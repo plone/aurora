@@ -1,0 +1,1 @@
+Updated contents route imports and TypeScript app type resolution to use the `@plone/aurora` app alias. @sneridagh
