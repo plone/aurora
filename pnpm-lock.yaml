@@ -10,8 +10,8 @@ catalogs:
       specifier: ^3.12.1
       version: 3.12.1
     '@platejs/playwright':
-      specifier: ^52.0.11
-      version: 52.0.11
+      specifier: 49.0.0
+      version: 49.0.0
     '@playwright/test':
       specifier: ^1.60.0
       version: 1.60.0
@@ -1100,7 +1100,7 @@ importers:
         version: 49.0.0(platejs@49.2.21(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@platejs/playwright':
         specifier: 'catalog:'
-        version: 52.0.11(@playwright/test@1.60.0)(platejs@49.2.21(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 49.0.0(@playwright/test@1.60.0)(platejs@49.2.21(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@platejs/resizable':
         specifier: ^49.0.0
         version: 49.0.0(platejs@49.2.21(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -1613,7 +1613,7 @@ importers:
         version: 9.38.0
       '@platejs/playwright':
         specifier: 'catalog:'
-        version: 52.0.11(@playwright/test@1.60.0)(platejs@49.2.21(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 49.0.0(@playwright/test@1.60.0)(platejs@49.2.21(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@playwright/test':
         specifier: 'catalog:'
         version: 1.60.0
@@ -3089,11 +3089,11 @@ packages:
       react: ^19.2.0
       react-dom: ^19.2.0
 
-  '@platejs/playwright@52.0.11':
-    resolution: {integrity: sha512-3C2wl77Rf5zWGASzT673YbvoAbddEsjDj2S5dKF/p5+AUm55rOwZqkLJr4ubj4qCj5VuX3iH2asRjsjQVmkkcg==}
+  '@platejs/playwright@49.0.0':
+    resolution: {integrity: sha512-gIt0BrLELQ3035uKK3FbJCuQP7Fnwa8HLPSmqh1IsyEAaQ9PspGgkPOAg9Pz4EPiMPwvPb0Y0dO4rKGlec5YAA==}
     peerDependencies:
       '@playwright/test': '>=1.42.1'
-      platejs: '>=52.0.11'
+      platejs: '>=49.0.0'
       react: ^19.2.0
       react-dom: ^19.2.0
 
@@ -8018,11 +8018,6 @@ packages:
   react-base16-styling@0.9.1:
     resolution: {integrity: sha512-1s0CY1zRBOQ5M3T61wetEpvQmsYSNtWEcdYzyZNxKa8t7oDvaOn9d21xrGezGAHFWLM7SHcktPuPTrvoqxSfKw==}
 
-  react-compiler-runtime@1.0.0:
-    resolution: {integrity: sha512-rRfjYv66HlG8896yPUDONgKzG5BxZD1nV9U6rkm+7VCuvQc903C4MjcoZR4zPw53IKSOX9wMQVpA1IAbRtzQ7w==}
-    peerDependencies:
-      react: ^19.2.0
-
   react-dnd-html5-backend@16.0.1:
     resolution: {integrity: sha512-Wu3dw5aDJmOGw8WjH1I1/yTH+vlXEL4vmjk5p+MHxP8HuHJS1lAGeIdG/hze1AvNeXWo/JgULV87LyQOr+r5jw==}
 
@@ -10974,12 +10969,11 @@ snapshots:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
 
-  '@platejs/playwright@52.0.11(@playwright/test@1.60.0)(platejs@49.2.21(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@platejs/playwright@49.0.0(@playwright/test@1.60.0)(platejs@49.2.21(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@playwright/test': 1.60.0
       platejs: 49.2.21(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0))
       react: 19.2.0
-      react-compiler-runtime: 1.0.0(react@19.2.0)
       react-dom: 19.2.0(react@19.2.0)
 
   '@platejs/resizable@49.0.0(platejs@49.2.21(@babel/core@7.28.5)(@babel/template@7.27.2)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0)))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
@@ -16416,10 +16410,6 @@ snapshots:
       color: 3.2.1
       csstype: 3.2.3
       lodash.curry: 4.1.1
-
-  react-compiler-runtime@1.0.0(react@19.2.0):
-    dependencies:
-      react: 19.2.0
 
   react-dnd-html5-backend@16.0.1:
     dependencies:
