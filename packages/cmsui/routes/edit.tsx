@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ploneClientContext,
   ploneContentContext,
-} from 'seven/app/middleware.server';
+} from '@plone/aurora/app/middleware.server';
 import ContentForm from '../components/ContentForm/ContentForm';
 
 export async function loader({

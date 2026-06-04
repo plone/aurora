@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { RouterContextProvider } from 'react-router';
 import { loader } from './layout';
-import { ploneContentContext } from 'seven/app/middleware.server';
+import { ploneContentContext } from '@plone/aurora/app/middleware.server';
 
-vi.mock('seven/app/i18next.server', () => ({
+vi.mock('@plone/aurora/app/i18next.server', () => ({
   default: {
     getLocale: vi.fn().mockResolvedValue('en'),
   },

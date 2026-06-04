@@ -20,8 +20,8 @@ import json
 
 # -- Project information -----------------------------------------------------
 
-project = "Seven Documentation"
-copyright = "Seven Foundation"
+project = "Plone Aurora Documentation"
+copyright = "Plone Aurora Foundation"
 author = "Plone Community"
 trademark_name = "Plone"
 now = datetime.now()
@@ -31,7 +31,7 @@ year = str(now.year)
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 with open(
-    os.path.join(os.path.abspath("."), "../apps/seven/package.json"), "r"
+    os.path.join(os.path.abspath("."), "../apps/aurora/package.json"), "r"
 ) as package_json:
     data = package_json.read()
 

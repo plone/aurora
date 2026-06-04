@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { langmap } from '@plone/helpers';
 import { Link } from '@plone/components';
-import type { RootLoader } from 'seven/app/root';
+import type { RootLoader } from '@plone/aurora/app/root';
 
 import styles from './LanguageSwitcher.module.css';
 import { useRouteLoaderData } from 'react-router';

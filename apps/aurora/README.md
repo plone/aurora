@@ -23,7 +23,7 @@ To start, from the root of the monorepo, issue the following commands.
 
 ```shell
 pnpm install
-pnpm --filter seven run dev
+pnpm --filter @plone/aurora run dev
 ```
 
 Then start the Plone backend.

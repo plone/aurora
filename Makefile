@@ -183,7 +183,7 @@ frontend-docker-start: ## Starts a Docker-based frontend for development
 
 .PHONY: acceptance-frontend-dev-start
 acceptance-frontend-dev-start: ## Start acceptance frontend in development mode
-	PLONE_API_PATH=http://localhost:55001/plone pnpm --filter seven start
+	PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start
 
 ######### Seven Acceptance tests
 
@@ -197,7 +197,7 @@ ci-acceptance-backend-start: ## Start backend acceptance server in headless mode
 
 .PHONY: acceptance-frontend-prod-start
 acceptance-frontend-prod-start: ## Start acceptance frontend in production mode
-	pnpm --filter seven build && PLONE_API_PATH=http://localhost:55001/plone pnpm --filter seven start:prod
+	pnpm --filter @plone/aurora build && PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start:prod
 
 .PHONY: acceptance-test
 acceptance-test: ## Start Cypress in interactive mode

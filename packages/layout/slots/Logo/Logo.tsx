@@ -7,7 +7,7 @@ import { messages } from '../messages';
 import styles from './Logo.module.css';
 import LogoImage from './Logo.svg';
 import { useRouteLoaderData } from 'react-router';
-import type { RootLoader } from 'seven/app/root';
+import type { RootLoader } from '@plone/aurora/app/root';
 
 const Logo = (props: SlotComponentProps) => {
   const { content } = props;
