@@ -4,7 +4,7 @@ myst:
     "description": "How to add Tailwind CSS to your add-on"
     "property=og:description": "How to add Tailwind CSS to your add-on"
     "property=og:title": "How to add Tailwind CSS to your add-on"
-    "keywords": "Seven, frontend, Plone, how-to, theming, Tailwind CSS, tailwind"
+    "keywords": "Plone Aurora, frontend, Plone, how-to, theming, Tailwind CSS, tailwind"
 ---
 
 # Add Tailwind CSS to your add-on

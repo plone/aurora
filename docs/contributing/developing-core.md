@@ -1,24 +1,15 @@
 ---
 myst:
   html_meta:
-    "description": "Learn how to set up an environment to develop Volto core and the basics of the Volto monorepo."
-    "property=og:description": "Learn how to set up an environment to develop Volto core and the basics of the Volto monorepo."
-    "property=og:title": "Develop Volto core"
-    "keywords": "pnpm, monorepo, develop, core, Volto, Plone, frontend, typescript"
+    "description": "Learn how to set up an environment to develop Plone Aurora core and the basics of the Plone Aurora monorepo."
+    "property=og:description": "Learn how to set up an environment to develop Plone Aurora core and the basics of the Plone Aurora monorepo."
+    "property=og:title": "Develop Plone Aurora core"
+    "keywords": "pnpm, monorepo, develop, core, Plone Aurora, Plone, frontend, typescript"
 ---
 
-# Develop Volto core
+# Develop Plone Aurora core
 
-This chapter describes how to develop the latest version of Volto core and its libraries, packages, and apps as open source software contributions.
-
-```{seealso}
-For previous versions of Volto core, you should follow the guide in the relevant version branch to build and run the backend.
-
--   [Volto 17](https://github.com/plone/volto/blob/17.x.x/api/README.rst)
--   [Volto 16](https://github.com/plone/volto/blob/16.x.x/api/README.rst)
-
-Additionally you can build each version of Volto documentation by running `make docs-html` from the root of the repository, and reading the relevant developer and contributing documentation.
-```
+This chapter describes how to develop the latest version of Plone Aurora core and its libraries, packages, and apps as open source software contributions.
 
 ```{seealso}
 To create a full Plone project with both frontend and backend, see {doc}`plone:install/create-project-cookieplone` instead.
@@ -29,7 +20,7 @@ To create a full Plone project with both frontend and backend, see {doc}`plone:i
 
 ## Monorepo structure
 
-The Volto core repository has the shape of a monorepo, where "mono" means "single" and "repo" is short for "repository".
+The Plone Aurora core repository has the shape of a monorepo, where "mono" means "single" and "repo" is short for "repository".
 This means that several apps and libraries related to each other are stored in the same repository.
 They are managed together but released individually.
 This allows the code to be shared effectively, and unifies tracking of changes across all of the apps and libraries.
@@ -41,35 +32,39 @@ The workspaces are located in the `packages` or `apps` folder.
 
 ### Folder layout
 
-Volto has the following folder structure.
-The package `volto` is the core code of Volto.
+Plone Aurora has the following folder structure.
+The app `aurora` is the core app of Plone Aurora.
 
 ```text
 /
 ├─ apps/
-│  ├─ nextjs
-│  └─ rr7
+│  └─ aurora
 ├─ ...
 ├─ packages/
+│  ├─ agave
 │  ├─ blocks
 │  ├─ client
+│  ├─ cmasui
 │  ├─ components
+│  ├─ contents
 │  ├─ helpers
+│  ├─ layout
+│  ├─ plate
+│  ├─ publicui
+│  ├─ react-router
 │  ├─ registry
 │  ├─ scripts
-│  ├─ layout
 │  ├─ theming
+│  ├─ tooling
 │  ├─ tsconfig
-│  ├─ types
-│  ├─ volto
-│  └─ volto-slate
+│  └─ types
 ├─ ...
 ```
 
 
 ## Development prerequisites
 
-To set up a Volto core development environment, your system must satisfy the following prerequisites.
+To set up a Plone Aurora core development environment, your system must satisfy the following prerequisites.
 
 ```{include} ../_inc/_install-operating-system.md
 ```
@@ -82,7 +77,7 @@ To set up a Volto core development environment, your system must satisfy the fol
 -   {term}`Git`
 
 ```{note}
-When developing Volto core, pnpm is required.
+When developing Plone Aurora core, pnpm is required.
 When developing a project using Plone, Yarn or other package managers may be used.
 ```
 
@@ -148,11 +143,11 @@ Compare the output to the [latest pnpm release number](https://www.npmjs.com/pac
 
 You need to perform the steps in this section only once to set up your environment.
 
-Clone the Volto repo, and change your working directory to the cloned repository:
+Clone the Plone Aurora repo, and change your working directory to the cloned repository:
 
 ```shell
-git clone https://github.com/plone/volto.git
-cd volto
+git clone https://github.com/plone/aurora.git
+cd aurora
 ```
 
 Install the frontend dependencies.
@@ -166,8 +161,8 @@ make install
 
 ## Start Plone
 
-Every time you want to run Volto for core development, you will need to create two terminal sessions, one for the {ref}`backend <develop-volto-start-the-backend-label>` and one for the {ref}`frontend <develop-volto-start-the-frontend-label>`.
-For both sessions, change your working directory to the root of your Volto clone.
+Every time you want to run Plone Aurora for core development, you will need to create two terminal sessions, one for the {ref}`backend <develop-volto-start-the-backend-label>` and one for the {ref}`frontend <develop-volto-start-the-frontend-label>`.
+For both sessions, change your working directory to the root of your Plone Aurora clone.
 
 To stop either the backend or frontend, use {kbd}`ctrl-c`.
 
@@ -237,7 +232,7 @@ make backend-docker-start
 
 ## Start the frontend
 
-In the second session, start the frontend, Volto.
+In the second session, start the frontend, Plone Aurora.
 
 ```shell
 pnpm start
@@ -253,7 +248,7 @@ Browse to the frontend running at http://localhost:3000.
 As mentioned in {ref}`developing-core-monorepo-structure-label`, pnpm has the concept of {term}`workspace`.
 Every package or app located in the `packages` or `apps` folders is declared as a pnpm workspace.
 
-When developing Volto, you can run pnpm commands from either the repository root or inside the package's or app's workspace in `packages/<package_name>` or `apps/<app_name>`.
+When developing Plone Aurora, you can run pnpm commands from either the repository root or inside the package's or app's workspace in `packages/<package_name>` or `apps/<app_name>`.
 
 pnpm commands will apply in the context from which they are run.
 That means when you run a pnpm command from the repository root, it will apply to all workspaces.
@@ -262,36 +257,26 @@ It also means when you run a pnpm command from inside a workspace, it will apply
 You can also use the pnpm `--filter` feature from the repository root to apply to only the specified workspaces, as shown in the following examples.
 
 ```shell
-pnpm --filter @plone/volto start
+pnpm --filter @plone/aurora start
 ```
 
-The above command when run from the repository root will start Volto.
+The above command when run from the repository root will start Plone Aurora.
 
 ```shell
 pnpm --filter @plone/registry build
 ```
 
-The above command when run from the repository root will build the Volto registry.
+The above command when run from the repository root will build the Plone Aurora registry.
 
 ```{seealso}
 For more information about pnpm workspaces, read the [documentation of pnpm workspaces](https://pnpm.io/workspaces).
 ```
 
 
-## Developing Volto
+## Developing Plone Aurora
 
-The Volto core code is located in the `packages/volto` folder.
+The Plone Aurora app code is located in the `apps/aurora` folder.
 
-````{versionchanged} 18.x.x
-Since December 2023, the Volto repository is now a monorepo.
-Volto is located now in the `packages/volto` folder.
-You can run all the usual commands from inside that folder, but replacing `yarn` with `pnpm`, since they have similar commands and features.
-For example, to start Volto:
-
-```shell
-pnpm start
-```
-````
 
 You can also run commands for a specific workspace using the `--filter` feature as shown in the previous section, {ref}`developing-core-run-commands-for-pnpm-workspaces-label`.
 
@@ -313,7 +298,7 @@ If a package is a dependency of another package in the monorepo, and it's declar
 
 ## TypeScript
 
-By default, the use of TypeScript is required in Plone frontend libraries, Volto itself being an exception.
+By default, the use of TypeScript is required in Plone frontend libraries, including Plone Aurora.
 
 ```{seealso}
 {ref}`typescript-policy-in-core-label`.
@@ -326,79 +311,13 @@ The monorepository consists of several core libraries.
 ### Registry
 
 `@plone/registry` provides support for building an add-on registry and infrastructure for JavaScript and TypeScript-based apps.
-Used by Volto, you can also use it in other JavaScript frameworks and environments to help create an add-on driven extensiblility story.
+Used by Plone Aurora, you can also use it in other JavaScript frameworks and environments to help create an add-on driven extensiblility story.
 
 ### Scripts
 
-`@plone/scripts` is the placeholder of tools used by Volto and its add-ons, such as the `i18n` internationalization scripts.
+`@plone/scripts` is the placeholder of tools used by Plone Aurora and its add-ons, such as the `i18n` internationalization scripts.
 
 ### Types
 
 `@plone/types` is the package that contains the TypeScript types in used in Plone.
 
-### Slate support for Volto
-
-`@plone/volto-slate` is the glue package that provides support for the Slate library in Volto.
-
-### Volto project generator
-
-```{deprecated} 18.0.0-alpha.43
-For Volto 18, `@plone/generator-volto` is replaced by [Cookieplone](https://github.com/plone/cookieplone).
-```
-
-`@plone/generator-volto` was a Yeoman generator that helps you set up Volto via command line.
-It generated all the boilerplate needed to start developing a Plone Volto project.
-It was used by `cookiecutter-plone-starter`, the deprecated way to set up Plone projects.
-The generator featured an `addon` template for scaffolding Volto add-ons in your projects.
-
-
-## Supported frontends
-
-Plone 6 comes with two frontend {term}`reference implementation`s.
-Volto is the default frontend, and is React-based.
-Classic UI is the Python-based, server-side rendered frontend.
-
-In Volto's `apps` folder, you'll find a Volto project scaffolding that uses Volto as a library.
-This is the same as that which you'll have when you follow the instructions in {doc}`plone:install/create-project-cookieplone`).
-
-
-## Experimental frontends
-
-Other frontends are currently under heavy development.
-They are marked as experimental and, for now, they are a proof of concept demonstrating that other frontends are possible.
-Although they do work now in an acceptable way, the implementation might change in the future.
-These implementations only show how to access the public Plone content in the current site, dealing with data fetching and routing.
-All implementations are located in the `apps` directory in a subdirectory according to their implementation name.
-They use the Plone frontend strategic packages, including `@plone/registry`, `@plone/client`, and `@plone/components`.
-
-
-### Next.js
-
-This frontend is a proof of concept using Next.js with Plone.
-
-You can try it out using the following command.
-
-```shell
-pnpm --filter plone-nextjs dev
-```
-
-### Remix
-
-This frontend is a proof of concept using Remix with Plone.
-
-You can try it out using the following command.
-
-```shell
-pnpm --filter plone-remix dev
-```
-
-
-### React Router 7
-
-This frontend is a proof of concept using React Router 7 with Plone.
-
-You can try it out using the following command.
-
-```shell
-pnpm --filter plone-rr7 dev
-```

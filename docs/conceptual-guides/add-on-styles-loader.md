@@ -4,7 +4,7 @@ myst:
     "description": "An explanation of the add-ons styles loader in @plone/registry"
     "property=og:description": "An explanation of the add-ons styles loader in @plone/registry"
     "property=og:title": "Add-ons styles loader"
-    "keywords": "Seven, @plone/registry, registry, add-ons, loader"
+    "keywords": "Plone Aurora, @plone/registry, registry, add-ons, loader"
 ---
 
 # Add-ons styles loader

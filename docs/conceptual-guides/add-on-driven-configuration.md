@@ -4,13 +4,13 @@ myst:
     "description": "Add-on driven configuration"
     "property=og:description": "Add-on driven configuration"
     "property=og:title": "Add-on driven configuration"
-    "keywords": "Seven, add-ons, configuration"
+    "keywords": "Plone Aurora, add-ons, configuration"
 ---
 
 # Add-on driven configuration
 
-Seven is a frontend framework that can be extended using add-ons.
-Add-ons can provide configuration to customize or extend the default configuration of Seven.
+Plone Aurora is a frontend framework that can be extended using add-ons.
+Add-ons can provide configuration to customize or extend the default configuration of Plone Aurora.
 
 See {ref}`what-is-an-addon` for more information about add-ons.
 

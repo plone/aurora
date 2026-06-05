@@ -1,10 +1,10 @@
 ---
 myst:
   html_meta:
-    "description": "Documentation in Volto"
-    "property=og:description": "Documentation in Volto"
-    "property=og:title": "Documentation in Volto"
-    "keywords": "Volto, Plone, frontend, React, Documentation, MyST, Storybook, Vale, spell, grammar, style, check, linkcheck"
+    "description": "Documentation in Plone Aurora"
+    "property=og:description": "Documentation in Plone Aurora"
+    "property=og:title": "Documentation in Plone Aurora"
+    "keywords": "Plone Aurora, Plone, frontend, React, Documentation, MyST, Storybook, Vale, spell, grammar, style, check, linkcheck"
 ---
 
 (volto-documentation-label)=
@@ -13,14 +13,14 @@ myst:
 
 > "If it ain't documented, it's broken."
 
-Documentation in Volto has two parts, {ref}`narrative <volto-documentation-narrative-label>` and {ref}`Storybook <volto-documentation-storybook-label>`.
+Documentation in Plone Aurora has two parts, {ref}`narrative <volto-documentation-narrative-label>` and {ref}`Storybook <volto-documentation-storybook-label>`.
 
 
 (volto-documentation-narrative-label)=
 
 ## Narrative documentation
 
-Volto follows the guidance of {doc}`plone:index` and uses the same tools when writing narrative documentation.
+Plone Aurora follows the guidance of {doc}`plone:index` and uses the same tools when writing narrative documentation.
 
 We use Sphinx to build and check documentation.
 
@@ -38,7 +38,7 @@ The {doc}`plone:index` also provides excellent references for writing high quali
 You can use Make commands to run Sphinx to build and check documentation.
 All build and check documentation commands use the file `Makefile`.
 
-In Volto, all documentation commands are prefixed with `docs-`.
+In Plone Aurora, all documentation commands are prefixed with `docs-`.
 You should run these commands from the root of the `volto` repository.
 
 To see the all Make commands, use the following command.
@@ -133,13 +133,13 @@ See {ref}`plone:authors-advanced-vale-usage-label` for Vale configuration, integ
 Storybook provides a sandbox to build, test, and document these visual elements (components) in isolation, mock them to show different data, test edge cases.
 
 Components include widgets, blocks, and basic and structural items.
-When you develop a component, we encourage you to create or update its [Volto Storybook](https://6.docs.plone.org/storybook/) entry.
+When you develop a component, we encourage you to create or update its [Plone Aurora Storybook](https://6.docs.plone.org/storybook/) entry.
 As an example of how to do that, you can copy the existing Storybook entry for the `RichTextWidget` component.
 
 -   https://github.com/plone/volto/blob/main/packages/volto/src/components/theme/Widgets/RichTextWidget.stories.jsx#L3
 -   https://github.com/plone/volto/blob/main/packages/volto/src/components/theme/Widgets/RichTextWidget.jsx
 
-To build the Volto Storybook locally and test your entry, run the following command from the repository root.
+To build the Plone Aurora Storybook locally and test your entry, run the following command from the repository root.
 
 ```shell
 make storybook-build

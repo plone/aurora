@@ -4,7 +4,7 @@ myst:
     "description": "How to fetch additional data in the root loader"
     "property=og:description": "How to fetch additional data in the root loader"
     "property=og:title": "Fetch additional data in the root loader"
-    "keywords": "Seven, @plone/registry, registry, configuration, guide, root, data, fetching"
+    "keywords": "Plone Aurora, @plone/registry, registry, configuration, guide, root, data, fetching"
 ---
 
 # Fetch additional data in the root loader

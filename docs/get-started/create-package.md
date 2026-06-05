@@ -4,7 +4,7 @@ myst:
     "description": "How to create a package with only a frontend add-on using Cookieplone"
     "property=og:description": "How to create a package with only a frontend add-on using Cookieplone"
     "property=og:title": "How to create a package with only a frontend add-on using Cookieplone"
-    "keywords": "Plone, Plone 6, Seven, create, project, install, Cookieplone"
+    "keywords": "Plone, Plone 6, Plone Aurora, create, project, install, Cookieplone"
 ---
 
 (create-package-label)=
@@ -12,29 +12,29 @@ myst:
 # Create a package: frontend add-on only
 
 This chapter describes how you can create a package with only a frontend add-on using {term}`Cookieplone`.
-Cookieplone is the recommended way to create a package as an add-on for Plone that uses the Seven frontend.
+Cookieplone is the recommended way to create a package as an add-on for Plone that uses the Plone Aurora frontend.
 It also includes tools for development and deployment.
 
 
-(seven-create-project-cookieplone-generate-the-package-label)=
+(plone-aurora-create-project-cookieplone-generate-the-package-label)=
 
 ## Generate the add-on package
 
-After satisfying the {doc}`system-requirements` and having {ref}`activated an LTS version of Node.js <seven-prerequisites-nodejs-label>`, generate the add-on package.
+After satisfying the {doc}`system-requirements` and having {ref}`activated an LTS version of Node.js <plone-aurora-prerequisites-nodejs-label>`, generate the add-on package.
 
 ```shell
-uvx cookieplone seven_addon --no-input
+uvx cookieplone aurora_addon --no-input
 ```
 
 
 ## Install the add-on package
 
-Cookieplone creates a folder with the name of the add-on, in this example, {file}`seven-add-on`.
+Cookieplone creates a folder with the name of the add-on, in this example, {file}`plone-aurora-add-on`.
 
-Change your current working directory to {file}`seven-add-on`.
+Change your current working directory to {file}`plone-aurora-add-on`.
 
 ```shell
-cd seven-add-on
+cd plone-aurora-add-on
 ```
 
 To install the add-on, use the following command.
@@ -81,7 +81,7 @@ This will start a clean Plone server for development purposes so you can start d
 ### Start Plone frontend
 
 Create a second shell session in a new window.
-Change your current working directory to {file}`seven-add-on`.
+Change your current working directory to {file}`plone-aurora-add-on`.
 Start the Plone frontend with the following command.
 
 ```shell
@@ -99,7 +99,7 @@ Open a browser at the following URL to visit your Plone site.
 
 http://localhost:3000
 
-Your newly created add-on will be installed with vanilla Seven.
-You can start developing it in the add-on package located in {file}`packages/seven-add-on`.
+Your newly created add-on will be installed with vanilla Plone Aurora.
+You can start developing it in the add-on package located in {file}`packages/plone-aurora-add-on`.
 
 You can stop the site with {kbd}`ctrl-c`.

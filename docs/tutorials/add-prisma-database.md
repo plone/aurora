@@ -1,12 +1,12 @@
 
-# External Prisma database support for a Seven add-on
+# External Prisma database support for a Plone Aurora add-on
 
-This tutorial will show you how to add a small "Like" counter button to any Seven content object.
+This tutorial will show you how to add a small "Like" counter button to any Plone Aurora content object.
 It will persist its value in an external database using {term}`Prisma`.
-It also demonstrates how to create API routes and slots in Seven and how to share data from the server to the client through the root loader.
+It also demonstrates how to create API routes and slots in Plone Aurora and how to share data from the server to the client through the root loader.
 In this tutorial you will:
 
-- install Prisma inside an existing Seven add-on
+- install Prisma inside an existing Plone Aurora add-on
 - model a `UrlLike` table backed by SQLite for local development
 - expose API endpoints that read and update the like counter
 - surface the latest count in a slot component rendered on every page
@@ -18,7 +18,7 @@ Prisma is an open-source toolkit that simplifies database access.
 ```
 
 ```{note}
-The main purpose of this tutorial is to demonstrate how to integrate Prisma with Seven.
+The main purpose of this tutorial is to demonstrate how to integrate Prisma with Plone Aurora.
 You can also use the same approach but saving to a Plone REST API endpoint.
 It is not meant to be a complete, production-ready implementation of a like button.
 The complete code of this tutorial is in the GitHub repository [`collective/seven-training-addon`](https://github.com/collective/seven-training-addon).
@@ -26,9 +26,9 @@ The complete code of this tutorial is in the GitHub repository [`collective/seve
 
 ## Prerequisites
 
-- A Seven add-on scaffolded with {term}`cookieplone`
+- A Plone Aurora add-on scaffolded with {term}`cookieplone`
 - {term}`pnpm` installed and configured for the workspace
-- Basic familiarity with TypeScript and React Router code in a Seven project
+- Basic familiarity with TypeScript and React Router code in a Plone Aurora project
 
 If you still need an add-on skeleton, follow {doc}`../get-started/create-package` before you continue.
 
@@ -115,7 +115,7 @@ DATABASE_URL="file:./dev.db" pnpm dev
 
 ## Create a reusable Prisma client helper
 
-Seven will import Prisma from multiple files.
+Plone Aurora will import Prisma from multiple files.
 Add a tiny helper that keeps one shared instance alive across hot reloads.
 
 ```{code-block} ts
@@ -186,7 +186,7 @@ export async function action({ params }: ActionFunctionArgs) {
 }
 ```
 
-Let's declare the route in Seven.
+Let's declare the route in Plone Aurora.
 First, create a {file}`config` folder in your add-on at {file}`package/<add-on-name>/config`.
 You'll store all your add-on configurations in this folder.
 
@@ -278,7 +278,7 @@ export default function LikeButton() {
 This component uses the `useFetcher` hook from `react-router` to send a POST request to the `/@likes/*` route when the button is clicked.
 It also uses the `useRouteLoaderData` hook to get the current number of likes for the URL from the root loader data.
 
-Next, declare the slot in Seven.
+Next, declare the slot in Plone Aurora.
 First, create a {file}`slots.ts` file in the {file}`config` folder of your add-on at {file}`package/<add-on-name>/config/slots.ts` with the following code:
 
 ```{code-block} ts
@@ -316,9 +316,9 @@ export default function install(config: ConfigType) {
 
 ## Provide likes data from the root loader
 
-Seven lets add-ons contribute data to the root loader through utilities.
+Plone Aurora lets add-ons contribute data to the root loader through utilities.
 Create {file}`packages/<add-on-name>/config/server.ts` so every request exposes the current like counter to the client.
-Next, register a utility function of the type `rootLoaderData` that will be called in the root loader of Seven.
+Next, register a utility function of the type `rootLoaderData` that will be called in the root loader of Plone Aurora.
 Create a new file {file}`server.ts` in the {file}`config` folder of your add-on at {file}`package/<add-on-name>/config/server.ts` with the following code.
 
 ```{code-block} ts
@@ -345,7 +345,7 @@ export default function install(config: ConfigType) {
 }
 ```
 
-Seven will call this function in the root loader, passing the current path as an argument.
+Plone Aurora will call this function in the root loader, passing the current path as an argument.
 The data will be available in the `LikeButton` component via the `useRouteLoaderData` hook.
 With this utility in place, `LikeButton` can read the latest count from the root loader, and React Router will revalidate the loader automatically after each POST.
 
