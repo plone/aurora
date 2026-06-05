@@ -4,7 +4,7 @@ myst:
     "description": "Configure and shadow Plate code block syntax highlighting languages"
     "property=og:description": "Configure and shadow Plate code block syntax highlighting languages"
     "property=og:title": "Configure Plate code block languages"
-    "keywords": "Seven, Plate, code block, lowlight, highlight.js, shadowing"
+    "keywords": "Plone Aurora, Plate, code block, lowlight, highlight.js, shadowing"
 ---
 
 # Configure Plate code block languages
@@ -13,7 +13,7 @@ This guide explains how to configure which languages are available for syntax hi
 
 ## Default language module
 
-Seven reads the language map from:
+Plone Aurora reads the language map from:
 
 - {file}`packages/plate/components/editor/plugins/code-block-languages.ts`
 

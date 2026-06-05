@@ -4,7 +4,7 @@ myst:
     "description": "Storybook"
     "property=og:description": "Storybook"
     "property=og:title": "Storybook"
-    "keywords": "Plone, Seven, frontend, storybook"
+    "keywords": "Plone, Plone Aurora, frontend, storybook"
 ---
 
 # Storybook
