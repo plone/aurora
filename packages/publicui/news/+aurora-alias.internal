@@ -1,0 +1,1 @@
+Updated Public UI route imports and typecheck setup to use the `@plone/aurora` app alias. @sneridagh

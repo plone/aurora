@@ -29,7 +29,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Run unit tests ${{ matrix.name }}
-        run: pnpm --filter seven exec init-loaders && pnpm --filter ${{ matrix.name }} test
+        run: pnpm --filter @plone/aurora exec init-loaders && pnpm --filter ${{ matrix.name }} test
 
   client:
     name: '@plone/client'
@@ -66,8 +66,8 @@ jobs:
 
       - run: pnpm --filter @plone/client test
 
-  seven:
-    name: 'Seven'
+  aurora:
+    name: '@plone/aurora'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -82,4 +82,4 @@ jobs:
 
       - run: make build-deps
 
-      - run: pnpm --filter seven test
+      - run: pnpm --filter @plone/aurora test

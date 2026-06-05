@@ -37,9 +37,15 @@ if (!vscodeSettingsJSON['[markdown]']) {
   vscodeSettingsJSON['[markdown]']['editor.formatOnSave'] = false;
 }
 
-if (!vscodeSettingsJSON['tailwindCSS.experimental.configFile']) {
+if (
+  vscodeSettingsJSON['tailwindCSS.experimental.configFile'] ===
+  'apps/seven/.plone/publicui.css'
+) {
   vscodeSettingsJSON['tailwindCSS.experimental.configFile'] =
-    'apps/seven/.plone/publicui.css';
+    'apps/aurora/.plone/publicui.css';
+} else if (!vscodeSettingsJSON['tailwindCSS.experimental.configFile']) {
+  vscodeSettingsJSON['tailwindCSS.experimental.configFile'] =
+    'apps/aurora/.plone/publicui.css';
 }
 
 if (!vscodeSettingsJSON['tailwindCSS.classFunctions']) {

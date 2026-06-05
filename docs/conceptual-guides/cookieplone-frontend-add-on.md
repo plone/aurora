@@ -25,7 +25,7 @@ The generated project contains the following files and folders:
   The default content is:
 
   ```ts
-  import { addons } from 'seven/registry.config';
+  import { addons } from '@plone/aurora/registry.config';
 
   addons.push('<add-on-name>'); // <add-on-name> being the actual name of your add-on
 

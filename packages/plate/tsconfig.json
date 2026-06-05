@@ -13,7 +13,7 @@
   "compilerOptions": {
     "types": ["vite/client"],
     "paths": {
-      "seven/*": ["../../apps/seven/*"],
+      "@plone/aurora/*": ["../../apps/aurora/*"],
       "@plone/plate/*": ["./*"],
       "@/*": ["./*"]
     }

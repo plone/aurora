@@ -4,7 +4,7 @@ import { loader } from './contents';
 import {
   ploneClientContext,
   ploneContentContext,
-} from 'seven/app/middleware.server';
+} from '@plone/aurora/app/middleware.server';
 
 vi.mock('@plone/react-router', () => ({
   requireAuthCookie: vi.fn().mockResolvedValue('fake-token'),
