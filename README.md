@@ -63,34 +63,34 @@ You can find it at https://plone-storybook.readthedocs.io/?path=/docs/introducti
 
 ## Create a Plone Aurora frontend-only project
 
-To create a project with a frontend-only scaffold using Plone Aurora, follow the [Plone installation documentation](https://volto.readthedocs.io/seven/get-started/create-package.html).
+To create a project with a frontend-only scaffold using Plone Aurora, follow the [Plone installation documentation](https://plone-aurora.readthedocs.io/get-started/create-package.html).
 
 
 ## Documentation
 
-You can find the documentation at [https://volto.readthedocs.io/seven/](https://volto.readthedocs.io/seven/).
+You can find the documentation at [https://plone-aurora.readthedocs.io/](https://plone-aurora.readthedocs.io/).
 
 
 ## Supported Plone, Python, and Plone REST API versions
 
-See [Plone, Python, and Plone REST API compatibility](https://volto.readthedocs.io/seven/contributing/version-policy.html#version-policy-plone-python-and-plone-rest-api-compatibility)
+See [Plone, Python, and Plone REST API compatibility](https://plone-aurora.readthedocs.io/contributing/version-policy.html#version-policy-plone-python-and-plone-rest-api-compatibility)
 
 See the [Plone Release Schedule](https://plone.org/download/release-schedule) for details of maintenance and support.
 
 
 ## Supported Node.js versions
 
-See [Node.js version policy](https://volto.readthedocs.io/seven/contributing/version-policy.html#version-policy-plone-python-and-plone-rest-api-compatibility).
+See [Node.js version policy](https://plone-aurora.readthedocs.io/contributing/version-policy.html#version-policy-plone-python-and-plone-rest-api-compatibility).
 
 
 ## Supported browsers
 
-See [Supported browsers](https://volto.readthedocs.io/seven/contributing/version-policy.html#version-policy-supported-browsers).
+See [Supported browsers](https://plone-aurora.readthedocs.io/contributing/version-policy.html#version-policy-supported-browsers).
 
 
 ## Contributing
 
-To contribute to the Plone Aurora project by writing code, documentation, translations, and so on, please read [Contributing to Plone](https://6.docs.plone.org/contributing/index.html) and [Contributing to Volto](https://volto.readthedocs.io/seven/contributing/index.html).
+To contribute to the Plone Aurora project by writing code, documentation, translations, and so on, please read [Contributing to Plone](https://6.docs.plone.org/contributing/index.html) and [Contributing to Plone Aurora](https://plone-aurora.readthedocs.io/contributing/index.html).
 
 For newcomers to Plone Aurora, Plone, or open source software, you must read and follow [First-time contributors](https://6.docs.plone.org/contributing/first-time.html).
 
