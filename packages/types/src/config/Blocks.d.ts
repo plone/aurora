@@ -150,6 +150,7 @@ export interface BlockConfigBase {
 }
 
 export interface PlateBlockConfigBase {
+  category?: string;
   blockWidth?: BlockWidthConfig;
 }
 

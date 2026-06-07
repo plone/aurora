@@ -27,6 +27,7 @@ import { MarkdownKit } from './plugins/markdown-kit';
 import { MediaKit } from './plugins/media-kit';
 import { MentionKit } from './plugins/mention-kit';
 import { BlockWidthKit } from './plugins/block-width-kit';
+import { BlockAnatomyKit } from './plugins/block-anatomy-kit';
 import { StyleFieldsKit } from './plugins/style-fields-kit';
 import { SlashKit } from './plugins/slash-kit';
 // import { SuggestionKit } from './plugins/suggestion-kit';
@@ -55,6 +56,7 @@ export const EditorKit = [
   ...FontKit,
 
   // Block Style
+  ...BlockAnatomyKit,
   ...StyleFieldsKit,
   ...BlockWidthKit,
   ...ListKit,

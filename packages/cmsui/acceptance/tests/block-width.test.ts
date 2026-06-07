@@ -1,5 +1,6 @@
 import { expect, test } from '../../../tooling/playwright/test';
 import type { Locator, Page } from '@playwright/test';
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
 
@@ -71,7 +72,7 @@ test('Somersault edit mode injects the configured CSS custom property for an exp
     pageId: 'width-explicit-page',
     contentTitle: 'Block width explicit page',
     paragraph: {
-      type: 'unknown',
+      type: PLONE_BLOCK_TYPE,
       '@type': 'image',
       blockWidth: 'layout',
       children: [{ text: '' }],

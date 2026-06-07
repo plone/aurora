@@ -49,6 +49,8 @@ const RenderBlocks = (props: RenderBlocksProps) => {
     );
   }
 
+  // This branch only runs if no somersault block is found, so
+  // we can be sure that the blocks are not somersault blocks and render them as usual
   return hasBlocksData(content) ? (
     <CustomTag>
       {content.blocks_layout.items.map((block) => {
@@ -58,7 +60,11 @@ const RenderBlocks = (props: RenderBlocksProps) => {
         const Block = blocksConfig[blockType]?.view || DefaultBlockView;
 
         return Block ? (
-          <BlockWrapper key={block} data={blockData}>
+          <BlockWrapper
+            key={block}
+            data={blockData}
+            blocksConfig={blocksConfig}
+          >
             {/* @ts-ignore It's ok to pass the blockData as is */}
             <Block
               key={block}

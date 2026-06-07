@@ -55,6 +55,7 @@ describe('BlockWrapper', () => {
             teaser: {
               id: 'teaser',
               title: 'Teaser',
+              category: 'teaser',
               icon: 'icon',
               group: 'default',
               restricted: false,
@@ -87,6 +88,9 @@ describe('BlockWrapper', () => {
     const wrapper = container.firstElementChild as HTMLElement;
 
     expect(wrapper).toBeTruthy();
+    expect(wrapper.className).toBe('block block-teaser category-teaser');
+    expect(wrapper.getAttribute('data-block-type')).toBe('teaser');
+    expect(wrapper.getAttribute('data-block-category')).toBe('teaser');
     expect(wrapper.style.getPropertyValue('--theme-color')).toBe('wheat');
   });
 });

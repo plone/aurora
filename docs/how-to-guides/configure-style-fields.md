@@ -166,6 +166,10 @@ This works in both:
 - Plate and Somersault rendering
 - public block rendering in `@plone/layout`
 
+Style fields only resolve semantic values into styles.
+They do not add the block model class-name contract.
+For `.block.block-<type>.category-<category>` and `data-block-*` attributes, see {doc}`../development/block-anatomy`.
+
 ## Nested storage
 
 If the value must be stored under a nested key, use an object marker instead of `true`.

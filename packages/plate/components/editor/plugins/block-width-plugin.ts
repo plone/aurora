@@ -5,6 +5,7 @@ import {
   type SlateEditor,
   type TElement,
 } from 'platejs';
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import config from '@plone/registry';
 import type { StyleDefinition } from '@plone/types';
 import { toPlatePlugin } from 'platejs/react';
@@ -114,12 +115,12 @@ export const resolveBlockWidthConfig = (
   editor: SlateEditor,
   element?: TElement | null,
 ): BlockWidthConfig => {
-  if (element?.type === 'unknown') {
+  if (element?.type === PLONE_BLOCK_TYPE) {
     return {};
   }
 
   const registryConfig =
-    element?.type === 'unknown'
+    element?.type === PLONE_BLOCK_TYPE
       ? getPloneBlockRegistryWidthConfig(element)
       : getPlateBlockRegistryWidthConfig(element);
 
@@ -172,7 +173,7 @@ export const applyBlockWidthDefaultsInValue = (value: unknown[]) => {
     const element = node as ValueElement;
     if (typeof element.type !== 'string') return;
 
-    if (element.type === 'unknown') {
+    if (element.type === PLONE_BLOCK_TYPE) {
       if (Array.isArray(element.children)) {
         element.children.forEach(visit);
       }
@@ -219,7 +220,7 @@ export const withBlockWidthDefaults = <T extends TElement>(
   editor: SlateEditor,
   element: T,
 ): T => {
-  if (element.type === 'unknown') {
+  if (element.type === PLONE_BLOCK_TYPE) {
     return element;
   }
 
@@ -255,7 +256,7 @@ const withInsertedBlockWidthDefaults = (
   const nextNode: TElement =
     children === nodes.children ? nodes : ({ ...nodes, children } as TElement);
 
-  if (!editor.api.isBlock(nextNode) || nextNode.type === 'unknown') {
+  if (!editor.api.isBlock(nextNode) || nextNode.type === PLONE_BLOCK_TYPE) {
     return nextNode;
   }
 
@@ -268,7 +269,7 @@ const setBlockWidth = (
   setNodesOptions?: SetNodesOptions,
 ) => {
   const matchesValue = (node: TElement) => {
-    if (node.type === 'unknown') return false;
+    if (node.type === PLONE_BLOCK_TYPE) return false;
 
     const config = getBlockWidthConfig(editor, node);
 
@@ -300,7 +301,7 @@ export const BaseBlockWidthPlugin = createSlatePlugin({
         if (
           !element ||
           !ElementApi.isElement(element) ||
-          element.type === 'unknown'
+          element.type === PLONE_BLOCK_TYPE
         ) {
           return props;
         }
@@ -344,7 +345,7 @@ export const BaseBlockWidthPlugin = createSlatePlugin({
     const block =
       blockEntry &&
       ElementApi.isElement(blockEntry[0]) &&
-      blockEntry[0].type !== 'unknown'
+      blockEntry[0].type !== PLONE_BLOCK_TYPE
         ? blockEntry[0]
         : undefined;
     const { defaultWidth } = getBlockWidthConfig(editor, block);

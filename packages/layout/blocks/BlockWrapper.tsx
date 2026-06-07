@@ -4,6 +4,7 @@ import type { RenderBlocksProps } from './RenderBlocks';
 import type { BlocksFormData } from '@plone/types';
 import {
   getStyleFieldDefinitionsFromRegistry,
+  resolveBlockAnatomy,
   resolveStyleFields,
 } from '@plone/helpers';
 import { getBlockStyleFieldConfigs } from '../helpers';
@@ -23,19 +24,15 @@ const BlockWrapper = (props: BlockWrapperProps) => {
     container: undefined,
     resolveDefinitions: getStyleFieldDefinitionsFromRegistry,
   });
-  // TODO: Bring in the StyleWrapper helpers for calculating classes
-  const classNames = undefined;
+  const anatomy = resolveBlockAnatomy({
+    type: data['@type'],
+    category,
+  });
 
   return (
     <div
-      className={cx(
-        'block',
-        'block-' + data['@type'],
-        {
-          ['category-' + category]: category,
-        },
-        classNames,
-      )}
+      className={cx(anatomy.className)}
+      {...anatomy.dataAttributes}
       style={style}
     >
       <div className="block-inner-container">{children}</div>

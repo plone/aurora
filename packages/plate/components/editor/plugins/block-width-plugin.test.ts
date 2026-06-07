@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import config from '@plone/registry';
 
 import {
@@ -141,7 +142,7 @@ describe('block width plugin', () => {
     });
   });
 
-  it('does not use blocksConfig.blockWidth for unknown blocks in BlockWidthPlugin', () => {
+  it('does not use blocksConfig.blockWidth for ploneBlock nodes in BlockWidthPlugin', () => {
     registryBlocks.widths = [
       {
         name: 'default',
@@ -167,7 +168,7 @@ describe('block width plugin', () => {
 
     expect(
       getBlockWidthConfig(editor, {
-        type: 'unknown',
+        type: PLONE_BLOCK_TYPE,
         '@type': 'image',
         children: [{ text: '' }],
       } as any),
@@ -177,7 +178,7 @@ describe('block width plugin', () => {
     });
   });
 
-  it('still uses blocksConfig.blockWidth as a fallback for unknown blocks in style fields', () => {
+  it('still uses blocksConfig.blockWidth as a fallback for ploneBlock nodes in style fields', () => {
     registryBlocks.widths = [
       {
         name: 'default',
@@ -205,7 +206,7 @@ describe('block width plugin', () => {
     expect(
       transformProps({
         element: {
-          type: 'unknown',
+          type: PLONE_BLOCK_TYPE,
           '@type': 'image',
           children: [{ text: '' }],
         },
@@ -399,7 +400,7 @@ describe('block width plugin', () => {
 
     const setNodes = vi.fn();
     const block = {
-      type: 'unknown',
+      type: PLONE_BLOCK_TYPE,
       '@type': 'teaser',
       styles: {
         theme: 'sand',

@@ -2,6 +2,7 @@ import {
   applyStyleFieldDefaultsInData,
   getStyleFieldsFromBlockSchema,
   getStyleFieldDefinitionsFromRegistry,
+  PLONE_BLOCK_TYPE,
   resolveStyleFields,
   setStyleFieldValue,
 } from '@plone/helpers';
@@ -73,7 +74,7 @@ const getElementStyleFieldConfigs = (
 ): Record<string, StyleFieldConfig> => {
   if (!element) return {};
 
-  if (element.type === 'unknown') {
+  if (element.type === PLONE_BLOCK_TYPE) {
     const blockType = (element as TElement & { '@type'?: unknown })['@type'];
 
     if (typeof blockType !== 'string') return {};
@@ -218,7 +219,7 @@ export const setStyleFieldOnEditor = (
     const definitions = getStyleFieldDefinitionsFromRegistry(fieldName, {
       data: node as Record<string, unknown>,
       blockType:
-        (typeof node.type === 'string' && node.type !== 'unknown'
+        (typeof node.type === 'string' && node.type !== PLONE_BLOCK_TYPE
           ? node.type
           : (node as TElement & { '@type'?: string })['@type']) ?? undefined,
       fieldName,

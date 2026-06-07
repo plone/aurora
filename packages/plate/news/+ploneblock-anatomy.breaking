@@ -1,0 +1,1 @@
+Renamed adapted registry-backed block nodes from `unknown` to `ploneBlock` and added the `BlockAnatomyPlugin` class contract. @sneridagh
