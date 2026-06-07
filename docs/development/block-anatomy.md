@@ -11,6 +11,24 @@ myst:
 
 Plone Aurora exposes a shared block anatomy contract for both public rendering and Plate/Somersault rendering.
 
+## Plone Aurora's block model
+
+In the past, the Plone's block engines used different approaches, improving and iterating them over the years.
+We identified several of these iterations, and defined what we called the Block Model v3.
+It is the model behind Plone Aurora block anatomy contract, and from now on, it is simply referred to as the block model.
+Its main goal is to keep view mode and edit mode structurally aligned so the same CSS can work in both places.
+Instead of letting each block invent its own wrapper layout, the framework provides a standard two-level structure and leaves the block component focused on content and behavior.
+
+The important ideas are:
+
+- The outer container is responsible for full-width page placement, theme styling, and vertical spacing.
+- The inner container controls content width, centering, and block-to-block spacing.
+- Block categories drive spacing behavior between adjacent blocks, so spacing decisions stay consistent across the site.
+- Blocks should stay simple and render their actual content directly, without adding extra layout wrappers unless they are genuinely needed.
+- The model is opt-in, which keeps existing blocks compatible while allowing v3-capable blocks to adopt the shared structure.
+
+In practice, that means the block model defines the structure around a block, while the block itself stays focused on the content it renders.
+
 The outer block element receives:
 
 ```html
