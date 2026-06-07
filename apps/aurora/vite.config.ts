@@ -21,7 +21,8 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
       tailwindcss(),
       reactRouter(),
       babel({
-        filter: /app\/.*\.tsx?$/,
+        include: /\.tsx?$/,
+        exclude: /node_modules/,
         babelConfig: {
           presets: ['@babel/preset-typescript'],
           plugins: ['babel-plugin-react-compiler'],
