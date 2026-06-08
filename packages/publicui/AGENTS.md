@@ -4,7 +4,7 @@ This file applies only to `packages/publicui` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/publicui` provides the **public-facing routes and page rendering for Seven**.
+- `@plone/publicui` provides the **public-facing routes and page rendering for Plone Aurora**.
 - It is the surface that anonymous visitors and authenticated users see when browsing the site.
 - It covers content views, search results, and the sitemap.
 - It consumes `@plone/layout` for structural page elements and `@plone/blocks` for block rendering.

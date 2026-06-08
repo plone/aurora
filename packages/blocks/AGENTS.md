@@ -4,10 +4,10 @@ This file applies only to `packages/blocks` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/blocks` provides the **core content blocks for Seven** (Plone 7).
+- `@plone/blocks` provides the **core content blocks for Plone Aurora**.
 - It is **not part of Volto** and not used by it.
 - Each block serves two consumers:
-  - **Edit components** → consumed by `@plone/plate` (the Seven block editor)
+  - **Edit components** → consumed by `@plone/plate` (the Plone Aurora block editor, aka Somersault block editor)
   - **View components** → consumed by `@plone/publicui` (the public-facing renderer)
 
 > [!WARNING]

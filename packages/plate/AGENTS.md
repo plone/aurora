@@ -4,8 +4,8 @@ This file applies only to `packages/plate` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/plate` is the **block editor for Seven**, built on [Plate.js](https://platejs.org/).
-- It will eventually **replace `@plone/volto-slate`** in the Seven context.
+- `@plone/plate` is the **block editor for Plone Aurora**, built on [Plate.js](https://platejs.org/).
+- It will eventually **replace `@plone/volto-slate`** in the Plone Aurora context.
 - It is consumed by `@plone/cmsui` to power the `add` and `edit` routes, and uses Edit components from `@plone/blocks` for individual block types.
 - Block migration utilities live under `migrations/`.
 
