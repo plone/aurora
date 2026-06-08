@@ -7,21 +7,21 @@ Each package also has its own `AGENTS.md` with more specific guidance — always
 
 This is a **pnpm monorepo** (`pnpm-workspace.yaml`) containing:
 
-- `apps/seven` — the main Seven (Plone 7) application
-- `packages/*` — shared libraries that make up the Seven stack and tooling
+- `apps/aurora` — the main Plone Aurora application
+- `packages/*` — shared libraries that make up the Plone Aurora stack and tooling
 
 The package manager is **pnpm**. Do not use `npm` or `yarn`.
 
 ## Two Stacks in This Repo
 
-### Seven (Plone 7) — the active stack
+### Plone Aurora — the active stack
 
-Every package except `volto` and `volto-slate` belongs to the **Seven** stack, an API-first, React-based frontend for Plone 7.
-Seven is composed of focused packages that are assembled into `apps/seven`:
+Every package except `volto` and `volto-slate` belongs to the **Plone Aurora** stack, an API-first, React-based frontend for Plone RESTAPI contract (`plone.restapi`).
+Plone Aurora is composed of focused packages that are assembled into `apps/aurora`:
 
 | Layer                      | Packages                                                                            |
 | -------------------------- | ----------------------------------------------------------------------------------- |
-| App shell                  | `apps/seven`                                                                        |
+| App shell                  | `apps/aurora`                                                                        |
 | Public UI (visitor-facing) | `@plone/publicui`, `@plone/layout`, `@plone/blocks`                                 |
 | CMS UI (editor-facing)     | `@plone/cmsui`, `@plone/contents`, `@plone/plate`, `@plone/blocks`, `@plone/layout` |
 | Shared infrastructure      | `@plone/client`, `@plone/registry`, `@plone/react-router`                           |
@@ -32,7 +32,7 @@ Seven is composed of focused packages that are assembled into `apps/seven`:
 ### Volto (Plone 6) — reference only
 
 `packages/volto` and `packages/volto-slate` are the stable Plone 6 frontend.
-They are present **for reference only** during Seven development and will be deleted once they are no longer useful.
+They are present **for reference only** during Plone Aurora development and will be deleted once they are no longer useful.
 Do not make significant changes to these packages.
 
 ## Working in a Package
@@ -79,8 +79,8 @@ pnpm check:ts
 
 ## General Conventions
 
-- **TypeScript** is the default for all new code. Avoid adding plain `.js` files to Seven packages.
-- **Vitest** is the test runner across all Seven packages (not Jest).
+- **TypeScript** is the default for all new code. Avoid adding plain `.js` files to Plone Aurora packages.
+- **Vitest** is the test runner across all Plone Aurora packages (not Jest).
 - **Vite** is the bundler for application code; **tsup** is used for library packages.
 - Keep changes **package-local** unless there is a clear cross-cutting reason.
 - When adding a new package dependency, check whether it already exists in a sibling package or the workspace root before adding it.

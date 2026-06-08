@@ -4,7 +4,7 @@ This file applies only to `packages/registry` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/registry` is the **add-on and configuration registry** — the extensibility backbone of Seven and other Plone JS/TS apps.
+- `@plone/registry` is the **add-on and configuration registry** — the extensibility backbone of Plone Aurora and other Plone JS/TS apps.
 - It provides the infrastructure to build pluggable, extensible applications where add-ons can register and override configuration, components, blocks, and more.
 - It also includes a **Vite plugin** (`vite-plugin`) that integrates the add-on registry into the build pipeline.
 

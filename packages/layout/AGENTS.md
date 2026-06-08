@@ -4,7 +4,7 @@ This file applies only to `packages/layout` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/layout` provides **shared structural layout elements** for Seven.
+- `@plone/layout` provides **shared structural layout elements** for Plone Aurora.
 - It is consumed by both `@plone/cmsui` (editor UI) and `@plone/publicui` (public-facing pages).
 - It contains: page header, footer, breadcrumbs, block renderer (`RenderBlocks`, `SomersaultRenderer`, `BlockWrapper`, `DefaultBlockView`), toast notifications, and slot configuration.
 

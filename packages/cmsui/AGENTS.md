@@ -4,7 +4,7 @@ This file applies only to `packages/cmsui` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/cmsui` is the **full editing and administration UI for Seven** (Plone 7).
+- `@plone/cmsui` is the **full editing and administration UI for Plone Aurora**.
 - It is the interface that content editors use to create, edit, and manage content.
 - It contains routes, widgets, forms, a sidebar, and control panels.
 - The block editor inside `add` and `edit` routes is powered by `@plone/plate`.
