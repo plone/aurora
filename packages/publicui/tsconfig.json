@@ -3,8 +3,7 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "../../apps/seven/.react-router/types/**/*",
-    "../components/src/icons.d.ts"
+    "../../apps/aurora/.react-router/types/**/*"
   ],
   "exclude": [
     "node_modules",
@@ -19,11 +18,11 @@
     "types": ["vite/client"],
     "rootDirs": [
       ".",
-      "../../apps/seven/app",
-      "../../apps/seven/.react-router/types/app"
+      "../../apps/aurora/app",
+      "../../apps/aurora/.react-router/types/app"
     ],
     "paths": {
-      "seven/*": ["../../apps/seven/*"]
+      "@plone/aurora/*": ["../../apps/aurora/*"]
     }
   }
 }

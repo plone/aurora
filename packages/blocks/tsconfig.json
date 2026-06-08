@@ -4,7 +4,7 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.d.ts",
-    "../../apps/seven/.react-router/types/**/*"
+    "../../apps/aurora/.react-router/types/**/*"
   ],
   "exclude": [
     "node_modules",
@@ -18,11 +18,11 @@
   "compilerOptions": {
     "rootDirs": [
       ".",
-      "../../apps/seven/app",
-      "../../apps/seven/.react-router/types/app"
+      "../../apps/aurora/app",
+      "../../apps/aurora/.react-router/types/app"
     ],
     "paths": {
-      "seven/*": ["../../apps/seven/*"]
+      "@plone/aurora/*": ["../../apps/aurora/*"]
     }
   }
 }

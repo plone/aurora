@@ -4,7 +4,7 @@ This file applies only to `packages/react-router` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/react-router` is a **thin bridge over React Router 7** for Plone/Seven.
+- `@plone/react-router` is a **thin bridge over React Router 7** for Plone Aurora.
 - It provides Plone-specific wrappers for React Router hooks (`useHref`, `useLocation`, `useParams`, `navigate`) used by `@plone/providers` and other packages.
 
 > [!WARNING]

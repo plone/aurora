@@ -6,7 +6,7 @@ import {
   useLoaderData,
   type LoaderFunctionArgs,
 } from 'react-router';
-import { ploneClientContext } from 'seven/app/middleware.server';
+import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { Container, Input } from '@plone/components/quanta';
 
 export const handle = {

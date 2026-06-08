@@ -1,6 +1,6 @@
 ---
 name: '🦄 Feature request'
-about: 'Suggest an idea for Volto'
+about: 'Suggest an idea for Plone Aurora'
 title: ''
 labels: '04 type: enhancement'
 assignees: ''

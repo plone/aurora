@@ -4,7 +4,7 @@ import {
   type LoaderFunctionArgs,
 } from 'react-router';
 import { flattenToAppURL } from '@plone/helpers';
-import { ploneClientContext } from 'seven/app/middleware.server';
+import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 
 export async function loader({
   params,

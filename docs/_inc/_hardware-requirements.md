@@ -3,12 +3,18 @@ The hardware requirements below give a rough estimate of the minimum hardware se
 A single Plone installation is able to run many Plone sites.
 
 -   Installation of the Plone backend and Classic UI frontend requires a minimum of 256 MB of RAM and 2GB of disk swap space.
--   Installation of the Seven frontend requires a minimum of 2GB of RAM.
+-   Installation of the Plone Aurora frontend requires a minimum of 2GB of RAM.
 -   After installation, running Plone requires a minimum of 256 MB RAM and 512 MB of disk swap space per Plone site.
     2 GB or more RAM per Plone site is recommended.
 -   Minimum 512 MB hard disk space is required.
     40 GB or more hard disk space is recommended.
 
+```{disclaimer}
+The above hardware requirements for Plone Aurora are estimates based on the experience of the Plone community with Plone Volto.
+The hardware requirements for Plone Aurora should be lower than those of Plone Volto, as Plone Aurora is bundled with Vite, which is faster and more efficient than Webpack, the bundler used in Plone Volto.
+The hardware requirements for Plone Aurora may also change as the project evolves and new features are added.
+Once we have more data on the hardware requirements for Plone Aurora, we will update this section accordingly.
+```
 
 ````{warning}
 {term}`Add-on` products and caching solutions may also increase RAM and disk swap space requirements.

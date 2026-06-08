@@ -1,34 +1,34 @@
 ---
 myst:
   html_meta:
-    "description": "How to contribute to Volto, the frontend for Plone."
-    "property=og:description": "How to contribute to Volto, the frontend for Plone."
-    "property=og:title": "How to contribute to Volto, the frontend for Plone."
-    "keywords": "Plone, Volto, contributing, developer, guidelines"
+    "description": "How to contribute to Plone Aurora, the frontend for Plone."
+    "property=og:description": "How to contribute to Plone Aurora, the frontend for Plone."
+    "property=og:title": "How to contribute to Plone Aurora, the frontend for Plone."
+    "keywords": "Plone, Plone Aurora, contributing, developer, guidelines"
 ---
 
 (contributing-to-volto-label)=
 
-# Contributing to Seven
+# Contributing to Plone Aurora
 
 ```{important}
-The Volto Team has suspended its review of new pull requests from first-time contributors until the [release of Plone 7](https://plone.org/download/release-schedule), which is preliminarily scheduled for the second quarter of 2026.
-This will allow the Volto Team to focus its efforts on delivering the next generation of Plone in a timely manner.
+The Plone Aurora Team has suspended its review of new pull requests from first-time contributors until the [release of Plone 7](https://plone.org/download/release-schedule), which is preliminarily scheduled for the second quarter of 2026.
+This will allow the Plone Aurora Team to focus its efforts on delivering the next generation of Plone in a timely manner.
 
 The Plone community welcomes contributions to {doc}`Plone 6 Documentation <plone:contributing/documentation/index>` or other {doc}`Plone <plone:contributing/index>` packages.
 ```
 
 First read {doc}`plone:contributing/index`.
-Volto follows those guidelines with a few specific variations, as described in this chapter.
+Plone Aurora follows those guidelines with a few specific variations, as described in this chapter.
 
 
 (contributing-reporting-an-issue-or-making-a-feature-request-label)=
 
 ## Report an issue or make a feature request
 
-If you know the issue or feature request is for Volto, first search for an existing item in the [Volto issue tracker](https://github.com/plone/volto/issues).
+If you know the issue or feature request is for Plone Aurora, first search for an existing item in the [Plone Aurora issue tracker](https://github.com/plone/aurora/issues).
 
-If an issue does not already exist for your item, then you can [create a new issue or feature request in Volto](https://github.com/plone/volto/issues/new/choose).
+If an issue does not already exist for your item, then you can [create a new issue or feature request in Plone Aurora](https://github.com/plone/aurora/issues/new/choose).
 When in doubt, create one in the [CMFPlone issue tracker](https://github.com/plone/Products.CMFPlone/issues).
 
 In your report, please specify a few things:
@@ -44,7 +44,7 @@ In your report, please specify a few things:
 
 ## Sign and return the Plone Contributor Agreement
 
-The Volto Team reviews pull requests only from people with a GitHub account who have signed and returned the {ref}`Plone Contributor Agreement <plone:contributing-sign-and-return-the-plone-contributor-agreement-label>`, and subsequently been assigned to a Plone Team in GitHub.
+The Plone Aurora Team reviews pull requests only from people with a GitHub account who have signed and returned the {ref}`Plone Contributor Agreement <plone:contributing-sign-and-return-the-plone-contributor-agreement-label>`, and subsequently been assigned to a Plone Team in GitHub.
 
 
 (contributing-branch-policy-label)=
@@ -57,9 +57,9 @@ The Volto Team reviews pull requests only from people with a GitHub account who 
 
 (contributing-install-volto-for-development-label)=
 
-## Install Volto for development
+## Install Plone Aurora for development
 
-For developing Volto, follow {doc}`developing-core`.
+For developing Plone Aurora, follow {doc}`developing-core`.
 
 
 (contributing-translations-label)=
@@ -84,7 +84,7 @@ When contributing translations, please create a branch from the numbered release
 
 ## Change log entry
 
-Volto requires that you include a change log entry or news item with your contribution.
+Plone Aurora requires that you include a change log entry or news item with your contribution.
 Your attribution must be in the format of `@github_username`.
 
 ```{seealso}

@@ -4,7 +4,7 @@ myst:
     "description": "Development conventions, rules, and best practices"
     "property=og:description": "Development conventions, rules, and best practices"
     "property=og:title": "Development conventions, rules, and best practices"
-    "keywords": "Plone, Seven, frontend, best practices, conventions, rules, reference"
+    "keywords": "Plone, Plone Aurora, frontend, best practices, conventions, rules, reference"
 ---
 
 # Development conventions, rules, and best practices
@@ -33,10 +33,10 @@ Also, the Public UI cannot rely on any CMSUI-specific styles or components.
 
 Storybook is a tool for building UI components in isolation with React.
 It helps you develop components by mocking their different states and interacting with them in a sandbox.
-Seven follows a Storybook-first approach, so new components should be developed in Storybook first before adding them to the app.
+Plone Aurora follows a Storybook-first approach, so new components should be developed in Storybook first before adding them to the app.
 This mainly applies to design system components (`@plone/components`), but you can also use it for other structural components (`@plone/layout`).
 
-You can see the Storybook for this package at [Seven Storybook](https://plone-storybook.readthedocs.io/latest/?path=/docs/introduction--docs).
+You can see the Storybook for this package at [Plone Aurora Storybook](https://plone-storybook.readthedocs.io/latest/?path=/docs/introduction--docs).
 
 ## Routes naming
 
@@ -51,7 +51,7 @@ When defining routes in React Router, follow these rules:
 
 In the past, Volto add-ons had a `src` folder with all the code.
 Since Volto add-ons weren't meant to be compiled, the build process had to be patched to make it work.
-In Seven, we decided to drop the `src` folder and put all code directly in the package root.
+In Plone Aurora, we decided to drop the `src` folder and put all code directly in the package root.
 This makes the build process work out of the box without any patching, following ecosystem conventions.
 Otherwise, we'd have to patch the resolution process for every build or bundler tool.
 
@@ -75,14 +75,14 @@ We also include a basic "baseline" CSS for the headless components to give you a
 These styles are very simple ("vanilla") and easy to override with your own styles.
 You can also use these in Volto projects by installing the `@plone/components` package.
 
-The Tailwind-based components are meant for public themes that also use Tailwind CSS, like the default Seven theme (`@plone/agave`).
+The Tailwind-based components are meant for public themes that also use Tailwind CSS, like the default Plone Aurora theme (`@plone/agave`).
 They're also used in the CMSUI, which is based on Tailwind CSS.
 
 Check out the Storybook for this package at [@plone/components Storybook](https://plone-components.readthedocs.io/latest/?path=/docs/introduction--docs).
 
 ## `@plone/layout` package
 
-This package is a Seven add-on and thus, a third-level Plone modular architecture package.
+This package is a Plone Aurora add-on and thus, a third-level Plone modular architecture package.
 This package holds the structural components of the Plone 7 frontend, such as `Header`, `Footer`, and `ContentArea`.
 These components handle the overall layout and structure of the app.
 When adding new structural components, add them as slots so they can be easily customized.
@@ -99,6 +99,6 @@ The rule of thumb is that if a component has props that take Plone-specific data
 ## All structural components are slots
 
 Slots let you define areas in your layout where components can be dynamically added.
-In Seven, all structural components—such as `Header`, `Footer`, or `Sidebar`—are slots.
+In Plone Aurora, all structural components—such as `Header`, `Footer`, or `Sidebar`—are slots.
 This makes it easy to customize the layout by adding or removing components without changing the core layout code.
 Slots are defined in the `@plone/layout` package.

@@ -9,7 +9,7 @@ import {
 } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { atom } from 'jotai';
-import { ploneClientContext } from 'seven/app/middleware.server';
+import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import type { DeepKeys } from '@tanstack/react-form';
 import { requireAuthCookie } from '@plone/react-router';
 import { InitAtoms } from '@plone/helpers';

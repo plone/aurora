@@ -22,9 +22,9 @@ import {
   Link,
   RouterProvider as RACRouterProvider,
 } from 'react-aria-components';
-import i18next from 'seven/app/i18next.server';
-import { ploneContentContext } from 'seven/app/middleware.server';
-import type { RootLoader } from 'seven/app/root';
+import i18next from '@plone/aurora/app/i18next.server';
+import { ploneContentContext } from '@plone/aurora/app/middleware.server';
+import type { RootLoader } from '@plone/aurora/app/root';
 import { FolderIcon } from '@plone/components/Icons';
 import Pencil from '@plone/components/icons/pencil.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
@@ -35,7 +35,7 @@ import clsx from 'clsx';
 import config from '@plone/registry';
 
 import styles from '@plone/layout/slots/App/App.module.css';
-import stylesheet from 'seven/.plone/publicui.css?url';
+import stylesheet from '@plone/aurora/.plone/publicui.css?url';
 import { ContentTypesMenu } from '../components/Toolbar/ContentTypesMenu';
 
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({

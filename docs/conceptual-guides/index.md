@@ -1,20 +1,20 @@
 ---
 myst:
   html_meta:
-    "description": "Volto conceptual guides"
-    "property=og:description": "Volto conceptual guides"
+    "description": "Plone Aurora conceptual guides"
+    "property=og:description": "Plone Aurora conceptual guides"
     "property=og:title": "Conceptual guides"
-    "keywords": "Volto, user interface, frontend, Plone, conceptual guides"
+    "keywords": "Plone Aurora, user interface, frontend, Plone, conceptual guides"
 ---
 
 # Conceptual guides
 
-This section of the documentation contains conceptual guides for various aspects of Volto.
+This section of the documentation contains conceptual guides for various aspects of Plone Aurora.
 
 ```{toctree}
 :maxdepth: 2
 
-seven-vs-volto-differences
+aurora-vs-volto-differences
 modular-arch-packages
 add-on-registry
 add-on-loader

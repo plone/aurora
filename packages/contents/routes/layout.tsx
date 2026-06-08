@@ -14,9 +14,9 @@ import {
 import { useTranslation } from 'react-i18next';
 import { RouterProvider as RACRouterProvider } from 'react-aria-components';
 import clsx from 'clsx';
-import i18next from 'seven/app/i18next.server';
-import { ploneContentContext } from 'seven/app/middleware.server';
-import { type RootLoader } from 'seven/app/root';
+import i18next from '@plone/aurora/app/i18next.server';
+import { ploneContentContext } from '@plone/aurora/app/middleware.server';
+import { type RootLoader } from '@plone/aurora/app/root';
 import { Link } from '@plone/components/quanta';
 import { PluggablesProvider, Plug } from '@plone/layout/components/Pluggable';
 import Toast from '@plone/layout/components/Toast/Toast';
@@ -26,7 +26,7 @@ import config from '@plone/registry';
 import Back from '@plone/components/icons/arrow-left.svg?react';
 
 // eslint-disable-next-line import/no-unresolved
-import stylesheet from 'seven/.plone/cmsui.css?url';
+import stylesheet from '@plone/aurora/.plone/cmsui.css?url';
 // TODO these imports are temporary and will need to be fully replaced with quanta tailwind styles
 import basicComponentsStylesheets from '@plone/components/dist/basic.css?url';
 import quantaComponentsStylesheet from '@plone/components/dist/quanta.css?url';

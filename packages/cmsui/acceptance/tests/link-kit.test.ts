@@ -1,12 +1,11 @@
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
-import { waitForPlateEditorReady } from '../../../tooling/playwright/plate';
 import {
-  clickAtPath,
-  getEditorHandle,
-  setSelection,
-} from '@platejs/playwright';
+  selectPlateEditorText,
+  waitForPlateEditorReady,
+} from '../../../tooling/playwright/plate';
+import { clickAtPath, getEditorHandle } from '@platejs/playwright';
 
 const TARGET_TITLE = 'Link target document';
 const SECOND_TARGET_TITLE = 'Second link target document';
@@ -74,10 +73,15 @@ async function setupLinkPage(page: Parameters<typeof test>[0]['page']) {
 async function openLinkToolbar(page: Parameters<typeof test>[0]['page']) {
   const editorHandle = await getEditorHandle(page);
   await clickAtPath(page, editorHandle, [1]);
-  await setSelection(page, editorHandle, {
-    anchor: { path: [1, 0], offset: 0 },
-    focus: { path: [1, 0], offset: SELECTED_TEXT.length },
-  });
+  await selectPlateEditorText(
+    page,
+    editorHandle,
+    {
+      anchor: { path: [1, 0], offset: 0 },
+      focus: { path: [1, 0], offset: SELECTED_TEXT.length },
+    },
+    SELECTED_TEXT,
+  );
 
   const toolbar = page.getByLabel('Editor toolbar');
   await expect(toolbar).toBeVisible();
@@ -86,10 +90,15 @@ async function openLinkToolbar(page: Parameters<typeof test>[0]['page']) {
 
 async function selectHelloLink(page: Parameters<typeof test>[0]['page']) {
   const editorHandle = await getEditorHandle(page);
-  await setSelection(page, editorHandle, {
-    anchor: { path: [1, 0, 0], offset: 0 },
-    focus: { path: [1, 0, 0], offset: SELECTED_TEXT.length },
-  });
+  await selectPlateEditorText(
+    page,
+    editorHandle,
+    {
+      anchor: { path: [1, 1, 0], offset: 0 },
+      focus: { path: [1, 1, 0], offset: SELECTED_TEXT.length },
+    },
+    SELECTED_TEXT,
+  );
 }
 
 test('Link kit browse button opens the object browser', async ({ page }) => {

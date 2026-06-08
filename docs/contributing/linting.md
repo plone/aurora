@@ -1,17 +1,17 @@
 ---
 myst:
   html_meta:
-    "description": "Code linting in Volto"
-    "property=og:description": "Code linting in Volto"
+    "description": "Code linting in Plone Aurora"
+    "property=og:description": "Code linting in Plone Aurora"
     "property=og:title": "Linting"
-    "keywords": "Volto, Plone, frontend, React, lint"
+    "keywords": "Plone Aurora, Plone, frontend, React, lint"
 ---
 
 # Linting
 
-Volto developers can enjoy a lot of freedom in their choice of text editors and IDEs, thanks to the strong tooling provided by the JavaScript ecosystem.
+Plone Aurora developers can enjoy a lot of freedom in their choice of text editors and IDEs, thanks to the strong tooling provided by the JavaScript ecosystem.
 
-Volto uses {term}`ESLint`, the advanced JavaScript linting and formatting tool, {term}`Stylelint`, and {term}`Prettier`.
+Plone Aurora uses {term}`ESLint`, the advanced JavaScript linting and formatting tool, {term}`Stylelint`, and {term}`Prettier`.
 
 
 (linting-editor-integration-label)=
@@ -21,7 +21,7 @@ Volto uses {term}`ESLint`, the advanced JavaScript linting and formatting tool, 
 For Visual Studio Code, you'll need to install [VS Code ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint).
 
 For Vim and NeoVim, you can use [Asynchronous Lint Engine (ALE)](https://github.com/dense-analysis/ale)
-It provides out-of-the box integration with all the tooling provided by Volto.
+It provides out-of-the box integration with all the tooling provided by Plone Aurora.
 
 PyCharm Professional includes [ESLint](https://www.jetbrains.com/help/pycharm/eslint.html), [Stylelint](https://www.jetbrains.com/help/pycharm/using-stylelint-code-quality-tool.html), and [Prettier](https://www.jetbrains.com/help/pycharm/prettier.html).
 
@@ -33,19 +33,19 @@ Use this checklist to make sure you have correctly configured your editor, most 
 -  format code on save
 
 
-## Lint Volto core
+## Lint Plone Aurora core
 
-If you want to contribute to Volto core, you must perform several code quality control tasks.
-Your commits must not break the automated tests, or {term}`GitHub workflows`, that Volto performs on every push or pull request.
+If you want to contribute to Plone Aurora core, you must perform several code quality control tasks.
+Your commits must not break the automated tests, or {term}`GitHub workflows`, that Plone Aurora performs on every push or pull request.
 
 Code linting is the first step in the testing hierarchy.
 
-Volto core should automatically perform linting commands when you commit locally, as provided by the {term}`husky` integration.
+Plone Aurora core should automatically perform linting commands when you commit locally, as provided by the {term}`husky` integration.
 However if the automated check doesn't happen when performing a commit, or you want to get less information, you can also run each linting task manually, as described in {ref}`linting-eslint-prettier-and-stylelint-label`.
 
 If you want to see exactly which linting commands are set to run after a commit, look at the {file}`.lintstagedrc` at the root of the repository.
 
-Volto core performs linting using the following commands:
+Plone Aurora core performs linting using the following commands:
 
 `eslint`
 :   For finding problems in the project's code files.
@@ -56,10 +56,10 @@ Volto core performs linting using the following commands:
 `stylelint`
 :   For uniform style formatting.
 
-Although we can run the linting commands from the root of the repository, it is easier to run the commands only for Volto core within the Volto core folder:
+Although we can run the linting commands from the root of the repository, it is easier to run the commands only for Plone Aurora core within the Plone Aurora core folder:
 
 ```shell
-cd packages/volto
+cd apps/aurora
 ```
 
 From here we will have access to the commands to check for errors and to fix them.
@@ -73,7 +73,7 @@ From here we will have access to the commands to check for errors and to fix the
 
 ### Eslint, Prettier, and Stylelint
 
-You can run the pnpm `eslint`, `prettier`, and `stylelint` commands from the Volto package folder:
+You can run the pnpm `eslint`, `prettier`, and `stylelint` commands from the Plone Aurora package folder:
 
 ```shell
 pnpm lint
@@ -90,7 +90,7 @@ pnpm stylelint:fix
 ```
 
 ```{versionadded} Volto 18.0.0-alpha.43
-[Cookieplone](https://github.com/plone/cookieplone) is now the recommended way to develop Volto projects, using it as a boilerplate generator.
+[Cookieplone](https://github.com/plone/cookieplone) is now the recommended way to develop Plone Aurora projects, using it as a boilerplate generator.
 Cookieplone uses the frontend code installed using `pnpm` instead of `yarn`.
 ```
 

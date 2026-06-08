@@ -1,15 +1,15 @@
 ---
 myst:
   html_meta:
-    "description": "How to customize the Seven login screen with slots."
-    "property=og:description": "How to customize the Seven login screen with slots."
+    "description": "How to customize the Plone Aurora login screen with slots."
+    "property=og:description": "How to customize the Plone Aurora login screen with slots."
     "property=og:title": "Customize the login screen"
-    "keywords": "Seven, Plone, login, authentication, slots, customization"
+    "keywords": "Plone Aurora, Plone, login, authentication, slots, customization"
 ---
 
 # Customize the login screen
 
-The Seven login screen is rendered by the `/login` route in `@plone/cmsui`.
+The Plone Aurora login screen is rendered by the `/login` route in `@plone/cmsui`.
 The route provides the login form, error handling, authentication action, and redirect behavior.
 Its visual extension points are exposed as slots, so add-ons and projects can change the branding and supporting actions without shadowing the whole route.
 
@@ -32,7 +32,7 @@ Its visual extension points are exposed as slots, so add-ons and projects can ch
     Customize this slot to use project-specific artwork, campaign imagery, institutional branding, or remove the right-hand visual column.
 
 The `/login` route passes the current `content` and React Router `location` to each slot renderer.
-This means custom slot predicates can use the same values as other Seven slots.
+This means custom slot predicates can use the same values as other Plone Aurora slots.
 
 ## Override a login slot
 

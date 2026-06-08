@@ -6,10 +6,10 @@ env:
   CYPRESS_RETRIES: 2
 
 jobs:
-  seven:
+  aurora:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
-    name: Seven Cookieplone
+    name: Aurora
     timeout-minutes: 45
     strategy:
       fail-fast: false
@@ -22,43 +22,45 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install the latest version of uv
-        uses: astral-sh/setup-uv@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v8.1.0
+        timeout-minutes: 5
         with:
+          version: 0.11.19
           python-version: ${{ env.python-version }}
           enable-cache: false
 
       - name: Generate Cookieplone-based frontend addon
         run: |
-          uvx cookieplone seven_addon --no-input
+          uvx cookieplone@2.0.0b1 aurora_addon --no-input
 
       - name: Install generated package
-        working-directory: seven-add-on
+        working-directory: plone-aurora-add-on
         run: |
           pnpm dlx mrs-developer missdev --no-config --fetch-https
-          if [[ "${GITHUB_REF#refs/heads/}" != "seven" ]]; then
+          if [[ "${GITHUB_REF#refs/heads/}" != "main" ]]; then
           (cd core && git fetch --depth 1 origin ${GITHUB_REF#refs/heads/}:${GITHUB_REF#refs/heads/} && git checkout ${GITHUB_REF#refs/heads/})
           fi
           pnpm i
           make build-deps
 
       - name: Run linters in the generated package
-        working-directory: seven-add-on
+        working-directory: plone-aurora-add-on
         run: make lint
 
       - name: Run formatters in the generated package
-        working-directory: seven-add-on
+        working-directory: plone-aurora-add-on
         run: make format
 
       # Upload Cypress screenshots
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-screenshots
-          path: apps/seven/cypress/screenshots
+          path: apps/aurora/cypress/screenshots
       # Upload Cypress videos
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: cypress-videos
-          path: apps/seven/cypress/videos
+          path: apps/aurora/cypress/videos

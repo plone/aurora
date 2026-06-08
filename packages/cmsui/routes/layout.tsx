@@ -14,14 +14,14 @@ import {
 import { useTranslation } from 'react-i18next';
 import { RouterProvider as RACRouterProvider } from 'react-aria-components';
 import { clsx } from 'clsx';
-import i18next from 'seven/app/i18next.server';
-import type { RootLoader } from 'seven/app/root';
+import i18next from '@plone/aurora/app/i18next.server';
+import type { RootLoader } from '@plone/aurora/app/root';
 import { PluggablesProvider } from '@plone/layout/components/Pluggable';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
 import { shouldShowToolbar } from '@plone/layout/helpers';
 
-import stylesheet from 'seven/.plone/cmsui.css?url';
-import { ploneContentContext } from 'seven/app/middleware.server';
+import stylesheet from '@plone/aurora/.plone/cmsui.css?url';
+import { ploneContentContext } from '@plone/aurora/app/middleware.server';
 
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
   matches,

@@ -75,7 +75,7 @@ test('Teaser block shows placeholder while source is not selected', async ({
   ).toBeVisible();
 });
 
-test('Teaser block integrates seven object browser trigger in edit mode', async ({
+test('Teaser block integrates Aurora object browser trigger in edit mode', async ({
   page,
 }) => {
   await login(page);

@@ -1,6 +1,6 @@
 ---
 name: '🐞 Bug report'
-about: 'Create a report to help us improve Volto'
+about: 'Create a report to help us improve Plone Aurora'
 title: ''
 labels: ['01 type: bug', '30 needs: triage']
 assignees: ''
@@ -27,7 +27,7 @@ If applicable, add screenshots or videos to help explain your problem.
 
 - OS: [e.g. iOS]
 - Browser [e.g. firefox, chrome, safari]
-- Volto Version [e.g. 18.4.0]
+- Plone Aurora Version [e.g. 18.4.0]
 - Plone Version [e.g. 6.1.0]
 - Plone REST API Version [e.g. 9.1.0]
 

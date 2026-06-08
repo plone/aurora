@@ -1,17 +1,17 @@
 ---
 myst:
   html_meta:
-    "description": "Use the Seven icon system to combine Quanta icons with your own SVGs."
-    "property=og:description": "Use the Seven icon system to combine Quanta icons with your own SVGs."
-    "property=og:title": "Use the icon system in Seven"
-    "keywords": "Seven, @plone/components, icons, Quanta, SVG, SVGR, guide"
+    "description": "Use the Plone Aurora icon system to combine Quanta icons with your own SVGs."
+    "property=og:description": "Use the Plone Aurora icon system to combine Quanta icons with your own SVGs."
+    "property=og:title": "Use the icon system in Plone Aurora"
+    "keywords": "Plone Aurora, @plone/components, icons, Quanta, SVG, SVGR, guide"
 ---
 
 # Icon system
 
 This guide shows how to import icons, customize them, and decide when to use the pre-built React wrappers.
 
-Seven ships with an icon pipeline via `@plone/components`.
+Plone Aurora ships with an icon pipeline via `@plone/components`.
 This system is SVG-based, so you can mix its Quanta design system icons with any custom SVGs that you add to your project.
 
 ```{tip}
@@ -21,7 +21,7 @@ That means it accepts props, can be composed, and follows the same accessibility
 
 ## Add custom SVG icons
 
-Seven uses [{abbr}`SVGR (SVG to React)`](https://react-svgr.com/) through a custom Vite plugin to transform SVG files into React components at build time.
+Plone Aurora uses [{abbr}`SVGR (SVG to React)`](https://react-svgr.com/) through a custom Vite plugin to transform SVG files into React components at build time.
 
 To add a custom icon, perform the following steps.
 
@@ -32,7 +32,7 @@ To add a custom icon, perform the following steps.
 The following code example shows the last two steps.
 
 ```{code-block} tsx
-:caption: {file}`apps/seven/app/components/MyComponent.tsx`
+:caption: {file}`apps/aurora/app/components/MyComponent.tsx`
 
 import MyIcon from './my-icon.svg?react';
 

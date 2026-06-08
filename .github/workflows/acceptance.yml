@@ -1,10 +1,10 @@
 name: Acceptance Tests
 on: [push, pull_request]
 jobs:
-  seven:
+  aurora:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
-    name: Seven
+    name: Aurora
     timeout-minutes: 45
     strategy:
       fail-fast: false
@@ -19,7 +19,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - uses: JarvusInnovations/background-action@v1
-        name: Start Servers - Plone 7 frontend and backend
+        name: Start Servers - Aurora and Plone
         with:
           run: |
             make ci-acceptance-backend-start &
@@ -42,7 +42,7 @@ jobs:
         shell: bash
         run: pnpm exec playwright test --reporter=list,html
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: playwright-report

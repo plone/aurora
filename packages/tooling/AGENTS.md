@@ -4,7 +4,7 @@ This file applies only to `packages/tooling` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/tooling` provides **shared Playwright test harness and ESLint devDependencies** for Seven packages.
+- `@plone/tooling` provides **shared Playwright test harness and ESLint devDependencies** for Plone Aurora packages.
 - It houses the shared Playwright fixtures, test utilities, and launcher scripts used across packages that run acceptance tests.
 - It also provides ESLint as a shared devDependency so packages do not need to manage it individually.
 

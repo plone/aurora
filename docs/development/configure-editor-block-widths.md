@@ -4,7 +4,7 @@ myst:
     "description": "Configure block widths for Plate and Plone blocks"
     "property=og:description": "Configure block widths for Plate and Plone blocks"
     "property=og:title": "Configure Plate block widths"
-    "keywords": "Seven, Plate, block width, editor"
+    "keywords": "Plone Aurora, Plate, block width, editor"
 ---
 
 # Configure editor block widths

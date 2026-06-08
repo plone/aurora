@@ -1,6 +1,6 @@
 import './storybook-base.css';
 import '../../theming/styles/theme.css';
-import '../styles/main.css';
+import '../styles/publicui.css';
 import config from '@plone/registry';
 import {
   createMemoryRouter,

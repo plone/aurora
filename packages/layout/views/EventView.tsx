@@ -1,6 +1,6 @@
 import { hasBlocksData } from '@plone/helpers';
 import { useRouteLoaderData } from 'react-router';
-import type { RootLoader } from 'seven/app/root';
+import type { RootLoader } from '@plone/aurora/app/root';
 import RenderBlocks from '../blocks/RenderBlocks';
 import EventDetails from '../components/EventDetails/EventDetails';
 import config from '@plone/registry';

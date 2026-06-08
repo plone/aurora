@@ -1,16 +1,16 @@
 ---
 myst:
   html_meta:
-    "description": "How to shadow a component or module in Seven"
-    "property=og:description": "How to shadow a component or module in Seven"
-    "property=og:title": "Shadow a component or module in Seven"
-    "keywords": "Seven, shadow, override, component, frontend"
+    "description": "How to shadow a component or module in Plone Aurora"
+    "property=og:description": "How to shadow a component or module in Plone Aurora"
+    "property=og:title": "Shadow a component or module in Plone Aurora"
+    "keywords": "Plone Aurora, shadow, override, component, frontend"
 ---
 
 # Shadow a component or module
 
 Component or module shadowing allows you to override a component from an existing package in a clean and structured way, without directly modifying third-party code.
-This technique is particularly useful for customizing the behavior or appearance of specific components in Seven or any add-ons.
+This technique is particularly useful for customizing the behavior or appearance of specific components in Plone Aurora or any add-ons.
 
 This mechanism is powered by Vite's [`resolve.alias`](https://vite.dev/config/shared-options#resolve-alias), which maps a module path to an alternative file or folder.
 Vite resolves the override at build time, replacing the original module with your custom implementation.
