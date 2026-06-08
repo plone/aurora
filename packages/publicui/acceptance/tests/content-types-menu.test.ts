@@ -80,6 +80,7 @@ test.describe('ContentTypesMenu', () => {
   }) => {
     await login(page);
     await page.goto('/');
+    await expect(addTrigger(page)).toBeVisible();
 
     const result = await page.evaluate(() => {
       const host = document.getElementById('toolbar');
