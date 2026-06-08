@@ -119,6 +119,9 @@
       "signInTo": "Sign in to {{site}}",
       "forgotPassword": "Forgot password? Request a <a>new password</a>",
       "returnToHome": "Return to home page"
+    },
+    "sharing": {
+      "label": "Sharing"
     }
   }
 }

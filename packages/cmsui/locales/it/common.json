@@ -109,6 +109,9 @@
       "signInTo": "Accedi a {{site}}",
       "forgotPassword": "Password dimenticata? <a>Richiedi una nuova password</a>",
       "returnToHome": "Torna alla home page"
+    },
+    "sharing": {
+      "label": "Condivisione"
     }
   }
 }
