@@ -20,7 +20,7 @@ import type { TableIndexes } from '../types';
 import {
   ploneClientContext,
   ploneContentContext,
-} from 'seven/app/middleware.server';
+} from '@plone/aurora/app/middleware.server';
 
 // This is needed because to prevent circular import loops
 export type ContentsLoaderType = typeof loader;

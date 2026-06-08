@@ -10,7 +10,7 @@ import {
   type RouterContextProvider,
 } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { ploneClientContext } from 'seven/app/middleware.server';
+import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import ContentForm from '../components/ContentForm/ContentForm';
 
 export async function loader({

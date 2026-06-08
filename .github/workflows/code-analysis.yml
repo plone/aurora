@@ -16,8 +16,8 @@ jobs:
         with:
           node-version: ${{ env.node-version }}
 
-      - name: Seven app TypeScript check
-        run: pnpm --filter seven exec init-loaders && pnpm --filter seven run typecheck
+      - name: Aurora app TypeScript check
+        run: pnpm --filter @plone/aurora exec init-loaders && pnpm --filter @plone/aurora run typecheck
 
       - name: Package TypeScript checks
         run: |
@@ -30,6 +30,8 @@ jobs:
           pnpm --filter @plone/layout run check:ts
           pnpm --filter @plone/plate run check:ts
           pnpm --filter @plone/publicui run check:ts
+          # Enable when ready
+          # pnpm --filter @plone/contents run check:ts
 
   prettier:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name

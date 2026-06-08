@@ -4,12 +4,12 @@ myst:
     "description": "Developer guidelines for acceptance tests."
     "property=og:description": "Developer guidelines for acceptance tests."
     "property=og:title": "Acceptance tests"
-    "keywords": "Volto, Plone, frontend, React, helper command, redux, acceptance, tests, Playwright, contributing"
+    "keywords": "Plone Aurora, Plone, frontend, React, helper command, acceptance, tests, Playwright, contributing"
 ---
 
 # Acceptance tests
 
-Seven uses [Playwright](https://playwright.dev/) for browser-based acceptance tests.
+Plone Aurora uses [Playwright](https://playwright.dev/) for browser-based acceptance tests.
 
 There are a number of tests available covering all the configuration use cases.
 These tests have both a specific backend and frontend configuration setup and a related set of tests.
@@ -24,8 +24,8 @@ The latter is the one that you run under development.
 When writing new acceptance tests, you usually want to minimize the time it takes to run the tests, while also being able to debug or inspect what's going on.
 
 Being able to restart individual components also comes in handy.
-It's recommended to start three individual terminal sessions, one each for running the Plone backend, the Volto frontend, and the acceptance tests.
-All sessions should start from the `packages/volto` directory.
+It's recommended to start three individual terminal sessions, one each for running the Plone backend, the Plone Aurora frontend, and the acceptance tests.
+All sessions should start from the repository root.
 
 1.  In the first session, start the backend server.
 
@@ -45,16 +45,16 @@ All sessions should start from the `packages/volto` directory.
     make acceptance-test
     ```
 
-1.  In the main Playwright runner section, you will see all of the test specs that Volto developers have written to test Volto and its packages.
+1.  In the main Playwright runner section, you will see all of the test specs that Plone Aurora developers have written to test Plone Aurora and its packages.
 
 1.  To run a test, interact with the file based tree that displays all possible tests to run, and click on the test spec you need to run.
 
 We provide the following major test specs:
 
--   Core (`core` used to test the core functionality of Volto)
--   Multilingual (`multilingual` tests the multilingual support of Volto)
--   Working Copy (`workingCopy` tests the working copy feature of Volto)
--   Core Sandbox (`coresandbox` tests Volto using configuration and elements that are not present in vanilla Volto)
+-   Core (`core` used to test the core functionality of Plone Aurora)
+-   Multilingual (`multilingual` tests the multilingual support of Plone Aurora)
+-   Working Copy (`workingCopy` tests the working copy feature of Plone Aurora)
+-   Core Sandbox (`coresandbox` tests Plone Aurora using configuration and elements that are not present in vanilla Plone Aurora)
 
 There are convenience commands for each of these specs.
 See `Makefile` at the root of the repository for more information.
@@ -73,6 +73,6 @@ All test files are automatically picked up by Playwright.
 
 ## Helper commands
 
-There are some helper commands in {file}`packages/tooling/playwright` written by Volto contributors and made available for the acceptance tests using Playwright.
+There are some helper commands in {file}`packages/tooling/playwright` written by Plone Aurora contributors and made available for the acceptance tests using Playwright.
 
-Seven core makes heavy use of these helpers in the core tests to avoid verbose duplication, and they can make your life easier.
+Plone Aurora core makes heavy use of these helpers in the core tests to avoid verbose duplication, and they can make your life easier.

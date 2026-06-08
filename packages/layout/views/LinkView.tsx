@@ -1,5 +1,5 @@
 import { useRouteLoaderData } from 'react-router';
-import type { RootLoader } from 'seven/app/root';
+import type { RootLoader } from '@plone/aurora/app/root';
 import { Container } from '@plone/components';
 import { Link } from '@plone/components/quanta';
 import { useTranslation } from 'react-i18next';

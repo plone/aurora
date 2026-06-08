@@ -14,13 +14,13 @@ import {
   ploneClientContext,
   ploneContentContext,
   ploneSiteContext,
-} from 'seven/app/middleware.server';
+} from '@plone/aurora/app/middleware.server';
 import { getAuthFromRequest, setAuthOnResponse } from '@plone/react-router';
 import { TextField, Link } from '@plone/components/quanta';
 import CloseSVG from '@plone/components/icons/close.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import { Trans, useTranslation } from 'react-i18next';
-import type { RootLoader } from 'seven/app/root';
+import type { RootLoader } from '@plone/aurora/app/root';
 
 export async function loader({
   request,

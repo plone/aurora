@@ -1,10 +1,10 @@
 ---
 myst:
   html_meta:
-    "description": "Volto provides an integrated component registry that stores named references to components, allowing them to be queried programmatically."
-    "property=og:description": "Volto provides an integrated component registry that stores named references to components, allowing them to be queried programmatically."
-    "property=og:title": "Component registry in Volto"
-    "keywords": "Volto, Plone, frontend, React, registry, component"
+    "description": "Plone Aurora provides an integrated component registry that stores named references to components, allowing them to be queried programmatically."
+    "property=og:description": "Plone Aurora provides an integrated component registry that stores named references to components, allowing them to be queried programmatically."
+    "property=og:title": "Component registry in Plone Aurora"
+    "keywords": "Plone Aurora, Plone, frontend, React, registry, component"
 ---
 
 (component-registry)=

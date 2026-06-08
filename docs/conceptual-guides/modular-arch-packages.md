@@ -120,7 +120,7 @@ The add-on packages are:
 
 ## Development utility packages
 
-These packages are used today to develop Seven core.
+These packages are used today to develop Plone Aurora core.
 
 ### `@plone/tooling`
 
@@ -128,10 +128,10 @@ These packages are used today to develop Seven core.
 
 It provides shared Storybook, Playwright, ESLint, and other configurations.
 
-They are used in Seven projects and add-ons as well, so they can share the same setup and tooling as Seven core.
+They are used in Plone Aurora projects and add-ons as well, so they can share the same setup and tooling as Plone Aurora core.
 
 ### `tsconfig`
 
 The `tsconfig` package provides a base TypeScript configuration for all Plone packages.
 It helps ensure consistency in TypeScript settings across the codebase.
-Nowadays, it's used by all packages in the Seven monorepo, but it's not used in Seven projects or add-ons.
+Nowadays, it's used by all packages in the Plone Aurora monorepo, but it's not used in Plone Aurora projects or add-ons.

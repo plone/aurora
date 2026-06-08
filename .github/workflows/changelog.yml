@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [assigned, opened, synchronize, reopened, labeled, unlabeled]
     branches:
-      - seven
+      - main
 
 env:
   node-version: 24.x
@@ -20,12 +20,12 @@ jobs:
       - name: Install towncrier
         run: pip install towncrier
 
-      - uses: dorny/paths-filter@v3
+      - uses: dorny/paths-filter@v4
         id: filter
         with:
           filters: |
-            seven:
-              - 'apps/seven/**'
+            aurora:
+              - 'apps/aurora/**'
             client:
               - 'packages/client/**'
             registry:
@@ -53,107 +53,107 @@ jobs:
             wrongNews:
               - added|modified: 'news/**'
 
-      - name: seven changelog check
-        if: steps.filter.outputs.seven == 'true'
+      - name: Aurora changelog check
+        if: steps.filter.outputs.aurora == 'true'
         run: |
-          git fetch --no-tags origin seven
-          towncrier check --compare-with origin/seven --dir apps/seven
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir apps/aurora
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 
       - name: CMSUI changelog check
         if: steps.filter.outputs.cmsui == 'true'
         run: |
-          git fetch --no-tags origin seven
-          towncrier check --compare-with origin/seven --dir packages/cmsui
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir packages/cmsui
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 
       - name: Client changelog check
         if: steps.filter.outputs.client == 'true'
         run: |
-          git fetch --no-tags origin seven
-          towncrier check --compare-with origin/seven --dir packages/client
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir packages/client
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 
       - name: Registry changelog check
         if: steps.filter.outputs.registry == 'true'
         run: |
-          git fetch --no-tags origin seven
-          towncrier check --compare-with origin/seven --dir packages/registry
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir packages/registry
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 
       - name: Components changelog check
         if: steps.filter.outputs.components == 'true'
         run: |
-          git fetch --no-tags origin seven
-          towncrier check --compare-with origin/seven --dir packages/components
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir packages/components
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 
       - name: Helpers changelog check
         if: steps.filter.outputs.helpers == 'true'
         run: |
-          git fetch --no-tags origin seven
-          towncrier check --compare-with origin/seven --dir packages/helpers
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir packages/helpers
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 
       - name: Types changelog check
         if: steps.filter.outputs.types == 'true'
         run: |
-          git fetch --no-tags origin seven
-          towncrier check --compare-with origin/seven --dir packages/types
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir packages/types
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 
       - name: Public UI changelog check
         if: steps.filter.outputs.publicui == 'true'
         run: |
-          git fetch --no-tags origin seven
-          towncrier check --compare-with origin/seven --dir packages/publicui
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir packages/publicui
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 
       - name: Plate changelog check
         if: steps.filter.outputs.plate == 'true'
         run: |
-          git fetch --no-tags origin seven
-          towncrier check --compare-with origin/seven --dir packages/plate
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir packages/plate
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 
       - name: React Router changelog check
         if: steps.filter.outputs.reactrouter == 'true'
         run: |
-          git fetch --no-tags origin seven
-          towncrier check --compare-with origin/seven --dir packages/react-router
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir packages/react-router
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 
       - name: Blocks changelog check
         if: steps.filter.outputs.blocks == 'true'
         run: |
-          git fetch --no-tags origin seven
-          towncrier check --compare-with origin/seven --dir packages/blocks
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir packages/blocks
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 
       - name: Layout changelog check
         if: steps.filter.outputs.layout == 'true'
         run: |
-          git fetch --no-tags origin seven
-          towncrier check --compare-with origin/seven --dir packages/layout
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir packages/layout
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 
       - name: Theming changelog check
         if: steps.filter.outputs.theming == 'true'
         run: |
-          git fetch --no-tags origin seven
-          towncrier check --compare-with origin/seven --dir packages/theming
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir packages/theming
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 

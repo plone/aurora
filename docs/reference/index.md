@@ -1,15 +1,15 @@
 ---
 myst:
   html_meta:
-    "description": "Seven reference guides"
-    "property=og:description": "Seven reference guides"
-    "property=og:title": "Seven reference guides"
-    "keywords": "Seven, frontend, Plone, reference guides"
+    "description": "Plone Aurora reference guides"
+    "property=og:description": "Plone Aurora reference guides"
+    "property=og:title": "Plone Aurora reference guides"
+    "keywords": "Plone Aurora, frontend, Plone, reference guides"
 ---
 
 # Reference
 
-This section of the documentation contains reference guides for developing with Seven.
+This section of the documentation contains reference guides for developing with Plone Aurora.
 
 ```{toctree}
 :maxdepth: 2

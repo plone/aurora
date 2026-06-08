@@ -4,8 +4,8 @@ This file applies only to `packages/contents` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/contents` provides the folder contents views for Seven.
-- It is the Seven-specific evolution of Volto's contents view, split into smaller React Aria Components based pieces.
+- `@plone/contents` provides the folder contents views for Plone Aurora.
+- It is the Plone Aurora-specific evolution of Plone Volto's contents view, split into smaller React Aria Components based pieces.
 - Keep the package focused on contents-specific behavior, route wiring, and composition. Do not turn it into a generic component library.
 
 ## Architecture
@@ -32,7 +32,7 @@ This file applies only to `packages/contents` and its subdirectories.
 ## Components
 
 - Components live under `components/` and should remain granular.
-- Prefer package-local components over adding Seven-wide abstractions unless reuse is already proven.
+- Prefer package-local components over adding Plone Aurora-wide abstractions unless reuse is already proven.
 - When touching table cells, actions, or popovers, preserve the shadowing-friendly split between:
   - table/container orchestration
   - per-item rendering

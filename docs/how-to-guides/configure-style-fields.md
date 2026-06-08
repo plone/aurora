@@ -1,15 +1,15 @@
 ---
 myst:
   html_meta:
-    "description": "Configure schema-driven style fields in Seven"
-    "property=og:description": "Configure schema-driven style fields in Seven"
+    "description": "Configure schema-driven style fields in Plone Aurora"
+    "property=og:description": "Configure schema-driven style fields in Plone Aurora"
     "property=og:title": "Configure style fields"
-    "keywords": "Seven, style fields, theme, blocks, Plate"
+    "keywords": "Plone Aurora, style fields, theme, blocks, Plate"
 ---
 
 # Configure style fields
 
-This guide explains how to configure block styles based on fields in the block schema in Seven.
+This guide explains how to configure block styles based on fields in the block schema in Plone Aurora.
 It focuses on a `theme` field, because that is the common case for the new style field system.
 
 Use this model when you want a block to store a semantic ID, such as `default` or `sand`, and resolve that ID to a runtime style object later.
@@ -33,7 +33,7 @@ For example, a block can store `sand` as an identifier:
 }
 ```
 
-And Seven can later resolve `sand` to a CSS variable:
+And Plone Aurora can later resolve `sand` to a CSS variable:
 
 ```ts
 {
@@ -82,7 +82,7 @@ The schema is now the source of truth for:
 - the default value
 - the available values exposed by the widget
 
-Seven reads this metadata from the schema at runtime.
+Plone Aurora reads this metadata from the schema at runtime.
 
 ## Register the style definitions
 
@@ -153,7 +153,7 @@ Once the schema field and utility are registered, the block only stores the sele
 }
 ```
 
-At render time, Seven:
+At render time, Plone Aurora:
 
 1. inspects the schema
 2. finds fields marked with `styleField`
@@ -196,7 +196,7 @@ This stores the selected value under:
 ```
 
 Use this only when you need compatibility with an existing data shape.
-For new Seven code, flat fields such as `theme` are the preferred default.
+For new Plone Aurora code, flat fields such as `theme` are the preferred default.
 
 ## Why `blockWidth` is different
 

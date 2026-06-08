@@ -1,6 +1,11 @@
 {
   "extends": "tsconfig/react-library.json",
-  "include": ["**/*.ts", "**/*.tsx", "../components/src/icons.d.ts"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "../components/src/icons.d.ts",
+    "../../apps/aurora/.react-router/types/**/*"
+  ],
   "exclude": [
     "node_modules",
     "build",
@@ -12,8 +17,13 @@
   ],
   "compilerOptions": {
     "types": ["vite/client"],
+    "rootDirs": [
+      ".",
+      "../../apps/aurora/app",
+      "../../apps/aurora/.react-router/types/app"
+    ],
     "paths": {
-      "seven/*": ["../../apps/seven/*"]
+      "@plone/aurora/*": ["../../apps/aurora/*"]
     }
   }
 }

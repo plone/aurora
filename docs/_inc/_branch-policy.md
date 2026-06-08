@@ -20,12 +20,6 @@ legacy
     Legacy versions won't receive any new features.
     They might receive occasional bug fixes or security updates, subject to approval from the Volto Team.
 
-`seven`
-:   This is the branch for the successor of Volto.
-    It is under active development, and it will be released when it is ready.
-    It is not a stable version, and it should not be used in production.
-    The Plone's modular architecture packages are released from this branch.
-
 `main`
 :   This is the bleeding edge branch in git.
     It is the branch upon which future development occurs, and from which future releases shall be cut.

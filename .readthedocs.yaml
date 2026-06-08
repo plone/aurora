@@ -7,10 +7,10 @@ version: 2
 
 # Set the OS, Python version and other tools you might need
 build:
-  os: ubuntu-22.04
+  os: ubuntu-24.04
   tools:
-    python: "3.12"
-    nodejs: "20"
+    python: "3.13"
+    nodejs: "24"
   commands:
     # First fetch the changes from the non-primary branch.
     #
@@ -21,9 +21,9 @@ build:
     # If there are no changes (git diff exits with 0) we force the command to return with 183.
     # This is a special exit code on Read the Docs that will cancel the build immediately.
     - |
-      git fetch origin seven
-      if [ "$READTHEDOCS_VERSION_TYPE" = "external" ] && git diff --quiet origin/seven -- docs/ .readthedocs.yaml requirements-docs.txt \
-          packages/components/.storybook/ packages/volto/.storybook/;
+      git fetch origin main
+      if [ "$READTHEDOCS_VERSION_TYPE" = "external" ] && git diff --quiet origin/main -- docs/ .readthedocs.yaml requirements-docs.txt \
+          packages/components/.storybook/ packages/registry/.storybook/ packages/cmsui/.storybook/ packages/layout/.storybook/;
       then
         exit 183;
       fi

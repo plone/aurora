@@ -4,7 +4,7 @@ myst:
     "description": "How to define TypeScript types for custom Plone content types"
     "property=og:description": "How to define TypeScript types for custom Plone content types"
     "property=og:title": "Custom content types"
-    "keywords": "Seven, TypeScript, custom, content types, @plone/types, ContentTypeMap, type narrowing"
+    "keywords": "Plone Aurora, TypeScript, custom, content types, @plone/types, ContentTypeMap, type narrowing"
 ---
 
 # Custom content types
@@ -148,7 +148,7 @@ Export the {file}`.d.ts` file from your package by listing it in your {file}`pac
 
 ```json
 {
-  "name": "my-seven-addon",
+  "name": "my-plone-aurora-addon",
   "types": "dist/index.d.ts",
   "files": ["dist"]
 }
@@ -159,7 +159,7 @@ Consumers of your add-on will get the `ContentTypeMap` augmentation applied as s
 Alternatively, if the augmentation lives in a side-effect-only {file}`.d.ts` file, add a triple-slash reference.
 
 ```ts
-/// <reference types="my-seven-addon" />
+/// <reference types="my-plone-aurora-addon" />
 ```
 
 This ensures that anyone installing your add-on gets full TypeScript support for its content types without any manual setup.
