@@ -171,11 +171,7 @@ export const PloneRegistryVitePlugin = () => {
             exclude: addOns,
           },
         },
-        esbuild: {
-          supported: {
-            'top-level-await': true, //browsers can handle top-level-await features
-          },
-        },
+        oxc: {},
         optimizeDeps: {
           exclude: addOns,
         },

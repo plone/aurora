@@ -9,11 +9,7 @@ export function PloneRegistryVitePlugin(): {
         exclude: string[];
       };
     };
-    esbuild: {
-      supported: {
-        'top-level-await': boolean;
-      };
-    };
+    oxc: Record<string, never>;
     optimizeDeps: {
       exclude: string[];
     };
