@@ -29,6 +29,17 @@ export default function install(config: ConfigType) {
       },
       {
         type: 'prefix',
+        path: 'register',
+        children: [
+          {
+            type: 'route',
+            path: '*',
+            file: '@plone/cmsui/routes/auth/register.tsx',
+          },
+        ],
+      },
+      {
+        type: 'prefix',
         path: '@@add',
         children: [
           {
