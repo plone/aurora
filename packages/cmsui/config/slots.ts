@@ -1,3 +1,4 @@
+import { createElement } from 'react';
 import type { ConfigType } from '@plone/registry';
 import LoginLogo from '../components/Login/LoginLogo';
 import LoginHero from '../components/Login/LoginHero';
@@ -8,6 +9,16 @@ export default function installSlots(config: ConfigType) {
     name: 'LoginLogo',
     slot: 'loginLogo',
     component: LoginLogo,
+  });
+
+  config.registerSlotComponent({
+    name: 'LoginLogo',
+    slot: 'loginLogo',
+    predicates: [
+      ({ location }) => Boolean(location?.pathname?.startsWith('/register')),
+    ],
+    component: () =>
+      createElement(LoginLogo, { bgClassName: 'bg-quanta-tiffany' }),
   });
 
   config.registerSlotComponent({
