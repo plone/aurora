@@ -9,6 +9,7 @@ import HeaderTools from '../slots/Tools';
 import ContentArea from '../slots/ContentArea';
 import MainFooter from '../slots/MainFooter/MainFooter';
 import Breadcrumbs from '../slots/Breadcrumbs';
+import Tags from '../slots/Tags/Tags';
 import { NotContentTypeCondition } from '../helpers';
 
 export default function install(config: ConfigType) {
@@ -68,6 +69,13 @@ export default function install(config: ConfigType) {
     name: 'contentArea',
     slot: 'contentArea',
     component: ContentArea,
+  });
+
+  // Tags (Subjects)
+  config.registerSlotComponent({
+    name: 'Tags',
+    slot: 'belowContent',
+    component: Tags,
   });
 
   // Footer Slot
