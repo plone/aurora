@@ -77,7 +77,9 @@
       "name": "Name",
       "inherit": "Berechtigungen von höheren Ebenen erben",
       "globalRole": "Globale Rolle",
-      "inheritedValue": "Geerbter Wert"
+      "inheritedValue": "Geerbter Wert",
+      "user": "Benutzer",
+      "group": "Gruppe"
     }
   }
 }

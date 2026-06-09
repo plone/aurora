@@ -125,7 +125,9 @@
       "name": "Name",
       "inherit": "Inherit permissions from higher levels",
       "globalRole": "Global role",
-      "inheritedValue": "Inherited value"
+      "inheritedValue": "Inherited value",
+      "user": "User",
+      "group": "Group"
     }
   }
 }

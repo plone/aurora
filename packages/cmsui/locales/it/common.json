@@ -115,7 +115,9 @@
       "name": "Nome",
       "inherit": "Eredita i permessi dai livelli superiori",
       "globalRole": "Ruolo globale",
-      "inheritedValue": "Valore ereditato"
+      "inheritedValue": "Valore ereditato",
+      "user": "Utente",
+      "group": "Gruppo"
     }
   }
 }

@@ -17,8 +17,13 @@ import {
   Row,
   Cell,
 } from '@plone/components/quanta';
-import type { SharingRoleValue } from '@plone/types';
-import { WorldIcon, ArrowupIcon } from '@plone/components/Icons';
+import type { SharingEntry, SharingRoleValue } from '@plone/types';
+import {
+  WorldIcon,
+  ArrowupIcon,
+  UserIcon,
+  SocialIcon,
+} from '@plone/components/Icons';
 
 export async function loader({
   request,
@@ -33,6 +38,30 @@ export async function loader({
   const { data: sharingData } = await cli.getSharing({ path: contentPath });
 
   return data(flattenToAppURL({ content, sharingData }));
+}
+
+function NameCell({ entry }: { entry: SharingEntry }) {
+  const { t } = useTranslation();
+  return (
+    <Cell>
+      <span className="inline-flex items-center">
+        {entry.type === 'user' && (
+          <UserIcon
+            aria-label={t('cmsui.sharing.user')}
+            className="me-2 shrink-0"
+          />
+        )}
+        {entry.type === 'group' && (
+          <SocialIcon
+            aria-label={t('cmsui.sharing.group')}
+            className="me-2 shrink-0"
+          />
+        )}
+        {entry.title}
+        {entry.login && ` (${entry.login})`}
+      </span>
+    </Cell>
+  );
 }
 
 function RoleCell({
@@ -86,10 +115,7 @@ export default function Sharing() {
         <TableBody>
           {entries.map((entry) => (
             <Row key={entry.id} id={entry.id}>
-              <Cell>
-                {entry.title}
-                {entry.login && ` (${entry.login})`}
-              </Cell>
+              <NameCell entry={entry} />
               {available_roles.map((role) => (
                 <RoleCell
                   key={role.id}
