@@ -117,6 +117,9 @@ export default class PloneClient {
 
   search = restapi.search;
 
+  getSharing = restapi.getSharing;
+  updateSharing = restapi.updateSharing;
+
   getSite = restapi.getSite;
 
   getSource = restapi.getSource;
