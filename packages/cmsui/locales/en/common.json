@@ -127,7 +127,9 @@
       "globalRole": "Global role",
       "inheritedValue": "Inherited value",
       "user": "User",
-      "group": "Group"
+      "group": "Group",
+      "searchLabel": "Search for users and groups",
+      "searchPlaceholder": "Search for users and groups…"
     }
   }
 }

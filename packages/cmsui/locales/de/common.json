@@ -79,7 +79,9 @@
       "globalRole": "Globale Rolle",
       "inheritedValue": "Geerbter Wert",
       "user": "Benutzer",
-      "group": "Gruppe"
+      "group": "Gruppe",
+      "searchLabel": "Nach Benutzern und Gruppen suchen",
+      "searchPlaceholder": "Nach Benutzern und Gruppen suchen…"
     }
   }
 }

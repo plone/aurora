@@ -117,7 +117,9 @@
       "globalRole": "Ruolo globale",
       "inheritedValue": "Valore ereditato",
       "user": "Utente",
-      "group": "Gruppo"
+      "group": "Gruppo",
+      "searchLabel": "Cerca utenti e gruppi",
+      "searchPlaceholder": "Cerca utenti e gruppi…"
     }
   }
 }

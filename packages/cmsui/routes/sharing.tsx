@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs } from 'react-router';
 import { requireAuthCookie } from '@plone/react-router';
-import { data, RouterContextProvider, useLoaderData } from 'react-router';
+import { data, Form, RouterContextProvider, useLoaderData } from 'react-router';
 import {
   ploneClientContext,
   ploneContentContext,
@@ -16,6 +16,7 @@ import {
   TableBody,
   Row,
   Cell,
+  TextField,
 } from '@plone/components/quanta';
 import type { SharingEntry, SharingRoleValue } from '@plone/types';
 import {
@@ -35,9 +36,14 @@ export async function loader({
   const content = context.get(ploneContentContext);
   const contentPath = content?.['@id'] ?? '/';
 
-  const { data: sharingData } = await cli.getSharing({ path: contentPath });
+  const search = new URL(request.url).searchParams.get('search') ?? '';
 
-  return data(flattenToAppURL({ content, sharingData }));
+  const { data: sharingData } = await cli.getSharing({
+    path: contentPath,
+    search,
+  });
+
+  return data(flattenToAppURL({ content, sharingData, search }));
 }
 
 function NameCell({ entry }: { entry: SharingEntry }) {
@@ -94,13 +100,23 @@ function RoleCell({
 }
 
 export default function Sharing() {
-  const { content, sharingData } = useLoaderData<typeof loader>();
+  const { content, sharingData, search } = useLoaderData<typeof loader>();
   const { t } = useTranslation();
   const { entries, available_roles, inherit } = sharingData;
 
   return (
     <Container id="page-sharing">
       <h1>{t('cmsui.sharing.label', { title: content.title })}</h1>
+      <Form role="search">
+        <TextField
+          key={search}
+          type="search"
+          name="search"
+          defaultValue={search}
+          label={t('cmsui.sharing.searchLabel')}
+          placeholder={t('cmsui.sharing.searchPlaceholder')}
+        />
+      </Form>
       <Table aria-label={t('cmsui.sharing.label')}>
         <TableHeader>
           <Column id="name" isRowHeader>
