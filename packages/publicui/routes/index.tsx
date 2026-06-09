@@ -25,7 +25,7 @@ import {
 import i18next from '@plone/aurora/app/i18next.server';
 import { ploneContentContext } from '@plone/aurora/app/middleware.server';
 import type { RootLoader } from '@plone/aurora/app/root';
-import { FolderIcon } from '@plone/components/Icons';
+import { FolderIcon, HistoryIcon } from '@plone/components/Icons';
 import Pencil from '@plone/components/icons/pencil.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
@@ -148,6 +148,20 @@ export default function Index() {
                 href={`/@@contents${location.pathname.replace(/^\/$/, '')}`}
               >
                 <FolderIcon />
+              </Link>
+            </Plug>
+            <Plug
+              pluggable="toolbar-top"
+              id="button-history"
+              // @ts-expect-error this is currently typed as never[]
+              dependencies={[location.pathname]}
+            >
+              <Link
+                className="secondary"
+                aria-label="History"
+                href={`/@@history${location.pathname.replace(/^\/$/, '')}`}
+              >
+                <HistoryIcon />
               </Link>
             </Plug>
             {showToolbar && <Toolbar />}

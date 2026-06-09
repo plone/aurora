@@ -71,6 +71,10 @@
       "signInTo": "Bei {{site}} anmelden",
       "forgotPassword": "Passwort vergessen? <a>Neues Passwort anfordern</a>",
       "returnToHome": "Zur Startseite zurückkehren"
+    },
+    "history": {
+      "label": "Verlauf",
+      "revert": "Zurücksetzen"
     }
   }
 }

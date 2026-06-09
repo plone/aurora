@@ -119,6 +119,10 @@
       "signInTo": "Sign in to {{site}}",
       "forgotPassword": "Forgot password? Request a <a>new password</a>",
       "returnToHome": "Return to home page"
+    },
+    "history": {
+      "label": "History",
+      "revert": "Revert"
     }
   }
 }
