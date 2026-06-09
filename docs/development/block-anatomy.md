@@ -55,8 +55,8 @@ The anatomy contract is resolved by `resolveBlockAnatomy` in `@plone/helpers`.
 
 It is consumed by:
 
-- `BlockWrapper` in `@plone/layout` for Plone Volto block rendering
-- `BlockAnatomyPlugin` in `@plone/plate` for Plate-native and Somersault editor block rendering
+- `BlockAnatomyPlugin` in `@plone/plate` for Plate-native blocks and registry-backed Plone blocks in Plate/Somersault rendering
+- `BlockWrapper` in `@plone/layout` for Plone Volto block fallback rendering (not-Plate-native, non-Somersault)
 
 This avoids duplicating class-name rules in individual blocks.
 

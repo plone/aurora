@@ -164,38 +164,34 @@ The `blockWidth` policy supports:
 
 ## Configure widths for Plone blocks
 
-Plone blocks are configured in their block info object under `packages/blocks/<Block>/index.ts`.
+Plone blocks (non-plate native, registry-backed) are configured in their block schema.
 
-Example from `packages/blocks/Image/index.ts`:
+Example from `packages/blocks/Image/schema.tsx`:
 
 ```ts
-const ImageBlockInfo = {
-  id: 'image',
-  title: 'Image',
-  // ...
-  blockWidth: {
-    defaultWidth: 'default',
-    widths: ['layout', 'default', 'narrow', 'full'],
-  },
-};
+blockWidth: {
+  title: 'Block width',
+  widget: 'width',
+  default: 'default',
+  styleField: true,
+},
 ```
 
-This value is registered through `config.blocks.blocksConfig`.
-In the current architecture, registry-backed Plone blocks are represented in Plate as `ploneBlock` nodes.
-Their `blockWidth` configuration is bridged into the generic style-field runtime, so it is resolved consistently in Plate/Somersault and public `@plone/layout` rendering.
+This stores the selected width id in the block data as `blockWidth`.
+Because the field is marked with `styleField: true`, `StyleFieldsPlugin` can resolve that stored id to the matching style definition from `config.blocks.widths`.
 
-To configure another Plone block, add a `blockWidth` section to its block info object:
+To configure another Plone block, add a `blockWidth` property to its schema:
 
 ```ts
-const MyBlockInfo = {
-  id: 'myBlock',
-  title: 'My block',
-  // ...
+properties: {
   blockWidth: {
-    defaultWidth: 'default',
-    widths: ['default', 'narrow'],
+    title: 'Block width',
+    widget: 'width',
+    default: 'default',
+    actions = ['narrow', 'default'],
+    styleField: true,
   },
-};
+}
 ```
 
 ## Resolution order
@@ -203,7 +199,7 @@ const MyBlockInfo = {
 Width policy resolution is split by block family:
 
 - For Plate-native blocks, `BlockWidthPlugin` reads `config.blocks.plateBlocksConfig[element.type]`.
-- For registry-backed Plone blocks, the style-field runtime reads `config.blocks.blocksConfig[element['@type']].blockWidth`.
+- For Plone blocks, the style-field runtime reads fields marked with `styleField` from `config.blocks.blocksConfig[element['@type']].blockSchema`.
 - If no Plate-native registry config is found, `BlockWidthPlugin` falls back to plugin options for backward compatibility.
 
 For Plate-native blocks, the width toolbar uses the resolved policy and the shared width definitions together:

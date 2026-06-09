@@ -32,43 +32,6 @@ type ValueElement = Record<string, unknown> & {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === 'object' && !Array.isArray(value);
 
-const getGlobalWidthValues = () =>
-  (
-    (config.blocks as Record<string, unknown>).widths as
-      | Array<{ name?: string }>
-      | undefined
-  )
-    ?.map((definition) => definition.name)
-    .filter((name): name is string => !!name) ?? [];
-
-const getGlobalDefaultWidth = () => {
-  const values = getGlobalWidthValues();
-
-  if (!values.length) return 'default';
-  if (values.includes('default')) return 'default';
-
-  return values[0];
-};
-
-const withBlockWidthFallback = (
-  styleFields: Record<string, StyleFieldConfig>,
-  blockWidthConfig?: {
-    defaultWidth?: string;
-    widths?: readonly string[];
-  },
-) => {
-  if (!blockWidthConfig) {
-    return styleFields;
-  }
-
-  styleFields.blockWidth = {
-    defaultValue: blockWidthConfig.defaultWidth ?? getGlobalDefaultWidth(),
-    values: blockWidthConfig.widths ?? getGlobalWidthValues(),
-  };
-
-  return styleFields;
-};
-
 const getElementStyleFieldConfigs = (
   element?: TElement | null,
 ): Record<string, StyleFieldConfig> => {
@@ -84,12 +47,9 @@ const getElementStyleFieldConfigs = (
 
     const currentBlockConfig = blockConfig?.[blockType];
 
-    return withBlockWidthFallback(
-      getStyleFieldsFromBlockSchema(
-        currentBlockConfig,
-        element as unknown as BlocksFormData,
-      ),
-      currentBlockConfig?.blockWidth,
+    return getStyleFieldsFromBlockSchema(
+      currentBlockConfig,
+      element as unknown as BlocksFormData,
     );
   }
 

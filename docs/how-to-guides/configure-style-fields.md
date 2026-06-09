@@ -9,7 +9,7 @@ myst:
 
 # Configure style fields
 
-This guide explains how to configure block styles based on fields in the block schema in Plone Aurora.
+This guide explains how to configure Plone blocks (non-plate native, registry-backed) styles based on fields in the block schema in Plone Aurora.
 It focuses on a `theme` field, because that is the common case for the new style field system.
 
 Use this model when you want a block to store a semantic ID, such as `default` or `sand`, and resolve that ID to a runtime style object later.
@@ -43,7 +43,7 @@ And Plone Aurora can later resolve `sand` to a CSS variable:
 
 ## Mark the schema field
 
-Configure generic style fields in the block schema.
+Configure generic style fields in the Plone block schema.
 Add the field as usual, then mark it with `styleField: true`.
 
 ```ts
@@ -161,11 +161,6 @@ At render time, Plone Aurora:
 4. resolves the stored value against the returned `StyleDefinition[]`
 5. injects the matching `style` object into the block wrapper
 
-This works in both:
-
-- Plate and Somersault rendering
-- public block rendering in `@plone/layout`
-
 Style fields only resolve semantic values into styles.
 They do not add the block model class-name contract.
 For `.block.block-<type>.category-<category>` and `data-block-*` attributes, see {doc}`../development/block-anatomy`.
@@ -199,21 +194,30 @@ This stores the selected value under:
 }
 ```
 
-Use this only when you need compatibility with an existing data shape.
+Use this only when you need compatibility with an existing data shape (eg. Plone Volto's legacy blocks).
 For new Plone Aurora code, flat fields such as `theme` are the preferred default.
 
 ## Why `blockWidth` is different
 
-`blockWidth` remains special.
-It is intrinsic to the block wrapper and width policy of each block, so it still uses `blockWidth` configuration in `blocksConfig` and `plateBlocksConfig`.
+`blockWidth` is a reserved style field with existing editor UI and shared width definitions.
+Do not create a separate custom field for setting block widths.
 
 That means:
 
 - generic style fields such as `theme` are schema-driven
-- `blockWidth` remains block configuration-driven
+- Plate-native block widths are configuration-driven
+- registry-backed Plone block widths are schema-driven
+
+How `blockWidth` is resolved depends on where the block is rendered:
+
+- In the Plate editor, Plate-native blocks use `BlockWidthPlugin`.
+  It reads their width policy from `config.blocks.plateBlocksConfig[element.type]`.
+- In the Plate editor, registry-backed Plone blocks are adapted to `ploneBlock` nodes.
+  They do not use `BlockWidthPlugin`.
+  `StyleFieldsPlugin` reads their real Plone block type from `element['@type']`, then reads `blockWidth` from fields marked with `styleField` in that block schema.
 
 The global width definitions themselves have not changed.
-They are still defined in `config.blocks.widths` and resolved through the `blockWidth` utility.
+They are still defined in `config.blocks.widths` and resolved through the registered `blockWidth` style definitions.
 
 ## Theme example
 
@@ -321,4 +325,5 @@ For generic style-backed fields:
 - expose its values through `choices` or `actions` (or other widget configuration)
 - register a `styleFieldDefinition` utility with the same field name
 
-For `blockWidth`, keep using the existing `blockWidth` block configuration.
+For registry-backed Plone blocks, define `blockWidth` in the block schema and mark it with `styleField`.
+For Plate-native blocks, keep using the existing `blockWidth` configuration in `plateBlocksConfig`.

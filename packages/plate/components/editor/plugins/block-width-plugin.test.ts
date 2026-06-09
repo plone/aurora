@@ -178,7 +178,7 @@ describe('block width plugin', () => {
     });
   });
 
-  it('still uses blocksConfig.blockWidth as a fallback for ploneBlock nodes in style fields', () => {
+  it('does not use blocksConfig.blockWidth as a fallback for ploneBlock style fields', () => {
     registryBlocks.widths = [
       {
         name: 'default',
@@ -219,7 +219,123 @@ describe('block width plugin', () => {
     ).toEqual({
       style: {
         color: 'red',
+      },
+    });
+  });
+
+  it('uses schema-marked blockWidth style fields for ploneBlock nodes', () => {
+    registryBlocks.widths = [
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+      {
+        name: 'layout',
+        label: 'Layout',
+        style: { '--block-width': 'var(--layout-container-width)' },
+      },
+    ];
+    registryBlocks.blocksConfig = {
+      image: {
+        blockSchema: {
+          title: 'Image',
+          fieldsets: [],
+          required: [],
+          properties: {
+            blockWidth: {
+              default: 'layout',
+              choices: [
+                ['default', 'Default'],
+                ['layout', 'Layout'],
+              ],
+              styleField: true,
+            },
+          },
+        },
+      },
+    };
+
+    const transformProps = (BaseStyleFieldsPlugin as any).inject.nodeProps
+      .transformProps as TransformPropsFn;
+
+    expect(
+      transformProps({
+        element: {
+          type: PLONE_BLOCK_TYPE,
+          '@type': 'image',
+          children: [{ text: '' }],
+        },
+        props: {
+          style: {
+            color: 'red',
+          },
+        },
+      }),
+    ).toEqual({
+      style: {
+        color: 'red',
         '--block-width': 'var(--layout-container-width)',
+      },
+    });
+  });
+
+  it('does not leak the raw blockWidth field into ploneBlock inline styles', () => {
+    registryBlocks.widths = [
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+    ];
+    registryBlocks.blocksConfig = {
+      image: {
+        blockSchema: {
+          title: 'Image',
+          fieldsets: [],
+          required: [],
+          properties: {
+            blockWidth: {
+              default: 'default',
+              choices: [['default', 'Default']],
+              styleField: true,
+            },
+          },
+        },
+      },
+    };
+
+    const blockWidthNodeProps = (BaseBlockWidthPlugin as any).inject.nodeProps;
+    const blockElement = {
+      type: PLONE_BLOCK_TYPE,
+      '@type': 'image',
+      blockWidth: 'default',
+      children: [{ text: '' }],
+    };
+    const transformProps = (BaseStyleFieldsPlugin as any).inject.nodeProps
+      .transformProps as TransformPropsFn;
+
+    expect(
+      blockWidthNodeProps.query({
+        nodeProps: {
+          element: blockElement,
+        },
+      }),
+    ).toBe(false);
+    expect(blockWidthNodeProps.transformStyle()).toEqual({});
+    expect(
+      transformProps({
+        element: blockElement,
+        props: {
+          style: {
+            position: 'relative',
+          },
+        },
+      }),
+    ).toEqual({
+      style: {
+        position: 'relative',
+        '--block-width': 'var(--default-container-width)',
       },
     });
   });

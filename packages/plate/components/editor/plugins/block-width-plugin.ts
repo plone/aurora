@@ -96,21 +96,6 @@ const getPlateBlockRegistryWidthConfig = (
   return plateBlocksConfig?.[element.type]?.blockWidth ?? {};
 };
 
-const getPloneBlockRegistryWidthConfig = (
-  element?: TElement | null,
-): BlockWidthConfig => {
-  const blockType = (
-    element as (TElement & { '@type'?: unknown }) | null | undefined
-  )?.['@type'];
-  if (!blockType || typeof blockType !== 'string') return {};
-
-  const blocksConfig = config?.blocks?.blocksConfig as unknown as
-    | Record<string, { blockWidth?: BlockWidthConfig }>
-    | undefined;
-
-  return blocksConfig?.[blockType]?.blockWidth ?? {};
-};
-
 export const resolveBlockWidthConfig = (
   editor: SlateEditor,
   element?: TElement | null,
@@ -119,10 +104,7 @@ export const resolveBlockWidthConfig = (
     return {};
   }
 
-  const registryConfig =
-    element?.type === PLONE_BLOCK_TYPE
-      ? getPloneBlockRegistryWidthConfig(element)
-      : getPlateBlockRegistryWidthConfig(element);
+  const registryConfig = getPlateBlockRegistryWidthConfig(element);
 
   if (registryConfig.defaultWidth || registryConfig.widths?.length) {
     return registryConfig;
@@ -297,6 +279,14 @@ export const BaseBlockWidthPlugin = createSlatePlugin({
     isBlock: true,
     nodeProps: {
       nodeKey: BLOCK_WIDTH_KEY,
+      query: ({ nodeProps }) => {
+        const element = nodeProps.element;
+
+        return (
+          !ElementApi.isElement(element) || element.type !== PLONE_BLOCK_TYPE
+        );
+      },
+      transformStyle: () => ({}) as CSSStyleDeclaration,
       transformProps: ({ editor, element, nodeValue, props }) => {
         if (
           !element ||
