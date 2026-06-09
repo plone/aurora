@@ -2,10 +2,11 @@ import type { ConfigType } from '@plone/registry';
 import {
   AlignWidget,
   Checkbox,
+  DateRangePicker,
   DateTimePicker,
   SizeWidget,
-  WidthWidget,
   TextField,
+  WidthWidget,
 } from '@plone/components/quanta';
 import { DateField } from '@plone/components';
 import { RecurrenceWidget } from '../components/RecurrenceWidget/RecurrenceWidget';
@@ -64,6 +65,12 @@ export default function install(config: ConfigType) {
     key: 'vocabulary',
     definition: {
       'plone.app.vocabularies.Catalog': ObjectBrowserWidget,
+    },
+  });
+  config.registerWidget({
+    key: 'widget',
+    definition: {
+      daterange: DateRangePicker,
     },
   });
 
