@@ -27,6 +27,7 @@ export * from './relations';
 export * from './roles';
 export * from './rules';
 export * from './search';
+export * from './sharing';
 export * from './site';
 export * from './sources';
 export * from './system';
