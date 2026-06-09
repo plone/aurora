@@ -1,0 +1,39 @@
+@layer custom {
+  .count {
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--quanta-silver);
+    margin-bottom: 8px;
+    color: var(--quanta-graphite);
+    font-size: 0.875rem;
+  }
+
+  .item {
+    display: flex;
+    align-items: flex-start;
+    padding: 16px 0;
+    gap: 12px;
+  }
+
+  .icon {
+    flex-shrink: 0;
+    color: var(--quanta-graphite);
+  }
+
+  .headline {
+    margin: 0 0 4px;
+    font-size: 1.125rem;
+  }
+
+  .headline a {
+    color: var(--quanta-sapphire);
+    text-decoration: none;
+  }
+
+  .headline a:hover {
+    text-decoration: underline;
+  }
+
+  .description {
+    margin: 0;
+  }
+}

@@ -8,6 +8,8 @@ import {
 } from 'react-router';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { Container, Input } from '@plone/components/quanta';
+import { SearchResults } from '../components/SearchResults/SearchResults';
+import styles from '../components/SearchResults/SearchResults.module.css';
 
 export const handle = {
   bodyClass: 'search-route',
@@ -36,6 +38,7 @@ export async function loader({
 
     return {
       search: results.data.items,
+      total: results.data.items_total,
       params: query,
     };
   } catch (error: any) {
@@ -51,7 +54,7 @@ export const meta = () => {
 
 export default function SearchRoute() {
   const { t } = useTranslation();
-  const { search, params } = useLoaderData<typeof loader>();
+  const { search, total, params } = useLoaderData<typeof loader>();
 
   return (
     <Container width="default" className="route-search">
@@ -69,37 +72,13 @@ export default function SearchRoute() {
         />
         {/* <Icon name={zoomSVG} size="18px" /> */}
       </Form>
-      {/*  */}
-      {/* <Search items={sitemapnavigation.items} /> */}
       {search?.length > 0 ? (
-        search.map((item) => (
-          <article className="tileItem" key={item['@id']}>
-            <h2 className="tileHeadline">
-              {/* <UniversalLink
-                      item={item}
-                      className="summary url"
-                      title={item['@type']}
-                    > */}
-              {item.title}
-              {/* </UniversalLink> */}
-            </h2>
-            {item.description && (
-              <div className="tileBody">
-                <span className="description">{item.description}</span>
-              </div>
-            )}
-            <div className="tileFooter">
-              Read more
-              {/* <UniversalLink item={item}>
-                      <FormattedMessage
-                        id="Read More…"
-                        defaultMessage="Read More…"
-                      />
-                    </UniversalLink> */}
-            </div>
-            <div className="visualClear" />
-          </article>
-        ))
+        <>
+          <p className={styles.count}>
+            {t('publicui.search.count', { count: total })}
+          </p>
+          <SearchResults items={search} />
+        </>
       ) : (
         <div>
           <p className="noResults">{t('publicui.search.noResults')}</p>
