@@ -5,7 +5,6 @@ import {
   useLoaderData,
   useLocation,
   useParams,
-  redirect,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   RouterContextProvider,
@@ -15,7 +14,7 @@ import {
   ploneClientContext,
   ploneContentContext,
 } from '@plone/aurora/app/middleware.server';
-import { getAuthFromRequest } from '@plone/react-router';
+import { redirectIfLoggedInLoader } from '@plone/react-router';
 import { TextField, Link, Button } from '@plone/components/quanta';
 import CloseSVG from '@plone/components/icons/close.svg?react';
 import ArrowRightSVG from '@plone/components/icons/arrow-right.svg?react';
@@ -23,15 +22,9 @@ import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import { useTranslation } from 'react-i18next';
 import type { RootLoader } from '@plone/aurora/app/root';
 
-export async function loader({
-  request,
-  context,
-  params,
-}: LoaderFunctionArgs<RouterContextProvider>) {
-  const authToken = await getAuthFromRequest(request);
-  if (authToken && !params.token) throw redirect('/');
-
-  const content = context.get(ploneContentContext);
+export async function loader(args: LoaderFunctionArgs<RouterContextProvider>) {
+  await redirectIfLoggedInLoader(args);
+  const content = args.context.get(ploneContentContext);
   return { content };
 }
 
