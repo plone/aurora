@@ -1,0 +1,1 @@
+Registered new `daterange` widget @maurice-rm
