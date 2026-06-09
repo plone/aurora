@@ -14,13 +14,13 @@ Each action works on one or several items at once.
 
 ## Open the folder contents view
 
-Navigate to a folder and open its contents view at `/@@contents` followed by the folder path, for example `/@@contents/my-folder`.
+Navigate to a folder, then select the {guilabel}`Contents` button — the folder icon — in the toolbar.
 The view lists the items in the folder together with a toolbar of actions.
 
 ## Select the items to act on
 
-Select one or more items with the checkboxes in the first column.
-Use the checkbox in the table header to select or clear all items on the current page.
+To select items to act on, check their checkboxes in the first column.
+To either select or deselect all items on the current page, check the checkbox in the table header.
 
 The {guilabel}`Rename`, {guilabel}`Change state`, {guilabel}`Tags`, and {guilabel}`Properties` actions stay disabled until you select at least one item.
 Each action applies to the current selection.
@@ -29,14 +29,14 @@ Each action applies to the current selection.
 
 1. Select the items to rename.
 2. Select {guilabel}`Rename` in the toolbar.
-3. Edit the short name, the title, or both for each item in the dialog.
+3. Edit the {guilabel}`Short name`, the {guilabel}`Title`, or both for each item in the dialog.
 4. Select {guilabel}`Rename` in the dialog to apply the changes.
 
-The short name is the last segment of the item's URL.
+The {guilabel}`Short name` is the last segment of the item's URL.
 
 ```{warning}
-Changing the short name changes the item's URL.
-Existing links to the old URL no longer resolve unless a redirect is in place.
+Changing the {guilabel}`Short name` changes the item's URL.
+Links and bookmarks that point to the old URL stop working.
 ```
 
 ## Change the workflow state
@@ -49,7 +49,7 @@ Existing links to the old URL no longer resolve unless a redirect is in place.
 6. Select {guilabel}`Change state` in the dialog to apply the transition.
 
 The list offers only the transitions that are available for every selected item.
-If the selected items share no common transition, the dialog tells you so, and you cannot apply a transition.
+If the selected items share no common transition, the dialog tells you so, and you can't apply a transition.
 
 ## Edit tags
 
@@ -67,7 +67,7 @@ Adding a tag applies it to every selected item, and removing a tag removes it fr
 
 1. Select the items whose properties you want to edit.
 2. Select {guilabel}`Properties` in the toolbar.
-3. Edit any of the publishing date, expiration date, rights, creators, or {guilabel}`Exclude from navigation`.
+3. Edit any of the {guilabel}`Publishing date`, {guilabel}`Expiration date`, {guilabel}`Rights`, {guilabel}`Creators`, or {guilabel}`Exclude from navigation`.
 4. Select {guilabel}`Save properties` to apply the changes.
 
 The dialog saves only the fields you change.
