@@ -32,7 +32,15 @@
       "move_to_top_folder": "Move to top folder",
       "move_to_bottom_folder": "Move to bottom folder",
       "uploaded": "Content '{{title}}' successfully uploaded",
-      "uploaded_multiple": "{{number}} contents successfully uploaded"
+      "uploaded_multiple": "{{number}} contents successfully uploaded",
+      "renamed": "Content '{{title}}' successfully renamed",
+      "renamed_multiple": "{{number}} contents successfully renamed",
+      "tagged": "Tags of '{{title}}' successfully updated",
+      "tagged_multiple": "Tags of {{number}} contents successfully updated",
+      "properties_saved": "Properties of '{{title}}' successfully updated",
+      "properties_saved_multiple": "Properties of {{number}} contents successfully updated",
+      "state_changed": "State of '{{title}}' successfully changed",
+      "state_changed_multiple": "State of {{number}} contents successfully changed"
     },
     "item": {
       "expired": "Expired",
@@ -93,6 +101,45 @@
       },
       "description": "This action cannot be undone.",
       "confirm": "Delete"
+    },
+    "modal_rename": {
+      "title": "Rename items",
+      "confirm": "Rename",
+      "columns": {
+        "name": "Short name",
+        "title": "Title"
+      }
+    },
+    "modal_tags": {
+      "title": "Edit tags",
+      "confirm": "Save tags",
+      "current_label": "Tags",
+      "add_label": "Add a tag",
+      "add_placeholder": "Type a tag…",
+      "add_hint": "Press Enter to add. Suggestions come from existing tags.",
+      "empty": "No tags on the selected items.",
+      "remove": "Remove tag {{tag}}"
+    },
+    "modal_properties": {
+      "title": "Edit properties",
+      "confirm": "Save properties",
+      "mixed": "Mixed values",
+      "effective": "Publishing date",
+      "expires": "Expiration date",
+      "rights": "Rights",
+      "creators": "Creators",
+      "creators_hint": "Comma-separated user names",
+      "exclude_from_nav": "Exclude from navigation"
+    },
+    "modal_workflow": {
+      "title": "Change state",
+      "confirm": "Change state",
+      "current_state": "Current state",
+      "transition": "Transition",
+      "select_transition": "Select a transition…",
+      "no_common_transitions": "The selected items share no common transition.",
+      "comment": "Comment",
+      "include_children": "Apply to contained items"
     }
   }
 }

@@ -32,7 +32,15 @@
       "move_to_top_folder": "Sposta in cima alla cartella",
       "move_to_bottom_folder": "Sposta in fondo alla cartella",
       "uploaded": "Contenuto '{{title}}' caricato con successo",
-      "uploaded_multiple": "{{number}} contenuti caricati con successo"
+      "uploaded_multiple": "{{number}} contenuti caricati con successo",
+      "renamed": "Contenuto '{{title}}' rinominato con successo",
+      "renamed_multiple": "{{number}} contenuti rinominati con successo",
+      "tagged": "Etichette di '{{title}}' aggiornate con successo",
+      "tagged_multiple": "Etichette di {{number}} contenuti aggiornate con successo",
+      "properties_saved": "Proprietà di '{{title}}' aggiornate con successo",
+      "properties_saved_multiple": "Proprietà di {{number}} contenuti aggiornate con successo",
+      "state_changed": "Stato di '{{title}}' cambiato con successo",
+      "state_changed_multiple": "Stato di {{number}} contenuti cambiato con successo"
     },
     "item": {
       "expired": "Scaduto",
@@ -93,6 +101,45 @@
       },
       "description": "Questa azione non può essere annullata.",
       "confirm": "Procedi con l'eliminazione"
+    },
+    "modal_rename": {
+      "title": "Rinomina elementi",
+      "confirm": "Rinomina",
+      "columns": {
+        "name": "Nome breve",
+        "title": "Titolo"
+      }
+    },
+    "modal_tags": {
+      "title": "Modifica etichette",
+      "confirm": "Salva etichette",
+      "current_label": "Etichette",
+      "add_label": "Aggiungi un'etichetta",
+      "add_placeholder": "Scrivi un'etichetta…",
+      "add_hint": "Premi Invio per aggiungere. I suggerimenti provengono dalle etichette esistenti.",
+      "empty": "Nessuna etichetta sugli elementi selezionati.",
+      "remove": "Rimuovi etichetta {{tag}}"
+    },
+    "modal_properties": {
+      "title": "Modifica proprietà",
+      "confirm": "Salva proprietà",
+      "mixed": "Valori misti",
+      "effective": "Data di pubblicazione",
+      "expires": "Data di scadenza",
+      "rights": "Diritti",
+      "creators": "Autori",
+      "creators_hint": "Nomi utente separati da virgola",
+      "exclude_from_nav": "Escludi dalla navigazione"
+    },
+    "modal_workflow": {
+      "title": "Cambia stato",
+      "confirm": "Cambia stato",
+      "current_state": "Stato attuale",
+      "transition": "Transizione",
+      "select_transition": "Seleziona una transizione…",
+      "no_common_transitions": "Gli elementi selezionati non hanno transizioni in comune.",
+      "comment": "Commento",
+      "include_children": "Applica agli elementi contenuti"
     }
   }
 }

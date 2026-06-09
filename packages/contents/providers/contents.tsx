@@ -32,6 +32,14 @@ interface ContentsContext {
   setShowUpload: (s: boolean) => void;
   pendingDropFiles: FileEntry[];
   setPendingDropFiles: (files: FileEntry[]) => void;
+  showRename: boolean;
+  setShowRename: (s: boolean) => void;
+  showWorkflow: boolean;
+  setShowWorkflow: (s: boolean) => void;
+  showTags: boolean;
+  setShowTags: (s: boolean) => void;
+  showProperties: boolean;
+  setShowProperties: (s: boolean) => void;
   contentTitle: string;
   contentPath: string;
   showToast: (c: ToastItem) => void;
@@ -48,6 +56,14 @@ const ContentsContext = createContext<ContentsContext>({
   setShowUpload: () => {},
   pendingDropFiles: [],
   setPendingDropFiles: () => {},
+  showRename: false,
+  setShowRename: () => {},
+  showWorkflow: false,
+  setShowWorkflow: () => {},
+  showTags: false,
+  setShowTags: () => {},
+  showProperties: false,
+  setShowProperties: () => {},
   contentTitle: '',
   contentPath: '/',
   showToast: (t: ToastItem) => {},
@@ -86,6 +102,12 @@ export function ContentsProvider(props: ContentsProviderProps) {
   const [showUpload, setShowUpload] = useState(false);
   const [pendingDropFiles, setPendingDropFiles] = useState<FileEntry[]>([]);
 
+  //object actions
+  const [showRename, setShowRename] = useState(false);
+  const [showWorkflow, setShowWorkflow] = useState(false);
+  const [showTags, setShowTags] = useState(false);
+  const [showProperties, setShowProperties] = useState(false);
+
   //show toast
   const showToast = (queueElement: ToastItem) => {
     config
@@ -106,6 +128,14 @@ export function ContentsProvider(props: ContentsProviderProps) {
     setShowUpload,
     pendingDropFiles,
     setPendingDropFiles,
+    showRename,
+    setShowRename,
+    showWorkflow,
+    setShowWorkflow,
+    showTags,
+    setShowTags,
+    showProperties,
+    setShowProperties,
     contentTitle,
     contentPath,
     showToast,
