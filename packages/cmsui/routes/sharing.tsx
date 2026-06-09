@@ -18,6 +18,7 @@ import {
   Cell,
 } from '@plone/components/quanta';
 import type { SharingRoleValue } from '@plone/types';
+import { WorldIcon, ArrowupIcon } from '@plone/components/Icons';
 
 export async function loader({
   request,
@@ -34,12 +35,6 @@ export async function loader({
   return data(flattenToAppURL({ content, sharingData }));
 }
 
-/**
- * Read-only rendering of a single role cell as a checkbox.
- * A boolean value is an assignable role; the `'global'` / `'acquired'`
- * sentinels are read-only and managed elsewhere (site admin / parent),
- * so they render as checked checkboxes with a color cue and title.
- */
 function RoleCell({
   value,
   roleTitle,
@@ -48,27 +43,23 @@ function RoleCell({
   roleTitle: string;
 }) {
   const { t } = useTranslation();
-  const isGlobal = value === 'global';
-  const isAcquired = value === 'acquired';
-  const title = isGlobal
-    ? t('cmsui.sharing.globalRole')
-    : isAcquired
-      ? t('cmsui.sharing.inheritedValue')
-      : undefined;
-
   return (
     <Cell>
-      <Checkbox
-        isSelected={value === true || isGlobal || isAcquired}
-        aria-label={title ? `${roleTitle} (${title})` : roleTitle}
-        className={
-          isGlobal
-            ? 'text-quanta-sapphire'
-            : isAcquired
-              ? 'text-green-600'
-              : undefined
-        }
-      />
+      {value === 'global' && (
+        <WorldIcon
+          className="text-quanta-sapphire"
+          aria-label={`${roleTitle} — ${t('cmsui.sharing.globalRole')}`}
+        />
+      )}
+      {value === 'acquired' && (
+        <ArrowupIcon
+          className="text-green-600"
+          aria-label={`${roleTitle} — ${t('cmsui.sharing.inheritedValue')}`}
+        />
+      )}
+      {typeof value === 'boolean' && (
+        <Checkbox isSelected={value} aria-label={roleTitle} />
+      )}
     </Cell>
   );
 }
@@ -80,9 +71,7 @@ export default function Sharing() {
 
   return (
     <Container id="page-sharing">
-      <h1>
-        {t('cmsui.sharing.label')}: {content.title}
-      </h1>
+      <h1>{t('cmsui.sharing.label', { title: content.title })}</h1>
       <Table aria-label={t('cmsui.sharing.label')}>
         <TableHeader>
           <Column id="name" isRowHeader>
@@ -113,9 +102,9 @@ export default function Sharing() {
         </TableBody>
       </Table>
 
-      <p>
+      <div>
         <Checkbox isSelected={inherit}>{t('cmsui.sharing.inherit')}</Checkbox>
-      </p>
+      </div>
     </Container>
   );
 }

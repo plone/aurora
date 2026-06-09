@@ -111,7 +111,7 @@
       "returnToHome": "Torna alla home page"
     },
     "sharing": {
-      "label": "Condivisione",
+      "label": "Condivisione per «{{title}}»",
       "name": "Nome",
       "inherit": "Eredita i permessi dai livelli superiori",
       "globalRole": "Ruolo globale",

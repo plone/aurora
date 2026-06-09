@@ -73,7 +73,7 @@
       "returnToHome": "Zur Startseite zurückkehren"
     },
     "sharing": {
-      "label": "Freigabe",
+      "label": "Freigabe von „{{title}}\"",
       "name": "Name",
       "inherit": "Berechtigungen von höheren Ebenen erben",
       "globalRole": "Globale Rolle",

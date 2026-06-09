@@ -121,7 +121,7 @@
       "returnToHome": "Return to home page"
     },
     "sharing": {
-      "label": "Sharing",
+      "label": "Sharing for \"{{title}}\"",
       "name": "Name",
       "inherit": "Inherit permissions from higher levels",
       "globalRole": "Global role",
