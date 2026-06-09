@@ -81,7 +81,8 @@
       "user": "Benutzer",
       "group": "Gruppe",
       "searchLabel": "Nach Benutzern und Gruppen suchen",
-      "searchPlaceholder": "Nach Benutzern und Gruppen suchen…"
+      "searchPlaceholder": "Nach Benutzern und Gruppen suchen…",
+      "cancel": "Abbrechen"
     }
   }
 }

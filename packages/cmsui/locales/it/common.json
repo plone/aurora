@@ -119,7 +119,8 @@
       "user": "Utente",
       "group": "Gruppo",
       "searchLabel": "Cerca utenti e gruppi",
-      "searchPlaceholder": "Cerca utenti e gruppi…"
+      "searchPlaceholder": "Cerca utenti e gruppi…",
+      "cancel": "Annulla"
     }
   }
 }

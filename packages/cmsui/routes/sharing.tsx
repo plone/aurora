@@ -17,6 +17,7 @@ import {
   Row,
   Cell,
   TextField,
+  Link,
 } from '@plone/components/quanta';
 import type { SharingEntry, SharingRoleValue } from '@plone/types';
 import {
@@ -24,7 +25,9 @@ import {
   ArrowupIcon,
   UserIcon,
   SocialIcon,
+  CloseIcon,
 } from '@plone/components/Icons';
+import { Plug } from '@plone/layout/components/Pluggable';
 
 export async function loader({
   request,
@@ -106,6 +109,15 @@ export default function Sharing() {
 
   return (
     <Container id="page-sharing">
+      <Plug
+        pluggable="toolbar-top"
+        id="button-cancel"
+        dependencies={[content['@id']] as any}
+      >
+        <Link aria-label={t('cmsui.sharing.cancel')} href={content['@id']}>
+          <CloseIcon />
+        </Link>
+      </Plug>
       <h1>{t('cmsui.sharing.label', { title: content.title })}</h1>
       <Form role="search">
         <TextField
