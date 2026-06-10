@@ -108,7 +108,17 @@
       "signUp": "Registrati",
       "signInTo": "Accedi a {{site}}",
       "forgotPassword": "Password dimenticata? <a>Richiedi una nuova password</a>",
-      "returnToHome": "Torna alla home page"
+      "returnToHome": "Torna alla home page",
+      "register": {
+        "title": "Form di iscrizione",
+        "fullname": "Nome completo",
+        "fullnameHint": "Inserisci il tuo nome completo, ad esempio Mario Rossi.",
+        "email": "E-mail",
+        "emailHint": "Inserisci un indirizzo e-mail. Esso sarà il tuo nome utente. Rispettiamo la tua privacy: non daremo l'indirizzo a terzi, né verrà esposto nel portale.",
+        "submit": "Registrati",
+        "successTitle": "Registrazione account completata",
+        "successBody": "La registrazione è andata a buon fine. Controlla la tua casella di posta per le istruzioni su come attivare il tuo account."
+      }
     }
   }
 }

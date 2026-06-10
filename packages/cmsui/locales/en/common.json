@@ -118,7 +118,17 @@
       "signUp": "Sign up",
       "signInTo": "Sign in to {{site}}",
       "forgotPassword": "Forgot password? Request a <a>new password</a>",
-      "returnToHome": "Return to home page"
+      "returnToHome": "Return to home page",
+      "register": {
+        "title": "Registration form",
+        "fullname": "Full Name",
+        "fullnameHint": "Enter full name, e.g. John Smith.",
+        "email": "E-mail",
+        "emailHint": "Enter an email address. This will be your login name. We respect your privacy, and will not give the address away to any third parties or expose it anywhere.",
+        "submit": "Register",
+        "successTitle": "Account Registration Completed",
+        "successBody": "The registration process has been successful. Please check your e-mail inbox for information on how to activate your account."
+      }
     }
   }
 }

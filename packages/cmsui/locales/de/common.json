@@ -70,7 +70,17 @@
       "signUp": "Registrieren",
       "signInTo": "Bei {{site}} anmelden",
       "forgotPassword": "Passwort vergessen? <a>Neues Passwort anfordern</a>",
-      "returnToHome": "Zur Startseite zurückkehren"
+      "returnToHome": "Zur Startseite zurückkehren",
+      "register": {
+        "title": "Registrierungsformular",
+        "fullname": "Vor- und Nachname",
+        "fullnameHint": "Tragen Sie bitte Ihren vollen Namen ein.",
+        "email": "E-Mail",
+        "emailHint": "Tragen Sie Ihre E-Mail-Adresse ein, mit der Sie sich künftig anmelden müssen. Wir respektieren den Datenschutz und werden die E-Mail-Adresse nicht an Dritte weitergeben und auch nirgends anzeigen.",
+        "submit": "Registrieren",
+        "successTitle": "Registrierung abgeschlossen",
+        "successBody": "Die Registrierung war erfolgreich. Bitte prüfen Sie Ihren E-Mail-Posteingang für Informationen zur Aktivierung Ihres Kontos."
+      }
     }
   }
 }
