@@ -245,6 +245,7 @@ export default function Sharing() {
         </Link>
       </Plug>
       <h1>{t('cmsui.sharing.label', { title: content.title })}</h1>
+      <p>{t('cmsui.sharing.description')}</p>
       <search>
         <Form>
           <SearchField
