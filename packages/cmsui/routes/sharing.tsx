@@ -66,7 +66,6 @@ export async function loader({
   );
 }
 
-/** Minimal entry shape accepted by the `@sharing` POST. */
 type UpdatedEntry = {
   id: string;
   type: string;
@@ -83,9 +82,12 @@ export async function action({
   const cli = context.get(ploneClientContext);
   const path = `/${params['*'] || ''}`;
 
-  const { entries } = (await request.json()) as { entries: UpdatedEntry[] };
+  const { entries, inherit } = (await request.json()) as {
+    entries: UpdatedEntry[];
+    inherit: boolean;
+  };
 
-  await cli.updateSharing({ path, data: { entries } });
+  await cli.updateSharing({ path, data: { entries, inherit } });
 
   return redirect(path);
 }
@@ -154,22 +156,17 @@ function RoleCell({
   );
 }
 
-/** Pending role changes, keyed by entry id then role id. */
 type RoleEdits = Record<string, Record<string, boolean>>;
 
-/**
- * Owns the pending checkbox edits as a thin overlay on top of the loader's
- * entries: only changed roles are tracked, so detecting reverts and building
- * the save payload stay trivial. Pass the active search term as `resetKey` so
- * edits are discarded whenever a new search re-fetches the entries.
- */
-function useSharingEdits(resetKey: string) {
+function useSharingEdits(resetKey: string, originalInherit: boolean) {
   const [edits, setEdits] = useState<RoleEdits>({});
+  const [inherit, setInherit] = useState(originalInherit);
 
   const [prevKey, setPrevKey] = useState(resetKey);
   if (prevKey !== resetKey) {
     setPrevKey(resetKey);
     setEdits({});
+    setInherit(originalInherit);
   }
 
   const isSelected = (entry: SharingEntry, roleId: string): boolean =>
@@ -178,7 +175,6 @@ function useSharingEdits(resetKey: string) {
   const toggle = (entry: SharingEntry, roleId: string, selected: boolean) =>
     setEdits((prev) => {
       const entryEdits = { ...prev[entry.id] };
-      // Reverting to the original value clears the pending edit.
       if (selected === (entry.roles[roleId] === true)) {
         delete entryEdits[roleId];
       } else {
@@ -193,10 +189,8 @@ function useSharingEdits(resetKey: string) {
       return next;
     });
 
-  const hasEdits = Object.keys(edits).length > 0;
+  const hasEdits = Object.keys(edits).length > 0 || inherit !== originalInherit;
 
-  // The `@sharing` POST payload: only changed entries, each carrying its full
-  // boolean role map (read-only 'global'/'acquired' sentinels excluded).
   const buildChangedEntries = (
     entries: SharingEntry[],
     roles: SharingRole[],
@@ -214,7 +208,14 @@ function useSharingEdits(resetKey: string) {
         ),
       }));
 
-  return { isSelected, toggle, hasEdits, buildChangedEntries };
+  return {
+    isSelected,
+    toggle,
+    inherit,
+    setInherit,
+    hasEdits,
+    buildChangedEntries,
+  };
 }
 
 export default function Sharing() {
@@ -223,13 +224,16 @@ export default function Sharing() {
   const { t } = useTranslation();
   const { entries, available_roles, inherit } = sharingData;
 
-  const edits = useSharingEdits(search);
+  const edits = useSharingEdits(search, inherit);
   const fetcher = useFetcher();
   const isSaving = fetcher.state !== 'idle';
 
   const handleSave = () => {
     fetcher.submit(
-      { entries: edits.buildChangedEntries(entries, available_roles) },
+      {
+        entries: edits.buildChangedEntries(entries, available_roles),
+        inherit: edits.inherit,
+      },
       { method: 'post', encType: 'application/json' },
     );
   };
@@ -293,7 +297,9 @@ export default function Sharing() {
       </Table>
 
       <div>
-        <Checkbox isSelected={inherit}>{t('cmsui.sharing.inherit')}</Checkbox>
+        <Checkbox isSelected={edits.inherit} onChange={edits.setInherit}>
+          {t('cmsui.sharing.inherit')}
+        </Checkbox>
       </div>
 
       <div>
