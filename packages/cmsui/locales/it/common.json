@@ -120,6 +120,8 @@
       "group": "Gruppo",
       "searchLabel": "Cerca utenti e gruppi",
       "searchPlaceholder": "Cerca utenti e gruppi…",
+      "searchResults_one": "{{count}} voce trovata",
+      "searchResults_other": "{{count}} voci trovate",
       "cancel": "Annulla"
     }
   }

@@ -16,6 +16,7 @@ import {
 } from '@plone/aurora/app/middleware.server';
 import { flattenToAppURL } from '@plone/helpers';
 import { useTranslation } from 'react-i18next';
+import { VisuallyHidden } from 'react-aria';
 import {
   Checkbox,
   Container,
@@ -250,51 +251,61 @@ export default function Sharing() {
         </Link>
       </Plug>
       <h1>{t('cmsui.sharing.label', { title: content.title })}</h1>
-      <Form role="search">
-        <SearchField
-          key={search}
-          name="search"
-          defaultValue={search}
-          label={t('cmsui.sharing.searchLabel')}
-          placeholder={t('cmsui.sharing.searchPlaceholder')}
-        />
-      </Form>
-      <Table aria-label={t('cmsui.sharing.label', { title: content.title })}>
-        <TableHeader>
-          <Column id="name" isRowHeader>
-            {t('cmsui.sharing.name')}
-          </Column>
-          {available_roles.map((role) => (
-            <Column key={role.id} id={role.id}>
-              {role.title}
+      <search>
+        <Form>
+          <SearchField
+            key={search}
+            name="search"
+            defaultValue={search}
+            label={t('cmsui.sharing.searchLabel')}
+            placeholder={t('cmsui.sharing.searchPlaceholder')}
+            aria-controls="sharing-entries"
+          />
+        </Form>
+      </search>
+      <div id="sharing-entries">
+        <VisuallyHidden>
+          <span aria-live="polite">
+            {t('cmsui.sharing.searchResults', { count: entries.length })}
+          </span>
+        </VisuallyHidden>
+        <Table aria-label={t('cmsui.sharing.label', { title: content.title })}>
+          <TableHeader>
+            <Column id="name" isRowHeader>
+              {t('cmsui.sharing.name')}
             </Column>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {entries.map((entry) => {
-            const isRowDisabled =
-              entry.disabled ||
-              (entry.type === 'user' && entry.id === currentUserId);
-            return (
-              <Row key={entry.id} id={entry.id}>
-                <NameCell entry={entry} />
-                {available_roles.map((role) => (
-                  <RoleCell
-                    key={role.id}
-                    value={entry.roles[role.id]}
-                    roleTitle={role.title}
-                    isSelected={edits.isSelected(entry, role.id)}
-                    isDisabled={isRowDisabled}
-                    onChange={(selected) =>
-                      edits.toggle(entry, role.id, selected)
-                    }
-                  />
-                ))}
-              </Row>
-            );
-          })}
-        </TableBody>
-      </Table>
+            {available_roles.map((role) => (
+              <Column key={role.id} id={role.id}>
+                {role.title}
+              </Column>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {entries.map((entry) => {
+              const isRowDisabled =
+                entry.disabled ||
+                (entry.type === 'user' && entry.id === currentUserId);
+              return (
+                <Row key={entry.id} id={entry.id}>
+                  <NameCell entry={entry} />
+                  {available_roles.map((role) => (
+                    <RoleCell
+                      key={role.id}
+                      value={entry.roles[role.id]}
+                      roleTitle={role.title}
+                      isSelected={edits.isSelected(entry, role.id)}
+                      isDisabled={isRowDisabled}
+                      onChange={(selected) =>
+                        edits.toggle(entry, role.id, selected)
+                      }
+                    />
+                  ))}
+                </Row>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
 
       <div>
         <Checkbox isSelected={edits.inherit} onChange={edits.setInherit}>

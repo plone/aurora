@@ -130,6 +130,8 @@
       "group": "Group",
       "searchLabel": "Search for users and groups",
       "searchPlaceholder": "Search for users and groups…",
+      "searchResults_one": "{{count}} entry found",
+      "searchResults_other": "{{count}} entries found",
       "cancel": "Cancel"
     }
   }
