@@ -14,7 +14,6 @@ import {
   ploneContentContext,
   ploneUserContext,
 } from '@plone/aurora/app/middleware.server';
-import { flattenToAppURL } from '@plone/helpers';
 import { useTranslation } from 'react-i18next';
 import { VisuallyHidden } from 'react-aria';
 import {
@@ -57,14 +56,12 @@ export async function loader({
 
   const { data: sharingData } = await cli.getSharing({ path, search });
 
-  return data(
-    flattenToAppURL({
-      content,
-      sharingData,
-      search,
-      currentUserId: user?.id ?? null,
-    }),
-  );
+  return data({
+    content: { '@id': content['@id'], title: content.title },
+    sharingData,
+    search,
+    currentUserId: user?.id ?? null,
+  });
 }
 
 type UpdatedEntry = {
