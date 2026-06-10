@@ -1,5 +1,14 @@
 @layer custom {
+  /* Reserve the scrollbar gutter so the page width doesn't shift. */
+  html {
+    scrollbar-gutter: stable;
+  }
+
   .with-toolbar #main {
     margin-inline-start: var(--plone-toolbar-width);
+  }
+
+  .route-search .documentFirstHeading {
+    color: var(--color-quanta-peacock);
   }
 }

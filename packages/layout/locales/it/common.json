@@ -3,6 +3,22 @@
     "languageSwitcher": {
       "switchTo": "Passa a {{ lang }}"
     },
+    "search": {
+      "resultCount": "{{count}} risultati",
+      "pagination": "Pagine dei risultati di ricerca",
+      "previous": "Pagina precedente",
+      "next": "Pagina successiva",
+      "page": "Pagina {{page}}",
+      "filterByTag": "Filtra per tag",
+      "resultsLabel": "Risultati della ricerca",
+      "loading": "Ricerca in corso…",
+      "sort": {
+        "label": "Ordina per",
+        "relevance": "Rilevanza",
+        "date": "Data",
+        "title": "Titolo"
+      }
+    },
     "contenttypes": {
       "common": {
         "size": "Dimensione:"

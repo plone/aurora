@@ -1,0 +1,1 @@
+The public UI reserves the scrollbar gutter (`scrollbar-gutter: stable`) so the page width no longer shifts when the search result height changes (for example, when expanding the tag filter or changing the result count). @nils-pzr

@@ -1,0 +1,1 @@
+Added tag (`Subject`) facets to the search results. Available tags and their counts are aggregated from the matches, and selecting one or more filters the results via repeated `Subject` query parameters while resetting paging. @nils-pzr

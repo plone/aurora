@@ -1,0 +1,1 @@
+Added pagination to the search results and styled the search heading in the brand teal. Results are now batched per page, with crawlable previous/next and numbered page links that preserve the active query. @nils-pzr

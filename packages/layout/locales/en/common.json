@@ -3,6 +3,22 @@
     "languageSwitcher": {
       "switchTo": "Switch to {{ lang }}"
     },
+    "search": {
+      "resultCount": "{{count}} results",
+      "pagination": "Search results pages",
+      "previous": "Previous page",
+      "next": "Next page",
+      "page": "Page {{page}}",
+      "filterByTag": "Filter by tag",
+      "resultsLabel": "Search results",
+      "loading": "Searching…",
+      "sort": {
+        "label": "Sort by",
+        "relevance": "Relevance",
+        "date": "Date",
+        "title": "Title"
+      }
+    },
     "contenttypes": {
       "common": {
         "size": "Size:"

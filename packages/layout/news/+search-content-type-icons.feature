@@ -1,0 +1,1 @@
+Search results now show a per-content-type icon (resolved via `getContentIcon`/`config.settings.contentIcons`, registered in `@plone/layout` so it is available in the public UI) and the localized effective date of each result. @nils-pzr

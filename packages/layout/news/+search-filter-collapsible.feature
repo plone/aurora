@@ -1,0 +1,1 @@
+The search tag filter is now collapsed by default behind an animated "Filter by tag" disclosure (it auto-opens when a tag filter is active), and the results show a loading state (`aria-busy` + a "Searching…" status) while a new query, sort, page or filter is fetched. @nils-pzr

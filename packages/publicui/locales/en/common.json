@@ -5,8 +5,7 @@
       "title": "Search results for",
       "results": "Search results",
       "placeholder": "Write here...",
-      "noResults": "No results found",
-      "count": "{{count}} results"
+      "noResults": "No results found"
     }
   }
 }
