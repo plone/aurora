@@ -81,12 +81,7 @@ export async function action({
   const content = context.get(ploneContentContext);
   const path = `/${params['*'] || ''}`;
 
-  const { entries, inherit } = (await request.json()) as {
-    entries: UpdatedEntry[];
-    inherit: boolean;
-  };
-
-  await cli.updateSharing({ path, data: { entries, inherit } });
+  await cli.updateSharing({ path, data: await request.json() });
 
   return redirect(content['@id']);
 }
