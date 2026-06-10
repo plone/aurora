@@ -69,6 +69,19 @@ export default function install(config: ConfigType) {
       },
       {
         type: 'prefix',
+        path: '@@personal-information',
+        children: [
+          {
+            type: 'index',
+            file: '@plone/cmsui/routes/personal-information.tsx',
+            options: {
+              id: 'personal-information',
+            },
+          },
+        ],
+      },
+      {
+        type: 'prefix',
         path: 'test-layout',
         children: [
           {
