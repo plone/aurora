@@ -260,7 +260,7 @@ export default function Sharing() {
           placeholder={t('cmsui.sharing.searchPlaceholder')}
         />
       </Form>
-      <Table aria-label={t('cmsui.sharing.label')}>
+      <Table aria-label={t('cmsui.sharing.label', { title: content.title })}>
         <TableHeader>
           <Column id="name" isRowHeader>
             {t('cmsui.sharing.name')}
@@ -273,8 +273,9 @@ export default function Sharing() {
         </TableHeader>
         <TableBody>
           {entries.map((entry) => {
-            const isOwnRow =
-              entry.type === 'user' && entry.id === currentUserId;
+            const isRowDisabled =
+              entry.disabled ||
+              (entry.type === 'user' && entry.id === currentUserId);
             return (
               <Row key={entry.id} id={entry.id}>
                 <NameCell entry={entry} />
@@ -284,7 +285,7 @@ export default function Sharing() {
                     value={entry.roles[role.id]}
                     roleTitle={role.title}
                     isSelected={edits.isSelected(entry, role.id)}
-                    isDisabled={isOwnRow}
+                    isDisabled={isRowDisabled}
                     onChange={(selected) =>
                       edits.toggle(entry, role.id, selected)
                     }
