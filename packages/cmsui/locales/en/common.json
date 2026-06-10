@@ -124,6 +124,7 @@
       "label": "Sharing for \"{{title}}\"",
       "name": "Name",
       "inherit": "Inherit permissions from higher levels",
+      "inheritDescription": "By default, permissions from the container of this item are inherited. If you disable this, only the explicitly defined sharing permissions will be valid. In the overview, a green arrow indicates an inherited value and a blue globe indicates a global role, which is managed by the site administrator.",
       "globalRole": "Global role",
       "inheritedValue": "Inherited value",
       "user": "User",

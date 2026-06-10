@@ -114,6 +114,7 @@
       "label": "Condivisione per «{{title}}»",
       "name": "Nome",
       "inherit": "Eredita i permessi dai livelli superiori",
+      "inheritDescription": "Per impostazione predefinita, i permessi del contenitore di questo elemento sono ereditati. Se disattivi questa opzione, saranno validi solo i permessi di condivisione definiti esplicitamente. Nella panoramica, una freccia verde indica un valore ereditato e un globo blu indica un ruolo globale, gestito dall'amministratore del sito.",
       "globalRole": "Ruolo globale",
       "inheritedValue": "Valore ereditato",
       "user": "Utente",

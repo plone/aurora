@@ -76,6 +76,7 @@
       "label": "Freigabe von „{{title}}“",
       "name": "Name",
       "inherit": "Berechtigungen von höheren Ebenen erben",
+      "inheritDescription": "Standardmäßig werden die Berechtigungen aus dem übergeordneten Container vererbt. Wird dies deaktiviert, gelten nur die explizit definierten Freigabeberechtigungen. In der Übersicht kennzeichnet ein grüner Pfeil einen geerbten Wert und ein blauer Globus eine globale Rolle, die vom Site-Administrator verwaltet wird.",
       "globalRole": "Globale Rolle",
       "inheritedValue": "Geerbter Wert",
       "user": "Benutzer",

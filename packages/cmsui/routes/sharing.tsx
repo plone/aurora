@@ -28,6 +28,7 @@ import {
   SearchField,
   Link,
   Button,
+  Description,
 } from '@plone/components/quanta';
 import type { SharingEntry, SharingRole, SharingRoleValue } from '@plone/types';
 import {
@@ -301,9 +302,16 @@ export default function Sharing() {
       </div>
 
       <div>
-        <Checkbox isSelected={edits.inherit} onChange={edits.setInherit}>
+        <Checkbox
+          isSelected={edits.inherit}
+          onChange={edits.setInherit}
+          aria-describedby="inherit-description"
+        >
           {t('cmsui.sharing.inherit')}
         </Checkbox>
+        <Description id="inherit-description">
+          {t('cmsui.sharing.inheritDescription')}
+        </Description>
       </div>
 
       <div>
