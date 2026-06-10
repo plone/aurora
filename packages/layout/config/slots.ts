@@ -9,6 +9,7 @@ import HeaderTools from '../slots/Tools';
 import ContentArea from '../slots/ContentArea';
 import MainFooter from '../slots/MainFooter/MainFooter';
 import Breadcrumbs from '../slots/Breadcrumbs';
+import RelatedItems from '../slots/RelatedItems/RelatedItems';
 import { NotContentTypeCondition } from '../helpers';
 
 export default function install(config: ConfigType) {
@@ -81,6 +82,13 @@ export default function install(config: ConfigType) {
     name: 'mainFooter',
     slot: 'mainFooter',
     component: MainFooter,
+  });
+
+  // Related Items
+  config.registerSlotComponent({
+    name: 'RelatedItems',
+    slot: 'belowContent',
+    component: RelatedItems,
   });
 
   return config;

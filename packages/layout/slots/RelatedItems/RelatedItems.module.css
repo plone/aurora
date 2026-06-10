@@ -1,0 +1,10 @@
+@layer custom {
+  .relatedItems {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin-top: 24px;
+    gap: 8px;
+    list-style: none;
+  }
+}

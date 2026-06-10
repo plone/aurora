@@ -17,6 +17,9 @@
     "toolbar": {
       "label": "Toolbar"
     },
+    "relatedItems": {
+      "label": "Related items"
+    },
     "views": {
       "link": {
         "linkLabel": "The link address is:",
