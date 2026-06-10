@@ -78,6 +78,7 @@ export async function action({
   await requireAuthCookie(request);
 
   const cli = context.get(ploneClientContext);
+  const content = context.get(ploneContentContext);
   const path = `/${params['*'] || ''}`;
 
   const { entries, inherit } = (await request.json()) as {
@@ -87,7 +88,7 @@ export async function action({
 
   await cli.updateSharing({ path, data: { entries, inherit } });
 
-  return redirect(path);
+  return redirect(content['@id']);
 }
 
 function NameCell({ entry }: { entry: SharingEntry }) {
