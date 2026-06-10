@@ -1,0 +1,1 @@
+The search route now honours the site's search settings (`use_site_search_settings`), matching Volto, and improves accessibility: the form sits in a native `<search>` landmark, the results are a named `region`, and the result count is a `role="status"` live region linked to the results via `aria-controls`. @nils-pzr

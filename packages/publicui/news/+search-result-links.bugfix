@@ -1,0 +1,1 @@
+Fixed search result links opening the backend instead of navigating within Aurora: backend URLs are now flattened to app-relative ones in the loader (server-side), so clicking a result navigates to the correct Aurora page. @nils-pzr

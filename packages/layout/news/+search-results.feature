@@ -1,0 +1,1 @@
+Added shared `SearchResults` and `SearchPagination` components for the public search page. Results show a content icon, a linked title, and the description; pagination renders crawlable previous/next and numbered page links that preserve the active query. Styling uses themeable CSS tokens so it can be re-themed. @nils-pzr
