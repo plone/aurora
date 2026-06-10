@@ -122,7 +122,25 @@
     },
     "history": {
       "label": "History",
-      "revert": "Revert"
+      "home": "Home",
+      "back": "Back",
+      "changesTo": "Changes to \"{{title}}\"",
+      "actions": "Actions",
+      "column": {
+        "action": "Action done",
+        "by": "By",
+        "time": "Time",
+        "changeNote": "Change note"
+      },
+      "reviewChanges": "Review changes",
+      "viewRevision": "View this revision",
+      "revert": "Revert to this version",
+      "modalRevert": {
+        "title": "Revert to this version?",
+        "description": "\"{{title}}\" will be reset to the state from {{time}}.",
+        "cancel": "Cancel",
+        "confirm": "Revert"
+      }
     }
   }
 }

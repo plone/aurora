@@ -154,15 +154,18 @@ export default function Index() {
               pluggable="toolbar-top"
               id="button-history"
               // @ts-expect-error this is currently typed as never[]
-              dependencies={[location.pathname]}
+              dependencies={[location.pathname, content['@type']]}
             >
-              <Link
-                className="secondary"
-                aria-label="History"
-                href={`/@@history${location.pathname.replace(/^\/$/, '')}`}
-              >
-                <HistoryIcon />
-              </Link>
+              {content['@type'] !== 'Plone Site' ? (
+                // Plone Site does not have history (yet), same guard as Volto
+                <Link
+                  className="secondary"
+                  aria-label="History"
+                  href={`/@@history${location.pathname.replace(/^\/$/, '')}`}
+                >
+                  <HistoryIcon />
+                </Link>
+              ) : null}
             </Plug>
             {showToolbar && <Toolbar />}
             <div id="main">

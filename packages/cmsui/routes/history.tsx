@@ -1,18 +1,17 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
-import {
-  data,
-  RouterContextProvider,
-  useFetcher,
-  useLoaderData,
-} from 'react-router';
+import { data, RouterContextProvider, useLoaderData } from 'react-router';
+import { Link } from 'react-aria-components';
+import { useTranslation } from 'react-i18next';
 import { requireAuthCookie } from '@plone/react-router';
+import { Plug } from '@plone/layout/components/Pluggable';
+import Back from '@plone/components/icons/arrow-left.svg?react';
 import {
   ploneClientContext,
   ploneContentContext,
 } from '@plone/aurora/app/middleware.server';
 import { flattenToAppURL } from '@plone/helpers';
-import { useTranslation } from 'react-i18next';
-import type { GetHistoryResponse } from '@plone/types';
+import type { Content, GetHistoryResponse } from '@plone/types';
+import HistoryView from '../components/History/HistoryView';
 
 export async function loader({
   request,
@@ -48,31 +47,32 @@ export async function action({
 }
 
 export default function History() {
-  const { content, history } = useLoaderData<typeof loader>();
   const { t } = useTranslation();
-  const fetcher = useFetcher();
+  const { content, history } = useLoaderData<typeof loader>();
+  const typedContent = content as unknown as Content;
 
-  // TODO: replace this list with the quanta Table component and format the
-  // timestamp with @internationalized/date. See Volto's History.jsx for the
-  // full UX (version comparison/diff, state transitions).
   return (
-    <main>
-      <h1>{t('cmsui.history.label')}</h1>
-      <p>{content['@id']}</p>
-      <ul>
-        {(history as GetHistoryResponse).map((entry, index) => (
-          <li key={index}>
-            <b>{entry.actor?.fullname}</b> {entry.transition_title} {entry.time}
-            {entry.comments ? <em> ({entry.comments})</em> : null}
-            {'version' in entry && entry.may_revert ? (
-              <fetcher.Form method="post" style={{ display: 'inline' }}>
-                <input type="hidden" name="version" value={entry.version} />
-                <button type="submit">{t('cmsui.history.revert')}</button>
-              </fetcher.Form>
-            ) : null}
-          </li>
-        ))}
-      </ul>
-    </main>
+    <>
+      <Plug
+        pluggable="toolbar-top"
+        id="button-back"
+        // @ts-expect-error this is currently typed as never[]
+        dependencies={[typedContent['@id']]}
+      >
+        <Link
+          className="secondary"
+          aria-label={t('cmsui.history.back')}
+          href={typedContent['@id']}
+        >
+          <Back />
+        </Link>
+      </Plug>
+      <main id="main">
+        <HistoryView
+          content={typedContent}
+          history={history as GetHistoryResponse}
+        />
+      </main>
+    </>
   );
 }

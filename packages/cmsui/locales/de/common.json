@@ -74,7 +74,25 @@
     },
     "history": {
       "label": "Verlauf",
-      "revert": "Zurücksetzen"
+      "home": "Startseite",
+      "back": "Zurück",
+      "changesTo": "Änderungen an \"{{title}}\"",
+      "actions": "Aktionen",
+      "column": {
+        "action": "Aktion",
+        "by": "Von",
+        "time": "Zeit",
+        "changeNote": "Änderungsnotiz"
+      },
+      "reviewChanges": "Änderungen ansehen",
+      "viewRevision": "Diese Version ansehen",
+      "revert": "Auf diese Version zurücksetzen",
+      "modalRevert": {
+        "title": "Auf diese Version zurücksetzen?",
+        "description": "„{{title}}\" wird auf den Stand vom {{time}} zurückgesetzt.",
+        "cancel": "Abbrechen",
+        "confirm": "Zurücksetzen"
+      }
     }
   }
 }

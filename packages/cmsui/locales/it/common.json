@@ -112,7 +112,25 @@
     },
     "history": {
       "label": "Cronologia",
-      "revert": "Ripristina"
+      "home": "Home",
+      "back": "Indietro",
+      "changesTo": "Modifiche a \"{{title}}\"",
+      "actions": "Azioni",
+      "column": {
+        "action": "Azione",
+        "by": "Di",
+        "time": "Quando",
+        "changeNote": "Nota di modifica"
+      },
+      "reviewChanges": "Rivedi le modifiche",
+      "viewRevision": "Vedi questa revisione",
+      "revert": "Ripristina questa versione",
+      "modalRevert": {
+        "title": "Ripristinare questa versione?",
+        "description": "\"{{title}}\" sarà riportato allo stato del {{time}}.",
+        "cancel": "Annulla",
+        "confirm": "Ripristina"
+      }
     }
   }
 }
