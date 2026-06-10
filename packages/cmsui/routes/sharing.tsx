@@ -225,7 +225,7 @@ export default function Sharing() {
   const { t } = useTranslation();
   const { entries, available_roles, inherit } = sharingData;
 
-  const edits = useSharingEdits(search, inherit);
+  const edits = useSharingEdits(`${content['@id']}|${search}`, inherit);
   const fetcher = useFetcher();
   const isSaving = fetcher.state !== 'idle';
 
