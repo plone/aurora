@@ -25,7 +25,7 @@ import {
   TableBody,
   Row,
   Cell,
-  TextField,
+  SearchField,
   Link,
   Button,
 } from '@plone/components/quanta';
@@ -251,9 +251,8 @@ export default function Sharing() {
       </Plug>
       <h1>{t('cmsui.sharing.label', { title: content.title })}</h1>
       <Form role="search">
-        <TextField
+        <SearchField
           key={search}
-          type="search"
           name="search"
           defaultValue={search}
           label={t('cmsui.sharing.searchLabel')}
