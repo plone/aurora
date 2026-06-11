@@ -93,7 +93,7 @@ export async function loader({
 export default function Index() {
   const location = useLocation();
   const { content, locale } = useLoaderData<typeof loader>();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const matches = useMatches() as UIMatch<unknown, { bodyClass: string }>[];
   const routesBodyClasses = matches
@@ -160,7 +160,7 @@ export default function Index() {
                 // Plone Site does not have history (yet), same guard as Volto
                 <Link
                   className="secondary"
-                  aria-label="History"
+                  aria-label={t('cmsui.history.label')}
                   href={`/@@history${location.pathname.replace(/^\/$/, '')}`}
                 >
                   <HistoryIcon />
