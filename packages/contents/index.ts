@@ -22,6 +22,26 @@ export default function install(config: ConfigType) {
             file: '@plone/contents/routes/upload.tsx',
           },
           {
+            path: '@@rename/*',
+            type: 'route',
+            file: '@plone/contents/routes/rename.tsx',
+          },
+          {
+            path: '@@workflow/*',
+            type: 'route',
+            file: '@plone/contents/routes/workflow.tsx',
+          },
+          {
+            path: '@@tags/*',
+            type: 'route',
+            file: '@plone/contents/routes/tags.tsx',
+          },
+          {
+            path: '@@properties/*',
+            type: 'route',
+            file: '@plone/contents/routes/properties.tsx',
+          },
+          {
             path: '@@order/*',
             type: 'route',
             file: '@plone/contents/routes/order.tsx',

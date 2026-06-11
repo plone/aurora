@@ -7,6 +7,7 @@ import type { RequestResponse } from '../types';
 
 export const createWorkflowArgsSchema = z.object({
   path: z.string(),
+  transition: z.string().optional(),
   data: createWorkflowDataSchema.optional(),
 });
 
@@ -14,10 +15,11 @@ export type CreateWorkflowArgs = z.infer<typeof createWorkflowArgsSchema>;
 
 export async function createWorkflow(
   this: PloneClient,
-  { path, data }: CreateWorkflowArgs,
+  { path, transition, data }: CreateWorkflowArgs,
 ): Promise<RequestResponse<CreateWorkflowResponse>> {
   const validatedArgs = createWorkflowArgsSchema.parse({
     path,
+    transition,
     data,
   });
 
@@ -26,7 +28,9 @@ export async function createWorkflow(
     config: this.config,
   };
 
-  const workflowPath = `${validatedArgs.path}/@workflow/publish`;
+  const workflowPath = `${validatedArgs.path}/@workflow/${
+    validatedArgs.transition ?? 'publish'
+  }`;
 
   return apiRequest('post', workflowPath, options);
 }
