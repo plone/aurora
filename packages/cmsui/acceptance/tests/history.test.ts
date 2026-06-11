@@ -51,6 +51,36 @@ test.describe('History route', () => {
     await expect(page.locator('tbody tr').first()).toBeVisible();
   });
 
+  test('redirects anonymous visitors to the login', async ({ page }) => {
+    // a published page: on private content the middleware already fails the
+    // anonymous content fetch (error boundary) before the loader's auth
+    // guard can redirect
+    await createContent(page, {
+      contentType: 'Document',
+      contentId: 'public-page',
+      contentTitle: 'Public Page',
+      transition: 'publish',
+    });
+    await page.context().clearCookies();
+
+    await page.goto('/@@history/public-page');
+
+    await expect(page).toHaveURL(/\/login/);
+  });
+
+  test('navigates back to the content via the toolbar back button', async ({
+    page,
+  }) => {
+    await openHistory(page);
+
+    await page.getByRole('link', { name: 'Back' }).click();
+
+    await expect(page).toHaveURL(/\/my-page$/);
+    await expect(
+      page.getByRole('heading', { name: 'My Page', exact: true }),
+    ).toBeVisible();
+  });
+
   test('asks for confirmation before reverting', async ({ page }) => {
     // two edits, so an older, revertable version exists
     await editTitle(page, 'My Page (v2)');

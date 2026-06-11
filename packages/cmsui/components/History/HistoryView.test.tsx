@@ -213,6 +213,33 @@ describe('HistoryView', () => {
     );
   });
 
+  it('shows the absolute date as tooltip on the relative time', () => {
+    render(<HistoryView content={content} history={history} />);
+
+    const times = document.querySelectorAll('time');
+    expect(times.length).toBe(history.length);
+    for (const time of times) {
+      expect(time).toHaveAttribute('dateTime');
+      // the full-date tooltip (browser locale, so only check presence)
+      expect(time.getAttribute('title')).toBeTruthy();
+    }
+  });
+
+  it('renders an empty history without errors', () => {
+    render(
+      <HistoryView content={content} history={[] as GetHistoryResponse} />,
+    );
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'cmsui.history.changesTo',
+      }),
+    ).toBeInTheDocument();
+    // only the header row remains
+    expect(screen.getAllByRole('row')).toHaveLength(1);
+  });
+
   it('survives entries with an unparsable time', () => {
     render(
       <HistoryView
