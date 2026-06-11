@@ -1,6 +1,7 @@
 {
   "cmsui": {
     "add": "Hinzufügen",
+    "cancel": "Abbrechen",
     "edit": "Bearbeiten",
     "save": "Speichern",
     "controlpanel": "Kontrollzentrum",
@@ -85,8 +86,7 @@
       "searchLabel": "Nach Benutzern und Gruppen suchen",
       "searchPlaceholder": "Nach Benutzern und Gruppen suchen…",
       "searchResults_one": "{{count}} Eintrag gefunden",
-      "searchResults_other": "{{count}} Einträge gefunden",
-      "cancel": "Abbrechen"
+      "searchResults_other": "{{count}} Einträge gefunden"
     }
   }
 }

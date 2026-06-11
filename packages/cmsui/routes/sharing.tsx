@@ -240,7 +240,7 @@ export default function Sharing() {
         id="button-cancel"
         dependencies={[content['@id']] as any}
       >
-        <Link aria-label={t('cmsui.sharing.cancel')} href={content['@id']}>
+        <Link aria-label={t('cmsui.cancel')} href={content['@id']}>
           <CloseIcon />
         </Link>
       </Plug>

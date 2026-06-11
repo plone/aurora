@@ -1,6 +1,7 @@
 {
   "cmsui": {
     "add": "Add",
+    "cancel": "Cancel",
     "edit": "Edit",
     "save": "Save",
     "recurrence": {
@@ -133,8 +134,7 @@
       "searchLabel": "Search for users and groups",
       "searchPlaceholder": "Search for users and groups…",
       "searchResults_one": "{{count}} entry found",
-      "searchResults_other": "{{count}} entries found",
-      "cancel": "Cancel"
+      "searchResults_other": "{{count}} entries found"
     }
   }
 }

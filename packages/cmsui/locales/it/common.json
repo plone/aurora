@@ -1,6 +1,7 @@
 {
   "cmsui": {
     "add": "Aggiungi",
+    "cancel": "Annulla",
     "edit": "Modifica",
     "save": "Salva",
     "recurrence": {
@@ -123,8 +124,7 @@
       "searchLabel": "Cerca utenti e gruppi",
       "searchPlaceholder": "Cerca utenti e gruppi…",
       "searchResults_one": "{{count}} voce trovata",
-      "searchResults_other": "{{count}} voci trovate",
-      "cancel": "Annulla"
+      "searchResults_other": "{{count}} voci trovate"
     }
   }
 }
