@@ -39,11 +39,22 @@ export async function action({
   const contentPath = content?.['@id'] ?? '/';
 
   const formData = await request.formData();
-  const version = Number(formData.get('version'));
+  const rawVersion = formData.get('version');
+  const version = Number(rawVersion);
 
-  await cli.revertHistory({ path: contentPath, data: { version } });
+  if (rawVersion === null || !Number.isInteger(version) || version < 0) {
+    return data({ ok: false, error: 'invalidVersion' as const }, 400);
+  }
 
-  return data({ ok: true });
+  try {
+    await cli.revertHistory({ path: contentPath, data: { version } });
+  } catch {
+    // Surface the failure as data so the dialog can show feedback instead of
+    // the route's error boundary taking over.
+    return data({ ok: false, error: 'revertFailed' as const }, 502);
+  }
+
+  return data({ ok: true as const });
 }
 
 export default function History() {
