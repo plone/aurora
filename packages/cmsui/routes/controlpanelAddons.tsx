@@ -474,14 +474,7 @@ export default function AddonsControlPanel() {
         </Button>
       </Plug>
       <Container width="default" className="route-controlpanel pb-16">
-        <h1
-          className={`
-            addons-title
-            xl:-ms-32
-          `}
-        >
-          {t('cmsui.paneltitles.addons')}
-        </h1>
+        <h1 className="addons-title">{t('cmsui.paneltitles.addons')}</h1>
 
         <div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">

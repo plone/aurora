@@ -46,14 +46,7 @@ export default function ControlPanels() {
         width="default"
         className="route-controlpanel cp-overview pb-16"
       >
-        <h1
-          className={`
-            cp-title
-            xl:-ms-32
-          `}
-        >
-          {t('cmsui.controlpanel')}
-        </h1>
+        <h1 className="cp-title">{t('cmsui.controlpanel')}</h1>
         <ControlPanelsList controlpanels={controlpanels ?? []} />
         <VersionOverview {...systemInformation} />
       </Container>
