@@ -42,8 +42,18 @@ export default function ControlPanels() {
           <Back />
         </Button>
       </Plug>
-      <Container width="default" className="route-controlpanel">
-        <h1 className="documentFirstHeading">{t('cmsui.controlpanel')}</h1>
+      <Container
+        width="default"
+        className="route-controlpanel cp-overview pb-16"
+      >
+        <h1
+          className={`
+            cp-title
+            xl:-ms-32
+          `}
+        >
+          {t('cmsui.controlpanel')}
+        </h1>
         <ControlPanelsList controlpanels={controlpanels ?? []} />
         <VersionOverview {...systemInformation} />
       </Container>

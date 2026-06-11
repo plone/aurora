@@ -7,6 +7,7 @@
 
 @layer cmsui {
   @import '@plone/components/src/styles/basic/theme.css';
+  @import '@plone/components/src/styles/fonts/metropolis/stylesheet.css';
   @import 'tailwindcss/theme.css';
   @import 'tailwindcss/preflight.css';
   @import 'tailwindcss/utilities.css';
@@ -159,3 +160,48 @@
 }
 
 @import './utilities.css';
+
+/* Add-ons control panel: Metropolis font + page-specific typography overrides.
+   Unlayered so these win over the (layered) basic theme + Tailwind utilities. */
+.route-addons {
+  font-family: 'Metropolis', sans-serif;
+}
+
+.route-addons .addons-title {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  color: #000;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 30px;
+}
+
+.route-addons .addons-section-heading {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 25px;
+}
+
+.route-addons .addons-search {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-radius: 6px;
+  background-color: #f2f4f7;
+}
+
+/* Control panel overview (/controlpanel): title left + card grid, mirrors the add-ons page. */
+.cp-overview .cp-title {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  color: #000;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 30px;
+}
+
+.cp-overview .cp-group-title {
+  color: var(--foreground);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+}

@@ -550,6 +550,9 @@ importers:
       usehooks-ts:
         specifier: ^3.1.1
         version: 3.1.1(react@19.2.0)
+      zod:
+        specifier: ^3.22.4
+        version: 3.25.76
     devDependencies:
       '@plone/types':
         specifier: workspace:*
