@@ -1,0 +1,1 @@
+Added the `Plone Site` content type to the `ContentTypeMap`, so `content['@type']` comparisons against the site root type check.
