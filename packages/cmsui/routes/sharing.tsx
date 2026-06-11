@@ -73,7 +73,9 @@ export default function Sharing() {
           <CloseIcon />
         </Link>
       </Plug>
-      <h1>{t('cmsui.sharing.label', { title: content.title })}</h1>
+      <h1 className="text-2xl font-bold">
+        {t('cmsui.sharing.label', { title: content.title })}
+      </h1>
       <p>{t('cmsui.sharing.description')}</p>
       <SharingForm
         content={content}
