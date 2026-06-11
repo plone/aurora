@@ -83,6 +83,37 @@ export function formatRelativeTime(iso: string, locale: string): string {
   return iso;
 }
 
+// Interim Volto-parity label for workflow rows: "Publish (Private → Published)",
+// or just "(Private)" when no previous state is known (e.g. creation) — unlike
+// Volto, which renders a literal "undefined" in that case. Uses the
+// backend-translated state titles, so it stays neutral on the final wording
+// ("Published from Private", Figma) that is still an open question in #30.
+export function workflowStateSuffix(
+  entry: HistoryEntry,
+  prevStateTitle: string | undefined,
+): string {
+  if (!('state_title' in entry) || !entry.state_title) return '';
+  const from = entry.action && prevStateTitle ? `${prevStateTitle} → ` : '';
+  return ` (${from}${entry.state_title})`;
+}
+
+// Walks the (newest-first) entries and returns, per index, the workflow state
+// title that was active BEFORE that entry (Volto's prev_state_title).
+export function deriveWorkflowPrevStates(
+  history: GetHistoryResponse,
+): (string | undefined)[] {
+  const prev: (string | undefined)[] = new Array(history.length);
+  let title: string | undefined;
+  for (let i = history.length - 1; i >= 0; i -= 1) {
+    const entry = history[i];
+    if ('state_title' in entry && entry.state_title) {
+      prev[i] = title;
+      title = entry.state_title;
+    }
+  }
+  return prev;
+}
+
 interface HistoryViewProps {
   content: Content;
   history: GetHistoryResponse;
@@ -140,6 +171,8 @@ export default function HistoryView({ content, history }: HistoryViewProps) {
   // Entries arrive newest-first, so the first versioning entry is the current
   // revision. The current revision cannot be reverted to itself.
   const currentVersion = history.find((entry) => 'version' in entry)?.version;
+
+  const workflowPrevStates = deriveWorkflowPrevStates(history);
 
   // Breadcrumbs from the content's @components.breadcrumbs, mirroring the
   // inline Quanta breadcrumb of @plone/contents (ContentsTable) for a
@@ -206,7 +239,7 @@ export default function HistoryView({ content, history }: HistoryViewProps) {
             </Column>
           </TableHeader>
           <TableBody>
-            {history.map((entry) => {
+            {history.map((entry, index) => {
               const versioned = 'version' in entry;
               const isCurrent = versioned && entry.version === currentVersion;
               // Stable row identity: after a revert the loader prepends a new
@@ -228,6 +261,7 @@ export default function HistoryView({ content, history }: HistoryViewProps) {
                         `}
                       />
                       {entry.transition_title}
+                      {workflowStateSuffix(entry, workflowPrevStates[index])}
                     </span>
                   </Cell>
                   <Cell>{entry.actor?.fullname}</Cell>

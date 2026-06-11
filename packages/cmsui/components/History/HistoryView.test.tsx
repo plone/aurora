@@ -240,6 +240,28 @@ describe('HistoryView', () => {
     expect(screen.getAllByRole('row')).toHaveLength(1);
   });
 
+  it('shows the workflow state transition like Volto', () => {
+    const entries = [
+      versionedEntry({ version: 2 }),
+      workflowEntry(),
+      workflowEntry({
+        action: null,
+        transition_title: 'Create',
+        review_state: 'private',
+        state_title: 'Private',
+        time: '2026-06-10T10:00:00+00:00',
+      }),
+    ] as GetHistoryResponse;
+    render(<HistoryView content={content} history={entries} />);
+
+    // transition with a known previous state
+    expect(
+      screen.getByText('Publish (Private → Published)'),
+    ).toBeInTheDocument();
+    // creation: no previous state, no Volto-style literal "undefined"
+    expect(screen.getByText('Create (Private)')).toBeInTheDocument();
+  });
+
   it('survives entries with an unparsable time', () => {
     render(
       <HistoryView
