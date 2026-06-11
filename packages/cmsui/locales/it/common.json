@@ -103,8 +103,6 @@
       "install": "Installa",
       "uninstall": "Disinstalla",
       "upgrade": "Aggiorna",
-      "details": "Dettagli",
-      "catalog": "Catalogo",
       "updatesAvailable": "Aggiornamenti disponibili",
       "upgradeFromTo": "Aggiorna {{from}} → {{to}}",
       "prev": "Precedente",
@@ -113,8 +111,6 @@
       "searchPlaceholder": "Filtra i prodotti aggiuntivi…",
       "installHint": "Per visualizzare qui nuovi add-on, aggiungili alla configurazione, ricompila e riavvia il processo del server. Per istruzioni dettagliate consulta",
       "installHintLink": "Installare un add-on di terze parti",
-      "pairsWith": "Si abbina a",
-      "opensInNewTab": "(si apre in una nuova scheda)",
       "resultsCount": "{{total}} add-on trovati",
       "actionError": "Operazione non riuscita. Riprova."
     },

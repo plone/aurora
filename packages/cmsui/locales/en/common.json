@@ -113,8 +113,6 @@
       "install": "Install",
       "uninstall": "Uninstall",
       "upgrade": "Upgrade",
-      "details": "Details",
-      "catalog": "Catalog",
       "updatesAvailable": "Updates available",
       "upgradeFromTo": "Update {{from}} → {{to}}",
       "prev": "Previous",
@@ -123,8 +121,6 @@
       "searchPlaceholder": "Filter add-ons…",
       "installHint": "To make new add-ons show up here, add them to your configuration, build, and restart the server process. For detailed instructions see",
       "installHintLink": "Installing a third party add-on",
-      "pairsWith": "Pairs with",
-      "opensInNewTab": "(opens in a new tab)",
       "resultsCount": "{{total}} add-ons found",
       "actionError": "Action failed. Please try again."
     },

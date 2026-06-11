@@ -7,11 +7,6 @@ import AddonsControlPanel from './controlpanelAddons';
 
 type LoaderData = {
   siteAddons: any[];
-  query: string;
-  catalog: any[];
-  catalogTotal: number;
-  catalogStart: number;
-  catalogSize: number;
 };
 
 const translations = {
@@ -24,14 +19,10 @@ const translations = {
   'cmsui.addons.install': 'Install',
   'cmsui.addons.uninstall': 'Uninstall',
   'cmsui.addons.upgrade': 'Upgrade',
-  'cmsui.addons.details': 'Details',
-  'cmsui.addons.catalog': 'Catalog',
   'cmsui.addons.prev': 'Previous',
   'cmsui.addons.next': 'Next',
   'cmsui.addons.page': '{{current}} / {{total}}',
   'cmsui.addons.searchPlaceholder': 'Filter add-ons…',
-  'cmsui.addons.pairsWith': 'Pairs with',
-  'cmsui.addons.opensInNewTab': '(opens in a new tab)',
   'cmsui.addons.resultsCount': '{{total}} add-ons found',
   'cmsui.addons.actionError': 'Action failed. Please try again.',
 } as const;
@@ -117,53 +108,12 @@ const SITE_ADDONS = [
   },
 ];
 
-const CATALOG = [
-  {
-    id: 'pypi:collective.volto.formsupport',
-    name: 'collective.volto.formsupport',
-    title: 'Volto Form Support',
-    summary: 'Backend support for Volto forms.',
-    kind: 'backend',
-    source: 'pypi',
-    latest_version: '5.0.0',
-    trust: 'community',
-    status: 'available',
-    repo_url: 'https://github.com/collective/collective.volto.formsupport',
-    homepage: 'https://github.com/collective/collective.volto.formsupport',
-    pairs_with: ['npm:@kitconcept/volto-form-block'],
-  },
-  {
-    id: 'pypi:eea.facetednavigation',
-    name: 'eea.facetednavigation',
-    title: 'EEA Faceted Navigation',
-    summary: 'Faceted search and navigation for Plone.',
-    kind: 'backend',
-    source: 'pypi',
-    latest_version: '20.0',
-    trust: 'community',
-    status: 'available',
-    repo_url: 'https://github.com/eea/eea.facetednavigation',
-    homepage: 'https://github.com/eea/eea.facetednavigation',
-    pairs_with: [],
-  },
-];
-
 const POPULATED: LoaderData = {
   siteAddons: SITE_ADDONS,
-  query: '',
-  catalog: CATALOG,
-  catalogTotal: CATALOG.length,
-  catalogStart: 0,
-  catalogSize: 24,
 };
 
 const EMPTY: LoaderData = {
   siteAddons: [],
-  query: '',
-  catalog: [],
-  catalogTotal: 0,
-  catalogStart: 0,
-  catalogSize: 24,
 };
 
 const createAddonsRouter = (data: LoaderData) =>

@@ -65,8 +65,6 @@
       "install": "Installieren",
       "uninstall": "Deinstallieren",
       "upgrade": "Aktualisieren",
-      "details": "Details",
-      "catalog": "Katalog",
       "updatesAvailable": "Updates verfügbar",
       "upgradeFromTo": "Update {{from}} → {{to}}",
       "prev": "Zurück",
@@ -75,8 +73,6 @@
       "searchPlaceholder": "Erweiterungen filtern…",
       "installHint": "Damit neue Add-ons hier erscheinen, füge sie zur Konfiguration hinzu, baue das Projekt neu und starte den Server-Prozess neu. Eine ausführliche Anleitung findest du unter",
       "installHintLink": "Ein Add-on eines Drittanbieters installieren",
-      "pairsWith": "Passt zu",
-      "opensInNewTab": "(öffnet in neuem Tab)",
       "resultsCount": "{{total}} Add-ons gefunden",
       "actionError": "Aktion fehlgeschlagen. Bitte erneut versuchen."
     },

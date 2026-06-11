@@ -33,34 +33,6 @@ const mockSiteAddons = {
   ],
 };
 
-const mockCatalogResponse = {
-  query: '',
-  kind: null,
-  plone_version: '6.1.0',
-  volto_version: '19',
-  compatible: true,
-  total: 1,
-  b_start: 0,
-  b_size: 24,
-  count: 1,
-  results: [
-    {
-      id: 'pypi:collective.catalog',
-      name: 'collective.catalog',
-      title: 'Catalog Add-on',
-      summary: 'From the marketplace',
-      kind: 'backend',
-      source: 'pypi',
-      latest_version: '3.0.0',
-      trust: 'community',
-      status: 'available',
-      repo_url: 'https://example.com/repo',
-      homepage: 'https://example.com',
-      pairs_with: ['npm:@collective/catalog'],
-    },
-  ],
-};
-
 function makeClient(overrides: Record<string, unknown> = {}) {
   return {
     config: { apiPath, token: 'fake-token' },
@@ -97,106 +69,15 @@ describe('Addons control panel route', () => {
   });
 
   describe('loader', () => {
-    it('fetches site add-ons and queries the marketplace catalog endpoint', async () => {
-      const fetchMock = vi.fn().mockResolvedValue(
-        new Response(JSON.stringify(mockCatalogResponse), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        }),
-      );
-      vi.stubGlobal('fetch', fetchMock);
-
+    it('returns the site add-ons from getAddons', async () => {
       const client = makeClient();
       const result = await callLoader(
         client,
-        'http://example.com/controlpanel/addons?q=catalog',
+        'http://example.com/controlpanel/addons',
       );
 
       expect(client.getAddons).toHaveBeenCalledOnce();
-
-      // The full catalog is always requested (no compatibility filtering).
-      expect(fetchMock).toHaveBeenCalledOnce();
-      const [requestedUrl, requestInit] = fetchMock.mock.calls[0];
-      expect(requestedUrl).toContain(`${apiPath}/@addon-marketplace-search?`);
-      expect(requestedUrl).toContain('q=catalog');
-      expect(requestedUrl).toContain('b_start=0');
-      expect(requestedUrl).toContain('b_size=24');
-      expect(requestedUrl).toContain('compatible=0');
-      expect(requestInit.headers.Authorization).toBe('Bearer fake-token');
-
       expect(result.siteAddons).toEqual(mockSiteAddons.items);
-      expect(result.query).toBe('catalog');
-      expect(result.catalog).toHaveLength(1);
-      expect(result.catalog[0].id).toBe('pypi:collective.catalog');
-      expect(result.catalogTotal).toBe(1);
-    });
-
-    it('clamps a negative b_start to 0 and always requests the full catalog', async () => {
-      const fetchMock = vi.fn().mockResolvedValue(
-        new Response(JSON.stringify(mockCatalogResponse), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        }),
-      );
-      vi.stubGlobal('fetch', fetchMock);
-
-      await callLoader(
-        makeClient(),
-        'http://example.com/controlpanel/addons?b_start=-5',
-      );
-
-      const [requestedUrl] = fetchMock.mock.calls[0];
-      expect(requestedUrl).toContain('b_start=0');
-      expect(requestedUrl).toContain('compatible=0');
-      expect(requestedUrl).not.toContain('compatible=1');
-    });
-
-    it('falls back to the empty catalog when the endpoint responds non-ok', async () => {
-      const fetchMock = vi
-        .fn()
-        .mockResolvedValue(new Response('nope', { status: 500 }));
-      vi.stubGlobal('fetch', fetchMock);
-
-      const result = await callLoader(
-        makeClient(),
-        'http://example.com/controlpanel/addons',
-      );
-
-      expect(result.catalog).toEqual([]);
-      expect(result.catalogTotal).toBe(0);
-      // Site add-ons are still returned independently of the catalog failure.
-      expect(result.siteAddons).toEqual(mockSiteAddons.items);
-    });
-
-    it('falls back to the empty catalog when the response fails zod validation', async () => {
-      const fetchMock = vi.fn().mockResolvedValue(
-        new Response(JSON.stringify({ totally: 'wrong shape' }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        }),
-      );
-      vi.stubGlobal('fetch', fetchMock);
-
-      const result = await callLoader(
-        makeClient(),
-        'http://example.com/controlpanel/addons',
-      );
-
-      expect(result.catalog).toEqual([]);
-      expect(result.catalogTotal).toBe(0);
-    });
-
-    it('falls back to the empty catalog when fetch throws', async () => {
-      const fetchMock = vi.fn().mockRejectedValue(new Error('network down'));
-      vi.stubGlobal('fetch', fetchMock);
-
-      const result = await callLoader(
-        makeClient(),
-        'http://example.com/controlpanel/addons',
-      );
-
-      expect(result.catalog).toEqual([]);
-      expect(result.catalogTotal).toBe(0);
     });
   });
 
@@ -269,14 +150,7 @@ describe('Addons control panel route', () => {
   });
 
   describe('AddonsControlPanel component', () => {
-    const loaderData = {
-      siteAddons: mockSiteAddons.items,
-      query: '',
-      catalog: mockCatalogResponse.results,
-      catalogTotal: 1,
-      catalogStart: 0,
-      catalogSize: 24,
-    };
+    const loaderData = { siteAddons: mockSiteAddons.items };
 
     afterEach(() => {
       vi.resetModules();
@@ -286,6 +160,9 @@ describe('Addons control panel route', () => {
     // the default component can render in isolation (no router/provider tree).
     const renderPanel = async (fetcherData?: unknown, data = loaderData) => {
       vi.resetModules();
+      // resetModules defeats Testing Library's auto-cleanup, so clear any DOM
+      // left by a previous render to keep each render isolated.
+      document.body.innerHTML = '';
 
       vi.doMock('@plone/react-router', () => ({
         requireAuthCookie: vi.fn().mockResolvedValue('fake-token'),
@@ -311,8 +188,6 @@ describe('Addons control panel route', () => {
           ...actual,
           useLoaderData: () => data,
           useNavigate: () => vi.fn(),
-          useNavigation: () => ({ state: 'idle', location: null }),
-          useSearchParams: () => [new URLSearchParams(), vi.fn()],
           useFetcher: () => ({
             state: 'idle',
             data: fetcherData,
@@ -327,12 +202,12 @@ describe('Addons control panel route', () => {
         './controlpanelAddons'
       );
 
-      render(<AddonsControlPanel />);
-      return screen;
+      const result = render(<AddonsControlPanel />);
+      return { screen, ...result };
     };
 
-    it('groups installed/available site add-ons and renders the catalog', async () => {
-      const screen = await renderPanel();
+    it('groups installed and available site add-ons', async () => {
+      const { screen } = await renderPanel();
 
       // Section headings (i18n falls back to the raw key in tests).
       expect(
@@ -341,36 +216,39 @@ describe('Addons control panel route', () => {
       expect(
         screen.getByRole('heading', { name: 'cmsui.addons.available' }),
       ).toBeInTheDocument();
-      expect(
-        screen.getByRole('heading', { name: 'cmsui.addons.catalog' }),
-      ).toBeInTheDocument();
 
       expect(screen.getByText('Installed Add-on')).toBeInTheDocument();
       expect(screen.getByText('Available Add-on')).toBeInTheDocument();
-      expect(screen.getByText('Catalog Add-on')).toBeInTheDocument();
+    });
+
+    it('filters the list as you type in the search box', async () => {
+      const { screen } = await renderPanel();
+      const { fireEvent } = await import('@testing-library/react');
+
+      expect(screen.getByText('Installed Add-on')).toBeInTheDocument();
+
+      fireEvent.change(screen.getByRole('searchbox'), {
+        target: { value: 'Available' },
+      });
+
+      expect(screen.getByText('Available Add-on')).toBeInTheDocument();
+      expect(screen.queryByText('Installed Add-on')).not.toBeInTheDocument();
     });
 
     it('shows the action error alert when fetcher.data.ok is false', async () => {
-      const screen = await renderPanel({ ok: false, error: 'boom' });
+      const { screen } = await renderPanel({ ok: false, error: 'boom' });
 
       const alerts = screen.getAllByRole('alert');
       expect(alerts.length).toBeGreaterThan(0);
-      // Site-add-on action errors surface the actionError message; locate it by text.
       const actionAlert = alerts.find((alert) =>
         alert.textContent?.includes('cmsui.addons.actionError'),
       );
       expect(actionAlert).toBeDefined();
-      // Raw error detail is surfaced via the title attribute.
       expect(actionAlert).toHaveAttribute('title', 'boom');
     });
 
-    it('shows the empty message when there are no add-ons at all', async () => {
-      const screen = await renderPanel(undefined, {
-        ...loaderData,
-        siteAddons: [],
-        catalog: [],
-        catalogTotal: 0,
-      });
+    it('shows the empty message when there are no add-ons', async () => {
+      const { screen } = await renderPanel(undefined, { siteAddons: [] });
 
       expect(screen.getByText('cmsui.addons.empty')).toBeInTheDocument();
     });
