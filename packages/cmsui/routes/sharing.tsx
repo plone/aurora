@@ -153,7 +153,7 @@ function RoleCell({
 
 type RoleEdits = Record<string, Record<string, boolean>>;
 
-function useSharingEdits(resetKey: string, originalInherit: boolean) {
+export function useSharingEdits(resetKey: string, originalInherit: boolean) {
   const [edits, setEdits] = useState<RoleEdits>({});
   const [inherit, setInherit] = useState(originalInherit);
 
