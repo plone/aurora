@@ -4,6 +4,7 @@ import { Heading } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
+  Checkbox,
   DateTimePicker,
   Dialog,
   Input,
@@ -170,6 +171,11 @@ export default function PropertiesModal() {
               value={values.rights ?? ''}
               placeholder={mixedPlaceholder('rights')}
               onChange={(e) => setField('rights', e.target.value)}
+              className={`
+                rounded-lg border border-quanta-silver bg-quanta-air px-3 py-2
+                hover:bg-quanta-air
+                focus:border-quanta-sapphire
+              `}
             />
           </Field>
           <Field label={t('contents.modal_properties.creators')}>
@@ -181,21 +187,28 @@ export default function PropertiesModal() {
                 t('contents.modal_properties.creators_hint')
               }
               onChange={(e) => setField('creators', e.target.value)}
+              className={`
+                rounded-lg border border-quanta-silver bg-quanta-air px-3 py-2
+                hover:bg-quanta-air
+                focus:border-quanta-sapphire
+              `}
             />
           </Field>
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={!!values.exclude_from_nav}
-              onChange={(e) => setField('exclude_from_nav', e.target.checked)}
-            />
-            {t('contents.modal_properties.exclude_from_nav')}
-            {initial.exclude_from_nav.mixed && (
-              <span className="text-quanta-graphite">
-                ({t('contents.modal_properties.mixed')})
-              </span>
-            )}
-          </label>
+          <Checkbox
+            className="text-sm"
+            isSelected={!!values.exclude_from_nav}
+            onChange={(checked) => setField('exclude_from_nav', checked)}
+          >
+            <span className="relative top-px leading-5">
+              {t('contents.modal_properties.exclude_from_nav')}
+              {initial.exclude_from_nav.mixed && (
+                <span className="text-quanta-graphite">
+                  {' '}
+                  ({t('contents.modal_properties.mixed')})
+                </span>
+              )}
+            </span>
+          </Checkbox>
 
           <div className="mt-4 flex justify-center gap-3">
             <Button

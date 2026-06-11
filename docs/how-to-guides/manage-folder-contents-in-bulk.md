@@ -14,7 +14,7 @@ Each action works on one or several items at once.
 
 ## Open the folder contents view
 
-Navigate to a folder, then select the {guilabel}`Contents` button — the folder icon — in the toolbar.
+Navigate to a folder, then select the {guilabel}`Contents` button <img alt="Contents" src="../_static/icons/contents.svg" class="inline"> in the toolbar.
 The view lists the items in the folder together with a toolbar of actions.
 
 ## Select the items to act on
@@ -34,10 +34,14 @@ Each action applies to the current selection.
 
 The {guilabel}`Short name` is the last segment of the item's URL.
 
-```{warning}
+````{warning}
 Changing the {guilabel}`Short name` changes the item's URL.
-Links and bookmarks that point to the old URL stop working.
+Existing links to the old URL no longer resolve unless a redirect is in place.
+
+```{todo}
+Replace the above sentence with a reference to the to-be-documented and to-be-created redirect feature in Aurora.
 ```
+````
 
 ## Change the workflow state
 

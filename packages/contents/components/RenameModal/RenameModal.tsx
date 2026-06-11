@@ -101,7 +101,7 @@ export default function RenameModal() {
         <div className="mx-auto max-w-2xl">
           <table className="mb-6 w-full border-collapse text-sm">
             <thead>
-              <tr className="text-quanta-graphite border-b border-quanta-silver text-left">
+              <tr className="text-quanta-graphite text-left">
                 <th className="pb-2 font-normal">
                   {t('contents.modal_rename.columns.name')}
                 </th>
@@ -112,13 +112,18 @@ export default function RenameModal() {
             </thead>
             <tbody>
               {rows.map((row, index) => (
-                <tr key={row['@id']} className="border-b border-quanta-silver">
+                <tr key={row['@id']}>
                   <td className="py-3 pe-3">
                     <Input
                       type="text"
                       value={row.id}
                       onChange={(e) => updateRow(index, 'id', e.target.value)}
                       aria-label={`${t('contents.modal_rename.columns.name')}: ${row.originalId}`}
+                      className={`
+                        w-full rounded-lg border border-quanta-silver bg-quanta-air px-3 py-2
+                        hover:bg-quanta-air
+                        focus:border-quanta-sapphire
+                      `}
                     />
                   </td>
                   <td className="py-3">
@@ -129,6 +134,11 @@ export default function RenameModal() {
                         updateRow(index, 'title', e.target.value)
                       }
                       aria-label={`${t('contents.modal_rename.columns.title')}: ${row.originalTitle}`}
+                      className={`
+                        w-full rounded-lg border border-quanta-silver bg-quanta-air px-3 py-2
+                        hover:bg-quanta-air
+                        focus:border-quanta-sapphire
+                      `}
                     />
                   </td>
                 </tr>

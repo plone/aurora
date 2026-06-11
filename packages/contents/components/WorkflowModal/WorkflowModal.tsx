@@ -2,7 +2,14 @@ import { useEffect, useMemo, useState } from 'react';
 import { useFetcher, useRevalidator } from 'react-router';
 import { Heading } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
-import { Button, Dialog, Input, Modal } from '@plone/components/quanta';
+import {
+  Button,
+  Checkbox,
+  Dialog,
+  Input,
+  Modal,
+  Select,
+} from '@plone/components/quanta';
 import { CloseIcon, StateIcon } from '@plone/components/Icons';
 import { type ToastItem } from '@plone/layout/config/toast';
 import { useContentsContext } from '../../providers/contents';
@@ -114,32 +121,26 @@ export default function WorkflowModal() {
             </p>
           )}
 
-          <label className="grid gap-1 text-sm">
-            <span className="font-bold">
-              {t('contents.modal_workflow.transition')}
-            </span>
-            <select
-              className="rounded border border-quanta-silver p-2"
-              value={transition}
-              onChange={(e) => setTransition(e.target.value)}
+          <div className="grid gap-1 text-sm">
+            <Select
+              label={t('contents.modal_workflow.transition')}
+              labelClassnames="font-bold"
               aria-label={t('contents.modal_workflow.transition')}
-              disabled={loadingTransitions}
-            >
-              <option value="">
-                {t('contents.modal_workflow.select_transition')}
-              </option>
-              {transitions.map((tr) => (
-                <option key={tr.id} value={tr.id}>
-                  {tr.title}
-                </option>
-              ))}
-            </select>
+              items={transitions.map((tr) => ({
+                label: tr.title,
+                value: tr.id,
+              }))}
+              selectedKey={transition || null}
+              onSelectionChange={(key) => setTransition(String(key))}
+              placeholder={t('contents.modal_workflow.select_transition')}
+              isDisabled={loadingTransitions}
+            />
             {!loadingTransitions && transitions.length === 0 && (
               <span className="text-quanta-candy">
                 {t('contents.modal_workflow.no_common_transitions')}
               </span>
             )}
-          </label>
+          </div>
 
           <label className="grid gap-1 text-sm">
             <span className="font-bold">
@@ -150,17 +151,23 @@ export default function WorkflowModal() {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               aria-label={t('contents.modal_workflow.comment')}
+              className={`
+                rounded-lg border border-quanta-silver bg-quanta-air px-3 py-2
+                hover:bg-quanta-air
+                focus:border-quanta-sapphire
+              `}
             />
           </label>
 
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={includeChildren}
-              onChange={(e) => setIncludeChildren(e.target.checked)}
-            />
-            {t('contents.modal_workflow.include_children')}
-          </label>
+          <Checkbox
+            className="text-sm"
+            isSelected={includeChildren}
+            onChange={setIncludeChildren}
+          >
+            <span className="relative top-px leading-5">
+              {t('contents.modal_workflow.include_children')}
+            </span>
+          </Checkbox>
 
           <div className="mt-4 flex justify-center gap-3">
             <Button

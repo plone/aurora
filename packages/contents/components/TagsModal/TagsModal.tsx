@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useFetcher, useRevalidator, type SubmitTarget } from 'react-router';
 import { Heading } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
-import { Button, Dialog, Input, Modal } from '@plone/components/quanta';
-import { CloseIcon, TagIcon } from '@plone/components/Icons';
+import { Button, Dialog, Modal } from '@plone/components/quanta';
+import { CloseIcon, TagIcon, ChevrondownIcon } from '@plone/components/Icons';
 import { type ToastItem } from '@plone/layout/config/toast';
 import { useContentsContext } from '../../providers/contents';
 import { buildTagsPayload, unionSubjects } from '../../helpers/tags';
@@ -114,12 +114,7 @@ export default function TagsModal() {
           <span className="mb-2 block text-sm font-bold">
             {t('contents.modal_tags.current_label')}
           </span>
-          <div
-            className={`
-              mb-5 flex min-h-12 flex-wrap items-center gap-2 rounded-lg border border-quanta-silver
-              bg-quanta-snow p-2
-            `}
-          >
+          <div className="mb-5 flex min-h-8 flex-wrap items-center gap-2">
             {visibleExisting.map((tag) => (
               <TagChip
                 key={`e-${tag}`}
@@ -145,21 +140,40 @@ export default function TagsModal() {
           <label className="mb-1 block text-sm font-bold" htmlFor="tags-add">
             {t('contents.modal_tags.add_label')}
           </label>
-          <Input
-            id="tags-add"
-            type="text"
-            list="tags-vocabulary"
-            value={input}
-            placeholder={t('contents.modal_tags.add_placeholder')}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-                addTag(input);
-              }
-            }}
-            aria-label={t('contents.modal_tags.add_label')}
-          />
+          <div
+            className={`
+              flex items-center gap-2 rounded-lg border border-quanta-silver bg-quanta-air pe-3
+              transition-colors
+              focus-within:border-quanta-sapphire
+            `}
+          >
+            <input
+              id="tags-add"
+              type="text"
+              list="tags-vocabulary"
+              value={input}
+              placeholder={t('contents.modal_tags.add_placeholder')}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  addTag(input);
+                }
+              }}
+              aria-label={t('contents.modal_tags.add_label')}
+              className={`
+                min-w-0 flex-1 appearance-none bg-transparent py-2 ps-3 text-sm outline-0
+                placeholder:text-quanta-pigeon
+                [&::-webkit-calendar-picker-indicator]:hidden!
+                [&::-webkit-calendar-picker-indicator]:appearance-none
+              `}
+            />
+            <ChevrondownIcon
+              aria-hidden
+              size="base"
+              className="pointer-events-none shrink-0 text-quanta-pigeon"
+            />
+          </div>
           <p className="text-quanta-graphite mt-1 text-xs">
             {t('contents.modal_tags.add_hint')}
           </p>
@@ -209,7 +223,8 @@ function TagChip({
     <span
       className={`
         inline-flex items-center gap-1 rounded-full py-1 ps-3 pe-1 text-sm font-medium
-        ${added ? 'bg-quanta-tiffany text-quanta-puya' : 'bg-quanta-azure text-quanta-puya'}
+        text-quanta-space
+        ${added ? 'bg-quanta-tiffany' : 'bg-quanta-azure'}
       `}
     >
       {label}
@@ -218,13 +233,12 @@ function TagChip({
         onClick={onRemove}
         aria-label={t('contents.modal_tags.remove', { tag: label })}
         className={`
-          flex h-5 w-5 items-center justify-center rounded-full text-lg leading-none opacity-60
-          transition-colors
-          hover:bg-black/10 hover:opacity-100
+          flex h-5 w-5 items-center justify-center rounded-full transition-colors
+          hover:bg-black/10
           focus-visible:outline-2 focus-visible:outline-quanta-sapphire
         `}
       >
-        <span aria-hidden="true">×</span>
+        <CloseIcon aria-hidden className="h-3 w-3" />
       </button>
     </span>
   );
