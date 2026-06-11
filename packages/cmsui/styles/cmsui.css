@@ -161,6 +161,12 @@
 
 @import './utilities.css';
 
+/* Control-panel pages: a horizontal gutter so content never sits flush against
+   the viewport edge once the toolbar + max-width leave no room to center. */
+.route-controlpanel {
+  padding-inline: 1.5rem;
+}
+
 /* Add-ons control panel + control-panel overview: Metropolis font + page
    typography. Unlayered so these win over the (layered) basic theme + Tailwind
    utilities. */
