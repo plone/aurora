@@ -34,12 +34,13 @@ Each action applies to the current selection.
 
 The {guilabel}`Short name` is the last segment of the item's URL.
 
-````{warning}
+````{note}
 Changing the {guilabel}`Short name` changes the item's URL.
-Existing links to the old URL no longer resolve unless a redirect is in place.
+Aurora automatically redirects the old URL to the new one, so existing links and bookmarks keep working.
 
 ```{todo}
-Replace the above sentence with a reference to the to-be-documented and to-be-created redirect feature in Aurora.
+Document the URL management control panel once it is available.
+See [URL management: redirect control panel + documentation](https://github.com/plone/aurora/issues/121).
 ```
 ````
 
