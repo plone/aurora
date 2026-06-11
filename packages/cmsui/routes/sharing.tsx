@@ -63,7 +63,13 @@ export default function Sharing() {
   const { t } = useTranslation();
 
   return (
-    <Container id="page-sharing">
+    <Container
+      id="page-sharing"
+      className={`
+        mx-auto px-4 py-2
+        lg:px-8
+      `}
+    >
       <Plug
         pluggable="toolbar-top"
         id="button-cancel"
