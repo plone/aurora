@@ -5,6 +5,7 @@
     "save": "Save",
     "cancel": "Cancel",
     "personalInformation": "Personal Information",
+    "changePassword": "Change Password",
     "recurrence": {
       "editRecurrence": "Edit recurrence",
       "repeat": "Repeat",

@@ -12,7 +12,7 @@ import {
   ploneClientContext,
   ploneUserContext,
 } from '@plone/aurora/app/middleware.server';
-import { Button } from '@plone/components/quanta';
+import { Button, Link } from '@plone/components/quanta';
 import { useTranslation } from 'react-i18next';
 import { useAppForm } from '../components/Form/Form';
 
@@ -129,6 +129,10 @@ function PersonalInformationForm({
           <Button onPress={() => navigate('/')}>{t('cmsui.cancel')}</Button>
         </div>
       </form>
+      {/* route from PR #109 */}
+      <Link href="/reset-password" className="mt-4 inline-block">
+        {t('cmsui.changePassword')}
+      </Link>
     </>
   );
 }
