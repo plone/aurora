@@ -1,0 +1,1 @@
+`getContent` no longer drops the `expand` parameter when a specific version is requested.
