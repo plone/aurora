@@ -27,7 +27,6 @@ interface ControlPanel {
 
 type IconComponent = FunctionComponent<SVGProps<SVGSVGElement>>;
 
-/** Best-effort icon per control panel, matched on its id; falls back to a gear. */
 const iconFor = (id: string): IconComponent => {
   if (/date|time|calendar/.test(id)) return Calendar;
   if (/lang|translation|multilingual/.test(id)) return Language;
@@ -131,13 +130,13 @@ export const ControlPanelsList = ({
   );
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="controlpanels-container controlpanels flex flex-col gap-10">
       {Object.entries(groupedPanels).map(([group, panels]) => (
-        <section key={group}>
-          <h2 className="cp-group-title mb-4">{group}</h2>
+        <section key={group} className="controlpanels-group">
+          <h2 className="group-title cp-group-title mb-4">{group}</h2>
           <ul
             className={`
-              grid list-none grid-cols-2 gap-x-6 gap-y-5 p-0
+              controlpanels-list grid list-none grid-cols-2 gap-x-6 gap-y-5 p-0
               sm:grid-cols-3
               lg:grid-cols-4
             `}
@@ -147,10 +146,12 @@ export const ControlPanelsList = ({
               .map((panel) => {
                 const Icon = iconFor(panel.id || '');
                 return (
-                  <li key={panel['@id']}>
+                  <li key={panel['@id']} className="controlpanel-item">
                     <Link
                       href={`/controlpanel/${panel.id}`}
-                      className="group flex flex-col items-center gap-2 no-underline"
+                      className={`
+                        controlpanel-link group flex flex-col items-center gap-2 no-underline
+                      `}
                     >
                       <span
                         className={`
