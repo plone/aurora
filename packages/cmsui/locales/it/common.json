@@ -3,6 +3,8 @@
     "add": "Aggiungi",
     "edit": "Modifica",
     "save": "Salva",
+    "cancel": "Annulla",
+    "personalInformation": "Informazioni Personali",
     "recurrence": {
       "editRecurrence": "Cambia la ricorrenza",
       "repeat": "Ricorrenza",

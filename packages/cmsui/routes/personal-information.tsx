@@ -88,7 +88,7 @@ function PersonalInformationForm({
 
   return (
     <>
-      <h1 className="documentFirstHeading">Personal Information</h1>
+      <h1 className="documentFirstHeading">{t('cmsui.personalInformation')}</h1>
       <form
         onSubmit={(event) => {
           event.preventDefault();
@@ -126,7 +126,7 @@ function PersonalInformationForm({
           >
             {t('cmsui.save')}
           </Button>
-          <Button onPress={() => navigate('/')}>Cancel</Button>
+          <Button onPress={() => navigate('/')}>{t('cmsui.cancel')}</Button>
         </div>
       </form>
     </>

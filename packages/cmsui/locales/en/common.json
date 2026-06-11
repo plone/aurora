@@ -3,6 +3,8 @@
     "add": "Add",
     "edit": "Edit",
     "save": "Save",
+    "cancel": "Cancel",
+    "personalInformation": "Personal Information",
     "recurrence": {
       "editRecurrence": "Edit recurrence",
       "repeat": "Repeat",
