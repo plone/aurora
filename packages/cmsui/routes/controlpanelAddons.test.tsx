@@ -156,12 +156,8 @@ describe('Addons control panel route', () => {
       vi.resetModules();
     });
 
-    // Re-import the route with react-router hooks, Pluggable and auth mocked so
-    // the default component can render in isolation (no router/provider tree).
     const renderPanel = async (fetcherData?: unknown, data = loaderData) => {
       vi.resetModules();
-      // resetModules defeats Testing Library's auto-cleanup, so clear any DOM
-      // left by a previous render to keep each render isolated.
       document.body.innerHTML = '';
 
       vi.doMock('@plone/react-router', () => ({
@@ -172,8 +168,6 @@ describe('Addons control panel route', () => {
         Plug: ({ children }: { children: any }) => <>{children}</>,
       }));
 
-      // The `?react` SVG imports resolve to a data-URI string under vitest
-      // (no SVGR transform); stub them with a real component so render works.
       const svgStub = (props: any) => <svg {...props} />;
       vi.doMock('@plone/components/icons/arrow-left.svg?react', () => ({
         default: svgStub,
@@ -209,7 +203,6 @@ describe('Addons control panel route', () => {
     it('groups installed and available site add-ons', async () => {
       const { screen } = await renderPanel();
 
-      // Section headings (i18n falls back to the raw key in tests).
       expect(
         screen.getByRole('heading', { name: 'cmsui.addons.installed' }),
       ).toBeInTheDocument();

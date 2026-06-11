@@ -2,11 +2,6 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ControlPanelsList } from './ControlPanelsList';
 
-// The list renders a decorative icon per control panel. Under vitest the
-// `?react` SVG imports resolve to a data-URI string rather than a component,
-// so they must be stubbed before the component is rendered (same approach as
-// RecurrenceWidget.test.tsx). Factories are inlined because `vi.mock` is
-// hoisted above the imports.
 vi.mock('@plone/components/icons/calendar.svg?react', () => ({
   default: () => <svg />,
 }));
