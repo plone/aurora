@@ -213,6 +213,22 @@ describe('HistoryView', () => {
     );
   });
 
+  it('survives entries with an unparsable time', () => {
+    render(
+      <HistoryView
+        content={content}
+        history={
+          [
+            versionedEntry({ time: 'not-a-date' }),
+          ] as unknown as GetHistoryResponse
+        }
+      />,
+    );
+
+    // the raw value is shown instead of crashing on Invalid Date
+    expect(screen.getByText('not-a-date')).toBeInTheDocument();
+  });
+
   it('keeps the dialog open during submit and shows a message on failure', async () => {
     const view = render(<HistoryView content={content} history={history} />);
 

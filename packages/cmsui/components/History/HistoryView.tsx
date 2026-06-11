@@ -46,6 +46,18 @@ export function statusDotClass(entry: HistoryEntry): string {
   return 'bg-quanta-pigeon';
 }
 
+// Constructing Intl formatters is expensive and this runs once per table row,
+// so instances are cached per locale.
+const relativeTimeFormatters = new Map<string, Intl.RelativeTimeFormat>();
+function getRelativeTimeFormatter(locale: string): Intl.RelativeTimeFormat {
+  let formatter = relativeTimeFormatters.get(locale);
+  if (!formatter) {
+    formatter = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+    relativeTimeFormatters.set(locale, formatter);
+  }
+  return formatter;
+}
+
 // Human-friendly relative time ("2 minutes ago") in the active locale, using
 // the built-in Intl API so we don't pull in a date library.
 // TODO: extract into a shared helper in @plone/helpers (see #30).
@@ -53,7 +65,7 @@ export function formatRelativeTime(iso: string, locale: string): string {
   const then = new Date(iso).getTime();
   if (Number.isNaN(then)) return iso;
   const diffSeconds = Math.round((then - Date.now()) / 1000);
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+  const rtf = getRelativeTimeFormatter(locale);
   const units: [Intl.RelativeTimeFormatUnit, number][] = [
     ['year', 31536000],
     ['month', 2592000],
@@ -194,11 +206,18 @@ export default function HistoryView({ content, history }: HistoryViewProps) {
             </Column>
           </TableHeader>
           <TableBody>
-            {history.map((entry, index) => {
+            {history.map((entry) => {
               const versioned = 'version' in entry;
               const isCurrent = versioned && entry.version === currentVersion;
+              // Stable row identity: after a revert the loader prepends a new
+              // entry, so an array index would shift every row's state.
+              const rowId = versioned
+                ? `versioning-${entry.version}`
+                : `${entry.type}-${entry.time}-${entry.transition_title}`;
+              const time = new Date(entry.time);
+              const hasValidTime = !Number.isNaN(time.getTime());
               return (
-                <Row key={index} id={String(index)}>
+                <Row key={rowId} id={rowId}>
                   <Cell>
                     <span className="flex items-center gap-2">
                       <span
@@ -215,7 +234,11 @@ export default function HistoryView({ content, history }: HistoryViewProps) {
                   <Cell>
                     <time
                       dateTime={entry.time}
-                      title={fullDateFormatter.format(new Date(entry.time))}
+                      title={
+                        hasValidTime
+                          ? fullDateFormatter.format(time)
+                          : undefined
+                      }
                       suppressHydrationWarning
                     >
                       {formatRelativeTime(entry.time, i18n.language)}
@@ -286,9 +309,11 @@ export default function HistoryView({ content, history }: HistoryViewProps) {
             <p className="text-center text-sm">
               {t('cmsui.history.modalRevert.description', {
                 title: content.title,
-                time: revertTarget
-                  ? fullDateFormatter.format(new Date(revertTarget.time))
-                  : '',
+                time:
+                  revertTarget &&
+                  !Number.isNaN(new Date(revertTarget.time).getTime())
+                    ? fullDateFormatter.format(new Date(revertTarget.time))
+                    : '',
               })}
             </p>
             {revertFailed ? (
