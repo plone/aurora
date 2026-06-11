@@ -1,1 +1,1 @@
-Added `showProgress` and `dismiss` to the toast framework, made the `show` utility return the toast key and accept a per-call `timeout`/`onClose`, lowered the default timeout to 6 seconds, and wired `Toast.css` into both the publicui and cmsui style bundles. @InteraktivPreuss
+Added `showProgress` and `dismiss` to the toast framework, made the `show` utility return the toast key and accept a per-call `timeout`/`onClose`, lowered the default timeout to 6 seconds, and wired `Toast.css` into both the `publicui` and `cmsui` style bundles. @InteraktivPreuss
