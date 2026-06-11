@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useFetcher } from 'react-router';
-import { useDateFormatter } from 'react-aria';
+import { useDateFormatter, VisuallyHidden } from 'react-aria';
 import { Heading } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import type { Content, GetHistoryResponse } from '@plone/types';
@@ -38,7 +38,7 @@ type HistoryEntry = GetHistoryResponse[number];
 // are colored by their resulting review state (published = blue, private = red).
 // TODO: replace with a global, configurable review-state -> color mapping
 // shared with @plone/contents' ReviewState (see #30).
-function statusDotClass(entry: HistoryEntry): string {
+export function statusDotClass(entry: HistoryEntry): string {
   if ('version' in entry) return 'bg-quanta-neon';
   const state = 'review_state' in entry ? entry.review_state : undefined;
   if (state === 'published') return 'bg-quanta-cobalt';
@@ -49,7 +49,7 @@ function statusDotClass(entry: HistoryEntry): string {
 // Human-friendly relative time ("2 minutes ago") in the active locale, using
 // the built-in Intl API so we don't pull in a date library.
 // TODO: extract into a shared helper in @plone/helpers (see #30).
-function formatRelativeTime(iso: string, locale: string): string {
+export function formatRelativeTime(iso: string, locale: string): string {
   const then = new Date(iso).getTime();
   if (Number.isNaN(then)) return iso;
   const diffSeconds = Math.round((then - Date.now()) / 1000);
@@ -167,8 +167,8 @@ export default function HistoryView({ content, history }: HistoryViewProps) {
             <Column width="20%">{t('cmsui.history.column.by')}</Column>
             <Column width="15%">{t('cmsui.history.column.time')}</Column>
             <Column width="25%">{t('cmsui.history.column.changeNote')}</Column>
-            <Column width={56} aria-label={t('cmsui.history.actions')}>
-              {''}
+            <Column width={56}>
+              <VisuallyHidden>{t('cmsui.history.actions')}</VisuallyHidden>
             </Column>
           </TableHeader>
           <TableBody>
