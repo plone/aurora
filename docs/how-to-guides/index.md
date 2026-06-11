@@ -30,4 +30,5 @@ icons
 configure-plate-code-block-languages
 bind-metadata-fields-to-plate-text-blocks
 custom-content-types
+translate-content
 ```

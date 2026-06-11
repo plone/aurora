@@ -56,6 +56,11 @@
       "groupMembership": "Gruppenmitgliedschaft",
       "groups": "Gruppen"
     },
+    "translate": {
+      "source": "Quelle",
+      "view_source": "Quellinhalt ansehen",
+      "heading_new": "\"{{title}}\" nach {{language}} übersetzen"
+    },
     "blocksEditor": {
       "blocksTab": "Blöcke",
       "contentTab": "Inhalt"

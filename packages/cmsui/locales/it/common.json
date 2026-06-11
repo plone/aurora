@@ -94,6 +94,11 @@
       "groupMembership": "Appartenenza ai gruppi",
       "groups": "Gruppi"
     },
+    "translate": {
+      "source": "Origine",
+      "view_source": "Visualizza il contenuto di origine",
+      "heading_new": "Traduci \"{{title}}\" in {{language}}"
+    },
     "blocksEditor": {
       "blocksTab": "Blocchi",
       "contentTab": "Contenuto"
