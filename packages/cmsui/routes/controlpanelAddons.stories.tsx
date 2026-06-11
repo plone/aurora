@@ -20,7 +20,6 @@ const translations = {
   'cmsui.addons.available': 'Available',
   'cmsui.addons.empty': 'No add-ons found.',
   'cmsui.addons.noMatches': 'No add-ons match your search.',
-  'cmsui.addons.version': 'Version {{version}}',
   'cmsui.addons.latestVersion': 'Latest version: {{version}}',
   'cmsui.addons.install': 'Install',
   'cmsui.addons.uninstall': 'Uninstall',
