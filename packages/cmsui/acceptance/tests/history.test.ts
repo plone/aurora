@@ -98,6 +98,51 @@ test.describe('History route', () => {
     await expect(page.locator('tbody tr').first()).toBeVisible();
   });
 
+  test('shows an older revision via "View this revision"', async ({ page }) => {
+    await editTitle(page, 'My Page (v2)');
+    await editTitle(page, 'My Page (v3)');
+
+    await openHistory(page);
+
+    // the last menu belongs to the oldest version (v0, title "My Page")
+    await page.getByRole('button', { name: 'Actions' }).last().click();
+    await page.getByRole('menuitem', { name: 'View this revision' }).click();
+
+    await expect(page).toHaveURL(/\?version=0$/);
+    await expect(
+      page.getByRole('heading', { name: 'My Page', exact: true }),
+    ).toBeVisible();
+  });
+
+  test('does not leak old revisions to anonymous visitors', async ({
+    page,
+  }) => {
+    // a published page whose original title differs from the current one
+    await createContent(page, {
+      contentType: 'Document',
+      contentId: 'public-page',
+      contentTitle: 'Old secret title',
+      transition: 'publish',
+    });
+    const patch = await page.request.patch(`${apiURL}/public-page`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: authHeader,
+      },
+      data: { title: 'Public title' },
+    });
+    expect(patch.ok()).toBeTruthy();
+
+    // drop the auth cookie: the backend protects the @history endpoint, so
+    // the version request must fail instead of serving the old revision
+    await page.context().clearCookies();
+    const response = await page.goto('/public-page?version=0');
+
+    expect(response?.ok()).toBeFalsy();
+    await expect(page.getByText('Old secret title')).toBeHidden();
+  });
+
   test('hides the History toolbar button on the site root', async ({
     page,
   }) => {
