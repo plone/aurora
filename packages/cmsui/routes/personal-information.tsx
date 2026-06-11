@@ -3,6 +3,7 @@ import {
   RouterContextProvider,
   useFetcher,
   useLoaderData,
+  useNavigate,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from 'react-router';
@@ -12,6 +13,7 @@ import {
   ploneUserContext,
 } from '@plone/aurora/app/middleware.server';
 import { Button } from '@plone/components/quanta';
+import { useTranslation } from 'react-i18next';
 import { useAppForm } from '../components/Form/Form';
 
 export async function loader({
@@ -65,6 +67,8 @@ function PersonalInformationForm({
 }) {
   const properties = userschema.properties as Record<string, any>;
   const fetcher = useFetcher();
+  const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const form = useAppForm({
     defaultValues: (user ?? {}) as Record<string, unknown>,
@@ -85,7 +89,12 @@ function PersonalInformationForm({
   return (
     <>
       <h1 className="documentFirstHeading">Personal Information</h1>
-      <form>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          form.handleSubmit();
+        }}
+      >
         {userschema.fieldsets.map((fieldset) => (
           <div key={fieldset.id}>
             {fieldset.fields.map((schemaField, index) => (
@@ -108,14 +117,17 @@ function PersonalInformationForm({
             ))}
           </div>
         ))}
-        <Button
-          type="submit"
-          variant="primary"
-          accent
-          onPress={() => form.handleSubmit()}
-        >
-          Save
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            type="submit"
+            variant="primary"
+            accent
+            onPress={() => form.handleSubmit()}
+          >
+            {t('cmsui.save')}
+          </Button>
+          <Button onPress={() => navigate('/')}>Cancel</Button>
+        </div>
       </form>
     </>
   );
