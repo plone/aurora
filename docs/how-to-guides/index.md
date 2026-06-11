@@ -20,6 +20,7 @@ extend-vite-configuration
 access-registry
 register-and-retrieve-components
 register-and-retrieve-utilities
+use-the-objectbrowser-widget
 configure-style-fields
 register-slots
 customize-login-screen
