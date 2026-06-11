@@ -139,7 +139,8 @@
         "title": "Revert to this version?",
         "description": "\"{{title}}\" will be reset to the state from {{time}}.",
         "cancel": "Cancel",
-        "confirm": "Revert"
+        "confirm": "Revert",
+        "error": "The version could not be restored. Please try again."
       }
     }
   }

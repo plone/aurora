@@ -93,9 +93,12 @@ test.describe('History route', () => {
     });
     await dialog.getByRole('button', { name: 'Revert' }).click();
 
-    // the revert adds a new history entry for the restored state
+    // the dialog closes on success and the loader revalidates: the title
+    // shows the restored (oldest) state again
     await expect(dialog).toBeHidden();
-    await expect(page.locator('tbody tr').first()).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+      'Changes to "My Page"',
+    );
   });
 
   test('shows an older revision via "View this revision"', async ({ page }) => {

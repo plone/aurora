@@ -91,7 +91,8 @@
         "title": "Auf diese Version zurücksetzen?",
         "description": "„{{title}}\" wird auf den Stand vom {{time}} zurückgesetzt.",
         "cancel": "Abbrechen",
-        "confirm": "Zurücksetzen"
+        "confirm": "Zurücksetzen",
+        "error": "Die Version konnte nicht wiederhergestellt werden. Bitte erneut versuchen."
       }
     }
   }

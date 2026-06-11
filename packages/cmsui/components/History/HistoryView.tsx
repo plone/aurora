@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFetcher } from 'react-router';
 import { useDateFormatter, VisuallyHidden } from 'react-aria';
 import { Heading } from 'react-aria-components';
@@ -93,15 +93,37 @@ export default function HistoryView({ content, history }: HistoryViewProps) {
     time: string;
   } | null>(null);
   const [isRevertOpen, setIsRevertOpen] = useState(false);
+  // Tracks whether THIS dialog instance submitted, so stale fetcher.data from
+  // an earlier revert cannot close or decorate a freshly opened dialog.
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  const revertResult = fetcher.data as
+    | { ok: boolean; error?: string }
+    | undefined;
+  const isSubmitting = fetcher.state !== 'idle';
+  const revertFailed =
+    hasSubmitted && !isSubmitting && revertResult !== undefined
+      ? !revertResult.ok
+      : false;
 
   const submitRevert = () => {
     if (!revertTarget) return;
+    setHasSubmitted(true);
     fetcher.submit(
       { version: String(revertTarget.version) },
       { method: 'post' },
     );
-    setIsRevertOpen(false);
   };
+
+  // The dialog stays open while the revert is in flight; it only closes
+  // itself once the action reports success. Failures keep it open and show
+  // the error message instead.
+  useEffect(() => {
+    if (hasSubmitted && !isSubmitting && revertResult?.ok) {
+      setIsRevertOpen(false);
+      setHasSubmitted(false);
+    }
+  }, [hasSubmitted, isSubmitting, revertResult]);
 
   // Entries arrive newest-first, so the first versioning entry is the current
   // revision. The current revision cannot be reverted to itself.
@@ -231,6 +253,7 @@ export default function HistoryView({ content, history }: HistoryViewProps) {
                                   version: entry.version,
                                   time: entry.time,
                                 });
+                                setHasSubmitted(false);
                                 setIsRevertOpen(true);
                               }}
                             >
@@ -268,6 +291,14 @@ export default function HistoryView({ content, history }: HistoryViewProps) {
                   : '',
               })}
             </p>
+            {revertFailed ? (
+              <p
+                role="alert"
+                className="mt-2 text-center text-sm text-quanta-candy"
+              >
+                {t('cmsui.history.modalRevert.error')}
+              </p>
+            ) : null}
             <div className="mt-8 flex justify-center gap-3">
               <Button
                 className="react-aria-Button close"
@@ -281,6 +312,7 @@ export default function HistoryView({ content, history }: HistoryViewProps) {
               <Button
                 className="react-aria-Button revert"
                 onPress={submitRevert}
+                isDisabled={isSubmitting}
                 aria-label={t('cmsui.history.modalRevert.confirm')}
                 variant="destructive"
                 accent={true}

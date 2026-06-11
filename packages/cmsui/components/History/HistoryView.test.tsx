@@ -1,16 +1,30 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { axe } from 'jest-axe';
-import { vi, describe, it, expect, beforeAll, afterAll } from 'vitest';
+import {
+  vi,
+  describe,
+  it,
+  expect,
+  beforeAll,
+  afterAll,
+  beforeEach,
+} from 'vitest';
 import type { Content, GetHistoryResponse } from '@plone/types';
 import HistoryView, { statusDotClass, formatRelativeTime } from './HistoryView';
 
 const submitMock = vi.fn();
 
+// Mutable so tests can simulate the fetcher lifecycle (submitting → result).
+const fetcherState: { state: string; data: unknown } = {
+  state: 'idle',
+  data: undefined,
+};
+
 vi.mock('react-router', () => ({
   useFetcher: vi.fn(() => ({
     submit: (...args: unknown[]) => submitMock(...args),
-    state: 'idle',
-    data: undefined,
+    state: fetcherState.state,
+    data: fetcherState.data,
   })),
 }));
 
@@ -132,6 +146,12 @@ describe('HistoryView', () => {
     workflowEntry(),
   ] as GetHistoryResponse;
 
+  beforeEach(() => {
+    submitMock.mockClear();
+    fetcherState.state = 'idle';
+    fetcherState.data = undefined;
+  });
+
   it('renders the title, breadcrumbs, and one row per entry', async () => {
     const { container } = render(
       <HistoryView content={content} history={history} />,
@@ -191,5 +211,43 @@ describe('HistoryView', () => {
       { version: '1' },
       { method: 'post' },
     );
+  });
+
+  it('keeps the dialog open during submit and shows a message on failure', async () => {
+    const view = render(<HistoryView content={content} history={history} />);
+
+    const [, oldMenu] = screen.getAllByRole('button', {
+      name: 'cmsui.history.actions',
+    });
+    fireEvent.click(oldMenu);
+    fireEvent.click(
+      await screen.findByRole('menuitem', { name: /cmsui\.history\.revert/ }),
+    );
+    fireEvent.click(
+      screen.getByRole('button', { name: 'cmsui.history.modalRevert.confirm' }),
+    );
+
+    // while the revert is in flight, the dialog stays open and confirm is
+    // disabled
+    fetcherState.state = 'submitting';
+    view.rerender(<HistoryView content={content} history={history} />);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'cmsui.history.modalRevert.confirm' }),
+    ).toBeDisabled();
+
+    // a failed action keeps it open and shows the error message
+    fetcherState.state = 'idle';
+    fetcherState.data = { ok: false, error: 'revertFailed' };
+    view.rerender(<HistoryView content={content} history={history} />);
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'cmsui.history.modalRevert.error',
+    );
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+    // a successful action closes the dialog
+    fetcherState.data = { ok: true };
+    view.rerender(<HistoryView content={content} history={history} />);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 });

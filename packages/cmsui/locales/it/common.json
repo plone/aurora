@@ -129,7 +129,8 @@
         "title": "Ripristinare questa versione?",
         "description": "\"{{title}}\" sarà riportato allo stato del {{time}}.",
         "cancel": "Annulla",
-        "confirm": "Ripristina"
+        "confirm": "Ripristina",
+        "error": "Impossibile ripristinare la versione. Riprova."
       }
     }
   }
