@@ -11,6 +11,7 @@ import {
 } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
+import { useDebounceCallback } from 'usehooks-ts';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { requireAuthCookie } from '@plone/react-router';
 import { Button, Container } from '@plone/components/quanta';
@@ -21,7 +22,6 @@ import ChevronDown from '@plone/components/icons/chevron-down.svg?react';
 
 type SiteAddon = Addons['items'][number];
 
-/** Optional backend string that may arrive as null; normalised to undefined. */
 const optionalString = z
   .string()
   .nullish()
@@ -63,7 +63,6 @@ const MarketplaceResponseSchema = z.object({
 type CatalogAddon = z.infer<typeof CatalogAddonSchema>;
 type MarketplaceResponse = z.infer<typeof MarketplaceResponseSchema>;
 
-/** Visual tone of a section's count badge. */
 type Tone = 'installed' | 'muted';
 
 type ItemView = {
@@ -76,7 +75,6 @@ type ItemView = {
   upgrade?: { from?: string; to?: string };
 };
 
-/** Shape of the core ``@addons`` upgrade_info we care about. */
 type UpgradeInfo = {
   available?: boolean;
   installedVersion?: string;
@@ -100,32 +98,25 @@ const CATALOG_PAGE_SIZE = 24;
  * patterns) so the class order/content stays exactly as authored.
  */
 const styles = {
-  /** "Details" link in the catalog list (mirrors a Quanta secondary button). */
   catalogDetailsLink:
     'inline-flex w-28 items-center justify-center rounded-md border border-border px-3 py-1 text-xs font-medium text-foreground transition-colors hover:bg-muted',
-  /** Count badge next to a section heading, by tone. */
   countBadgeInstalled:
     'rounded-full bg-quanta-daiquiri px-2 py-0.5 text-xs font-semibold text-quanta-emerald',
   countBadgeMuted:
     'rounded-full bg-quanta-smoke px-2 py-0.5 text-xs font-semibold text-quanta-iron',
-  /** Clickable <summary> rows of the collapsible sections / add-on items. */
   sectionSummary:
     'mb-1 flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden',
   addonSummary:
     'flex cursor-pointer list-none items-center gap-3 py-4 [&::-webkit-details-marker]:hidden',
-  /** Chevron that rotates when its parent <details> opens. */
   sectionChevron:
     'ms-auto size-5 shrink-0 rotate-180 text-muted-foreground transition-transform group-open/section:rotate-0',
   addonChevron:
     'size-5 shrink-0 rotate-180 text-muted-foreground transition-transform group-open:rotate-0',
-  /** Small kind chip. */
   kindBadge:
     'rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium tracking-wide text-muted-foreground uppercase',
-  /** Search input in the header row. */
   searchInput:
     'addons-search w-full max-w-md border border-input px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none',
 } as const;
-/** Debounce before a keystroke commits to the URL and triggers the server search. */
 const SEARCH_DEBOUNCE_MS = 300;
 
 export async function loader({
@@ -307,7 +298,6 @@ function SiteAddonActions({ addon }: { addon: SiteAddon }) {
   );
 }
 
-/** Upgrade-only action button, used by the "updates available" banner. */
 function UpgradeButton({ addon }: { addon: SiteAddon }) {
   const { t } = useTranslation();
   const fetcher = useFetcher<typeof action>();
@@ -327,7 +317,6 @@ function UpgradeButton({ addon }: { addon: SiteAddon }) {
   );
 }
 
-/** Highlighted block listing installed add-ons that have an upgrade available. */
 function UpgradesBanner({ addons }: { addons: SiteAddon[] }) {
   const { t } = useTranslation();
   if (addons.length === 0) {
@@ -406,7 +395,6 @@ function CountBadge({ count, tone }: { count: number; tone: Tone }) {
   );
 }
 
-/** Collapsible section group (Catalog / Installed / Available). Force-open while searching. */
 function CollapsibleSection({
   title,
   count,
@@ -446,7 +434,6 @@ function KindBadge({ kind }: { kind: string }) {
   return <span className={styles.kindBadge}>{kind}</span>;
 }
 
-/** A single add-on, collapsed by default; expanding reveals the details + actions. */
 function AddonItem({ item, actions }: { item: ItemView; actions: ReactNode }) {
   const { t } = useTranslation();
   return (
@@ -676,7 +663,6 @@ export default function AddonsControlPanel() {
   const [, setSearchParams] = useSearchParams();
 
   const [term, setTerm] = useState(query);
-  const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
   // The query value we last pushed to the URL ourselves, so the effect can tell our own
   // debounced echo apart from an external change (browser back/forward, a shared link).
   const pushedQuery = useRef(query);
@@ -690,27 +676,26 @@ export default function AddonsControlPanel() {
     }
   }, [query]);
 
+  const pushQuery = useDebounceCallback((value: string) => {
+    pushedQuery.current = value;
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (value) {
+          next.set('q', value);
+        } else {
+          next.delete('q');
+        }
+        next.delete('b_start');
+        return next;
+      },
+      { replace: true },
+    );
+  }, SEARCH_DEBOUNCE_MS);
+
   const onSearchChange = (value: string) => {
     setTerm(value);
-    if (debounce.current) {
-      clearTimeout(debounce.current);
-    }
-    debounce.current = setTimeout(() => {
-      pushedQuery.current = value;
-      setSearchParams(
-        (prev) => {
-          const next = new URLSearchParams(prev);
-          if (value) {
-            next.set('q', value);
-          } else {
-            next.delete('q');
-          }
-          next.delete('b_start');
-          return next;
-        },
-        { replace: true },
-      );
-    }, SEARCH_DEBOUNCE_MS);
+    pushQuery(value);
   };
 
   const goToStart = (bStart: number) =>
@@ -760,7 +745,7 @@ export default function AddonsControlPanel() {
       <Container width="default" className="route-controlpanel pb-16">
         <h1
           className={`
-            documentFirstHeading addons-title
+            addons-title
             xl:-ms-32
           `}
         >

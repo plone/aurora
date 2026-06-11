@@ -114,9 +114,7 @@ describe('Addons control panel route', () => {
 
       expect(client.getAddons).toHaveBeenCalledOnce();
 
-      // The catalog request hits the @addon-marketplace-search endpoint with
-      // the query and pagination params, plus the bearer token. Compatibility
-      // filtering was removed, so the full catalog is always requested.
+      // The full catalog is always requested (no compatibility filtering).
       expect(fetchMock).toHaveBeenCalledOnce();
       const [requestedUrl, requestInit] = fetchMock.mock.calls[0];
       expect(requestedUrl).toContain(`${apiPath}/@addon-marketplace-search?`);
@@ -347,7 +345,6 @@ describe('Addons control panel route', () => {
         screen.getByRole('heading', { name: 'cmsui.addons.catalog' }),
       ).toBeInTheDocument();
 
-      // Items from each source render.
       expect(screen.getByText('Installed Add-on')).toBeInTheDocument();
       expect(screen.getByText('Available Add-on')).toBeInTheDocument();
       expect(screen.getByText('Catalog Add-on')).toBeInTheDocument();
