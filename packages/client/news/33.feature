@@ -1,0 +1,1 @@
+Added semantic content rules methods `enableRules`, `disableRules`, `applyRulesToSubfolders`, `unapplyRulesToSubfolders` and `moveRule`, so consumers no longer need to build the legacy `form.button.*` payloads themselves. @ArneRiehn

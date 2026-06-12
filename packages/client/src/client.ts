@@ -112,8 +112,12 @@ export default class PloneClient {
 
   getRules = restapi.getRules;
   createRule = restapi.createRule;
-  updateRules = restapi.updateRules;
+  moveRule = restapi.moveRule;
   deleteRules = restapi.deleteRules;
+  enableRules = restapi.enableRules;
+  disableRules = restapi.disableRules;
+  applyRulesToSubfolders = restapi.applyRulesToSubfolders;
+  unapplyRulesToSubfolders = restapi.unapplyRulesToSubfolders;
 
   search = restapi.search;
 

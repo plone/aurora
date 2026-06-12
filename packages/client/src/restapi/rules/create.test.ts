@@ -1,4 +1,4 @@
-import { setup, teardown } from '../../utils/test';
+import { createTestRule, setup, teardown } from '../../utils/test';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import PloneClient from '../../client';
 import { v4 as uuid } from 'uuid';
@@ -18,11 +18,10 @@ afterEach(async () => {
 });
 
 describe('Rule', () => {
-  test.skip('Successful', async () => {
-    const randomId = uuid();
-    const ruleId = `add-rule${randomId}`;
+  test('Successful', async () => {
+    const ruleId = await createTestRule(cli, `Add rule ${uuid()}`);
 
-    const result = await cli.createRule({ ruleId });
+    const result = await cli.createRule({ path: '/', ruleId });
 
     expect(result.data.message).toBe(
       `Successfully assigned the rule ${ruleId}`,

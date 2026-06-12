@@ -1,5 +1,5 @@
 import ploneClient from '../../client';
-import { setup, teardown } from '../../utils/test';
+import { createTestRule, setup, teardown } from '../../utils/test';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { v4 as uuid } from 'uuid';
 
@@ -18,13 +18,12 @@ afterEach(async () => {
 });
 
 describe('Get Rules', () => {
-  test.skip('Successful', async () => {
-    const randomId = uuid();
-    const ruleId = `get-rule${randomId}`;
+  test('Successful', async () => {
+    const ruleId = await createTestRule(cli, `Get rule ${uuid()}`);
 
-    await cli.createRule({ ruleId });
+    await cli.createRule({ path: '/', ruleId });
 
-    const result = await cli.getRules();
+    const result = await cli.getRules({ path: '/' });
 
     expect(result.data['content-rules']?.assigned_rules.length).toBeGreaterThan(
       0,

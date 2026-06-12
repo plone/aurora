@@ -86,8 +86,12 @@ export { getRoles } from './roles/get';
 
 export { getRules } from './rules/get';
 export { createRule } from './rules/create';
-export { updateRules } from './rules/update';
+export { moveRule } from './rules/move';
 export { deleteRules } from './rules/delete';
+export { enableRules } from './rules/enable';
+export { disableRules } from './rules/disable';
+export { applyRulesToSubfolders } from './rules/apply_subfolders';
+export { unapplyRulesToSubfolders } from './rules/unapply_subfolders';
 
 export { search } from './search/get';
 

@@ -43,6 +43,26 @@ export const stripExtraSlash = (path: string) => {
 export const getPathFromPageTitle = (title: string) =>
   stripExtraSlash(`/${title.toLocaleLowerCase().split(' ').join('-')}`);
 
+export async function createTestRule(cli: PloneClient, title: string) {
+  const result = await cli.createControlpanel({
+    path: 'content-rules',
+    data: {
+      title,
+      description: 'Rule created in the testing setup',
+      event: 'Comment added',
+      enabled: true,
+      cascading: false,
+      stop: false,
+    },
+  });
+
+  const id = (result.data as { '@id': string })['@id'].split('/').pop();
+  if (!id) {
+    throw new Error('Could not resolve the id of the created content rule');
+  }
+  return id;
+}
+
 export async function setup() {
   const APIPATH = 'http://localhost:55001/plone';
   const data =

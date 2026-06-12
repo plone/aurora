@@ -1,4 +1,4 @@
-import { setup, teardown } from '../../utils/test';
+import { createTestRule, setup, teardown } from '../../utils/test';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import PloneClient from '../../client';
 import { v4 as uuid } from 'uuid';
@@ -18,17 +18,12 @@ afterEach(async () => {
 });
 
 describe('Delete Rules', () => {
-  test.skip('Successful', async () => {
-    const randomId = uuid();
-    const ruleId = `delete-rule${randomId}`;
+  test('Successful', async () => {
+    const ruleId = await createTestRule(cli, `Delete rule ${uuid()}`);
 
-    await cli.createRule({ ruleId });
+    await cli.createRule({ path: '/', ruleId });
 
-    const deleteRuleData = {
-      rules_ids: [ruleId],
-    };
-
-    const result = await cli.deleteRules({ data: deleteRuleData });
+    const result = await cli.deleteRules({ path: '/', ruleIds: [ruleId] });
     expect(result.status).toBe(204);
   });
 });

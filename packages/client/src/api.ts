@@ -29,9 +29,15 @@ export function getBackendURL(
 ) {
   if (path.startsWith('http://') || path.startsWith('https://')) return path;
 
-  const adjustedPath = path[0] !== '/' ? `/${path}` : path;
+  const queryIndex = path.indexOf('?');
+  const pathPart = queryIndex === -1 ? path : path.slice(0, queryIndex);
+  const query = queryIndex === -1 ? '' : path.slice(queryIndex);
+  const adjustedPath =
+    (pathPart[0] !== '/' ? `/${pathPart}` : pathPart)
+      .replace(/\/{2,}/g, '/')
+      .replace(/\/+$/, '') || '/';
 
-  return `${apiPath}${apiSuffix ?? APISUFFIX}${adjustedPath}`;
+  return `${apiPath}${apiSuffix ?? APISUFFIX}${adjustedPath}${query}`;
 }
 
 const _handleResponse = (response: AxiosResponse) => response;
