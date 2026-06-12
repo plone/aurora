@@ -1,10 +1,10 @@
 import {
-  redirect,
   RouterContextProvider,
   useFetcher,
   useLoaderData,
   useNavigate,
   type ActionFunctionArgs,
+  type FetcherWithComponents,
   type LoaderFunctionArgs,
 } from 'react-router';
 import { requireAuthCookie } from '@plone/react-router';
@@ -27,36 +27,67 @@ export async function loader({
   return { user, userschema };
 }
 
+type ActionResult = { ok: true } | { ok: false; error: string };
+
 export async function action({
   request,
   context,
-}: ActionFunctionArgs<RouterContextProvider>) {
+}: ActionFunctionArgs<RouterContextProvider>): Promise<ActionResult> {
   await requireAuthCookie(request);
 
   const data = await request.json();
   const cli = context.get(ploneClientContext);
   const user = context.get(ploneUserContext);
 
-  if (user?.id) {
-    await cli.updateUser({ id: user.id, data });
+  if (!user?.id) {
+    return { ok: false, error: 'No authenticated user' };
   }
 
-  return redirect('/@@personal-information');
+  try {
+    await cli.updateUser({ id: user.id, data });
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : String(error),
+    };
+  }
+
+  return { ok: true };
 }
 
 type LoaderData = Awaited<ReturnType<typeof loader>>;
 
 export default function PersonalInformation() {
   const { user, userschema } = useLoaderData<typeof loader>();
+  // fetcher: successful save remounts the form (fresh key), feedback survives
+  const fetcher = useFetcher<typeof action>();
+  const { t } = useTranslation();
   return (
     <main>
-      <Container width="default" className="route-personal-information">
+      <Container
+        width="default"
+        className="route-controlpanel route-personal-information"
+      >
         {/* key: remount to reload persisted values */}
         <PersonalInformationForm
           key={JSON.stringify(user)}
           user={user}
           userschema={userschema}
+          fetcher={fetcher}
         />
+        {fetcher.data?.ok === false ? (
+          <p
+            role="alert"
+            title={fetcher.data.error}
+            className="mt-4 text-destructive"
+          >
+            {t('cmsui.saveError')}
+          </p>
+        ) : null}
+        {/* live region, changes get announced here */}
+        <p role="status" aria-live="polite" className="sr-only">
+          {fetcher.data?.ok === true ? t('cmsui.saveSuccess') : ''}
+        </p>
       </Container>
     </main>
   );
@@ -65,12 +96,13 @@ export default function PersonalInformation() {
 function PersonalInformationForm({
   user,
   userschema,
+  fetcher,
 }: {
   user: LoaderData['user'];
   userschema: LoaderData['userschema'];
+  fetcher: FetcherWithComponents<ActionResult>;
 }) {
   const properties = userschema.properties as Record<string, any>;
-  const fetcher = useFetcher();
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -126,6 +158,7 @@ function PersonalInformationForm({
             type="submit"
             variant="primary"
             accent
+            isDisabled={fetcher.state !== 'idle'}
             onPress={() => form.handleSubmit()}
           >
             {t('cmsui.save')}

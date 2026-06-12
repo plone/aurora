@@ -165,20 +165,27 @@ describe('Personal information route', () => {
       expect(updateUserMock).toHaveBeenCalledWith({ id: 'john', data: body });
     });
 
-    it('should redirect back to the route', async () => {
+    it('should return ok on success', async () => {
       const result = await callAction(
         buildActionRequest({ fullname: 'Jane Doe' }),
         { updateUser: vi.fn().mockResolvedValue({}) },
         mockUser,
       );
 
-      expect((result as Response).status).toBe(302);
-      expect((result as Response).headers.get('Location')).toBe(
-        '/@@personal-information',
-      );
+      expect(result).toEqual({ ok: true });
     });
 
-    it('should skip updateUser when there is no user in context', async () => {
+    it('should return the error instead of throwing when updateUser rejects', async () => {
+      const result = await callAction(
+        buildActionRequest({ fullname: 'Jane Doe' }),
+        { updateUser: vi.fn().mockRejectedValue(new Error('PATCH failed')) },
+        mockUser,
+      );
+
+      expect(result).toEqual({ ok: false, error: 'PATCH failed' });
+    });
+
+    it('should skip updateUser and report an error when there is no user in context', async () => {
       const updateUserMock = vi.fn();
 
       const result = await callAction(buildActionRequest({ fullname: 'X' }), {
@@ -186,7 +193,7 @@ describe('Personal information route', () => {
       });
 
       expect(updateUserMock).not.toHaveBeenCalled();
-      expect((result as Response).status).toBe(302);
+      expect(result).toEqual({ ok: false, error: 'No authenticated user' });
     });
   });
 
@@ -209,7 +216,7 @@ describe('Personal information route', () => {
             user: mockUser,
             userschema: mockUserschema,
           }),
-          useFetcher: () => ({ submit: fetcherSubmit }),
+          useFetcher: () => ({ state: 'idle', submit: fetcherSubmit }),
           useNavigate: () => vi.fn(),
         };
       });
@@ -290,6 +297,76 @@ describe('Personal information route', () => {
         },
         { method: 'post', encType: 'application/json' },
       );
+    });
+
+    it('should show an alert on failed save, announce success, and disable Save while busy', async () => {
+      vi.resetModules();
+
+      vi.doMock('@plone/react-router', () => ({
+        requireAuthCookie: vi.fn().mockResolvedValue('fake-token'),
+      }));
+
+      // mutable so each render below can see a different fetcher state
+      let fetcherValue: any = {
+        state: 'idle',
+        submit: vi.fn(),
+        data: { ok: false, error: 'PATCH failed' },
+      };
+
+      vi.doMock('react-router', async (importOriginal) => {
+        const actual = (await importOriginal()) as any;
+        return {
+          ...actual,
+          useLoaderData: () => ({
+            user: mockUser,
+            userschema: mockUserschema,
+          }),
+          useFetcher: () => fetcherValue,
+          useNavigate: () => vi.fn(),
+        };
+      });
+
+      vi.doMock('../components/Form/Form', () => ({
+        useAppForm: () => ({
+          handleSubmit: vi.fn(),
+          AppField: ({ name, children }: any) =>
+            children({
+              name,
+              state: { value: '', meta: { errors: [] } },
+              Quanta: (props: any) => (
+                <input aria-label={props.label} name={props.name} />
+              ),
+            }),
+        }),
+      }));
+
+      const { render, screen } = await import('@testing-library/react');
+      const { default: PersonalInformationMocked } = await import(
+        './personal-information'
+      );
+
+      // drop leftovers from the previous component test
+      document.body.innerHTML = '';
+
+      // failed save: visible alert with the generic message, detail in title
+      const failed = render(<PersonalInformationMocked />);
+      const alert = screen.getByRole('alert');
+      expect(alert).toHaveTextContent('cmsui.saveError');
+      expect(alert).toHaveAttribute('title', 'PATCH failed');
+      expect(screen.getByRole('status')).toHaveTextContent('');
+      failed.unmount();
+
+      // successful save: no alert, live region announces
+      fetcherValue = { state: 'idle', submit: vi.fn(), data: { ok: true } };
+      const succeeded = render(<PersonalInformationMocked />);
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+      expect(screen.getByRole('status')).toHaveTextContent('cmsui.saveSuccess');
+      succeeded.unmount();
+
+      // in-flight submission: Save is disabled
+      fetcherValue = { state: 'submitting', submit: vi.fn() };
+      render(<PersonalInformationMocked />);
+      expect(screen.getByRole('button', { name: 'cmsui.save' })).toBeDisabled();
     });
   });
 });

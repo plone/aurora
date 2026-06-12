@@ -6,6 +6,8 @@
     "cancel": "Cancel",
     "personalInformation": "Personal Information",
     "changePassword": "Change Password",
+    "saveError": "Saving failed. Please try again.",
+    "saveSuccess": "Changes saved.",
     "recurrence": {
       "editRecurrence": "Edit recurrence",
       "repeat": "Repeat",

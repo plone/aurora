@@ -100,6 +100,9 @@ test.describe('Personal Information Route Tests', () => {
       await page.getByLabel('Location').fill('Berlin');
       await page.getByRole('button', { name: 'Save' }).click();
 
+      // the sr-only live region announces the successful save
+      await expect(page.getByRole('status')).toHaveText('Changes saved.');
+
       // The PATCH happens server-side in the route action, so verify
       // persistence directly against the backend.
       await expect

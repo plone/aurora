@@ -6,6 +6,8 @@
     "cancel": "Abbrechen",
     "personalInformation": "Persönliche Informationen",
     "changePassword": "Passwort ändern",
+    "saveError": "Speichern fehlgeschlagen. Bitte erneut versuchen.",
+    "saveSuccess": "Änderungen gespeichert.",
     "controlpanel": "Konfiguration",
     "objectbrowserwidget": {
       "openDialog": "Inhalt auswählen",
