@@ -1,5 +1,10 @@
 {
   "publicui": {
+    "toolbar": {
+      "edit": "Edit",
+      "contents": "Contents",
+      "rules": "Rules"
+    },
     "sitemap": "Sitemap",
     "search": {
       "title": "Search results for",

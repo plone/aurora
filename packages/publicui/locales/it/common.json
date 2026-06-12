@@ -1,5 +1,10 @@
 {
   "publicui": {
+    "toolbar": {
+      "edit": "Modifica",
+      "contents": "Contenuti",
+      "rules": "Regole"
+    },
     "sitemap": "Sitemap",
     "search": {
       "title":"Risultati della ricerca per",

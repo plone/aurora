@@ -25,7 +25,7 @@ import {
 import i18next from '@plone/aurora/app/i18next.server';
 import { ploneContentContext } from '@plone/aurora/app/middleware.server';
 import type { RootLoader } from '@plone/aurora/app/root';
-import { FolderIcon } from '@plone/components/Icons';
+import { AutomatedcontentIcon, FolderIcon } from '@plone/components/Icons';
 import Pencil from '@plone/components/icons/pencil.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
@@ -93,7 +93,7 @@ export async function loader({
 export default function Index() {
   const location = useLocation();
   const { content, locale } = useLoaderData<typeof loader>();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const matches = useMatches() as UIMatch<unknown, { bodyClass: string }>[];
   const routesBodyClasses = matches
@@ -122,35 +122,57 @@ export default function Index() {
         <link rel="stylesheet" href="/layers.css" precedence="first" />
         <RACRouterProvider navigate={navigate}>
           <PluggablesProvider>
-            <Plug
-              pluggable="toolbar-top"
-              id="button-edit"
-              // @ts-expect-error this is currently typed as never[]
-              dependencies={[location.pathname]}
-            >
-              <Link
-                className="primary"
-                aria-label="Edit"
-                href={`/@@edit${location.pathname.replace(/^\/$/, '')}`}
-              >
-                <Pencil />
-              </Link>
-            </Plug>
-            <Plug
-              pluggable="toolbar-top"
-              id="button-contents"
-              // @ts-expect-error this is currently typed as never[]
-              dependencies={[location.pathname]}
-            >
-              <Link
-                className="secondary"
-                aria-label="Contents"
-                href={`/@@contents${location.pathname.replace(/^\/$/, '')}`}
-              >
-                <FolderIcon />
-              </Link>
-            </Plug>
-            {showToolbar && <Toolbar />}
+            {showToolbar && (
+              <>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-edit"
+                  // @ts-expect-error this is currently typed as never[]
+                  dependencies={[location.pathname]}
+                >
+                  <Link
+                    className="primary"
+                    aria-label={t('publicui.toolbar.edit')}
+                    href={`/@@edit${location.pathname.replace(/^\/$/, '')}`}
+                  >
+                    <Pencil />
+                  </Link>
+                </Plug>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-contents"
+                  // @ts-expect-error this is currently typed as never[]
+                  dependencies={[location.pathname]}
+                >
+                  <Link
+                    className="secondary"
+                    aria-label={t('publicui.toolbar.contents')}
+                    href={`/@@contents${location.pathname.replace(/^\/$/, '')}`}
+                  >
+                    <FolderIcon />
+                  </Link>
+                </Plug>
+                {content['@components']?.actions?.object?.some(
+                  (action: { id: string }) => action.id === 'contentrules',
+                ) && (
+                  <Plug
+                    pluggable="toolbar-top"
+                    id="button-rules"
+                    // @ts-expect-error this is currently typed as never[]
+                    dependencies={[location.pathname]}
+                  >
+                    <Link
+                      className="secondary"
+                      aria-label={t('publicui.toolbar.rules')}
+                      href={`/@@rules${location.pathname.replace(/^\/$/, '')}`}
+                    >
+                      <AutomatedcontentIcon />
+                    </Link>
+                  </Plug>
+                )}
+                <Toolbar />
+              </>
+            )}
             <div id="main">
               <div className={clsx(styles.app, 'app-slot')}>
                 <header id="header" className="header-slot">
