@@ -54,4 +54,27 @@ describe('Update Content', () => {
       expect((err as RequestError).status).toBe(404);
     }
   });
+
+  test('Saves the changeNote as the version comment', async () => {
+    const path = '/';
+    const data = {
+      '@type': 'Document',
+      title: 'My Page',
+    };
+    await cli.createContent({ path, data });
+
+    const dataPatch = {
+      title: 'My Page updated',
+      changeNote: 'Updated the title',
+    };
+    const pagePath = '/my-page';
+
+    const result = await cli.updateContent({ path: pagePath, data: dataPatch });
+
+    expect(result.status).toBe(204);
+
+    const history = await cli.getHistory({ path: pagePath });
+
+    expect(history.data[0].comments).toBe('Updated the title');
+  });
 });
