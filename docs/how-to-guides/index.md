@@ -15,7 +15,7 @@ This section of the documentation contains how-to guides for developing with Plo
 :maxdepth: 2
 
 routes
-search-the-site
+customize-the-search
 register-an-add-on
 extend-vite-configuration
 access-registry

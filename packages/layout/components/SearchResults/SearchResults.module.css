@@ -270,3 +270,8 @@
 .headline a:hover {
   text-decoration: underline;
 }
+
+.headline a:focus-visible {
+  outline: 2px solid var(--color-quanta-peacock);
+  outline-offset: 2px;
+}
