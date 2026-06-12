@@ -6,7 +6,7 @@
     "cancel": "Abbrechen",
     "personalInformation": "Persönliche Informationen",
     "changePassword": "Passwort ändern",
-    "controlpanel": "Kontrollzentrum",
+    "controlpanel": "Konfiguration",
     "objectbrowserwidget": {
       "openDialog": "Inhalt auswählen",
       "dialogTitle": "Inhalt auswählen",
@@ -74,6 +74,9 @@
       "signInTo": "Bei {{site}} anmelden",
       "forgotPassword": "Passwort vergessen? <a>Neues Passwort anfordern</a>",
       "returnToHome": "Zur Startseite zurückkehren"
+    },
+    "toolbar": {
+      "settings": "Einstellungen"
     }
   }
 }
