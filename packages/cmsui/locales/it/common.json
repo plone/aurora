@@ -3,6 +3,7 @@
     "add": "Aggiungi",
     "edit": "Modifica",
     "save": "Salva",
+    "cancel": "Annulla",
     "recurrence": {
       "editRecurrence": "Cambia la ricorrenza",
       "repeat": "Ricorrenza",
@@ -132,6 +133,9 @@
         "confirm": "Ripristina",
         "error": "Impossibile ripristinare la versione. Riprova."
       }
+    },
+    "toolbar": {
+      "settings": "Impostazioni"
     }
   }
 }

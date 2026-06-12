@@ -3,7 +3,8 @@
     "add": "Hinzufügen",
     "edit": "Bearbeiten",
     "save": "Speichern",
-    "controlpanel": "Kontrollzentrum",
+    "cancel": "Abbrechen",
+    "controlpanel": "Konfiguration",
     "objectbrowserwidget": {
       "openDialog": "Inhalt auswählen",
       "dialogTitle": "Inhalt auswählen",
@@ -94,6 +95,9 @@
         "confirm": "Zurücksetzen",
         "error": "Die Version konnte nicht wiederhergestellt werden. Bitte erneut versuchen."
       }
+    },
+    "toolbar": {
+      "settings": "Einstellungen"
     }
   }
 }

@@ -3,6 +3,7 @@
     "add": "Add",
     "edit": "Edit",
     "save": "Save",
+    "cancel": "Cancel",
     "recurrence": {
       "editRecurrence": "Edit recurrence",
       "repeat": "Repeat",
@@ -142,6 +143,9 @@
         "confirm": "Revert",
         "error": "The version could not be restored. Please try again."
       }
+    },
+    "toolbar": {
+      "settings": "Settings"
     }
   }
 }
