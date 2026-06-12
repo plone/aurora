@@ -1,0 +1,1 @@
+Added `vite.extend.js` to pre-bundle layout dependencies, reducing dev server startup reloads. @arybakov05

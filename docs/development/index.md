@@ -19,4 +19,5 @@ images
 i18n
 editor-slash-menu
 configure-editor-block-widths
+vite-optimize-deps
 ```
