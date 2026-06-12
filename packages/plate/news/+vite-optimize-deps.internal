@@ -1,0 +1,1 @@
+Added `vite.extend.js` to pre-bundle platejs and Radix UI dependencies, reducing dev server startup reloads. @arybakov05

@@ -79,7 +79,14 @@ const load = (config, context = {}) => {
 export default load;
 `;
 
-  fs.writeFileSync(viteLoaderPath, code);
+  // Only write if content changed — vite.loader.js is imported by vite.config.ts
+  // so any write triggers a Vite server restart, causing an infinite loop
+  const existing = fs.existsSync(viteLoaderPath)
+    ? fs.readFileSync(viteLoaderPath, 'utf-8')
+    : null;
+  if (existing !== code) {
+    fs.writeFileSync(viteLoaderPath, code);
+  }
   return viteLoaderPath;
 }
 
