@@ -37,6 +37,7 @@ import config from '@plone/registry';
 import styles from '@plone/layout/slots/App/App.module.css';
 import stylesheet from '@plone/aurora/.plone/publicui.css?url';
 import { ContentTypesMenu } from '../components/Toolbar/ContentTypesMenu';
+import { MoreActionsMenu } from '../components/Toolbar/MoreActionsMenu';
 
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
   matches,
@@ -164,6 +165,13 @@ export default function Index() {
                   dependencies={[location.pathname] as any}
                 >
                   <ContentTypesMenu content={content} />
+                </Plug>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-more-actions"
+                  dependencies={[location.pathname] as any}
+                >
+                  <MoreActionsMenu content={content} />
                 </Plug>
               </>
             )}

@@ -114,4 +114,51 @@ Using the same `id` as an existing plug replaces it.
 
 For a full example, see the [`ContentTypesMenu`](https://github.com/plone/volto/blob/seven/packages/publicui/components/Toolbar/ContentTypesMenu.tsx) component in `@plone/publicui`.
 
+## Add a popover panel to the toolbar
+
+Use `ToolbarPopover` when you need a free-form panel — one that contains `Select` controls, links, or other form elements that would conflict with `Menu`'s collection context.
+
+### Create the popover component
+
+```tsx
+import { ToolbarPopover } from '@plone/layout/components/Toolbar/ToolbarPopover';
+import MyIcon from './my-icon.svg?react';
+
+import panelStyles from './MyPanel.css?inline';
+
+export const MyPanel = () => {
+  return (
+    <ToolbarPopover icon={<MyIcon />} className="panel-my-panel" styles={panelStyles}>
+      {/* Any content: links, selects, form controls */}
+    </ToolbarPopover>
+  );
+};
+```
+
+`ToolbarPopover` accepts the following props:
+
+`icon`
+:   The trigger element rendered in the toolbar, typically an SVG icon.
+
+`className`
+:   Applied to the inner `Dialog` element. Use it to scope your panel styles.
+
+`styles`
+:   A CSS string imported with `?inline`.
+    Injects the styles into the toolbar's shadow root so that your panel styles apply correctly.
+
+### Register the popover as a pluggable
+
+```tsx
+import { Plug } from '@plone/layout/components/Pluggable';
+import { MyPanel } from './MyPanel';
+
+// Inside your layout component:
+<Plug pluggable="toolbar-top" id="my-panel">
+  <MyPanel />
+</Plug>
+```
+
+For a full example, see the [`MoreActionsMenu`](https://github.com/plone/volto/blob/seven/packages/publicui/components/Toolbar/MoreActionsMenu.tsx) component in `@plone/publicui`.
+
 See the {doc}`plone:volto/development/pluggables` for the full pluggable API reference.

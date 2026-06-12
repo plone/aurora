@@ -9,7 +9,13 @@
     },
     "toolbar": {
       "edit": "Modifica",
-      "addContent": "Aggiungi contenuto"
+      "addContent": "Aggiungi contenuto",
+      "pageSettings": "Impostazioni pagina",
+      "state": "Stato",
+      "appearance": "Aspetto",
+      "lastModified": "Ultima modifica",
+      "changes": "Modifiche",
+      "share": "Condividi"
     }
   }
 }

@@ -9,7 +9,13 @@
     },
     "toolbar": {
       "edit": "Bearbeiten",
-      "addContent": "Inhalt hinzufügen"
+      "addContent": "Inhalt hinzufügen",
+      "pageSettings": "Seiteneinstellungen",
+      "state": "Status",
+      "appearance": "Aussehen",
+      "lastModified": "Zuletzt verändert",
+      "changes": "Änderungen",
+      "share": "Teilen"
     }
   }
 }

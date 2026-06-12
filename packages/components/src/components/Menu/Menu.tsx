@@ -41,17 +41,22 @@ export function MenuSectionHeader(props: React.ComponentProps<typeof Header>) {
 interface BasicMenuTriggerProps extends MenuTriggerProps {
   placement?: Placement;
   isNonModal?: boolean;
+  popoverRef?: React.Ref<HTMLElement>;
 }
 
 export function MenuTrigger(props: BasicMenuTriggerProps) {
   const [trigger, menu] = getMenuTriggerChildren(props.children, 'MenuTrigger');
 
-  const { placement, isNonModal, ...menuProps } = props;
+  const { placement, isNonModal, popoverRef, ...menuProps } = props;
 
   return (
     <RACMenuTrigger {...menuProps}>
       {trigger}
-      <Popover placement={placement || 'bottom start'} isNonModal={isNonModal}>
+      <Popover
+        ref={popoverRef}
+        placement={placement || 'bottom start'}
+        isNonModal={isNonModal}
+      >
         {menu}
       </Popover>
     </RACMenuTrigger>

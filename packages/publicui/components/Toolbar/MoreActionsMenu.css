@@ -1,0 +1,32 @@
+.menu-more-actions {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 8px;
+
+  .react-aria-Select,
+  .last-modified {
+    padding: 0.5rem;
+  }
+
+  .react-aria-Select,
+  .last-modified {
+    display: grid;
+    grid-template-areas: 'label item';
+    grid-template-columns: repeat(2, 1fr);
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--quanta-smoke);
+    }
+  }
+
+  .react-aria-Select .react-aria-Label,
+  .last-modified span {
+    grid-area: label;
+  }
+
+  .react-aria-Select .react-aria-Button,
+  .last-modified time {
+    grid-area: item;
+  }
+}

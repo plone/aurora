@@ -9,7 +9,13 @@
     },
     "toolbar": {
       "edit": "Edit",
-      "addContent": "Add content"
+      "addContent": "Add content",
+      "pageSettings": "Page settings",
+      "state": "State",
+      "appearance": "Appearance",
+      "lastModified": "Last modified",
+      "changes": "Changes",
+      "share": "Share"
     }
   }
 }

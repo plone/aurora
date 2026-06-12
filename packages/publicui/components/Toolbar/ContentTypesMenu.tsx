@@ -1,12 +1,12 @@
+import { useLocation } from 'react-router';
+import { useTranslation } from 'react-i18next';
+import { Header, Menu, MenuSection } from 'react-aria-components';
 import { ToolbarMenu } from '@plone/layout/components/Toolbar/ToolbarMenu';
 import Add from '@plone/components/icons/add.svg?react';
 import Page from '@plone/components/icons/page.svg?react';
 import type { Content, GetTypesResponse, Type } from '@plone/types';
-import { Header, Menu, MenuSection, Text } from 'react-aria-components';
-import { useTranslation } from 'react-i18next';
 import config from '@plone/registry';
-import { MenuItem } from '@plone/components';
-import { useLocation } from 'react-router';
+import { MenuLinkItem } from '../MenuLinkItem/MenuLinkItem';
 import contentTypesMenuStyles from './ContentTypesMenu.css?inline';
 
 interface ContentTypesMenuProps {
@@ -35,16 +35,18 @@ export const ContentTypesMenu = ({ content }: ContentTypesMenuProps) => {
 
   const ContentTypeMenuItem = (type: Type) => {
     const typeToAdd = type['@id'].split('@types/')[1];
-    const Icon = config.settings.contentIcons[type.id] ?? Page;
+    const iconEntry = config.settings.contentIcons[type.id];
+    const Icon =
+      (typeof iconEntry !== 'string' ? iconEntry : undefined) ?? Page;
 
     return (
-      <MenuItem
+      <MenuLinkItem
+        as="menuitem"
         id={type.id}
+        icon={Icon}
         href={`/@@add${location.pathname}?type=${typeToAdd}`}
-      >
-        <Icon />
-        <Text slot="label">{type.title}</Text>
-      </MenuItem>
+        label={type.title}
+      />
     );
   };
 

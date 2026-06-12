@@ -1,24 +1,6 @@
 .menu-contenttypes-add {
   padding: 1rem;
 
-  .react-aria-Text {
-    color: var(--quanta-sapphire);
-  }
-
-  .icon {
-    color: var(--quanta-dolphin);
-  }
-
-  .react-aria-MenuItem[data-focused='true'] {
-    .icon {
-      color: var(--quanta-smoke);
-    }
-
-    .react-aria-Text {
-      color: var(--quanta-air);
-    }
-  }
-
   .most-used {
     display: grid;
     width: 100%;
@@ -48,18 +30,11 @@
         width: 48px;
         height: 48px;
       }
-    }
-  }
 
-  .types .react-aria-MenuItem {
-    padding: 1rem;
-
-    &:not(:last-child) {
-      border-bottom: 1px solid var(--quanta-smoke);
-    }
-
-    .icon {
-      margin-right: 1rem;
+      .icon:nth-child(3) {
+        display: none;
+        visibility: hidden;
+      }
     }
   }
 }
