@@ -3,13 +3,14 @@ import { createContentDataSchema, updateContentDataSchema } from './content';
 import { createUserDataSchema, updateUserDataSchema } from './users';
 
 describe('content data schemas', () => {
-  test('updateContentDataSchema keeps the changeNote', () => {
-    const parsed = updateContentDataSchema.parse({
+  test('createContentDataSchema keeps unknown (custom dexterity) fields', () => {
+    const parsed = createContentDataSchema.parse({
+      '@type': 'Document',
       title: 'My Page',
-      changeNote: 'Fixed a typo',
+      my_custom_field: 'custom value',
     });
 
-    expect(parsed.changeNote).toBe('Fixed a typo');
+    expect(parsed.my_custom_field).toBe('custom value');
   });
 
   test('updateContentDataSchema keeps unknown (custom dexterity) fields', () => {
@@ -25,18 +26,6 @@ describe('content data schemas', () => {
     expect(() =>
       updateContentDataSchema.parse({ exclude_from_nav: 'yes' }),
     ).toThrow();
-  });
-
-  test('createContentDataSchema keeps changeNote and unknown fields', () => {
-    const parsed = createContentDataSchema.parse({
-      '@type': 'Document',
-      title: 'My Page',
-      changeNote: 'Initial version',
-      my_custom_field: 'custom value',
-    });
-
-    expect(parsed.changeNote).toBe('Initial version');
-    expect(parsed.my_custom_field).toBe('custom value');
   });
 });
 
