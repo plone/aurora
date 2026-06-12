@@ -51,6 +51,17 @@ export default function install(config: ConfigType) {
       },
       {
         type: 'prefix',
+        path: '@@rules',
+        children: [
+          {
+            type: 'route',
+            path: '*',
+            file: '@plone/cmsui/routes/rules.tsx',
+          },
+        ],
+      },
+      {
+        type: 'prefix',
         path: 'controlpanel',
         children: [
           {
