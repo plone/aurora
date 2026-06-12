@@ -12,7 +12,7 @@ import {
   ploneClientContext,
   ploneUserContext,
 } from '@plone/aurora/app/middleware.server';
-import { Button, Link } from '@plone/components/quanta';
+import { Button, Container, Link } from '@plone/components/quanta';
 import { useTranslation } from 'react-i18next';
 import { useAppForm } from '../components/Form/Form';
 
@@ -48,13 +48,17 @@ type LoaderData = Awaited<ReturnType<typeof loader>>;
 
 export default function PersonalInformation() {
   const { user, userschema } = useLoaderData<typeof loader>();
-  // reload persisted values
   return (
-    <PersonalInformationForm
-      key={JSON.stringify(user)}
-      user={user}
-      userschema={userschema}
-    />
+    <main>
+      <Container width="default" className="route-personal-information">
+        {/* key: remount to reload persisted values */}
+        <PersonalInformationForm
+          key={JSON.stringify(user)}
+          user={user}
+          userschema={userschema}
+        />
+      </Container>
+    </main>
   );
 }
 
