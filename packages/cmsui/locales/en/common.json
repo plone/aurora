@@ -2,6 +2,20 @@
   "cmsui": {
     "add": "Add",
     "edit": "Edit",
+    "manage_translations": {
+      "title": "Manage translations for \"{{title}}\"",
+      "back": "Back",
+      "language": "Language",
+      "path": "Path",
+      "tools": "Tools",
+      "no_translation": "No translation",
+      "link": "Link an existing {{language}} translation",
+      "unlink": "Unlink the {{language}} translation",
+      "create": "Create the {{language}} translation",
+      "linked": "Translation linked",
+      "unlinked": "Translation unlinked",
+      "failed": "Translation update failed"
+    },
     "save": "Save",
     "recurrence": {
       "editRecurrence": "Edit recurrence",

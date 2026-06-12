@@ -7,6 +7,7 @@
 
 @layer cmsui {
   @import '@plone/components/src/styles/basic/theme.css';
+  @import '@plone/components/src/styles/basic/Toast.css';
   @import 'tailwindcss/theme.css';
   @import 'tailwindcss/preflight.css';
   @import 'tailwindcss/utilities.css';

@@ -43,14 +43,9 @@ vi.mock('react-i18next', () => ({
 }));
 
 // Mock dei componenti
-vi.mock('@plone/components', () => ({
-  Modal: ({ children, isOpen, onOpenChange, className, ...props }: any) => (
-    <div
-      data-testid="modal"
-      data-open={isOpen}
-      className={className}
-      {...props}
-    >
+vi.mock('react-aria-components', () => ({
+  ModalOverlay: ({ children, isOpen, onOpenChange, className }: any) => (
+    <div data-testid="modal-overlay" data-open={isOpen} className={className}>
       {children}
       {onOpenChange && (
         <button
@@ -62,9 +57,11 @@ vi.mock('@plone/components', () => ({
       )}
     </div>
   ),
-}));
-
-vi.mock('react-aria-components', () => ({
+  Modal: ({ children, className }: any) => (
+    <div data-testid="modal" className={className}>
+      {children}
+    </div>
+  ),
   Dialog: ({ children, className, ...props }: any) => (
     <div data-testid="dialog" className={className} {...props}>
       {children}
@@ -145,7 +142,10 @@ describe('ObjectBrowserModal', () => {
       renderWithContext(defaultContextValue);
 
       expect(screen.getByTestId('modal')).toBeInTheDocument();
-      expect(screen.getByTestId('modal')).toHaveAttribute('data-open', 'true');
+      expect(screen.getByTestId('modal-overlay')).toHaveAttribute(
+        'data-open',
+        'true',
+      );
     });
 
     it('should render modal when closed', () => {
@@ -154,7 +154,10 @@ describe('ObjectBrowserModal', () => {
         open: false,
       });
 
-      expect(screen.getByTestId('modal')).toHaveAttribute('data-open', 'false');
+      expect(screen.getByTestId('modal-overlay')).toHaveAttribute(
+        'data-open',
+        'false',
+      );
     });
 
     it('should prefer controlled isOpen when provided', () => {
@@ -168,7 +171,10 @@ describe('ObjectBrowserModal', () => {
         },
       );
 
-      expect(screen.getByTestId('modal')).toHaveAttribute('data-open', 'true');
+      expect(screen.getByTestId('modal-overlay')).toHaveAttribute(
+        'data-open',
+        'true',
+      );
     });
 
     it('should render dialog and widget body', () => {
@@ -340,12 +346,16 @@ describe('ObjectBrowserModal', () => {
   });
 
   describe('CSS Classes', () => {
-    it('should apply correct CSS classes to modal', () => {
+    it('should apply correct CSS classes to modal and overlay', () => {
       renderWithContext(defaultContextValue);
 
+      const overlay = screen.getByTestId('modal-overlay');
+      expect(overlay).toHaveClass('fixed');
+      expect(overlay).toHaveClass('inset-0');
+      expect(overlay).toHaveClass('z-50');
+      expect(overlay).toHaveClass('bg-black/50');
+
       const modal = screen.getByTestId('modal');
-      expect(modal).toHaveClass('data-[entering]:animate-slide-in');
-      expect(modal).toHaveClass('data-[exiting]:animate-slide-out');
       expect(modal).toHaveClass('border-quanta-azure');
       expect(modal).toHaveClass('bg-quanta-air');
     });
