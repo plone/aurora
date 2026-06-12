@@ -22,7 +22,6 @@ import { PluggablesProvider, Plug } from '@plone/layout/components/Pluggable';
 import Toast from '@plone/layout/components/Toast/Toast';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
 import { shouldShowToolbar } from '@plone/layout/helpers';
-import config from '@plone/registry';
 import Back from '@plone/components/icons/arrow-left.svg?react';
 
 // eslint-disable-next-line import/no-unresolved
@@ -127,9 +126,7 @@ export default function Index() {
             </Plug>
           </PluggablesProvider>
         </RACRouterProvider>
-        <Toast
-          queue={config.getUtility({ name: 'queue', type: 'toast' }).method()}
-        />
+        <Toast />
         <ScrollRestoration />
         <Scripts />
       </body>

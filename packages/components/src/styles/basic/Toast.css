@@ -26,6 +26,15 @@
     --toast-bg: #6d030a;
   }
 
+  .toast-icon {
+    display: flex;
+    align-self: center;
+  }
+
+  &:has([slot='description']) .toast-icon {
+    align-self: flex-start;
+  }
+
   display: flex;
   align-items: center;
   padding: 0.8rem 1rem;
@@ -47,10 +56,14 @@
     flex: 1 1 auto;
     flex-direction: column;
 
-    [slot='title'] {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
+    a {
+      font-weight: 700;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
     }
   }
 
@@ -59,9 +72,9 @@
     width: 2rem;
     height: 2rem;
     flex: 0 0 auto;
+    align-items: center;
     justify-content: center;
     padding: 0;
-    border: none;
     border: none;
     border-radius: 50%;
     appearance: none;

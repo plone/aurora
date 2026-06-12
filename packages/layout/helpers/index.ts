@@ -1,7 +1,7 @@
+import type { Location, PathPattern } from 'react-router';
 import { matchPath } from 'react-router';
 import { getStyleFieldsFromBlockSchema } from '@plone/helpers';
 import type { BlocksConfigData, BlocksFormData, Content } from '@plone/types';
-import type { Location, PathPattern } from 'react-router';
 
 type StyleFieldConfig = {
   defaultValue?: string;
@@ -41,13 +41,21 @@ export function NotContentTypeCondition(contentType: string[]) {
   };
 }
 
-export function shouldShowToolbar(content?: Content | null) {
+function getContentActions(content?: Content | null) {
   const actions = content?.['@components']?.actions;
-  const isVisible =
-    (actions?.object?.some((a) => a.id === 'edit') ?? false) ||
-    (actions?.object_buttons?.some((a) => a.id === 'edit') ?? false);
+  return [...(actions?.object ?? []), ...(actions?.object_buttons ?? [])];
+}
 
-  return isVisible;
+export function hasAction(content: Content | null, actionId: string) {
+  return getContentActions(content).some((a) => a.id === actionId);
+}
+
+export function shouldShowToolbar(content?: Content | null) {
+  return getContentActions(content).some((a) => a.id !== 'view');
+}
+
+export function contentRouteUrl(prefix: string, pathname: string) {
+  return `/${prefix}${pathname.replace(/^\/$/, '')}`;
 }
 
 export const getBlockStyleFieldConfigs = (

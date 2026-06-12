@@ -3,19 +3,19 @@
  */
 import {
   Links,
+  type LinksFunction,
+  type LoaderFunctionArgs,
   Meta,
+  type MetaFunction,
   Outlet,
+  RouterContextProvider,
   Scripts,
   ScrollRestoration,
+  type UIMatch,
   useLoaderData,
   useLocation,
   useMatches,
   useNavigate,
-  type UIMatch,
-  type LinksFunction,
-  type MetaFunction,
-  type LoaderFunctionArgs,
-  RouterContextProvider,
 } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import {
@@ -28,8 +28,13 @@ import type { RootLoader } from '@plone/aurora/app/root';
 import { FolderIcon } from '@plone/components/Icons';
 import Pencil from '@plone/components/icons/pencil.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
+import Toast from '@plone/layout/components/Toast/Toast';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
-import { shouldShowToolbar } from '@plone/layout/helpers';
+import {
+  hasAction,
+  contentRouteUrl,
+  shouldShowToolbar,
+} from '@plone/layout/helpers';
 import { Plug, PluggablesProvider } from '@plone/layout/components/Pluggable';
 import clsx from 'clsx';
 import config from '@plone/registry';
@@ -37,6 +42,8 @@ import config from '@plone/registry';
 import styles from '@plone/layout/slots/App/App.module.css';
 import stylesheet from '@plone/aurora/.plone/publicui.css?url';
 import { ContentTypesMenu } from '../components/Toolbar/ContentTypesMenu';
+import { WorkingCopyToolbarButtons } from '../components/Toolbar/WorkingCopyToolbarButtons';
+import { WorkingCopyToasts } from '../components/WorkingCopy/WorkingCopyToasts';
 
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
   matches,
@@ -94,7 +101,7 @@ export async function loader({
 export default function Index() {
   const location = useLocation();
   const { content, locale } = useLoaderData<typeof loader>();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const matches = useMatches() as UIMatch<unknown, { bodyClass: string }>[];
   const routesBodyClasses = matches
@@ -130,30 +137,34 @@ export default function Index() {
           <PluggablesProvider>
             {hasContent && (
               <>
-                <Plug
-                  pluggable="toolbar-top"
-                  id="button-edit"
-                  // @ts-expect-error this is currently typed as never[]
-                  dependencies={[location.pathname]}
-                >
-                  <Link
-                    className="primary"
-                    aria-label="Edit"
-                    href={`/@@edit${location.pathname.replace(/^\/$/, '')}`}
+                {hasAction(content, 'edit') && (
+                  <Plug
+                    pluggable="toolbar-top"
+                    id="button-edit"
+                    order={10}
+                    // @ts-expect-error this is currently typed as never[]
+                    dependencies={[location.pathname]}
                   >
-                    <Pencil />
-                  </Link>
-                </Plug>
+                    <Link
+                      className="primary"
+                      aria-label={t('publicui.toolbar.edit')}
+                      href={contentRouteUrl('@@edit', location.pathname)}
+                    >
+                      <Pencil />
+                    </Link>
+                  </Plug>
+                )}
                 <Plug
                   pluggable="toolbar-top"
                   id="button-contents"
+                  order={20}
                   // @ts-expect-error this is currently typed as never[]
                   dependencies={[location.pathname]}
                 >
                   <Link
                     className="secondary"
-                    aria-label="Contents"
-                    href={`/@@contents${location.pathname.replace(/^\/$/, '')}`}
+                    aria-label={t('publicui.toolbar.contents')}
+                    href={contentRouteUrl('@@contents', location.pathname)}
                   >
                     <FolderIcon />
                   </Link>
@@ -161,10 +172,21 @@ export default function Index() {
                 <Plug
                   pluggable="toolbar-top"
                   id="button-add"
+                  order={30}
                   dependencies={[location.pathname] as any}
                 >
                   <ContentTypesMenu content={content} />
                 </Plug>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-workingcopy"
+                  order={40}
+                  dependencies={[location.pathname] as any}
+                >
+                  {/* Temporary until the "more actions" menu exists */}
+                  <WorkingCopyToolbarButtons content={content} />
+                </Plug>
+                <WorkingCopyToasts content={content} />
               </>
             )}
             {showToolbar && <Toolbar />}
@@ -191,6 +213,7 @@ export default function Index() {
             </div>
           </PluggablesProvider>
         </RACRouterProvider>
+        <Toast />
         <ScrollRestoration />
         <Scripts />
       </body>

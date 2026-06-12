@@ -66,6 +66,7 @@
     "@plone/client": "workspace:*",
     "@plone/helpers": "workspace:*",
     "clsx": "^2.1.1",
+    "react-aria": "catalog:",
     "react-aria-components": "catalog:",
     "react-i18next": "catalog:",
     "react-router": "catalog:"

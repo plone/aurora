@@ -9,7 +9,16 @@
     },
     "toolbar": {
       "edit": "Edit",
+      "contents": "Contents",
       "addContent": "Add content"
+    },
+    "workingcopy": {
+      "create": "Create working copy",
+      "apply": "Apply working copy",
+      "discard": "Discard working copy",
+      "isCopy": "This is a working copy of <lnk>{{title}}</lnk>",
+      "hasCopy": "This has an ongoing working copy in <lnk>{{title}}</lnk>",
+      "createdBy": "Created by {{creator}} on {{date}}"
     }
   }
 }

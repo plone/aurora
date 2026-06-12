@@ -2,14 +2,23 @@
   "publicui": {
     "sitemap": "Mappa del sito",
     "search": {
-      "title":"Risultati della ricerca per",
+      "title": "Risultati della ricerca per",
       "results": "Risultati della ricerca",
       "placeholder": "Scrivi qui...",
       "noResults": "Nessun risultato"
     },
     "toolbar": {
       "edit": "Modifica",
+      "contents": "Contenuti",
       "addContent": "Aggiungi contenuto"
+    },
+    "workingcopy": {
+      "create": "Crea copia di lavoro",
+      "apply": "Applica copia di lavoro",
+      "discard": "Elimina copia di lavoro",
+      "isCopy": "Questa è una copia di lavoro di <lnk>{{title}}</lnk>",
+      "hasCopy": "Esiste una copia di lavoro in <lnk>{{title}}</lnk>",
+      "createdBy": "Creato da {{creator}} il {{date}}"
     }
   }
 }

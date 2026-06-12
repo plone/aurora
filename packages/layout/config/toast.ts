@@ -9,8 +9,8 @@ export type Toast = {
 };
 // Define the type for our toast content.
 export type ToastItem = {
-  title: string;
-  description?: string;
+  title: ReactNode | string;
+  description?: ReactNode | string;
   icon?: ReactNode;
   className?: string;
 };

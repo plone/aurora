@@ -1,5 +1,6 @@
 import type { Expanders, ContainedItem, Image, RelatedItem } from './common';
 import type { BlocksFormData } from '../blocks';
+import type { WorkingCopyInfo } from '../services/workingcopy';
 
 /**
  * Base interface containing all fields common to every Plone content type.
@@ -85,6 +86,6 @@ export interface ContentBase {
   type_title: string | null;
   version: number | null;
   versioning_enabled: boolean | null;
-  working_copy: unknown;
-  working_copy_of: unknown;
+  working_copy: WorkingCopyInfo | null;
+  working_copy_of: Pick<WorkingCopyInfo, '@id' | 'title'> | null;
 }
