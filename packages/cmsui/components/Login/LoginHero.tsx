@@ -1,9 +1,9 @@
-import voltoHeroSvg from '../../static/volto-hero.svg';
+import ploneHeroSvg from '../../static/plone-hero.svg';
 
 const LoginHero = () => {
   return (
     <img
-      src={voltoHeroSvg}
+      src={ploneHeroSvg}
       className="h-full w-auto object-cover"
       alt=""
       aria-hidden="true"
