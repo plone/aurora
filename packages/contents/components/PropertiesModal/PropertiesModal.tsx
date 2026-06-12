@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useFetcher, useRevalidator, type SubmitTarget } from 'react-router';
-import { Heading } from 'react-aria-components';
+import { Button as RACButton, Heading, TextArea } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
@@ -10,7 +10,11 @@ import {
   Input,
   Modal,
 } from '@plone/components/quanta';
-import { CloseIcon, PropertiesIcon } from '@plone/components/Icons';
+import {
+  ArrowrightIcon,
+  CloseIcon,
+  PropertiesIcon,
+} from '@plone/components/Icons';
 import { type ToastItem } from '@plone/layout/config/toast';
 import { useContentsContext } from '../../providers/contents';
 import {
@@ -19,6 +23,20 @@ import {
   type PropertyField,
   type PropertyItem,
 } from '../../helpers/properties';
+
+const dateFieldClasses = `
+  w-full
+  [&>div]:w-full
+  [&>div>button[disabled]]:hidden
+  [&>div>div:first-child]:w-full
+  [&>div>div:first-child_button]:w-9
+  [&>div>div:first-child_button]:bg-transparent!
+  [&>div>div:first-child_button]:shadow-none!
+  [&>div>div:first-child_svg]:h-5!
+  [&>div>div:first-child_svg]:w-5!
+  [&>div>div:first-child_svg]:shrink-0
+  [&>div>div:first-child_svg]:text-quanta-sapphire
+`;
 
 export default function PropertiesModal() {
   const { t } = useTranslation();
@@ -144,19 +162,33 @@ export default function PropertiesModal() {
       onOpenChange={setShowProperties}
     >
       <Dialog className="mx-auto w-full p-8">
-        <Heading
-          slot="title"
-          className="react-aria-Heading mb-6 text-xl font-bold"
-        >
-          {t('contents.modal_properties.title')}
-        </Heading>
-        <div className="mx-auto grid max-w-xl gap-4">
+        <div className="mb-10 flex items-center justify-between">
+          <Heading
+            slot="title"
+            className="react-aria-Heading text-xl font-bold"
+          >
+            {t('contents.modal_properties.title')}
+          </Heading>
+          <RACButton
+            onPress={close}
+            aria-label={t('contents.modal.close')}
+            className={`
+              cursor-pointer text-quanta-space
+              hover:text-quanta-sapphire
+              [&_svg]:size-5
+            `}
+          >
+            <CloseIcon />
+          </RACButton>
+        </div>
+        <div className="mx-auto grid max-w-sm gap-4">
           <DateTimePicker
             label={t('contents.modal_properties.effective')}
             value={values.effective ?? null}
             granularity="minute"
             description={mixedPlaceholder('effective')}
             onChange={(v) => setField('effective', v)}
+            className={dateFieldClasses}
           />
           <DateTimePicker
             label={t('contents.modal_properties.expires')}
@@ -164,17 +196,20 @@ export default function PropertiesModal() {
             granularity="minute"
             description={mixedPlaceholder('expires')}
             onChange={(v) => setField('expires', v)}
+            className={dateFieldClasses}
           />
           <Field label={t('contents.modal_properties.rights')}>
-            <Input
-              type="text"
+            <TextArea
               value={values.rights ?? ''}
               placeholder={mixedPlaceholder('rights')}
               onChange={(e) => setField('rights', e.target.value)}
+              aria-label={t('contents.modal_properties.rights')}
               className={`
-                rounded-lg border border-quanta-silver bg-quanta-air px-3 py-2
-                hover:bg-quanta-air
-                focus:border-quanta-sapphire
+                min-h-28 w-full rounded-lg bg-quanta-snow p-3 text-sm text-quanta-space
+                outline-quanta-cobalt
+                placeholder:text-quanta-pigeon
+                hover:bg-quanta-smoke
+                focus:bg-quanta-air
               `}
             />
           </Field>
@@ -187,15 +222,11 @@ export default function PropertiesModal() {
                 t('contents.modal_properties.creators_hint')
               }
               onChange={(e) => setField('creators', e.target.value)}
-              className={`
-                rounded-lg border border-quanta-silver bg-quanta-air px-3 py-2
-                hover:bg-quanta-air
-                focus:border-quanta-sapphire
-              `}
+              className="h-11 w-full rounded-lg px-3"
             />
           </Field>
           <Checkbox
-            className="text-sm"
+            className="text-sm text-quanta-space"
             isSelected={!!values.exclude_from_nav}
             onChange={(checked) => setField('exclude_from_nav', checked)}
           >
@@ -210,15 +241,7 @@ export default function PropertiesModal() {
             </span>
           </Checkbox>
 
-          <div className="mt-4 flex justify-center gap-3">
-            <Button
-              onPress={close}
-              aria-label={t('contents.modal.close')}
-              accent={true}
-              size="L"
-            >
-              <CloseIcon />
-            </Button>
+          <div className="mt-6 flex justify-end">
             <Button
               onPress={confirm}
               aria-label={t('contents.modal_properties.confirm')}
@@ -227,7 +250,7 @@ export default function PropertiesModal() {
               size="L"
               isDisabled={fetcher.state !== 'idle' || !dataFetcher.data}
             >
-              <PropertiesIcon />
+              <ArrowrightIcon />
             </Button>
           </div>
         </div>
@@ -245,7 +268,7 @@ function Field({
 }) {
   return (
     <label className="grid gap-1 text-sm">
-      <span className="font-bold">{label}</span>
+      <span className="text-quanta-graphite text-xs">{label}</span>
       {children}
     </label>
   );

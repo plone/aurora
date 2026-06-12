@@ -29,13 +29,14 @@ Each action applies to the current selection.
 
 1. Select the items to rename.
 2. Select {guilabel}`Rename` in the toolbar.
-3. Edit the {guilabel}`Short name`, the {guilabel}`Title`, or both for each item in the dialog.
-4. Select {guilabel}`Rename` in the dialog to apply the changes.
+3. Edit the {guilabel}`Name`, the {guilabel}`URL`, or both for each item in the dialog.
+4. Select the {guilabel}`→` button to apply the changes.
 
-The {guilabel}`Short name` is the last segment of the item's URL.
+The {guilabel}`Name` is the title of the item.
+The {guilabel}`URL` is the last segment of the item's URL.
 
 ````{note}
-Changing the {guilabel}`Short name` changes the item's URL.
+Changing the {guilabel}`URL` changes the item's URL.
 Aurora automatically redirects the old URL to the new one, so existing links and bookmarks keep working.
 
 ```{todo}
@@ -51,7 +52,7 @@ See [URL management: redirect control panel + documentation](https://github.com/
 3. Choose a transition from the list.
 4. Optionally add a comment.
 5. Optionally select {guilabel}`Apply to contained items` to apply the transition recursively.
-6. Select {guilabel}`Change state` in the dialog to apply the transition.
+6. Select the {guilabel}`→` button to apply the transition.
 
 The list offers only the transitions that are available for every selected item.
 If the selected items share no common transition, the dialog tells you so, and you can't apply a transition.
@@ -73,7 +74,7 @@ Adding a tag applies it to every selected item, and removing a tag removes it fr
 1. Select the items whose properties you want to edit.
 2. Select {guilabel}`Properties` in the toolbar.
 3. Edit any of the {guilabel}`Publishing date`, {guilabel}`Expiration date`, {guilabel}`Rights`, {guilabel}`Creators`, or {guilabel}`Exclude from navigation`.
-4. Select {guilabel}`Save properties` to apply the changes.
+4. Select the {guilabel}`→` button to apply the changes.
 
 The dialog saves only the fields you change.
 Fields you leave untouched keep their current values on each item.

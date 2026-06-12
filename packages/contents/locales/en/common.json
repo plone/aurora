@@ -103,12 +103,10 @@
       "confirm": "Delete"
     },
     "modal_rename": {
-      "title": "Rename items",
+      "title": "Rename selection",
       "confirm": "Rename",
-      "columns": {
-        "name": "Short name",
-        "title": "Title"
-      }
+      "name": "Name",
+      "url": "URL"
     },
     "modal_tags": {
       "title": "Edit tags",
@@ -121,7 +119,7 @@
       "remove": "Remove tag {{tag}}"
     },
     "modal_properties": {
-      "title": "Edit properties",
+      "title": "Selection properties",
       "confirm": "Save properties",
       "mixed": "Mixed values",
       "effective": "Publishing date",
@@ -136,7 +134,7 @@
       "confirm": "Change state",
       "current_state": "Current state",
       "transition": "Transition",
-      "select_transition": "Select a transition…",
+      "select_transition": "Select new state…",
       "no_common_transitions": "The selected items share no common transition.",
       "comment": "Comment",
       "include_children": "Apply to contained items"

@@ -103,12 +103,10 @@
       "confirm": "Procedi con l'eliminazione"
     },
     "modal_rename": {
-      "title": "Rinomina elementi",
+      "title": "Rinomina selezione",
       "confirm": "Rinomina",
-      "columns": {
-        "name": "Nome breve",
-        "title": "Titolo"
-      }
+      "name": "Nome",
+      "url": "URL"
     },
     "modal_tags": {
       "title": "Modifica etichette",
@@ -121,7 +119,7 @@
       "remove": "Rimuovi etichetta {{tag}}"
     },
     "modal_properties": {
-      "title": "Modifica proprietà",
+      "title": "Proprietà della selezione",
       "confirm": "Salva proprietà",
       "mixed": "Valori misti",
       "effective": "Data di pubblicazione",
@@ -136,7 +134,7 @@
       "confirm": "Cambia stato",
       "current_state": "Stato attuale",
       "transition": "Transizione",
-      "select_transition": "Seleziona una transizione…",
+      "select_transition": "Seleziona nuovo stato…",
       "no_common_transitions": "Gli elementi selezionati non hanno transizioni in comune.",
       "comment": "Commento",
       "include_children": "Applica agli elementi contenuti"

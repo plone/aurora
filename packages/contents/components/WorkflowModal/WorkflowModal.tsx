@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useFetcher, useRevalidator } from 'react-router';
-import { Heading } from 'react-aria-components';
+import { Button as RACButton, Heading } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
@@ -10,7 +10,7 @@ import {
   Modal,
   Select,
 } from '@plone/components/quanta';
-import { CloseIcon, StateIcon } from '@plone/components/Icons';
+import { ArrowrightIcon, CloseIcon, StateIcon } from '@plone/components/Icons';
 import { type ToastItem } from '@plone/layout/config/toast';
 import { useContentsContext } from '../../providers/contents';
 import type { TransitionOption } from '../../helpers/workflow';
@@ -108,13 +108,26 @@ export default function WorkflowModal() {
   return (
     <Modal isDismissable isOpen={showWorkflow} onOpenChange={setShowWorkflow}>
       <Dialog className="mx-auto w-full p-8">
-        <Heading
-          slot="title"
-          className="react-aria-Heading mb-6 text-xl font-bold"
-        >
-          {t('contents.modal_workflow.title')}
-        </Heading>
-        <div className="mx-auto grid max-w-xl gap-4">
+        <div className="mb-10 flex items-center justify-between">
+          <Heading
+            slot="title"
+            className="react-aria-Heading text-xl font-bold"
+          >
+            {t('contents.modal_workflow.title')}
+          </Heading>
+          <RACButton
+            onPress={close}
+            aria-label={t('contents.modal.close')}
+            className={`
+              cursor-pointer text-quanta-space
+              hover:text-quanta-sapphire
+              [&_svg]:size-5
+            `}
+          >
+            <CloseIcon />
+          </RACButton>
+        </div>
+        <div className="mx-auto grid max-w-sm gap-4">
           {stateSummary && (
             <p className="text-quanta-graphite text-sm">
               {t('contents.modal_workflow.current_state')}: {stateSummary}
@@ -123,8 +136,6 @@ export default function WorkflowModal() {
 
           <div className="grid gap-1 text-sm">
             <Select
-              label={t('contents.modal_workflow.transition')}
-              labelClassnames="font-bold"
               aria-label={t('contents.modal_workflow.transition')}
               items={transitions.map((tr) => ({
                 label: tr.title,
@@ -142,8 +153,8 @@ export default function WorkflowModal() {
             )}
           </div>
 
-          <label className="grid gap-1 text-sm">
-            <span className="font-bold">
+          <label className="block text-sm">
+            <span className="text-quanta-graphite mb-1 block text-xs">
               {t('contents.modal_workflow.comment')}
             </span>
             <Input
@@ -151,16 +162,12 @@ export default function WorkflowModal() {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               aria-label={t('contents.modal_workflow.comment')}
-              className={`
-                rounded-lg border border-quanta-silver bg-quanta-air px-3 py-2
-                hover:bg-quanta-air
-                focus:border-quanta-sapphire
-              `}
+              className="h-11 w-full rounded-lg px-3"
             />
           </label>
 
           <Checkbox
-            className="text-sm"
+            className="text-sm text-quanta-space"
             isSelected={includeChildren}
             onChange={setIncludeChildren}
           >
@@ -169,15 +176,7 @@ export default function WorkflowModal() {
             </span>
           </Checkbox>
 
-          <div className="mt-4 flex justify-center gap-3">
-            <Button
-              onPress={close}
-              aria-label={t('contents.modal.close')}
-              accent={true}
-              size="L"
-            >
-              <CloseIcon />
-            </Button>
+          <div className="mt-6 flex justify-end">
             <Button
               onPress={confirm}
               aria-label={t('contents.modal_workflow.confirm')}
@@ -186,7 +185,7 @@ export default function WorkflowModal() {
               size="L"
               isDisabled={!transition || fetcher.state !== 'idle'}
             >
-              <StateIcon />
+              <ArrowrightIcon />
             </Button>
           </div>
         </div>

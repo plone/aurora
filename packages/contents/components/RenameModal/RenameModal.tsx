@@ -1,9 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useFetcher, useRevalidator, type SubmitTarget } from 'react-router';
-import { Heading } from 'react-aria-components';
+import { Button, Heading } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
-import { Button, Dialog, Input, Modal } from '@plone/components/quanta';
-import { CloseIcon, RenameIcon } from '@plone/components/Icons';
+import { getContentIcon } from '@plone/helpers';
+import {
+  Button as QuantaButton,
+  Dialog,
+  Input,
+  Modal,
+  Separator,
+} from '@plone/components/quanta';
+import { ArrowrightIcon, CloseIcon, RenameIcon } from '@plone/components/Icons';
 import { type ToastItem } from '@plone/layout/config/toast';
 import { useContentsContext } from '../../providers/contents';
 import { buildRenamePayload, type RenameEdit } from '../../helpers/rename';
@@ -92,69 +99,74 @@ export default function RenameModal() {
   return (
     <Modal isDismissable isOpen={showRename} onOpenChange={setShowRename}>
       <Dialog className="mx-auto w-full p-8">
-        <Heading
-          slot="title"
-          className="react-aria-Heading mb-6 text-xl font-bold"
-        >
-          {t('contents.modal_rename.title')}
-        </Heading>
-        <div className="mx-auto max-w-2xl">
-          <table className="mb-6 w-full border-collapse text-sm">
-            <thead>
-              <tr className="text-quanta-graphite text-left">
-                <th className="pb-2 font-normal">
-                  {t('contents.modal_rename.columns.name')}
-                </th>
-                <th className="pb-2 font-normal">
-                  {t('contents.modal_rename.columns.title')}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row, index) => (
-                <tr key={row['@id']}>
-                  <td className="py-3 pe-3">
-                    <Input
-                      type="text"
-                      value={row.id}
-                      onChange={(e) => updateRow(index, 'id', e.target.value)}
-                      aria-label={`${t('contents.modal_rename.columns.name')}: ${row.originalId}`}
+        <div className="mb-10 flex items-center justify-between">
+          <Heading
+            slot="title"
+            className="react-aria-Heading text-xl font-bold"
+          >
+            {t('contents.modal_rename.title')}
+          </Heading>
+          <Button
+            onPress={close}
+            aria-label={t('contents.modal.close')}
+            className={`
+              cursor-pointer text-quanta-space
+              hover:text-quanta-sapphire
+              [&_svg]:size-5
+            `}
+          >
+            <CloseIcon />
+          </Button>
+        </div>
+        <div className="mx-auto max-w-sm">
+          {rows.map((row, index) => {
+            const item = items[index];
+            const Icon = getContentIcon(item?.['@type'], item?.is_folderish);
+            return (
+              <div key={row['@id']}>
+                {index > 0 && <Separator className="my-6 bg-quanta-silver" />}
+                <label className="block">
+                  <span className="text-quanta-graphite mb-1 block text-xs">
+                    {t('contents.modal_rename.name')}
+                  </span>
+                  <div className="relative">
+                    <span
                       className={`
-                        w-full rounded-lg border border-quanta-silver bg-quanta-air px-3 py-2
-                        hover:bg-quanta-air
-                        focus:border-quanta-sapphire
+                        pointer-events-none absolute start-3 top-1/2 -translate-y-1/2
+                        text-quanta-space
+                        [&_svg]:size-4
                       `}
-                    />
-                  </td>
-                  <td className="py-3">
+                    >
+                      <Icon />
+                    </span>
                     <Input
                       type="text"
                       value={row.title}
                       onChange={(e) =>
                         updateRow(index, 'title', e.target.value)
                       }
-                      aria-label={`${t('contents.modal_rename.columns.title')}: ${row.originalTitle}`}
-                      className={`
-                        w-full rounded-lg border border-quanta-silver bg-quanta-air px-3 py-2
-                        hover:bg-quanta-air
-                        focus:border-quanta-sapphire
-                      `}
+                      aria-label={`${t('contents.modal_rename.name')}: ${row.originalTitle}`}
+                      className="h-11 w-full rounded-lg ps-10 pe-3"
                     />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="mt-8 flex justify-center gap-3">
-            <Button
-              onPress={close}
-              aria-label={t('contents.modal.close')}
-              accent={true}
-              size="L"
-            >
-              <CloseIcon />
-            </Button>
-            <Button
+                  </div>
+                </label>
+                <label className="mt-4 block">
+                  <span className="text-quanta-graphite mb-1 block text-xs">
+                    {t('contents.modal_rename.url')}
+                  </span>
+                  <Input
+                    type="text"
+                    value={row.id}
+                    onChange={(e) => updateRow(index, 'id', e.target.value)}
+                    aria-label={`${t('contents.modal_rename.url')}: ${row.originalId}`}
+                    className="h-11 w-full rounded-lg px-3"
+                  />
+                </label>
+              </div>
+            );
+          })}
+          <div className="mt-10 flex justify-end">
+            <QuantaButton
               onPress={confirm}
               aria-label={t('contents.modal_rename.confirm')}
               variant="primary"
@@ -162,8 +174,8 @@ export default function RenameModal() {
               size="L"
               isDisabled={rows.length === 0 || fetcher.state !== 'idle'}
             >
-              <RenameIcon />
-            </Button>
+              <ArrowrightIcon />
+            </QuantaButton>
           </div>
         </div>
       </Dialog>
