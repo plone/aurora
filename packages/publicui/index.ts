@@ -29,6 +29,14 @@ export default function install(config: ConfigType) {
       },
       {
         type: 'route',
+        path: ':root/search',
+        file: '@plone/publicui/routes/search.tsx',
+        options: {
+          id: 'search-scoped',
+        },
+      },
+      {
+        type: 'route',
         path: '*',
         file: '@plone/publicui/routes/content.tsx',
         options: {

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import {
   data,
+  redirect,
   RouterContextProvider,
   useLoaderData,
   useLocation,
@@ -35,11 +36,11 @@ export async function loader({
 }: LoaderFunctionArgs<RouterContextProvider>) {
   const cli = context.get(ploneClientContext);
 
-  const path = `/${params['*'] || ''}`;
   const url = new URL(request.url);
-  const query = url.searchParams.get('SearchableText') || '';
+  const query = (url.searchParams.get('SearchableText') || '').trim();
   const bStart = Math.max(0, Number(url.searchParams.get('b_start')) || 0);
   const subjects = url.searchParams.getAll('Subject');
+  const root = params.root ? `/${params.root}` : null;
 
   // An empty term with use_site_search_settings returns a bare list, not a
   // batch, so skip the query entirely.
@@ -56,14 +57,14 @@ export async function loader({
 
   const baseQuery = {
     SearchableText: `${query}*`,
-    path: {
-      query: path || '/',
-    },
     use_site_search_settings: 1,
+    ...(root ? { path: { query: root } } : {}),
   };
 
+  let results;
+  let facetSample;
   try {
-    const [results, facetSample] = await Promise.all([
+    [results, facetSample] = await Promise.all([
       cli.search({
         query: {
           ...baseQuery,
@@ -81,21 +82,32 @@ export async function loader({
         },
       }),
     ]);
-
-    return {
-      // Flatten on the server so result links stay in-app, not the backend.
-      search: flattenToAppURL(results.data.items ?? []),
-      total: results.data.items_total ?? 0,
-      params: query,
-      bStart,
-      bSize: PAGE_SIZE,
-      facets: aggregateFacets(facetSample.data.items ?? []),
-    };
   } catch (error: any) {
     throw data('Search failed', {
       status: typeof error.status === 'number' ? error.status : 500,
     });
   }
+
+  const total = results.data.items_total ?? 0;
+
+  if (total > 0 && bStart >= total) {
+    const lastStart = Math.floor((total - 1) / PAGE_SIZE) * PAGE_SIZE;
+    if (lastStart > 0) {
+      url.searchParams.set('b_start', String(lastStart));
+    } else {
+      url.searchParams.delete('b_start');
+    }
+    throw redirect(`${url.pathname}?${url.searchParams.toString()}`);
+  }
+
+  return {
+    search: flattenToAppURL(results.data.items ?? []),
+    total,
+    params: query,
+    bStart,
+    bSize: PAGE_SIZE,
+    facets: aggregateFacets(facetSample.data.items ?? []),
+  };
 }
 
 export const meta = () => {

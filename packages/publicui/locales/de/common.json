@@ -1,0 +1,11 @@
+{
+  "publicui": {
+    "sitemap": "Sitemap",
+    "search": {
+      "title": "Suchergebnisse für",
+      "results": "Suchergebnisse",
+      "placeholder": "Hier schreiben...",
+      "noResults": "Keine Ergebnisse gefunden"
+    }
+  }
+}

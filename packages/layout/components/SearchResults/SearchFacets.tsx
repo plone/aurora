@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import { ChevrondownIcon } from '@plone/components/Icons';
@@ -33,6 +33,7 @@ export function SearchFacets({ facets }: SearchFacetsProps) {
 
   const selected = new Set(searchParams.getAll('Subject'));
   // Collapsed by default; open when a tag filter is already active.
+  const listId = useId();
   const [open, setOpen] = useState(selected.size > 0);
 
   if (facets.length === 0) {
@@ -62,7 +63,7 @@ export function SearchFacets({ facets }: SearchFacetsProps) {
         type="button"
         className={styles.facetsToggle}
         aria-expanded={open}
-        aria-controls="search-facet-list"
+        aria-controls={listId}
         onClick={() => setOpen((value) => !value)}
       >
         <span>{t('layout.search.filterByTag')}</span>
@@ -80,7 +81,7 @@ export function SearchFacets({ facets }: SearchFacetsProps) {
         <div className={styles.facetListInner} inert={!open}>
           <div
             className={styles.facetList}
-            id="search-facet-list"
+            id={listId}
             role="group"
             aria-label={t('layout.search.filterByTag')}
           >

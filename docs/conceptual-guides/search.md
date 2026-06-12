@@ -16,6 +16,9 @@ Plone Aurora ships a public search route at {file}`packages/publicui/routes/sear
 The search input itself lives in the site header.
 This route reads the search term from the `SearchableText` query parameter.
 
+The route answers at `/search` for the whole site, and at `/<root>/search` for a top-level folder, such as a language root folder.
+On a multilingual site, `/de/search` scopes the results to the `/de` language tree.
+
 The route queries the backend in its `loader` and renders on the server.
 It returns search results with sorting, filtering, and pagination.
 The results are friendly to accessibility tools, keyboard navigation, search engine indexers, web crawlers, and AI agents.
@@ -27,6 +30,7 @@ The components live in `@plone/layout`, so both the CMS UI and the Public UI can
 ## The query
 
 The `loader` reads the search term from the `SearchableText` query parameter, the requested page from `b_start`, the selected tags from repeated `Subject` parameters, and the sort order from `sort`.
+On the scoped route, it adds a `path` query for the root segment, so the backend only returns matches from that subtree.
 It then runs two queries against the `@search` endpoint through `@plone/client` in parallel.
 
 ```{code-block} ts
@@ -34,30 +38,36 @@ It then runs two queries against the `@search` endpoint through `@plone/client` 
 
 const baseQuery = {
   SearchableText: `${query}*`,
-  path: {
-    query: path || '/',
-  },
   use_site_search_settings: 1,
+  ...(root ? { path: { query: root } } : {}),
 };
 
-const [results, facetSample] = await Promise.all([
-  cli.search({
-    query: {
-      ...baseQuery,
-      ...(subjects.length > 0 ? { Subject: subjects } : {}),
-      b_start: bStart,
-      b_size: PAGE_SIZE,
-      ...sortToQuery(url.searchParams.get('sort')),
-    },
-  }),
-  cli.search({
-    query: {
-      ...baseQuery,
-      metadata_fields: 'Subject',
-      b_size: FACET_SAMPLE_SIZE,
-    },
-  }),
-]);
+let results;
+let facetSample;
+try {
+  [results, facetSample] = await Promise.all([
+    cli.search({
+      query: {
+        ...baseQuery,
+        ...(subjects.length > 0 ? { Subject: subjects } : {}),
+        b_start: bStart,
+        b_size: PAGE_SIZE,
+        ...sortToQuery(url.searchParams.get('sort')),
+      },
+    }),
+    cli.search({
+      query: {
+        ...baseQuery,
+        metadata_fields: 'Subject',
+        b_size: FACET_SAMPLE_SIZE,
+      },
+    }),
+  ]);
+} catch (error: any) {
+  throw data('Search failed', {
+    status: typeof error.status === 'number' ? error.status : 500,
+  });
+}
 ```
 
 The first query fetches the visible page of results.
@@ -66,16 +76,11 @@ The loader appends a trailing `*` to the term so partial words match.
 That count is everything the pagination needs.
 
 The second query feeds {ref}`the tag facets <search-facet-sampling>`.
-The loader runs both queries inside a `try` block, and translates a backend failure into an error response that the route's error boundary renders.
+A backend failure becomes an error response that the route's error boundary renders.
 
 `use_site_search_settings: 1` makes the backend honor the site's search settings, such as content types excluded from search, matching Volto's behavior.
-This flag is also the reason the loader returns early and renders only the heading when there is no `SearchableText`.
+This flag is also the reason the loader trims the term, returns early, and renders only the heading when there is no `SearchableText`.
 An empty term combined with `use_site_search_settings` makes the backend return a bare list instead of a batched result.
-
-```{note}
-The `path` in the query comes from the catch-all route segment.
-So `/search` searches the whole site, and `/some/folder/search` scopes the search to that subtree.
-```
 
 ## Result links stay in the app
 
@@ -85,9 +90,8 @@ The result titles link to `item['@id']`, and the loader flattens the items to ap
 :caption: packages/publicui/routes/search.tsx
 
 return {
-  // Flatten on the server so result links stay in-app, not the backend.
   search: flattenToAppURL(results.data.items ?? []),
-  total: results.data.items_total ?? 0,
+  total,
   params: query,
   bStart,
   bSize: PAGE_SIZE,
@@ -142,6 +146,8 @@ When the results fit on a single page, the component renders nothing.
 Each page is a link that updates the `b_start` query parameter and keeps every other parameter in the address, such as `SearchableText`, `sort`, and `Subject`.
 The component reads the current parameters with `useSearchParams` and the current path with `useLocation`, so it carries any additional filters across pages.
 
+When the address requests a `b_start` beyond the last page, the loader redirects to the last real page instead of rendering an empty result list.
+
 (search-facet-sampling)=
 
 ## Tag facets
@@ -168,9 +174,8 @@ The search markup carries the structure that assistive technology needs.
 
 -   `SearchResults` renders the results in a named `region` landmark, a `<section>` with an `aria-label`.
     Individual results are `<article>` elements, which aren't landmarks.
--   The result count is a `<p>` with `role="status"`, a polite live region, and `aria-controls` that points at the results container.
-    Screen readers announce the new count and associate it with the list it describes.
--   The result title links, the tag chips, the {guilabel}`Filter by tag` toggle, and the sort selector all show a visible `:focus-visible` outline for keyboard navigation.
+-   The result count is a `<p>` with `role="status"`, a polite live region, so screen readers announce the new count.
+-   The result title links, the tag chips, the {guilabel}`Filter by tag` toggle, the sort selector, and the pagination links all show a visible `:focus-visible` outline for keyboard navigation.
 -   The pagination is a `nav` landmark with labeled previous and next controls, and the current page carries `aria-current="page"`.
 
 While the loader re-runs for a new query, sort order, page, or filter, the route detects the navigation with `useNavigation` and passes `loading` to `SearchResults`.

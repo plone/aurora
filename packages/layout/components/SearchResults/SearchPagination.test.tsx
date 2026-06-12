@@ -62,6 +62,42 @@ describe('SearchPagination', () => {
     );
   });
 
+  it('windows long page lists with ellipses around the current page', () => {
+    renderPagination(
+      { total: 250, bStart: 100, bSize: 25 },
+      '/search?SearchableText=foo&b_start=100',
+    );
+
+    for (const page of ['1', '4', '5', '6', '10']) {
+      expect(screen.getByText(page)).toBeInTheDocument();
+    }
+    for (const page of ['2', '3', '7', '8', '9']) {
+      expect(screen.queryByText(page)).not.toBeInTheDocument();
+    }
+    expect(screen.getAllByText('…')).toHaveLength(2);
+  });
+
+  it('windows the edges without a leading or trailing ellipsis', () => {
+    renderPagination({ total: 250, bStart: 0, bSize: 25 });
+    expect(screen.getByText('1')).toBeInTheDocument();
+    expect(screen.getByText('2')).toBeInTheDocument();
+    expect(screen.getByText('10')).toBeInTheDocument();
+    expect(screen.queryByText('3')).not.toBeInTheDocument();
+    expect(screen.getAllByText('…')).toHaveLength(1);
+  });
+
+  it('windows the last page without a trailing ellipsis', () => {
+    renderPagination(
+      { total: 250, bStart: 225, bSize: 25 },
+      '/search?SearchableText=foo&b_start=225',
+    );
+    expect(screen.getByText('1')).toBeInTheDocument();
+    expect(screen.getByText('9')).toBeInTheDocument();
+    expect(screen.getByText('10')).toBeInTheDocument();
+    expect(screen.queryByText('8')).not.toBeInTheDocument();
+    expect(screen.getAllByText('…')).toHaveLength(1);
+  });
+
   it('disables previous on the first page and next on the last', () => {
     const { rerender } = renderPagination({ total: 60, bStart: 0, bSize: 25 });
     expect(screen.getByText('‹').closest('a')).toBeNull();

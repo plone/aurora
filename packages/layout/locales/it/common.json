@@ -4,7 +4,8 @@
       "switchTo": "Passa a {{ lang }}"
     },
     "search": {
-      "resultCount": "{{count}} risultati",
+      "resultCount_one": "{{count}} risultato",
+      "resultCount_other": "{{count}} risultati",
       "pagination": "Pagine dei risultati di ricerca",
       "previous": "Pagina precedente",
       "next": "Pagina successiva",

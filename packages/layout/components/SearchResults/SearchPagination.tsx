@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useSearchParams } from 'react-router';
 import { Link } from '@plone/components';
@@ -81,10 +82,7 @@ export function SearchPagination({
         </Link>
       ) : (
         <span
-          className={`
-            ${styles.pageNav}
-            ${styles.pageDisabled}
-          `}
+          className={clsx(styles.pageNav, styles.pageDisabled)}
           aria-hidden="true"
         >
           ‹
@@ -103,10 +101,7 @@ export function SearchPagination({
         ) : item === currentPage ? (
           <span
             key={item}
-            className={`
-              ${styles.pageItem}
-              ${styles.pageCurrent}
-            `}
+            className={clsx(styles.pageItem, styles.pageCurrent)}
             aria-current="page"
           >
             {item + 1}
@@ -134,10 +129,7 @@ export function SearchPagination({
         </Link>
       ) : (
         <span
-          className={`
-            ${styles.pageNav}
-            ${styles.pageDisabled}
-          `}
+          className={clsx(styles.pageNav, styles.pageDisabled)}
           aria-hidden="true"
         >
           ›

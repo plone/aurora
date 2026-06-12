@@ -18,6 +18,7 @@ export default function install(config: ConfigType) {
     Image: imageSVG,
     File: pageSVG,
     Link: linkSVG,
+    ...(config.settings.contentIcons ?? {}),
   };
 
   return config;

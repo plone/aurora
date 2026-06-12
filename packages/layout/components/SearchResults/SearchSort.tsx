@@ -1,3 +1,4 @@
+import { useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 import styles from './SearchResults.module.css';
@@ -25,7 +26,11 @@ export function SearchSort() {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const current = (searchParams.get('sort') as SortOption) || DEFAULT_SORT;
+  const raw = searchParams.get('sort');
+  const current: SortOption = SORT_OPTIONS.includes(raw as SortOption)
+    ? (raw as SortOption)
+    : DEFAULT_SORT;
+  const selectId = useId();
 
   const onChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const next = new URLSearchParams(searchParams);
@@ -40,11 +45,11 @@ export function SearchSort() {
 
   return (
     <div className={styles.sort}>
-      <label className={styles.sortLabel} htmlFor="search-sort">
+      <label className={styles.sortLabel} htmlFor={selectId}>
         {t('layout.search.sort.label')}
       </label>
       <select
-        id="search-sort"
+        id={selectId}
         className={styles.sortSelect}
         value={current}
         onChange={onChange}

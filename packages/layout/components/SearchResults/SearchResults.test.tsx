@@ -51,8 +51,7 @@ describe('SearchResults', () => {
     renderResults(items);
     const region = screen.getByRole('region', { name: /resultsLabel/i });
     expect(region).toBeInTheDocument();
-    const status = screen.getByRole('status');
-    expect(status).toHaveAttribute('aria-controls', 'search-result-items');
+    expect(screen.getByRole('status')).toBeInTheDocument();
   });
 
   it('shows the formatted effective date as metadata', () => {
@@ -62,6 +61,36 @@ describe('SearchResults', () => {
       .closest('article') as HTMLElement;
     // a localized date is rendered (year present), and not the 1969 placeholder
     expect(within(first).getByText(/2024/)).toBeInTheDocument();
+  });
+
+  it('suppresses the Plone placeholder date', () => {
+    renderResults([
+      {
+        '@id': '/news/c',
+        title: 'Article C',
+        description: '',
+        effective: '1969-12-31T00:00:00+00:00',
+      },
+    ]);
+    const article = screen
+      .getByRole('link', { name: 'Article C' })
+      .closest('article') as HTMLElement;
+    expect(within(article).queryByText(/1969/)).toBeNull();
+  });
+
+  it('keeps a real date from 1970', () => {
+    renderResults([
+      {
+        '@id': '/news/d',
+        title: 'Article D',
+        description: '',
+        effective: '1970-06-15T00:00:00+00:00',
+      },
+    ]);
+    const article = screen
+      .getByRole('link', { name: 'Article D' })
+      .closest('article') as HTMLElement;
+    expect(within(article).getByText(/1970/)).toBeInTheDocument();
   });
 
   it('does not render a redundant "read more" link', () => {

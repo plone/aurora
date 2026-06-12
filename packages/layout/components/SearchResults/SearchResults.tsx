@@ -11,15 +11,20 @@ export interface SearchResultsProps {
   loading?: boolean;
 }
 
+const PLACEHOLDER_DATE = '1969-12-31T00:00:00+00:00';
+
 function formatDate(value: string | undefined, locale: string) {
-  if (!value || value.startsWith('1969') || value.startsWith('1970')) {
+  if (!value || value === PLACEHOLDER_DATE) {
     return null;
   }
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
     return null;
   }
-  return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(date);
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: 'medium',
+    timeZone: 'UTC',
+  }).format(date);
 }
 
 export function SearchResults({
@@ -35,16 +40,12 @@ export function SearchResults({
       aria-label={t('layout.search.resultsLabel')}
       aria-busy={loading || undefined}
     >
-      <p
-        className={styles.count}
-        role="status"
-        aria-controls="search-result-items"
-      >
+      <p className={styles.count} role="status">
         {loading
           ? t('layout.search.loading')
           : t('layout.search.resultCount', { count: total })}
       </p>
-      <div id="search-result-items" className={styles.list}>
+      <div className={styles.list}>
         {items.map((item) => {
           const Icon = getContentIcon(item['@type']) ?? PageIcon;
           const date = formatDate(item.effective, i18n.language);
@@ -55,7 +56,9 @@ export function SearchResults({
               </span>
               <div className={styles.body}>
                 <h2 className={styles.headline}>
-                  <Link href={item['@id']}>{item.title}</Link>
+                  <Link className={styles.headlineLink} href={item['@id']}>
+                    {item.title}
+                  </Link>
                 </h2>
                 {item.description && (
                   <p className={styles.description}>{item.description}</p>
