@@ -1,9 +1,18 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import config from '@plone/registry';
 import { SOMERSAULT_KEY } from '@plone/plate/constants';
-import type { Content } from '@plone/types';
+import type { Content, ContentBase } from '@plone/types';
 import installMigrations from './migrations.server';
 import { migrateContent } from './content-migrations.server';
+
+type TestContent = Partial<ContentBase> & {
+  '@id': string;
+  title: string;
+  blocks: Record<string, unknown>;
+  blocks_layout: {
+    items: string[];
+  };
+};
 
 describe('content migrations', () => {
   afterEach(() => {
@@ -20,7 +29,7 @@ describe('content migrations', () => {
     } as typeof config.blocks;
     installMigrations();
 
-    const content: Content = {
+    const content: TestContent = {
       '@id': 'http://example.com/',
       title: 'Page title',
       blocks: {
@@ -35,9 +44,9 @@ describe('content migrations', () => {
       blocks_layout: {
         items: ['text', 'titleBlock'],
       },
-    } as Content;
+    };
 
-    const migrated = migrateContent(content);
+    const migrated = migrateContent(content as unknown as Content);
 
     expect(migrated.blocks?.[SOMERSAULT_KEY]).toEqual({
       '@type': SOMERSAULT_KEY,
@@ -65,7 +74,7 @@ describe('content migrations', () => {
     } as typeof config.blocks;
     installMigrations();
 
-    const content: Content = {
+    const content: TestContent = {
       '@id': 'http://example.com/',
       title: 'Page title',
       blocks: {
@@ -91,9 +100,9 @@ describe('content migrations', () => {
       blocks_layout: {
         items: ['titleBlock', 'listing', 'image', 'custom'],
       },
-    } as Content;
+    };
 
-    const migrated = migrateContent(content);
+    const migrated = migrateContent(content as unknown as Content);
 
     expect(migrated.blocks?.[SOMERSAULT_KEY]).toEqual({
       '@type': SOMERSAULT_KEY,
