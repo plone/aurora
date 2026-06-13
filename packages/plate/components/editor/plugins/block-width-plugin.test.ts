@@ -223,6 +223,55 @@ describe('block width plugin', () => {
     });
   });
 
+  it('uses blockWidth data as a baseline style field for ploneBlock nodes without schema style fields', () => {
+    registryBlocks.widths = [
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+      {
+        name: 'full',
+        label: 'Full Width',
+        style: { '--block-width': '100%' },
+      },
+    ];
+    registryBlocks.blocksConfig = {
+      teaser: {
+        blockSchema: {
+          title: 'Teaser',
+          fieldsets: [],
+          required: [],
+          properties: {},
+        },
+      },
+    };
+
+    const transformProps = (BaseStyleFieldsPlugin as any).inject.nodeProps
+      .transformProps as TransformPropsFn;
+
+    expect(
+      transformProps({
+        element: {
+          type: PLONE_BLOCK_TYPE,
+          '@type': 'teaser',
+          blockWidth: 'full',
+          children: [{ text: '' }],
+        },
+        props: {
+          style: {
+            color: 'red',
+          },
+        },
+      }),
+    ).toEqual({
+      style: {
+        color: 'red',
+        '--block-width': '100%',
+      },
+    });
+  });
+
   it('uses schema-marked blockWidth style fields for ploneBlock nodes', () => {
     registryBlocks.widths = [
       {

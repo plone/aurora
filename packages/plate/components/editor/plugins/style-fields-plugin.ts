@@ -46,11 +46,15 @@ const getElementStyleFieldConfigs = (
       .blocksConfig as Record<string, BlockConfigBase> | undefined;
 
     const currentBlockConfig = blockConfig?.[blockType];
-
-    return getStyleFieldsFromBlockSchema(
+    const styleFields = getStyleFieldsFromBlockSchema(
       currentBlockConfig,
       element as unknown as BlocksFormData,
     );
+
+    return {
+      ...styleFields,
+      blockWidth: styleFields.blockWidth ?? {},
+    };
   }
 
   return {};
