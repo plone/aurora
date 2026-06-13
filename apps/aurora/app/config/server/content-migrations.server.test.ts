@@ -95,7 +95,7 @@ describe('content migrations', () => {
           },
         },
       },
-    } as typeof config.blocks;
+    } as unknown as typeof config.blocks;
     installMigrations();
 
     const content: TestContent = {
