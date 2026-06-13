@@ -114,10 +114,6 @@ export const resolveBlockWidthConfig = (
   editor: SlateEditor,
   element?: TElement | null,
 ): BlockWidthConfig => {
-  if (element?.type === 'unknown') {
-    return {};
-  }
-
   const registryConfig =
     element?.type === 'unknown'
       ? getPloneBlockRegistryWidthConfig(element)
@@ -172,16 +168,10 @@ export const applyBlockWidthDefaultsInValue = (value: unknown[]) => {
     const element = node as ValueElement;
     if (typeof element.type !== 'string') return;
 
-    if (element.type === 'unknown') {
-      if (Array.isArray(element.children)) {
-        element.children.forEach(visit);
-      }
-      return;
-    }
-
-    const registryConfig = getPlateBlockRegistryWidthConfig(
-      element as TElement,
-    );
+    const registryConfig =
+      element.type === 'unknown'
+        ? getPloneBlockRegistryWidthConfig(element as TElement)
+        : getPlateBlockRegistryWidthConfig(element as TElement);
     const defaultWidth = registryConfig.defaultWidth ?? fallbackDefaultWidth;
     const widths = registryConfig.widths?.length
       ? registryConfig.widths
