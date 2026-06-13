@@ -146,7 +146,7 @@ export interface BlockConfigBase {
   // TODO: Improve extensions shape
   extensions?: Record<string, BlockExtension>;
   blocksConfig?: Partial<BlocksConfigData>;
-  blockWidth?: BlockWidthConfig;
+  defaultBlockWidth?: string;
 }
 
 export interface PlateBlockConfigBase {

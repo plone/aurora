@@ -1,1 +1,1 @@
-Updated classic block rendering to use the shared block anatomy class and data-attribute contract. @sneridagh
+Updated block rendering to rely on the Somersault renderer and removed the classic block wrapper fallback. @sneridagh

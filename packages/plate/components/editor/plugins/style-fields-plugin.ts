@@ -18,6 +18,7 @@ import {
 import { toPlatePlugin } from 'platejs/react';
 
 export const STYLE_FIELDS_KEY = 'styleFields';
+const DEFAULT_BLOCK_WIDTH = 'default';
 type StyleFieldConfig = {
   defaultValue?: string;
   values?: readonly string[];
@@ -53,7 +54,10 @@ const getElementStyleFieldConfigs = (
 
     return {
       ...styleFields,
-      blockWidth: styleFields.blockWidth ?? {},
+      blockWidth: styleFields.blockWidth ?? {
+        defaultValue:
+          currentBlockConfig?.defaultBlockWidth ?? DEFAULT_BLOCK_WIDTH,
+      },
     };
   }
 

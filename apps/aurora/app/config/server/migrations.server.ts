@@ -46,7 +46,11 @@ const getMigratedPloneBlockWidth = (block: Record<string, unknown>) => {
     block as BlocksFormData,
   );
 
-  return styleFields.blockWidth?.defaultValue ?? DEFAULT_BLOCK_WIDTH;
+  return (
+    styleFields.blockWidth?.defaultValue ??
+    blockConfig?.defaultBlockWidth ??
+    DEFAULT_BLOCK_WIDTH
+  );
 };
 
 export default function install() {

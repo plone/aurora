@@ -142,7 +142,7 @@ describe('block width plugin', () => {
     });
   });
 
-  it('does not use blocksConfig.blockWidth for ploneBlock nodes in BlockWidthPlugin', () => {
+  it('uses the baseline default for ploneBlock style fields without schema style fields', () => {
     registryBlocks.widths = [
       {
         name: 'default',
@@ -157,45 +157,11 @@ describe('block width plugin', () => {
     ];
     registryBlocks.blocksConfig = {
       image: {
-        blockWidth: {
-          defaultWidth: 'layout',
-          widths: ['layout'],
-        },
-      },
-    };
-
-    const editor = createEditor();
-
-    expect(
-      getBlockWidthConfig(editor, {
-        type: PLONE_BLOCK_TYPE,
-        '@type': 'image',
-        children: [{ text: '' }],
-      } as any),
-    ).toEqual({
-      defaultWidth: 'default',
-      widths: ['default', 'layout'],
-    });
-  });
-
-  it('does not use blocksConfig.blockWidth as a fallback for ploneBlock style fields', () => {
-    registryBlocks.widths = [
-      {
-        name: 'default',
-        label: 'Default',
-        style: { '--block-width': 'var(--default-container-width)' },
-      },
-      {
-        name: 'layout',
-        label: 'Layout',
-        style: { '--block-width': 'var(--layout-container-width)' },
-      },
-    ];
-    registryBlocks.blocksConfig = {
-      image: {
-        blockWidth: {
-          defaultWidth: 'layout',
-          widths: ['layout'],
+        blockSchema: {
+          title: 'Image',
+          fieldsets: [],
+          required: [],
+          properties: {},
         },
       },
     };
@@ -219,6 +185,7 @@ describe('block width plugin', () => {
     ).toEqual({
       style: {
         color: 'red',
+        '--block-width': 'var(--default-container-width)',
       },
     });
   });
@@ -270,6 +237,212 @@ describe('block width plugin', () => {
         '--block-width': '100%',
       },
     });
+  });
+
+  it('uses defaultBlockWidth for ploneBlock nodes without schema style fields', () => {
+    registryBlocks.widths = [
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+      {
+        name: 'layout',
+        label: 'Layout',
+        style: { '--block-width': 'var(--layout-container-width)' },
+      },
+    ];
+    registryBlocks.blocksConfig = {
+      teaser: {
+        defaultBlockWidth: 'layout',
+        blockSchema: {
+          title: 'Teaser',
+          fieldsets: [],
+          required: [],
+          properties: {},
+        },
+      },
+    };
+
+    const transformProps = (BaseStyleFieldsPlugin as any).inject.nodeProps
+      .transformProps as TransformPropsFn;
+
+    expect(
+      transformProps({
+        element: {
+          type: PLONE_BLOCK_TYPE,
+          '@type': 'teaser',
+          children: [{ text: '' }],
+        },
+        props: {
+          style: {
+            color: 'red',
+          },
+        },
+      }),
+    ).toEqual({
+      style: {
+        color: 'red',
+        '--block-width': 'var(--layout-container-width)',
+      },
+    });
+  });
+
+  it('adds the baseline default blockWidth when creating ploneBlock nodes without schema style fields', () => {
+    registryBlocks.widths = [
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+      {
+        name: 'full',
+        label: 'Full Width',
+        style: { '--block-width': '100%' },
+      },
+    ];
+    registryBlocks.blocksConfig = {
+      teaser: {
+        blockSchema: {
+          title: 'Teaser',
+          fieldsets: [],
+          required: [],
+          properties: {},
+        },
+      },
+    };
+
+    const node = {
+      type: PLONE_BLOCK_TYPE,
+      '@type': 'teaser',
+      children: [{ text: '' }],
+    };
+    const insertNodes = vi.fn();
+    const editor = {
+      api: {
+        create: {
+          block: vi.fn(() => node),
+        },
+      },
+      tf: {
+        insertNodes,
+      },
+    } as any;
+
+    const extendedEditor = (BaseStyleFieldsPlugin as any).extendEditor({
+      editor,
+    });
+
+    expect(extendedEditor.api.create.block()).toEqual({
+      ...node,
+      blockWidth: 'default',
+    });
+
+    extendedEditor.tf.insertNodes(node, { at: [0] });
+
+    expect(insertNodes).toHaveBeenCalledWith(
+      {
+        ...node,
+        blockWidth: 'default',
+      },
+      { at: [0] },
+    );
+  });
+
+  it('adds configured defaultBlockWidth when creating ploneBlock nodes without schema style fields', () => {
+    registryBlocks.widths = [
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+      {
+        name: 'layout',
+        label: 'Layout',
+        style: { '--block-width': 'var(--layout-container-width)' },
+      },
+    ];
+    registryBlocks.blocksConfig = {
+      teaser: {
+        defaultBlockWidth: 'layout',
+        blockSchema: {
+          title: 'Teaser',
+          fieldsets: [],
+          required: [],
+          properties: {},
+        },
+      },
+    };
+
+    const node = {
+      type: PLONE_BLOCK_TYPE,
+      '@type': 'teaser',
+      children: [{ text: '' }],
+    };
+    const editor = {
+      api: {
+        create: {
+          block: vi.fn(() => node),
+        },
+      },
+      tf: {
+        insertNodes: vi.fn(),
+      },
+    } as any;
+
+    const extendedEditor = (BaseStyleFieldsPlugin as any).extendEditor({
+      editor,
+    });
+
+    expect(extendedEditor.api.create.block()).toEqual({
+      ...node,
+      blockWidth: 'layout',
+    });
+  });
+
+  it('adds configured defaultBlockWidth when normalizing initial ploneBlock values without schema style fields', () => {
+    registryBlocks.widths = [
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+      {
+        name: 'layout',
+        label: 'Layout',
+        style: { '--block-width': 'var(--layout-container-width)' },
+      },
+    ];
+    registryBlocks.blocksConfig = {
+      teaser: {
+        defaultBlockWidth: 'layout',
+        blockSchema: {
+          title: 'Teaser',
+          fieldsets: [],
+          required: [],
+          properties: {},
+        },
+      },
+    };
+
+    const value = [
+      {
+        type: PLONE_BLOCK_TYPE,
+        '@type': 'teaser',
+        children: [{ text: '' }],
+      },
+    ];
+
+    (BaseStyleFieldsPlugin as any).normalizeInitialValue({ value });
+
+    expect(value).toEqual([
+      {
+        type: PLONE_BLOCK_TYPE,
+        '@type': 'teaser',
+        blockWidth: 'layout',
+        children: [{ text: '' }],
+      },
+    ]);
   });
 
   it('uses schema-marked blockWidth style fields for ploneBlock nodes', () => {

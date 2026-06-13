@@ -71,6 +71,15 @@ describe('content migrations', () => {
       blocksConfig: {
         listing: {},
         image: {},
+        configuredWidth: {
+          defaultBlockWidth: 'layout',
+          blockSchema: {
+            title: 'Configured width block',
+            fieldsets: [],
+            required: [],
+            properties: {},
+          },
+        },
         schemaWidth: {
           blockSchema: {
             title: 'Schema width block',
@@ -107,6 +116,9 @@ describe('content migrations', () => {
           url: '/image',
           alt: 'Example image',
         },
+        configuredWidth: {
+          '@type': 'configuredWidth',
+        },
         schemaWidth: {
           '@type': 'schemaWidth',
         },
@@ -116,7 +128,14 @@ describe('content migrations', () => {
         },
       },
       blocks_layout: {
-        items: ['titleBlock', 'listing', 'image', 'schemaWidth', 'custom'],
+        items: [
+          'titleBlock',
+          'listing',
+          'image',
+          'configuredWidth',
+          'schemaWidth',
+          'custom',
+        ],
       },
     };
 
@@ -146,6 +165,12 @@ describe('content migrations', () => {
           children: [{ text: '' }],
           type: PLONE_BLOCK_TYPE,
           url: '/image',
+        },
+        {
+          '@type': 'configuredWidth',
+          blockWidth: 'layout',
+          children: [{ text: '' }],
+          type: PLONE_BLOCK_TYPE,
         },
         {
           '@type': 'schemaWidth',

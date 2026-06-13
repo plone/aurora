@@ -56,13 +56,11 @@ The anatomy contract is resolved by `resolveBlockAnatomy` in `@plone/helpers`.
 It is consumed by:
 
 - `BlockAnatomyPlugin` in `@plone/plate` for Plate-native blocks and registry-backed Plone blocks in Plate/Somersault rendering
-- `BlockWrapper` in `@plone/layout` for Plone Volto block fallback rendering (not-Plate-native, non-Somersault)
 
 This avoids duplicating class-name rules in individual blocks.
 
-Plone Volto block rendering and Somersault editor rendering are separate paths.
-Plone Volto rendering uses `BlockWrapper`.
 Somersault editor rendering goes through Plate and receives the same classes from `BlockAnatomyPlugin`.
+Public rendering uses `SomersaultRenderer`, which uses the Plate renderer path and the same anatomy plugin contract.
 
 ## Plate-native block categories
 

@@ -206,7 +206,8 @@ That means:
 
 - generic style fields such as `theme` are schema-driven
 - Plate-native block widths are configuration-driven
-- registry-backed Plone block widths are schema-driven
+- registry-backed Plone block widths are schema-driven when they expose editor controls
+- registry-backed Plone block widths can use `defaultBlockWidth` when they only need a default value
 
 How `blockWidth` is resolved depends on where the block is rendered:
 
@@ -215,6 +216,8 @@ How `blockWidth` is resolved depends on where the block is rendered:
 - In the Plate editor, registry-backed Plone blocks are adapted to `ploneBlock` nodes.
   They do not use `BlockWidthPlugin`.
   `StyleFieldsPlugin` reads their real Plone block type from `element['@type']`, then reads `blockWidth` from fields marked with `styleField` in that block schema.
+  If the schema does not mark `blockWidth` as a style field, `StyleFieldsPlugin` uses `config.blocks.blocksConfig[element['@type']].defaultBlockWidth`.
+  If that default is not configured, it uses `default`.
 
 The global width definitions themselves have not changed.
 They are still defined in `config.blocks.widths` and resolved through the registered `blockWidth` style definitions.
@@ -325,5 +328,6 @@ For generic style-backed fields:
 - expose its values through `choices` or `actions` (or other widget configuration)
 - register a `styleFieldDefinition` utility with the same field name
 
-For registry-backed Plone blocks, define `blockWidth` in the block schema and mark it with `styleField`.
+For registry-backed Plone blocks with editor width controls, define `blockWidth` in the block schema and mark it with `styleField`.
+For registry-backed Plone blocks that need a default width without editor controls, set `defaultBlockWidth` in `config.blocks.blocksConfig`.
 For Plate-native blocks, keep using the existing `blockWidth` configuration in `plateBlocksConfig`.
