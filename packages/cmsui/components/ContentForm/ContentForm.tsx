@@ -7,6 +7,7 @@ import {
   AccordionItemTrigger,
   AccordionPanel,
   Tabs,
+  Link,
 } from '@plone/components/quanta';
 import { InitAtoms } from '@plone/helpers';
 import { Plug } from '@plone/layout/components/Pluggable';
@@ -16,7 +17,6 @@ import clsx from 'clsx';
 import { createStore, Provider, useAtom } from 'jotai';
 import type { ReactNode } from 'react';
 import { useRef } from 'react';
-import { Link } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import { useFetcher, type SubmitTarget } from 'react-router';
 import { useAppForm } from '../Form/Form';
@@ -158,14 +158,13 @@ export default function ContentForm({
               id="button-cancel"
               dependencies={[content['@id']] as any}
             >
-              <Link aria-label="Cancel" href={content['@id']}>
+              <Link aria-label={t('cmsui.cancel')} href={content['@id']}>
                 <Close />
               </Link>
             </Plug>
             <Plug pluggable="toolbar-bottom" id="button-settings">
               <button
-                type="button"
-                aria-label="Settings"
+                aria-label={t('cmsui.toolbar.settings')}
                 onClick={() => setCollapsed((state) => !state)}
               >
                 <Settings />
