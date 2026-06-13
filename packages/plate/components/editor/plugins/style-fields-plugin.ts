@@ -94,19 +94,11 @@ const withInsertedStyleFieldDefaults = (nodes: unknown): unknown => {
     return nodes;
   }
 
-  const children: unknown[] | undefined = Array.isArray(nodes.children)
-    ? nodes.children.map((child: unknown) =>
-        withInsertedStyleFieldDefaults(child),
-      )
-    : nodes.children;
-  const nextNode: TElement =
-    children === nodes.children ? nodes : ({ ...nodes, children } as TElement);
-
-  return applyStyleFieldDefaultsToElement(nextNode);
+  return applyStyleFieldDefaultsToElement(nodes);
 };
 
 const applyStyleFieldDefaultsInValue = (value: unknown[]) => {
-  const visit = (node: unknown) => {
+  const applyDefaults = (node: unknown) => {
     if (!node || typeof node !== 'object') return;
 
     const element = node as ValueElement;
@@ -122,13 +114,9 @@ const applyStyleFieldDefaultsInValue = (value: unknown[]) => {
       container: undefined,
       resolveDefinitions: getStyleFieldDefinitionsFromRegistry,
     });
-
-    if (Array.isArray(element.children)) {
-      element.children.forEach(visit);
-    }
   };
 
-  value.forEach(visit);
+  value.forEach(applyDefaults);
   return value;
 };
 

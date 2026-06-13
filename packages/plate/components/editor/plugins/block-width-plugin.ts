@@ -149,16 +149,13 @@ export const applyBlockWidthDefaultsInValue = (value: unknown[]) => {
   const fallbackWidths = getBlockWidthValueList();
   const fallbackDefaultWidth = getDefaultBlockWidth();
 
-  const visit = (node: unknown) => {
+  const applyDefault = (node: unknown) => {
     if (!node || typeof node !== 'object') return;
 
     const element = node as ValueElement;
     if (typeof element.type !== 'string') return;
 
     if (element.type === PLONE_BLOCK_TYPE) {
-      if (Array.isArray(element.children)) {
-        element.children.forEach(visit);
-      }
       return;
     }
 
@@ -174,13 +171,9 @@ export const applyBlockWidthDefaultsInValue = (value: unknown[]) => {
     if (typeof currentWidth !== 'string' || !widths.includes(currentWidth)) {
       element[BLOCK_WIDTH_KEY] = defaultWidth;
     }
-
-    if (Array.isArray(element.children)) {
-      element.children.forEach(visit);
-    }
   };
 
-  value.forEach(visit);
+  value.forEach(applyDefault);
   return value;
 };
 
@@ -230,19 +223,11 @@ const withInsertedBlockWidthDefaults = (
     return nodes;
   }
 
-  const children: unknown[] | undefined = Array.isArray(nodes.children)
-    ? nodes.children.map((child: unknown) =>
-        withInsertedBlockWidthDefaults(editor, child),
-      )
-    : nodes.children;
-  const nextNode: TElement =
-    children === nodes.children ? nodes : ({ ...nodes, children } as TElement);
-
-  if (!editor.api.isBlock(nextNode) || nextNode.type === PLONE_BLOCK_TYPE) {
-    return nextNode;
+  if (!editor.api.isBlock(nodes) || nodes.type === PLONE_BLOCK_TYPE) {
+    return nodes;
   }
 
-  return withBlockWidthDefaults(editor, nextNode);
+  return withBlockWidthDefaults(editor, nodes);
 };
 
 const setBlockWidth = (
@@ -291,7 +276,8 @@ export const BaseBlockWidthPlugin = createSlatePlugin({
         if (
           !element ||
           !ElementApi.isElement(element) ||
-          element.type === PLONE_BLOCK_TYPE
+          element.type === PLONE_BLOCK_TYPE ||
+          (editor?.api?.isBlock && !editor.api.isBlock(element))
         ) {
           return props;
         }

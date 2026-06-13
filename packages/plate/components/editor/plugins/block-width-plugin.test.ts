@@ -349,6 +349,89 @@ describe('block width plugin', () => {
     );
   });
 
+  it('does not add style field defaults to nested inserted ploneBlock descendants', () => {
+    registryBlocks.widths = [
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+      {
+        name: 'layout',
+        label: 'Layout',
+        style: { '--block-width': 'var(--layout-container-width)' },
+      },
+    ];
+    registryBlocks.blocksConfig = {
+      teaser: {
+        defaultBlockWidth: 'default',
+        blockSchema: {
+          title: 'Teaser',
+          fieldsets: [],
+          required: [],
+          properties: {},
+        },
+      },
+    };
+
+    const node = {
+      type: PLONE_BLOCK_TYPE,
+      '@type': 'teaser',
+      title: 'Root teaser',
+      children: [
+        {
+          type: PLONE_BLOCK_TYPE,
+          '@type': 'teaser',
+          title: 'Nested teaser',
+          description: 'Nested teaser body',
+          children: [
+            {
+              type: 'p',
+              children: [
+                { text: 'Nested teaser text with ' },
+                {
+                  type: 'a',
+                  url: 'https://plone.org',
+                  children: [{ text: 'a link' }],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    const editor = {
+      api: {
+        create: {
+          block: vi.fn(() => node),
+        },
+      },
+      tf: {
+        insertNodes: vi.fn(),
+      },
+    } as any;
+    const insertNodes = editor.tf.insertNodes;
+
+    const extendedEditor = (BaseStyleFieldsPlugin as any).extendEditor({
+      editor,
+    });
+
+    expect(extendedEditor.api.create.block()).toEqual({
+      ...node,
+      blockWidth: 'default',
+    });
+
+    extendedEditor.tf.insertNodes(node, { at: [0] });
+
+    expect(insertNodes).toHaveBeenCalledWith(
+      {
+        ...node,
+        blockWidth: 'default',
+      },
+      { at: [0] },
+    );
+  });
+
   it('adds configured defaultBlockWidth when creating ploneBlock nodes without schema style fields', () => {
     registryBlocks.widths = [
       {
@@ -445,6 +528,93 @@ describe('block width plugin', () => {
     ]);
   });
 
+  it('does not add style field defaults to nested initial ploneBlock descendants', () => {
+    registryBlocks.widths = [
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+      {
+        name: 'layout',
+        label: 'Layout',
+        style: { '--block-width': 'var(--layout-container-width)' },
+      },
+    ];
+    registryBlocks.blocksConfig = {
+      teaser: {
+        defaultBlockWidth: 'layout',
+        blockSchema: {
+          title: 'Teaser',
+          fieldsets: [],
+          required: [],
+          properties: {},
+        },
+      },
+    };
+
+    const value = [
+      {
+        type: PLONE_BLOCK_TYPE,
+        '@type': 'teaser',
+        title: 'Root teaser',
+        children: [
+          {
+            type: PLONE_BLOCK_TYPE,
+            '@type': 'teaser',
+            title: 'Nested teaser',
+            description: 'Nested teaser body',
+            children: [
+              {
+                type: 'p',
+                children: [
+                  { text: 'Nested teaser text with ' },
+                  {
+                    type: 'a',
+                    url: 'https://plone.org',
+                    children: [{ text: 'a link' }],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ];
+
+    (BaseStyleFieldsPlugin as any).normalizeInitialValue({ value });
+
+    expect(value).toEqual([
+      {
+        type: PLONE_BLOCK_TYPE,
+        '@type': 'teaser',
+        title: 'Root teaser',
+        blockWidth: 'layout',
+        children: [
+          {
+            type: PLONE_BLOCK_TYPE,
+            '@type': 'teaser',
+            title: 'Nested teaser',
+            description: 'Nested teaser body',
+            children: [
+              {
+                type: 'p',
+                children: [
+                  { text: 'Nested teaser text with ' },
+                  {
+                    type: 'a',
+                    url: 'https://plone.org',
+                    children: [{ text: 'a link' }],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
   it('uses schema-marked blockWidth style fields for ploneBlock nodes', () => {
     registryBlocks.widths = [
       {
@@ -508,6 +678,11 @@ describe('block width plugin', () => {
         name: 'default',
         label: 'Default',
         style: { '--block-width': 'var(--default-container-width)' },
+      },
+      {
+        name: 'layout',
+        label: 'Layout',
+        style: { '--block-width': 'var(--layout-container-width)' },
       },
     ];
     registryBlocks.blocksConfig = {
@@ -674,6 +849,252 @@ describe('block width plugin', () => {
       style: {
         color: 'red',
         '--block-width': 'var(--narrow-container-width)',
+      },
+    });
+  });
+
+  it('adds block width defaults only to top-level initial native Plate blocks', () => {
+    registryBlocks.widths = [
+      {
+        name: 'narrow',
+        label: 'Narrow',
+        style: { '--block-width': 'var(--narrow-container-width)' },
+      },
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+      {
+        name: 'layout',
+        label: 'Layout',
+        style: { '--block-width': 'var(--layout-container-width)' },
+      },
+    ];
+    registryBlocks.plateBlocksConfig = {
+      code_block: {
+        blockWidth: {
+          defaultWidth: 'layout',
+          widths: ['layout'],
+        },
+      },
+      code_line: {
+        blockWidth: {
+          defaultWidth: 'narrow',
+          widths: ['narrow'],
+        },
+      },
+    };
+
+    const value = [
+      {
+        children: [
+          {
+            children: [{ text: 'and code as a block' }],
+            id: 'PNn1nGth7G',
+            type: 'code_line',
+          },
+        ],
+        id: 'kI_CM1pABf',
+        type: 'code_block',
+      },
+      {
+        type: 'p',
+        children: [
+          {
+            type: 'span',
+            children: [{ text: 'Nested inline text' }],
+          },
+        ],
+      },
+    ];
+
+    (BaseBlockWidthPlugin as any).normalizeInitialValue({ value });
+
+    expect(value).toEqual([
+      {
+        blockWidth: 'layout',
+        children: [
+          {
+            children: [{ text: 'and code as a block' }],
+            id: 'PNn1nGth7G',
+            type: 'code_line',
+          },
+        ],
+        id: 'kI_CM1pABf',
+        type: 'code_block',
+      },
+      {
+        type: 'p',
+        blockWidth: 'default',
+        children: [
+          {
+            type: 'span',
+            children: [{ text: 'Nested inline text' }],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('adds block width defaults only to inserted top-level native Plate blocks', () => {
+    registryBlocks.widths = [
+      {
+        name: 'narrow',
+        label: 'Narrow',
+        style: { '--block-width': 'var(--narrow-container-width)' },
+      },
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+      {
+        name: 'layout',
+        label: 'Layout',
+        style: { '--block-width': 'var(--layout-container-width)' },
+      },
+    ];
+    registryBlocks.plateBlocksConfig = {
+      code_block: {
+        blockWidth: {
+          defaultWidth: 'layout',
+          widths: ['layout'],
+        },
+      },
+      code_line: {
+        blockWidth: {
+          defaultWidth: 'narrow',
+          widths: ['narrow'],
+        },
+      },
+    };
+
+    const node = {
+      children: [
+        {
+          children: [{ text: 'and code as a block' }],
+          id: 'PNn1nGth7G',
+          type: 'code_line',
+        },
+      ],
+      id: 'kI_CM1pABf',
+      type: 'code_block',
+    };
+    const editor = {
+      getOptions: vi.fn(() => ({ defaultWidths: ['default'] })),
+      api: {
+        create: {
+          block: vi.fn(() => node),
+        },
+        isBlock: vi.fn((element) => element.type === 'code_block'),
+      },
+      tf: {
+        insertNodes: vi.fn(),
+      },
+    } as any;
+    const insertNodes = editor.tf.insertNodes;
+
+    const extendedEditor = (BaseBlockWidthPlugin as any).extendEditor({
+      editor,
+    });
+
+    expect(extendedEditor.api.create.block()).toEqual({
+      ...node,
+      blockWidth: 'layout',
+    });
+
+    extendedEditor.tf.insertNodes(node, { at: [0] });
+
+    expect(insertNodes).toHaveBeenCalledWith(
+      {
+        ...node,
+        blockWidth: 'layout',
+      },
+      { at: [0] },
+    );
+  });
+
+  it('does not inject block width styles into nested native Plate children', () => {
+    registryBlocks.widths = [
+      {
+        name: 'narrow',
+        label: 'Narrow',
+        style: { '--block-width': 'var(--narrow-container-width)' },
+      },
+      {
+        name: 'layout',
+        label: 'Layout',
+        style: { '--block-width': 'var(--layout-container-width)' },
+      },
+    ];
+    registryBlocks.plateBlocksConfig = {
+      code_block: {
+        blockWidth: {
+          defaultWidth: 'layout',
+          widths: ['layout'],
+        },
+      },
+      code_line: {
+        blockWidth: {
+          defaultWidth: 'narrow',
+          widths: ['narrow'],
+        },
+      },
+    };
+
+    const editor = {
+      getOptions: vi.fn(() => ({ defaultWidths: ['default'] })),
+      api: {
+        isBlock: vi.fn((element) => element.type === 'code_block'),
+      },
+    } as any;
+    const transformProps = (BaseBlockWidthPlugin as any).inject.nodeProps
+      .transformProps as TransformPropsFn;
+    const codeBlock = {
+      children: [
+        {
+          blockWidth: 'narrow',
+          children: [{ text: 'and code as a block' }],
+          id: 'PNn1nGth7G',
+          type: 'code_line',
+        },
+      ],
+      id: 'kI_CM1pABf',
+      type: 'code_block',
+    };
+    const codeLine = codeBlock.children[0];
+
+    expect(
+      transformProps({
+        editor,
+        element: codeBlock,
+        props: {
+          style: {
+            color: 'red',
+          },
+        },
+      } as any),
+    ).toEqual({
+      style: {
+        color: 'red',
+        '--block-width': 'var(--layout-container-width)',
+      },
+    });
+
+    expect(
+      transformProps({
+        editor,
+        element: codeLine,
+        props: {
+          style: {
+            color: 'red',
+          },
+        },
+      } as any),
+    ).toEqual({
+      style: {
+        color: 'red',
       },
     });
   });
