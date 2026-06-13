@@ -12,6 +12,17 @@ import type {
   SomersaultMigrationArgs,
 } from '../types';
 
+const isRegisteredNativeBlock = (block: Record<string, unknown>) => {
+  const blockType = block['@type'];
+  if (typeof blockType !== 'string') return false;
+
+  const blocksConfig = config.blocks?.blocksConfig as
+    | Record<string, unknown>
+    | undefined;
+
+  return Boolean(blocksConfig?.[blockType]);
+};
+
 export default function install() {
   config.registerUtility({
     name: 'somersaultBlockMigrationTitle',
@@ -36,6 +47,21 @@ export default function install() {
     type: 'somersaultBlockMigration',
     method: ({ block }: SomersaultBlockMigrationArgs) =>
       Array.isArray(block.value) ? block.value : [],
+  });
+
+  config.registerUtility({
+    name: 'somersaultBlockMigrationUnknown',
+    type: 'somersaultBlockMigration',
+    method: ({ block }: SomersaultBlockMigrationArgs) =>
+      isRegisteredNativeBlock(block) && !Array.isArray(block.value)
+        ? [
+            {
+              ...block,
+              type: 'unknown',
+              children: [{ text: '' }],
+            },
+          ]
+        : [],
   });
 
   config.registerUtility({
