@@ -68,18 +68,8 @@ describe('content migrations', () => {
   it('moves native blocks into the somersault field as unknown nodes', () => {
     config.blocks = {
       blocksConfig: {
-        listing: {
-          blockWidth: {
-            defaultWidth: 'layout',
-            widths: ['layout'],
-          },
-        },
-        image: {
-          blockWidth: {
-            defaultWidth: 'full',
-            widths: ['full'],
-          },
-        },
+        listing: {},
+        image: {},
       },
     } as typeof config.blocks;
     installMigrations();
@@ -124,7 +114,6 @@ describe('content migrations', () => {
         },
         {
           '@type': 'listing',
-          blockWidth: 'layout',
           children: [{ text: '' }],
           querystring: {
             criteria: [],
@@ -134,7 +123,6 @@ describe('content migrations', () => {
         {
           '@type': 'image',
           alt: 'Example image',
-          blockWidth: 'full',
           children: [{ text: '' }],
           type: 'unknown',
           url: '/image',

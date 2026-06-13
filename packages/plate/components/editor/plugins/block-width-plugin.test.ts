@@ -141,7 +141,7 @@ describe('block width plugin', () => {
     });
   });
 
-  it('uses blocksConfig.blockWidth for unknown blocks in BlockWidthPlugin', () => {
+  it('does not use blocksConfig.blockWidth for unknown blocks in BlockWidthPlugin', () => {
     registryBlocks.widths = [
       {
         name: 'default',
@@ -172,8 +172,8 @@ describe('block width plugin', () => {
         children: [{ text: '' }],
       } as any),
     ).toEqual({
-      defaultWidth: 'layout',
-      widths: ['layout'],
+      defaultWidth: 'default',
+      widths: ['default', 'layout'],
     });
   });
 
