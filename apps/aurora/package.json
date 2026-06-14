@@ -12,6 +12,7 @@
     "build": "pnpm exec init-loaders && react-router build",
     "build:publicui": "REGISTRYCONFIG=registry-publicui.config.ts pnpm exec init-loaders && react-router build",
     "start:prod": "react-router-serve ./build/server/index.js",
+    "check:ts": "react-router typegen && tsc",
     "typecheck": "react-router typegen && tsc",
     "typegen": "react-router typegen",
     "release": "release-it",
