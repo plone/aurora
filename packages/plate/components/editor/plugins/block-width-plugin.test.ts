@@ -408,6 +408,8 @@ describe('block width plugin', () => {
       },
       tf: {
         insertNodes: vi.fn(),
+        setNodes: vi.fn(),
+        wrapNodes: vi.fn(),
       },
     } as any;
     const insertNodes = editor.tf.insertNodes;
@@ -470,6 +472,8 @@ describe('block width plugin', () => {
       },
       tf: {
         insertNodes: vi.fn(),
+        setNodes: vi.fn(),
+        wrapNodes: vi.fn(),
       },
     } as any;
 
@@ -991,6 +995,8 @@ describe('block width plugin', () => {
       },
       tf: {
         insertNodes: vi.fn(),
+        setNodes: vi.fn(),
+        wrapNodes: vi.fn(),
       },
     } as any;
     const insertNodes = editor.tf.insertNodes;
@@ -1013,6 +1019,288 @@ describe('block width plugin', () => {
       },
       { at: [0] },
     );
+  });
+
+  it('adds block width defaults to registered native Plate wrappers', () => {
+    registryBlocks.widths = [
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+    ];
+    registryBlocks.plateBlocksConfig = {
+      code_block: {
+        category: 'text',
+      },
+    };
+
+    const codeBlock = {
+      children: [],
+      type: 'code_block',
+    };
+    const editor = {
+      getOptions: vi.fn(() => ({ defaultWidths: ['default'] })),
+      api: {
+        create: {
+          block: vi.fn(),
+        },
+        isBlock: vi.fn(() => false),
+      },
+      tf: {
+        insertNodes: vi.fn(),
+        setNodes: vi.fn(),
+        wrapNodes: vi.fn(),
+      },
+    } as any;
+    const wrapNodes = editor.tf.wrapNodes;
+
+    const extendedEditor = (BaseBlockWidthPlugin as any).extendEditor({
+      editor,
+    });
+
+    extendedEditor.tf.wrapNodes(codeBlock, { select: true });
+
+    expect(wrapNodes).toHaveBeenCalledWith(
+      {
+        ...codeBlock,
+        blockWidth: 'default',
+      },
+      { select: true },
+    );
+  });
+
+  it('does not add block width defaults to unregistered native Plate wrappers', () => {
+    registryBlocks.widths = [
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+    ];
+    registryBlocks.plateBlocksConfig = {
+      code_block: {
+        category: 'text',
+      },
+    };
+
+    const link = {
+      children: [{ text: 'Linked text' }],
+      type: 'a',
+      url: 'https://plone.org',
+    };
+    const editor = {
+      getOptions: vi.fn(() => ({ defaultWidths: ['default'] })),
+      api: {
+        create: {
+          block: vi.fn(),
+        },
+        isBlock: vi.fn(() => false),
+      },
+      tf: {
+        insertNodes: vi.fn(),
+        setNodes: vi.fn(),
+        wrapNodes: vi.fn(),
+      },
+    } as any;
+    const wrapNodes = editor.tf.wrapNodes;
+
+    const extendedEditor = (BaseBlockWidthPlugin as any).extendEditor({
+      editor,
+    });
+
+    extendedEditor.tf.wrapNodes(link, { split: true });
+
+    expect(wrapNodes).toHaveBeenCalledWith(link, { split: true });
+  });
+
+  it('adds block width defaults when autoformat sets a registered native Plate block type', () => {
+    registryBlocks.widths = [
+      {
+        name: 'narrow',
+        label: 'Narrow',
+        style: { '--block-width': 'var(--narrow-container-width)' },
+      },
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+    ];
+    registryBlocks.plateBlocksConfig = {
+      h2: {
+        blockWidth: {
+          defaultWidth: 'narrow',
+          widths: ['narrow'],
+        },
+      },
+    };
+
+    const editor = {
+      getOptions: vi.fn(() => ({ defaultWidths: ['default'] })),
+      api: {
+        create: {
+          block: vi.fn(),
+        },
+        isBlock: vi.fn(() => true),
+      },
+      tf: {
+        insertNodes: vi.fn(),
+        setNodes: vi.fn(),
+        wrapNodes: vi.fn(),
+      },
+    } as any;
+    const setNodes = editor.tf.setNodes;
+
+    const extendedEditor = (BaseBlockWidthPlugin as any).extendEditor({
+      editor,
+    });
+
+    extendedEditor.tf.setNodes(
+      { type: 'h2' },
+      {
+        match: vi.fn(),
+      },
+    );
+
+    expect(setNodes).toHaveBeenCalledWith(
+      {
+        type: 'h2',
+        blockWidth: 'narrow',
+      },
+      {
+        match: expect.any(Function),
+      },
+    );
+  });
+
+  it('preserves explicit block width when autoformat sets a registered native Plate block type', () => {
+    registryBlocks.widths = [
+      {
+        name: 'narrow',
+        label: 'Narrow',
+        style: { '--block-width': 'var(--narrow-container-width)' },
+      },
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+    ];
+    registryBlocks.plateBlocksConfig = {
+      h2: {
+        blockWidth: {
+          defaultWidth: 'narrow',
+          widths: ['narrow'],
+        },
+      },
+    };
+
+    const editor = {
+      getOptions: vi.fn(() => ({ defaultWidths: ['default'] })),
+      api: {
+        create: {
+          block: vi.fn(),
+        },
+        isBlock: vi.fn(() => true),
+      },
+      tf: {
+        insertNodes: vi.fn(),
+        setNodes: vi.fn(),
+        wrapNodes: vi.fn(),
+      },
+    } as any;
+    const setNodes = editor.tf.setNodes;
+
+    const extendedEditor = (BaseBlockWidthPlugin as any).extendEditor({
+      editor,
+    });
+
+    extendedEditor.tf.setNodes({ type: 'h2', blockWidth: 'default' });
+
+    expect(setNodes).toHaveBeenCalledWith(
+      {
+        type: 'h2',
+        blockWidth: 'default',
+      },
+      undefined,
+    );
+  });
+
+  it('normalizes missing block width on top-level registered native Plate blocks', () => {
+    registryBlocks.widths = [
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+      {
+        name: 'narrow',
+        label: 'Narrow',
+        style: { '--block-width': 'var(--narrow-container-width)' },
+      },
+    ];
+    registryBlocks.plateBlocksConfig = {
+      code_block: {
+        category: 'text',
+      },
+      code_line: {
+        blockWidth: {
+          defaultWidth: 'narrow',
+          widths: ['narrow'],
+        },
+      },
+    };
+
+    const normalizeNode = vi.fn();
+    const setNodes = vi.fn();
+    const editor = {
+      getOptions: vi.fn(() => ({ defaultWidths: ['default'] })),
+      normalizeNode,
+      api: {
+        create: {
+          block: vi.fn(),
+        },
+        isBlock: vi.fn(() => false),
+      },
+      tf: {
+        insertNodes: vi.fn(),
+        setNodes,
+        wrapNodes: vi.fn(),
+      },
+    } as any;
+    const extendedEditor = (BaseBlockWidthPlugin as any).extendEditor({
+      editor,
+    });
+    const codeBlock = {
+      children: [
+        {
+          children: [{ text: 'and code as a block' }],
+          id: 'PNn1nGth7G',
+          type: 'code_line',
+        },
+      ],
+      id: 'kI_CM1pABf',
+      type: 'code_block',
+    };
+
+    extendedEditor.normalizeNode([codeBlock, [1]]);
+
+    expect(setNodes).toHaveBeenCalledWith(
+      {
+        blockWidth: 'default',
+      },
+      {
+        at: [1],
+      },
+    );
+    expect(normalizeNode).not.toHaveBeenCalled();
+
+    setNodes.mockClear();
+    extendedEditor.normalizeNode([codeBlock.children[0], [1, 0]]);
+
+    expect(setNodes).not.toHaveBeenCalled();
+    expect(normalizeNode).toHaveBeenCalledWith([codeBlock.children[0], [1, 0]]);
   });
 
   it('does not inject block width styles into nested native Plate children', () => {

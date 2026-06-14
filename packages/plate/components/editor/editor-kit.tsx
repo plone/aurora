@@ -58,7 +58,6 @@ export const EditorKit = [
   // Block Style
   ...BlockAnatomyKit,
   ...StyleFieldsKit,
-  ...BlockWidthKit,
   ...ListKit,
   ...AlignKit,
   ...LineHeightKit,
@@ -79,6 +78,8 @@ export const EditorKit = [
   // Parsers
   ...DocxKit,
   ...MarkdownKit,
+
+  ...BlockWidthKit,
 
   // UI
   ...BlockPlaceholderKit,

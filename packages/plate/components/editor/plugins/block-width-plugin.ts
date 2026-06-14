@@ -1,6 +1,7 @@
 import {
   createSlatePlugin,
   ElementApi,
+  PathApi,
   type SetNodesOptions,
   type SlateEditor,
   type TElement,
@@ -96,6 +97,16 @@ const getPlateBlockRegistryWidthConfig = (
   return plateBlocksConfig?.[element.type]?.blockWidth ?? {};
 };
 
+const hasPlateBlockRegistryConfig = (element?: TElement | null) => {
+  if (!element?.type) return false;
+
+  const plateBlocksConfig = config?.blocks?.plateBlocksConfig as
+    | Record<string, unknown>
+    | undefined;
+
+  return element.type in (plateBlocksConfig ?? {});
+};
+
 export const resolveBlockWidthConfig = (
   editor: SlateEditor,
   element?: TElement | null,
@@ -144,6 +155,8 @@ type ValueElement = Record<string, unknown> & {
   type?: unknown;
   children?: unknown[];
 };
+
+type SetNodesPatch = Partial<TElement> & Record<string, unknown>;
 
 export const applyBlockWidthDefaultsInValue = (value: unknown[]) => {
   const fallbackWidths = getBlockWidthValueList();
@@ -214,20 +227,55 @@ export const withBlockWidthDefaults = <T extends TElement>(
 const withInsertedBlockWidthDefaults = (
   editor: SlateEditor,
   nodes: unknown,
+  { allowRegisteredPlateBlock = false } = {},
 ): unknown => {
   if (Array.isArray(nodes)) {
-    return nodes.map((node) => withInsertedBlockWidthDefaults(editor, node));
+    return nodes.map((node) =>
+      withInsertedBlockWidthDefaults(editor, node, {
+        allowRegisteredPlateBlock,
+      }),
+    );
   }
 
   if (!ElementApi.isElement(nodes)) {
     return nodes;
   }
 
-  if (!editor.api.isBlock(nodes) || nodes.type === PLONE_BLOCK_TYPE) {
+  const isTopLevelBlock =
+    editor.api.isBlock(nodes) ||
+    (allowRegisteredPlateBlock && hasPlateBlockRegistryConfig(nodes));
+
+  if (!isTopLevelBlock || nodes.type === PLONE_BLOCK_TYPE) {
     return nodes;
   }
 
   return withBlockWidthDefaults(editor, nodes);
+};
+
+const withSetNodesBlockWidthDefaults = (
+  editor: SlateEditor,
+  props: unknown,
+): unknown => {
+  if (!props || typeof props !== 'object' || Array.isArray(props)) {
+    return props;
+  }
+
+  const nextProps = props as SetNodesPatch;
+
+  if (
+    typeof nextProps.type !== 'string' ||
+    nextProps.type === PLONE_BLOCK_TYPE ||
+    BLOCK_WIDTH_KEY in nextProps ||
+    !hasPlateBlockRegistryConfig(nextProps as TElement)
+  ) {
+    return props;
+  }
+
+  return {
+    ...nextProps,
+    [BLOCK_WIDTH_KEY]: getBlockWidthConfig(editor, nextProps as TElement)
+      .defaultWidth,
+  };
 };
 
 const setBlockWidth = (
@@ -253,6 +301,41 @@ const setBlockWidth = (
       ...setNodesOptions,
     },
   );
+};
+
+const normalizeTopLevelBlockWidth = (
+  editor: SlateEditor,
+  element: TElement,
+  path: number[],
+) => {
+  if (
+    path.length !== 1 ||
+    element.type === PLONE_BLOCK_TYPE ||
+    !hasPlateBlockRegistryConfig(element)
+  ) {
+    return false;
+  }
+
+  const currentWidth = element[BLOCK_WIDTH_KEY];
+  const config = getBlockWidthConfig(editor, element);
+
+  if (
+    typeof currentWidth === 'string' &&
+    isAllowedWidth(config.widths, currentWidth)
+  ) {
+    return false;
+  }
+
+  editor.tf.setNodes(
+    {
+      [BLOCK_WIDTH_KEY]: config.defaultWidth,
+    },
+    {
+      at: path,
+    },
+  );
+
+  return true;
 };
 
 export const BaseBlockWidthPlugin = createSlatePlugin({
@@ -303,6 +386,12 @@ export const BaseBlockWidthPlugin = createSlatePlugin({
   extendEditor: ({ editor }) => {
     const createBlock = editor.api.create.block.bind(editor.api.create);
     const insertNodes = editor.tf.insertNodes.bind(editor.tf);
+    const setNodes = editor.tf.setNodes.bind(editor.tf);
+    const wrapNodes = editor.tf.wrapNodes.bind(editor.tf);
+    const normalizeNode =
+      typeof editor.normalizeNode === 'function'
+        ? editor.normalizeNode.bind(editor)
+        : () => undefined;
 
     editor.api.create.block = ((...args: any[]) =>
       withInsertedBlockWidthDefaults(editor, createBlock(...args))) as any;
@@ -312,6 +401,34 @@ export const BaseBlockWidthPlugin = createSlatePlugin({
         withInsertedBlockWidthDefaults(editor, nodes) as any,
         options,
       )) as any;
+
+    editor.tf.setNodes = ((props: any, options?: any) =>
+      setNodes(
+        withSetNodesBlockWidthDefaults(editor, props) as any,
+        options,
+      )) as any;
+
+    editor.tf.wrapNodes = ((element: any, options?: any) =>
+      wrapNodes(
+        withInsertedBlockWidthDefaults(editor, element, {
+          allowRegisteredPlateBlock: true,
+        }) as any,
+        options,
+      )) as any;
+
+    editor.normalizeNode = ((entry: any) => {
+      const [node, path] = entry;
+
+      if (
+        ElementApi.isElement(node) &&
+        PathApi.isPath(path) &&
+        normalizeTopLevelBlockWidth(editor, node, path)
+      ) {
+        return;
+      }
+
+      normalizeNode(entry);
+    }) as any;
 
     return editor;
   },
