@@ -54,30 +54,53 @@ export default function install(config: ConfigType) {
 
   const plateBlocksConfig = {
     p: {
+      category: 'text',
       blockWidth: {
         defaultWidth: 'narrow',
         widths: ['narrow'],
       },
     },
     h2: {
+      category: 'text',
       blockWidth: {
         defaultWidth: 'narrow',
         widths: ['narrow'],
       },
     },
     h3: {
+      category: 'text',
       blockWidth: {
         defaultWidth: 'narrow',
         widths: ['narrow'],
       },
     },
     h4: {
+      category: 'text',
       blockWidth: {
         defaultWidth: 'narrow',
         widths: ['narrow'],
       },
     },
+    h1: {
+      category: 'text',
+    },
+    h5: {
+      category: 'text',
+    },
+    h6: {
+      category: 'text',
+    },
+    blockquote: {
+      category: 'text',
+    },
+    code_block: {
+      category: 'text',
+    },
+    toggle: {
+      category: 'text',
+    },
     title: {
+      category: 'text',
       blockWidth: {
         defaultWidth: 'default',
         widths: ['default'],
@@ -90,10 +113,38 @@ export default function install(config: ConfigType) {
       },
     },
     toc: {
+      category: 'navigation',
       blockWidth: {
         defaultWidth: 'default',
         widths: ['layout', 'default', 'narrow'],
       },
+    },
+    callout: {
+      category: 'common',
+    },
+    table: {
+      category: 'common',
+    },
+    column_group: {
+      category: 'layout',
+    },
+    column: {
+      category: 'layout',
+    },
+    img: {
+      category: 'media',
+    },
+    video: {
+      category: 'media',
+    },
+    audio: {
+      category: 'media',
+    },
+    file: {
+      category: 'media',
+    },
+    media_embed: {
+      category: 'media',
     },
   };
 

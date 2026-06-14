@@ -3,7 +3,8 @@
     "add": "Hinzufügen",
     "edit": "Bearbeiten",
     "save": "Speichern",
-    "controlpanel": "Kontrollzentrum",
+    "cancel": "Abbrechen",
+    "controlpanel": "Konfiguration",
     "objectbrowserwidget": {
       "openDialog": "Inhalt auswählen",
       "dialogTitle": "Inhalt auswählen",
@@ -71,6 +72,9 @@
       "signInTo": "Bei {{site}} anmelden",
       "forgotPassword": "Passwort vergessen? <a>Neues Passwort anfordern</a>",
       "returnToHome": "Zur Startseite zurückkehren"
+    },
+    "toolbar": {
+      "settings": "Einstellungen"
     }
   }
 }

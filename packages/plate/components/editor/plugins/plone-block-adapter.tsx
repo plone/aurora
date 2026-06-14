@@ -1,6 +1,6 @@
 import React from 'react';
 import { BlockSelectionPlugin } from '@platejs/selection/react';
-import { isDeepEqual } from '@plone/helpers';
+import { isDeepEqual, PLONE_BLOCK_TYPE } from '@plone/helpers';
 import config from '@plone/registry';
 import { createSlatePlugin, ElementApi, PathApi, type TElement } from 'platejs';
 import {
@@ -60,6 +60,9 @@ function getBlockId(element: NativeBlockElement, path: number[]) {
   const explicitId = element?.id;
   return explicitId ? String(explicitId) : path.join('-');
 }
+
+const getTopLevelBlockPath = (path: number[]) =>
+  path.length > 1 ? [path[0]] : path;
 
 function PloneBlockAdapterContent(
   props: PlateElementProps<NativeBlockElement> & {
@@ -201,12 +204,12 @@ export function PloneBlockAdapterElement(
   );
 }
 
-export const BasePloneBlockAdapterPlugin = createSlatePlugin({
-  // TODO: Find a better key for this plugin. Maybe just `block`?
-  // It is used in conversions too.
-  key: 'unknown',
+export const BasePloneBlockKeyboardPlugin = createSlatePlugin({
+  key: `${PLONE_BLOCK_TYPE}Keyboard`,
   handlers: {
     onKeyDown: ({ editor, event }: { editor: PlateEditor; event: any }) => {
+      if (event.defaultPrevented) return;
+
       const nativeEvent = (event as any)?.nativeEvent ?? event;
       if (!nativeEvent) return;
       if (!editor.selection || !editor.api.isCollapsed()) return;
@@ -215,16 +218,21 @@ export const BasePloneBlockAdapterPlugin = createSlatePlugin({
       if (!currentEntry) return;
 
       const [currentNode, currentPath] = currentEntry;
-      const currentIsNativeUnknown =
-        ElementApi.isElement(currentNode) && currentNode.type === 'unknown';
+      const currentBlockPath = getTopLevelBlockPath(currentPath as number[]);
+      const currentIsPloneBlock =
+        ElementApi.isElement(currentNode) &&
+        currentNode.type === PLONE_BLOCK_TYPE;
 
-      if (nativeEvent.key === 'Enter' && currentIsNativeUnknown) {
+      if (nativeEvent.key === 'Enter' && currentIsPloneBlock) {
         event.preventDefault();
 
-        const nextPath = PathApi.next(currentPath as number[]);
+        const nextPath = PathApi.next(currentBlockPath);
         const nextNode = editor.api.node(nextPath)?.[0];
 
-        if (ElementApi.isElement(nextNode) && nextNode.type !== 'unknown') {
+        if (
+          ElementApi.isElement(nextNode) &&
+          nextNode.type !== PLONE_BLOCK_TYPE
+        ) {
           editor.tf.focus();
           editor.tf.select([...nextPath, 0]);
           editor.tf.collapse({ edge: 'start' });
@@ -244,12 +252,12 @@ export const BasePloneBlockAdapterPlugin = createSlatePlugin({
         return;
       }
 
-      if (nativeEvent.key === 'ArrowUp' && currentIsNativeUnknown) {
+      if (nativeEvent.key === 'ArrowUp' && currentIsPloneBlock) {
         event.preventDefault();
 
         let previousPath: number[] | undefined;
         try {
-          previousPath = PathApi.previous(currentPath as number[]);
+          previousPath = PathApi.previous(currentBlockPath);
         } catch {
           return;
         }
@@ -259,9 +267,10 @@ export const BasePloneBlockAdapterPlugin = createSlatePlugin({
         editor.tf.focus();
         if (
           ElementApi.isElement(previousNode) &&
-          previousNode.type === 'unknown'
+          previousNode.type === PLONE_BLOCK_TYPE
         ) {
-          editor.tf.select(previousPath);
+          editor.tf.select([...previousPath, 0]);
+          editor.tf.collapse({ edge: 'start' });
           return;
         }
         editor.tf.select([...previousPath, 0]);
@@ -269,16 +278,20 @@ export const BasePloneBlockAdapterPlugin = createSlatePlugin({
         return;
       }
 
-      if (nativeEvent.key === 'ArrowDown' && currentIsNativeUnknown) {
+      if (nativeEvent.key === 'ArrowDown' && currentIsPloneBlock) {
         event.preventDefault();
 
-        const nextPath = PathApi.next(currentPath as number[]);
+        const nextPath = PathApi.next(currentBlockPath);
         const nextNode = editor.api.node(nextPath)?.[0];
         if (!nextNode) return;
 
         editor.tf.focus();
-        if (ElementApi.isElement(nextNode) && nextNode.type === 'unknown') {
-          editor.tf.select(nextPath);
+        if (
+          ElementApi.isElement(nextNode) &&
+          nextNode.type === PLONE_BLOCK_TYPE
+        ) {
+          editor.tf.select([...nextPath, 0]);
+          editor.tf.collapse({ edge: 'start' });
           return;
         }
         editor.tf.select([...nextPath, 0]);
@@ -289,7 +302,7 @@ export const BasePloneBlockAdapterPlugin = createSlatePlugin({
       if (nativeEvent.key === 'ArrowDown') {
         let nextPath: number[] | undefined;
         try {
-          nextPath = PathApi.next(currentPath as number[]);
+          nextPath = PathApi.next(currentBlockPath);
         } catch {
           return;
         }
@@ -297,10 +310,14 @@ export const BasePloneBlockAdapterPlugin = createSlatePlugin({
         if (!nextPath) return;
 
         const nextNode = editor.api.node(nextPath)?.[0];
-        if (ElementApi.isElement(nextNode) && nextNode.type === 'unknown') {
+        if (
+          ElementApi.isElement(nextNode) &&
+          nextNode.type === PLONE_BLOCK_TYPE
+        ) {
           event.preventDefault();
           editor.tf.focus();
-          editor.tf.select(nextPath);
+          editor.tf.select([...nextPath, 0]);
+          editor.tf.collapse({ edge: 'start' });
         }
         return;
       }
@@ -309,7 +326,7 @@ export const BasePloneBlockAdapterPlugin = createSlatePlugin({
 
       let previousPath: number[] | undefined;
       try {
-        previousPath = PathApi.previous(currentPath as number[]);
+        previousPath = PathApi.previous(currentBlockPath);
       } catch {
         return;
       }
@@ -319,19 +336,24 @@ export const BasePloneBlockAdapterPlugin = createSlatePlugin({
       const previousNode = editor.api.node(previousPath)?.[0];
       if (
         ElementApi.isElement(previousNode) &&
-        previousNode.type === 'unknown'
+        previousNode.type === PLONE_BLOCK_TYPE
       ) {
         event.preventDefault();
         editor.tf.focus();
-        editor.tf.select(previousPath);
+        editor.tf.select([...previousPath, 0]);
+        editor.tf.collapse({ edge: 'start' });
       }
     },
   } as any,
+});
+
+export const BasePloneBlockAdapterPlugin = createSlatePlugin({
+  key: PLONE_BLOCK_TYPE,
   node: {
     component: PloneBlockAdapterElement,
     isVoid: true,
     isElement: true,
-    type: 'unknown',
+    type: PLONE_BLOCK_TYPE,
   },
   extendEditor: ({ editor }) => {
     const insertBreak = editor.tf.insertBreak;
@@ -340,11 +362,14 @@ export const BasePloneBlockAdapterPlugin = createSlatePlugin({
       const blockEntry = editor.api.block({ highest: true });
       if (blockEntry) {
         const [node, path] = blockEntry;
-        if (ElementApi.isElement(node) && node.type === 'unknown') {
+        if (ElementApi.isElement(node) && node.type === PLONE_BLOCK_TYPE) {
           const nextPath = PathApi.next(path);
           const nextNode = editor.api.node(nextPath)?.[0];
 
-          if (ElementApi.isElement(nextNode) && nextNode.type !== 'unknown') {
+          if (
+            ElementApi.isElement(nextNode) &&
+            nextNode.type !== PLONE_BLOCK_TYPE
+          ) {
             editor.tf.focus();
             editor.tf.select([...nextPath, 0]);
             editor.tf.collapse({ edge: 'start' });
@@ -371,6 +396,10 @@ export const BasePloneBlockAdapterPlugin = createSlatePlugin({
     return editor;
   },
 });
+
+export const PloneBlockKeyboardPlugin = toPlatePlugin(
+  BasePloneBlockKeyboardPlugin,
+);
 
 export const PloneBlockAdapterPlugin = toPlatePlugin(
   BasePloneBlockAdapterPlugin,
