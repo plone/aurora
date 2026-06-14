@@ -106,12 +106,6 @@ export default function install(config: ConfigType) {
         widths: ['default'],
       },
     },
-    listing: {
-      blockWidth: {
-        defaultWidth: 'default',
-        widths: ['layout', 'default', 'narrow'],
-      },
-    },
     toc: {
       category: 'navigation',
       blockWidth: {

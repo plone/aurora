@@ -15,6 +15,7 @@ const ListingBlockInfo = {
   blockSchema: ListingSchema,
   icon: ListIcon,
   category: 'common',
+  defaultBlockWidth: 'default',
 } satisfies Partial<BlockConfigBase>;
 
 export default ListingBlockInfo;
