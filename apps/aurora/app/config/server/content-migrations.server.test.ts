@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest';
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import config from '@plone/registry';
 import { SOMERSAULT_KEY } from '@plone/plate/constants';
 import type { Content, ContentBase } from '@plone/types';
@@ -65,13 +66,36 @@ describe('content migrations', () => {
     });
   });
 
-  it('moves native blocks into the somersault field as unknown nodes', () => {
+  it('moves native blocks into the somersault field as ploneBlock nodes', () => {
     config.blocks = {
       blocksConfig: {
         listing: {},
         image: {},
+        configuredWidth: {
+          defaultBlockWidth: 'layout',
+          blockSchema: {
+            title: 'Configured width block',
+            fieldsets: [],
+            required: [],
+            properties: {},
+          },
+        },
+        schemaWidth: {
+          blockSchema: {
+            title: 'Schema width block',
+            fieldsets: [],
+            required: [],
+            properties: {
+              blockWidth: {
+                widget: 'width',
+                default: 'full',
+                styleField: true,
+              },
+            },
+          },
+        },
       },
-    } as typeof config.blocks;
+    } as unknown as typeof config.blocks;
     installMigrations();
 
     const content: TestContent = {
@@ -92,13 +116,26 @@ describe('content migrations', () => {
           url: '/image',
           alt: 'Example image',
         },
+        configuredWidth: {
+          '@type': 'configuredWidth',
+        },
+        schemaWidth: {
+          '@type': 'schemaWidth',
+        },
         custom: {
           '@type': 'custom-unregistered',
           foo: 'bar',
         },
       },
       blocks_layout: {
-        items: ['titleBlock', 'listing', 'image', 'custom'],
+        items: [
+          'titleBlock',
+          'listing',
+          'image',
+          'configuredWidth',
+          'schemaWidth',
+          'custom',
+        ],
       },
     };
 
@@ -114,18 +151,32 @@ describe('content migrations', () => {
         },
         {
           '@type': 'listing',
+          blockWidth: 'default',
           children: [{ text: '' }],
           querystring: {
             criteria: [],
           },
-          type: 'unknown',
+          type: PLONE_BLOCK_TYPE,
         },
         {
           '@type': 'image',
           alt: 'Example image',
+          blockWidth: 'default',
           children: [{ text: '' }],
-          type: 'unknown',
+          type: PLONE_BLOCK_TYPE,
           url: '/image',
+        },
+        {
+          '@type': 'configuredWidth',
+          blockWidth: 'layout',
+          children: [{ text: '' }],
+          type: PLONE_BLOCK_TYPE,
+        },
+        {
+          '@type': 'schemaWidth',
+          blockWidth: 'full',
+          children: [{ text: '' }],
+          type: PLONE_BLOCK_TYPE,
         },
       ],
     });
