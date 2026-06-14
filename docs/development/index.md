@@ -18,5 +18,6 @@ This part of the documentation describes how to develop projects using Plone Aur
 images
 i18n
 editor-slash-menu
+block-anatomy
 configure-editor-block-widths
 ```
