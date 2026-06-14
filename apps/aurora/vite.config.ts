@@ -51,14 +51,12 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
         // App-level deps (in apps/aurora/package.json)
         'i18next',
         'i18next-browser-languagedetector',
-        'i18next-fs-backend/cjs',
         'i18next-http-backend',
         'react-i18next',
         // Injected by babel-plugin-react-compiler, not in any package.json
         'react/compiler-runtime',
         'remix-i18next/client',
         'remix-i18next/react',
-        'remix-i18next/server',
         // @plone/components and @plone/helpers are not registered add-ons, so
         // their deps can't be declared in vite.extend.js — list them here
         '@plone/components > @internationalized/date',
@@ -80,6 +78,11 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
         '@plone/helpers > jotai/utils',
         '@plone/helpers > jotai-optics',
       ],
+    },
+    ssr: {
+      optimizeDeps: {
+        include: ['i18next-fs-backend/cjs', 'remix-i18next/server'],
+      },
     },
     resolve: {
       tsconfigPaths: true,

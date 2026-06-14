@@ -65,6 +65,8 @@ You do not need entries for:
 If a dependency exports subpaths you use (for example `some-lib/react` or `some-lib/client`), add a separate entry for each subpath.
 Vite does not discover subpath exports automatically from the main entry.
 
+If a dependency is only used in server-side code (for example `*.server.*` files), add it to `ssr.optimizeDeps.include` instead of `optimizeDeps.include` so it isn't pre-bundled for the browser.
+
 ### Existing core add-on files
 
 | Add-on | File |
