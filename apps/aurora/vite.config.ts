@@ -66,6 +66,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
         '@plone/components > react-aria',
         '@plone/components > react-aria-components',
         '@plone/components > react-aria-components/DropZone',
+        '@plone/components > react-aria-components/Form',
         '@plone/components > react-aria-components/Group',
         '@plone/components > react-aria-components/Modal',
         '@plone/components > react-aria-components/Table',
@@ -81,7 +82,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
     },
     ssr: {
       optimizeDeps: {
-        include: ['i18next-fs-backend/cjs', 'remix-i18next/server'],
+        include: ['i18next-fs-backend/cjs', 'isbot', 'remix-i18next/server'],
       },
     },
     resolve: {
