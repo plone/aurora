@@ -15,6 +15,7 @@ const TeaserBlockInfo = {
   category: 'teaser',
   blockSchema: TeaserSchema,
   icon: LinkIcon,
+  defaultBlockWidth: 'default',
 } satisfies Partial<BlockConfigBase>;
 
 export default TeaserBlockInfo;
