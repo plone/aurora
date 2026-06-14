@@ -1,5 +1,10 @@
 import config from '@plone/registry';
 import {
+  getStyleFieldsFromBlockSchema,
+  PLONE_BLOCK_TYPE,
+} from '@plone/helpers';
+import type { BlockConfigBase, BlocksFormData } from '@plone/types';
+import {
   migrateLegacyBoldInValue,
   migrateLegacyBlockWidthsInValue,
   migrateLegacyItalicInValue,
@@ -21,6 +26,31 @@ const isRegisteredNativeBlock = (block: Record<string, unknown>) => {
     | undefined;
 
   return Boolean(blocksConfig?.[blockType]);
+};
+
+const DEFAULT_BLOCK_WIDTH = 'default';
+
+const getMigratedPloneBlockWidth = (block: Record<string, unknown>) => {
+  const blockType = block['@type'];
+
+  if (typeof blockType !== 'string') {
+    return DEFAULT_BLOCK_WIDTH;
+  }
+
+  const blocksConfig = config.blocks?.blocksConfig as
+    | Record<string, BlockConfigBase>
+    | undefined;
+  const blockConfig = blocksConfig?.[blockType];
+  const styleFields = getStyleFieldsFromBlockSchema(
+    blockConfig,
+    block as BlocksFormData,
+  );
+
+  return (
+    styleFields.blockWidth?.defaultValue ??
+    blockConfig?.defaultBlockWidth ??
+    DEFAULT_BLOCK_WIDTH
+  );
 };
 
 export default function install() {
@@ -57,7 +87,8 @@ export default function install() {
         ? [
             {
               ...block,
-              type: 'unknown',
+              blockWidth: getMigratedPloneBlockWidth(block),
+              type: PLONE_BLOCK_TYPE,
               children: [{ text: '' }],
             },
           ]
