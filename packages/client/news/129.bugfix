@@ -1,0 +1,1 @@
+Stopped the content and user data schemas from silently stripping fields they do not declare (e.g. `changeNote`, custom dexterity fields, custom member properties). Unknown keys are now passed through to the backend, which is the authority on which fields exist. @jmevissen
