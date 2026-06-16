@@ -23,7 +23,7 @@ const ListingEdit = (props: BlockEditProps) => {
   useEffect(() => {
     setBlock({
       ...data,
-      items,
+      items: hasListingQuery ? items : [],
     });
   }, [items, hasListingQuery, data, setBlock]);
 

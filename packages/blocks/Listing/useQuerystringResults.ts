@@ -9,7 +9,9 @@ export function useQuerystringResults(
 ) {
   const fetcher = useFetcher<QuerystringSearchResult>();
 
-  const querySignature = JSON.stringify(querystring?.query ?? []);
+  const criteria = querystring?.query ?? [];
+  const hasCriteria = criteria.length > 0;
+  const querySignature = JSON.stringify(criteria);
   const [debouncedQuerySignature] = useDebounceValue(querySignature, 400);
 
   useEffect(() => {
@@ -22,9 +24,9 @@ export function useQuerystringResults(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedQuerySignature]);
 
-  const items = fetcher.data?.items ?? [];
-  const total = fetcher.data?.items_total ?? 0;
-  const loading = fetcher.state !== 'idle';
+  const items = hasCriteria ? (fetcher.data?.items ?? []) : [];
+  const total = hasCriteria ? (fetcher.data?.items_total ?? 0) : 0;
+  const loading = hasCriteria && fetcher.state !== 'idle';
 
   return { items, total, loading };
 }
