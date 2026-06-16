@@ -21,12 +21,10 @@ const ListingEdit = (props: BlockEditProps) => {
   const { items } = useQuerystringResults(data.querystring as any);
 
   useEffect(() => {
-    if (hasListingQuery && items.length > 0) {
-      setBlock({
-        ...data,
-        items,
-      });
-    }
+    setBlock({
+      ...data,
+      items,
+    });
   }, [items, hasListingQuery, data, setBlock]);
 
   if (!hasListingQuery) {

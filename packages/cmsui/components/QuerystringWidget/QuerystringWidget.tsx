@@ -145,6 +145,21 @@ function QueryCriterionRow({
             onChange={(value: string) => handleValueChange(value)}
             isDisabled={disabled}
           />
+        ) : field?.valueType === 'select' && field?.valueOptions?.length ? (
+          <Select
+            label={index === 0 ? 'Value' : undefined}
+            selectedKey={criterion.v}
+            onSelectionChange={(key) =>
+              key !== undefined && handleValueChange(String(key))
+            }
+            isDisabled={disabled}
+          >
+            {field.valueOptions.map((option) => (
+              <SelectItem key={option.value} id={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </Select>
         ) : (
           <TextField
             label={index === 0 ? 'Value' : undefined}
