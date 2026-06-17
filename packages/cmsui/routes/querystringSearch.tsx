@@ -3,6 +3,7 @@ import {
   RouterContextProvider,
   type LoaderFunctionArgs,
 } from 'react-router';
+import { flattenToAppURL } from '@plone/helpers';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import type { Brain } from '@plone/types';
 
@@ -47,11 +48,14 @@ export async function loader({
 
     // Pass the entire query object to cli.querystringSearch()
     const { data: results } = await cli.querystringSearch(queryObject);
+    const flattened = results
+      ? flattenToAppURL(results)
+      : { items: [], items_total: 0 };
 
     return data(
       {
-        items: results?.items ?? [],
-        items_total: results?.items_total ?? 0,
+        items: flattened.items ?? [],
+        items_total: flattened.items_total ?? 0,
       } satisfies QuerystringSearchResult,
       {
         headers: { 'Content-Type': 'application/json' },

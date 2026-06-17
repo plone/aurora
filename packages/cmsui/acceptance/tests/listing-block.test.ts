@@ -1,4 +1,5 @@
 import { expect, test } from '../../../tooling/playwright/test';
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
 import { waitForPlateEditorReady } from '../../../tooling/playwright/plate';
@@ -45,7 +46,7 @@ async function setupListingBlockPage(page: Page) {
               children: [{ text: 'Listing Block Page' }],
             },
             {
-              type: 'unknown',
+              type: PLONE_BLOCK_TYPE,
               '@type': 'listing',
               headline: 'Latest News',
               querystring: {
@@ -115,7 +116,7 @@ test.describe('Listing block', () => {
                 children: [{ text: 'Empty Listing Page' }],
               },
               {
-                type: 'unknown',
+                type: PLONE_BLOCK_TYPE,
                 '@type': 'listing',
                 headline: 'No Query',
                 children: [{ text: '' }],
