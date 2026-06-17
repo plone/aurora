@@ -31,8 +31,8 @@ function buildQueryParams(querystring: QuerystringValue | undefined) {
     query?: QuerystringValue['query'];
     sort_on?: string;
     sort_order?: string;
-    b_size?: number;
-    limit?: number;
+    b_size?: string;
+    limit?: string;
   } = {};
 
   if (querystring.query && querystring.query.length > 0) {
@@ -49,11 +49,11 @@ function buildQueryParams(querystring: QuerystringValue | undefined) {
   }
 
   if (querystring.b_size !== undefined && querystring.b_size !== null) {
-    params.b_size = querystring.b_size;
+    params.b_size = String(querystring.b_size);
   }
 
   if (querystring.limit !== undefined && querystring.limit !== null) {
-    params.limit = querystring.limit;
+    params.limit = String(querystring.limit);
   }
 
   return Object.keys(params).length > 0 ? params : null;
