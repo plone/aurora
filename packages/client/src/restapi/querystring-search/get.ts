@@ -9,27 +9,45 @@ export type QuerystringSearchArgs = z.infer<typeof querystringSearchDataSchema>;
 
 export async function querystringSearch(
   this: PloneClient,
-  { query, post }: QuerystringSearchArgs,
+  args: QuerystringSearchArgs,
 ): Promise<RequestResponse<QuerystringSearchResponse>> {
-  const validatedArgs = querystringSearchDataSchema.parse({
+  const {
     query,
-  });
+    post,
+    sort_on,
+    sort_order,
+    b_size,
+    limit,
+    b_start,
+    fullobjects,
+  } = querystringSearchDataSchema.parse(args);
+
+  // Build the complete query object with all parameters
+  const queryObject = {
+    query,
+    ...(sort_on && { sort_on }),
+    ...(sort_order && { sort_order }),
+    ...(b_size && { b_size }),
+    ...(limit && { limit }),
+    ...(b_start && { b_start }),
+    ...(fullobjects !== undefined && { fullobjects }),
+  };
+
   if (post) {
     const options: ApiRequestParams = {
-      data: { query: validatedArgs.query },
+      data: queryObject,
       config: this.config,
     };
 
     return apiRequest('post', '/@querystring-search', options);
   } else {
-    const queryObject = { query: validatedArgs.query };
     const querystring = JSON.stringify(queryObject);
     const encodedQuery = encodeURIComponent(querystring);
 
     const options: ApiRequestParams = {
       config: this.config,
       params: {
-        ...(encodedQuery && { query: encodedQuery }),
+        query: encodedQuery,
       },
     };
 

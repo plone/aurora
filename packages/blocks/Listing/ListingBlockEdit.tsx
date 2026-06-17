@@ -1,8 +1,6 @@
-import { useEffect } from 'react';
 import type { BlockEditProps } from '@plone/types';
 
 import ListingBlockView from './ListingBlockView';
-import { useQuerystringResults } from './useQuerystringResults';
 
 const hasQuery = (value: any): boolean => {
   if (!value) return false;
@@ -16,16 +14,8 @@ const hasQuery = (value: any): boolean => {
 };
 
 const ListingEdit = (props: BlockEditProps) => {
-  const { data, setBlock } = props;
+  const { data } = props;
   const hasListingQuery = hasQuery(data.querystring as any);
-  const { items } = useQuerystringResults(data.querystring as any);
-
-  useEffect(() => {
-    setBlock({
-      ...data,
-      items: hasListingQuery ? items : [],
-    });
-  }, [items, hasListingQuery, data, setBlock]);
 
   if (!hasListingQuery) {
     return (
