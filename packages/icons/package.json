@@ -1,6 +1,6 @@
 {
-  "name": "@plone/publicui",
-  "description": "Plone default publicui",
+  "name": "@plone/icons",
+  "description": "Plone icons for Aurora",
   "maintainers": [
     {
       "name": "Plone Foundation",
@@ -9,11 +9,11 @@
   ],
   "funding": "https://github.com/sponsors/plone",
   "license": "MIT",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/plone/volto.git",
-    "directory": "packages/publicui"
+    "directory": "packages/icons"
   },
   "bugs": {
     "url": "https://github.com/plone/volto/issues"
@@ -24,25 +24,16 @@
     "plone",
     "plone6",
     "react",
-    "helpers"
+    "icons"
   ],
   "publishConfig": {
     "access": "public"
   },
   "type": "module",
   "main": "index.ts",
-  "addons": [
-    "@plone/theming",
-    "@plone/blocks",
-    "@plone/layout"
-  ],
   "scripts": {
     "test": "vitest",
-    "check:ts": "pnpm --filter @plone/aurora run typegen && tsc --project tsconfig.json",
-    "dry-release": "release-it --dry-run",
-    "release": "release-it",
-    "release-major-alpha": "release-it major --preRelease=alpha",
-    "release-alpha": "release-it --preRelease=alpha",
+    "check:ts": "tsc --project tsconfig.json",
     "prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx}'",
     "lint:fix": "eslint --max-warnings=0 './**/*.{js,jsx,ts,tsx}' --fix --no-error-on-unmatched-pattern",
     "stylelint:fix": "sh -c 'if [ -f .stylelintrc ] || [ -f .stylelintrc.json ] || [ -f .stylelintrc.js ] || [ -f .stylelintrc.cjs ] || [ -f stylelint.config.js ] || [ -f stylelint.config.cjs ] || [ -f stylelint.config.mjs ]; then stylelint '''./**/*.{css,scss,less}''' --fix --allow-empty-input; else echo \"No local stylelint config, skipping\"; fi'",
@@ -58,34 +49,20 @@
     }
   },
   "dependencies": {
-    "@plone/blocks": "workspace:*",
-    "@plone/layout": "workspace:*",
-    "@plone/registry": "workspace:*",
-    "@plone/theming": "workspace:*",
     "@plone/components": "workspace:*",
-    "@plone/client": "workspace:*",
-    "@plone/helpers": "workspace:*",
-    "@plone/icons": "workspace:*",
-    "clsx": "^2.1.1",
-    "react-aria-components": "catalog:",
-    "react-i18next": "catalog:",
-    "react-router": "catalog:"
+    "@plone/registry": "workspace:*"
   },
   "devDependencies": {
     "@plone/types": "workspace:*",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
-    "@types/jest-axe": "^3.5.7",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "eslint-plugin-storybook": "^0.11.2",
-    "jest-axe": "^8.0.0",
-    "release-it": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
     "tsconfig": "workspace:*",
     "typescript": "catalog:",
     "vite": "catalog:",
-    "vitest": "catalog:",
-    "vitest-axe": "^0.1.0"
+    "vitest": "catalog:"
   }
 }
