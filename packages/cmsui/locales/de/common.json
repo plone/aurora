@@ -4,7 +4,8 @@
     "cancel": "Abbrechen",
     "edit": "Bearbeiten",
     "save": "Speichern",
-    "controlpanel": "Kontrollzentrum",
+    "cancel": "Abbrechen",
+    "controlpanel": "Konfiguration",
     "objectbrowserwidget": {
       "openDialog": "Inhalt auswählen",
       "dialogTitle": "Inhalt auswählen",
@@ -87,6 +88,9 @@
       "searchPlaceholder": "Nach Benutzern und Gruppen suchen…",
       "searchResults_one": "{{count}} Eintrag gefunden",
       "searchResults_other": "{{count}} Einträge gefunden"
+    },
+    "toolbar": {
+      "settings": "Einstellungen"
     }
   }
 }

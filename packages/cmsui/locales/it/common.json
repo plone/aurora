@@ -4,6 +4,7 @@
     "cancel": "Annulla",
     "edit": "Modifica",
     "save": "Salva",
+    "cancel": "Annulla",
     "recurrence": {
       "editRecurrence": "Cambia la ricorrenza",
       "repeat": "Ricorrenza",
@@ -125,6 +126,9 @@
       "searchPlaceholder": "Cerca utenti e gruppi…",
       "searchResults_one": "{{count}} voce trovata",
       "searchResults_other": "{{count}} voci trovate"
+    },
+    "toolbar": {
+      "settings": "Impostazioni"
     }
   }
 }

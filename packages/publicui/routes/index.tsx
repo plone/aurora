@@ -36,6 +36,7 @@ import config from '@plone/registry';
 
 import styles from '@plone/layout/slots/App/App.module.css';
 import stylesheet from '@plone/aurora/.plone/publicui.css?url';
+import { ContentTypesMenu } from '../components/Toolbar/ContentTypesMenu';
 
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
   matches,
@@ -102,6 +103,11 @@ export default function Index() {
   const contentLanguage = (content.language as { token?: string } | undefined)
     ?.token;
 
+  const hasContent =
+    matches.filter(
+      (match) => match.id === 'content' || match.id === 'content-index',
+    ).length > 0;
+
   const showToolbar = shouldShowToolbar(content);
 
   return (
@@ -122,48 +128,60 @@ export default function Index() {
         <link rel="stylesheet" href="/layers.css" precedence="first" />
         <RACRouterProvider navigate={navigate}>
           <PluggablesProvider>
-            <Plug
-              pluggable="toolbar-top"
-              id="button-edit"
-              // @ts-expect-error this is currently typed as never[]
-              dependencies={[location.pathname]}
-            >
-              <Link
-                className="primary"
-                aria-label="Edit"
-                href={`/@@edit${location.pathname.replace(/^\/$/, '')}`}
-              >
-                <Pencil />
-              </Link>
-            </Plug>
-            <Plug
-              pluggable="toolbar-top"
-              id="button-contents"
-              // @ts-expect-error this is currently typed as never[]
-              dependencies={[location.pathname]}
-            >
-              <Link
-                className="secondary"
-                aria-label="Contents"
-                href={`/@@contents${location.pathname.replace(/^\/$/, '')}`}
-              >
-                <FolderIcon />
-              </Link>
-            </Plug>
-            <Plug
-              pluggable="toolbar-top"
-              id="button-sharing"
-              // @ts-expect-error this is currently typed as never[]
-              dependencies={[location.pathname]}
-            >
-              <Link
-                className="secondary"
-                aria-label="Sharing"
-                href={`/@@sharing${location.pathname.replace(/^\/$/, '')}`}
-              >
-                <ShareIcon />
-              </Link>
-            </Plug>
+            {hasContent && (
+              <>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-edit"
+                  // @ts-expect-error this is currently typed as never[]
+                  dependencies={[location.pathname]}
+                >
+                  <Link
+                    className="primary"
+                    aria-label="Edit"
+                    href={`/@@edit${location.pathname.replace(/^\/$/, '')}`}
+                  >
+                    <Pencil />
+                  </Link>
+                </Plug>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-contents"
+                  // @ts-expect-error this is currently typed as never[]
+                  dependencies={[location.pathname]}
+                >
+                  <Link
+                    className="secondary"
+                    aria-label="Contents"
+                    href={`/@@contents${location.pathname.replace(/^\/$/, '')}`}
+                  >
+                    <FolderIcon />
+                  </Link>
+                </Plug>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-add"
+                  // @ts-expect-error this is currently typed as never[]
+                  dependencies={[location.pathname]}
+                >
+                  <ContentTypesMenu content={content} />
+                </Plug>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-sharing"
+                  // @ts-expect-error this is currently typed as never[]
+                  dependencies={[location.pathname]}
+                >
+                  <Link
+                    className="secondary"
+                    aria-label="Sharing"
+                    href={`/@@sharing${location.pathname.replace(/^\/$/, '')}`}
+                  >
+                    <ShareIcon />
+                  </Link>
+                </Plug>
+              </>
+            )}
             {showToolbar && <Toolbar />}
             <div id="main">
               <div className={clsx(styles.app, 'app-slot')}>

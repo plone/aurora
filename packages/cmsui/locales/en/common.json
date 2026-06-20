@@ -4,6 +4,7 @@
     "cancel": "Cancel",
     "edit": "Edit",
     "save": "Save",
+    "cancel": "Cancel",
     "recurrence": {
       "editRecurrence": "Edit recurrence",
       "repeat": "Repeat",
@@ -135,6 +136,9 @@
       "searchPlaceholder": "Search for users and groups…",
       "searchResults_one": "{{count}} entry found",
       "searchResults_other": "{{count}} entries found"
+    },
+    "toolbar": {
+      "settings": "Settings"
     }
   }
 }
