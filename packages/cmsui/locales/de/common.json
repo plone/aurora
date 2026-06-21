@@ -3,7 +3,8 @@
     "add": "Hinzufügen",
     "edit": "Bearbeiten",
     "save": "Speichern",
-    "controlpanel": "Kontrollzentrum",
+    "cancel": "Abbrechen",
+    "controlpanel": "Konfiguration",
     "objectbrowserwidget": {
       "openDialog": "Inhalt auswählen",
       "dialogTitle": "Inhalt auswählen",
@@ -102,6 +103,9 @@
           "serverError": "Auf unserer Seite ist ein Fehler aufgetreten. Bitte versuchen Sie es in Kürze erneut."
         }
       }
+    },
+    "toolbar": {
+      "settings": "Einstellungen"
     }
   }
 }

@@ -3,6 +3,7 @@
     "add": "Add",
     "edit": "Edit",
     "save": "Save",
+    "cancel": "Cancel",
     "recurrence": {
       "editRecurrence": "Edit recurrence",
       "repeat": "Repeat",
@@ -150,6 +151,9 @@
           "serverError": "Something went wrong on our end. Please try again in a few moments."
         }
       }
+    },
+    "toolbar": {
+      "settings": "Settings"
     }
   }
 }

@@ -3,6 +3,7 @@
     "add": "Aggiungi",
     "edit": "Modifica",
     "save": "Salva",
+    "cancel": "Annulla",
     "recurrence": {
       "editRecurrence": "Cambia la ricorrenza",
       "repeat": "Ricorrenza",
@@ -140,6 +141,9 @@
           "serverError": "Si è verificato un errore dal nostro lato. Riprova tra qualche istante."
         }
       }
+    },
+    "toolbar": {
+      "settings": "Impostazioni"
     }
   }
 }
