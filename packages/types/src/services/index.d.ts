@@ -1,5 +1,6 @@
 export * from './common';
 export * from './actions';
+export * from './blocktypes';
 export * from './breadcrumbs';
 export * from './navigation';
 export * from './types';
@@ -26,6 +27,7 @@ export * from './relations';
 export * from './roles';
 export * from './rules';
 export * from './search';
+export * from './sharing';
 export * from './site';
 export * from './sources';
 export * from './system';

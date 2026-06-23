@@ -16,7 +16,7 @@ import { getDefaultCallees } from 'eslint-plugin-better-tailwindcss/api/defaults
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const tailwindEntryPoint = path.resolve(
   __dirname,
-  'apps/seven/.plone/publicui.css',
+  'apps/aurora/.plone/publicui.css',
 );
 const tailwindCallees = [...getDefaultCallees(), 'composeTailwindRenderProps'];
 
@@ -31,7 +31,6 @@ const nonAddons = [
   'packages/components',
   'packages/registry',
   'packages/helpers',
-  'packages/providers',
   'packages/react-router',
   'packages/scripts',
   'packages/tooling',
@@ -81,8 +80,12 @@ export default tseslint.config(
       },
       'import/resolver': {
         typescript: {
-          project: ['packages/*/tsconfig.json', 'apps/seven/tsconfig.json'],
+          project: ['packages/*/tsconfig.json', 'apps/aurora/tsconfig.json'],
           alwaysTryTypes: true,
+          noWarnOnMultipleProjects: true,
+        },
+        alias: {
+          map: [['@plone/aurora', './apps/aurora']],
         },
         node: true,
       },
@@ -171,7 +174,6 @@ export default tseslint.config(
       '**/storybook-static/*',
       '**/.storybook/*',
       'packages/volto/*',
-      'packages/coresandbox/*',
       'packages/volto-slate',
       '!**/.*',
       '**/dist',
@@ -181,8 +183,7 @@ export default tseslint.config(
       'packages/registry/docs',
       '**/.react-router/*',
       '**/+types/*',
-      '**/registry.loader.js',
-      '**/registry.loader.server.js',
+      '**/.plone/*',
     ],
   },
 );

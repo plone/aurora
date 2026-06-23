@@ -2,6 +2,7 @@ import { Content } from '../content';
 import { BlocksFormData } from '../blocks/index';
 import { ConfigData } from '.';
 import { Controlpanel, ControlPanelSchema } from '..';
+import type { ComponentType, SVGProps } from 'react';
 
 type apiExpandersType =
   | { match: string; GET_CONTENT: string[] }
@@ -27,6 +28,26 @@ type styleClassNameExtendersType = ({
   data: BlocksFormData;
   classNames: string[];
 }) => string[];
+
+type IconType =
+  | { [key: string]: ComponentType<SVGProps<SVGSVGElement>> }
+  | Record<string, string>; // Volto ones
+
+export type PlateConfig = {
+  editorConfig: {
+    plugins: any[];
+    [key: string]: unknown;
+  };
+  rendererConfig: {
+    plugins: any[];
+    [key: string]: unknown;
+  };
+  floatingToolbarButtons?: React.ComponentType<any>;
+};
+
+interface PlateSettings {
+  block: PlateConfig;
+}
 
 export interface SettingsConfig {
   [key: string]: unknown;
@@ -62,7 +83,7 @@ export interface SettingsConfig {
   persistentReducers: string[];
   initialReducersBlacklist: string[];
   asyncPropsExtenders: unknown[];
-  contentIcons: Record<string, React.ComponentType>;
+  contentIcons: IconType;
   loadables: unknown;
   lazyBundles: {
     [key: string]: string[];
@@ -81,7 +102,7 @@ export interface SettingsConfig {
   showTags: boolean;
   showRelatedItems: boolean;
   controlpanels: Controlpanel[];
-  controlPanelsIcons: Record<string, React.ComponentType>;
+  controlPanelsIcons: IconType;
   filterControlPanels: unknown;
   filterControlPanelsSchema: (schema: Controlpanel) => ControlPanelSchema;
   externalRoutes: {
@@ -106,4 +127,6 @@ export interface SettingsConfig {
   };
   cssLayers: string[];
   hideBreadcrumbs: string[]; // Content types for which to hide breadcrumbs
+  plate: PlateSettings | Record<string, never>;
+  mostUsedTypes: string[];
 }

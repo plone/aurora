@@ -10,14 +10,19 @@ JavaScript
 npm
 nvm
 Pastanaga
+Plate
 Plone
 pluggab(le|ility)
 programatically
 Public UI
+Quanta
 Razzle
 RichText
 Sass
+SVGs?
 transpile[dr]{0,1}
+unregister
+Vite
 Volto
 Vue
 Zope

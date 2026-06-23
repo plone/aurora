@@ -4,7 +4,7 @@ myst:
     "description": "How to get started with Plone"
     "property=og:description": "How to get started with Plone"
     "property=og:title": "How to get started with Plone"
-    "keywords": "Plone, Seven, frontend, user interface, React"
+    "keywords": "Plone, Plone Aurora, frontend, user interface, React"
 ---
 
 (get-started-label)=

@@ -1,0 +1,34 @@
+# .github/workflows/docs-rtd-pr-preview-plone-aurora.yml
+name: readthedocs/actions
+on:
+  pull_request_target:
+    types:
+      - opened
+    # Execute this action only on PRs that touch
+    # documentation files for Plone Aurora.
+    branches:
+      - main
+    paths:
+      - "docs/**"
+      - "packages/components/.storybook/**"
+      - "packages/components/**/*.stories.*"
+      - "packages/registry/.storybook/**"
+      - "packages/registry/**/*.stories.*"
+      - "packages/layout/.storybook/**"
+      - "packages/layout/**/*.stories.*"
+      - "packages/cmsui/.storybook/**"
+      - "packages/cmsui/**/*.stories.*"
+      - .readthedocs.yaml
+      - requirements-docs.txt
+
+permissions:
+  pull-requests: write
+
+jobs:
+  documentation-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: readthedocs/actions/preview@v1
+        with:
+          project-slug: "plone-aurora"
+          single-version: "true"

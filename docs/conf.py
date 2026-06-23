@@ -20,8 +20,8 @@ import json
 
 # -- Project information -----------------------------------------------------
 
-project = "Seven Documentation"
-copyright = "Seven Foundation"
+project = "Plone Aurora Documentation"
+copyright = "Plone Aurora Foundation"
 author = "Plone Community"
 trademark_name = "Plone"
 now = datetime.now()
@@ -31,7 +31,7 @@ year = str(now.year)
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 with open(
-    os.path.join(os.path.abspath("."), "../apps/seven/package.json"), "r"
+    os.path.join(os.path.abspath("."), "../apps/aurora/package.json"), "r"
 ) as package_json:
     data = package_json.read()
 
@@ -87,13 +87,14 @@ linkcheck_ignore = [
     r"http://127.0.0.1",
     r"http://localhost",
     # Ignore pages that require authentication
-    r"https://github.com/plone/volto/issues/new/choose",  # requires auth
+    r"https://github.com/plone/aurora/issues/new/choose",  # requires auth
     # Ignore github.com pages with anchors
     r"https://github.com/.*#.*",
     # Ignore other specific anchors
     r"https://browsersl.ist/#",
     r"https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors#Identifying_the_issue",
     r"https://docs.cypress.io/guides/references/migration-guide#Migrating-to-Cypress-version-10-0",
+    r"https://medium.com",
 ]
 linkcheck_anchors = True
 linkcheck_timeout = 5
@@ -140,7 +141,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/plone/volto",
+            "url": "https://github.com/plone/aurora",
             "icon": "fa-brands fa-square-github",
             "type": "fontawesome",
             "attributes": {
@@ -184,12 +185,12 @@ html_theme_options = {
         },
     ],
     "logo": {
-        "text": "Seven Documentation",
+        "text": "Plone Aurora Documentation",
     },
     "navigation_with_keys": True,
     "path_to_docs": "docs",
     "repository_branch": "main",
-    "repository_url": "https://github.com/plone/volto",
+    "repository_url": "https://github.com/plone/aurora",
     "search_bar_text": "Search",
     "use_edit_page_button": True,
     "use_issues_button": True,
@@ -277,7 +278,7 @@ todo_include_todos = True
 # -- Options for HTML help output -------------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "SevenDocumentation"
+htmlhelp_basename = "PloneAuroraDocumentation"
 
 
 # -- Options for LaTeX output -------------------------------------------------
@@ -287,8 +288,8 @@ htmlhelp_basename = "SevenDocumentation"
 latex_documents = [
     (
         "index",
-        "SevenDocumentation.tex",
-        "Volto Documentation",
+        "PloneAuroraDocumentation.tex",
+        "Plone Aurora Documentation",
         "Plone Community",
         "manual",
     ),
@@ -323,5 +324,5 @@ redirects = {
 def setup(app):
     # app.add_config_value("source_replacements", {}, True)
     # app.connect("source-read", source_replace)
-    app.add_config_value("context", "volto", "env")
-    app.tags.add("volto")
+    app.add_config_value("context", "plone-aurora", "env")
+    app.tags.add("plone-aurora")

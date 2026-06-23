@@ -1,6 +1,11 @@
 {
   "extends": "tsconfig/react-library.json",
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.d.ts",
+    "../../apps/aurora/.react-router/types/**/*"
+  ],
   "exclude": [
     "node_modules",
     "build",
@@ -9,5 +14,15 @@
     "src/**/*.test.{js,jsx,ts,tsx}",
     "src/**/*.spec.{js,jsx,ts,tsx}",
     "src/**/*.stories.{js,jsx,ts,tsx}"
-  ]
+  ],
+  "compilerOptions": {
+    "rootDirs": [
+      ".",
+      "../../apps/aurora/app",
+      "../../apps/aurora/.react-router/types/app"
+    ],
+    "paths": {
+      "@plone/aurora/*": ["../../apps/aurora/*"]
+    }
+  }
 }

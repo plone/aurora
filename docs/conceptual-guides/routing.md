@@ -1,27 +1,27 @@
 ---
 myst:
   html_meta:
-    "description": "Routing in Seven"
-    "property=og:description": "Routing in Seven"
-    "property=og:title": "Routing in Seven"
-    "keywords": "Volto, routing, frontend, Plone, routes, add-ons"
+    "description": "Routing in Plone Aurora"
+    "property=og:description": "Routing in Plone Aurora"
+    "property=og:title": "Routing in Plone Aurora"
+    "keywords": "Plone Aurora, routing, frontend, Plone, routes, add-ons"
 ---
 
 # Routing
 
-Seven uses [React Router](https://reactrouter.com/) in framework mode for routing.
-Since Seven uses a decentralized modular approach, routing is done in a different way than in a traditional React Router app.
-In Seven, routes are registered in the configuration registry via the add-ons.
+Plone Aurora uses [React Router](https://reactrouter.com/) in framework mode for routing.
+Since Plone Aurora uses a decentralized modular approach, routing is done in a different way than in a traditional React Router app.
+In Plone Aurora, routes are registered in the configuration registry via the add-ons.
 
-Seven provides an abstraction layer over the React Router API to isolate the add-ons from the underlying implementation.
-This prevents the add-ons from depending directly on React Router development libraries, which is the responsibility of Seven.
-Under the hood, Seven uses the `@plone/react-router` package to register routes and load them in the app.
+Plone Aurora provides an abstraction layer over the React Router API to isolate the add-ons from the underlying implementation.
+This prevents the add-ons from depending directly on React Router development libraries, which is the responsibility of Plone Aurora.
+Under the hood, Plone Aurora uses the `@plone/react-router` package to register routes and load them in the app.
 The add-ons only have to rely on the `@plone/registry` package and its API to register routes.
 Routes are registered in add-ons using the `config.registerRoute()` API from `@plone/registry`.
 
 ## Route types
 
-Seven supports four types of routes, aligned with [React Router 7’s data route definitions](https://reactrouter.com/start/data/routing).
+Plone Aurora supports four types of routes, aligned with [React Router 7’s data route definitions](https://reactrouter.com/start/data/routing).
 
 `route`
 :   `route` is a standard route type for a specific path.
@@ -41,7 +41,7 @@ See the [React Router documentation](https://reactrouter.com/en/main/start/overv
 
 ## Route definition
 
-The definition of routes in Seven is mapped directly to the React Router API.
+The definition of routes in Plone Aurora is mapped directly to the React Router API.
 The `config.registerRoute` method adds a route to the configuration registry.
 
 ```{seealso}

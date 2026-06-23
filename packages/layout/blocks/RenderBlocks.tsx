@@ -1,8 +1,8 @@
-import { Fragment } from 'react';
+import { Fragment, lazy } from 'react';
 import { hasBlocksData } from '@plone/helpers';
-import { DefaultBlockView } from './DefaultBlockView';
-import type { BlocksConfigData, Content } from '@plone/types';
-import BlockWrapper from './BlockWrapper';
+import type { Content } from '@plone/types';
+import { SOMERSAULT_KEY } from '@plone/plate/constants';
+const SomersaultRenderer = lazy(() => import('./SomersaultRenderer'));
 
 export type RenderBlocksProps = {
   /**
@@ -10,62 +10,31 @@ export type RenderBlocksProps = {
    */
   content: Content;
   /**
-   * Current blocks configuration object
-   * From the registry or local to this instance (eg. in a blocks in block container)
-   */
-  blocksConfig: BlocksConfigData;
-  /**
    * Wrap the blocks in an enclosing tag
    * From the registry or local to this instance (eg. in a blocks in block container)
    */
   as?: React.ElementType;
-  /**
-   * Router location object
-   */
-  pathname: string;
-  /**
-   * Metadata object
-   * In case of the blocks in block container use case, it's the metadata (content data)
-   * from the parent container, passed down to the contained blocks
-   */
-  metadata?: Content;
 };
 
 const RenderBlocks = (props: RenderBlocksProps) => {
-  const { blocksConfig, content, pathname, metadata } = props;
+  const { content } = props;
   const CustomTag = props.as || Fragment;
-
-  return hasBlocksData(content) ? (
-    <CustomTag>
-      {content.blocks_layout.items.map((block) => {
-        const blockData = content.blocks?.[block];
-        const blockType = blockData?.['@type'];
-        // @ts-ignore
-        const Block = blocksConfig[blockType]?.view || DefaultBlockView;
-
-        return Block ? (
-          <BlockWrapper key={block} data={blockData}>
-            {/* @ts-ignore It's ok to pass the blockData as is */}
-            <Block
-              key={block}
-              id={block}
-              metadata={metadata}
-              properties={content}
-              data={blockData}
-              path={pathname || ''}
-              blocksConfig={blocksConfig}
-            />
-          </BlockWrapper>
-        ) : blockData ? (
-          <div key={block}>Unknown block found: {blockType}</div>
-        ) : (
-          <div key={block}>Invalid Block</div>
-        );
-      })}
-    </CustomTag>
-  ) : (
-    ''
+  const shouldRenderSomersault = Object.hasOwn(
+    content.blocks ?? {},
+    SOMERSAULT_KEY,
   );
+
+  if (shouldRenderSomersault) {
+    return (
+      <CustomTag>
+        <SomersaultRenderer content={content} />
+      </CustomTag>
+    );
+  }
+
+  if (!hasBlocksData(content)) return '';
+
+  return '';
 };
 
 export default RenderBlocks;

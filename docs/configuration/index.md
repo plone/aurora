@@ -4,7 +4,7 @@ myst:
     "description": "Main configuration file"
     "property=og:description": "Main configuration file"
     "property=og:title": "Configuration"
-    "keywords": "Volto, Plone, frontend, React, configuration"
+    "keywords": "Plone Aurora, Plone, frontend, React, configuration"
 ---
 
 # Configuration
@@ -12,6 +12,7 @@ myst:
 ```{toctree}
 :maxdepth: 2
 
+configuration-registry
 component-registry
 expanders
 ```

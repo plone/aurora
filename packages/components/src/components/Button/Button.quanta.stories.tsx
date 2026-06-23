@@ -14,12 +14,39 @@ const meta = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['neutral', 'primary', 'destructive'],
+      options: ['neutral', 'primary', 'destructive', 'secondary'],
+    },
+    asLink: {
+      control: 'boolean',
+      description: 'Show the button as a link',
+      table: {
+        type: {
+          summary: 'boolean',
+        },
+        defaultValue: {
+          summary: 'false',
+        },
+      },
+    },
+    accent: {
+      table: {
+        defaultValue: {
+          summary: 'false',
+        },
+      },
+    },
+    isDisabled: {
+      table: {
+        defaultValue: {
+          summary: 'false',
+        },
+      },
     },
   },
   args: {
     isDisabled: false,
     children: 'Button',
+    asLink: false as any,
     accent: false,
   },
 } satisfies Meta<typeof Button>;
@@ -30,27 +57,22 @@ type Story = StoryObj<typeof meta>;
 export const Neutral: Story = {
   render: (args) => (
     <div className="flex gap-8">
-      <Button {...args}>Neutral</Button>
+      <Button {...args}></Button>
       <Button {...args}>
         <BinIcon />
       </Button>
     </div>
   ),
-  args: {},
+  args: {
+    children: 'Neutral',
+  },
 };
 
 export const Accent: Story = {
   render: Neutral.render,
   args: {
     accent: true,
-  },
-};
-
-export const AccentPrimary: Story = {
-  render: Neutral.render,
-  args: {
-    variant: 'primary',
-    accent: true,
+    children: 'Accent',
   },
 };
 
@@ -60,6 +82,16 @@ export const AccentPrimarySmall: Story = {
     variant: 'primary',
     accent: true,
     size: 'S',
+    children: 'Accent Primary Small',
+  },
+};
+
+export const AccentPrimary: Story = {
+  render: Neutral.render,
+  args: {
+    variant: 'primary',
+    accent: true,
+    children: 'Accent Primary',
   },
 };
 
@@ -69,18 +101,23 @@ export const AccentPrimaryLarge: Story = {
     variant: 'primary',
     accent: true,
     size: 'L',
+    children: 'Accent Primary Large',
   },
 };
 
 export const Destructive: Story = {
+  render: Neutral.render,
   args: {
     variant: 'destructive',
+    children: 'Destructive',
   },
 };
 
 export const Disabled: Story = {
+  render: Neutral.render,
   args: {
     isDisabled: true,
+    children: 'Disabled',
   },
 };
 
@@ -90,6 +127,17 @@ export const Icon: Story = {
       <BinIcon />
     </Button>
   ),
+};
+
+export const IconVariant: Story = {
+  render: (args) => (
+    <Button {...args}>
+      <BinIcon />
+    </Button>
+  ),
+  args: {
+    variant: 'icon',
+  },
 };
 
 export const IconAccentPrimarySmall: Story = {
@@ -143,5 +191,21 @@ export const WithTWClassName: Story = {
     className: 'border-5 border-amber-300',
     variant: 'destructive',
     accent: true,
+  },
+};
+
+export const AsLink: Story = {
+  args: {
+    asLink: true,
+    variant: 'primary',
+  },
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['primary', 'secondary'],
+    },
+    accent: {
+      table: { disable: true },
+    },
   },
 };

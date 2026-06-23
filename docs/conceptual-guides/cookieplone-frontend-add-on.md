@@ -4,12 +4,12 @@ myst:
     "description": "An explanation of the anatomy of a frontend add-on"
     "property=og:description": "An explanation of the anatomy of a frontend add-on"
     "property=og:title": "Frontend add-on anatomy"
-    "keywords": "Seven, cookieplone, template, add-on, anatomy"
+    "keywords": "Plone Aurora, cookieplone, template, add-on, anatomy"
 ---
 
 # Frontend add-on anatomy
 
-This chapter explains the anatomy of a frontend add-on in Seven that was created with {term}`cookieplone`.
+This chapter explains the anatomy of a frontend add-on in Plone Aurora that was created with {term}`cookieplone`.
 
 ## Root folder structure
 
@@ -20,12 +20,12 @@ The generated project contains the following files and folders:
 {file}`registry.config.ts`
 : This file is the main entry point for your add-on configuration.
   You can programmatically register add-ons in your app.
-  By default, it registers both your add-on and the official Seven add-ons.
-  The default Seven set includes the {term}`CMSUI` add-ons, but you can opt in to use only the {term}`Public UI` add-ons when building a public site without CMS functionality.
+  By default, it registers both your add-on and the official Plone Aurora add-ons.
+  The default Plone Aurora set includes the {term}`CMSUI` add-ons, but you can opt in to use only the {term}`Public UI` add-ons when building a public site without CMS functionality.
   The default content is:
 
   ```ts
-  import { addons } from 'seven/registry.config';
+  import { addons } from '@plone/aurora/registry.config';
 
   addons.push('<add-on-name>'); // <add-on-name> being the actual name of your add-on
 
@@ -35,7 +35,7 @@ The generated project contains the following files and folders:
 {file}`mrs-developer.json`
 : This file configures the {term}`mrs-developer` tool.
   mrs-developer helps manage multiple repositories and packages in a monorepo.
-  By default, it checks out the official Seven repository.
+  By default, it checks out the official Plone Aurora repository.
   This default is mandatory and you should not remove it.
   You can add external packages if your project requires them.
   Add them to the {file}`packages` folder via the `output` key using a configuration, as shown in the following example:
@@ -46,10 +46,9 @@ The generated project contains the following files and folders:
   {
     "core": {
       "output": "./",
-      "package": "@plone/volto",
-      "url": "git@github.com:plone/volto.git",
-      "https": "https://github.com/plone/volto.git",
-      "branch": "seven",
+      "package": "@plone/aurora",
+      "url": "git@github.com:plone/aurora.git",
+      "https": "https://github.com/plone/aurora.git",
       "filterBlobs": true
     },
     "volto-light-theme": {
@@ -129,7 +128,7 @@ The add-on folder {file}`packages/<add-on-name>` contains the folowing files and
 
   ```{note}
   This file is not in a {file}`src` folder.
-  Seven add-ons do not use a {file}`src` folder.
+  Plone Aurora add-ons do not use a {file}`src` folder.
   See {ref}`add-on-packages-do-not-use-src-folder` for more information.
   ```
 
@@ -146,7 +145,7 @@ The project includes the following tooling configurations:
 
 {file}`eslint.config.mjs`
 : This file configures ESLint.
-  It extends the default Seven configuration, and you can customize it if needed.
+  It extends the default Plone Aurora configuration, and you can customize it if needed.
   In normal circumstances, you do not need to change this file.
 
 {file}`.prettierrc`
@@ -177,20 +176,20 @@ The project includes the following tooling configurations:
   In normal circumstances, you do not need to change this folder.
   Customize the workflows if you need a tailored CI/CD process.
 
-{file}`cypress`
-: This folder contains Cypress end-to-end tests for your add-on.
-  Add tests in {file}`cypress/tests` using the `*.cy.ts` naming convention.
-  In normal circumstances, you do not need to change the Cypress configuration.
+{file}`acceptance`
+: This folder contains Playwright end-to-end tests for your add-on.
+  Add tests in {file}`acceptance/tests` using the `*.test.ts` naming convention.
+  In normal circumstances, you do not need to change the acceptance testing configuration.
 
-## Seven core checkout
+## Plone Aurora core checkout
 
-The Seven core repository is checked out in the {file}`core` folder.
+The Plone Aurora core repository is checked out in the {file}`core` folder.
 This checkout is mandatory and you should not remove it.
 It is managed by mrs-developer.
 
-### Update Seven
+### Update Plone Aurora
 
-After a Seven release, update your checkout by changing the `tag` key in the `core` section of {file}`mrs-developer.json`:
+After a Plone Aurora release, update your checkout by changing the `tag` key in the `core` section of {file}`mrs-developer.json`:
 
 ```{code-block} python
 :caption: mrs-developer.json
@@ -198,9 +197,9 @@ After a Seven release, update your checkout by changing the `tag` key in the `co
 {
   "core": {
     "output": "./",
-    "package": "@plone/volto",
-    "url": "git@github.com:plone/volto.git",
-    "https": "https://github.com/plone/volto.git",
+    "package": "@plone/aurora",
+    "url": "git@github.com:plone/aurora.git",
+    "https": "https://github.com/plone/aurora.git",
     "tag": "1.0.0",
     "filterBlobs": true
   },
@@ -213,6 +212,3 @@ Then run:
 make install
 ```
 
-```{important}
-During the alpha and beta phases of Seven, you should not use the `tag` key, but the `branch` key instead, pointing to the `seven` branch.
-```

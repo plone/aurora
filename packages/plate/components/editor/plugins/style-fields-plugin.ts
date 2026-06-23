@@ -1,0 +1,281 @@
+import {
+  applyStyleFieldDefaultsInData,
+  getStyleFieldsFromBlockSchema,
+  getStyleFieldDefinitionsFromRegistry,
+  PLONE_BLOCK_TYPE,
+  resolveStyleFields,
+  setStyleFieldValue,
+} from '@plone/helpers';
+import config from '@plone/registry';
+import type { BlockConfigBase, BlocksFormData } from '@plone/types';
+import {
+  createSlatePlugin,
+  ElementApi,
+  type SetNodesOptions,
+  type SlateEditor,
+  type TElement,
+} from 'platejs';
+import { toPlatePlugin } from 'platejs/react';
+
+export const STYLE_FIELDS_KEY = 'styleFields';
+const DEFAULT_BLOCK_WIDTH = 'default';
+type StyleFieldConfig = {
+  defaultValue?: string;
+  values?: readonly string[];
+  path?: string;
+};
+
+type ValueElement = Record<string, unknown> & {
+  type?: unknown;
+  children?: unknown[];
+};
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  !!value && typeof value === 'object' && !Array.isArray(value);
+
+const getElementStyleFieldConfigs = (
+  element?: TElement | null,
+): Record<string, StyleFieldConfig> => {
+  if (!element) return {};
+
+  if (element.type === PLONE_BLOCK_TYPE) {
+    const blockType = (element as TElement & { '@type'?: unknown })['@type'];
+
+    if (typeof blockType !== 'string') return {};
+
+    const blockConfig = (config.blocks as Record<string, unknown>)
+      .blocksConfig as Record<string, BlockConfigBase> | undefined;
+
+    const currentBlockConfig = blockConfig?.[blockType];
+    const styleFields = getStyleFieldsFromBlockSchema(
+      currentBlockConfig,
+      element as unknown as BlocksFormData,
+    );
+
+    return {
+      ...styleFields,
+      blockWidth: styleFields.blockWidth ?? {
+        defaultValue:
+          currentBlockConfig?.defaultBlockWidth ?? DEFAULT_BLOCK_WIDTH,
+      },
+    };
+  }
+
+  return {};
+};
+
+const applyStyleFieldDefaultsToElement = <T extends TElement>(
+  element: T,
+): T => {
+  const fieldConfigs = getElementStyleFieldConfigs(element);
+  const nextElement = { ...element } as Record<string, unknown>;
+  const nextStyles = nextElement['styles'];
+
+  if (isRecord(nextStyles)) {
+    nextElement['styles'] = { ...nextStyles };
+  }
+
+  applyStyleFieldDefaultsInData({
+    data: nextElement,
+    fieldConfigs,
+    container: undefined,
+    resolveDefinitions: getStyleFieldDefinitionsFromRegistry,
+  });
+
+  return nextElement as T;
+};
+
+const withInsertedStyleFieldDefaults = (nodes: unknown): unknown => {
+  if (Array.isArray(nodes)) {
+    return nodes.map((node) => withInsertedStyleFieldDefaults(node));
+  }
+
+  if (!ElementApi.isElement(nodes)) {
+    return nodes;
+  }
+
+  return applyStyleFieldDefaultsToElement(nodes);
+};
+
+const applyStyleFieldDefaultsInValue = (value: unknown[]) => {
+  const applyDefaults = (node: unknown) => {
+    if (!node || typeof node !== 'object') return;
+
+    const element = node as ValueElement;
+    if (typeof element.type !== 'string') return;
+
+    if (isRecord(element.styles)) {
+      element.styles = { ...element.styles };
+    }
+
+    applyStyleFieldDefaultsInData({
+      data: element,
+      fieldConfigs: getElementStyleFieldConfigs(element as TElement),
+      container: undefined,
+      resolveDefinitions: getStyleFieldDefinitionsFromRegistry,
+    });
+  };
+
+  value.forEach(applyDefaults);
+  return value;
+};
+
+const buildStyleFieldPatch = (
+  node: TElement,
+  fieldName: string,
+  value: string,
+  fieldConfig?: StyleFieldConfig,
+) => {
+  const nextNode = { ...node } as TElement & Record<string, unknown>;
+
+  if (isRecord(nextNode.styles)) {
+    nextNode.styles = { ...nextNode.styles };
+  }
+
+  setStyleFieldValue(nextNode, fieldName, value, fieldConfig);
+
+  if (
+    typeof fieldConfig?.path === 'string' &&
+    fieldConfig.path.startsWith('styles.')
+  ) {
+    return {
+      styles: nextNode.styles,
+    };
+  }
+
+  if (!(fieldName in node) && isRecord(node.styles)) {
+    return {
+      styles: nextNode.styles,
+    };
+  }
+
+  return {
+    [fieldName]: nextNode[fieldName],
+  };
+};
+
+export const setStyleFieldOnEditor = (
+  editor: SlateEditor,
+  fieldName: string,
+  value: string,
+  setNodesOptions?: SetNodesOptions,
+) => {
+  const entries = setNodesOptions?.at
+    ? [editor.api.node<TElement>(setNodesOptions.at)].filter(Boolean)
+    : editor.api.blocks({ mode: 'lowest' });
+
+  entries.forEach((entry) => {
+    if (!entry) return;
+
+    const [node, path] = entry;
+
+    if (!ElementApi.isElement(node) || !editor.api.isBlock(node)) return;
+
+    const fieldConfig = getElementStyleFieldConfigs(node)[fieldName];
+    const definitions = getStyleFieldDefinitionsFromRegistry(fieldName, {
+      data: node as Record<string, unknown>,
+      blockType:
+        (typeof node.type === 'string' && node.type !== PLONE_BLOCK_TYPE
+          ? node.type
+          : (node as TElement & { '@type'?: string })['@type']) ?? undefined,
+      fieldName,
+    });
+
+    const allowedValues = fieldConfig?.values?.length
+      ? fieldConfig.values
+      : definitions
+          .map((definition: { name?: string }) => definition.name)
+          .filter((name: string | undefined): name is string => !!name);
+
+    if (!allowedValues.includes(value)) return;
+
+    editor.tf.setNodes(
+      buildStyleFieldPatch(node, fieldName, value, fieldConfig),
+      {
+        ...setNodesOptions,
+        at: path,
+      },
+    );
+  });
+};
+
+export const resetStyleFieldOnEditor = (
+  editor: SlateEditor,
+  fieldName: string,
+  options?: SetNodesOptions,
+) => {
+  const blockEntry = editor.api.block();
+  const block =
+    blockEntry && ElementApi.isElement(blockEntry[0])
+      ? blockEntry[0]
+      : undefined;
+  const defaultValue = block
+    ? getElementStyleFieldConfigs(block)[fieldName]?.defaultValue
+    : undefined;
+
+  if (!defaultValue) return;
+
+  setStyleFieldOnEditor(editor, fieldName, defaultValue, options);
+};
+
+export const BaseStyleFieldsPlugin = createSlatePlugin({
+  key: STYLE_FIELDS_KEY,
+  normalizeInitialValue: ({ value }) => {
+    applyStyleFieldDefaultsInValue(value);
+  },
+  inject: {
+    isBlock: true,
+    nodeProps: {
+      transformProps: ({ element, props }) => {
+        if (!element || !ElementApi.isElement(element)) {
+          return props;
+        }
+
+        const { style } = resolveStyleFields({
+          data: element as Record<string, unknown>,
+          fieldConfigs: getElementStyleFieldConfigs(element),
+          container: undefined,
+          resolveDefinitions: getStyleFieldDefinitionsFromRegistry,
+        });
+
+        if (!Object.keys(style).length) return props;
+
+        return {
+          ...props,
+          style: {
+            ...(props.style ?? {}),
+            ...style,
+          },
+        };
+      },
+    },
+  },
+  extendEditor: ({ editor }) => {
+    const createBlock = editor.api.create.block.bind(editor.api.create);
+    const insertNodes = editor.tf.insertNodes.bind(editor.tf);
+
+    editor.api.create.block = ((...args: any[]) =>
+      withInsertedStyleFieldDefaults(createBlock(...args))) as any;
+
+    editor.tf.insertNodes = ((nodes: any, options?: any) =>
+      insertNodes(
+        withInsertedStyleFieldDefaults(nodes) as any,
+        options,
+      )) as any;
+
+    return editor;
+  },
+}).extendTransforms(({ editor }) => ({
+  setStyleField: (
+    fieldName: string,
+    value: string,
+    options?: SetNodesOptions,
+  ) => {
+    setStyleFieldOnEditor(editor, fieldName, value, options);
+  },
+  resetStyleField: (fieldName: string, options?: SetNodesOptions) => {
+    resetStyleFieldOnEditor(editor, fieldName, options);
+  },
+}));
+
+export const StyleFieldsPlugin = toPlatePlugin(BaseStyleFieldsPlugin);

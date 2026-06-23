@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { langmap } from '@plone/helpers';
 import { Link } from '@plone/components';
-import type { RootLoader } from 'seven/app/root';
+import type { RootLoader } from '@plone/aurora/app/root';
 
 import styles from './LanguageSwitcher.module.css';
 import { useRouteLoaderData } from 'react-router';
@@ -27,13 +27,16 @@ const LanguageSwitcher = (props: LanguageSelectorProps) => {
   }
 
   const { site } = rootData;
+  if (!site) {
+    return null;
+  }
   const isMultilingual = site.features?.multilingual;
   const availableLanguages = site['plone.available_languages'] || [];
   const currentLang = site['plone.default_language'] || 'en';
 
   return isMultilingual ? (
     <div className={clsx(styles['language-switcher'])}>
-      {availableLanguages.map((lang) => {
+      {availableLanguages.map((lang: string) => {
         return (
           <Link
             aria-label={t('layout.languageSwitcher.switchTo', {

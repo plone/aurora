@@ -1,4 +1,4 @@
-1.  Install or update the supported LTS versions of Node.js, then activate the version supported in Seven.
+1.  Install or update the supported LTS versions of Node.js, then activate the version supported in Plone Aurora.
 
     ```shell
     nvm install --lts

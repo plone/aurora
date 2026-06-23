@@ -1,15 +1,15 @@
 ---
 myst:
   html_meta:
-    "description": "Seven development"
-    "property=og:description": "Seven development"
+    "description": "Plone Aurora development"
+    "property=og:description": "Plone Aurora development"
     "property=og:title": "Development"
-    "keywords": "Seven, Plone, frontend, React, development"
+    "keywords": "Plone Aurora, Plone, frontend, React, development"
 ---
 
 # Development
 
-This part of the documentation describes how to develop projects using Seven.
+This part of the documentation describes how to develop projects using Plone Aurora.
 
 ```{toctree}
 :caption: Table of contents
@@ -17,4 +17,7 @@ This part of the documentation describes how to develop projects using Seven.
 
 images
 i18n
+editor-slash-menu
+block-anatomy
+configure-editor-block-widths
 ```

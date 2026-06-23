@@ -7,6 +7,11 @@ export function RouteCondition(path: string | PathPattern) {
     Boolean(matchPath(path, location.pathname));
 }
 
+export function NotRouteCondition(path: string | PathPattern) {
+  return ({ location }: { location: Location }) =>
+    !Boolean(matchPath(path, location.pathname));
+}
+
 export function ContentTypeCondition(contentType: string[]) {
   return ({ content, location }: { content: Content; location: Location }) => {
     return (
@@ -27,4 +32,34 @@ export function NotContentTypeCondition(contentType: string[]) {
       })
     );
   };
+}
+
+export function shouldShowToolbar(content?: Content | null) {
+  const actions = content?.['@components']?.actions;
+  const isVisible =
+    (actions?.object?.some((a) => a.id === 'edit') ?? false) ||
+    (actions?.object_buttons?.some((a) => a.id === 'edit') ?? false);
+
+  return isVisible;
+}
+
+export function isSameDay(start: string, end: string): boolean {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  return (
+    startDate.getDate() === endDate.getDate() &&
+    startDate.getMonth() === endDate.getMonth() &&
+    startDate.getFullYear() === endDate.getFullYear()
+  );
+}
+
+export function getDate(date: string | Date, locale: string): string {
+  const dateObject = typeof date === 'string' ? new Date(date) : date;
+
+  const dateTimeFormat = Intl.DateTimeFormat([locale], {
+    dateStyle: 'medium',
+  });
+
+  return dateTimeFormat.format(dateObject);
 }

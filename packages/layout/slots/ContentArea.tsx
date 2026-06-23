@@ -7,18 +7,12 @@ const ContentArea = (props: SlotComponentProps) => {
   const { content } = props;
 
   if (
-    ['Document', 'Plone Site', 'LRF', 'News Item', 'Event'].includes(
-      content['@type'],
-    ) &&
+    ['Document', 'Plone Site', 'LRF', 'News Item'].includes(content['@type']) &&
     hasBlocksData(content)
   ) {
     return (
       <>
-        <RenderBlocks
-          content={content}
-          blocksConfig={config.blocks.blocksConfig}
-          pathname="/"
-        />
+        <RenderBlocks content={content} />
       </>
     );
   } else {

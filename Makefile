@@ -1,15 +1,3 @@
-### Defensive settings for make:
-#     https://tech.davis-hansson.com/p/make/
-SHELL:=bash
-.ONESHELL:
-.SHELLFLAGS:=-eu -o pipefail -c
-.SILENT:
-.DELETE_ON_ERROR:
-MAKEFLAGS+=--warn-undefined-variables
-MAKEFLAGS+=--no-builtin-rules
-
-CURRENT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-
 # Project settings
 include variables.mk
 
@@ -35,13 +23,12 @@ CHECKOUT_BRANCH=$(shell git branch --show-current)
 CHECKOUT_TMP=../$(CHECKOUT_BASENAME).tmp
 CHECKOUT_TMP_ABS="$(shell realpath $(CHECKOUT_TMP))"
 
-# We like colors
-# From: https://coderwall.com/p/izxssa/colored-makefile-for-golang-projects
-RED=`tput setaf 1`
-GREEN=`tput setaf 2`
-RESET=`tput sgr0`
-YELLOW=`tput setaf 3`
-
+.PHONY: test-colors
+test-colors:
+	@echo "$(RED)This is red$(RESET)"
+	@echo "$(GREEN)This is green$(RESET)"
+	@echo "$(YELLOW)This is yellow$(RESET)"
+	@echo "$(CYAN)This is cyan$(RESET)"
 
 # Top-level targets
 
@@ -53,7 +40,7 @@ all: help
 # to return a pretty list of targets and their descriptions.
 .PHONY: help
 help: ## This help message
-	@echo -e "$$(grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:.*##\s*/:/' -e 's/^\(.\+\):\(.*\)/\\x1b[36m\1\\x1b[m:\2/' | column -c2 -t -s :)"
+	@echo -e "$$(grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:.*##\s*/:/' -e 's/^\(.\+\):\(.*\)/$(CYAN)\1$(RESET):\2/' | column -c2 -t -s :)"
 
 .PHONY: start
 start: ## Starts Seven in development mode
@@ -152,10 +139,6 @@ docs-test: docs-clean docs-linkcheckbroken docs-vale  ## Clean docs build, then 
 
 ##### Build
 
-.PHONY: cypress-install
-cypress-install: ## Install Cypress for acceptance tests
-	$(NODEBIN)/cypress install
-
 packages/registry/dist: $(shell find packages/registry/src -type f)
 	pnpm build:registry
 
@@ -165,9 +148,6 @@ packages/components/dist: $(shell find packages/components/src -type f)
 packages/client/dist: $(shell find packages/client/src -type f)
 	pnpm build:client
 
-# packages/providers/dist: $(shell find packages/providers/src -type f)
-# 	pnpm build:providers
-
 packages/helpers/dist: $(shell find packages/helpers/src -type f)
 	pnpm build:helpers
 
@@ -176,16 +156,6 @@ packages/react-router/dist: $(shell find packages/react-router/src -type f)
 
 .PHONY: build-deps
 build-deps: packages/registry/dist packages/components/dist packages/client/dist packages/react-router/dist packages/helpers/dist  ## Build dependencies
-
-## Storybook
-
-.PHONY: storybook-start
-storybook-start: ## Start Storybook server on port 6006
-	$(MAKE) -C "./packages/volto/" storybook-start
-
-.PHONY: storybook-build
-storybook-build: ## Build Storybook
-	$(MAKE) -C "./packages/volto/" storybook-build
 
 ##### Release
 
@@ -208,12 +178,12 @@ backend-docker-start-no-cors: ## Starts the Docker-based backend without CORS in
 frontend-docker-start: ## Starts a Docker-based frontend for development
 	echo "This should start a container with the Seven frontend for demo purposes..."
 
-##### Acceptance tests (Cypress)
+##### Acceptance tests
 ######### Dev mode Acceptance tests
 
 .PHONY: acceptance-frontend-dev-start
 acceptance-frontend-dev-start: ## Start acceptance frontend in development mode
-	PLONE_API_PATH=http://127.0.0.1:55001/plone pnpm --filter seven start
+	PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start
 
 ######### Seven Acceptance tests
 
@@ -227,27 +197,19 @@ ci-acceptance-backend-start: ## Start backend acceptance server in headless mode
 
 .PHONY: acceptance-frontend-prod-start
 acceptance-frontend-prod-start: ## Start acceptance frontend in production mode
-	pnpm --filter seven build && PLONE_API_PATH=http://127.0.0.1:55001/plone pnpm --filter seven start:prod
+	pnpm --filter @plone/aurora build && PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start:prod
 
 .PHONY: acceptance-test
 acceptance-test: ## Start Cypress in interactive mode
-	pnpm --filter @plone/tooling exec cypress open --config-file $(CURRENT_DIR)/packages/tooling/cypress.config.js --config specPattern=$(CURRENT_DIR)'/apps/seven/cypress/tests/**/*.cy.{js,jsx,ts,tsx}'
+	pnpm exec playwright test --ui
 
 .PHONY: ci-acceptance-test
 ci-acceptance-test: ## Run cypress tests in headless mode for CI
-	pnpm --filter @plone/tooling exec cypress run --config-file $(CURRENT_DIR)/packages/tooling/cypress.config.js --config specPattern=$(CURRENT_DIR)'/apps/seven/cypress/tests/**/*.cy.{js,jsx,ts,tsx}'
+	pnpm exec playwright test
 
 .PHONY: ci-acceptance-test-run-all
 ci-acceptance-test-run-all: ## With a single command, start both the acceptance frontend and backend acceptance server, and run Cypress tests in headless mode
-	$(NODEBIN)/start-test "make ci-acceptance-backend-start" http-get://127.0.0.1:55001/plone "make acceptance-frontend-prod-start" http://127.0.0.1:3000 "make ci-acceptance-test"
-
-######### @plone/cmsui Acceptance tests
-
-cmsui-acceptance-test: ## Start Cypress in interactive mode for @plone/cmsui tests
-	pnpm --filter @plone/tooling exec cypress open --config-file $(CURRENT_DIR)/packages/tooling/cypress.config.js --config specPattern=$(CURRENT_DIR)'/packages/cmsui/cypress/tests/**/*.cy.{js,jsx,ts,tsx}'
-
-cmsui-ci-acceptance-test: ## Start Cypress in interactive mode for @plone/cmsui tests
-	pnpm --filter @plone/tooling exec cypress run --config-file $(CURRENT_DIR)/packages/tooling/cypress.config.js --config specPattern=$(CURRENT_DIR)'/packages/cmsui/cypress/tests/**/*.cy.{js,jsx,ts,tsx}'
+	$(NODEBIN)/start-test "make ci-acceptance-backend-start" http-get://localhost:55001/plone "make acceptance-frontend-prod-start" http://localhost:3000 "make ci-acceptance-test"
 
 # include local overrides if present
 -include Makefile.local
