@@ -30,6 +30,14 @@ type ValueElement = Record<string, unknown> & {
   children?: unknown[];
 };
 
+const toStyleFieldDataAttributes = (values: Record<string, string>) =>
+  Object.fromEntries(
+    Object.entries(values).map(([fieldName, value]) => [
+      `data-style-${fieldName}`,
+      value,
+    ]),
+  );
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === 'object' && !Array.isArray(value);
 
@@ -231,17 +239,22 @@ export const BaseStyleFieldsPlugin = createSlatePlugin({
           return props;
         }
 
-        const { style } = resolveStyleFields({
+        const { style, values } = resolveStyleFields({
           data: element as Record<string, unknown>,
           fieldConfigs: getElementStyleFieldConfigs(element),
           container: undefined,
           resolveDefinitions: getStyleFieldDefinitionsFromRegistry,
         });
 
-        if (!Object.keys(style).length) return props;
+        const dataAttributes = toStyleFieldDataAttributes(values);
+
+        if (!Object.keys(style).length && !Object.keys(dataAttributes).length) {
+          return props;
+        }
 
         return {
           ...props,
+          ...dataAttributes,
           style: {
             ...(props.style ?? {}),
             ...style,
