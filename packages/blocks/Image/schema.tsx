@@ -54,6 +54,13 @@ export function ImageSchema({
         title: 'Block width',
         widget: 'width',
         default: 'default',
+        isDisabled: formData.align === 'left' || formData.align === 'right',
+        value: ['left', 'right'].includes(formData.align)
+          ? ['s', 'm'].includes(formData.size)
+            ? 'narrow'
+            : 'default'
+          : formData.blockWidth,
+
         styleField: true,
       },
       align: {
@@ -68,7 +75,8 @@ export function ImageSchema({
         widget: 'size',
         default: 'l',
         actions: ['s', 'm', 'l'],
-        disabled: formData.align === 'center',
+        isDisabled: formData.align === 'center',
+        value: formData.align === 'center' ? 'l' : formData.size,
         styleField: true,
       },
       href: {
