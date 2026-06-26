@@ -38,6 +38,19 @@ const resolveDefinitions = vi.fn((fieldName: string) => {
     ];
   }
 
+  if (fieldName === 'size') {
+    return [
+      {
+        name: 's',
+        label: 'Small',
+      },
+      {
+        name: 'm',
+        label: 'Medium',
+      },
+    ];
+  }
+
   return [];
 });
 
@@ -101,6 +114,24 @@ describe('style fields helpers', () => {
     ).toEqual({
       style: { '--theme-color': 'wheat' },
       values: { theme: 'sand' },
+    });
+  });
+
+  it('returns semantic values even when a definition has no style object', () => {
+    expect(
+      resolveStyleFields({
+        data: {
+          '@type': 'image',
+          size: 'm',
+        },
+        fieldConfigs: {
+          size: {},
+        },
+        resolveDefinitions,
+      }),
+    ).toEqual({
+      style: {},
+      values: { size: 'm' },
     });
   });
 
