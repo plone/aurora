@@ -1,33 +1,27 @@
 /**
- * A free-form panel component designed for use inside the Toolbar's shadow DOM.
+ * A free-form panel component for use inside the Toolbar.
  *
- * Uses DialogTrigger + Popover + Dialog instead of MenuTrigger + Menu, so any
- * content (Select, links, form controls) can live inside without conflicting
- * with Menu's collection context.
+ * Without Shadow DOM, React Aria's DialogTrigger + Popover + Dialog work
+ * as-is — no custom open/close wiring, no portal hacks, no offsetParent
+ * workarounds needed. Select, ComboBox, and any other RAC component placed
+ * inside renders and positions correctly out of the box.
  *
- * All shadow DOM workarounds (open/close state, outside-click detection,
- * Tab trapping, focus-on-open, focus-restore-on-close) are handled by
- * `useToolbarOverlay` with `mode='popover'`. Nested RAC overlays (Select,
- * ComboBox, etc.) portal into the shadow root automatically via the toolbar's
- * UNSAFE_PortalProvider.
+ * The `styles` prop is vestigial (was used to inject CSS into the shadow root).
+ * Import CSS normally instead.
  *
- * Pass custom CSS via the `styles` prop (imported with `?inline`) — it will
- * be injected into the shadow root automatically:
+ *   import './MyPanel.css';
  *
- *   import panelStyles from './MyPanel.css?inline';
- *
- *   <ToolbarPopover icon={<MyIcon />} className="my-panel" styles={panelStyles}>
+ *   <ToolbarPopover icon={<MyIcon />} className="my-panel">
  *     <MyPanelContent />
  *   </ToolbarPopover>
  */
 
 import React from 'react';
 import { Button, Dialog, DialogTrigger, Popover } from 'react-aria-components';
-import { useToolbarOverlay } from './useToolbarOverlay';
 
 export interface ToolbarPopoverProps {
   icon?: React.ReactNode;
-  /** CSS string (imported with `?inline`) to inject into the shadow root. */
+  /** @deprecated Was used to inject CSS into the shadow root. Import CSS normally. */
   styles?: string;
   className?: string;
   children?: React.ReactNode;
@@ -35,22 +29,16 @@ export interface ToolbarPopoverProps {
 
 export function ToolbarPopover({
   icon,
-  styles,
+  styles: _styles,
   className,
   children,
 }: ToolbarPopoverProps) {
-  const { isOpen, onOpenChange, triggerRef, overlayRef } =
-    useToolbarOverlay('popover');
-
   return (
-    <>
-      {styles && <style>{styles}</style>}
-      <DialogTrigger isOpen={isOpen} onOpenChange={onOpenChange}>
-        <Button ref={triggerRef}>{icon}</Button>
-        <Popover ref={overlayRef} placement="bottom start" isNonModal>
-          <Dialog className={className}>{children}</Dialog>
-        </Popover>
-      </DialogTrigger>
-    </>
+    <DialogTrigger>
+      <Button>{icon}</Button>
+      <Popover placement="bottom start" className="toolbar-overlay">
+        <Dialog className={className}>{children}</Dialog>
+      </Popover>
+    </DialogTrigger>
   );
 }

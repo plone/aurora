@@ -1,9 +1,13 @@
+/* all: initial resets every CSS property to its spec default, preventing
+   host-page styles from leaking into the toolbar. Properties needed for
+   layout and appearance must be re-declared explicitly after the reset. */
 .toolbar {
+  all: initial;
   position: fixed;
   z-index: 10;
   top: 0;
   bottom: 0;
   left: 0;
+  display: block;
   width: var(--plone-toolbar-width, 80px);
-  background: var(--plone-toolbar-background, var(--quanta-smoke));
 }

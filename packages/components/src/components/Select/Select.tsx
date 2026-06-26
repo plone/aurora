@@ -8,11 +8,9 @@ import {
   ListBoxItem,
   ListBoxSection,
   Popover,
-  PopoverContext,
   Select as RACSelect,
   SelectValue,
   Text,
-  useContextProps,
   type ListBoxItemProps,
   type ListBoxProps,
   type SectionProps,
@@ -54,8 +52,6 @@ export function Select<
   items,
   ...props
 }: SelectProps<T, M>) {
-  const [popoverProps] = useContextProps({}, null, PopoverContext);
-
   return (
     <RACSelect {...props}>
       {({ isOpen }) => (
@@ -69,7 +65,7 @@ export function Select<
           </Button>
           {description && <Text slot="description">{description}</Text>}
           <FieldError>{errorMessage}</FieldError>
-          <Popover offset={0} {...popoverProps}>
+          <Popover offset={0}>
             <SelectListBox items={items}>
               {children
                 ? children

@@ -1,29 +1,22 @@
 /**
- * CMS Toolbar — rendered inside a Shadow DOM for full CSS isolation.
+ * CMS Toolbar — CSS isolation via `all: initial` reset (no Shadow DOM).
  *
- * Why Shadow DOM?
- * Third-party Plone themes can ship any CSS they like. A theme's rules must
- * never leak into the toolbar, and the toolbar's rules must never leak into
- * the public page. Shadow DOM provides a hard boundary: styles declared
- * inside the shadow root do not inherit from the host page, and the host
- * page's selectors cannot pierce the boundary.
+ * `all: initial` on the root element resets every inherited and non-inherited
+ * CSS property to its spec default, preventing host-page styles from leaking
+ * in. CSS Modules scopes toolbar class names so toolbar styles cannot leak out.
  *
- * The toolbar is client-side only (useEffect attaches the shadow root).
- * On the server the host <div> is rendered as an inert empty element, which
- * is acceptable because permission-gated UI requires an authenticated request
- * anyway.
+ * The only gap vs Shadow DOM: CSS custom properties are not covered by
+ * `all: initial`. Variables are namespaced `--plone-*` / `--quanta-*` so
+ * host-page collision is negligible in practice.
  *
- * React context (Jotai, Router, Pluggables…) flows through createPortal
- * unchanged — portals preserve the React tree's context even when the DOM
- * target is a shadow root.
+ * Without Shadow DOM, React Aria's overlay components (MenuTrigger, DialogTrigger,
+ * Popover, Select…) work as designed — no event-retargeting patches, no custom
+ * portal wiring, no offsetParent hacks.
  */
 
-import { createPortal } from 'react-dom';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import styles from './Toolbar.module.css';
-import toolbarInnerStyles from './Toolbar-inner.css?inline';
 import { useTranslation } from 'react-i18next';
-import { UNSAFE_PortalProvider } from 'react-aria';
+import styles from './Toolbar.module.css';
+import './Toolbar-inner.css';
 import { Pluggable } from '../Pluggable';
 
 function ToolbarInner() {
@@ -43,49 +36,10 @@ function ToolbarInner() {
   );
 }
 
-/**
- * Renders a fixed CMS toolbar on the left side of the viewport, isolated from
- * the host-page stylesheet via Shadow DOM.
- *
- * Extensibility is handled by the Pluggable system:
- *   • `toolbar-top`    — slot at the top of the toolbar
- *   • `toolbar-bottom` — slot at the bottom of the toolbar
- *
- * Register items with `<Plug pluggable="toolbar-top" id="my-button">`
- * More info about Pluggables: https://6.docs.plone.org/volto/development/pluggables.html
- */
 const Toolbar = () => {
-  const [shadowRoot, setShadowRoot] = useState<ShadowRoot | null>(null);
-  const hostRef = useRef<HTMLDivElement>(null);
-  const portalContainerRef = useRef<HTMLDivElement>(null);
-  const getContainer = useCallback(() => portalContainerRef.current, []);
-
-  useEffect(() => {
-    if (!hostRef.current || hostRef.current.shadowRoot) return;
-    const root = hostRef.current.attachShadow({ mode: 'open' });
-    setShadowRoot(root);
-  }, []);
-
-  // The host element is always rendered, so the ref is stable. No content is
-  // placed in the shadow root until we know the user can edit.
   return (
-    <div ref={hostRef} id="toolbar" className={styles.toolbar}>
-      {shadowRoot &&
-        createPortal(
-          /* UNSAFE_PortalProvider tells React Aria where to render
-            overlay elements (popovers, menus, tooltips). By default,
-            React Aria appends them to document.body, which is outside
-            the shadow DOM, so they would miss the toolbar's scoped
-            styles and be invisible or unstyled. Pointing getContainer
-            at #toolbar-portals keeps overlays inside the shadow root
-            where they inherit the toolbar's CSS. */
-          <UNSAFE_PortalProvider getContainer={getContainer}>
-            <style>{toolbarInnerStyles}</style>
-            <ToolbarInner />
-            <div ref={portalContainerRef} id="toolbar-portals" />
-          </UNSAFE_PortalProvider>,
-          shadowRoot,
-        )}
+    <div id="toolbar" className={styles.toolbar}>
+      <ToolbarInner />
     </div>
   );
 };

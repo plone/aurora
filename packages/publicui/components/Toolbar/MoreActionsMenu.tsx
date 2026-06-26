@@ -9,7 +9,7 @@ import { MenuLinkItem } from '../MenuLinkItem/MenuLinkItem';
 import MoreOptions from '@plone/components/icons/more-options.svg?react';
 import History from '@plone/components/icons/history.svg?react';
 import Share from '@plone/components/icons/share.svg?react';
-import moreActionsMenuStyles from './MoreActionsMenu.css?inline';
+import styles from './MoreActionsMenu.module.css';
 
 interface MoreActionsMenu {
   content: Content;
@@ -20,11 +20,7 @@ export const MoreActionsMenu = ({ content }: MoreActionsMenu) => {
   const { t } = useTranslation();
 
   return (
-    <ToolbarPopover
-      icon={<MoreOptions />}
-      styles={moreActionsMenuStyles}
-      className="menu-more-actions"
-    >
+    <ToolbarPopover icon={<MoreOptions />} className={styles.menuMoreActions}>
       <Header>{t('publicui.toolbar.pageSettings')}</Header>
       <Select
         label={t('publicui.toolbar.state')}
@@ -36,7 +32,7 @@ export const MoreActionsMenu = ({ content }: MoreActionsMenu) => {
       <Select label={t('publicui.toolbar.appearance')}>
         <SelectItem id="private">Default</SelectItem>
       </Select>
-      <div className="last-modified">
+      <div className={styles.lastModified}>
         <span>{t('publicui.toolbar.lastModified')}</span>
         <time>insert timestamp</time>
       </div>

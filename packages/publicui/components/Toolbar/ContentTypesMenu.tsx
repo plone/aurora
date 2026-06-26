@@ -7,7 +7,7 @@ import Page from '@plone/components/icons/page.svg?react';
 import type { Content, GetTypesResponse, Type } from '@plone/types';
 import config from '@plone/registry';
 import { MenuLinkItem } from '../MenuLinkItem/MenuLinkItem';
-import contentTypesMenuStyles from './ContentTypesMenu.css?inline';
+import styles from './ContentTypesMenu.module.css';
 
 interface ContentTypesMenuProps {
   content: Content;
@@ -51,9 +51,9 @@ export const ContentTypesMenu = ({ content }: ContentTypesMenuProps) => {
   };
 
   return (
-    <ToolbarMenu icon={<Add />} styles={contentTypesMenuStyles}>
-      <Menu className="menu-contenttypes-add">
-        <MenuSection className="most-used">
+    <ToolbarMenu icon={<Add />}>
+      <Menu className={styles.menuContenttypesAdd}>
+        <MenuSection className={styles.mostUsed}>
           <Header>{t('publicui.toolbar.addContent')}</Header>
           {highlightedTypes.length > 0 &&
             highlightedTypes.map((type) => (
