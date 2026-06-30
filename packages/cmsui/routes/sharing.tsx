@@ -84,7 +84,6 @@ export default function Sharing() {
       </h1>
       <p>{t('cmsui.sharing.description')}</p>
       <SharingForm
-        key={`${content['@id']}|${search}`}
         content={content}
         sharingData={sharingData}
         search={search}

@@ -87,7 +87,7 @@ describe('useSharingEdits', () => {
   };
 
   it('starts without edits', () => {
-    const { result } = renderHook(() => useSharingEdits(true));
+    const { result } = renderHook(() => useSharingEdits(true, ''));
 
     expect(result.current.hasEdits).toBe(false);
     expect(result.current.isSelected(editorsEntry, 'Reader')).toBe(false);
@@ -96,7 +96,7 @@ describe('useSharingEdits', () => {
   });
 
   it('tracks a toggled role and reverts when toggled back', () => {
-    const { result } = renderHook(() => useSharingEdits(true));
+    const { result } = renderHook(() => useSharingEdits(true, ''));
 
     act(() => result.current.toggle(editorsEntry, 'Reader', true));
     expect(result.current.isSelected(editorsEntry, 'Reader')).toBe(true);
@@ -108,7 +108,7 @@ describe('useSharingEdits', () => {
   });
 
   it('counts an inherit change as an edit', () => {
-    const { result } = renderHook(() => useSharingEdits(true));
+    const { result } = renderHook(() => useSharingEdits(true, ''));
 
     act(() => result.current.setInherit(false));
     expect(result.current.hasEdits).toBe(true);
@@ -117,8 +117,25 @@ describe('useSharingEdits', () => {
     expect(result.current.hasEdits).toBe(false);
   });
 
+  it('clears entry edits but keeps the inherit toggle when the search changes', () => {
+    const { result, rerender } = renderHook(
+      ({ search }) => useSharingEdits(true, search),
+      { initialProps: { search: '' } },
+    );
+
+    act(() => result.current.toggle(editorsEntry, 'Reader', true));
+    act(() => result.current.setInherit(false));
+    expect(result.current.isSelected(editorsEntry, 'Reader')).toBe(true);
+
+    rerender({ search: 'username' });
+
+    expect(result.current.isSelected(editorsEntry, 'Reader')).toBe(false);
+    expect(result.current.inherit).toBe(false);
+    expect(result.current.hasEdits).toBe(true);
+  });
+
   it('builds only changed entries, each with its full boolean role map', () => {
-    const { result } = renderHook(() => useSharingEdits(true));
+    const { result } = renderHook(() => useSharingEdits(true, ''));
 
     act(() => result.current.toggle(inheritedEntry, 'Editor', true));
 
@@ -157,10 +174,9 @@ describe('SharingForm', () => {
     inherit: true,
   };
 
-  it('discards unsaved edits when remounted with a new key (document/search change)', () => {
+  it('discards unsaved edits when the search changes (same instance, no remount)', () => {
     const { rerender } = render(
       <SharingForm
-        key={`${content['@id']}|`}
         content={content}
         sharingData={sharingData}
         search=""
@@ -179,10 +195,9 @@ describe('SharingForm', () => {
 
     rerender(
       <SharingForm
-        key="/other-page|"
         content={content}
         sharingData={sharingData}
-        search=""
+        search="username"
         currentUserId={null}
       />,
     );

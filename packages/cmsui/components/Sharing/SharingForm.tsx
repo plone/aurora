@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Form, useFetcher } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { VisuallyHidden } from 'react-aria';
@@ -100,9 +100,13 @@ function RoleCell({
 
 type RoleEdits = Record<string, Record<string, boolean>>;
 
-export function useSharingEdits(originalInherit: boolean) {
+export function useSharingEdits(originalInherit: boolean, search: string) {
   const [edits, setEdits] = useState<RoleEdits>({});
   const [inherit, setInherit] = useState(originalInherit);
+
+  useEffect(() => {
+    setEdits((prev) => (Object.keys(prev).length ? {} : prev));
+  }, [search]);
 
   const isSelected = (entry: SharingEntry, roleId: string): boolean =>
     edits[entry.id]?.[roleId] ?? entry.roles[roleId] === true;
@@ -169,7 +173,7 @@ export default function SharingForm({
   const { t } = useTranslation();
   const { entries, available_roles, inherit } = sharingData;
 
-  const edits = useSharingEdits(inherit);
+  const edits = useSharingEdits(inherit, search);
   const fetcher = useFetcher();
   const isSaving = fetcher.state !== 'idle';
 
