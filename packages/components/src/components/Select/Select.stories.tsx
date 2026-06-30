@@ -3,8 +3,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   Autocomplete,
   Collection,
+  DialogTrigger,
   Group,
+  Heading,
   Label,
+  Modal,
   Popover,
   Select as RACSelect,
   SelectValue,
@@ -12,6 +15,7 @@ import {
 } from 'react-aria-components';
 
 import { Button } from '../Button/Button';
+import { Dialog } from '../Dialog/Dialog';
 import { Form } from '../Form/Form';
 import { SearchField } from '../SearchField/SearchField';
 import { Tag, TagGroup } from '../TagGroup/TagGroup';
@@ -24,16 +28,16 @@ import {
 } from './Select';
 
 const options = [
-  { label: '1', value: 'Aerospace' },
-  { label: '2', value: 'Mechanical' },
-  { label: '3', value: 'Civil' },
-  { label: '4', value: 'Biomedical' },
-  { label: '5', value: 'Nuclear' },
-  { label: '6', value: 'Industrial' },
-  { label: '7', value: 'Chemical' },
-  { label: '8', value: 'Agricultural' },
-  { label: '9', value: 'Electrical' },
-  { label: '10', value: 'Telco' },
+  { label: 'Aerospace', value: 'aerospace' },
+  { label: 'Mechanical', value: 'mechanical' },
+  { label: 'Civil', value: 'civil' },
+  { label: 'Biomedical', value: 'biomedical' },
+  { label: 'Nuclear', value: 'nuclear' },
+  { label: 'Industrial', value: 'industrial' },
+  { label: 'Chemical', value: 'chemical' },
+  { label: 'Agricultural', value: 'agricultural' },
+  { label: 'Electrical', value: 'electrical' },
+  { label: 'Telco', value: 'telco' },
 ];
 
 const groupedOptions = [
@@ -94,7 +98,8 @@ const meta = {
       <div
         style={
           {
-            width: '420px',
+            width: '100%',
+            maxWidth: '420px',
             '--rac-select-min-width': '220px',
           } as React.CSSProperties
         }
@@ -109,7 +114,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 function ControlledValueStory(args: any) {
-  const [value, setValue] = React.useState<string>('10');
+  const [value, setValue] = React.useState<string>('telco');
 
   return (
     <>
@@ -122,7 +127,10 @@ function ControlledValueStory(args: any) {
 }
 
 function MultipleValueStory(args: any) {
-  const [value, setValue] = React.useState<string[]>(['2', '9']);
+  const [value, setValue] = React.useState<string[]>([
+    'mechanical',
+    'electrical',
+  ]);
 
   return (
     <>
@@ -233,6 +241,29 @@ function TagGroupValueStory() {
   );
 }
 
+function InModalStory(args: any) {
+  return (
+    <DialogTrigger>
+      <Button>Open modal</Button>
+      <Modal>
+        <Dialog>
+          <div
+            style={{
+              display: 'grid',
+              gap: 16,
+              width: '100%',
+              maxWidth: 320,
+            }}
+          >
+            <Heading slot="title">Select inside a modal</Heading>
+            <Select {...args} items={options} />
+          </div>
+        </Dialog>
+      </Modal>
+    </DialogTrigger>
+  );
+}
+
 export const Default: Story = {
   args: {
     name: 'field-default',
@@ -306,6 +337,16 @@ export const TagGroupValue: Story = {
   render: TagGroupValueStory,
 };
 
+export const InModal: Story = {
+  render: InModalStory,
+  args: {
+    name: 'field-modal',
+    label: 'Field title',
+    description: 'Open the modal, then open the Select popover.',
+    placeholder: 'Select...',
+  },
+};
+
 export const Required: Story = {
   ...Items,
   args: {
@@ -321,7 +362,7 @@ export const Filled: Story = {
     ...Items.args,
     name: 'field-filled',
     label: 'Filled field title',
-    defaultValue: '10',
+    defaultValue: 'telco',
     isRequired: true,
   },
 };
@@ -332,7 +373,7 @@ export const Errored: Story = {
     ...Items.args,
     name: 'field-errored',
     label: 'Errored field title',
-    defaultValue: '10',
+    defaultValue: 'telco',
     errorMessage: 'This is the error',
     isInvalid: true,
     isRequired: true,
