@@ -100,16 +100,9 @@ function RoleCell({
 
 type RoleEdits = Record<string, Record<string, boolean>>;
 
-export function useSharingEdits(resetKey: string, originalInherit: boolean) {
+export function useSharingEdits(originalInherit: boolean) {
   const [edits, setEdits] = useState<RoleEdits>({});
   const [inherit, setInherit] = useState(originalInherit);
-
-  const [prevKey, setPrevKey] = useState(resetKey);
-  if (prevKey !== resetKey) {
-    setPrevKey(resetKey);
-    setEdits({});
-    setInherit(originalInherit);
-  }
 
   const isSelected = (entry: SharingEntry, roleId: string): boolean =>
     edits[entry.id]?.[roleId] ?? entry.roles[roleId] === true;
@@ -176,7 +169,7 @@ export default function SharingForm({
   const { t } = useTranslation();
   const { entries, available_roles, inherit } = sharingData;
 
-  const edits = useSharingEdits(`${content['@id']}|${search}`, inherit);
+  const edits = useSharingEdits(inherit);
   const fetcher = useFetcher();
   const isSaving = fetcher.state !== 'idle';
 
@@ -195,7 +188,6 @@ export default function SharingForm({
       <search>
         <Form>
           <SearchField
-            key={search}
             name="search"
             defaultValue={search}
             label={t('cmsui.sharing.searchLabel')}
