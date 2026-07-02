@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.6 (2026-07-02)
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+
 ## 1.0.0-alpha.5 (2026-05-07)
 
 ### Internal
