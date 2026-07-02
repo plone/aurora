@@ -8,6 +8,21 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.7 (2026-07-02)
+
+### Feature
+
+- Added a reusable `getContentIcon` helper for resolving configured content type icons. @pnicolli @giuliaghisini 
+- Added shared block anatomy helpers and the `ploneBlock` node type constant. @sneridagh 
+
+### Bugfix
+
+- Preserved resolved style field values even when the selected definition does not contribute CSS styles. @sneridagh 
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+
 ## 2.0.0-alpha.6 (2026-05-13)
 
 ### Bugfix
