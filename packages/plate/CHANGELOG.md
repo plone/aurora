@@ -8,6 +8,28 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.9 (2026-07-02)
+
+### Breaking
+
+- Renamed adapted registry-backed block nodes from `unknown` to `ploneBlock`, added the `BlockAnatomyPlugin` class contract, and made `blockWidth` a baseline `ploneBlock` style field. @sneridagh 
+
+### Feature
+
+- Integrate links with ObjectBrowser. @sneridagh [#8246](https://github.com/plone/volto/issues/8246)
+- Added `data-style-*` attributes for resolved style field values in the Somersault-based editor element props. @sneridagh 
+
+### Bugfix
+
+- Remove the native Plate Image block from the slash command "Text blocks" group in favor of the custom Image block available in the "Blocks" group. @iFlameing 
+- fix 'Maximum update depth exceeded' errors on @@edit. @frapell 
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+- Update to storybook 10. @sneridagh 
+- Updated Plate TypeScript configuration to resolve Aurora app modules through `@plone/aurora`. @sneridagh 
+
 ## 1.0.0-alpha.8 (2026-05-13)
 
 ### Feature
