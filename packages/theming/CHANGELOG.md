@@ -8,6 +8,20 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.6 (2026-07-02)
+
+### Feature
+
+- Added muted-background CSS variable. @sabrina-bongiovanni 
+
+### Bugfix
+
+- Renamed `quanta-lemmon` color to `quanta-lemon`. @arybakov05 [#6656](https://github.com/plone/volto/issues/6656)
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+
 ## 1.0.0-alpha.5 (2026-05-07)
 
 ### Internal
