@@ -54,13 +54,13 @@ export function ImageSchema({
         title: 'Block width',
         widget: 'width',
         default: 'default',
+        actions: ['narrow', 'default', 'layout', 'full'],
         isDisabled: formData.align === 'left' || formData.align === 'right',
         value: ['left', 'right'].includes(formData.align)
           ? ['s', 'm'].includes(formData.size)
             ? 'narrow'
             : 'default'
           : formData.blockWidth,
-
         styleField: true,
       },
       align: {
@@ -68,6 +68,16 @@ export function ImageSchema({
         widget: 'align',
         default: 'center',
         actions: ['left', 'right', 'center'],
+        onChangeSideEffects: (value: string, formData: BlocksFormData) => {
+          if (['left', 'right'].includes(value)) {
+            return {
+              blockWidth: ['s', 'm'].includes(formData.size as string)
+                ? 'narrow'
+                : 'default',
+            };
+          }
+          return {};
+        },
         styleField: true,
       },
       size: {
@@ -77,6 +87,19 @@ export function ImageSchema({
         actions: ['s', 'm', 'l'],
         isDisabled: formData.align === 'center',
         value: formData.align === 'center' ? 'l' : formData.size,
+        onChangeSideEffects: (value: string, formData: BlocksFormData) => {
+          if (formData.align === 'center') {
+            return { size: 'l' };
+          }
+          if (['left', 'right'].includes(formData.align)) {
+            return {
+              blockWidth: ['s', 'm'].includes(value as string)
+                ? 'narrow'
+                : 'default',
+            };
+          }
+          return {};
+        },
         styleField: true,
       },
       href: {

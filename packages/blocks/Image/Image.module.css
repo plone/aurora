@@ -1,5 +1,6 @@
 .block {
   max-width: inherit;
+  border: red 1px dotted;
   float: var(--block-align);
 }
 .left {

@@ -17,7 +17,6 @@ const ImageBlockEdit = (props: BlockEditProps) => {
   const ImageWidget = config.getWidget('image') as
     | React.ComponentType<any>
     | undefined;
-
   const handleChange = useCallback(
     (
       image: string | null,
@@ -41,8 +40,21 @@ const ImageBlockEdit = (props: BlockEditProps) => {
     [data, setBlock],
   );
 
+  // in ImageBlockView / ImageBlockEdit
+  const effectiveBlockWidth = ['left', 'right'].includes(data.align)
+    ? ['s', 'm'].includes(data.size)
+      ? 'narrow'
+      : 'default'
+    : data.blockWidth;
+
   return (
-    <div className={clsx('image align block', styles['block'])}>
+    <div
+      className={clsx(
+        'image align block',
+        styles['block'],
+        effectiveBlockWidth,
+      )}
+    >
       {data.url ? (
         <ImageView {...props} />
       ) : ImageWidget ? (

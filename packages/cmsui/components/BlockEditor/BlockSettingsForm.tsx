@@ -71,11 +71,23 @@ const BlockSettingsForm = (props: BlockSettingsFormProps) => {
       form={form}
       getFieldProps={(fieldName) => ({
         onChange: (value: unknown) => {
-          const nextData = setValueByPath(
+          let nextData = setValueByPath(
             (form.state.values as Record<string, unknown>) ?? {},
             fieldName,
             value,
           );
+
+          const fieldSchema = (schema as any)?.properties?.[fieldName];
+          const sideEffects = fieldSchema?.onChangeSideEffects?.(
+            value,
+            nextData,
+          );
+
+          if (sideEffects) {
+            Object.entries(sideEffects).forEach(([key, val]) => {
+              nextData = setValueByPath(nextData, key, val);
+            });
+          }
 
           props.onFormDataChange?.(nextData);
         },
