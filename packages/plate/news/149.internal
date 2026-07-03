@@ -1,0 +1,1 @@
+Fixed dependencies for `@plone/plate` given the fact that we want it to work in Volto environments too. @sneridagh
