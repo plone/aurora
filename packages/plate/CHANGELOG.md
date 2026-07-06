@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.10 (2026-07-06)
+
+### Internal
+
+- Fixed dependencies for `@plone/plate` given the fact that we want it to work in Volto environments too. @sneridagh [#149](https://github.com/plone/volto/issues/149)
+
 ## 1.0.0-alpha.9 (2026-07-02)
 
 ### Breaking
