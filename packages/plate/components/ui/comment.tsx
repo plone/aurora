@@ -169,19 +169,19 @@ export function Comment(props: {
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
-      <div className="relative flex items-start gap-5">
-        <Avatar className="size-12">
+      <div className="relative flex items-start gap-3">
+        <Avatar className="size-8">
           <AvatarImage alt={userInfo?.name} src={userInfo?.avatarUrl} />
           <AvatarFallback>{userInfo?.name?.[0]}</AvatarFallback>
         </Avatar>
 
         <div className="min-w-0 flex-1">
-          <h4 className="text-[30px] leading-[1.05] font-bold text-[#2b2b2b]">
+          <h4 className="text-base leading-tight font-bold text-[#2b2b2b]">
             {/* Replace to your own backend or refer to potion */}
             {userInfo?.name}
           </h4>
 
-          <div className="mt-2 text-[25px] leading-none text-[#7f8a91]">
+          <div className="mt-1 text-sm leading-none text-[#7f8a91]">
             <span className="mr-1">
               {formatCommentDate(new Date(comment.createdAt))}
             </span>
@@ -224,24 +224,24 @@ export function Comment(props: {
       </div>
 
       {isFirst && showDocumentContent && (
-        <div className="text-subtle-foreground relative mt-4 flex pl-[68px] text-lg">
+        <div className="text-subtle-foreground relative mt-2 flex pl-11 text-sm">
           {discussionLength > 1 && (
-            <div className="absolute top-[5px] left-6 h-full w-0.5 shrink-0 bg-muted" />
+            <div className="absolute top-[5px] left-4 h-full w-0.5 shrink-0 bg-muted" />
           )}
           <div className="bg-highlight my-px w-0.5 shrink-0" />
           {documentContent && <div className="ml-2">{documentContent}</div>}
         </div>
       )}
 
-      <div className="relative mt-5 mb-4 pl-[68px]">
+      <div className="relative mt-2 mb-3 pl-11">
         {!isLast && (
-          <div className="absolute top-0 left-6 h-full w-0.5 shrink-0 bg-muted" />
+          <div className="absolute top-0 left-4 h-full w-0.5 shrink-0 bg-muted" />
         )}
         <Plate readOnly={!isEditing} editor={commentEditor}>
           <EditorContainer variant="comment">
             <Editor
               variant="comment"
-              className="w-auto grow text-[30px] leading-[1.4] text-[#2b2b2b]"
+              className="w-auto grow text-base leading-6 text-[#2b2b2b]"
               onClick={() => onEditorClick?.()}
             />
 
@@ -556,10 +556,10 @@ export function CommentCreateForm({
   ]);
 
   return (
-    <div className={cn('flex w-full gap-4', className)}>
+    <div className={cn('flex w-full gap-3', className)}>
       <div className="mt-2 shrink-0">
         {/* Replace to your own backend or refer to potion */}
-        <Avatar className="size-12">
+        <Avatar className="size-8">
           <AvatarImage alt={userInfo?.name} src={userInfo?.avatarUrl} />
           <AvatarFallback>{userInfo?.name?.[0]}</AvatarFallback>
         </Avatar>
@@ -574,14 +574,14 @@ export function CommentCreateForm({
         >
           <EditorContainer
             className={`
-              min-h-[88px] rounded-full border border-[#e2e9ec] bg-[#f3f6f7]
-              px-8 py-5 shadow-inner shadow-slate-200/40
+              min-h-11 rounded-full border border-[#e2e9ec] bg-[#f3f6f7]
+              px-4 py-2 shadow-inner shadow-slate-200/40
             `}
             variant="comment"
           >
             <Editor
               variant="comment"
-              className="min-h-[38px] grow pr-12 text-[28px] leading-tight text-[#2b2b2b] placeholder:text-[#7f8589]"
+              className="min-h-7 grow pr-8 text-base leading-tight text-[#2b2b2b] placeholder:text-[#7f8589]"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
@@ -596,7 +596,7 @@ export function CommentCreateForm({
             <Button
               size="icon"
               variant="ghost"
-              className="absolute right-5 bottom-4 ml-auto size-10 shrink-0 text-[#a8b4b9] hover:text-[#0073b5]"
+              className="absolute right-2 bottom-1.5 ml-auto size-8 shrink-0 text-[#a8b4b9] hover:text-[#0073b5]"
               disabled={commentContent.trim().length === 0}
               onClick={(e) => {
                 e.stopPropagation();

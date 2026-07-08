@@ -47,15 +47,15 @@ import { Comment, CommentCreateForm } from './comment';
 
 export const discussionPopoverContentClassName = `
   max-h-[min(70dvh,calc(-24px+var(--radix-popper-available-height)))]
-  w-[min(600px,calc(100vw-24px))] min-w-[320px] overflow-y-auto
-  rounded-[24px] border border-[#c7d6dc] bg-white p-0
-  shadow-[0_26px_70px_rgba(15,23,42,0.18)]
+  w-[min(420px,calc(100vw-24px))] min-w-[300px] overflow-y-auto
+  rounded-[16px] border border-[#c7d6dc] bg-white p-0
+  shadow-[0_18px_48px_rgba(15,23,42,0.16)]
   data-[state=closed]:opacity-0
 `;
 
 export const discussionTriggerClassName = `
-  mt-1 ml-1 flex h-12 min-w-16 gap-2 rounded-md border-[3px]
-  border-[#0067c7] bg-[#f3fbff] px-3 py-0 text-[#0073b5]
+  mt-1 ml-1 flex h-9 min-w-12 gap-1.5 rounded-md border-2
+  border-[#0067c7] bg-[#f3fbff] px-2.5 py-0 text-[#0073b5]
   shadow-none hover:bg-[#edf8ff] hover:text-[#0073b5]
   data-[active=true]:bg-[#e9f7ff]
 `;
@@ -70,18 +70,18 @@ export function DiscussionPopoverHeader({
   title: string;
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 px-8 pt-7 pb-4">
-      <h3 className="text-[28px] leading-none font-bold tracking-[0.06em] text-[#2b2b2b] uppercase">
+    <div className="flex items-start justify-between gap-3 px-6 pt-5 pb-3">
+      <h3 className="text-lg leading-none font-bold tracking-[0.06em] text-[#2b2b2b] uppercase">
         {title} ({count})
       </h3>
       <Button
         aria-label="Close"
-        className="size-9 rounded-full p-0 text-[#7c858b] hover:bg-slate-100 hover:text-[#2b2b2b]"
+        className="size-7 rounded-full p-0 text-[#7c858b] hover:bg-slate-100 hover:text-[#2b2b2b]"
         onClick={onClose}
         type="button"
         variant="ghost"
       >
-        <XIcon className="size-7 stroke-[1.75]" />
+        <XIcon className="size-5 stroke-[1.75]" />
       </Button>
     </div>
   );
@@ -327,18 +327,18 @@ const BlockCommentContent = ({
                 contentEditable={false}
               >
                 {suggestionsCount > 0 && discussionsCount === 0 && (
-                  <PencilLineIcon className="size-6 shrink-0 text-[#4caf50]" />
+                  <PencilLineIcon className="size-5 shrink-0 text-[#4caf50]" />
                 )}
 
                 {suggestionsCount === 0 && discussionsCount > 0 && (
-                  <MessageSquareTextIcon className="size-6 shrink-0" />
+                  <MessageSquareTextIcon className="size-5 shrink-0" />
                 )}
 
                 {suggestionsCount > 0 && discussionsCount > 0 && (
-                  <MessagesSquareIcon className="size-6 shrink-0" />
+                  <MessagesSquareIcon className="size-5 shrink-0" />
                 )}
 
-                <span className="text-2xl leading-none font-medium">
+                <span className="text-base leading-none font-medium">
                   {totalCount}
                 </span>
               </Button>
@@ -361,7 +361,7 @@ function BlockComment({
 
   return (
     <React.Fragment key={discussion.id}>
-      <div className="px-8 pb-7">
+      <div className="px-6 pb-5">
         {discussion.comments.map((comment, index) => (
           <Comment
             key={comment.id ?? index}

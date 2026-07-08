@@ -128,36 +128,36 @@ export function BlockSuggestionCard({
 
   return (
     <div key={`${suggestion.suggestionId}-${idx}`} className="relative">
-      <div className="flex flex-col px-8 pb-7">
-        <div className="relative flex items-start gap-5">
+      <div className="flex flex-col px-6 pb-5">
+        <div className="relative flex items-start gap-3">
           {/* Replace to your own backend or refer to potion */}
-          <Avatar className="size-12">
+          <Avatar className="size-8">
             <AvatarImage alt={userInfo?.name} src={userInfo?.avatarUrl} />
             <AvatarFallback>{userInfo?.name?.[0]}</AvatarFallback>
           </Avatar>
 
-          <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-5 gap-y-2">
-            <h4 className="text-[30px] leading-[1.05] font-bold text-[#2b2b2b]">
+          <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h4 className="text-base leading-tight font-bold text-[#2b2b2b]">
               {userInfo?.name}
             </h4>
-            <span className="text-[25px] leading-none text-[#7f8a91]">
+            <span className="text-sm leading-none text-[#7f8a91]">
               {formatCommentDate(new Date(suggestion.createdAt))}
             </span>
           </div>
         </div>
 
-        <div className="relative mt-5 mb-6 pl-[68px]">
-          <div className="flex flex-col gap-5">
+        <div className="relative mt-3 mb-4 pl-11">
+          <div className="flex flex-col gap-3">
             {suggestion.type === 'remove' && (
               <React.Fragment>
                 {suggestionText2Array(suggestion.text!).map((text, index) => (
-                  <div key={index} className="flex flex-col gap-5">
-                    <span className="flex items-center gap-4 text-[25px] leading-none font-bold tracking-[0.06em] text-[#ef3e38] uppercase">
-                      <span className="text-3xl font-normal">-</span>
+                  <div key={index} className="flex flex-col gap-3">
+                    <span className="flex items-center gap-2 text-sm leading-none font-bold tracking-[0.06em] text-[#ef3e38] uppercase">
+                      <span className="text-xl font-normal">-</span>
                       Deletion
                     </span>
 
-                    <p className="text-[30px] leading-[1.35] text-[#2b2b2b]">
+                    <p className="text-base leading-6 text-[#2b2b2b]">
                       Suggested removing{' '}
                       <span className="font-bold text-[#ef3e38]">"{text}"</span>
                     </p>
@@ -170,13 +170,13 @@ export function BlockSuggestionCard({
               <React.Fragment>
                 {suggestionText2Array(suggestion.newText!).map(
                   (text, index) => (
-                    <div key={index} className="flex flex-col gap-5">
-                      <span className="flex items-center gap-4 text-[25px] leading-none font-bold tracking-[0.06em] text-[#4caf50] uppercase">
-                        <span className="text-3xl font-normal">+</span>
+                    <div key={index} className="flex flex-col gap-3">
+                      <span className="flex items-center gap-2 text-sm leading-none font-bold tracking-[0.06em] text-[#4caf50] uppercase">
+                        <span className="text-xl font-normal">+</span>
                         Insertion
                       </span>
 
-                      <p className="text-[30px] leading-[1.35] text-[#2b2b2b]">
+                      <p className="text-base leading-6 text-[#2b2b2b]">
                         Suggested adding{' '}
                         <span className="font-bold text-[#4caf50]">
                           "{text || 'line breaks'}"
@@ -195,12 +195,10 @@ export function BlockSuggestionCard({
                     <React.Fragment key={index}>
                       <div
                         key={index}
-                        className="flex items-start gap-3 text-[#4caf50]"
+                        className="flex items-start gap-2 text-[#4caf50]"
                       >
-                        <span className="text-[24px]">with:</span>
-                        <span className="text-[24px]">
-                          {text || 'line breaks'}
-                        </span>
+                        <span className="text-sm">with:</span>
+                        <span className="text-sm">{text || 'line breaks'}</span>
                       </div>
                     </React.Fragment>
                   ),
@@ -208,13 +206,11 @@ export function BlockSuggestionCard({
 
                 {suggestionText2Array(suggestion.text!).map((text, index) => (
                   <React.Fragment key={index}>
-                    <div key={index} className="flex items-start gap-3">
-                      <span className="text-[24px] text-muted-foreground">
+                    <div key={index} className="flex items-start gap-2">
+                      <span className="text-sm text-muted-foreground">
                         {index === 0 ? 'Replace:' : 'Delete:'}
                       </span>
-                      <span className="text-[24px]">
-                        {text || 'line breaks'}
-                      </span>
+                      <span className="text-sm">{text || 'line breaks'}</span>
                     </div>
                   </React.Fragment>
                 ))}
@@ -223,7 +219,7 @@ export function BlockSuggestionCard({
 
             {suggestion.type === 'update' && (
               <div className="flex items-center gap-2">
-                <span className="text-[24px] text-muted-foreground">
+                <span className="text-sm text-muted-foreground">
                   {Object.keys(suggestion.properties).map((key) => (
                     <span key={key}>Un{key}</span>
                   ))}
@@ -234,7 +230,7 @@ export function BlockSuggestionCard({
                     </span>
                   ))}
                 </span>
-                <span className="text-[24px]">{suggestion.newText}</span>
+                <span className="text-sm">{suggestion.newText}</span>
               </div>
             )}
           </div>
@@ -253,20 +249,20 @@ export function BlockSuggestionCard({
         ))}
 
         {canManageSuggestion && (
-          <div className="ml-[68px] flex gap-4">
+          <div className="ml-11 flex gap-3">
             <Button
-              className="h-[60px] min-w-[234px] rounded-[10px] bg-[#4caf50] text-[30px] font-bold text-white hover:bg-[#429a47]"
+              className="h-9 min-w-28 rounded-md bg-[#4caf50] text-base font-bold text-white hover:bg-[#429a47]"
               onClick={() => accept(suggestion)}
             >
-              <CheckIcon className="size-8 stroke-[3]" />
+              <CheckIcon className="size-5 stroke-[3]" />
               Accept
             </Button>
 
             <Button
-              className="h-[60px] min-w-[234px] rounded-[10px] border-2 border-[#c7d6dc] bg-white text-[30px] font-bold text-[#2b2b2b] hover:bg-slate-50"
+              className="h-9 min-w-28 rounded-md border border-[#c7d6dc] bg-white text-base font-bold text-[#2b2b2b] hover:bg-slate-50"
               onClick={() => reject(suggestion)}
             >
-              <XIcon className="size-7 text-[#8a6c6a]" />
+              <XIcon className="size-5 text-[#8a6c6a]" />
               Reject
             </Button>
           </div>
