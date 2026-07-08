@@ -102,8 +102,9 @@ export function BlockSuggestionCard({
   suggestion: ResolvedSuggestion;
 }) {
   const { api, editor } = useEditorPlugin(SuggestionPlugin);
-  const { users } = usePlatePlugins();
+  const { currentUserId, users } = usePlatePlugins();
   const userInfo = users[suggestion.userId];
+  const canManageSuggestion = !!currentUserId;
 
   const accept = (suggestion: ResolvedSuggestion) => {
     api.suggestion.withoutSuggestions(() => {
@@ -117,8 +118,6 @@ export function BlockSuggestionCard({
     });
   };
 
-  const [hovering, setHovering] = React.useState(false);
-
   const suggestionText2Array = (text: string) => {
     if (text === BLOCK_SUGGESTION) return ['line breaks'];
 
@@ -128,42 +127,40 @@ export function BlockSuggestionCard({
   const [editingId, setEditingId] = React.useState<string | null>(null);
 
   return (
-    <div
-      key={`${suggestion.suggestionId}-${idx}`}
-      className="relative"
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-    >
-      <div className="flex flex-col p-4">
-        <div className="relative flex items-center">
+    <div key={`${suggestion.suggestionId}-${idx}`} className="relative">
+      <div className="flex flex-col px-8 pb-7">
+        <div className="relative flex items-start gap-5">
           {/* Replace to your own backend or refer to potion */}
-          <Avatar className="size-5">
+          <Avatar className="size-12">
             <AvatarImage alt={userInfo?.name} src={userInfo?.avatarUrl} />
             <AvatarFallback>{userInfo?.name?.[0]}</AvatarFallback>
           </Avatar>
-          <h4 className="mx-2 text-sm leading-none font-semibold">
-            {userInfo?.name}
-          </h4>
-          <div className="text-xs leading-none text-muted-foreground/80">
-            <span className="mr-1">
+
+          <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-5 gap-y-2">
+            <h4 className="text-[30px] leading-[1.05] font-bold text-[#2b2b2b]">
+              {userInfo?.name}
+            </h4>
+            <span className="text-[25px] leading-none text-[#7f8a91]">
               {formatCommentDate(new Date(suggestion.createdAt))}
             </span>
           </div>
         </div>
 
-        <div className="relative mt-1 mb-4 pl-[32px]">
-          <div className="flex flex-col gap-2">
+        <div className="relative mt-5 mb-6 pl-[68px]">
+          <div className="flex flex-col gap-5">
             {suggestion.type === 'remove' && (
               <React.Fragment>
                 {suggestionText2Array(suggestion.text!).map((text, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">
-                      Delete:
+                  <div key={index} className="flex flex-col gap-5">
+                    <span className="flex items-center gap-4 text-[25px] leading-none font-bold tracking-[0.06em] text-[#ef3e38] uppercase">
+                      <span className="text-3xl font-normal">-</span>
+                      Deletion
                     </span>
 
-                    <span key={index} className="text-sm">
-                      {text}
-                    </span>
+                    <p className="text-[30px] leading-[1.35] text-[#2b2b2b]">
+                      Suggested removing{' '}
+                      <span className="font-bold text-[#ef3e38]">"{text}"</span>
+                    </p>
                   </div>
                 ))}
               </React.Fragment>
@@ -173,14 +170,18 @@ export function BlockSuggestionCard({
               <React.Fragment>
                 {suggestionText2Array(suggestion.newText!).map(
                   (text, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">
-                        Add:
+                    <div key={index} className="flex flex-col gap-5">
+                      <span className="flex items-center gap-4 text-[25px] leading-none font-bold tracking-[0.06em] text-[#4caf50] uppercase">
+                        <span className="text-3xl font-normal">+</span>
+                        Insertion
                       </span>
 
-                      <span key={index} className="text-sm">
-                        {text || 'line breaks'}
-                      </span>
+                      <p className="text-[30px] leading-[1.35] text-[#2b2b2b]">
+                        Suggested adding{' '}
+                        <span className="font-bold text-[#4caf50]">
+                          "{text || 'line breaks'}"
+                        </span>
+                      </p>
                     </div>
                   ),
                 )}
@@ -194,10 +195,12 @@ export function BlockSuggestionCard({
                     <React.Fragment key={index}>
                       <div
                         key={index}
-                        className="flex items-start gap-2 text-brand/80"
+                        className="flex items-start gap-3 text-[#4caf50]"
                       >
-                        <span className="text-sm">with:</span>
-                        <span className="text-sm">{text || 'line breaks'}</span>
+                        <span className="text-[24px]">with:</span>
+                        <span className="text-[24px]">
+                          {text || 'line breaks'}
+                        </span>
                       </div>
                     </React.Fragment>
                   ),
@@ -205,11 +208,13 @@ export function BlockSuggestionCard({
 
                 {suggestionText2Array(suggestion.text!).map((text, index) => (
                   <React.Fragment key={index}>
-                    <div key={index} className="flex items-start gap-2">
-                      <span className="text-sm text-muted-foreground">
+                    <div key={index} className="flex items-start gap-3">
+                      <span className="text-[24px] text-muted-foreground">
                         {index === 0 ? 'Replace:' : 'Delete:'}
                       </span>
-                      <span className="text-sm">{text || 'line breaks'}</span>
+                      <span className="text-[24px]">
+                        {text || 'line breaks'}
+                      </span>
                     </div>
                   </React.Fragment>
                 ))}
@@ -218,7 +223,7 @@ export function BlockSuggestionCard({
 
             {suggestion.type === 'update' && (
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">
+                <span className="text-[24px] text-muted-foreground">
                   {Object.keys(suggestion.properties).map((key) => (
                     <span key={key}>Un{key}</span>
                   ))}
@@ -229,7 +234,7 @@ export function BlockSuggestionCard({
                     </span>
                   ))}
                 </span>
-                <span className="text-sm">{suggestion.newText}</span>
+                <span className="text-[24px]">{suggestion.newText}</span>
               </div>
             )}
           </div>
@@ -247,27 +252,29 @@ export function BlockSuggestionCard({
           />
         ))}
 
-        {hovering && (
-          <div className="absolute top-4 right-4 flex gap-2">
+        {canManageSuggestion && (
+          <div className="ml-[68px] flex gap-4">
             <Button
-              variant="ghost"
-              className="size-6 p-1 text-muted-foreground"
+              className="h-[60px] min-w-[234px] rounded-[10px] bg-[#4caf50] text-[30px] font-bold text-white hover:bg-[#429a47]"
               onClick={() => accept(suggestion)}
             >
-              <CheckIcon className="size-4" />
+              <CheckIcon className="size-8 stroke-[3]" />
+              Accept
             </Button>
 
             <Button
-              variant="ghost"
-              className="size-6 p-1 text-muted-foreground"
+              className="h-[60px] min-w-[234px] rounded-[10px] border-2 border-[#c7d6dc] bg-white text-[30px] font-bold text-[#2b2b2b] hover:bg-slate-50"
               onClick={() => reject(suggestion)}
             >
-              <XIcon className="size-4" />
+              <XIcon className="size-7 text-[#8a6c6a]" />
+              Reject
             </Button>
           </div>
         )}
 
-        <CommentCreateForm discussionId={suggestion.suggestionId} />
+        {canManageSuggestion && (
+          <CommentCreateForm discussionId={suggestion.suggestionId} />
+        )}
       </div>
 
       {!isLast && <div className="h-px w-full bg-muted" />}

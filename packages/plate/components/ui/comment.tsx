@@ -169,21 +169,24 @@ export function Comment(props: {
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
-      <div className="relative flex items-center">
-        <Avatar className="size-5">
+      <div className="relative flex items-start gap-5">
+        <Avatar className="size-12">
           <AvatarImage alt={userInfo?.name} src={userInfo?.avatarUrl} />
           <AvatarFallback>{userInfo?.name?.[0]}</AvatarFallback>
         </Avatar>
-        <h4 className="mx-2 text-sm leading-none font-semibold">
-          {/* Replace to your own backend or refer to potion */}
-          {userInfo?.name}
-        </h4>
 
-        <div className="text-xs leading-none text-muted-foreground/80">
-          <span className="mr-1">
-            {formatCommentDate(new Date(comment.createdAt))}
-          </span>
-          {comment.isEdited && <span>(edited)</span>}
+        <div className="min-w-0 flex-1">
+          <h4 className="text-[30px] leading-[1.05] font-bold text-[#2b2b2b]">
+            {/* Replace to your own backend or refer to potion */}
+            {userInfo?.name}
+          </h4>
+
+          <div className="mt-2 text-[25px] leading-none text-[#7f8a91]">
+            <span className="mr-1">
+              {formatCommentDate(new Date(comment.createdAt))}
+            </span>
+            {comment.isEdited && <span>(edited)</span>}
+          </div>
         </div>
 
         {isMyComment && (hovering || dropdownOpen) && (
@@ -221,24 +224,24 @@ export function Comment(props: {
       </div>
 
       {isFirst && showDocumentContent && (
-        <div className="text-subtle-foreground relative mt-1 flex pl-[32px] text-sm">
+        <div className="text-subtle-foreground relative mt-4 flex pl-[68px] text-lg">
           {discussionLength > 1 && (
-            <div className="absolute top-[5px] left-3 h-full w-0.5 shrink-0 bg-muted" />
+            <div className="absolute top-[5px] left-6 h-full w-0.5 shrink-0 bg-muted" />
           )}
           <div className="bg-highlight my-px w-0.5 shrink-0" />
           {documentContent && <div className="ml-2">{documentContent}</div>}
         </div>
       )}
 
-      <div className="relative my-1 pl-[26px]">
+      <div className="relative mt-5 mb-4 pl-[68px]">
         {!isLast && (
-          <div className="absolute top-0 left-3 h-full w-0.5 shrink-0 bg-muted" />
+          <div className="absolute top-0 left-6 h-full w-0.5 shrink-0 bg-muted" />
         )}
         <Plate readOnly={!isEditing} editor={commentEditor}>
           <EditorContainer variant="comment">
             <Editor
               variant="comment"
-              className="w-auto grow"
+              className="w-auto grow text-[30px] leading-[1.4] text-[#2b2b2b]"
               onClick={() => onEditorClick?.()}
             />
 
@@ -553,10 +556,10 @@ export function CommentCreateForm({
   ]);
 
   return (
-    <div className={cn('flex w-full', className)}>
-      <div className="mt-2 mr-1 shrink-0">
+    <div className={cn('flex w-full gap-4', className)}>
+      <div className="mt-2 shrink-0">
         {/* Replace to your own backend or refer to potion */}
-        <Avatar className="size-5">
+        <Avatar className="size-12">
           <AvatarImage alt={userInfo?.name} src={userInfo?.avatarUrl} />
           <AvatarFallback>{userInfo?.name?.[0]}</AvatarFallback>
         </Avatar>
@@ -569,10 +572,16 @@ export function CommentCreateForm({
           }}
           editor={commentEditor}
         >
-          <EditorContainer variant="comment">
+          <EditorContainer
+            className={`
+              min-h-[88px] rounded-full border border-[#e2e9ec] bg-[#f3f6f7]
+              px-8 py-5 shadow-inner shadow-slate-200/40
+            `}
+            variant="comment"
+          >
             <Editor
               variant="comment"
-              className="min-h-[25px] grow pt-0.5 pr-8"
+              className="min-h-[38px] grow pr-12 text-[28px] leading-tight text-[#2b2b2b] placeholder:text-[#7f8589]"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
@@ -587,7 +596,7 @@ export function CommentCreateForm({
             <Button
               size="icon"
               variant="ghost"
-              className="absolute right-0.5 bottom-0.5 ml-auto size-6 shrink-0"
+              className="absolute right-5 bottom-4 ml-auto size-10 shrink-0 text-[#a8b4b9] hover:text-[#0073b5]"
               disabled={commentContent.trim().length === 0}
               onClick={(e) => {
                 e.stopPropagation();

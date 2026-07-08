@@ -9,6 +9,7 @@ import {
   MessageSquareTextIcon,
   MessagesSquareIcon,
   PencilLineIcon,
+  XIcon,
 } from 'lucide-react';
 import {
   type AnyPluginConfig,
@@ -43,6 +44,48 @@ import {
   useResolveSuggestion,
 } from './block-suggestion';
 import { Comment, CommentCreateForm } from './comment';
+
+export const discussionPopoverContentClassName = `
+  max-h-[min(70dvh,calc(-24px+var(--radix-popper-available-height)))]
+  w-[min(600px,calc(100vw-24px))] min-w-[320px] overflow-y-auto
+  rounded-[24px] border border-[#c7d6dc] bg-white p-0
+  shadow-[0_26px_70px_rgba(15,23,42,0.18)]
+  data-[state=closed]:opacity-0
+`;
+
+export const discussionTriggerClassName = `
+  mt-1 ml-1 flex h-12 min-w-16 gap-2 rounded-md border-[3px]
+  border-[#0067c7] bg-[#f3fbff] px-3 py-0 text-[#0073b5]
+  shadow-none hover:bg-[#edf8ff] hover:text-[#0073b5]
+  data-[active=true]:bg-[#e9f7ff]
+`;
+
+export function DiscussionPopoverHeader({
+  count,
+  onClose,
+  title,
+}: {
+  count: number;
+  onClose: () => void;
+  title: string;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-4 px-8 pt-7 pb-4">
+      <h3 className="text-[28px] leading-none font-bold tracking-[0.06em] text-[#2b2b2b] uppercase">
+        {title} ({count})
+      </h3>
+      <Button
+        aria-label="Close"
+        className="size-9 rounded-full p-0 text-[#7c858b] hover:bg-slate-100 hover:text-[#2b2b2b]"
+        onClick={onClose}
+        type="button"
+        variant="ghost"
+      >
+        <XIcon className="size-7 stroke-[1.75]" />
+      </Button>
+    </div>
+  );
+}
 
 export const BlockDiscussion: RenderNodeWrapper<AnyPluginConfig> = (props) => {
   const { editor, element } = props;
@@ -100,6 +143,12 @@ const BlockCommentContent = ({
   const suggestionsCount = resolvedSuggestions.length;
   const discussionsCount = resolvedDiscussions.length;
   const totalCount = suggestionsCount + discussionsCount;
+  const popoverTitle =
+    suggestionsCount > 0 && discussionsCount === 0
+      ? 'Suggestions'
+      : discussionsCount > 0 && suggestionsCount === 0
+        ? 'Comments'
+        : 'Comments & Suggestions';
 
   const activeSuggestionId = usePluginOption(suggestionPlugin, 'activeId');
   const activeSuggestion =
@@ -114,6 +163,11 @@ const BlockCommentContent = ({
     resolvedDiscussions.find((d) => d.id === activeCommentId);
 
   const noneActive = !activeSuggestion && !activeDiscussion;
+  const popoverHeaderCount = noneActive
+    ? totalCount
+    : activeDiscussion
+      ? activeDiscussion.comments.length
+      : 1;
 
   const sortedMergedData = [
     ...resolvedDiscussions,
@@ -134,6 +188,18 @@ const BlockCommentContent = ({
     _open ||
     selected ||
     (isCommenting && !!draftCommentNode && commentingCurrent);
+
+  const closePopover = React.useCallback(() => {
+    if (isCommenting && draftCommentNode) {
+      editor.tf.unsetNodes(getDraftCommentKey(), {
+        at: [],
+        mode: 'lowest',
+        match: (n) => n[getDraftCommentKey()],
+      });
+    }
+
+    setOpen(false);
+  }, [draftCommentNode, editor.tf, isCommenting]);
 
   const anchorElement = React.useMemo(() => {
     let activeNode: NodeEntry | undefined;
@@ -181,13 +247,11 @@ const BlockCommentContent = ({
       <Popover
         open={open}
         onOpenChange={(_open_) => {
-          if (!_open_ && isCommenting && draftCommentNode) {
-            editor.tf.unsetNodes(getDraftCommentKey(), {
-              at: [],
-              mode: 'lowest',
-              match: (n) => n[getDraftCommentKey()],
-            });
+          if (!_open_) {
+            closePopover();
+            return;
           }
+
           setOpen(_open_);
         }}
       >
@@ -201,11 +265,7 @@ const BlockCommentContent = ({
         )}
 
         <PopoverContent
-          className={`
-            max-h-[min(50dvh,calc(-24px+var(--radix-popper-available-height)))] w-[380px]
-            max-w-[calc(100vw-24px)] min-w-[130px] overflow-y-auto p-0
-            data-[state=closed]:opacity-0
-          `}
+          className={discussionPopoverContentClassName}
           onCloseAutoFocus={(e) => e.preventDefault()}
           onOpenAutoFocus={(e) => e.preventDefault()}
           align="center"
@@ -215,6 +275,11 @@ const BlockCommentContent = ({
             <CommentCreateForm className="p-4" focusOnMount />
           ) : (
             <React.Fragment>
+              <DiscussionPopoverHeader
+                count={popoverHeaderCount}
+                onClose={closePopover}
+                title={popoverTitle}
+              />
               {noneActive ? (
                 sortedMergedData.map((item, index) =>
                   isResolvedSuggestion(item) ? (
@@ -257,27 +322,25 @@ const BlockCommentContent = ({
             <PopoverTrigger asChild>
               <Button
                 variant="ghost"
-                className={`
-                  mt-1 ml-1 flex h-6 gap-1 !px-1.5 py-0 text-muted-foreground/80
-                  hover:text-muted-foreground/80
-                  data-[active=true]:bg-muted
-                `}
+                className={discussionTriggerClassName}
                 data-active={open}
                 contentEditable={false}
               >
                 {suggestionsCount > 0 && discussionsCount === 0 && (
-                  <PencilLineIcon className="size-4 shrink-0" />
+                  <PencilLineIcon className="size-6 shrink-0 text-[#4caf50]" />
                 )}
 
                 {suggestionsCount === 0 && discussionsCount > 0 && (
-                  <MessageSquareTextIcon className="size-4 shrink-0" />
+                  <MessageSquareTextIcon className="size-6 shrink-0" />
                 )}
 
                 {suggestionsCount > 0 && discussionsCount > 0 && (
-                  <MessagesSquareIcon className="size-4 shrink-0" />
+                  <MessagesSquareIcon className="size-6 shrink-0" />
                 )}
 
-                <span className="text-xs font-semibold">{totalCount}</span>
+                <span className="text-2xl leading-none font-medium">
+                  {totalCount}
+                </span>
               </Button>
             </PopoverTrigger>
           </div>
@@ -298,7 +361,7 @@ function BlockComment({
 
   return (
     <React.Fragment key={discussion.id}>
-      <div className="p-4">
+      <div className="px-8 pb-7">
         {discussion.comments.map((comment, index) => (
           <Comment
             key={comment.id ?? index}
