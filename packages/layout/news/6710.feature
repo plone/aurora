@@ -1,1 +1,0 @@
-Added the view for the Link content type @arybakov05

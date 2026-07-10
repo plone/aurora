@@ -8,6 +8,31 @@
 
 <!-- towncrier release notes start -->
 
+## 3.0.0-alpha.2 (2026-07-02)
+
+### Breaking
+
+- Added `category` support to Plate block configuration types, added `defaultBlockWidth` support to Plone block configuration types, and removed the legacy Plone block `blockWidth` configuration field. @sneridagh 
+- Refactored the `Content` type to properly match the basic Plone types and allow TypeScript to narrow this type automatically. @pnicolli 
+
+### Feature
+
+- Added type for the Event content type @arybakov05
+  Added a generic RootData type @arybakov05 [#6708](https://github.com/plone/volto/issues/6708)
+- Added type for the Link content type @arybakov05 [#6710](https://github.com/plone/volto/issues/6710)
+- Added Sharing service types @pnicolli 
+
+### Bugfix
+
+- Corrected `GetTypesResponse` to also include the non expanded type.
+  Used more specific type for `contentIcons` setting in the config. @arybakov05 [#6653](https://github.com/plone/volto/issues/6653)
+- Added EventContent type with recurrence fields. @sabrina-bongiovanni 
+- Allowed `contentIcons` settings to contain React icon components as well as SVG path strings. @pnicolli @giuliaghisini 
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+
 ## 3.0.0-alpha.1 (2026-05-08)
 
 ### Feature
