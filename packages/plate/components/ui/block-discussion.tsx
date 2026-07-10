@@ -5,12 +5,7 @@ import type { PlateElementProps, RenderNodeWrapper } from 'platejs/react';
 import { getDraftCommentKey } from '@platejs/comment';
 import { CommentPlugin } from '@platejs/comment/react';
 import { getTransientSuggestionKey } from '@platejs/suggestion';
-import {
-  MessageSquareTextIcon,
-  MessagesSquareIcon,
-  PencilLineIcon,
-  XIcon,
-} from 'lucide-react';
+import { MessageSquareTextIcon, MessagesSquareIcon, XIcon } from 'lucide-react';
 import {
   type AnyPluginConfig,
   type NodeEntry,
@@ -43,22 +38,26 @@ import {
   isResolvedSuggestion,
   useResolveSuggestion,
 } from './block-suggestion';
-import { Comment, CommentCreateForm } from './comment';
+import {
+  type CommentCreateFormHandle,
+  Comment,
+  CommentCreateForm,
+} from './comment';
 import { cn } from '../../lib/utils';
 
 export const discussionPopoverContentClassName = `
   max-h-[min(70dvh,calc(-24px+var(--radix-popper-available-height)))]
-  w-[min(420px,calc(100vw-24px))] min-w-[300px] overflow-y-auto
-  rounded-[16px] border border-[#c7d6dc] bg-white p-0
-  shadow-[0_18px_48px_rgba(15,23,42,0.16)]
+  w-[min(320px,calc(100vw-24px))] min-w-[300px] overflow-y-auto
+  rounded-[14px] border border-border bg-popover p-0
+  shadow-[0_10px_30px_rgba(15,23,42,0.14)]
   data-[state=closed]:opacity-0
 `;
 
 export const discussionTriggerClassName = `
-  mt-1 ml-1 flex h-9 min-w-12 gap-1.5 rounded-md border-2
-  border-[#0067c7] bg-[#f3fbff] px-2.5 py-0 text-[#0073b5]
-  shadow-none hover:bg-[#edf8ff] hover:text-[#0073b5]
-  data-[active=true]:bg-[#e9f7ff]
+  mt-1 flex h-auto min-w-0 items-center gap-1.5 rounded-md border-0
+  bg-transparent px-1.5 py-0.5 text-muted-foreground shadow-none
+  hover:bg-muted hover:text-muted-foreground
+  data-[active=true]:bg-muted
 `;
 
 type DiscussionTriggerKind = 'comments' | 'mixed' | 'suggestions';
@@ -177,22 +176,22 @@ export const DiscussionTriggerButton = React.forwardRef<
   <Button
     ref={ref}
     variant="ghost"
-    className={cn(discussionTriggerClassName, className)}
+    className={cn(
+      discussionTriggerClassName,
+      active && (kind === 'suggestions' ? 'text-quanta-emerald' : 'text-brand'),
+      className,
+    )}
     data-active={active}
     contentEditable={false}
     {...props}
   >
-    {kind === 'suggestions' && (
-      <PencilLineIcon className="size-5 shrink-0 text-[#4caf50]" />
-    )}
-
-    {kind === 'comments' && (
+    {kind === 'comments' ? (
       <MessageSquareTextIcon className="size-5 shrink-0" />
+    ) : (
+      <MessagesSquareIcon className="size-5 shrink-0" />
     )}
 
-    {kind === 'mixed' && <MessagesSquareIcon className="size-5 shrink-0" />}
-
-    <span className="text-base leading-none font-medium">{count}</span>
+    <span className="text-sm leading-none font-normal">{count}</span>
   </Button>
 ));
 
@@ -277,18 +276,22 @@ export function DiscussionPopoverHeader({
   title: string;
 }) {
   return (
-    <div className="flex items-start justify-between gap-3 px-4 pt-5 pb-3">
-      <div className="text-base leading-none font-bold tracking-[0.06em] text-slate-600 uppercase">
+    <div className="flex items-start justify-between gap-3 px-4 pt-3.5 pb-2">
+      <div
+        aria-level={2}
+        className="text-sm leading-none font-bold tracking-[0.06em] text-foreground uppercase"
+        role="heading"
+      >
         {title} ({count})
       </div>
       <Button
         aria-label="Close"
-        className="size-7 rounded-full p-0 text-[#7c858b] hover:bg-slate-100 hover:text-[#2b2b2b]"
+        className="size-6 rounded-md p-0 text-muted-foreground hover:bg-muted hover:text-foreground"
         onClick={onClose}
         type="button"
         variant="ghost"
       >
-        <XIcon className="size-5 stroke-[1.75]" />
+        <XIcon className="size-3.5 stroke-2" />
       </Button>
     </div>
   );
@@ -536,6 +539,7 @@ function BlockComment({
   isLast: boolean;
 }) {
   const [editingId, setEditingId] = React.useState<string | null>(null);
+  const createFormRef = React.useRef<CommentCreateFormHandle>(null);
 
   return (
     <React.Fragment key={discussion.id}>
@@ -548,11 +552,14 @@ function BlockComment({
             documentContent={discussion?.documentContent}
             editingId={editingId}
             index={index}
+            onReply={
+              index === 0 ? () => createFormRef.current?.focus() : undefined
+            }
             setEditingId={setEditingId}
             showDocumentContent
           />
         ))}
-        <CommentCreateForm discussionId={discussion.id} />
+        <CommentCreateForm ref={createFormRef} discussionId={discussion.id} />
       </div>
 
       {!isLast && <div className="h-px w-full bg-muted" />}

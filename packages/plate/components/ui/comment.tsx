@@ -60,6 +60,7 @@ export function Comment(props: {
   documentContent?: string;
   showDocumentContent?: boolean;
   onEditorClick?: () => void;
+  onReply?: () => void;
 }) {
   const {
     comment,
@@ -70,6 +71,7 @@ export function Comment(props: {
     setEditingId,
     showDocumentContent = false,
     onEditorClick,
+    onReply,
   } = props;
 
   const { discussions, setDiscussions, users, currentUserId } =
@@ -176,12 +178,12 @@ export function Comment(props: {
         </Avatar>
 
         <div className="min-w-0 flex-1">
-          <h4 className="text-base leading-tight font-bold text-[#2b2b2b]">
+          <h4 className="text-sm leading-tight font-bold text-foreground">
             {/* Replace to your own backend or refer to potion */}
             {userInfo?.name}
           </h4>
 
-          <div className="mt-1 text-sm leading-none text-[#7f8a91]">
+          <div className="mt-0.5 text-xs leading-none text-muted-foreground">
             <span className="mr-1">
               {formatCommentDate(new Date(comment.createdAt))}
             </span>
@@ -191,17 +193,6 @@ export function Comment(props: {
 
         {isMyComment && (hovering || dropdownOpen) && (
           <div className="absolute top-0 right-0 flex space-x-1">
-            {index === 0 && (
-              <Button
-                variant="ghost"
-                className="h-6 p-1 text-muted-foreground"
-                onClick={onResolveComment}
-                type="button"
-              >
-                <CheckIcon className="size-4" />
-              </Button>
-            )}
-
             <CommentMoreDropdown
               onCloseAutoFocus={() => {
                 setTimeout(() => {
@@ -241,7 +232,7 @@ export function Comment(props: {
           <EditorContainer variant="comment">
             <Editor
               variant="comment"
-              className="w-auto grow text-base leading-6 text-[#2b2b2b]"
+              className="w-auto grow text-sm leading-normal text-foreground"
               onClick={() => onEditorClick?.()}
             />
 
@@ -285,6 +276,31 @@ export function Comment(props: {
             )}
           </EditorContainer>
         </Plate>
+
+        {isFirst && onReply && !isEditing && (
+          <div className="mt-2 flex gap-4">
+            <button
+              className={`
+                cursor-pointer border-0 bg-transparent p-0 text-sm font-semibold
+                text-brand hover:underline
+              `}
+              onClick={onResolveComment}
+              type="button"
+            >
+              Resolve
+            </button>
+            <button
+              className={`
+                cursor-pointer border-0 bg-transparent p-0 text-sm font-semibold
+                text-brand hover:underline
+              `}
+              onClick={onReply}
+              type="button"
+            >
+              Reply
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -412,17 +428,27 @@ const useCommentEditor = (
   return commentEditor;
 };
 
-export function CommentCreateForm({
-  autoFocus = false,
-  className,
-  discussionId: discussionIdProp,
-  focusOnMount = false,
-}: {
-  autoFocus?: boolean;
-  className?: string;
-  discussionId?: string;
-  focusOnMount?: boolean;
-}) {
+export interface CommentCreateFormHandle {
+  focus: () => void;
+}
+
+export const CommentCreateForm = React.forwardRef<
+  CommentCreateFormHandle,
+  {
+    autoFocus?: boolean;
+    className?: string;
+    discussionId?: string;
+    focusOnMount?: boolean;
+  }
+>(function CommentCreateForm(
+  {
+    autoFocus = false,
+    className,
+    discussionId: discussionIdProp,
+    focusOnMount = false,
+  },
+  ref,
+) {
   const editor = useEditorRef();
   const commentId = useCommentId();
   const discussionId = discussionIdProp ?? commentId;
@@ -444,6 +470,16 @@ export function CommentCreateForm({
       commentEditor.tf.focus();
     }
   }, [commentEditor, focusOnMount]);
+
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      focus: () => {
+        commentEditor.tf.focus({ edge: 'endEditor' });
+      },
+    }),
+    [commentEditor],
+  );
 
   const onAddComment = React.useCallback(async () => {
     if (!commentValue || !currentUserId) return;
@@ -574,8 +610,8 @@ export function CommentCreateForm({
         >
           <EditorContainer
             className={`
-              min-h-11 rounded-full border border-[#e2e9ec] bg-[#f3f6f7]
-              px-4 py-2 shadow-inner shadow-slate-200/40
+              min-h-11 rounded-full border border-border bg-muted px-4 py-2
+              shadow-inner shadow-slate-200/40
             `}
             variant="comment"
           >
@@ -596,7 +632,7 @@ export function CommentCreateForm({
             <Button
               size="icon"
               variant="ghost"
-              className="absolute right-2 bottom-1.5 ml-auto size-8 shrink-0 text-[#a8b4b9] hover:text-[#0073b5]"
+              className="absolute right-2 bottom-1.5 ml-auto size-8 shrink-0 text-muted-foreground hover:text-brand"
               disabled={commentContent.trim().length === 0}
               onClick={(e) => {
                 e.stopPropagation();
@@ -612,7 +648,7 @@ export function CommentCreateForm({
       </div>
     </div>
   );
-}
+});
 
 export const formatCommentDate = (date: Date) => {
   // const now = new Date();
