@@ -581,7 +581,7 @@ export function CommentCreateForm({
           >
             <Editor
               variant="comment"
-              className="min-h-7 grow pr-8 text-base leading-tight text-[#2b2b2b] placeholder:text-[#7f8589]"
+              className=""
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();

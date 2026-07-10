@@ -44,6 +44,7 @@ import {
   useResolveSuggestion,
 } from './block-suggestion';
 import { Comment, CommentCreateForm } from './comment';
+import { cn } from '../../lib/utils';
 
 export const discussionPopoverContentClassName = `
   max-h-[min(70dvh,calc(-24px+var(--radix-popper-available-height)))]
@@ -60,6 +61,212 @@ export const discussionTriggerClassName = `
   data-[active=true]:bg-[#e9f7ff]
 `;
 
+type DiscussionTriggerKind = 'comments' | 'mixed' | 'suggestions';
+
+const DISCUSSION_POPOVER_COLLISION_PADDING = 12;
+
+const getDiscussionPopoverCollisionPadding = () => {
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    return DISCUSSION_POPOVER_COLLISION_PADDING;
+  }
+
+  const toolbarRect = document
+    .getElementById('toolbar')
+    ?.getBoundingClientRect();
+  const sidebarRect = document
+    .querySelector<HTMLElement>('.sidebar-container:not(.collapsed)')
+    ?.getBoundingClientRect();
+  const contentAreaRect = document
+    .querySelector<HTMLElement>('.content-area')
+    ?.getBoundingClientRect();
+
+  return {
+    top: DISCUSSION_POPOVER_COLLISION_PADDING,
+    bottom: DISCUSSION_POPOVER_COLLISION_PADDING,
+    left: Math.max(
+      DISCUSSION_POPOVER_COLLISION_PADDING,
+      (toolbarRect?.right ?? 0) + DISCUSSION_POPOVER_COLLISION_PADDING,
+      (contentAreaRect?.left ?? 0) + DISCUSSION_POPOVER_COLLISION_PADDING,
+    ),
+    right: Math.max(
+      DISCUSSION_POPOVER_COLLISION_PADDING,
+      sidebarRect
+        ? window.innerWidth -
+            sidebarRect.left +
+            DISCUSSION_POPOVER_COLLISION_PADDING
+        : DISCUSSION_POPOVER_COLLISION_PADDING,
+      contentAreaRect
+        ? window.innerWidth -
+            contentAreaRect.right +
+            DISCUSSION_POPOVER_COLLISION_PADDING
+        : DISCUSSION_POPOVER_COLLISION_PADDING,
+    ),
+  };
+};
+
+const hasMeaningfulRect = (element?: HTMLElement | null) => {
+  const rect = element?.getBoundingClientRect();
+
+  return Boolean(rect && rect.width > 0 && rect.height > 0);
+};
+
+function useDiscussionPopoverCollisionPadding() {
+  const [padding, setPadding] = React.useState(
+    getDiscussionPopoverCollisionPadding,
+  );
+
+  React.useEffect(() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return undefined;
+    }
+
+    const updatePadding = () => {
+      setPadding(getDiscussionPopoverCollisionPadding());
+    };
+
+    updatePadding();
+    window.addEventListener('resize', updatePadding);
+
+    const sidebar = document.querySelector<HTMLElement>('.sidebar-container');
+    const toolbar = document.getElementById('toolbar');
+    const contentArea = document.querySelector<HTMLElement>('.content-area');
+    const resizeObserver =
+      typeof ResizeObserver === 'undefined'
+        ? null
+        : new ResizeObserver(() => {
+            updatePadding();
+          });
+
+    [sidebar, toolbar, contentArea].forEach((element) => {
+      if (resizeObserver && hasMeaningfulRect(element)) {
+        resizeObserver.observe(element);
+      }
+    });
+
+    const mutationObserver = new MutationObserver(() => {
+      updatePadding();
+    });
+
+    [sidebar, toolbar, contentArea].forEach((element) => {
+      if (element) {
+        mutationObserver.observe(element, {
+          attributes: true,
+          attributeFilter: ['class', 'style'],
+        });
+      }
+    });
+
+    return () => {
+      window.removeEventListener('resize', updatePadding);
+      resizeObserver?.disconnect();
+      mutationObserver.disconnect();
+    };
+  }, []);
+
+  return padding;
+}
+
+export const DiscussionTriggerButton = React.forwardRef<
+  HTMLButtonElement,
+  React.ComponentProps<typeof Button> & {
+    active: boolean;
+    count: number;
+    kind: DiscussionTriggerKind;
+  }
+>(({ active, className, count, kind, ...props }, ref) => (
+  <Button
+    ref={ref}
+    variant="ghost"
+    className={cn(discussionTriggerClassName, className)}
+    data-active={active}
+    contentEditable={false}
+    {...props}
+  >
+    {kind === 'suggestions' && (
+      <PencilLineIcon className="size-5 shrink-0 text-[#4caf50]" />
+    )}
+
+    {kind === 'comments' && (
+      <MessageSquareTextIcon className="size-5 shrink-0" />
+    )}
+
+    {kind === 'mixed' && <MessagesSquareIcon className="size-5 shrink-0" />}
+
+    <span className="text-base leading-none font-medium">{count}</span>
+  </Button>
+));
+
+DiscussionTriggerButton.displayName = 'DiscussionTriggerButton';
+
+export function DiscussionPopover({
+  anchorAsChild = true,
+  anchorElement,
+  children,
+  content,
+  contentProps,
+  onOpenChange,
+  open,
+  trigger,
+  triggerAsPopoverTrigger = true,
+  wrapperProps,
+}: React.PropsWithChildren<{
+  anchorElement: HTMLElement | null;
+  content: React.ReactNode;
+  onOpenChange: (open: boolean) => void;
+  open: boolean;
+  anchorAsChild?: boolean;
+  contentProps?: Omit<React.ComponentProps<typeof PopoverContent>, 'children'>;
+  trigger?: React.ReactNode;
+  triggerAsPopoverTrigger?: boolean;
+  wrapperProps?: React.ComponentProps<'div'>;
+}>) {
+  const { className: wrapperClassName, ...restWrapperProps } =
+    wrapperProps ?? {};
+  const { className: contentClassName, ...restContentProps } =
+    contentProps ?? {};
+  const collisionPadding = useDiscussionPopoverCollisionPadding();
+
+  return (
+    <div className="flex w-full justify-between">
+      <Popover open={open} onOpenChange={onOpenChange}>
+        <div className={cn('w-full', wrapperClassName)} {...restWrapperProps}>
+          {children}
+        </div>
+
+        {anchorElement && (
+          <PopoverAnchor
+            asChild={anchorAsChild}
+            className="w-full"
+            virtualRef={{ current: anchorElement }}
+          />
+        )}
+
+        <PopoverContent
+          className={cn(discussionPopoverContentClassName, contentClassName)}
+          collisionPadding={collisionPadding}
+          onCloseAutoFocus={(event) => event.preventDefault()}
+          onOpenAutoFocus={(event) => event.preventDefault()}
+          align="center"
+          side="bottom"
+          {...restContentProps}
+        >
+          {content}
+        </PopoverContent>
+
+        {trigger && (
+          <div className="relative left-0 size-0 select-none">
+            {triggerAsPopoverTrigger ? (
+              <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+            ) : (
+              trigger
+            )}
+          </div>
+        )}
+      </Popover>
+    </div>
+  );
+}
+
 export function DiscussionPopoverHeader({
   count,
   onClose,
@@ -70,10 +277,10 @@ export function DiscussionPopoverHeader({
   title: string;
 }) {
   return (
-    <div className="flex items-start justify-between gap-3 px-6 pt-5 pb-3">
-      <h3 className="text-lg leading-none font-bold tracking-[0.06em] text-[#2b2b2b] uppercase">
+    <div className="flex items-start justify-between gap-3 px-4 pt-5 pb-3">
+      <div className="text-base leading-none font-bold tracking-[0.06em] text-slate-600 uppercase">
         {title} ({count})
-      </h3>
+      </div>
       <Button
         aria-label="Close"
         className="size-7 rounded-full p-0 text-[#7c858b] hover:bg-slate-100 hover:text-[#2b2b2b]"
@@ -168,6 +375,12 @@ const BlockCommentContent = ({
     : activeDiscussion
       ? activeDiscussion.comments.length
       : 1;
+  const triggerKind: DiscussionTriggerKind =
+    suggestionsCount > 0 && discussionsCount === 0
+      ? 'suggestions'
+      : suggestionsCount === 0 && discussionsCount > 0
+        ? 'comments'
+        : 'mixed';
 
   const sortedMergedData = [
     ...resolvedDiscussions,
@@ -242,111 +455,76 @@ const BlockCommentContent = ({
   if (suggestionsCount + resolvedDiscussions.length === 0 && !draftCommentNode)
     return <div className="w-full">{children}</div>;
 
-  return (
-    <div className="flex w-full justify-between">
-      <Popover
-        open={open}
-        onOpenChange={(_open_) => {
-          if (!_open_) {
-            closePopover();
-            return;
-          }
-
-          setOpen(_open_);
-        }}
-      >
-        <div className="w-full">{children}</div>
-        {anchorElement && (
-          <PopoverAnchor
-            asChild
-            className="w-full"
-            virtualRef={{ current: anchorElement }}
-          />
-        )}
-
-        <PopoverContent
-          className={discussionPopoverContentClassName}
-          onCloseAutoFocus={(e) => e.preventDefault()}
-          onOpenAutoFocus={(e) => e.preventDefault()}
-          align="center"
-          side="bottom"
-        >
-          {isCommenting ? (
-            <CommentCreateForm className="p-4" focusOnMount />
+  const popoverContent = isCommenting ? (
+    <CommentCreateForm className="p-4" focusOnMount />
+  ) : (
+    <React.Fragment>
+      <DiscussionPopoverHeader
+        count={popoverHeaderCount}
+        onClose={closePopover}
+        title={popoverTitle}
+      />
+      {noneActive ? (
+        sortedMergedData.map((item, index) =>
+          isResolvedSuggestion(item) ? (
+            <BlockSuggestionCard
+              key={item.suggestionId}
+              idx={index}
+              isLast={index === sortedMergedData.length - 1}
+              suggestion={item}
+            />
           ) : (
-            <React.Fragment>
-              <DiscussionPopoverHeader
-                count={popoverHeaderCount}
-                onClose={closePopover}
-                title={popoverTitle}
-              />
-              {noneActive ? (
-                sortedMergedData.map((item, index) =>
-                  isResolvedSuggestion(item) ? (
-                    <BlockSuggestionCard
-                      key={item.suggestionId}
-                      idx={index}
-                      isLast={index === sortedMergedData.length - 1}
-                      suggestion={item}
-                    />
-                  ) : (
-                    <BlockComment
-                      key={item.id}
-                      discussion={item}
-                      isLast={index === sortedMergedData.length - 1}
-                    />
-                  ),
-                )
-              ) : (
-                <React.Fragment>
-                  {activeSuggestion && (
-                    <BlockSuggestionCard
-                      key={activeSuggestion.suggestionId}
-                      idx={0}
-                      isLast={true}
-                      suggestion={activeSuggestion}
-                    />
-                  )}
-
-                  {activeDiscussion && (
-                    <BlockComment discussion={activeDiscussion} isLast={true} />
-                  )}
-                </React.Fragment>
-              )}
-            </React.Fragment>
+            <BlockComment
+              key={item.id}
+              discussion={item}
+              isLast={index === sortedMergedData.length - 1}
+            />
+          ),
+        )
+      ) : (
+        <React.Fragment>
+          {activeSuggestion && (
+            <BlockSuggestionCard
+              key={activeSuggestion.suggestionId}
+              idx={0}
+              isLast={true}
+              suggestion={activeSuggestion}
+            />
           )}
-        </PopoverContent>
 
-        {totalCount > 0 && (
-          <div className="relative left-0 size-0 select-none">
-            <PopoverTrigger asChild>
-              <Button
-                variant="ghost"
-                className={discussionTriggerClassName}
-                data-active={open}
-                contentEditable={false}
-              >
-                {suggestionsCount > 0 && discussionsCount === 0 && (
-                  <PencilLineIcon className="size-5 shrink-0 text-[#4caf50]" />
-                )}
+          {activeDiscussion && (
+            <BlockComment discussion={activeDiscussion} isLast={true} />
+          )}
+        </React.Fragment>
+      )}
+    </React.Fragment>
+  );
 
-                {suggestionsCount === 0 && discussionsCount > 0 && (
-                  <MessageSquareTextIcon className="size-5 shrink-0" />
-                )}
+  return (
+    <DiscussionPopover
+      anchorElement={anchorElement}
+      content={popoverContent}
+      onOpenChange={(_open_) => {
+        if (!_open_) {
+          closePopover();
+          return;
+        }
 
-                {suggestionsCount > 0 && discussionsCount > 0 && (
-                  <MessagesSquareIcon className="size-5 shrink-0" />
-                )}
-
-                <span className="text-base leading-none font-medium">
-                  {totalCount}
-                </span>
-              </Button>
-            </PopoverTrigger>
-          </div>
-        )}
-      </Popover>
-    </div>
+        setOpen(_open_);
+      }}
+      open={open}
+      trigger={
+        totalCount > 0 ? (
+          <DiscussionTriggerButton
+            active={open}
+            count={totalCount}
+            kind={triggerKind}
+          />
+        ) : null
+      }
+    >
+      {children}
+    </DiscussionPopover>
   );
 };
 
