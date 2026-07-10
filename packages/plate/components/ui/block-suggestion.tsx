@@ -84,7 +84,10 @@ export function BlockSuggestion({ element }: { element: TSuggestionElement }) {
   return (
     <div
       className={cn(
-        'pointer-events-none absolute inset-0 z-1 border-2 border-quanta-emerald/80 transition-opacity',
+        `
+          border-quanta-emerald/80 pointer-events-none absolute inset-0 z-1 border-2
+          transition-opacity
+        `,
         isRemove && 'border-quanta-rose/60',
       )}
       contentEditable={false}
@@ -137,10 +140,10 @@ export function BlockSuggestionCard({
           </Avatar>
 
           <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2 gap-y-1">
-            <h4 className="text-sm leading-tight font-bold text-foreground">
+            <h4 className="text-foreground text-sm leading-tight font-bold">
               {userInfo?.name}
             </h4>
-            <span className="text-xs leading-none text-muted-foreground">
+            <span className="text-muted-foreground text-xs leading-none">
               {formatCommentDate(new Date(suggestion.createdAt))}
             </span>
           </div>
@@ -152,15 +155,20 @@ export function BlockSuggestionCard({
               <React.Fragment>
                 {suggestionText2Array(suggestion.text!).map((text, index) => (
                   <div key={index} className="flex flex-col gap-2">
-                    <span className="flex items-center gap-1.5 text-xs leading-none font-bold tracking-wider text-quanta-rose uppercase">
+                    <span
+                      className={`
+                        text-quanta-rose flex items-center gap-1.5 text-xs leading-none font-bold
+                        tracking-wider uppercase
+                      `}
+                    >
                       <MinusIcon className="size-3" />
                       Deletion
                     </span>
 
-                    <p className="text-sm leading-normal text-foreground">
+                    <p className="text-foreground text-sm leading-normal">
                       Suggested removing{' '}
-                      <span className="font-semibold text-quanta-rose">
-                        "{text}"
+                      <span className="text-quanta-rose font-semibold">
+                        &ldquo;{text}&rdquo;
                       </span>
                     </p>
                   </div>
@@ -173,15 +181,20 @@ export function BlockSuggestionCard({
                 {suggestionText2Array(suggestion.newText!).map(
                   (text, index) => (
                     <div key={index} className="flex flex-col gap-2">
-                      <span className="flex items-center gap-1.5 text-xs leading-none font-bold tracking-wider text-quanta-emerald uppercase">
+                      <span
+                        className={`
+                          text-quanta-emerald flex items-center gap-1.5 text-xs leading-none
+                          font-bold tracking-wider uppercase
+                        `}
+                      >
                         <PlusIcon className="size-3" />
                         Insertion
                       </span>
 
-                      <p className="text-sm leading-normal text-foreground">
+                      <p className="text-foreground text-sm leading-normal">
                         Suggested adding{' '}
-                        <span className="font-semibold text-quanta-emerald">
-                          "{text || 'line breaks'}"
+                        <span className="text-quanta-emerald font-semibold">
+                          &ldquo;{text || 'line breaks'}&rdquo;
                         </span>
                       </p>
                     </div>
@@ -197,7 +210,7 @@ export function BlockSuggestionCard({
                     <React.Fragment key={index}>
                       <div
                         key={index}
-                        className="flex items-start gap-2 text-quanta-emerald"
+                        className="text-quanta-emerald flex items-start gap-2"
                       >
                         <span className="text-sm">with:</span>
                         <span className="text-sm">{text || 'line breaks'}</span>
@@ -209,7 +222,7 @@ export function BlockSuggestionCard({
                 {suggestionText2Array(suggestion.text!).map((text, index) => (
                   <React.Fragment key={index}>
                     <div key={index} className="flex items-start gap-2">
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-muted-foreground text-sm">
                         {index === 0 ? 'Replace:' : 'Delete:'}
                       </span>
                       <span className="text-sm">{text || 'line breaks'}</span>
@@ -221,7 +234,7 @@ export function BlockSuggestionCard({
 
             {suggestion.type === 'update' && (
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">
+                <span className="text-muted-foreground text-sm">
                   {Object.keys(suggestion.properties).map((key) => (
                     <span key={key}>Un{key}</span>
                   ))}
@@ -253,7 +266,10 @@ export function BlockSuggestionCard({
         {canManageSuggestion && (
           <div className="ml-11 flex gap-2">
             <Button
-              className="h-8 flex-1 gap-1.5 rounded-md bg-quanta-emerald text-sm font-semibold text-white hover:bg-quanta-turtle"
+              className={`
+                bg-quanta-emerald h-8 flex-1 gap-1.5 rounded-md text-sm font-semibold text-white
+                hover:bg-quanta-turtle
+              `}
               onClick={() => accept(suggestion)}
             >
               <CheckIcon className="size-3.5 stroke-2" />
@@ -261,10 +277,14 @@ export function BlockSuggestionCard({
             </Button>
 
             <Button
-              className="h-8 flex-1 gap-1.5 rounded-md border border-border bg-background text-sm font-semibold text-foreground hover:bg-muted"
+              className={`
+                border-border bg-background text-foreground h-8 flex-1 gap-1.5 rounded-md border
+                text-sm font-semibold
+                hover:bg-muted
+              `}
               onClick={() => reject(suggestion)}
             >
-              <XIcon className="size-3.5 text-muted-foreground" />
+              <XIcon className="text-muted-foreground size-3.5" />
               Reject
             </Button>
           </div>
@@ -275,7 +295,7 @@ export function BlockSuggestionCard({
         )}
       </div>
 
-      {!isLast && <div className="h-px w-full bg-muted" />}
+      {!isLast && <div className="bg-muted h-px w-full" />}
     </div>
   );
 }

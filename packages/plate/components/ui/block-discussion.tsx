@@ -137,7 +137,7 @@ function useDiscussionPopoverCollisionPadding() {
           });
 
     [sidebar, toolbar, contentArea].forEach((element) => {
-      if (resizeObserver && hasMeaningfulRect(element)) {
+      if (resizeObserver && element && hasMeaningfulRect(element)) {
         resizeObserver.observe(element);
       }
     });
@@ -279,14 +279,17 @@ export function DiscussionPopoverHeader({
     <div className="flex items-start justify-between gap-3 px-4 pt-3.5 pb-2">
       <div
         aria-level={2}
-        className="text-sm leading-none font-bold tracking-[0.06em] text-foreground uppercase"
+        className="text-foreground text-sm leading-none font-bold tracking-[0.06em] uppercase"
         role="heading"
       >
         {title} ({count})
       </div>
       <Button
         aria-label="Close"
-        className="size-6 rounded-md p-0 text-muted-foreground hover:bg-muted hover:text-foreground"
+        className={`
+          text-muted-foreground size-6 rounded-md p-0
+          hover:bg-muted hover:text-foreground
+        `}
         onClick={onClose}
         type="button"
         variant="ghost"
@@ -562,7 +565,7 @@ function BlockComment({
         <CommentCreateForm ref={createFormRef} discussionId={discussion.id} />
       </div>
 
-      {!isLast && <div className="h-px w-full bg-muted" />}
+      {!isLast && <div className="bg-muted h-px w-full" />}
     </React.Fragment>
   );
 }
