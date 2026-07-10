@@ -37,13 +37,13 @@ export function SuggestionLeaf(props: PlateLeafProps<TSuggestionText>) {
       as={Component}
       className={cn(
         `
-          border-b-quanta-emerald/40 bg-quanta-emerald/10 text-quanta-emerald border-b-2
+          border-b-2 border-b-quanta-emerald/40 bg-quanta-emerald/10 text-quanta-emerald
           no-underline transition-colors duration-200
         `,
         (hasActive || hasHover) &&
           'border-b-quanta-emerald/60 bg-quanta-emerald/20',
         hasRemove &&
-          'bg-quanta-rose/15 text-quanta-rose border-b-0 line-through',
+          'border-b-0 bg-quanta-rose/15 text-quanta-rose line-through',
         (hasActive || hasHover) && hasRemove && 'bg-quanta-rose/25',
       )}
       attributes={{
@@ -101,14 +101,14 @@ function SuggestionLineBreakContent({
       ref={spanRef}
       className={cn(
         `
-          border-b-quanta-emerald/40 bg-quanta-emerald/10 text-quanta-emerald absolute border-b-2
-          text-justify no-underline transition-colors duration-200
+          absolute border-b-2 border-b-quanta-emerald/40 bg-quanta-emerald/10 text-justify
+          text-quanta-emerald no-underline transition-colors duration-200
         `,
         isInsert &&
           (isActive || isHover) &&
           'border-b-quanta-emerald/60 bg-quanta-emerald/20',
         isRemove &&
-          'bg-quanta-rose/15 text-quanta-rose border-b-0 line-through',
+          'border-b-0 bg-quanta-rose/15 text-quanta-rose line-through',
         isRemove &&
           (isActive || isHover) &&
           'bg-quanta-rose/25 text-quanta-rose no-underline',

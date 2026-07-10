@@ -85,7 +85,7 @@ export function BlockSuggestion({ element }: { element: TSuggestionElement }) {
     <div
       className={cn(
         `
-          border-quanta-emerald/80 pointer-events-none absolute inset-0 z-1 border-2
+          pointer-events-none absolute inset-0 z-1 border-2 border-quanta-emerald/80
           transition-opacity
         `,
         isRemove && 'border-quanta-rose/60',
@@ -140,10 +140,10 @@ export function BlockSuggestionCard({
           </Avatar>
 
           <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2 gap-y-1">
-            <h4 className="text-foreground text-sm leading-tight font-bold">
+            <h4 className="text-sm leading-tight font-bold text-foreground">
               {userInfo?.name}
             </h4>
-            <span className="text-muted-foreground text-xs leading-none">
+            <span className="text-xs leading-none text-muted-foreground">
               {formatCommentDate(new Date(suggestion.createdAt))}
             </span>
           </div>
@@ -157,17 +157,17 @@ export function BlockSuggestionCard({
                   <div key={index} className="flex flex-col gap-2">
                     <span
                       className={`
-                        text-quanta-rose flex items-center gap-1.5 text-xs leading-none font-bold
-                        tracking-wider uppercase
+                        flex items-center gap-1.5 text-xs leading-none font-bold tracking-wider
+                        text-quanta-rose uppercase
                       `}
                     >
                       <MinusIcon className="size-3" />
                       Deletion
                     </span>
 
-                    <p className="text-foreground text-sm leading-normal">
+                    <p className="text-sm leading-normal text-foreground">
                       Suggested removing{' '}
-                      <span className="text-quanta-rose font-semibold">
+                      <span className="font-semibold text-quanta-rose">
                         &ldquo;{text}&rdquo;
                       </span>
                     </p>
@@ -183,17 +183,17 @@ export function BlockSuggestionCard({
                     <div key={index} className="flex flex-col gap-2">
                       <span
                         className={`
-                          text-quanta-emerald flex items-center gap-1.5 text-xs leading-none
-                          font-bold tracking-wider uppercase
+                          flex items-center gap-1.5 text-xs leading-none font-bold tracking-wider
+                          text-quanta-emerald uppercase
                         `}
                       >
                         <PlusIcon className="size-3" />
                         Insertion
                       </span>
 
-                      <p className="text-foreground text-sm leading-normal">
+                      <p className="text-sm leading-normal text-foreground">
                         Suggested adding{' '}
-                        <span className="text-quanta-emerald font-semibold">
+                        <span className="font-semibold text-quanta-emerald">
                           &ldquo;{text || 'line breaks'}&rdquo;
                         </span>
                       </p>
@@ -210,7 +210,7 @@ export function BlockSuggestionCard({
                     <React.Fragment key={index}>
                       <div
                         key={index}
-                        className="text-quanta-emerald flex items-start gap-2"
+                        className="flex items-start gap-2 text-quanta-emerald"
                       >
                         <span className="text-sm">with:</span>
                         <span className="text-sm">{text || 'line breaks'}</span>
@@ -222,7 +222,7 @@ export function BlockSuggestionCard({
                 {suggestionText2Array(suggestion.text!).map((text, index) => (
                   <React.Fragment key={index}>
                     <div key={index} className="flex items-start gap-2">
-                      <span className="text-muted-foreground text-sm">
+                      <span className="text-sm text-muted-foreground">
                         {index === 0 ? 'Replace:' : 'Delete:'}
                       </span>
                       <span className="text-sm">{text || 'line breaks'}</span>
@@ -234,7 +234,7 @@ export function BlockSuggestionCard({
 
             {suggestion.type === 'update' && (
               <div className="flex items-center gap-2">
-                <span className="text-muted-foreground text-sm">
+                <span className="text-sm text-muted-foreground">
                   {Object.keys(suggestion.properties).map((key) => (
                     <span key={key}>Un{key}</span>
                   ))}
@@ -267,7 +267,7 @@ export function BlockSuggestionCard({
           <div className="ml-11 flex gap-2">
             <Button
               className={`
-                bg-quanta-emerald h-8 flex-1 gap-1.5 rounded-md text-sm font-semibold text-white
+                h-8 flex-1 gap-1.5 rounded-md bg-quanta-emerald text-sm font-semibold text-white
                 hover:bg-quanta-turtle
               `}
               onClick={() => accept(suggestion)}
@@ -278,13 +278,13 @@ export function BlockSuggestionCard({
 
             <Button
               className={`
-                border-border bg-background text-foreground h-8 flex-1 gap-1.5 rounded-md border
-                text-sm font-semibold
+                h-8 flex-1 gap-1.5 rounded-md border border-border bg-background text-sm
+                font-semibold text-foreground
                 hover:bg-muted
               `}
               onClick={() => reject(suggestion)}
             >
-              <XIcon className="text-muted-foreground size-3.5" />
+              <XIcon className="size-3.5 text-muted-foreground" />
               Reject
             </Button>
           </div>
@@ -295,7 +295,7 @@ export function BlockSuggestionCard({
         )}
       </div>
 
-      {!isLast && <div className="bg-muted h-px w-full" />}
+      {!isLast && <div className="h-px w-full bg-muted" />}
     </div>
   );
 }

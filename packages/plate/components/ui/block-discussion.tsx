@@ -279,7 +279,7 @@ export function DiscussionPopoverHeader({
     <div className="flex items-start justify-between gap-3 px-4 pt-3.5 pb-2">
       <div
         aria-level={2}
-        className="text-foreground text-sm leading-none font-bold tracking-[0.06em] uppercase"
+        className="text-sm leading-none font-bold tracking-[0.06em] text-foreground uppercase"
         role="heading"
       >
         {title} ({count})
@@ -287,7 +287,7 @@ export function DiscussionPopoverHeader({
       <Button
         aria-label="Close"
         className={`
-          text-muted-foreground size-6 rounded-md p-0
+          size-6 rounded-md p-0 text-muted-foreground
           hover:bg-muted hover:text-foreground
         `}
         onClick={onClose}
@@ -565,7 +565,7 @@ function BlockComment({
         <CommentCreateForm ref={createFormRef} discussionId={discussion.id} />
       </div>
 
-      {!isLast && <div className="bg-muted h-px w-full" />}
+      {!isLast && <div className="h-px w-full bg-muted" />}
     </React.Fragment>
   );
 }

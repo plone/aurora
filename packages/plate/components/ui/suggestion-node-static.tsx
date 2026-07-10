@@ -24,11 +24,11 @@ export function SuggestionLeafStatic(props: SlateLeafProps<TSuggestionText>) {
       as={Component}
       className={cn(
         `
-          border-b-quanta-emerald/40 bg-quanta-emerald/10 text-quanta-emerald border-b-2
+          border-b-2 border-b-quanta-emerald/40 bg-quanta-emerald/10 text-quanta-emerald
           no-underline transition-colors duration-200
         `,
         hasRemove &&
-          'bg-quanta-rose/15 text-quanta-rose border-b-0 line-through',
+          'border-b-0 bg-quanta-rose/15 text-quanta-rose line-through',
       )}
     >
       {props.children}

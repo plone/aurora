@@ -178,12 +178,12 @@ export function Comment(props: {
         </Avatar>
 
         <div className="min-w-0 flex-1">
-          <h4 className="text-foreground text-sm leading-tight font-bold">
+          <h4 className="text-sm leading-tight font-bold text-foreground">
             {/* Replace to your own backend or refer to potion */}
             {userInfo?.name}
           </h4>
 
-          <div className="text-muted-foreground mt-0.5 text-xs leading-none">
+          <div className="mt-0.5 text-xs leading-none text-muted-foreground">
             <span className="mr-1">
               {formatCommentDate(new Date(comment.createdAt))}
             </span>
@@ -217,7 +217,7 @@ export function Comment(props: {
       {isFirst && showDocumentContent && (
         <div className="text-subtle-foreground relative mt-2 flex pl-11 text-sm">
           {discussionLength > 1 && (
-            <div className="bg-muted absolute top-[5px] left-4 h-full w-0.5 shrink-0" />
+            <div className="absolute top-[5px] left-4 h-full w-0.5 shrink-0 bg-muted" />
           )}
           <div className="bg-highlight my-px w-0.5 shrink-0" />
           {documentContent && <div className="ml-2">{documentContent}</div>}
@@ -226,13 +226,13 @@ export function Comment(props: {
 
       <div className="relative mt-2 mb-3 pl-11">
         {!isLast && (
-          <div className="bg-muted absolute top-0 left-4 h-full w-0.5 shrink-0" />
+          <div className="absolute top-0 left-4 h-full w-0.5 shrink-0 bg-muted" />
         )}
         <Plate readOnly={!isEditing} editor={commentEditor}>
           <EditorContainer variant="comment">
             <Editor
               variant="comment"
-              className="text-foreground w-auto grow text-sm leading-normal"
+              className="w-auto grow text-sm leading-normal text-foreground"
               onClick={() => onEditorClick?.()}
             />
 
@@ -249,10 +249,10 @@ export function Comment(props: {
                 >
                   <div
                     className={`
-                      bg-primary/40 flex size-5 shrink-0 items-center justify-center rounded-[50%]
+                      flex size-5 shrink-0 items-center justify-center rounded-[50%] bg-primary/40
                     `}
                   >
-                    <XIcon className="text-background size-3 stroke-[3px]" />
+                    <XIcon className="size-3 stroke-[3px] text-background" />
                   </div>
                 </Button>
 
@@ -266,10 +266,10 @@ export function Comment(props: {
                 >
                   <div
                     className={`
-                      bg-brand flex size-5 shrink-0 items-center justify-center rounded-[50%]
+                      flex size-5 shrink-0 items-center justify-center rounded-[50%] bg-brand
                     `}
                   >
-                    <CheckIcon className="text-background size-3 stroke-[3px]" />
+                    <CheckIcon className="size-3 stroke-[3px] text-background" />
                   </div>
                 </Button>
               </div>
@@ -281,7 +281,7 @@ export function Comment(props: {
           <div className="mt-2 flex gap-4">
             <button
               className={`
-                text-brand cursor-pointer border-0 bg-transparent p-0 text-sm font-semibold
+                cursor-pointer border-0 bg-transparent p-0 text-sm font-semibold text-brand
                 hover:underline
               `}
               onClick={onResolveComment}
@@ -291,7 +291,7 @@ export function Comment(props: {
             </button>
             <button
               className={`
-                text-brand cursor-pointer border-0 bg-transparent p-0 text-sm font-semibold
+                cursor-pointer border-0 bg-transparent p-0 text-sm font-semibold text-brand
                 hover:underline
               `}
               onClick={onReply}
@@ -381,7 +381,7 @@ function CommentMoreDropdown(props: {
       modal={false}
     >
       <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-        <Button variant="ghost" className={cn('text-muted-foreground h-6 p-1')}>
+        <Button variant="ghost" className={cn('h-6 p-1 text-muted-foreground')}>
           <MoreHorizontalIcon className="size-4" />
         </Button>
       </DropdownMenuTrigger>
@@ -610,7 +610,7 @@ export const CommentCreateForm = React.forwardRef<
         >
           <EditorContainer
             className={`
-              border-border bg-muted min-h-11 rounded-full border px-4 py-2 shadow-inner
+              min-h-11 rounded-full border border-border bg-muted px-4 py-2 shadow-inner
               shadow-slate-200/40
             `}
             variant="comment"
@@ -633,7 +633,7 @@ export const CommentCreateForm = React.forwardRef<
               size="icon"
               variant="ghost"
               className={`
-                text-muted-foreground absolute right-2 bottom-1.5 ml-auto size-8 shrink-0
+                absolute right-2 bottom-1.5 ml-auto size-8 shrink-0 text-muted-foreground
                 hover:text-brand
               `}
               disabled={commentContent.trim().length === 0}
