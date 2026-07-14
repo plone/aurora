@@ -279,7 +279,7 @@ export function DiscussionPopoverHeader({
     <div className="flex items-start justify-between gap-3 px-4 pt-3.5 pb-2">
       <div
         aria-level={2}
-        className="text-sm leading-none font-bold tracking-[0.06em] text-foreground uppercase"
+        className="text-[13px] leading-[1.6] font-bold tracking-[0.06em] text-foreground uppercase"
         role="heading"
       >
         {title} ({count})
@@ -287,14 +287,15 @@ export function DiscussionPopoverHeader({
       <Button
         aria-label="Close"
         className={`
-          size-6 rounded-md p-0 text-muted-foreground
+          size-[22px] rounded-md p-0.5 text-muted-foreground
           hover:bg-muted hover:text-foreground
         `}
         onClick={onClose}
+        size="icon"
         type="button"
         variant="ghost"
       >
-        <XIcon className="size-3.5 stroke-2" />
+        <XIcon className="size-[18px] stroke-2" />
       </Button>
     </div>
   );
@@ -546,7 +547,7 @@ function BlockComment({
 
   return (
     <React.Fragment key={discussion.id}>
-      <div className="px-6 pb-5">
+      <div className="px-4 pt-1 pb-3.5">
         {discussion.comments.map((comment, index) => (
           <Comment
             key={comment.id ?? index}

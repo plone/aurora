@@ -11,10 +11,10 @@ import { CommentPlugin, useCommentId } from '@platejs/comment/react';
 //   format,
 // } from 'date-fns';
 import {
-  ArrowUpIcon,
   CheckIcon,
   MoreHorizontalIcon,
   PencilIcon,
+  SendIcon,
   TrashIcon,
   XIcon,
 } from 'lucide-react';
@@ -171,19 +171,19 @@ export function Comment(props: {
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
-      <div className="relative flex items-start gap-3">
+      <div className="relative flex items-start gap-2.5">
         <Avatar className="size-8">
           <AvatarImage alt={userInfo?.name} src={userInfo?.avatarUrl} />
           <AvatarFallback>{userInfo?.name?.[0]}</AvatarFallback>
         </Avatar>
 
         <div className="min-w-0 flex-1">
-          <h4 className="text-sm leading-tight font-bold text-foreground">
+          <h4 className="mb-0! text-sm! leading-[1.2]! font-bold text-foreground">
             {/* Replace to your own backend or refer to potion */}
             {userInfo?.name}
           </h4>
 
-          <div className="mt-0.5 text-xs leading-none text-muted-foreground">
+          <div className="mt-px text-xs leading-[1.6] font-light text-muted-foreground">
             <span className="mr-1">
               {formatCommentDate(new Date(comment.createdAt))}
             </span>
@@ -215,7 +215,7 @@ export function Comment(props: {
       </div>
 
       {isFirst && showDocumentContent && (
-        <div className="text-subtle-foreground relative mt-2 flex pl-11 text-sm">
+        <div className="text-subtle-foreground relative mt-2 flex pl-[42px] text-sm">
           {discussionLength > 1 && (
             <div className="absolute top-[5px] left-4 h-full w-0.5 shrink-0 bg-muted" />
           )}
@@ -224,7 +224,7 @@ export function Comment(props: {
         </div>
       )}
 
-      <div className="relative mt-2 mb-3 pl-11">
+      <div className="relative mt-1.5 mb-3 pl-[42px]">
         {!isLast && (
           <div className="absolute top-0 left-4 h-full w-0.5 shrink-0 bg-muted" />
         )}
@@ -232,7 +232,7 @@ export function Comment(props: {
           <EditorContainer variant="comment">
             <Editor
               variant="comment"
-              className="w-auto grow text-sm leading-normal text-foreground"
+              className="w-auto grow text-sm leading-normal font-light text-foreground"
               onClick={() => onEditorClick?.()}
             />
 
@@ -278,10 +278,11 @@ export function Comment(props: {
         </Plate>
 
         {isFirst && onReply && !isEditing && (
-          <div className="mt-2 flex gap-4">
+          <div className="mt-[7px] flex gap-4">
             <button
               className={`
-                cursor-pointer border-0 bg-transparent p-0 text-sm font-semibold text-brand
+                cursor-pointer border-0 bg-transparent p-0 text-[13px]! leading-[1.6]!
+                font-semibold text-brand
                 hover:underline
               `}
               onClick={onResolveComment}
@@ -291,7 +292,8 @@ export function Comment(props: {
             </button>
             <button
               className={`
-                cursor-pointer border-0 bg-transparent p-0 text-sm font-semibold text-brand
+                cursor-pointer border-0 bg-transparent p-0 text-[13px]! leading-[1.6]!
+                font-semibold text-brand
                 hover:underline
               `}
               onClick={onReply}
@@ -452,9 +454,7 @@ export const CommentCreateForm = React.forwardRef<
   const editor = useEditorRef();
   const commentId = useCommentId();
   const discussionId = discussionIdProp ?? commentId;
-  const { currentUser, currentUserId, discussions, setDiscussions } =
-    usePlatePlugins();
-  const userInfo = currentUser ?? undefined;
+  const { currentUserId, discussions, setDiscussions } = usePlatePlugins();
   const [commentValue, setCommentValue] = React.useState<Value | undefined>();
   const commentContent = React.useMemo(
     () =>
@@ -592,15 +592,7 @@ export const CommentCreateForm = React.forwardRef<
   ]);
 
   return (
-    <div className={cn('flex w-full gap-3', className)}>
-      <div className="mt-2 shrink-0">
-        {/* Replace to your own backend or refer to potion */}
-        <Avatar className="size-8">
-          <AvatarImage alt={userInfo?.name} src={userInfo?.avatarUrl} />
-          <AvatarFallback>{userInfo?.name?.[0]}</AvatarFallback>
-        </Avatar>
-      </div>
-
+    <div className={cn('flex w-full', className)}>
       <div className="relative flex grow gap-2">
         <Plate
           onChange={({ value }) => {
@@ -610,8 +602,8 @@ export const CommentCreateForm = React.forwardRef<
         >
           <EditorContainer
             className={`
-              min-h-11 rounded-full border border-border bg-muted px-4 py-2 shadow-inner
-              shadow-slate-200/40
+              min-h-11 items-center rounded-full border border-border bg-muted py-1.5 pr-2
+              pl-4 shadow-inner shadow-slate-200/40
             `}
             variant="comment"
           >
@@ -624,7 +616,7 @@ export const CommentCreateForm = React.forwardRef<
                   onAddComment();
                 }
               }}
-              placeholder="Reply..."
+              placeholder={discussionId ? 'Reply to thread...' : 'Reply...'}
               autoComplete="off"
               autoFocus={autoFocus}
             />
@@ -643,7 +635,7 @@ export const CommentCreateForm = React.forwardRef<
               }}
             >
               <div className="flex size-6 items-center justify-center rounded-full">
-                <ArrowUpIcon />
+                <SendIcon />
               </div>
             </Button>
           </EditorContainer>

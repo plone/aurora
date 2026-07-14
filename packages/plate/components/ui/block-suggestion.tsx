@@ -32,12 +32,7 @@ import {
   suggestionPlugin,
 } from '../editor/plugins/suggestion-kit';
 
-import {
-  type TComment,
-  Comment,
-  CommentCreateForm,
-  formatCommentDate,
-} from './comment';
+import { type TComment, Comment, formatCommentDate } from './comment';
 
 export interface ResolvedSuggestion extends TResolvedSuggestion {
   comments: TComment[];
@@ -131,8 +126,8 @@ export function BlockSuggestionCard({
 
   return (
     <div key={`${suggestion.suggestionId}-${idx}`} className="relative">
-      <div className="flex flex-col px-6 pb-5">
-        <div className="relative flex items-start gap-3">
+      <div className="flex flex-col px-4 pt-1 pb-3.5">
+        <div className="relative flex items-start gap-2.5">
           {/* Replace to your own backend or refer to potion */}
           <Avatar className="size-8">
             <AvatarImage alt={userInfo?.name} src={userInfo?.avatarUrl} />
@@ -140,16 +135,16 @@ export function BlockSuggestionCard({
           </Avatar>
 
           <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2 gap-y-1">
-            <h4 className="text-sm leading-tight font-bold text-foreground">
+            <h4 className="mb-0! text-sm! leading-[1.2]! font-bold text-foreground">
               {userInfo?.name}
             </h4>
-            <span className="text-xs leading-none text-muted-foreground">
+            <span className="text-xs leading-[1.6] font-light text-muted-foreground">
               {formatCommentDate(new Date(suggestion.createdAt))}
             </span>
           </div>
         </div>
 
-        <div className="relative mt-3 mb-4 pl-11">
+        <div className="relative mt-3 mb-4">
           <div className="flex flex-col gap-3">
             {suggestion.type === 'remove' && (
               <React.Fragment>
@@ -165,7 +160,7 @@ export function BlockSuggestionCard({
                       Deletion
                     </span>
 
-                    <p className="text-sm leading-normal text-foreground">
+                    <p className="text-sm! leading-normal! text-foreground">
                       Suggested removing{' '}
                       <span className="font-semibold text-quanta-rose">
                         &ldquo;{text}&rdquo;
@@ -191,7 +186,7 @@ export function BlockSuggestionCard({
                         Insertion
                       </span>
 
-                      <p className="text-sm leading-normal text-foreground">
+                      <p className="text-sm! leading-normal! text-foreground">
                         Suggested adding{' '}
                         <span className="font-semibold text-quanta-emerald">
                           &ldquo;{text || 'line breaks'}&rdquo;
@@ -264,10 +259,11 @@ export function BlockSuggestionCard({
         ))}
 
         {canManageSuggestion && (
-          <div className="ml-11 flex gap-2">
+          <div className="flex gap-2">
             <Button
               className={`
-                h-8 flex-1 gap-1.5 rounded-md bg-quanta-emerald text-sm font-semibold text-white
+                h-8 flex-1 gap-1.5 rounded-md bg-quanta-emerald text-sm! font-semibold
+                text-white
                 hover:bg-quanta-turtle
               `}
               onClick={() => accept(suggestion)}
@@ -278,7 +274,7 @@ export function BlockSuggestionCard({
 
             <Button
               className={`
-                h-8 flex-1 gap-1.5 rounded-md border border-border bg-background text-sm
+                h-8 flex-1 gap-1.5 rounded-md border border-border bg-background text-sm!
                 font-semibold text-foreground
                 hover:bg-muted
               `}
@@ -288,10 +284,6 @@ export function BlockSuggestionCard({
               Reject
             </Button>
           </div>
-        )}
-
-        {canManageSuggestion && (
-          <CommentCreateForm discussionId={suggestion.suggestionId} />
         )}
       </div>
 
