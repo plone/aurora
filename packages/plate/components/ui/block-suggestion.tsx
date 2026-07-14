@@ -126,7 +126,7 @@ export function BlockSuggestionCard({
 
   return (
     <div key={`${suggestion.suggestionId}-${idx}`} className="relative">
-      <div className="flex flex-col px-4 pt-1 pb-3.5">
+      <div className="flex flex-col px-4 pt-[13px] pb-3.5">
         <div className="relative flex items-start gap-2.5">
           {/* Replace to your own backend or refer to potion */}
           <Avatar className="size-8">
