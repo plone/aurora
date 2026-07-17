@@ -1,0 +1,1 @@
+Restyle the discussion and suggestion popovers, add inline Resolve/Reply actions, and support rendering comment and suggestion popovers in read-only mode with the correct suggestion colours and clicked-mark targeting. @sneridagh
