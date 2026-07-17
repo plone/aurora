@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.11 (2026-07-17)
+
+### Feature
+
+- Restyle the discussion and suggestion popovers, add inline Resolve/Reply actions, and support rendering comment and suggestion popovers in read-only mode with the correct suggestion colours and clicked-mark targeting. @sneridagh [#150](https://github.com/plone/volto/issues/150)
+
 ## 1.0.0-alpha.10 (2026-07-06)
 
 ### Internal
