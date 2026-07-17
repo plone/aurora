@@ -281,8 +281,8 @@ export function Comment(props: {
           <div className="mt-[7px] flex gap-4">
             <button
               className={`
-                cursor-pointer border-0 bg-transparent p-0 text-[13px]! leading-[1.6]!
-                font-semibold text-brand
+                cursor-pointer border-0 bg-transparent p-0 text-[13px]! leading-[1.6]! font-semibold
+                text-brand
                 hover:underline
               `}
               onClick={onResolveComment}
@@ -292,8 +292,8 @@ export function Comment(props: {
             </button>
             <button
               className={`
-                cursor-pointer border-0 bg-transparent p-0 text-[13px]! leading-[1.6]!
-                font-semibold text-brand
+                cursor-pointer border-0 bg-transparent p-0 text-[13px]! leading-[1.6]! font-semibold
+                text-brand
                 hover:underline
               `}
               onClick={onReply}
@@ -602,8 +602,8 @@ export const CommentCreateForm = React.forwardRef<
         >
           <EditorContainer
             className={`
-              min-h-11 items-center rounded-full border border-border bg-muted py-1.5 pr-2
-              pl-4 shadow-inner shadow-slate-200/40
+              min-h-11 items-center rounded-full border border-border bg-muted py-1.5 pr-2 pl-4
+              shadow-inner shadow-slate-200/40
             `}
             variant="comment"
           >

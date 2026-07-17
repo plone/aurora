@@ -262,8 +262,7 @@ export function BlockSuggestionCard({
           <div className="flex gap-2">
             <Button
               className={`
-                h-8 flex-1 gap-1.5 rounded-md bg-quanta-emerald text-sm! font-semibold
-                text-white
+                h-8 flex-1 gap-1.5 rounded-md bg-quanta-emerald text-sm! font-semibold text-white
                 hover:bg-quanta-turtle
               `}
               onClick={() => accept(suggestion)}
