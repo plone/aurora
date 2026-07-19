@@ -1,1 +1,0 @@
-Added `Component` component. @arybakov05

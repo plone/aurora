@@ -8,6 +8,13 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.5 (2026-07-02)
+
+### Internal
+
+- Add shared auth cookie clearing helpers so Seven routes can centralize stale-cookie cleanup behavior. @sneridagh 
+- Unify Makefile files across the packages. @ionlizarazu 
+
 ## 2.0.0-alpha.4 (2026-05-07)
 
 ### Internal
