@@ -8,7 +8,7 @@ import {
   keyId2SuggestionId,
   rejectSuggestion,
 } from '@platejs/suggestion';
-import { CheckIcon, XIcon } from 'lucide-react';
+import { CheckIcon, MinusIcon, PlusIcon, XIcon } from 'lucide-react';
 import {
   type NodeEntry,
   type Path,
@@ -32,12 +32,7 @@ import {
   suggestionPlugin,
 } from '../editor/plugins/suggestion-kit';
 
-import {
-  type TComment,
-  Comment,
-  CommentCreateForm,
-  formatCommentDate,
-} from './comment';
+import { type TComment, Comment, formatCommentDate } from './comment';
 
 export interface ResolvedSuggestion extends TResolvedSuggestion {
   comments: TComment[];
@@ -84,8 +79,11 @@ export function BlockSuggestion({ element }: { element: TSuggestionElement }) {
   return (
     <div
       className={cn(
-        'pointer-events-none absolute inset-0 z-1 border-2 border-brand/[0.8] transition-opacity',
-        isRemove && 'border-gray-300',
+        `
+          pointer-events-none absolute inset-0 z-1 border-2 border-quanta-emerald/80
+          transition-opacity
+        `,
+        isRemove && 'border-quanta-rose/60',
       )}
       contentEditable={false}
     />
@@ -102,8 +100,9 @@ export function BlockSuggestionCard({
   suggestion: ResolvedSuggestion;
 }) {
   const { api, editor } = useEditorPlugin(SuggestionPlugin);
-  const { users } = usePlatePlugins();
+  const { currentUserId, users } = usePlatePlugins();
   const userInfo = users[suggestion.userId];
+  const canManageSuggestion = !!currentUserId;
 
   const accept = (suggestion: ResolvedSuggestion) => {
     api.suggestion.withoutSuggestions(() => {
@@ -117,8 +116,6 @@ export function BlockSuggestionCard({
     });
   };
 
-  const [hovering, setHovering] = React.useState(false);
-
   const suggestionText2Array = (text: string) => {
     if (text === BLOCK_SUGGESTION) return ['line breaks'];
 
@@ -128,42 +125,47 @@ export function BlockSuggestionCard({
   const [editingId, setEditingId] = React.useState<string | null>(null);
 
   return (
-    <div
-      key={`${suggestion.suggestionId}-${idx}`}
-      className="relative"
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-    >
-      <div className="flex flex-col p-4">
-        <div className="relative flex items-center">
+    <div key={`${suggestion.suggestionId}-${idx}`} className="relative">
+      <div className="flex flex-col px-4 pt-[13px] pb-3.5">
+        <div className="relative flex items-start gap-2.5">
           {/* Replace to your own backend or refer to potion */}
-          <Avatar className="size-5">
+          <Avatar className="size-8">
             <AvatarImage alt={userInfo?.name} src={userInfo?.avatarUrl} />
             <AvatarFallback>{userInfo?.name?.[0]}</AvatarFallback>
           </Avatar>
-          <h4 className="mx-2 text-sm leading-none font-semibold">
-            {userInfo?.name}
-          </h4>
-          <div className="text-xs leading-none text-muted-foreground/80">
-            <span className="mr-1">
+
+          <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2 gap-y-1">
+            <h4 className="mb-0! text-sm! leading-[1.2]! font-bold text-foreground">
+              {userInfo?.name}
+            </h4>
+            <span className="text-xs leading-[1.6] font-light text-muted-foreground">
               {formatCommentDate(new Date(suggestion.createdAt))}
             </span>
           </div>
         </div>
 
-        <div className="relative mt-1 mb-4 pl-[32px]">
-          <div className="flex flex-col gap-2">
+        <div className="relative mt-3 mb-4">
+          <div className="flex flex-col gap-3">
             {suggestion.type === 'remove' && (
               <React.Fragment>
                 {suggestionText2Array(suggestion.text!).map((text, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">
-                      Delete:
+                  <div key={index} className="flex flex-col gap-2">
+                    <span
+                      className={`
+                        flex items-center gap-1.5 text-xs leading-none font-bold tracking-wider
+                        text-quanta-rose uppercase
+                      `}
+                    >
+                      <MinusIcon className="size-3" />
+                      Deletion
                     </span>
 
-                    <span key={index} className="text-sm">
-                      {text}
-                    </span>
+                    <p className="text-sm! leading-normal! text-foreground">
+                      Suggested removing{' '}
+                      <span className="font-semibold text-quanta-rose">
+                        &ldquo;{text}&rdquo;
+                      </span>
+                    </p>
                   </div>
                 ))}
               </React.Fragment>
@@ -173,14 +175,23 @@ export function BlockSuggestionCard({
               <React.Fragment>
                 {suggestionText2Array(suggestion.newText!).map(
                   (text, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">
-                        Add:
+                    <div key={index} className="flex flex-col gap-2">
+                      <span
+                        className={`
+                          flex items-center gap-1.5 text-xs leading-none font-bold tracking-wider
+                          text-quanta-emerald uppercase
+                        `}
+                      >
+                        <PlusIcon className="size-3" />
+                        Insertion
                       </span>
 
-                      <span key={index} className="text-sm">
-                        {text || 'line breaks'}
-                      </span>
+                      <p className="text-sm! leading-normal! text-foreground">
+                        Suggested adding{' '}
+                        <span className="font-semibold text-quanta-emerald">
+                          &ldquo;{text || 'line breaks'}&rdquo;
+                        </span>
+                      </p>
                     </div>
                   ),
                 )}
@@ -194,7 +205,7 @@ export function BlockSuggestionCard({
                     <React.Fragment key={index}>
                       <div
                         key={index}
-                        className="flex items-start gap-2 text-brand/80"
+                        className="flex items-start gap-2 text-quanta-emerald"
                       >
                         <span className="text-sm">with:</span>
                         <span className="text-sm">{text || 'line breaks'}</span>
@@ -247,27 +258,32 @@ export function BlockSuggestionCard({
           />
         ))}
 
-        {hovering && (
-          <div className="absolute top-4 right-4 flex gap-2">
+        {canManageSuggestion && (
+          <div className="flex gap-2">
             <Button
-              variant="ghost"
-              className="size-6 p-1 text-muted-foreground"
+              className={`
+                h-8 flex-1 gap-1.5 rounded-md bg-quanta-emerald text-sm! font-semibold text-white
+                hover:bg-quanta-turtle
+              `}
               onClick={() => accept(suggestion)}
             >
-              <CheckIcon className="size-4" />
+              <CheckIcon className="size-3.5 stroke-2" />
+              Accept
             </Button>
 
             <Button
-              variant="ghost"
-              className="size-6 p-1 text-muted-foreground"
+              className={`
+                h-8 flex-1 gap-1.5 rounded-md border border-border bg-background text-sm!
+                font-semibold text-foreground
+                hover:bg-muted
+              `}
               onClick={() => reject(suggestion)}
             >
-              <XIcon className="size-4" />
+              <XIcon className="size-3.5 text-muted-foreground" />
+              Reject
             </Button>
           </div>
         )}
-
-        <CommentCreateForm discussionId={suggestion.suggestionId} />
       </div>
 
       {!isLast && <div className="h-px w-full bg-muted" />}

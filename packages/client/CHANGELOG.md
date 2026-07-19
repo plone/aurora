@@ -8,6 +8,23 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.5 (2026-07-02)
+
+### Feature
+
+- Added Sharing get and update methods @pnicolli 
+- Allowed content update requests to include Plone ordering payloads. @pnicolli @giuliaghisini 
+- Handled redirect responses from the backend when fetching content objects. @pnicolli 
+
+### Bugfix
+
+- Stopped the content and user data schemas from silently stripping fields they do not declare (e.g. `changeNote`, custom dexterity fields, custom member properties). Unknown keys are now passed through to the backend, which is the authority on which fields exist. @jmevissen [#129](https://github.com/plone/volto/pull/129)
+- Fixed TypeScript error in `getTypes` test by narrowing `GetTypesResponse` union type before indexing. @arybakov05 [#6653](https://github.com/plone/volto/pull/6653)
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+
 ## 2.0.0-alpha.4 (2026-05-07)
 
 ### Internal

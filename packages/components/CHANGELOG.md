@@ -8,6 +8,31 @@
 
 <!-- towncrier release notes start -->
 
+## 5.0.0-alpha.1 (2026-07-02)
+
+### Feature
+
+- Add `isNonModal` prop to to `MenuTrigger` and pass it to the `Popover`.
+  Moved `react-aria-components`, `react-aria`, and `react-stately` from `dependencies` to `peerDependencies` to prevent duplicate module instances that break React context across shadow DOM boundaries. @arybakov05 [#6653](https://github.com/plone/volto/issues/6653)
+- Added link and button cross variants. @pnicolli [#7379](https://github.com/plone/volto/issues/7379)
+- add quanta variant for comboBox @nileshgulia1 [#8007](https://github.com/plone/volto/issues/8007)
+- Add DialogTrigger component. @jnptk 
+- Add `renderEmptyState` to `Table` component. It provides content to display when there are no rows in the table. @jnptk 
+- Added DropZone, Pagination, Quanta Table, and Quanta Tooltip components for contents views. @pnicolli @giuliaghisini 
+- Added Modal and Dialog quanta components. @pnicolli 
+- Added RadioGroup quanta component, added props to form components, fixed select items. @sabrina-bongiovanni 
+
+### Bugfix
+
+- Added missing `forwardRef` to the Quanta button component.
+  Renamed `quanta-lemmon` color to `quanta-lemon`. @arybakov05 [#6656](https://github.com/plone/volto/issues/6656)
+- Fixed popover placement in modals for @plone/components Select @sneridagh @jnptk [#8359](https://github.com/plone/volto/issues/8359)
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+- Update to storybook 10. @sneridagh 
+
 ## 5.0.0-alpha.0 (2026-05-07)
 
 ### Bugfix

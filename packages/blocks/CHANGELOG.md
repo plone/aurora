@@ -8,6 +8,23 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.11 (2026-07-02)
+
+### Feature
+
+- Added default Plate-native block categories for the shared block anatomy class contract. @sneridagh 
+
+### Bugfix
+
+- Update prop for objectBrowser. @sneridagh [#8246](https://github.com/plone/volto/pull/8246)
+- Fix Teaser block object browser configuration: the target field now uses single selection mode, and the required item identifier is included in the selected attributes for both the target and image fields. @iFlameing 
+- Keep block naming conventions as `<BlockName>BlockView.tsx` and `<BlockName>BlockEdit.tsx`. @frapell 
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+- Updated TypeScript configuration to resolve Aurora app types from `@plone/aurora`. @sneridagh 
+
 ## 1.0.0-alpha.10 (2026-05-13)
 
 ### Internal
