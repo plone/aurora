@@ -2,6 +2,7 @@ import {
   applyStyleFieldDefaultsInData,
   getStyleFieldsFromBlockSchema,
   getStyleFieldDefinitionsFromRegistry,
+  PLONE_BLOCK_TYPE,
   resolveStyleFields,
   setStyleFieldValue,
 } from '@plone/helpers';
@@ -17,6 +18,7 @@ import {
 import { toPlatePlugin } from 'platejs/react';
 
 export const STYLE_FIELDS_KEY = 'styleFields';
+const DEFAULT_BLOCK_WIDTH = 'default';
 type StyleFieldConfig = {
   defaultValue?: string;
   values?: readonly string[];
@@ -31,49 +33,12 @@ type ValueElement = Record<string, unknown> & {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === 'object' && !Array.isArray(value);
 
-const getGlobalWidthValues = () =>
-  (
-    (config.blocks as Record<string, unknown>).widths as
-      | Array<{ name?: string }>
-      | undefined
-  )
-    ?.map((definition) => definition.name)
-    .filter((name): name is string => !!name) ?? [];
-
-const getGlobalDefaultWidth = () => {
-  const values = getGlobalWidthValues();
-
-  if (!values.length) return 'default';
-  if (values.includes('default')) return 'default';
-
-  return values[0];
-};
-
-const withBlockWidthFallback = (
-  styleFields: Record<string, StyleFieldConfig>,
-  blockWidthConfig?: {
-    defaultWidth?: string;
-    widths?: readonly string[];
-  },
-) => {
-  if (!blockWidthConfig) {
-    return styleFields;
-  }
-
-  styleFields.blockWidth = {
-    defaultValue: blockWidthConfig.defaultWidth ?? getGlobalDefaultWidth(),
-    values: blockWidthConfig.widths ?? getGlobalWidthValues(),
-  };
-
-  return styleFields;
-};
-
 const getElementStyleFieldConfigs = (
   element?: TElement | null,
 ): Record<string, StyleFieldConfig> => {
   if (!element) return {};
 
-  if (element.type === 'unknown') {
+  if (element.type === PLONE_BLOCK_TYPE) {
     const blockType = (element as TElement & { '@type'?: unknown })['@type'];
 
     if (typeof blockType !== 'string') return {};
@@ -82,14 +47,18 @@ const getElementStyleFieldConfigs = (
       .blocksConfig as Record<string, BlockConfigBase> | undefined;
 
     const currentBlockConfig = blockConfig?.[blockType];
-
-    return withBlockWidthFallback(
-      getStyleFieldsFromBlockSchema(
-        currentBlockConfig,
-        element as unknown as BlocksFormData,
-      ),
-      currentBlockConfig?.blockWidth,
+    const styleFields = getStyleFieldsFromBlockSchema(
+      currentBlockConfig,
+      element as unknown as BlocksFormData,
     );
+
+    return {
+      ...styleFields,
+      blockWidth: styleFields.blockWidth ?? {
+        defaultValue:
+          currentBlockConfig?.defaultBlockWidth ?? DEFAULT_BLOCK_WIDTH,
+      },
+    };
   }
 
   return {};
@@ -125,19 +94,11 @@ const withInsertedStyleFieldDefaults = (nodes: unknown): unknown => {
     return nodes;
   }
 
-  const children: unknown[] | undefined = Array.isArray(nodes.children)
-    ? nodes.children.map((child: unknown) =>
-        withInsertedStyleFieldDefaults(child),
-      )
-    : nodes.children;
-  const nextNode: TElement =
-    children === nodes.children ? nodes : ({ ...nodes, children } as TElement);
-
-  return applyStyleFieldDefaultsToElement(nextNode);
+  return applyStyleFieldDefaultsToElement(nodes);
 };
 
 const applyStyleFieldDefaultsInValue = (value: unknown[]) => {
-  const visit = (node: unknown) => {
+  const applyDefaults = (node: unknown) => {
     if (!node || typeof node !== 'object') return;
 
     const element = node as ValueElement;
@@ -153,13 +114,9 @@ const applyStyleFieldDefaultsInValue = (value: unknown[]) => {
       container: undefined,
       resolveDefinitions: getStyleFieldDefinitionsFromRegistry,
     });
-
-    if (Array.isArray(element.children)) {
-      element.children.forEach(visit);
-    }
   };
 
-  value.forEach(visit);
+  value.forEach(applyDefaults);
   return value;
 };
 
@@ -218,7 +175,7 @@ export const setStyleFieldOnEditor = (
     const definitions = getStyleFieldDefinitionsFromRegistry(fieldName, {
       data: node as Record<string, unknown>,
       blockType:
-        (typeof node.type === 'string' && node.type !== 'unknown'
+        (typeof node.type === 'string' && node.type !== PLONE_BLOCK_TYPE
           ? node.type
           : (node as TElement & { '@type'?: string })['@type']) ?? undefined,
       fieldName,

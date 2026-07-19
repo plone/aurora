@@ -1,21 +1,24 @@
 import { expect, test } from '../../../tooling/playwright/test';
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
 import { waitForPlateEditorReady } from '../../../tooling/playwright/plate';
 import { getEditorHandle, getNodeByPath } from '@platejs/playwright';
 import path from 'node:path';
 
-const IMAGE_ID = 'halfdome-local-image';
-const PAGE_ID = 'image-block-nav-page';
 const UPLOAD_FIXTURE_PATH = path.resolve(
   process.cwd(),
   'packages/tooling/playwright/fixtures/halfdome2022.jpg',
 );
 
-async function setupImageBlockPage(page: Parameters<typeof test>[0]['page']) {
+async function setupImageBlockPage(
+  page: Parameters<typeof test>[0]['page'],
+  pageId: string,
+  imageId: string,
+) {
   await createContent(page, {
     contentType: 'Image',
-    contentId: IMAGE_ID,
+    contentId: imageId,
     contentTitle: 'Half Dome Local',
     image: {
       sourceFilename: 'halfdome2022.jpg',
@@ -26,7 +29,7 @@ async function setupImageBlockPage(page: Parameters<typeof test>[0]['page']) {
 
   await createContent(page, {
     contentType: 'Document',
-    contentId: PAGE_ID,
+    contentId: pageId,
     contentTitle: 'Image block nav page',
     transition: 'publish',
     bodyModifier: (body) => ({
@@ -44,7 +47,7 @@ async function setupImageBlockPage(page: Parameters<typeof test>[0]['page']) {
               children: [{ text: 'Text before image' }],
             },
             {
-              type: 'unknown',
+              type: PLONE_BLOCK_TYPE,
               '@type': 'image',
               children: [{ text: '' }],
             },
@@ -61,7 +64,8 @@ async function setupImageBlockPage(page: Parameters<typeof test>[0]['page']) {
     }),
   });
 
-  await page.goto(`/@@edit/${PAGE_ID}`);
+  await page.goto(`/@@edit/${pageId}`);
+  await page.reload();
   await waitForPlateEditorReady(page);
 }
 
@@ -69,7 +73,8 @@ test('Image block can select a pre-uploaded local image URL', async ({
   page,
 }) => {
   await login(page);
-  await setupImageBlockPage(page);
+  const imageId = 'halfdome-select-image';
+  await setupImageBlockPage(page, 'image-block-select-page', imageId);
   await page
     .locator('#toolbar')
     .getByRole('button', { name: 'Settings' })
@@ -79,11 +84,11 @@ test('Image block can select a pre-uploaded local image URL', async ({
   await expect(page.locator('#sidebar form')).toHaveCount(1);
 
   const urlInput = page.getByPlaceholder('Enter an image URL');
-  await urlInput.fill(`/${IMAGE_ID}`);
+  await urlInput.fill(`/${imageId}`);
   await urlInput.press('Enter');
 
   await expect(
-    page.locator(`img[src*="/${IMAGE_ID}/@@images/image"]`).first(),
+    page.locator(`img[src*="/${imageId}/@@images/image"]`).first(),
   ).toBeVisible();
 });
 
@@ -91,7 +96,8 @@ test('Image block selection, arrows, enter, and sidebar lifecycle', async ({
   page,
 }) => {
   await login(page);
-  await setupImageBlockPage(page);
+  const imageId = 'halfdome-keyboard-image';
+  await setupImageBlockPage(page, 'image-block-keyboard-page', imageId);
   await page
     .locator('#toolbar')
     .getByRole('button', { name: 'Settings' })
@@ -100,9 +106,9 @@ test('Image block selection, arrows, enter, and sidebar lifecycle', async ({
   await expect(page.locator('#sidebar form')).toHaveCount(1);
 
   const urlInput = page.getByPlaceholder('Enter an image URL');
-  await urlInput.fill(`/${IMAGE_ID}`);
+  await urlInput.fill(`/${imageId}`);
   await urlInput.press('Enter');
-  const image = page.locator(`img[src*="/${IMAGE_ID}/@@images/image"]`).first();
+  const image = page.locator(`img[src*="/${imageId}/@@images/image"]`).first();
   await expect(image).toBeVisible();
 
   // Enter from selected image should leave image unselected.
@@ -133,7 +139,8 @@ test('Image block selection, arrows, enter, and sidebar lifecycle', async ({
 
 test('Image block saves alt text in block data', async ({ page }) => {
   await login(page);
-  await setupImageBlockPage(page);
+  const imageId = 'halfdome-alt-image';
+  await setupImageBlockPage(page, 'image-block-alt-page', imageId);
   await waitForPlateEditorReady(page);
   const editorHandle = await getEditorHandle(page);
   await page
@@ -145,10 +152,10 @@ test('Image block saves alt text in block data', async ({ page }) => {
   await expect(page.locator('#sidebar form')).toHaveCount(1);
 
   const urlInput = page.getByPlaceholder('Enter an image URL');
-  await urlInput.fill(`/${IMAGE_ID}`);
+  await urlInput.fill(`/${imageId}`);
   await urlInput.press('Enter');
 
-  const image = page.locator(`img[src*="/${IMAGE_ID}/@@images/image"]`).first();
+  const image = page.locator(`img[src*="/${imageId}/@@images/image"]`).first();
   await expect(image).toBeVisible();
 
   await image.click();
@@ -162,7 +169,7 @@ test('Image block saves alt text in block data', async ({ page }) => {
     string,
     unknown
   >;
-  expect(imageNode.type).toBe('unknown');
+  expect(imageNode.type).toBe(PLONE_BLOCK_TYPE);
   expect(imageNode['@type']).toBe('image');
   expect(imageNode.alt).toBe('Half Dome at sunset');
 
@@ -179,7 +186,11 @@ test('Image block can upload an image using the upload button', async ({
   page,
 }) => {
   await login(page);
-  await setupImageBlockPage(page);
+  await setupImageBlockPage(
+    page,
+    'image-block-upload-page',
+    'halfdome-upload-image',
+  );
   await page
     .locator('#toolbar')
     .getByRole('button', { name: 'Settings' })

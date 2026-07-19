@@ -5,6 +5,7 @@ import {
   getStyleFieldsFromSchema,
   resolveStyleFields,
 } from './styleFields';
+import { PLONE_BLOCK_TYPE } from './blockAnatomy';
 
 const resolveDefinitions = vi.fn((fieldName: string) => {
   if (fieldName === 'blockWidth') {
@@ -45,7 +46,7 @@ describe('style fields helpers', () => {
     expect(
       resolveStyleFields({
         data: {
-          type: 'unknown',
+          type: PLONE_BLOCK_TYPE,
           '@type': 'image',
           blockWidth: 'full',
         },
