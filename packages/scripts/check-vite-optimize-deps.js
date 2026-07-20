@@ -179,6 +179,28 @@ function isRuntimeImport(node) {
   return clause.namedBindings.elements.some((element) => !element.isTypeOnly);
 }
 
+function isRuntimeExport(node) {
+  if (node.isTypeOnly) {
+    return false;
+  }
+  const clause = node.exportClause;
+  if (!clause) {
+    // `export * from 'pkg'`
+    return true;
+  }
+  if (ts.isNamespaceExport(clause)) {
+    // `export * as ns from 'pkg'`
+    return true;
+  }
+  // `export { a, type b } from 'pkg'` — only a type-only re-export list
+  // (every element marked `type`) should be treated as a non-runtime export.
+  return clause.elements.some((element) => !element.isTypeOnly);
+}
+
+function isServerOnlyFile(relativeFile) {
+  return /\.server\.(js|jsx|ts|tsx)$/.test(toPosix(relativeFile));
+}
+
 function normalizeSpecifier(specifier) {
   return specifier.replace(/\?.*$/, '');
 }
@@ -207,7 +229,21 @@ function collectSpecifiers(packageDir, directDependencies, workspacePackages) {
     target?.sourceRoots ?? [''],
   );
 
-  const specifiers = new Set();
+  // Track, per specifier, whether it was seen from a client-reachable file
+  // and/or from a `*.server.*` file — only specifiers seen exclusively from
+  // `*.server.*` files belong in ssr.optimizeDeps.include; anything else
+  // (client-only, or used from both) belongs in optimizeDeps.include.
+  const seenFrom = new Map();
+
+  const record = (specifier, isServerFile) => {
+    const entry = seenFrom.get(specifier) ?? { client: false, server: false };
+    if (isServerFile) {
+      entry.server = true;
+    } else {
+      entry.client = true;
+    }
+    seenFrom.set(specifier, entry);
+  };
 
   for (const relativeFile of files) {
     const absoluteFile = path.join(repoRoot, packageDir, relativeFile);
@@ -215,6 +251,7 @@ function collectSpecifiers(packageDir, directDependencies, workspacePackages) {
       continue;
     }
 
+    const isServerFile = isServerOnlyFile(relativeFile);
     const sourceText = fs.readFileSync(absoluteFile, 'utf8');
     const sourceFile = ts.createSourceFile(
       absoluteFile,
@@ -240,15 +277,15 @@ function collectSpecifiers(packageDir, directDependencies, workspacePackages) {
             workspacePackages,
           )
         ) {
-          specifiers.add(specifier);
+          record(specifier, isServerFile);
         }
       }
 
       if (
         ts.isExportDeclaration(node) &&
-        !node.isTypeOnly &&
         node.moduleSpecifier &&
-        ts.isStringLiteral(node.moduleSpecifier)
+        ts.isStringLiteral(node.moduleSpecifier) &&
+        isRuntimeExport(node)
       ) {
         const specifier = normalizeSpecifier(node.moduleSpecifier.text);
         if (
@@ -258,7 +295,7 @@ function collectSpecifiers(packageDir, directDependencies, workspacePackages) {
             workspacePackages,
           )
         ) {
-          specifiers.add(specifier);
+          record(specifier, isServerFile);
         }
       }
 
@@ -276,7 +313,7 @@ function collectSpecifiers(packageDir, directDependencies, workspacePackages) {
             workspacePackages,
           )
         ) {
-          specifiers.add(specifier);
+          record(specifier, isServerFile);
         }
       }
 
@@ -286,9 +323,28 @@ function collectSpecifiers(packageDir, directDependencies, workspacePackages) {
     visit(sourceFile);
   }
 
-  return [...specifiers].sort((a, b) => a.localeCompare(b));
+  const client = [];
+  const serverOnly = [];
+  for (const [specifier, seen] of seenFrom) {
+    (seen.client ? client : serverOnly).push(specifier);
+  }
+
+  return {
+    client: client.sort((a, b) => a.localeCompare(b)),
+    serverOnly: serverOnly.sort((a, b) => a.localeCompare(b)),
+  };
 }
 
+function isPropertyNamed(node, name) {
+  return (
+    (ts.isPropertyAssignment(node) || ts.isShorthandPropertyAssignment(node)) &&
+    ts.isIdentifier(node.name) &&
+    node.name.text === name
+  );
+}
+
+// Only entries actually declared in an `include` array count as declared —
+// entries in a sibling `exclude` array must not be treated as covered.
 function collectDeclaredEntries(configFile, owner) {
   const contents = fs.readFileSync(path.join(repoRoot, configFile), 'utf8');
   const sourceFile = ts.createSourceFile(
@@ -301,21 +357,43 @@ function collectDeclaredEntries(configFile, owner) {
       : ts.ScriptKind.JS,
   );
 
-  const declared = new Set();
+  const prefix = `${owner} > `;
+  const client = new Set();
+  const ssr = new Set();
 
-  const visit = (node) => {
-    if (ts.isStringLiteralLike(node)) {
-      const prefix = `${owner} > `;
-      if (node.text.startsWith(prefix)) {
-        declared.add(node.text.slice(prefix.length));
+  const visit = (node, ancestorNames) => {
+    if (
+      isPropertyNamed(node, 'include') &&
+      node.initializer &&
+      ts.isArrayLiteralExpression(node.initializer)
+    ) {
+      const target = ancestorNames.includes('ssr') ? ssr : client;
+      for (const element of node.initializer.elements) {
+        if (
+          ts.isStringLiteralLike(element) &&
+          element.text.startsWith(prefix)
+        ) {
+          target.add(element.text.slice(prefix.length));
+        }
       }
     }
-    ts.forEachChild(node, visit);
+
+    const nextAncestors =
+      (ts.isPropertyAssignment(node) ||
+        ts.isShorthandPropertyAssignment(node)) &&
+      ts.isIdentifier(node.name)
+        ? [...ancestorNames, node.name.text]
+        : ancestorNames;
+
+    ts.forEachChild(node, (child) => visit(child, nextAncestors));
   };
 
-  visit(sourceFile);
+  visit(sourceFile, []);
 
-  return [...declared].sort((a, b) => a.localeCompare(b));
+  return {
+    client: [...client].sort((a, b) => a.localeCompare(b)),
+    ssr: [...ssr].sort((a, b) => a.localeCompare(b)),
+  };
 }
 
 function diffEntries(expected, declared) {
@@ -346,22 +424,52 @@ const results = TARGETS.map((target) => {
     workspacePackages,
   );
   const declared = collectDeclaredEntries(target.configFile, target.owner);
-  const { missing, extra } = diffEntries(expected, declared);
+  const clientDiff = diffEntries(expected.client, declared.client);
+  const ssrDiff = diffEntries(expected.serverOnly, declared.ssr);
 
   return {
     ...target,
     expected,
     declared,
-    missing,
-    extra,
+    clientDiff,
+    ssrDiff,
   };
 });
 
 let hasDiff = false;
 const reportedOk = new Set();
 
+function reportSection(label, owner, diff, suggested) {
+  let printed = false;
+
+  if (diff.missing.length) {
+    console.log(`  Missing ${label} entries:`);
+    for (const entry of diff.missing) {
+      console.log(`    ${owner} > ${entry}`);
+    }
+    printed = true;
+  }
+
+  if (diff.extra.length) {
+    console.log(`  Extra ${label} entries:`);
+    for (const entry of diff.extra) {
+      console.log(`    ${owner} > ${entry}`);
+    }
+    printed = true;
+  }
+
+  if (printed && suggested.length) {
+    console.log(`  Suggested ${label} block:`);
+    console.log(formatEntries(owner, suggested));
+  }
+}
+
 for (const result of results) {
-  if (!result.missing.length && !result.extra.length) {
+  const clientOk =
+    !result.clientDiff.missing.length && !result.clientDiff.extra.length;
+  const ssrOk = !result.ssrDiff.missing.length && !result.ssrDiff.extra.length;
+
+  if (clientOk && ssrOk) {
     if (!reportedOk.has(result.configFile)) {
       console.log(`OK ${result.configFile}`);
       reportedOk.add(result.configFile);
@@ -372,22 +480,23 @@ for (const result of results) {
   hasDiff = true;
   console.log(`CHECK ${result.configFile}`);
 
-  if (result.missing.length) {
-    console.log('  Missing entries:');
-    for (const entry of result.missing) {
-      console.log(`    ${result.owner} > ${entry}`);
-    }
+  if (!clientOk) {
+    reportSection(
+      'optimizeDeps.include',
+      result.owner,
+      result.clientDiff,
+      result.expected.client,
+    );
   }
 
-  if (result.extra.length) {
-    console.log('  Extra entries:');
-    for (const entry of result.extra) {
-      console.log(`    ${result.owner} > ${entry}`);
-    }
+  if (!ssrOk) {
+    reportSection(
+      'ssr.optimizeDeps.include',
+      result.owner,
+      result.ssrDiff,
+      result.expected.serverOnly,
+    );
   }
-
-  console.log('  Suggested include block:');
-  console.log(formatEntries(result.owner, result.expected));
 }
 
 if (hasDiff) {

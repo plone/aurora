@@ -47,6 +47,13 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
         : []),
     ] as PluginOption[],
     optimizeDeps: {
+      // Server-only deps that Vite would otherwise still pick up for the
+      // client bundle — keep in sync with ssr.optimizeDeps.include below
+      exclude: [
+        'i18next-fs-backend',
+        'i18next-fs-backend/cjs',
+        'remix-i18next/server',
+      ],
       include: [
         // App-level deps (in apps/aurora/package.json)
         'i18next',

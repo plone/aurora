@@ -66,6 +66,8 @@ If a dependency exports subpaths you use (for example `some-lib/react` or `some-
 Vite does not discover subpath exports automatically from the main entry.
 
 If a dependency is only used in server-side code (for example `*.server.*` files), add it to `ssr.optimizeDeps.include` instead of `optimizeDeps.include` so it isn't pre-bundled for the browser.
+Declaring it in `ssr.optimizeDeps.include` alone is not always enough — Vite's client-side dependency scanner can still pick it up through re-exports.
+If that happens, also add it to the top-level `optimizeDeps.exclude` in `apps/aurora/vite.config.ts` so it's explicitly kept out of the client bundle.
 
 To keep the lists from drifting, run:
 
