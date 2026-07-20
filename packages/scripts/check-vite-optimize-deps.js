@@ -358,10 +358,14 @@ const results = TARGETS.map((target) => {
 });
 
 let hasDiff = false;
+const reportedOk = new Set();
 
 for (const result of results) {
   if (!result.missing.length && !result.extra.length) {
-    console.log(`OK ${result.configFile}`);
+    if (!reportedOk.has(result.configFile)) {
+      console.log(`OK ${result.configFile}`);
+      reportedOk.add(result.configFile);
+    }
     continue;
   }
 

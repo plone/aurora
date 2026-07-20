@@ -61,6 +61,20 @@ jobs:
       - name: Main ESlint check
         run: pnpm lint
 
+  vite-optimize-deps:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    name: Vite optimizeDeps audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Node.js environment
+        uses: ./.github/actions/node_env_setup
+        with:
+          node-version: ${{ env.node-version }}
+
+      - name: Check optimizeDeps declarations are up to date
+        run: pnpm check:vite-optimize-deps
+
   stylelint:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: Stylelint ${{ matrix.name }}
