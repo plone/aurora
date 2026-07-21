@@ -4,6 +4,7 @@ import type { ViewsConfig } from './Views';
 import type { WidgetsConfig } from './Widgets';
 import type { SlotsConfig } from './Slots';
 import type { UtilitiesConfig } from './Utilities';
+import type { IconsConfig } from './Icons';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export type AddonReducersConfig = Record<string, Function>;
@@ -79,6 +80,7 @@ export type ConfigData = {
   slots: SlotsConfig;
   components: ComponentsConfig;
   utilities: UtilitiesConfig;
+  icons: IconsConfig;
   experimental: ExperimentalConfig;
 };
 
@@ -95,3 +97,4 @@ export * from './Slots';
 export * from './Utilities';
 export * from './Views';
 export * from './Widgets';
+export * from './Icons';

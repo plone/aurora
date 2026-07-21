@@ -25,12 +25,11 @@ import {
 import i18next from '@plone/aurora/app/i18next.server';
 import { ploneContentContext } from '@plone/aurora/app/middleware.server';
 import type { RootLoader } from '@plone/aurora/app/root';
-import { FolderIcon } from '@plone/components/Icons';
-import Pencil from '@plone/components/icons/pencil.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
 import { shouldShowToolbar } from '@plone/layout/helpers';
 import { Plug, PluggablesProvider } from '@plone/layout/components/Pluggable';
+import { Icon } from '@plone/icons';
 import clsx from 'clsx';
 import config from '@plone/registry';
 
@@ -141,7 +140,7 @@ export default function Index() {
                     aria-label="Edit"
                     href={`/@@edit${location.pathname.replace(/^\/$/, '')}`}
                   >
-                    <Pencil />
+                    <Icon name="pencil" />
                   </Link>
                 </Plug>
                 <Plug
@@ -155,7 +154,7 @@ export default function Index() {
                     aria-label="Contents"
                     href={`/@@contents${location.pathname.replace(/^\/$/, '')}`}
                   >
-                    <FolderIcon />
+                    <Icon name="folder" />
                   </Link>
                 </Plug>
                 <Plug

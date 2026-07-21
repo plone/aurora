@@ -13,6 +13,7 @@ import type {
   UtilitiesConfig,
   ViewsConfig,
   WidgetsConfig,
+  IconsConfig,
   ReactRouterRouteEntry,
   WidgetKey,
   UtilityTypeMap,
@@ -30,6 +31,7 @@ export type ConfigData = {
   slots: SlotsConfig | Record<string, never>;
   components: ComponentsConfig | Record<string, never>;
   utilities: UtilitiesConfig | Record<string, never>;
+  icons: IconsConfig | Record<string, never>;
   experimental?: ExperimentalConfig;
 };
 
@@ -67,6 +69,7 @@ class Config {
         slots: {},
         components: {},
         utilities: {},
+        icons: {},
       };
       Config.instance = this;
     }
@@ -171,6 +174,14 @@ class Config {
 
   set utilities(utilities) {
     this._data.utilities = utilities;
+  }
+
+  get icons() {
+    return this._data.icons;
+  }
+
+  set icons(icons) {
+    this._data.icons = icons;
   }
 
   getComponent(
@@ -616,6 +627,21 @@ class Config {
     }
 
     return undefined;
+  }
+
+  registerIcon(
+    name: string,
+    icon: React.ComponentType<React.SVGProps<SVGSVGElement>>,
+  ) {
+    if (this._data.icons[name] === undefined) {
+      this._data.icons[name] = icon;
+    }
+  }
+
+  getIcon(
+    name: string,
+  ): React.ComponentType<React.SVGProps<SVGSVGElement>> | undefined {
+    return this._data.icons[name];
   }
 }
 
