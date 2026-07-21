@@ -417,10 +417,11 @@ const useCommentEditor = (
   options: Omit<CreatePlateEditorOptions, 'plugins'> = {},
   deps: any[] = [],
 ) => {
+  const { commentEditorPlugins } = usePlatePlugins();
   const commentEditor = usePlateEditor(
     {
       id: 'comment',
-      plugins: BasicMarksKit,
+      plugins: commentEditorPlugins ?? BasicMarksKit,
       value: [],
       ...options,
     },
