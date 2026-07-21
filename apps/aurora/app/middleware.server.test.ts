@@ -640,6 +640,38 @@ describe('middleware', () => {
       });
     });
 
+    it('passes a ?version query parameter through to getContent', async () => {
+      const getContentMock = vi.fn().mockResolvedValue({ data: {} });
+      const getSiteMock = vi.fn().mockResolvedValue({ data: {} });
+      config.settings.apiPath = 'http://example.com';
+      registerPloneClientFactory({
+        getContent: getContentMock,
+        getSite: getSiteMock,
+      });
+      const request = new Request('http://example.com/test-content?version=2');
+      const context = new RouterContextProvider();
+      const nextMock = vi.fn();
+
+      await initializePloneClientContext(request, context);
+
+      await fetchPloneContent(
+        {
+          request,
+          params: { '*': 'test-content' },
+          context,
+          unstable_pattern: '/test-content',
+          unstable_url: new URL(request.url),
+        },
+        nextMock,
+      );
+
+      expect(getContentMock).toHaveBeenCalledWith({
+        path: '/test-content',
+        version: '2',
+        expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'],
+      });
+    });
+
     it('throws when content is not found', async () => {
       const getContentMock = vi
         .fn()

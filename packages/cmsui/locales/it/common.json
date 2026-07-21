@@ -111,6 +111,29 @@
       "forgotPassword": "Password dimenticata? <a>Richiedi una nuova password</a>",
       "returnToHome": "Torna alla home page"
     },
+    "history": {
+      "label": "Cronologia",
+      "home": "Home",
+      "back": "Indietro",
+      "changesTo": "Modifiche a \"{{title}}\"",
+      "actions": "Azioni",
+      "column": {
+        "action": "Azione",
+        "by": "Di",
+        "time": "Quando",
+        "changeNote": "Nota di modifica"
+      },
+      "reviewChanges": "Rivedi le modifiche",
+      "viewRevision": "Vedi questa revisione",
+      "revert": "Ripristina questa versione",
+      "modalRevert": {
+        "title": "Ripristinare questa versione?",
+        "description": "\"{{title}}\" sarà riportato allo stato del {{time}}.",
+        "cancel": "Annulla",
+        "confirm": "Ripristina",
+        "error": "Impossibile ripristinare la versione. Riprova."
+      }
+    },
     "toolbar": {
       "settings": "Impostazioni"
     }

@@ -73,6 +73,29 @@
       "forgotPassword": "Passwort vergessen? <a>Neues Passwort anfordern</a>",
       "returnToHome": "Zur Startseite zurückkehren"
     },
+    "history": {
+      "label": "Verlauf",
+      "home": "Startseite",
+      "back": "Zurück",
+      "changesTo": "Änderungen an \"{{title}}\"",
+      "actions": "Aktionen",
+      "column": {
+        "action": "Aktion",
+        "by": "Von",
+        "time": "Zeit",
+        "changeNote": "Änderungsnotiz"
+      },
+      "reviewChanges": "Änderungen ansehen",
+      "viewRevision": "Diese Version ansehen",
+      "revert": "Auf diese Version zurücksetzen",
+      "modalRevert": {
+        "title": "Auf diese Version zurücksetzen?",
+        "description": "„{{title}}\" wird auf den Stand vom {{time}} zurückgesetzt.",
+        "cancel": "Abbrechen",
+        "confirm": "Zurücksetzen",
+        "error": "Die Version konnte nicht wiederhergestellt werden. Bitte erneut versuchen."
+      }
+    },
     "toolbar": {
       "settings": "Einstellungen"
     }

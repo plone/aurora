@@ -25,7 +25,7 @@ import {
 import i18next from '@plone/aurora/app/i18next.server';
 import { ploneContentContext } from '@plone/aurora/app/middleware.server';
 import type { RootLoader } from '@plone/aurora/app/root';
-import { FolderIcon } from '@plone/components/Icons';
+import { FolderIcon, HistoryIcon } from '@plone/components/Icons';
 import Pencil from '@plone/components/icons/pencil.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
@@ -94,7 +94,7 @@ export async function loader({
 export default function Index() {
   const location = useLocation();
   const { content, locale } = useLoaderData<typeof loader>();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const matches = useMatches() as UIMatch<unknown, { bodyClass: string }>[];
   const routesBodyClasses = matches
@@ -157,6 +157,23 @@ export default function Index() {
                   >
                     <FolderIcon />
                   </Link>
+                </Plug>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-history"
+                  // @ts-expect-error this is currently typed as never[]
+                  dependencies={[location.pathname, content['@type']]}
+                >
+                  {content['@type'] !== 'Plone Site' ? (
+                    // Plone Site does not have history (yet), same guard as Volto
+                    <Link
+                      className="secondary"
+                      aria-label={t('cmsui.history.label')}
+                      href={`/@@history${location.pathname.replace(/^\/$/, '')}`}
+                    >
+                      <HistoryIcon />
+                    </Link>
+                  ) : null}
                 </Plug>
                 <Plug
                   pluggable="toolbar-top"
