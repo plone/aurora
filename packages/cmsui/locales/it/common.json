@@ -104,12 +104,43 @@
     },
     "auth": {
       "username": "nome utente",
+      "usernameOrEmail": "Nome utente o email",
       "password": "password",
       "signIn": "Accedi",
       "signUp": "Registrati",
       "signInTo": "Accedi a {{site}}",
-      "forgotPassword": "Password dimenticata? <a>Richiedi una nuova password</a>",
-      "returnToHome": "Torna alla home page"
+      "forgotPassword": "Password dimenticata? <a>Richiedi una nuova password</a>.",
+      "returnToHome": "Torna alla home page",
+      "resetPassword": {
+        "requestTitle": "Reimposta la tua password",
+        "requestDescription": "Inserisci il tuo nome utente e ti invieremo un link per impostare una nuova password.",
+        "requestDescriptionWithEmail": "Inserisci il tuo nome utente o la tua email e ti invieremo un link per impostare una nuova password.",
+        "requestSubmit": "Richiedi una nuova password",
+        "requestSuccessTitle": "Controlla la tua casella di posta",
+        "requestSuccessBody": "Se esiste un account per questo nome utente, ti abbiamo inviato un messaggio con le istruzioni per reimpostare la password.",
+        "requestSuccessBodyWithEmail": "Se esiste un account per questo nome utente o email, ti abbiamo inviato un messaggio con le istruzioni per reimpostare la password.",
+        "setTitle": "Imposta una nuova password",
+        "setDescription": "Scegli una nuova password per il tuo account.",
+        "setSubmit": "Imposta nuova password",
+        "setSuccessTitle": "Password aggiornata",
+        "setSuccessBody": "La tua password è stata impostata. Ora puoi accedere con la nuova password.",
+        "setIdentifierHint": "Inserisci il nome utente che hai usato per richiedere la reimpostazione.",
+        "setIdentifierHintWithEmail": "Inserisci il nome utente o l'email che hai usato per richiedere la reimpostazione.",
+        "newPassword": "Nuova password",
+        "confirmPassword": "Conferma nuova password",
+        "passwordHint": "Usa almeno {{min}} caratteri.",
+        "errors": {
+          "identifierRequired": "Inserisci un nome utente.",
+          "usernameNoEmail": "Inserisci il tuo nome utente, non un indirizzo email.",
+          "invalidEmail": "Inserisci un indirizzo email valido.",
+          "usernameTooShort": "Il nome utente deve contenere almeno {{min}} caratteri.",
+          "usernameNoSpaces": "Il nome utente non può contenere spazi.",
+          "passwordTooShort": "La password deve contenere almeno {{min}} caratteri.",
+          "passwordsDoNotMatch": "Le password non coincidono.",
+          "setFailed": "Non è stato possibile impostare la tua nuova password. Il link potrebbe essere non valido o scaduto. Richiedine uno nuovo.",
+          "serverError": "Si è verificato un errore dal nostro lato. Riprova tra qualche istante."
+        }
+      }
     },
     "toolbar": {
       "settings": "Impostazioni"

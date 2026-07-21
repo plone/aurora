@@ -66,12 +66,43 @@
     },
     "auth": {
       "username": "Benutzername",
+      "usernameOrEmail": "Benutzername oder E-Mail",
       "password": "Passwort",
       "signIn": "Anmelden",
       "signUp": "Registrieren",
       "signInTo": "Bei {{site}} anmelden",
-      "forgotPassword": "Passwort vergessen? <a>Neues Passwort anfordern</a>",
-      "returnToHome": "Zur Startseite zurückkehren"
+      "forgotPassword": "Passwort vergessen? <a>Neues Passwort anfordern</a>.",
+      "returnToHome": "Zur Startseite zurückkehren",
+      "resetPassword": {
+        "requestTitle": "Passwort zurücksetzen",
+        "requestDescription": "Geben Sie Ihren Benutzernamen ein und wir senden Ihnen einen Link, um ein neues Passwort zu vergeben.",
+        "requestDescriptionWithEmail": "Geben Sie Ihren Benutzernamen oder Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link, um ein neues Passwort zu vergeben.",
+        "requestSubmit": "Neues Passwort anfordern",
+        "requestSuccessTitle": "Bitte prüfen Sie Ihre E-Mails",
+        "requestSuccessBody": "Falls ein Konto mit diesem Benutzernamen existiert, haben wir eine Nachricht mit Anweisungen zum Zurücksetzen Ihres Passworts gesendet.",
+        "requestSuccessBodyWithEmail": "Falls ein Konto mit diesem Benutzernamen oder dieser E-Mail existiert, haben wir eine Nachricht mit Anweisungen zum Zurücksetzen Ihres Passworts gesendet.",
+        "setTitle": "Neues Passwort festlegen",
+        "setDescription": "Wählen Sie ein neues Passwort für Ihr Konto.",
+        "setSubmit": "Neues Passwort speichern",
+        "setSuccessTitle": "Passwort aktualisiert",
+        "setSuccessBody": "Ihr Passwort wurde gesetzt. Sie können sich nun mit dem neuen Passwort anmelden.",
+        "setIdentifierHint": "Geben Sie den Benutzernamen ein, mit dem Sie die Zurücksetzung angefordert haben.",
+        "setIdentifierHintWithEmail": "Geben Sie den Benutzernamen oder die E-Mail-Adresse ein, mit der Sie die Zurücksetzung angefordert haben.",
+        "newPassword": "Neues Passwort",
+        "confirmPassword": "Neues Passwort bestätigen",
+        "passwordHint": "Mindestens {{min}} Zeichen verwenden.",
+        "errors": {
+          "identifierRequired": "Bitte geben Sie einen Benutzernamen ein.",
+          "usernameNoEmail": "Bitte geben Sie Ihren Benutzernamen ein, keine E-Mail-Adresse.",
+          "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+          "usernameTooShort": "Der Benutzername muss mindestens {{min}} Zeichen lang sein.",
+          "usernameNoSpaces": "Der Benutzername darf keine Leerzeichen enthalten.",
+          "passwordTooShort": "Das Passwort muss mindestens {{min}} Zeichen lang sein.",
+          "passwordsDoNotMatch": "Die Passwörter stimmen nicht überein.",
+          "setFailed": "Ihr neues Passwort konnte nicht gesetzt werden. Möglicherweise ist Ihr Link ungültig oder abgelaufen. Bitte fordern Sie einen neuen an.",
+          "serverError": "Auf unserer Seite ist ein Fehler aufgetreten. Bitte versuchen Sie es in Kürze erneut."
+        }
+      }
     },
     "toolbar": {
       "settings": "Einstellungen"

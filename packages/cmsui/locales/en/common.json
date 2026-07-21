@@ -114,12 +114,43 @@
     },
     "auth": {
       "username": "username",
+      "usernameOrEmail": "Username or email",
       "password": "password",
       "signIn": "Sign in",
       "signUp": "Sign up",
       "signInTo": "Sign in to {{site}}",
-      "forgotPassword": "Forgot password? Request a <a>new password</a>",
-      "returnToHome": "Return to home page"
+      "forgotPassword": "Forgot your password? Request a <a>new password</a>.",
+      "returnToHome": "Return to home page",
+      "resetPassword": {
+        "requestTitle": "Reset your password",
+        "requestDescription": "Enter your username and we will send you a link to set a new password.",
+        "requestDescriptionWithEmail": "Enter your username or email and we will send you a link to set a new password.",
+        "requestSubmit": "Request new password",
+        "requestSuccessTitle": "Check your inbox",
+        "requestSuccessBody": "If an account exists for that username, we have sent a message with instructions to reset your password.",
+        "requestSuccessBodyWithEmail": "If an account exists for that username or email, we have sent a message with instructions to reset your password.",
+        "setTitle": "Set a new password",
+        "setDescription": "Choose a new password for your account.",
+        "setSubmit": "Set new password",
+        "setSuccessTitle": "Password updated",
+        "setSuccessBody": "Your password has been set. You can now sign in with your new password.",
+        "setIdentifierHint": "Enter the username you used to request the reset.",
+        "setIdentifierHintWithEmail": "Enter the username or email you used to request the reset.",
+        "newPassword": "New password",
+        "confirmPassword": "Confirm new password",
+        "passwordHint": "Use at least {{min}} characters.",
+        "errors": {
+          "identifierRequired": "Please enter a username.",
+          "usernameNoEmail": "Please enter your username, not an email address.",
+          "invalidEmail": "Please enter a valid email address.",
+          "usernameTooShort": "Username must be at least {{min}} characters.",
+          "usernameNoSpaces": "Username cannot contain spaces.",
+          "passwordTooShort": "Password must be at least {{min}} characters.",
+          "passwordsDoNotMatch": "Passwords do not match.",
+          "setFailed": "We couldn't set your new password. Your reset link may be invalid or expired. Please request a new one.",
+          "serverError": "Something went wrong on our end. Please try again in a few moments."
+        }
+      }
     },
     "toolbar": {
       "settings": "Settings"

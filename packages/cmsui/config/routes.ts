@@ -29,6 +29,42 @@ export default function install(config: ConfigType) {
       },
       {
         type: 'prefix',
+        path: 'reset-password',
+        children: [
+          {
+            type: 'index',
+            file: '@plone/cmsui/routes/auth/reset-password.tsx',
+            options: { id: 'reset-password-index' },
+          },
+          {
+            type: 'route',
+            path: ':token',
+            file: '@plone/cmsui/routes/auth/reset-password.tsx',
+            options: { id: 'reset-password-token' },
+          },
+        ],
+      },
+      {
+        // Alias for the URL Plone's password-reset email links to, which is
+        // `/passwordreset/<token>` (no hyphen) rather than `/reset-password`.
+        type: 'prefix',
+        path: 'passwordreset',
+        children: [
+          {
+            type: 'index',
+            file: '@plone/cmsui/routes/auth/reset-password.tsx',
+            options: { id: 'passwordreset-index' },
+          },
+          {
+            type: 'route',
+            path: ':token',
+            file: '@plone/cmsui/routes/auth/reset-password.tsx',
+            options: { id: 'passwordreset-token' },
+          },
+        ],
+      },
+      {
+        type: 'prefix',
         path: '@@add',
         children: [
           {
