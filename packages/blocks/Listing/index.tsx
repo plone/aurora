@@ -1,5 +1,7 @@
 import React from 'react';
 import type { BlockConfigBase } from '@plone/types';
+import { ListIcon } from '@plone/components/Icons';
+import { ListingSchema } from './schema';
 
 const ListingBlockInfo = {
   id: 'listing',
@@ -7,7 +9,13 @@ const ListingBlockInfo = {
   view: React.lazy(
     () => import(/* webpackChunkName: "plone-blocks" */ './ListingBlockView'),
   ),
+  edit: React.lazy(
+    () => import(/* webpackChunkName: "plone-blocks" */ './ListingBlockEdit'),
+  ),
+  blockSchema: ListingSchema,
+  icon: ListIcon,
   category: 'common',
+  defaultBlockWidth: 'default',
 } satisfies Partial<BlockConfigBase>;
 
 export default ListingBlockInfo;

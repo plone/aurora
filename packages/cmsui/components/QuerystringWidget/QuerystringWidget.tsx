@@ -1,4 +1,4 @@
-import { useId, useCallback, useMemo, useEffect, useRef } from 'react';
+import { useId, useCallback, useMemo } from 'react';
 import { tv } from 'tailwind-variants';
 import type { TextFieldProps as QuantaTextFieldProps } from '@plone/components/quanta';
 import {
@@ -48,7 +48,6 @@ interface QuerystringWidgetProps extends BaseFormFieldProps {
   value?: QuerystringValue;
   defaultValue?: QuerystringValue;
   onChange?: (value: QuerystringValue) => void;
-  onPatchFormData?: (partial: Record<string, unknown>) => void;
 }
 
 /**
@@ -146,6 +145,21 @@ function QueryCriterionRow({
             onChange={(value: string) => handleValueChange(value)}
             isDisabled={disabled}
           />
+        ) : field?.valueType === 'select' && field?.valueOptions?.length ? (
+          <Select
+            label={index === 0 ? 'Value' : undefined}
+            selectedKey={criterion.v}
+            onSelectionChange={(key) =>
+              key !== undefined && handleValueChange(String(key))
+            }
+            isDisabled={disabled}
+          >
+            {field.valueOptions.map((option) => (
+              <SelectItem key={option.value} id={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </Select>
         ) : (
           <TextField
             label={index === 0 ? 'Value' : undefined}
@@ -187,22 +201,7 @@ function QuerystringWidgetComponent(props: QuerystringWidgetProps) {
     addCriterion,
     removeCriterion,
     updateCriterion,
-    searchItems,
   } = useQuerystringContext();
-
-  // Feed query-string search results into the block's `items` so the
-  // Listing block preview renders them, mirroring Volto's withQuerystringResults.
-  const patchRef = useRef(props.onPatchFormData);
-  patchRef.current = props.onPatchFormData;
-  const lastItemsRef = useRef<string>('[]');
-
-  useEffect(() => {
-    const signature = JSON.stringify(searchItems.map((item) => item['@id']));
-    if (signature === lastItemsRef.current) return;
-    lastItemsRef.current = signature;
-    patchRef.current?.({ items: searchItems });
-  }, [searchItems]);
-
   // Sync context value with prop value
   const synced = useMemo(
     () => ({ ...value, ...contextValue }),

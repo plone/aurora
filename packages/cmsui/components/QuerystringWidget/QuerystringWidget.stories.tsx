@@ -16,7 +16,6 @@ interface QuerystringWidgetStoryProps {
   value?: QuerystringValue;
   defaultValue?: QuerystringValue;
   onChange?: (value: QuerystringValue) => void;
-  onPatchFormData?: (partial: Record<string, unknown>) => void;
 }
 
 const createQuerystringLoader = () => {
@@ -129,7 +128,11 @@ const createQuerystringRouter = (props: QuerystringWidgetStoryProps) =>
               sortable: true,
               group: 'Metadata',
               operators: {
-                is: { title: 'Is', description: null, widget: null },
+                is: {
+                  title: 'Is',
+                  description: null,
+                  widget: 'SelectionWidget',
+                },
               },
               values: {
                 published: { title: 'Published' },
@@ -144,7 +147,11 @@ const createQuerystringRouter = (props: QuerystringWidgetStoryProps) =>
               sortable: false,
               group: 'Metadata',
               operators: {
-                is: { title: 'Is', description: null, widget: null },
+                is: {
+                  title: 'Is',
+                  description: null,
+                  widget: 'SelectionWidget',
+                },
               },
               values: {
                 Document: { title: 'Page' },
@@ -199,7 +206,6 @@ const meta = {
     label: 'Search Criteria',
     description: 'Define search criteria to filter content',
     onChange: fn(),
-    onPatchFormData: fn(),
   },
 } satisfies Meta<QuerystringWidgetStoryProps>;
 
@@ -222,9 +228,9 @@ export const WithSingleCriterion: Story = {
     value: {
       query: [
         {
-          i: 'Creator',
+          i: 'portal_type',
           o: 'is',
-          v: 'admin',
+          v: 'Document',
         },
       ],
       sort_on: 'Title',

@@ -1,5 +1,9 @@
 import type { BlockViewProps, Brain, ListingBlockFormData } from '@plone/types';
 import { useTranslation } from 'react-i18next';
+import { useQuerystringResults } from './useQuerystringResults';
+
+const hasQuery = (value: ListingBlockFormData['querystring']): boolean =>
+  Array.isArray(value?.query) && value.query.length > 0;
 
 /**
  * View listing block component.
@@ -11,6 +15,10 @@ const ListingBlockView = (props: BlockViewProps) => {
   const HeadlineTag = data.headlineTag || 'h2';
   const ItemTitleTag = data.headlineTag === 'h2' ? 'h3' : 'h4';
   const { t } = useTranslation();
+  const hasListingQuery = hasQuery(data.querystring);
+  const { items, loaded } = useQuerystringResults(data.querystring as any);
+  const initialItems = props.isEditMode ? [] : (data.items ?? []);
+  const listingItems = hasListingQuery ? (loaded ? items : initialItems) : [];
 
   const getPreviewImageUrl = (item: Brain) => {
     const imageField = item.image_field;
@@ -51,10 +59,10 @@ const ListingBlockView = (props: BlockViewProps) => {
   return (
     <>
       {data.headline ? <HeadlineTag>{data.headline}</HeadlineTag> : ''}
-      {!data.items || data.items?.length === 0 ? (
+      {listingItems.length === 0 ? (
         <div>{t('blocks.listing.no-results')}</div>
       ) : (
-        data.items.map((item) =>
+        listingItems.map((item) =>
           data.variation === 'summary'
             ? renderSummary(item)
             : renderDefault(item),

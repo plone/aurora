@@ -3,6 +3,7 @@
  */
 import config from '@plone/registry';
 import PloneClient from '@plone/client';
+import { flattenToAppURL } from '@plone/helpers';
 // eslint-disable-next-line import/no-unresolved
 import applyAddonConfiguration from '../../.plone/registry.loader';
 // eslint-disable-next-line import/no-unresolved
@@ -34,7 +35,10 @@ export default function install() {
         const { id, block } = listingBlocks[i];
         if (block.querystring) {
           const results = await args.cli.querystringSearch(block.querystring);
-          args.content.blocks[id].items = results.data.items;
+          const flattened = flattenToAppURL(
+            results?.data ?? { items: [], items_total: 0 },
+          );
+          args.content.blocks[id].items = flattened.items;
         }
       }
     },
