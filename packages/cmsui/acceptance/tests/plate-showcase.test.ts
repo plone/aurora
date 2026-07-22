@@ -137,7 +137,9 @@ test.describe('Plate native blocks showcase', () => {
 
     // Renderer must not leak the "used outside Plate" runtime error
     await expect(
-      page.getByText('Plate hooks must be used inside a Plate or PlateController'),
+      page.getByText(
+        'Plate hooks must be used inside a Plate or PlateController',
+      ),
     ).toHaveCount(0);
   });
 
