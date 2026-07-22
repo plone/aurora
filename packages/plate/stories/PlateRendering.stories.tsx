@@ -4,6 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
 import plateBlockEditorConfig from '../config/presets/block-editor';
 import plateBlockRendererConfig from '../config/presets/block-renderer';
+import { normalizeLegacyValue } from '../migrations';
 
 const meta = {
   title: 'Basic Rendering',
@@ -82,11 +83,16 @@ export const Link: Story = {
   },
 };
 
+// Legacy Slate content is normalized on the server before it reaches the
+// editor/renderer (see apps/aurora middleware + @plone/plate/migrations).
+// Neither the editor nor the renderer runs legacy `normalizeNode` hooks anymore,
+// so this story pre-migrates the legacy value with `normalizeLegacyValue` to
+// mirror what the server hands over.
 export const LegacyLink: Story = {
   ...Default,
   args: {
     ...Default.args,
-    value: [
+    value: normalizeLegacyValue([
       {
         children: [
           {
@@ -107,6 +113,6 @@ export const LegacyLink: Story = {
         ],
         type: 'p',
       },
-    ],
+    ]) as Value,
   },
 };
