@@ -53,6 +53,62 @@ export const Default: Story = {
   },
 };
 
+// PoC: shadcn/ui Typeset applied to the read-only render (right panel).
+// The left panel is the live editor, still using the per-element cva classes,
+// so the two panels are a direct before/after comparison of prose styling.
+export const Typeset: Story = {
+  ...Default,
+  args: {
+    ...Default.args,
+    value: [
+      { type: 'h1', children: [{ text: 'Typeset in Aurora' }] },
+      {
+        type: 'p',
+        children: [
+          { text: 'A ' },
+          { text: 'single owned stylesheet', bold: true },
+          {
+            text: ' styles rendered content by tag — headings, paragraphs, ',
+          },
+          { text: 'inline code', code: true },
+          { text: ', quotes and more — with a consistent vertical rhythm.' },
+        ],
+      },
+      { type: 'h2', children: [{ text: 'Why it reads better' }] },
+      {
+        type: 'p',
+        children: [
+          { text: 'Spacing between blocks comes from one flow variable, and ' },
+          {
+            children: [{ text: 'links' }],
+            type: 'a',
+            url: 'https://ui.shadcn.com/docs/typeset',
+          },
+          { text: ' inherit the theme primary color.' },
+        ],
+      },
+      {
+        type: 'blockquote',
+        children: [
+          {
+            text: 'You render markdown and get back plain unstyled HTML; typeset does the rest.',
+          },
+        ],
+      },
+      { type: 'h3', children: [{ text: 'Code stays monospaced' }] },
+      {
+        type: 'code_block',
+        children: [
+          {
+            type: 'code_line',
+            children: [{ text: 'const rhythm = "one file, styled by tag";' }],
+          },
+        ],
+      },
+    ] as unknown as Value,
+  },
+};
+
 export const Link: Story = {
   ...Default,
   args: {

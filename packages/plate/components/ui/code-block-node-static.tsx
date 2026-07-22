@@ -8,13 +8,15 @@ import {
 
 import { BlockInnerContainer } from './block-inner-container';
 
+// The `pre` panel (background, padding, radius, scroll, mono font) is owned by
+// shadcn/ui Typeset. Only the highlight.js token colours stay here — Typeset
+// does not do syntax highlighting.
 export function CodeBlockElementStatic(
   props: SlateElementProps<TCodeBlockElement>,
 ) {
   return (
     <SlateElement
       className={`
-        py-1
         **:[.hljs-addition]:bg-[#f0fff4] **:[.hljs-addition]:text-[#22863a]
         dark:**:[.hljs-addition]:bg-[#3c5743] dark:**:[.hljs-addition]:text-[#ceead5]
         **:[.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable]:text-[#005cc5]
@@ -41,17 +43,9 @@ export function CodeBlockElementStatic(
       {...props}
     >
       <BlockInnerContainer>
-        <div className="relative rounded-md bg-muted/50">
-          <pre
-            className={`
-              overflow-x-auto p-8 pr-4 font-mono text-sm leading-[normal]
-              [tab-size:2]
-              print:break-inside-avoid
-            `}
-          >
-            <code>{props.children}</code>
-          </pre>
-        </div>
+        <pre>
+          <code>{props.children}</code>
+        </pre>
       </BlockInnerContainer>
     </SlateElement>
   );

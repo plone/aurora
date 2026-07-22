@@ -3,11 +3,12 @@ import type { SlateElementProps } from 'platejs';
 import { SlateElement } from 'platejs';
 
 import { BlockInnerContainer } from './block-inner-container';
-import { cn } from '../../lib/utils';
 
+// Prose styling (spacing, colour) is owned by shadcn/ui Typeset — see
+// `styles/typeset.css` and the `.typeset` wrapper on the read-only renderer.
 export function ParagraphElementStatic(props: SlateElementProps) {
   return (
-    <SlateElement {...props} className={cn('m-0 px-0 py-1')}>
+    <SlateElement {...props}>
       <BlockInnerContainer>{props.children}</BlockInnerContainer>
     </SlateElement>
   );

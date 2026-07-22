@@ -1,6 +1,9 @@
 /* Do not remove, it's necessary for the registry to detect Tailwind and load
 the styles for @plone/plate in the publicui */
 
+/* PoC: shadcn/ui Typeset — styles read-only rendered content by tag. */
+@import './typeset.css';
+
 .block-inner-container {
   width: 100%;
   max-width: var(--block-width);
