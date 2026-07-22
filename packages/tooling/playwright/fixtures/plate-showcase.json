@@ -1,0 +1,778 @@
+{
+  "blocks": {
+    "__somersault__": {
+      "@type": "__somersault__",
+      "value": [
+        {
+          "type": "title",
+          "children": [
+            {
+              "text": "Plate Native Blocks — Showcase"
+            }
+          ],
+          "id": "blk-001"
+        },
+        {
+          "type": "p",
+          "children": [
+            {
+              "text": "Every native Plate node/block currently available in Aurora, one use case each."
+            }
+          ],
+          "id": "blk-002"
+        },
+        {
+          "type": "h1",
+          "children": [
+            {
+              "text": "Heading level 1"
+            }
+          ],
+          "id": "blk-003"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Heading level 2"
+            }
+          ],
+          "id": "blk-004"
+        },
+        {
+          "type": "h3",
+          "children": [
+            {
+              "text": "Heading level 3"
+            }
+          ],
+          "id": "blk-005"
+        },
+        {
+          "type": "h4",
+          "children": [
+            {
+              "text": "Heading level 4"
+            }
+          ],
+          "id": "blk-006"
+        },
+        {
+          "type": "h5",
+          "children": [
+            {
+              "text": "Heading level 5"
+            }
+          ],
+          "id": "blk-007"
+        },
+        {
+          "type": "h6",
+          "children": [
+            {
+              "text": "Heading level 6"
+            }
+          ],
+          "id": "blk-008"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Paragraph"
+            }
+          ],
+          "id": "blk-009"
+        },
+        {
+          "type": "p",
+          "children": [
+            {
+              "text": "A plain paragraph of body text. Plate stores it as a "
+            },
+            {
+              "text": "p",
+              "code": true
+            },
+            {
+              "text": " node with plain text leaves."
+            }
+          ],
+          "id": "blk-010"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Text marks"
+            }
+          ],
+          "id": "blk-011"
+        },
+        {
+          "type": "p",
+          "children": [
+            {
+              "text": "This paragraph mixes "
+            },
+            {
+              "text": "bold",
+              "bold": true
+            },
+            {
+              "text": ", "
+            },
+            {
+              "text": "italic",
+              "italic": true
+            },
+            {
+              "text": ", "
+            },
+            {
+              "text": "underline",
+              "underline": true
+            },
+            {
+              "text": ", "
+            },
+            {
+              "text": "strikethrough",
+              "strikethrough": true
+            },
+            {
+              "text": ", "
+            },
+            {
+              "text": "inline code",
+              "code": true
+            },
+            {
+              "text": ", "
+            },
+            {
+              "text": "highlight",
+              "highlight": true
+            },
+            {
+              "text": ", a keyboard "
+            },
+            {
+              "text": "Ctrl",
+              "kbd": true
+            },
+            {
+              "text": " key, plus sub"
+            },
+            {
+              "text": "script",
+              "subscript": true
+            },
+            {
+              "text": " and super"
+            },
+            {
+              "text": "script",
+              "superscript": true
+            },
+            {
+              "text": "."
+            }
+          ],
+          "id": "blk-012"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Font styles"
+            }
+          ],
+          "id": "blk-013"
+        },
+        {
+          "type": "p",
+          "children": [
+            {
+              "text": "Coloured text",
+              "color": "#e11d48"
+            },
+            {
+              "text": ", "
+            },
+            {
+              "text": "highlighted background",
+              "backgroundColor": "#fde68a"
+            },
+            {
+              "text": ", "
+            },
+            {
+              "text": "bigger text",
+              "fontSize": "24px"
+            },
+            {
+              "text": ", and "
+            },
+            {
+              "text": "a monospace family",
+              "fontFamily": "monospace"
+            },
+            {
+              "text": "."
+            }
+          ],
+          "id": "blk-014"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Links & mentions"
+            }
+          ],
+          "id": "blk-015"
+        },
+        {
+          "type": "p",
+          "children": [
+            {
+              "text": "Visit the "
+            },
+            {
+              "type": "a",
+              "url": "https://plone.org",
+              "children": [
+                {
+                  "text": "Plone community website"
+                }
+              ],
+              "id": "blk-017"
+            },
+            {
+              "text": ", maintained by "
+            },
+            {
+              "type": "mention",
+              "value": "Alice",
+              "children": [
+                {
+                  "text": ""
+                }
+              ],
+              "id": "blk-018"
+            },
+            {
+              "text": " and the community."
+            }
+          ],
+          "id": "blk-016"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Blockquote"
+            }
+          ],
+          "id": "blk-019"
+        },
+        {
+          "type": "blockquote",
+          "children": [
+            {
+              "text": "The best way to predict the future is to invent it."
+            }
+          ],
+          "id": "blk-020"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Bulleted list"
+            }
+          ],
+          "id": "blk-021"
+        },
+        {
+          "type": "p",
+          "children": [
+            {
+              "text": "First bullet"
+            }
+          ],
+          "listStyleType": "disc",
+          "indent": 1,
+          "id": "blk-022"
+        },
+        {
+          "type": "p",
+          "children": [
+            {
+              "text": "Second bullet"
+            }
+          ],
+          "listStyleType": "disc",
+          "indent": 1,
+          "id": "blk-023"
+        },
+        {
+          "type": "p",
+          "children": [
+            {
+              "text": "Nested bullet"
+            }
+          ],
+          "listStyleType": "disc",
+          "indent": 2,
+          "id": "blk-024"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Numbered list"
+            }
+          ],
+          "id": "blk-025"
+        },
+        {
+          "type": "p",
+          "children": [
+            {
+              "text": "Step one"
+            }
+          ],
+          "listStyleType": "decimal",
+          "indent": 1,
+          "id": "blk-026"
+        },
+        {
+          "type": "p",
+          "children": [
+            {
+              "text": "Step two"
+            }
+          ],
+          "listStyleType": "decimal",
+          "indent": 1,
+          "id": "blk-027"
+        },
+        {
+          "type": "p",
+          "children": [
+            {
+              "text": "Step three"
+            }
+          ],
+          "listStyleType": "decimal",
+          "indent": 1,
+          "id": "blk-028"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "To-do list"
+            }
+          ],
+          "id": "blk-029"
+        },
+        {
+          "type": "p",
+          "children": [
+            {
+              "text": "Write the showcase"
+            }
+          ],
+          "listStyleType": "todo",
+          "indent": 1,
+          "checked": true,
+          "id": "blk-030"
+        },
+        {
+          "type": "p",
+          "children": [
+            {
+              "text": "Review it in the browser"
+            }
+          ],
+          "listStyleType": "todo",
+          "indent": 1,
+          "checked": false,
+          "id": "blk-031"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Code block"
+            }
+          ],
+          "id": "blk-032"
+        },
+        {
+          "type": "code_block",
+          "lang": "javascript",
+          "children": [
+            {
+              "type": "code_line",
+              "children": [
+                {
+                  "text": "const rhythm = 'one file, styled by tag';"
+                }
+              ],
+              "id": "blk-034"
+            },
+            {
+              "type": "code_line",
+              "children": [
+                {
+                  "text": "console.log(rhythm);"
+                }
+              ],
+              "id": "blk-035"
+            }
+          ],
+          "id": "blk-033"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Horizontal rule"
+            }
+          ],
+          "id": "blk-036"
+        },
+        {
+          "type": "hr",
+          "children": [
+            {
+              "text": ""
+            }
+          ],
+          "id": "blk-037"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Callout"
+            }
+          ],
+          "id": "blk-038"
+        },
+        {
+          "type": "callout",
+          "icon": "💡",
+          "children": [
+            {
+              "text": "Callouts draw attention to a helpful tip or warning."
+            }
+          ],
+          "id": "blk-039"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Toggle"
+            }
+          ],
+          "id": "blk-040"
+        },
+        {
+          "type": "toggle",
+          "children": [
+            {
+              "text": "Click to expand this toggle"
+            }
+          ],
+          "id": "blk-041"
+        },
+        {
+          "type": "p",
+          "children": [
+            {
+              "text": "Hidden content revealed by the toggle above."
+            }
+          ],
+          "indent": 1,
+          "id": "blk-042"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Columns"
+            }
+          ],
+          "id": "blk-043"
+        },
+        {
+          "type": "column_group",
+          "children": [
+            {
+              "type": "column",
+              "width": "50%",
+              "children": [
+                {
+                  "type": "p",
+                  "children": [
+                    {
+                      "text": "Left column content."
+                    }
+                  ],
+                  "id": "blk-046"
+                }
+              ],
+              "id": "blk-045"
+            },
+            {
+              "type": "column",
+              "width": "50%",
+              "children": [
+                {
+                  "type": "p",
+                  "children": [
+                    {
+                      "text": "Right column content."
+                    }
+                  ],
+                  "id": "blk-048"
+                }
+              ],
+              "id": "blk-047"
+            }
+          ],
+          "id": "blk-044"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Table"
+            }
+          ],
+          "id": "blk-049"
+        },
+        {
+          "type": "table",
+          "children": [
+            {
+              "type": "tr",
+              "children": [
+                {
+                  "type": "th",
+                  "children": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Block"
+                        }
+                      ],
+                      "id": "blk-053"
+                    }
+                  ],
+                  "id": "blk-052"
+                },
+                {
+                  "type": "th",
+                  "children": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Purpose"
+                        }
+                      ],
+                      "id": "blk-055"
+                    }
+                  ],
+                  "id": "blk-054"
+                }
+              ],
+              "id": "blk-051"
+            },
+            {
+              "type": "tr",
+              "children": [
+                {
+                  "type": "td",
+                  "children": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Heading"
+                        }
+                      ],
+                      "id": "blk-058"
+                    }
+                  ],
+                  "id": "blk-057"
+                },
+                {
+                  "type": "td",
+                  "children": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Section title"
+                        }
+                      ],
+                      "id": "blk-060"
+                    }
+                  ],
+                  "id": "blk-059"
+                }
+              ],
+              "id": "blk-056"
+            },
+            {
+              "type": "tr",
+              "children": [
+                {
+                  "type": "td",
+                  "children": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Callout"
+                        }
+                      ],
+                      "id": "blk-063"
+                    }
+                  ],
+                  "id": "blk-062"
+                },
+                {
+                  "type": "td",
+                  "children": [
+                    {
+                      "type": "p",
+                      "children": [
+                        {
+                          "text": "Highlighted note"
+                        }
+                      ],
+                      "id": "blk-065"
+                    }
+                  ],
+                  "id": "blk-064"
+                }
+              ],
+              "id": "blk-061"
+            }
+          ],
+          "id": "blk-050"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Table of contents"
+            }
+          ],
+          "id": "blk-066"
+        },
+        {
+          "type": "toc",
+          "children": [
+            {
+              "text": ""
+            }
+          ],
+          "id": "blk-067"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Media — video"
+            }
+          ],
+          "id": "blk-068"
+        },
+        {
+          "type": "video",
+          "url": "https://www.w3schools.com/html/mov_bbb.mp4",
+          "children": [
+            {
+              "text": ""
+            }
+          ],
+          "id": "blk-069"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Media — audio"
+            }
+          ],
+          "id": "blk-070"
+        },
+        {
+          "type": "audio",
+          "url": "https://www.w3schools.com/html/horse.mp3",
+          "children": [
+            {
+              "text": ""
+            }
+          ],
+          "id": "blk-071"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Media — file"
+            }
+          ],
+          "id": "blk-072"
+        },
+        {
+          "type": "file",
+          "url": "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+          "name": "dummy.pdf",
+          "children": [
+            {
+              "text": ""
+            }
+          ],
+          "id": "blk-073"
+        },
+        {
+          "type": "h2",
+          "children": [
+            {
+              "text": "Media — embed"
+            }
+          ],
+          "id": "blk-074"
+        },
+        {
+          "type": "media_embed",
+          "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+          "children": [
+            {
+              "text": ""
+            }
+          ],
+          "id": "blk-075"
+        }
+      ]
+    }
+  },
+  "blocks_layout": {
+    "items": [
+      "__somersault__"
+    ]
+  }
+}
