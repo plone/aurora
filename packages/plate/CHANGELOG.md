@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.13 (2026-07-24)
+
+### Bugfix
+
+- Added passing the `className` from parent in renderer and editor components. @sneridagh 
+
 ## 1.0.0-alpha.12 (2026-07-21)
 
 ### Feature
