@@ -1,0 +1,1 @@
+Added passing the `className` from parent in renderer and editor components. @sneridagh
