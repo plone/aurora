@@ -22,6 +22,7 @@ export function PlateEditor(props: {
   blocksApi?: any;
   intl?: any;
   children?: ReactNode;
+  className?: string;
   onChange: (options: {
     editor: TPlateEditor<Value, AnyPluginConfig>;
     value: TElement[];
@@ -45,7 +46,11 @@ export function PlateEditor(props: {
       {/* Provides editor context */}
       <EditorContainer className="">
         {/* Styles the editor area */}
-        <Editor variant="block" placeholder="Type text..." />
+        <Editor
+          className={props.className}
+          variant="block"
+          placeholder="Type text..."
+        />
       </EditorContainer>
       {props.children}
     </Plate>
@@ -84,6 +89,7 @@ export function PlateRenderer(
       <EditorView
         {...rest}
         editor={editor as unknown as SlateEditor}
+        className={props.className}
         variant="none"
       />
     </Plate>
