@@ -27,8 +27,10 @@ export interface SelectItemObject {
   value: string;
 }
 
-interface SelectBaseProps<T extends object, M extends 'single' | 'multiple'>
-  extends Omit<RACSelectProps<T, M>, 'children'> {
+interface SelectBaseProps<
+  T extends object,
+  M extends 'single' | 'multiple',
+> extends Omit<RACSelectProps<T, M>, 'children'> {
   label?: string;
   labelClassnames?: string;
   description?: string;

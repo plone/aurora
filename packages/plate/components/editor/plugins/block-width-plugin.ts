@@ -91,8 +91,7 @@ const getPlateBlockRegistryWidthConfig = (
   if (!element?.type) return {};
 
   const plateBlocksConfig = config?.blocks?.plateBlocksConfig as
-    | Record<string, { blockWidth?: BlockWidthConfig }>
-    | undefined;
+    Record<string, { blockWidth?: BlockWidthConfig }> | undefined;
 
   return plateBlocksConfig?.[element.type]?.blockWidth ?? {};
 };
@@ -101,8 +100,7 @@ const hasPlateBlockRegistryConfig = (element?: TElement | null) => {
   if (!element?.type) return false;
 
   const plateBlocksConfig = config?.blocks?.plateBlocksConfig as
-    | Record<string, unknown>
-    | undefined;
+    Record<string, unknown> | undefined;
 
   return element.type in (plateBlocksConfig ?? {});
 };
@@ -122,8 +120,7 @@ export const resolveBlockWidthConfig = (
   }
 
   const pluginOptions = editor.getOptions(BaseBlockWidthPlugin) as
-    | BlockWidthPluginOptions
-    | undefined;
+    BlockWidthPluginOptions | undefined;
 
   return {
     widths: pluginOptions?.defaultWidths,

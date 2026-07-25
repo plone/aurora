@@ -14,8 +14,10 @@ import { tv } from 'tailwind-variants';
 import { composeTailwindRenderProps, focusRing } from '../utils';
 import { CheckboxIcon } from '../icons/CheckboxIcon';
 
-interface ListBoxProps<T>
-  extends Omit<AriaListBoxProps<T>, 'layout' | 'orientation'> {}
+interface ListBoxProps<T> extends Omit<
+  AriaListBoxProps<T>,
+  'layout' | 'orientation'
+> {}
 
 export function ListBox<T extends object>({
   children,
