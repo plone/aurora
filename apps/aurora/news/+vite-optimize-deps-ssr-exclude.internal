@@ -1,0 +1,1 @@
+Excluded `i18next-fs-backend` and `remix-i18next/server` from the client `optimizeDeps` bundle — they were still being picked up by Vite's client-side dependency scanner despite only being declared in `ssr.optimizeDeps.include`. @sneridagh

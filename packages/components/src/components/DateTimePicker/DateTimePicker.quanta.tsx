@@ -53,11 +53,10 @@ function utcStringToLocalDateValue(
   }
 }
 
-export interface DateTimePickerProps
-  extends Omit<
-    AriaDatePickerProps<DateValue>,
-    'value' | 'defaultValue' | 'onChange'
-  > {
+export interface DateTimePickerProps extends Omit<
+  AriaDatePickerProps<DateValue>,
+  'value' | 'defaultValue' | 'onChange'
+> {
   label?: string;
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);

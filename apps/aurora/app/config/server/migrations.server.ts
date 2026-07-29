@@ -22,8 +22,7 @@ const isRegisteredNativeBlock = (block: Record<string, unknown>) => {
   if (typeof blockType !== 'string') return false;
 
   const blocksConfig = config.blocks?.blocksConfig as
-    | Record<string, unknown>
-    | undefined;
+    Record<string, unknown> | undefined;
 
   return Boolean(blocksConfig?.[blockType]);
 };
@@ -38,8 +37,7 @@ const getMigratedPloneBlockWidth = (block: Record<string, unknown>) => {
   }
 
   const blocksConfig = config.blocks?.blocksConfig as
-    | Record<string, BlockConfigBase>
-    | undefined;
+    Record<string, BlockConfigBase> | undefined;
   const blockConfig = blocksConfig?.[blockType];
   const styleFields = getStyleFieldsFromBlockSchema(
     blockConfig,

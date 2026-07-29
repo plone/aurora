@@ -43,7 +43,7 @@ export async function loader(props: LoaderFunctionArgs<RouterContextProvider>) {
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
   matches,
 }) => {
-  const rootData = matches.find((match) => match.id === 'root')?.data;
+  const rootData = matches.find((match) => match.id === 'root')?.loaderData;
 
   const siteTitle = rootData?.site?.['plone.site_title'];
 
@@ -94,8 +94,7 @@ export async function action({
 export default function Login() {
   const { content, siteTitle } = useLoaderData<typeof loader>();
   const actionResult = useActionData<typeof action>() as
-    | LoginErrorResponse
-    | undefined;
+    LoginErrorResponse | undefined;
   const location = useLocation();
   const { t } = useTranslation();
 

@@ -8,6 +8,18 @@
 
 <!-- towncrier release notes start -->
 
+## 4.0.0-alpha.1 (2026-07-02)
+
+### Bugfix
+
+- Updated `GetComponentResult` type, as retrieved component could be `undefined` if not found. @arybakov05 [#6691](https://github.com/plone/volto/issues/6691)
+- Externalize `bcrypt` and `node-gyp-build` in the registry Vite plugin SSR config to avoid native module resolution failures in Seven apps. @sneridagh 
+
+### Internal
+
+- Switch the registry Vite plugin from the deprecated esbuild top-level await setting to Vite 8's oxc configuration. @sneridagh 
+- Unify Makefile files across the packages. @ionlizarazu 
+
 ## 4.0.0-alpha.0 (2026-05-07)
 
 ### Feature

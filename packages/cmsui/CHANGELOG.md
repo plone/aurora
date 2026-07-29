@@ -8,6 +8,35 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.4 (2026-07-02)
+
+### Breaking
+
+- Refactored the `Content` type to properly match the basic Plone types and allow TypeScript to narrow this type automatically. @pnicolli 
+
+### Feature
+
+- Added German translations. @arybakov05 [#6653](https://github.com/plone/volto/issues/6653)
+- Implement login view according to Volto Quanta UI. @arybakov05 [#6656](https://github.com/plone/volto/issues/6656)
+- Added querystringWidget for seven @nileshgulia1 [#8007](https://github.com/plone/volto/issues/8007)
+- Integrate links with ObjectBrowser. @sneridagh [#8246](https://github.com/plone/volto/issues/8246)
+- Added recurrence widget. @sabrina-bongiovanni 
+
+### Bugfix
+
+- Renamed `quanta-lemmon` color to `quanta-lemon`. @arybakov05 [#6656](https://github.com/plone/volto/issues/6656)
+- Fix several issues in the Object Browser widget: single selection mode now behaves correctly, clicking a non-folder item no longer attempts navigation, the maximum selection limit is ignored in single mode, and the API for specifying which item attributes to return has been renamed for consistency across the codebase. @iFlameing 
+- Fix the sidebar to take 100% vertical space. @frapell 
+- Fix toolbar cancel button navigating to site root instead of current content page. @iFlameing 
+- Fixed Somersault editor sidebar state when navigating registry-backed Plone blocks and switching edited content. @sneridagh 
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+- Update to storybook 10. @sneridagh 
+- Updated CMS UI route imports and typecheck setup to use the `@plone/aurora` app alias. @sneridagh 
+- Updated the CMS UI layout loader to read content and locale from route context. @pnicolli 
+
 ## 1.0.0-alpha.3 (2026-05-07)
 
 ### Bugfix

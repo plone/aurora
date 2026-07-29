@@ -46,6 +46,52 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
           ]
         : []),
     ] as PluginOption[],
+    optimizeDeps: {
+      // Server-only deps that Vite would otherwise still pick up for the
+      // client bundle — keep in sync with ssr.optimizeDeps.include below
+      exclude: [
+        'i18next-fs-backend',
+        'i18next-fs-backend/cjs',
+        'remix-i18next/server',
+      ],
+      include: [
+        // App-level deps (in apps/aurora/package.json)
+        'i18next',
+        'i18next-browser-languagedetector',
+        'i18next-http-backend',
+        'react-i18next',
+        // Injected by babel-plugin-react-compiler, not in any package.json
+        'react/compiler-runtime',
+        'remix-i18next/client',
+        'remix-i18next/react',
+        // @plone/components and @plone/helpers are not registered add-ons, so
+        // their deps can't be declared in vite.extend.js — list them here
+        '@plone/components > @internationalized/date',
+        '@plone/components > @react-aria/utils',
+        '@plone/components > @react-spectrum/utils',
+        '@plone/components > clsx',
+        '@plone/components > react-aria',
+        '@plone/components > react-aria-components',
+        '@plone/components > react-aria-components/DropZone',
+        '@plone/components > react-aria-components/Form',
+        '@plone/components > react-aria-components/Group',
+        '@plone/components > react-aria-components/Modal',
+        '@plone/components > react-aria-components/Table',
+        '@plone/components > react-aria-components/Tooltip',
+        '@plone/components > react-aria-components/composeRenderProps',
+        '@plone/components > react-stately',
+        '@plone/components > tailwind-merge',
+        '@plone/components > tailwind-variants',
+        '@plone/helpers > jotai',
+        '@plone/helpers > jotai/utils',
+        '@plone/helpers > jotai-optics',
+      ],
+    },
+    ssr: {
+      optimizeDeps: {
+        include: ['i18next-fs-backend/cjs', 'isbot', 'remix-i18next/server'],
+      },
+    },
     resolve: {
       tsconfigPaths: true,
     },

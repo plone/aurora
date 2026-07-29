@@ -1,0 +1,1 @@
+Added `vite.extend.js` and a dependency audit path to pre-bundle layout runtime dependencies, reducing dev server startup reloads. @arybakov05

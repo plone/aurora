@@ -1,1 +1,0 @@
-Added `category` support to Plate block configuration types, added `defaultBlockWidth` support to Plone block configuration types, and removed the legacy Plone block `blockWidth` configuration field. @sneridagh

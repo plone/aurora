@@ -50,6 +50,7 @@
     "wait-on": "^8.0.0"
   },
   "devDependencies": {
-    "release-it": "catalog:"
+    "release-it": "catalog:",
+    "typescript": "catalog:"
   }
 }
