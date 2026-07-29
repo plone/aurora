@@ -20,4 +20,5 @@ i18n
 editor-slash-menu
 block-anatomy
 configure-editor-block-widths
+vite-optimize-deps
 ```

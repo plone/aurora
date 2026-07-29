@@ -1559,6 +1559,9 @@ importers:
       release-it:
         specifier: 'catalog:'
         version: 19.0.5(@types/node@24.10.1)(magicast@0.3.5)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.2
 
   packages/theming:
     dependencies:
@@ -6417,6 +6420,7 @@ packages:
   html2canvas-pro@1.5.12:
     resolution: {integrity: sha512-egtJIe6YXMKSLX/ls400OJD6tzEVtATJOE++mnXmxMWyqcu9HDXDoLiWeXnGv45QW2ZaIiDlXw46Gxqrqw6SEw==}
     engines: {node: '>=16.0.0'}
+    deprecated: All 1.5.x series are deprecated. Known rendering bugs exist and no further maintenance. Please upgrade to the latest 2.x release.
 
   htmlparser2@5.0.1:
     resolution: {integrity: sha512-vKZZra6CSe9qsJzh0BjBGXo8dvzNsq/oGvsjfRdOrrryfeD9UOBEEQdeoqCRmKZchF5h2zOBMQ6YuQ0uRUmdbQ==}
@@ -6933,7 +6937,6 @@ packages:
     resolution: {integrity: sha512-Quz3MvAwHxVYNXsOByL7xI5EB2WYOeFswqaHIA3qOK3isRWTxiplBEocmmru6XmxDB2L7jDNYtYA4FyimoAFEw==}
     engines: {node: '>=8.17.0'}
     hasBin: true
-    bundledDependencies: []
 
   jsonfile@4.0.0:
     resolution: {integrity: sha512-m6F1R3z8jjlf2imQHS2Qez5sjKWQzbuuhuJ/FKYFRZvPE3PuHcSMVZzfsLhGVOkfd20obL5SWEBew5ShlquNxg==}
