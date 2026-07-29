@@ -47,6 +47,13 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
         : []),
     ] as PluginOption[],
     optimizeDeps: {
+      // Server-only deps that Vite would otherwise still pick up for the
+      // client bundle — keep in sync with ssr.optimizeDeps.include below
+      exclude: [
+        'i18next-fs-backend',
+        'i18next-fs-backend/cjs',
+        'remix-i18next/server',
+      ],
       include: [
         // App-level deps (in apps/aurora/package.json)
         'i18next',
@@ -66,6 +73,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
         '@plone/components > react-aria',
         '@plone/components > react-aria-components',
         '@plone/components > react-aria-components/DropZone',
+        '@plone/components > react-aria-components/Form',
         '@plone/components > react-aria-components/Group',
         '@plone/components > react-aria-components/Modal',
         '@plone/components > react-aria-components/Table',
@@ -81,7 +89,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
     },
     ssr: {
       optimizeDeps: {
-        include: ['i18next-fs-backend/cjs', 'remix-i18next/server'],
+        include: ['i18next-fs-backend/cjs', 'isbot', 'remix-i18next/server'],
       },
     },
     resolve: {

@@ -9,7 +9,7 @@ myst:
 
 # Vite dependency pre-bundling
 
-This guide shows you how to declare third-party dependencies for pre-bundling so Vite resolves them at startup rather than lazily during dev.
+This guide shows you how to declare third-party dependencies for pre-bundling so Vite resolves more of them at startup instead of discovering them lazily during dev.
 
 Aurora runs in a pnpm monorepo.
 Vite treats workspace packages as source files and does not scan them upfront for their third-party dependencies.
@@ -66,6 +66,37 @@ If a dependency exports subpaths you use (for example `some-lib/react` or `some-
 Vite does not discover subpath exports automatically from the main entry.
 
 If a dependency is only used in server-side code (for example `*.server.*` files), add it to `ssr.optimizeDeps.include` instead of `optimizeDeps.include` so it isn't pre-bundled for the browser.
+Declaring it in `ssr.optimizeDeps.include` alone is not always enough — Vite's client-side dependency scanner can still pick it up through re-exports.
+If that happens, also add it to the top-level `optimizeDeps.exclude` in `apps/aurora/vite.config.ts` so it's explicitly kept out of the client bundle.
+
+To keep the lists from drifting, run:
+
+```sh
+pnpm check:vite-optimize-deps
+```
+
+The script inspects runtime imports in the workspace packages that require explicit declarations and reports missing or stale `pkg > dep` entries.
+
+Run it when:
+
+- you add or remove a runtime import in `@plone/components`, `@plone/helpers`,
+  `@plone/cmsui`, `@plone/layout`, or `@plone/plate`
+- you switch an import to a different package subpath such as
+  `some-lib/react`
+- you move an import between browser-only and server-only code and may need to
+  switch between `optimizeDeps.include` and `ssr.optimizeDeps.include`
+- you touch one of the existing optimize-deps config files and want to verify
+  the list before opening a PR
+
+Recommended workflow:
+
+1. Make the code change that introduces or removes runtime imports.
+2. Run `pnpm check:vite-optimize-deps`.
+3. Copy the reported missing entries into the relevant `vite.extend.js` file or
+   `apps/aurora/vite.config.ts`.
+4. Remove reported stale entries unless you have a concrete reason to keep
+   them.
+5. Re-run the check until it passes.
 
 ### Existing core add-on files
 

@@ -1,1 +1,1 @@
-Added `vite.extend.js` to pre-bundle CMS UI dependencies, reducing dev server startup reloads. @arybakov05
+Added `vite.extend.js` and a dependency audit path to pre-bundle CMS UI runtime dependencies, reducing dev server startup reloads. @arybakov05

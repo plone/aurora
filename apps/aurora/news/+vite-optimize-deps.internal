@@ -1,1 +1,1 @@
-Added `optimizeDeps.include` entries for non-addon workspace packages and app-level deps, eliminating lazy dependency discovery reloads on dev server startup. @arybakov05
+Added `optimizeDeps.include` entries for non-addon workspace packages and app-level deps to reduce lazy dependency discovery reloads on dev server startup. @arybakov05
