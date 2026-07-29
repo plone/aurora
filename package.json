@@ -22,6 +22,7 @@
     "test": "pnpm --filter @plone/aurora run test",
     "test:all": "pnpm test:ci",
     "test:ci": "pnpm --filter @plone/* --filter \"!@plone/scripts\" --filter \"!@plone/theming\" run test --run",
+    "check:vite-optimize-deps": "node packages/scripts/check-vite-optimize-deps.js",
     "prettier": "prettier --check '{apps,packages}/**/*.{js,jsx,ts,tsx}'",
     "prettier:fix": "prettier --write '{apps,packages}/**/*.{js,jsx,ts,tsx}'",
     "stylelint": "stylelint '{apps,packages}/**/*.{css,scss,less}'",

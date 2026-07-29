@@ -1,7 +1,7 @@
-import type { PropsWithChildren } from 'react';
+import { useEffect, type PropsWithChildren } from 'react';
 import { data, isRouteErrorResponse } from 'react-router';
-import { useChangeLanguage } from 'remix-i18next/react';
-import i18next from './i18next.server';
+import { useTranslation } from 'react-i18next';
+import { i18nextMiddleware, getLocale } from './i18next.server';
 import type { Route } from './+types/root';
 import config from '@plone/registry';
 import {
@@ -20,6 +20,7 @@ import {
 import { getClearAuthCookieHeader } from '@plone/react-router';
 
 export const middleware = [
+  i18nextMiddleware,
   installServerMiddleware,
   PloneClientMiddleware,
   otherResources,
@@ -29,7 +30,7 @@ export const middleware = [
 ];
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
-  const locale = await i18next.getLocale(request);
+  const locale = getLocale(context);
 
   const cli = context.get(ploneClientContext);
   const content = context.get(ploneContentContext);
@@ -112,11 +113,13 @@ export function Layout({
   // loaderData can be undefined in case of an error
   const locale = loaderData?.locale || 'en';
 
-  // This hook will change the i18n instance language to the current locale
-  // detected by the loader, this way, when we do something to change the
-  // language, this locale will change and i18next will load the correct
-  // translation files
-  useChangeLanguage(locale);
+  // Sync the i18n instance's language to the locale detected by the loader,
+  // this way, when we do something to change the language, this locale will
+  // change and i18next will load the correct translation files
+  const { i18n } = useTranslation();
+  useEffect(() => {
+    if (i18n.language !== locale) i18n.changeLanguage(locale);
+  }, [locale, i18n]);
 
   return children;
 }

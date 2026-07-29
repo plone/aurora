@@ -41,8 +41,8 @@ describe('Add route', () => {
         request,
         params: { '*': 'my-folder' },
         context,
-        unstable_pattern: '/my-folder/add',
-        unstable_url: new URL(request.url),
+        pattern: '/my-folder/add',
+        url: new URL(request.url),
       });
 
       expect(getTypeMock).toHaveBeenCalledWith({ type: 'Document' });
@@ -62,8 +62,8 @@ describe('Add route', () => {
         request,
         params: { '*': 'my-folder' },
         context,
-        unstable_pattern: '/my-folder/add',
-        unstable_url: new URL(request.url),
+        pattern: '/my-folder/add',
+        url: new URL(request.url),
       });
 
       expect((result as any).data).toEqual({
@@ -84,8 +84,8 @@ describe('Add route', () => {
           request,
           params: { '*': 'my-folder' },
           context,
-          unstable_pattern: '/my-folder/add',
-          unstable_url: new URL(request.url),
+          pattern: '/my-folder/add',
+          url: new URL(request.url),
         }),
       ).rejects.toEqual(
         expect.objectContaining({
@@ -110,8 +110,8 @@ describe('Add route', () => {
         request,
         params: {},
         context,
-        unstable_pattern: '/add',
-        unstable_url: new URL(request.url),
+        pattern: '/add',
+        url: new URL(request.url),
       });
 
       expect((result as any).data.type).toBe('Document');
@@ -140,8 +140,8 @@ describe('Add route', () => {
         request,
         params: { '*': 'my-folder' },
         context,
-        unstable_pattern: '/my-folder/add',
-        unstable_url: new URL(request.url),
+        pattern: '/my-folder/add',
+        url: new URL(request.url),
       });
 
       expect(createContentMock).toHaveBeenCalledWith({
@@ -170,8 +170,8 @@ describe('Add route', () => {
         request,
         params: { '*': 'my-folder' },
         context,
-        unstable_pattern: '/my-folder/add',
-        unstable_url: new URL(request.url),
+        pattern: '/my-folder/add',
+        url: new URL(request.url),
       });
 
       expect((result as Response).status).toBe(302);
@@ -200,8 +200,8 @@ describe('Add route', () => {
         request,
         params: {},
         context,
-        unstable_pattern: '/add',
-        unstable_url: new URL(request.url),
+        pattern: '/add',
+        url: new URL(request.url),
       });
 
       expect((result as Response).status).toBe(302);
