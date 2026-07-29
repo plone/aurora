@@ -11,8 +11,7 @@ const TeaserEdit = (props: BlockEditProps) => {
   const { data, setBlock } = props;
   const href = asFirstItem(data.href as any);
   const ObjectBrowserWidget = config.getWidget('object_browser') as
-    | ComponentType<any>
-    | undefined;
+    ComponentType<any> | undefined;
   const onTargetChange = useCallback(
     (selectedItems: Array<Record<string, any>>) => {
       const selectedTarget = selectedItems?.[0];

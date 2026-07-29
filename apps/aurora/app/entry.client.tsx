@@ -6,7 +6,6 @@ import i18next from 'i18next';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import Backend from 'i18next-http-backend';
-import { getInitialNamespaces } from 'remix-i18next/client';
 import install from './config';
 
 install();
@@ -18,8 +17,7 @@ async function hydrate() {
     .use(Backend) // Setup your backend
     .init({
       ...i18n, // spread the configuration
-      // This function detects the namespaces your routes rendered while SSR use
-      ns: getInitialNamespaces(),
+      ns: i18n.defaultNS,
       backend: { loadPath: '/locales/{{lng}}/{{ns}}.json' },
       detection: {
         // Here only enable htmlTag detection, we'll detect the language only

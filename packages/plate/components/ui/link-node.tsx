@@ -11,8 +11,7 @@ export function LinkElement(props: PlateElementProps<TLinkElement>) {
   const suggestionData = props.editor
     .getApi(SuggestionPlugin)
     .suggestion.suggestionData(props.element) as
-    | TInlineSuggestionData
-    | undefined;
+    TInlineSuggestionData | undefined;
 
   return (
     <PlateElement

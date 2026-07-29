@@ -125,8 +125,7 @@ export const VideoBlockBody = ({
       : null;
 
   const videoBlockConfig = config.blocks?.blocksConfig?.video as
-    | VideoBlockConfig
-    | undefined;
+    VideoBlockConfig | undefined;
   const peertubeInstances: string[] =
     videoBlockConfig?.allowedPeertubeInstances ?? [];
 

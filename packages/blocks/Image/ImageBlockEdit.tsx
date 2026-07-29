@@ -31,8 +31,7 @@ function getLegacyScaledSrc(url: string, size: string) {
 const ImageBlockEdit = (props: BlockEditProps) => {
   const { block, data, setBlock, selected } = props;
   const ImageWidget = config.getWidget('image') as
-    | React.ComponentType<any>
-    | undefined;
+    React.ComponentType<any> | undefined;
 
   const handleChange = useCallback(
     (

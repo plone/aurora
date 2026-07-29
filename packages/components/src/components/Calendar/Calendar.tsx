@@ -10,8 +10,9 @@ import {
   Text,
 } from 'react-aria-components';
 
-export interface CalendarProps<T extends DateValue>
-  extends RACCalendarProps<T> {
+export interface CalendarProps<
+  T extends DateValue,
+> extends RACCalendarProps<T> {
   errorMessage?: string;
 }
 
