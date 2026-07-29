@@ -1,0 +1,15 @@
+@layer custom {
+  .relatedItems {
+    padding: 0;
+    margin-top: 1.5rem;
+    list-style: none;
+  }
+
+  .relatedItems li {
+    margin-bottom: 0.5rem;
+  }
+
+  .relatedItems li:last-child {
+    margin-bottom: 0;
+  }
+}

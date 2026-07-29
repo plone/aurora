@@ -17,6 +17,9 @@
     "toolbar": {
       "label": "Barra degli strumenti"
     },
+    "relatedItems": {
+      "label": "Contenuti correlati"
+    },
     "views": {
       "link": {
         "linkLabel": "L'indirizzo del link è:",

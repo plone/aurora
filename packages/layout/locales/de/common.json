@@ -17,6 +17,9 @@
     "toolbar": {
       "label": "Werkzeugleiste"
     },
+    "relatedItems": {
+      "label": "Verwandte Inhalte"
+    },
     "views": {
       "link": {
         "linkLabel": "Die Linkadresse lautet:",
