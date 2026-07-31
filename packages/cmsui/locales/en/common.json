@@ -105,6 +105,26 @@
       "groupMembership": "Group Membership",
       "groups": "Groups"
     },
+    "addons": {
+      "installed": "Installed",
+      "available": "Available",
+      "empty": "No add-ons found.",
+      "noMatches": "No add-ons match your search.",
+      "latestVersion": "Latest version: {{version}}",
+      "install": "Install",
+      "uninstall": "Uninstall",
+      "upgrade": "Upgrade",
+      "updatesAvailable": "Updates available",
+      "upgradeFromTo": "Update {{from}} → {{to}}",
+      "prev": "Previous",
+      "next": "Next",
+      "page": "{{current}} / {{total}}",
+      "searchPlaceholder": "Filter add-ons…",
+      "installHint": "To make new add-ons show up here, add them to your configuration, build, and restart the server process. For detailed instructions see",
+      "installHintLink": "Installing a third party add-on",
+      "resultsCount": "{{total}} add-ons found",
+      "actionError": "Action failed. Please try again."
+    },
     "blocksEditor": {
       "blocksTab": "Blocks",
       "contentTab": "Content"

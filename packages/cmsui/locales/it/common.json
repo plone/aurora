@@ -95,6 +95,26 @@
       "groupMembership": "Appartenenza ai gruppi",
       "groups": "Gruppi"
     },
+    "addons": {
+      "installed": "Installato",
+      "available": "Disponibili",
+      "empty": "Nessun prodotto aggiuntivo trovato.",
+      "noMatches": "Nessun prodotto aggiuntivo corrisponde alla ricerca.",
+      "latestVersion": "Ultima versione: {{version}}",
+      "install": "Installa",
+      "uninstall": "Disinstalla",
+      "upgrade": "Aggiorna",
+      "updatesAvailable": "Aggiornamenti disponibili",
+      "upgradeFromTo": "Aggiorna {{from}} → {{to}}",
+      "prev": "Precedente",
+      "next": "Successivo",
+      "page": "{{current}} / {{total}}",
+      "searchPlaceholder": "Filtra i prodotti aggiuntivi…",
+      "installHint": "Per visualizzare qui nuovi add-on, aggiungili alla configurazione, ricompila e riavvia il processo del server. Per istruzioni dettagliate consulta",
+      "installHintLink": "Installare un add-on di terze parti",
+      "resultsCount": "{{total}} add-on trovati",
+      "actionError": "Operazione non riuscita. Riprova."
+    },
     "blocksEditor": {
       "blocksTab": "Blocchi",
       "contentTab": "Contenuto"

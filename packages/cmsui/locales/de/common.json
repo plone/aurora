@@ -57,6 +57,26 @@
       "groupMembership": "Gruppenmitgliedschaft",
       "groups": "Gruppen"
     },
+    "addons": {
+      "installed": "Installiert",
+      "available": "Verfügbar",
+      "empty": "Keine Erweiterungen gefunden.",
+      "noMatches": "Keine Erweiterungen passen zur Suche.",
+      "latestVersion": "Neueste Version: {{version}}",
+      "install": "Installieren",
+      "uninstall": "Deinstallieren",
+      "upgrade": "Aktualisieren",
+      "updatesAvailable": "Updates verfügbar",
+      "upgradeFromTo": "Update {{from}} → {{to}}",
+      "prev": "Zurück",
+      "next": "Weiter",
+      "page": "{{current}} / {{total}}",
+      "searchPlaceholder": "Erweiterungen filtern…",
+      "installHint": "Damit neue Add-ons hier erscheinen, füge sie zur Konfiguration hinzu, baue das Projekt neu und starte den Server-Prozess neu. Eine ausführliche Anleitung findest du unter",
+      "installHintLink": "Ein Add-on eines Drittanbieters installieren",
+      "resultsCount": "{{total}} Add-ons gefunden",
+      "actionError": "Aktion fehlgeschlagen. Bitte erneut versuchen."
+    },
     "blocksEditor": {
       "blocksTab": "Blöcke",
       "contentTab": "Inhalt"

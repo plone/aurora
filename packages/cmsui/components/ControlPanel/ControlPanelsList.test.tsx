@@ -1,5 +1,52 @@
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ControlPanelsList } from './ControlPanelsList';
+
+vi.mock('@plone/components/icons/calendar.svg?react', () => ({
+  default: () => <svg />,
+}));
+vi.mock('@plone/components/icons/language.svg?react', () => ({
+  default: () => <svg />,
+}));
+vi.mock('@plone/components/icons/mail.svg?react', () => ({
+  default: () => <svg />,
+}));
+vi.mock('@plone/components/icons/navigation.svg?react', () => ({
+  default: () => <svg />,
+}));
+vi.mock('@plone/components/icons/world.svg?react', () => ({
+  default: () => <svg />,
+}));
+vi.mock('@plone/components/icons/search.svg?react', () => ({
+  default: () => <svg />,
+}));
+vi.mock('@plone/components/icons/social.svg?react', () => ({
+  default: () => <svg />,
+}));
+vi.mock('@plone/components/icons/image.svg?react', () => ({
+  default: () => <svg />,
+}));
+vi.mock('@plone/components/icons/code.svg?react', () => ({
+  default: () => <svg />,
+}));
+vi.mock('@plone/components/icons/discussion.svg?react', () => ({
+  default: () => <svg />,
+}));
+vi.mock('@plone/components/icons/edit.svg?react', () => ({
+  default: () => <svg />,
+}));
+vi.mock('@plone/components/icons/undo.svg?react', () => ({
+  default: () => <svg />,
+}));
+vi.mock('@plone/components/icons/user.svg?react', () => ({
+  default: () => <svg />,
+}));
+vi.mock('@plone/components/icons/link.svg?react', () => ({
+  default: () => <svg />,
+}));
+vi.mock('@plone/components/icons/settings.svg?react', () => ({
+  default: () => <svg />,
+}));
 
 describe('ControlPanelsList', () => {
   const mockControlPanels = [

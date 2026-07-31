@@ -7,6 +7,7 @@
 
 @layer cmsui {
   @import '@plone/components/src/styles/basic/theme.css';
+  @import '@plone/components/src/styles/fonts/metropolis/stylesheet.css';
   @import 'tailwindcss/theme.css';
   @import 'tailwindcss/preflight.css';
   @import 'tailwindcss/utilities.css';
@@ -159,3 +160,41 @@
 }
 
 @import './utilities.css';
+
+.route-controlpanel {
+  padding-inline: 1.5rem;
+}
+
+.route-addons {
+  font-family: 'Metropolis', sans-serif;
+}
+
+.route-addons .addons-title,
+.cp-overview .cp-title {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  color: var(--foreground);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 30px;
+}
+
+.route-addons .addons-section-heading {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 25px;
+}
+
+.route-addons .addons-search {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  border-radius: 6px;
+  background-color: var(--quanta-snow);
+}
+
+.cp-overview .cp-group-title {
+  color: var(--foreground);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+}
