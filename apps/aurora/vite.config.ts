@@ -52,7 +52,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
       exclude: [
         'i18next-fs-backend',
         'i18next-fs-backend/cjs',
-        'remix-i18next/server',
+        'remix-i18next',
       ],
       include: [
         // App-level deps (in apps/aurora/package.json)
@@ -62,8 +62,6 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
         'react-i18next',
         // Injected by babel-plugin-react-compiler, not in any package.json
         'react/compiler-runtime',
-        'remix-i18next/client',
-        'remix-i18next/react',
         // @plone/components and @plone/helpers are not registered add-ons, so
         // their deps can't be declared in vite.extend.js — list them here
         '@plone/components > @internationalized/date',
@@ -89,7 +87,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
     },
     ssr: {
       optimizeDeps: {
-        include: ['i18next-fs-backend/cjs', 'isbot', 'remix-i18next/server'],
+        include: ['i18next-fs-backend/cjs', 'isbot', 'remix-i18next'],
       },
     },
     resolve: {
