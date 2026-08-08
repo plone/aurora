@@ -7,5 +7,18 @@ packages:
   # exclude Volto packages, leaving them as reference
   - '!packages/volto*'
 
+overrides:
+  react: ^19.2.0
+  react-dom: ^19.2.0
+  jotai: ^2.12.5
+
+onlyBuiltDependencies:
+  - '@swc/core'
+  - '@tailwindcss/oxide'
+  - esbuild
+  - lightningcss-cli
+  - msgpackr-extract
+  - unrs-resolver
+
 # The default pnpm catalog is loaded from `catalog.json` using `.pnpmfile.cjs`.
 # If you want to customize the versions of the catalog, do it in there.

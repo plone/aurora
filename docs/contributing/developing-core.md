@@ -96,25 +96,13 @@ When developing a project using Plone, Yarn or other package managers may be use
 
 ### pnpm
 
-Using corepack:
-
-```shell
-corepack prepare pnpm@latest --activate
-```
-
-or using `npm`:
-
-```shell
-npm install -g pnpm@latest
-```
-
-Verify the latest version.
+Corepack installs and activates the pnpm version pinned by the repository's `packageManager` field. Verify the active version.
 
 ```shell
 pnpm --version
 ```
 
-Compare the output to the [latest pnpm release number](https://www.npmjs.com/package/pnpm).
+The output should match the `packageManager` version in the repository's root `package.json`.
 
 ```{seealso}
 [pnpm installation](https://pnpm.io/installation).

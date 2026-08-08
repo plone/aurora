@@ -45,20 +45,5 @@
     "tsconfig": "workspace:*",
     "typescript": "catalog:"
   },
-  "pnpm": {
-    "overrides": {
-      "react": "^19.2.0",
-      "react-dom": "^19.2.0",
-      "jotai": "^2.12.5"
-    },
-    "onlyBuiltDependencies": [
-      "@swc/core",
-      "@tailwindcss/oxide",
-      "esbuild",
-      "lightningcss-cli",
-      "msgpackr-extract",
-      "unrs-resolver"
-    ]
-  },
-  "packageManager": "pnpm@10.20.0"
+  "packageManager": "pnpm@11.20.0"
 }
