@@ -7,6 +7,13 @@ packages:
   # exclude Volto packages, leaving them as reference
   - '!packages/volto*'
 
+publicHoistPattern:
+  - '*eslint*'
+  - '*prettier*'
+  - '*stylelint*'
+  - '*cypress*'
+  - '*playwright*'
+
 overrides:
   react: ^19.2.0
   react-dom: ^19.2.0
