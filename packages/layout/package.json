@@ -47,6 +47,7 @@
     "format": "pnpm prettier:fix && pnpm lint:fix && pnpm stylelint:fix"
   },
   "peerDependencies": {
+    "i18next": "catalog:",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },

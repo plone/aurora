@@ -9,9 +9,11 @@ runs:
       with:
         node-version: ${{ inputs.node-version }}
 
-    - name: Enable corepack
+    - name: Install and enable Corepack
       shell: bash
-      run: corepack enable
+      run: |
+        npm install --global corepack@latest
+        corepack enable
 
     - name: Get pnpm store directory
       shell: bash

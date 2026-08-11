@@ -1,0 +1,1 @@
+Declared the catalog-managed i18next version as a peer dependency to keep react-i18next instances unified. @sneridagh

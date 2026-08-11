@@ -1,0 +1,1 @@
+Updated development, CI, and documentation tooling to use pnpm 11.20.0 reproducibly through Corepack. @sneridagh
