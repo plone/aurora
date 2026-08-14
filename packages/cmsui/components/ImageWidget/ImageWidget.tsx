@@ -15,6 +15,7 @@ import {
   ObjectBrowserProvider,
   useObjectBrowserContext,
 } from '../ObjectBrowserWidget/ObjectBrowserContext';
+import { normalizeObjectBrowserPath } from '../ObjectBrowserWidget/utils';
 
 type BaseFormFieldProps = Pick<
   QuantaTextFieldProps,
@@ -101,16 +102,21 @@ async function parseJsonSafe(response: Response) {
   }
 }
 
+function blobDownloadUrl(value: Record<string, unknown>): string {
+  if (typeof value['@id'] === 'string') return value['@id'];
+  if (typeof value.download === 'string') return value.download;
+  return '';
+}
+
 function normalizeImageValue(value: unknown): string {
   if (typeof value === 'string') return value;
 
   if (Array.isArray(value) && value[0] && isRecord(value[0])) {
-    const first = value[0];
-    return typeof first['@id'] === 'string' ? first['@id'] : '';
+    return blobDownloadUrl(value[0]);
   }
 
-  if (isRecord(value) && typeof value['@id'] === 'string') {
-    return value['@id'];
+  if (isRecord(value)) {
+    return blobDownloadUrl(value);
   }
 
   return '';
@@ -134,11 +140,7 @@ function getBasePath(path: string) {
 }
 
 function getEditPathFromUrl(pathname: string) {
-  if (pathname.startsWith('/@@edit/')) {
-    return `/${pathname.replace(/^\/@@edit\//, '')}`;
-  }
-  if (pathname === '/@@edit') return '/';
-  return pathname;
+  return normalizeObjectBrowserPath(pathname) || '/';
 }
 
 function readFileAsDataURL(file: File) {

@@ -40,11 +40,12 @@ export default function install(config: ConfigType) {
   });
   config.registerWidget({
     key: 'widget',
-    definition: { image: ImageWidget },
+    definition: { image: ImageWidget, file: ImageWidget },
   });
   config.registerWidget({
     key: 'factory',
     definition: {
+      Image: ImageWidget,
       'Relation List': ObjectBrowserWidget,
     },
   });

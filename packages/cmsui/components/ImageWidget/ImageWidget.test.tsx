@@ -24,6 +24,13 @@ vi.mock('@plone/components/Icons', () => ({
   LinkIcon: () => <span>link</span>,
   NavigationIcon: () => <span>nav</span>,
   UploadIcon: () => <span>upload</span>,
+  PageIcon: () => <span>page</span>,
+  FolderIcon: () => <span>folder</span>,
+  NewsIcon: () => <span>news</span>,
+  CalendarIcon: () => <span>calendar</span>,
+  AttachmentIcon: () => <span>attachment</span>,
+  VideoIcon: () => <span>video</span>,
+  CollectionIcon: () => <span>collection</span>,
 }));
 
 vi.mock('../Field/Field', () => ({
@@ -73,6 +80,24 @@ describe('ImageWidget', () => {
     const image = container.querySelector('img');
     expect(image).toBeInTheDocument();
     expect(image).toHaveAttribute('src', 'https://cdn.example.com/image.jpg');
+  });
+
+  it('normalizes NamedBlobImage objects that expose download instead of @id', () => {
+    const { container } = render(
+      <ImageWidget
+        value={{
+          'content-type': 'image/png',
+          download: 'https://example.com/image.png/@@images/image',
+          filename: 'image.png',
+          size: 12,
+        }}
+      />,
+    );
+
+    expect(container.querySelector('img')).toHaveAttribute(
+      'src',
+      'https://example.com/image.png/@@images/image',
+    );
   });
 
   it('normalizes object and array values containing @id', () => {

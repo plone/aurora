@@ -1,0 +1,2 @@
+Register ImageWidget for REST API Image fields, keep JSON Schema metadata off RAC widgets, and load the object browser from a content path instead of CMS routes like /@@add. @aryan7081
+
