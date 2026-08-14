@@ -219,6 +219,46 @@ describe('ImageWidget', () => {
     });
     expect(screen.queryByText('Image upload failed')).not.toBeInTheDocument();
   });
+
+  it('stores a NamedBlobImage object for Image content fields instead of creating content', async () => {
+    class MockFileReader {
+      result = 'data:image/png;base64,ZmFrZS1pbWFnZS1ieXRlcw==';
+      error = null;
+      onload: null | (() => void) = null;
+      onerror: null | (() => void) = null;
+      readAsDataURL() {
+        this.onload?.();
+      }
+    }
+    vi.stubGlobal('FileReader', MockFileReader);
+
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    const onChange = vi.fn();
+    render(<ImageWidget factory="Image" onChange={onChange} />);
+
+    const fileInput = document.querySelector(
+      'input[type="file"]',
+    ) as HTMLInputElement;
+    const file = new File(['fake-image-bytes'], 'photo.png', {
+      type: 'image/png',
+    });
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(onChange).toHaveBeenCalledWith(
+        {
+          data: 'ZmFrZS1pbWFnZS1ieXRlcw==',
+          encoding: 'base64',
+          'content-type': 'image/png',
+          filename: 'photo.png',
+        },
+        { title: 'photo.png' },
+      );
+    });
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
 });
 
 describe('ImageInput', () => {

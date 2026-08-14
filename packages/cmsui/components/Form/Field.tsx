@@ -206,6 +206,8 @@ const renderFieldWidget = ({
     errorMessage: resolvedErrorMessage,
     widgetOptions,
     choices: fieldProps.choices,
+    factory: fieldProps.factory,
+    widget: fieldProps.widget,
     ...getWidgetPropsFromTaggedValues(widgetOptions),
   };
 
