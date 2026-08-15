@@ -75,9 +75,7 @@ const getWidgetByFactory = (
 const getWidgetByName = (
   widget: FieldProps['widget'],
 ): React.ComponentType<any> | null =>
-  typeof widget === 'string'
-    ? (config.getWidget(widget) ?? getWidgetDefault())
-    : null;
+  typeof widget === 'string' ? (config.getWidget(widget) ?? null) : null;
 
 /**
  * Get widget by tagged values
@@ -179,12 +177,38 @@ const renderFieldWidget = ({
     getWidgetByType(fieldProps.type) ||
     getWidgetDefault();
 
-  // Adding the widget props from tagged values (if any)
+  const widgetOptions = fieldProps.widgetOptions;
+  const title = fieldProps.title;
+  const error = fieldProps.error;
+  const errorMessage = (fieldProps as { errorMessage?: unknown }).errorMessage;
+
+  const resolvedErrorMessage =
+    typeof errorMessage === 'string'
+      ? errorMessage
+      : Array.isArray(error)
+        ? error.filter(Boolean).join(', ')
+        : undefined;
+
   const widgetProps = {
-    ...fieldProps,
-    label: fieldProps.title,
+    name: fieldProps.name,
+    id: fieldProps.id,
+    className: fieldProps.className,
+    label: title ?? fieldProps.label,
+    description:
+      typeof (fieldProps as { description?: unknown }).description === 'string'
+        ? (fieldProps as { description?: string }).description
+        : undefined,
     placeholder: fieldProps.placeholder || 'Type something...',
-    ...getWidgetPropsFromTaggedValues(fieldProps.widgetOptions),
+    value: fieldProps.value,
+    defaultValue: fieldProps.defaultValue,
+    required: fieldProps.required,
+    isRequired: fieldProps.required,
+    errorMessage: resolvedErrorMessage,
+    widgetOptions,
+    choices: fieldProps.choices,
+    factory: fieldProps.factory,
+    widget: fieldProps.widget,
+    ...getWidgetPropsFromTaggedValues(widgetOptions),
   };
 
   return fieldProps.mode !== MODE_HIDDEN ? (

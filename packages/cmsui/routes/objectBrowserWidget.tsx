@@ -5,6 +5,7 @@ import {
 } from 'react-router';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { flattenToAppURL } from '@plone/helpers';
+import { getContentPathFromCmsUrl } from '../helpers/cmsPath';
 
 export async function loader({
   params,
@@ -13,7 +14,7 @@ export async function loader({
 }: LoaderFunctionArgs<RouterContextProvider>) {
   const cli = context.get(ploneClientContext);
 
-  const path = `/${params['*'] || ''}`;
+  const path = getContentPathFromCmsUrl(`/${params['*'] || ''}`) || '/';
 
   const query = Object.fromEntries(new URL(request.url).searchParams.entries());
 
@@ -24,40 +25,37 @@ export async function loader({
 
   delete query['path.depth'];
   delete query['path.query'];
-  const { data: results } = await cli.search({
-    query: {
-      path: pathQuery,
-      ...query,
-      SearchableText: query.SearchableText
-        ? `${query.SearchableText}*`
-        : undefined,
-    },
-  });
-  // const items = response.items;
-  // const firstLevelIds = items
-  //   .filter((i) => i['@id'].split('/').length > 1)
-  //   .map((i) => i['@id']);
+  try {
+    const { data: results } = await cli.search({
+      query: {
+        path: pathQuery,
+        ...query,
+        SearchableText: query.SearchableText
+          ? `${query.SearchableText}*`
+          : undefined,
+      },
+    });
 
-  // const results = firstLevelIds.reduce((acc, curr) => {
-  //   const child = items.some((item) => item['@id'] === curr);
+    const { data: breadcrumbs } = await cli.getBreadcrumbs({
+      path,
+    });
 
-  //   return [acc, ...;
-  // }, []);
-  // Has to be used?
-  // const strippedRequest = new Request(request.url.replace(/\?.*$/, ''), {
-  //   headers: request.headers,
-  // });
-
-  // TODO replace with reading from the context expander
-  // const content = context.get(ploneContentContext),
-  // content.data['@components'].breadcrumbs....
-  const { data: breadcrumbs } = await cli.getBreadcrumbs({
-    path,
-  });
-
-  return data(flattenToAppURL({ results, breadcrumbs }), {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+    return data(flattenToAppURL({ results, breadcrumbs }), {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch {
+    return data(
+      {
+        results: { items: [] },
+        breadcrumbs: { items: [] },
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+  }
 }
