@@ -139,11 +139,10 @@ const useObjectBrowserInternal = (config: UseObjectBrowserConfig = {}) => {
   }
 
   useEffect(() => {
-    if (!open) return;
     if (searchMode && SearchableText.trim() === '') reset();
     else loadData(currentPath, SearchableText);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, currentPath, searchMode, SearchableText]);
+  }, [currentPath, searchMode, SearchableText]);
 
   const items = useMemo(
     () => fetcher?.data?.results?.items ?? [],

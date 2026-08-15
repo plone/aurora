@@ -366,9 +366,7 @@ describe('ObjectBrowserWidget Component Tests', () => {
 
     render(<ObjectBrowserWidget {...mockProps} />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Select content' }));
-
-    // Wait for useEffect to run after the dialog opens
+    // Wait for useEffect to run
     await waitFor(() => {
       expect(mockLoad).toHaveBeenCalled();
     });
