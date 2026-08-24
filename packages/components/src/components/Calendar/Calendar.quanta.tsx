@@ -84,7 +84,7 @@ export function CalendarHeader() {
   const { direction } = useLocale();
 
   return (
-    <header className="flex w-full items-center gap-1 px-1 pb-4">
+    <div className="flex w-full items-center gap-1 px-1 pb-4">
       <Button slot="previous">
         {direction === 'rtl' ? (
           <ChevronrightIcon aria-hidden />
@@ -105,7 +105,7 @@ export function CalendarHeader() {
           <ChevronrightIcon aria-hidden />
         )}
       </Button>
-    </header>
+    </div>
   );
 }
 

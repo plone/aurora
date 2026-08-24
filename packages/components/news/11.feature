@@ -1,0 +1,1 @@
+Added `DateRangePicker` and `RangeCalendar` Quanta components. @maurice-rm

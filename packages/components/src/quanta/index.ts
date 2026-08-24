@@ -19,7 +19,9 @@ export { AlignWidget } from '../components/AlignWidget/AlignWidget';
 export { WidthWidget } from '../components/WidthWidget/WidthWidget';
 
 export * from '../components/DateTimePicker/DateTimePicker.quanta';
+export * from '../components/DateRangePicker/DateRangePicker.quanta';
 export * from '../components/DatePicker/DatePicker.quanta';
+export * from '../components/RangeCalendar/RangeCalendar.quanta';
 export * from '../components/TimeField/TimeField.quanta';
 export * from '../components/DateInput/DateInput.quanta';
 export * from '../components/RadioGroup/RadioGroup.quanta';
