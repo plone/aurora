@@ -1,0 +1,1 @@
+Drop the duplicated `LegacyLinkPlugin` from the BlockEditor link kit; legacy Slate fragments pasted from a legacy volto-slate editor are now normalized by `@plone/plate`'s paste boundary instead. @sneridagh
