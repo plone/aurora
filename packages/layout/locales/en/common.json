@@ -3,6 +3,10 @@
     "languageSwitcher": {
       "switchTo": "Switch to {{ lang }}"
     },
+    "tools": {
+      "login": "Log in",
+      "logout": "Log out"
+    },
     "contenttypes": {
       "common": {
         "size": "Size:"
