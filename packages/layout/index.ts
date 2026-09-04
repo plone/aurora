@@ -5,6 +5,7 @@ import installToast from './config/toast';
 import DefaultView from './views/DefaultView';
 import FileView from './views/FileView';
 import ImageView from './views/ImageView';
+import NewsItemView from './views/NewsItemView';
 import LinkView from './views/LinkView';
 import EventView from './views/EventView';
 
@@ -20,6 +21,7 @@ export default function install(config: ConfigType) {
   config.views.contentTypesViews = {
     File: FileView,
     Image: ImageView,
+    'News Item': NewsItemView,
     Link: LinkView,
     Event: EventView,
     ...config.views.contentTypesViews,
