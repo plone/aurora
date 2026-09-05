@@ -8,6 +8,13 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.5 (2026-09-05)
+
+### Internal
+
+- Adapted routes to React Router v8's renamed loader/action context fields and `meta()` match shape. @sneridagh 
+- Declared the catalog-managed i18next version as a peer dependency to keep react-i18next instances unified. @sneridagh 
+
 ## 1.0.0-alpha.4 (2026-07-02)
 
 ### Feature
