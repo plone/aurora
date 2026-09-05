@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.6 (2026-09-05)
+
+### Internal
+
+- Re-release for update the README in npm. @sneridagh 
+
 ## 1.0.0-alpha.5 (2026-09-05)
 
 ### Breaking
