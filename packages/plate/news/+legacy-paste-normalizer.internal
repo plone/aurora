@@ -1,1 +1,0 @@
-Move legacy Slate → Plate normalization out of always-on runtime `normalizeNode` plugins and into a single `insertFragment` paste boundary (`LegacyPastePlugin`). The server now hands over already-migrated data, so the runtime legacy mark/list/link plugins were removed from the editor and renderer kits; pasting a legacy volto-slate fragment is still normalized. @sneridagh

@@ -8,6 +8,14 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.14 (2026-09-05)
+
+### Internal
+
+- Added `vite.extend.js` and a dependency audit path to pre-bundle Plate runtime dependencies, reducing dev server startup reloads. @arybakov05 
+- Move legacy Slate → Plate normalization out of always-on runtime `normalizeNode` plugins and into a single `insertFragment` paste boundary (`LegacyPastePlugin`). The server now hands over already-migrated data, so the runtime legacy mark/list/link plugins were removed from the editor and renderer kits; pasting a legacy volto-slate fragment is still normalized. @sneridagh 
+- Reformatted editor source for compatibility with Prettier 3.8. @sneridagh 
+
 ## 1.0.0-alpha.13 (2026-07-24)
 
 ### Bugfix
