@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.7 (2026-09-05)
+
+### Internal
+
+- Re-release for adjust tag in repo and in npm automatically during the alpha phase. @sneridagh 
+
 ## 1.0.0-alpha.6 (2026-09-05)
 
 ### Internal
