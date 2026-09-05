@@ -1,4 +1,7 @@
 {
+  "plugins": {
+    "../scripts/prepublish.js": {}
+  },
   "hooks": {
     "after:bump": [
       "pipx run towncrier build --draft --yes --version ${version} > .changelog.draft",
@@ -14,13 +17,13 @@
     "changelog": "pipx run towncrier build --draft --yes --version 0.0.0",
     "requireUpstream": false,
     "requireCleanWorkingDir": false,
-    "commitMessage": "Release Seven ${version}",
-    "tagName": "Seven-${version}",
-    "tagAnnotation": "Release Seven ${version}"
+    "commitMessage": "Release @plone/aurora ${version}",
+    "tagName": "plone-aurora-${version}",
+    "tagAnnotation": "Release @plone/aurora ${version}"
   },
   "github": {
     "release": true,
-    "releaseName": "Seven ${version}",
+    "releaseName": "@plone/aurora ${version}",
     "releaseNotes": "cat .changelog.draft"
   }
 }
