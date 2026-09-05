@@ -1,6 +1,6 @@
 {
   "plugins": {
-    "../scripts/prepublish.js": {}
+    "../../packages/scripts/prepublish.js": {}
   },
   "hooks": {
     "after:bump": [
