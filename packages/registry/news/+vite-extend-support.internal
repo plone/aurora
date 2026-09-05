@@ -1,1 +1,0 @@
-Check whether `.plone/vite.loader.js` content has changed before writing it in `PloneRegistryVitePlugin`. @arybakov05
