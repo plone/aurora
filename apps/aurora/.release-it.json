@@ -7,7 +7,10 @@
       "pipx run towncrier build --draft --yes --version ${version} > .changelog.draft",
       "pipx run towncrier build --yes --version ${version}"
     ],
-    "after:release": "rm .changelog.draft"
+    "after:release": [
+      "rm .changelog.draft",
+      "pnpm dist-tag add @plone/aurora@${version} latest"
+    ]
   },
   "npm": {
     "publish": false
@@ -17,13 +20,13 @@
     "changelog": "pipx run towncrier build --draft --yes --version 0.0.0",
     "requireUpstream": false,
     "requireCleanWorkingDir": false,
-    "commitMessage": "Release @plone/aurora ${version}",
-    "tagName": "plone-aurora-${version}",
-    "tagAnnotation": "Release @plone/aurora ${version}"
+    "commitMessage": "Releasing @plone/aurora ${version}",
+    "tagName": "${version}",
+    "tagAnnotation": "${version}"
   },
   "github": {
     "release": true,
-    "releaseName": "@plone/aurora ${version}",
+    "releaseName": "${version}",
     "releaseNotes": "cat .changelog.draft"
   }
 }
