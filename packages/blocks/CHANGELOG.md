@@ -8,6 +8,13 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.12 (2026-09-05)
+
+### Internal
+
+- Declared the catalog-managed i18next version as a peer dependency to keep react-i18next instances unified. @sneridagh 
+- Reformatted block components for compatibility with Prettier 3.8. @sneridagh 
+
 ## 1.0.0-alpha.11 (2026-07-02)
 
 ### Feature
