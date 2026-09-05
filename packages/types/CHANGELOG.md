@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 3.0.0-alpha.3 (2026-09-05)
+
+### Internal
+
+- Reformatted type declarations for compatibility with Prettier 3.8. @sneridagh 
+
 ## 3.0.0-alpha.2 (2026-07-02)
 
 ### Breaking
