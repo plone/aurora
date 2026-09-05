@@ -8,6 +8,20 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.5 (2026-09-05)
+
+### Feature
+
+- Switched login page from Volto style to Plone style.
+  Added option to display site logo in login page. @arybakov05 [#24](https://github.com/plone/volto/issues/24)
+
+### Internal
+
+- Adapted routes to React Router v8's renamed loader/action context fields and `meta()` match shape. @sneridagh 
+- Added `vite.extend.js` and a dependency audit path to pre-bundle CMS UI runtime dependencies, reducing dev server startup reloads. @arybakov05 
+- Declared the catalog-managed i18next version as a peer dependency to keep react-i18next instances unified. @sneridagh 
+- Drop the duplicated `LegacyLinkPlugin` from the BlockEditor link kit; legacy Slate fragments pasted from a legacy volto-slate editor are now normalized by `@plone/plate`'s paste boundary instead. @sneridagh 
+
 ## 1.0.0-alpha.4 (2026-07-02)
 
 ### Breaking
