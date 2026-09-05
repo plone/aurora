@@ -1,6 +1,6 @@
 {
   "name": "@plone/aurora",
-  "description": "Plone Aurora - The next generation frontend for Plone CMS",
+  "description": "Plone Aurora is the next-generation frontend for Plone CMS",
   "version": "1.0.0-alpha.5",
   "maintainers": [
     {
@@ -12,12 +12,13 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/plone/aurora.git"
+    "url": "https://github.com/plone/aurora.git",
+    "directory": "apps/aurora"
   },
   "bugs": {
     "url": "https://github.com/plone/aurora/issues"
   },
-  "homepage": "https://plone.org",
+  "homepage": "https://plone-aurora.readthedocs.io/",
   "keywords": [
     "aurora",
     "plone",
