@@ -1,7 +1,7 @@
 {
   "name": "@plone/aurora",
   "description": "Plone Aurora - The next generation frontend for Plone CMS",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "maintainers": [
     {
       "name": "Plone Foundation",

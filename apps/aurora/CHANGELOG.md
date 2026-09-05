@@ -8,6 +8,41 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.5 (2026-09-05)
+
+### Breaking
+
+- Refactored the `Content` type to properly match the basic Plone types and allow TypeScript to narrow this type automatically. @pnicolli 
+- Renamed the Seven app package and import alias to `@plone/aurora`. @sneridagh 
+
+### Feature
+
+- Added `isAuthenticated` boolean to root loader data. @arybakov05 [#6710](https://github.com/plone/volto/issues/6710)
+- Added a middleware to handle Link Content Type View redirecting users that don't have Edit permissions. @pnicolli 
+- Added recurrence widget. @sabrina-bongiovanni 
+- Handled redirect responses from the backend when fetching content objects. @pnicolli 
+- Registered Aurora native blocks are now migrated into the Somersault field as `type: 'ploneBlock'` nodes with migrated `blockWidth` defaults so they can be rendered by the new editor pipeline later. @sneridagh 
+- Registered the new `@plone/contents` add-on in the Seven app. @pnicolli @giuliaghisini @sneridagh 
+
+### Bugfix
+
+- Fixed the dev server due to stale react-i18next imports. @sneridagh 
+- Gracefully clear stale `auth_seven` cookies and retry public page and asset requests anonymously instead of surfacing a `401` error boundary. @sneridagh 
+
+### Internal
+
+- Add the missing `@babel/core` dev dependency and ignore the local `var/` runtime directory for app development. @sneridagh 
+- Added `optimizeDeps.include` entries for non-addon workspace packages and app-level deps to reduce lazy dependency discovery reloads on dev server startup. @arybakov05 
+- Excluded `i18next-fs-backend` and `remix-i18next/server` from the client `optimizeDeps` bundle — they were still being picked up by Vite's client-side dependency scanner despite only being declared in `ssr.optimizeDeps.include`. @sneridagh 
+- Unify Makefile files across the packages. @ionlizarazu 
+- Update the Babel Vite plugin configuration for Vite 8 dependency optimization and apply the React Compiler transform to TypeScript modules outside dependencies. @sneridagh 
+- Updated development, CI, and documentation tooling to use pnpm 11.20.0 reproducibly through Corepack. @sneridagh 
+- Upgraded React Router to v8 and migrated `remix-i18next` to its v8 middleware-based API (`createI18nextMiddleware`), replacing the removed `RemixI18Next` class and its subpath exports. @sneridagh 
+
+### Documentation
+
+- Search and replace seven->aurora. @sneridagh 
+
 ## 1.0.0-alpha.4 (2026-05-13)
 
 ## 1.0.0-alpha.3 (2026-05-07)
