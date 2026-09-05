@@ -8,6 +8,13 @@
 
 <!-- towncrier release notes start -->
 
+## 5.0.0-alpha.2 (2026-09-05)
+
+### Internal
+
+- Reformatted component source for compatibility with Prettier 3.8. @sneridagh 
+- Updated Read the Docs configuration to compare against `main` branch. @stevepiercy 
+
 ## 5.0.0-alpha.1 (2026-07-02)
 
 ### Feature
