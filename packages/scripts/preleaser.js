@@ -37,6 +37,7 @@ const RELEASE_GROUPS = [
       '@plone/agave',
       '@plone/cmsui',
       '@plone/publicui',
+      '@plone/contents',
     ],
   },
   {
