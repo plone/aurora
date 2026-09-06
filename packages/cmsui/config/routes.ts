@@ -51,6 +51,17 @@ export default function install(config: ConfigType) {
       },
       {
         type: 'prefix',
+        path: '@@translate',
+        children: [
+          {
+            type: 'route',
+            path: '*',
+            file: '@plone/cmsui/routes/translate.tsx',
+          },
+        ],
+      },
+      {
+        type: 'prefix',
         path: 'controlpanel',
         children: [
           {

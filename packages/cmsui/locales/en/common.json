@@ -105,6 +105,11 @@
       "groupMembership": "Group Membership",
       "groups": "Groups"
     },
+    "translate": {
+      "source": "Source",
+      "view_source": "View source content",
+      "heading_new": "Translate \"{{title}}\" to {{language}}"
+    },
     "blocksEditor": {
       "blocksTab": "Blocks",
       "contentTab": "Content"
