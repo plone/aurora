@@ -2,6 +2,20 @@
   "cmsui": {
     "add": "Aggiungi",
     "edit": "Modifica",
+    "manage_translations": {
+      "title": "Gestisci le traduzioni di \"{{title}}\"",
+      "back": "Indietro",
+      "language": "Lingua",
+      "path": "Percorso",
+      "tools": "Strumenti",
+      "no_translation": "Nessuna traduzione",
+      "link": "Collega una traduzione esistente ({{language}})",
+      "unlink": "Scollega la traduzione ({{language}})",
+      "create": "Crea la traduzione ({{language}})",
+      "linked": "Traduzione collegata",
+      "unlinked": "Traduzione scollegata",
+      "failed": "Aggiornamento della traduzione non riuscito"
+    },
     "save": "Salva",
     "cancel": "Annulla",
     "recurrence": {
@@ -94,6 +108,11 @@
       "users": "Utenti",
       "groupMembership": "Appartenenza ai gruppi",
       "groups": "Gruppi"
+    },
+    "translate": {
+      "source": "Origine",
+      "view_source": "Visualizza il contenuto di origine",
+      "heading_new": "Traduci \"{{title}}\" in {{language}}"
     },
     "blocksEditor": {
       "blocksTab": "Blocchi",
