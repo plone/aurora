@@ -17,6 +17,9 @@
     "toolbar": {
       "label": "Barra degli strumenti"
     },
+    "tags": {
+      "label": "Etichette"
+    },
     "views": {
       "link": {
         "linkLabel": "L'indirizzo del link è:",
