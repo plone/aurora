@@ -40,6 +40,17 @@ const AppToast = (props: AppToastPropsType<React.ElementType>) => {
           <Button slot="close">
             <CloseIcon />
           </Button>
+          {toast.timeout && toast.content.showProgress !== false ? (
+            <div
+              className="react-aria-Toast-progress"
+              style={
+                {
+                  '--toast-duration': `${toast.timeout}ms`,
+                } as React.CSSProperties
+              }
+              aria-hidden="true"
+            />
+          ) : null}
         </Toast>
       )}
     </ToastRegion>

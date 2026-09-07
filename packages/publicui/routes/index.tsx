@@ -29,6 +29,7 @@ import { FolderIcon } from '@plone/components/Icons';
 import Pencil from '@plone/components/icons/pencil.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
+import Toast from '@plone/layout/components/Toast/Toast';
 import { shouldShowToolbar } from '@plone/layout/helpers';
 import { Plug, PluggablesProvider } from '@plone/layout/components/Pluggable';
 import clsx from 'clsx';
@@ -191,6 +192,9 @@ export default function Index() {
             </div>
           </PluggablesProvider>
         </RACRouterProvider>
+        <Toast
+          queue={config.getUtility({ name: 'queue', type: 'toast' }).method()}
+        />
         <ScrollRestoration />
         <Scripts />
       </body>

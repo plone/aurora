@@ -2,6 +2,7 @@
 @import '@plone/components/src/styles/basic/Link.css';
 @import '@plone/components/src/styles/basic/Breadcrumbs.css';
 @import '@plone/components/src/styles/basic/Container.css';
+@import '@plone/components/src/styles/basic/Toast.css';
 
 @property --block-width {
   initial-value: 100%;
