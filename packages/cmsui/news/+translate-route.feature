@@ -1,0 +1,1 @@
+Add `@@translate` route to create and edit translations of a content item. The form is pre-filled with the source content (or the existing translation), and saving creates the translation in the target language root folder and links it to the source. @nils-pzr
