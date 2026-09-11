@@ -2,17 +2,12 @@ import type { SlateElementProps } from 'platejs';
 
 import { SlateElement } from 'platejs';
 
-import { cn } from '../../lib/utils';
-
+// Divider styling is owned by shadcn/ui Typeset (`.typeset hr`).
 export function HrElementStatic(props: SlateElementProps) {
   return (
     <SlateElement {...props}>
-      <div className="cursor-text py-6" contentEditable={false}>
-        <hr
-          className={cn(
-            'h-0.5 rounded-sm border-none bg-muted bg-clip-content',
-          )}
-        />
+      <div contentEditable={false}>
+        <hr />
       </div>
       {props.children}
     </SlateElement>

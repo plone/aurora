@@ -3,11 +3,11 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { basename, dirname, join } from 'node:path';
 
-export type SevenApi = 'plone' | 'guillotina';
+export type AuroraApi = 'plone' | 'guillotina';
 
-export type SevenRequestOptions = {
+export type AuroraRequestOptions = {
   apiURL?: string;
-  api?: SevenApi;
+  api?: AuroraApi;
   username?: string;
   password?: string;
 };
@@ -48,7 +48,7 @@ function getRequestContext(requestOrPage: APIRequestContext | Page) {
   return requestOrPage;
 }
 
-function getDefaultApiConfig(options: SevenRequestOptions) {
+function getDefaultApiConfig(options: AuroraRequestOptions) {
   const hostname = process.env.BACKEND_HOST || '127.0.0.1';
   const siteId = process.env.SITE_ID || 'plone';
 
@@ -93,7 +93,7 @@ function resolveFixturePath(sourceFilename: string) {
   return join(getFixturesDir(), sourceFilename);
 }
 
-export async function setWorkflowSeven(
+export async function setWorkflow(
   requestOrPage: APIRequestContext | Page,
   {
     path = '/',
@@ -106,14 +106,14 @@ export async function setWorkflowSeven(
     expires = '2019-01-21T08:00:00',
     include_children = true,
   }: SetWorkflowParams = {},
-  requestOptions: SevenRequestOptions = {},
+  requestOptions: AuroraRequestOptions = {},
 ) {
   const request = getRequestContext(requestOrPage);
   const { api, apiURL, username, password } =
     getDefaultApiConfig(requestOptions);
 
   if (api !== 'plone') {
-    throw new Error('setWorkflowSeven is only supported for Plone API');
+    throw new Error('setWorkflow is only supported for Plone API');
   }
 
   const normalized = normalizePath(path);
@@ -158,7 +158,7 @@ export async function createContent(
     bodyModifier = (body) => body,
     image = false,
   }: CreateContentParams,
-  requestOptions: SevenRequestOptions = {},
+  requestOptions: AuroraRequestOptions = {},
 ) {
   const request = getRequestContext(requestOrPage);
   const { api, apiURL, username, password } =
@@ -295,7 +295,7 @@ export async function createContent(
   }
 
   if (transition && api === 'plone') {
-    await setWorkflowSeven(
+    await setWorkflow(
       request,
       { path: path || contentId, review_state: transition },
       requestOptions,
@@ -303,6 +303,48 @@ export async function createContent(
   }
 
   return response;
+}
+
+export type CreatePlateShowcaseParams = {
+  contentId?: string;
+  contentTitle?: string;
+  transition?: string;
+};
+
+/**
+ * Creates a Document seeded with the reusable Plate showcase fixture
+ * (`fixtures/plate-showcase.json`) — one use case of every native Plate
+ * block/node available in Aurora. The same fixture backs
+ * `tooling/scripts/create_showcase.py`, so the manual showcase page and the
+ * acceptance tests share a single source of truth.
+ */
+export async function createPlateShowcase(
+  requestOrPage: APIRequestContext | Page,
+  {
+    contentId = 'plate-showcase',
+    contentTitle = 'Plate Native Blocks — Showcase',
+    transition = 'publish',
+  }: CreatePlateShowcaseParams = {},
+  requestOptions: AuroraRequestOptions = {},
+) {
+  const fixture = JSON.parse(
+    await readFile(join(getFixturesDir(), 'plate-showcase.json'), 'utf-8'),
+  ) as Record<string, unknown>;
+
+  return createContent(
+    requestOrPage,
+    {
+      contentType: 'Document',
+      contentId,
+      contentTitle,
+      contentDescription:
+        'A use case of every native Plate block/node available in Aurora.',
+      transition,
+      // Spreads `blocks` + `blocks_layout` from the fixture.
+      bodyModifier: (body) => ({ ...body, ...fixture }),
+    },
+    requestOptions,
+  );
 }
 
 /**
