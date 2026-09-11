@@ -1,1 +1,1 @@
-Block schema fields can now declare an `onChangeSideEffects(value, nextData)` function to patch other fields when they change; the block settings form applies these patches centrally. @sneridagh
+Block schema fields can now declare an `onChangeSideEffects(value, nextData)` function to patch other fields when they change; the block settings form applies these patches centrally. @sneridagh @TimoBroeskamp
