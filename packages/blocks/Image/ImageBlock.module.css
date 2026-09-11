@@ -1,0 +1,13 @@
+@layer custom {
+  .imageBlock {
+    width: min(100%, var(--block-size, 100%));
+    margin-block: 0;
+    margin-inline: var(--block-alignment, auto);
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  }
+}

@@ -7,8 +7,9 @@ import type {
   RelatedItem,
 } from '@plone/types';
 import Image from '@plone/layout/components/Image/Image';
-import clsx from 'clsx';
 import config from '@plone/registry';
+import clsx from 'clsx';
+import styles from './ImageBlock.module.css';
 
 function flattenToAppUrl(url: string) {
   const apiPath = config.settings.apiPath || '';
@@ -44,6 +45,7 @@ const ImageBlockEdit = (props: BlockEditProps) => {
     ) => {
       const { title, image_field, image_scales } = item;
       const url = image ? flattenToAppUrl(image) : '';
+      console.log(item);
 
       setBlock({
         ...data,
@@ -55,7 +57,6 @@ const ImageBlockEdit = (props: BlockEditProps) => {
     },
     [data, setBlock],
   );
-
   const imageItem = data.image_scales
     ? ({
         '@id': data.url,
@@ -65,23 +66,9 @@ const ImageBlockEdit = (props: BlockEditProps) => {
     : undefined;
 
   return (
-    <div
-      className={clsx(
-        'image align block',
-        {
-          center: !Boolean(data.align),
-        },
-        data.align,
-      )}
-    >
+    <div className={clsx(styles.imageBlock, 'image-block')}>
       {data.url ? (
         <Image
-          className={clsx({
-            'full-width': data.align === 'full',
-            large: data.size === 'l',
-            medium: data.size === 'm',
-            small: data.size === 's',
-          })}
           item={imageItem}
           src={
             data.image_scales
