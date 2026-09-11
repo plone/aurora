@@ -17,6 +17,9 @@
     "toolbar": {
       "label": "Werkzeugleiste"
     },
+    "tags": {
+      "label": "Schlagwörter"
+    },
     "views": {
       "link": {
         "linkLabel": "Die Linkadresse lautet:",

@@ -17,6 +17,9 @@
     "toolbar": {
       "label": "Toolbar"
     },
+    "tags": {
+      "label": "Tags"
+    },
     "views": {
       "link": {
         "linkLabel": "The link address is:",

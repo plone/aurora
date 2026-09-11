@@ -1,0 +1,21 @@
+@layer custom {
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    gap: 8px;
+  }
+
+  .tag {
+    padding: 4px 12px;
+    border-radius: 9999px;
+    background: var(--quanta-azure);
+    color: var(--quanta-puya);
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+
+  .tag:hover {
+    opacity: 0.8;
+  }
+}
