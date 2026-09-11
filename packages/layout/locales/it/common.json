@@ -3,6 +3,10 @@
     "languageSwitcher": {
       "switchTo": "Passa a {{ lang }}"
     },
+    "tools": {
+      "login": "Accedi",
+      "logout": "Esci"
+    },
     "contenttypes": {
       "common": {
         "size": "Dimensione:"
