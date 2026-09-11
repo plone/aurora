@@ -47,21 +47,26 @@ export default function install(config: ConfigType) {
       name: 'left',
       label: 'Left',
       style: {
-        '--block-alignment': 'var(--block-alignment-left, 0 auto)',
+        '--block-float': 'left',
+        '--block-margin':
+          '0 var(--block-inline-gap, 1rem) var(--block-block-gap, 1rem) 0',
       },
     },
     {
       name: 'center',
       label: 'Center',
       style: {
-        '--block-alignment': 'var(--block-alignment-center, auto)',
+        '--block-float': 'none',
+        '--block-margin': '0 auto',
       },
     },
     {
       name: 'right',
       label: 'Right',
       style: {
-        '--block-alignment': 'var(--block-alignment-right, auto 0)',
+        '--block-float': 'right',
+        '--block-margin':
+          '0 0 var(--block-block-gap, 1rem) var(--block-inline-gap, 1rem)',
       },
     },
   ];

@@ -71,11 +71,27 @@ const BlockSettingsForm = (props: BlockSettingsFormProps) => {
       form={form}
       getFieldProps={(fieldName) => ({
         onChange: (value: unknown) => {
-          const nextData = setValueByPath(
+          let nextData = setValueByPath(
             (form.state.values as Record<string, unknown>) ?? {},
             fieldName,
             value,
           );
+
+          // A field's schema may declare side effects on other fields when it
+          // changes, via `onChangeSideEffects(value, nextData)` returning a map
+          // of `fieldName -> value` patches. This is the single place block
+          // fields can react to each other (eg. coupling alignment and size).
+          const fieldSchema = (schema as any)?.properties?.[fieldName];
+          const sideEffects = fieldSchema?.onChangeSideEffects?.(
+            value,
+            nextData,
+          );
+
+          if (sideEffects) {
+            for (const [key, patchValue] of Object.entries(sideEffects)) {
+              nextData = setValueByPath(nextData, key, patchValue);
+            }
+          }
 
           props.onFormDataChange?.(nextData);
         },

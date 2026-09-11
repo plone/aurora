@@ -1,13 +1,75 @@
-@layer custom {
-  .imageBlock {
-    width: min(100%, var(--block-size, 100%));
-    margin-block: 0;
-    margin-inline: var(--block-alignment, auto);
+/*
+ * The image block owns its own layout. Tailwind's preflight reset
+ * (`* { margin: 0 }`) and the editor's selection outline live in a stronger
+ * cascade layer (`cmsui`), so these rules are intentionally left unlayered —
+ * unlayered normal declarations win over any layer — otherwise the reset would
+ * zero out the alignment margins and the outline could not be suppressed.
+ */
 
-    img {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
+.imageBlock {
+  width: min(100%, var(--block-size, 100%));
+  /*
+   * Alignment is float-based so that the content of following blocks wraps
+   * around left/right aligned images. `center` resets the float and uses auto
+   * inline margins to center the image instead. `--block-margin` also carries
+   * the gap that separates the wrapping text from the image.
+   */
+  margin: var(--block-margin, 0 auto);
+  float: var(--block-float, none);
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
+}
+
+/*
+ * When the image links somewhere, the anchor wraps the image inside the figure.
+ * Make it a block so the image keeps filling the figure width.
+ */
+.imageLink {
+  display: block;
+}
+
+/*
+ * When the image is floated its block wrapper collapses to zero height, so the
+ * following block paints over the image and would steal the clicks needed to
+ * select the block in the editor. Raising the floated image above the next
+ * block keeps it clickable. Only needed for the floated (left/right) states.
+ */
+:global([data-style-align='left']) .imageBlock,
+:global([data-style-align='right']) .imageBlock {
+  position: relative;
+  z-index: 2;
+}
+
+/*
+ * Once floated, the collapsed wrapper's selection outline renders as a stray
+ * full-width line and the inter-block spacing below it is pointless. Drop both
+ * while floated.
+ */
+:global(.block-image[data-style-align='left']),
+:global(.block-image[data-style-align='right']) {
+  outline: none;
+
+  :global(.block-inner-container) {
+    padding-bottom: 0;
+  }
+}
+
+/*
+ * Lists in blocks that follow a floated image wrap around it. Their markers use
+ * `list-style-position: outside`, which paints the marker to the left of the
+ * (float-shifted) first line — so the number/bullet lands on top of the image,
+ * ignoring the float gap. A marker gutter (`padding-inline-start`) cannot fix
+ * this: the one-item `<ol>` box still spans the full column, so the marker keeps
+ * tracking the shifted line. Switching these lists to inside markers moves the
+ * marker into the line box, so it respects the gap exactly like wrapping text.
+ */
+:global(.block-image[data-style-align='left']) ~ :global(.block) :global(ol),
+:global(.block-image[data-style-align='left']) ~ :global(.block) :global(ul),
+:global(.block-image[data-style-align='right']) ~ :global(.block) :global(ol),
+:global(.block-image[data-style-align='right']) ~ :global(.block) :global(ul) {
+  list-style-position: inside;
 }
