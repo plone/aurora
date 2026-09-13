@@ -14,6 +14,12 @@ const HeaderTools = () => {
       icon: '🔨',
       url: '/logout',
     },
+    {
+      id: '3',
+      label: 'personal information',
+      icon: '👤',
+      url: '/@@personal-information',
+    },
   ];
   // Inline styles since this is temporary during seven development
   return import.meta.env.DEV ? (
