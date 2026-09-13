@@ -37,18 +37,18 @@ export async function getContent(
       }),
     },
   };
+  if (validatedArgs.expand) {
+    options.params = {
+      ...options.params,
+      expand,
+    };
+  }
   if (validatedArgs.version) {
     return apiRequest(
       'get',
       `${path}/@history/${validatedArgs.version}`,
       options,
     );
-  }
-  if (validatedArgs.expand) {
-    options.params = {
-      ...options.params,
-      expand,
-    };
   }
   return apiRequest('get', path, options);
 }

@@ -43,6 +43,7 @@ export * from './types/file';
 export * from './types/image';
 export * from './types/folder';
 export * from './types/collection';
+export * from './types/plone-site';
 
 // Other
 export * from './common';

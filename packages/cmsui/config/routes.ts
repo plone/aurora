@@ -51,6 +51,17 @@ export default function install(config: ConfigType) {
       },
       {
         type: 'prefix',
+        path: '@@history',
+        children: [
+          {
+            type: 'route',
+            path: '*',
+            file: '@plone/cmsui/routes/history.tsx',
+          },
+        ],
+      },
+      {
+        type: 'prefix',
         path: 'controlpanel',
         children: [
           {

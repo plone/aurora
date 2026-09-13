@@ -143,6 +143,9 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
   let cli = context.get(ploneClientContext);
 
   const path = `/${params['*'] || ''}`;
+  // A `?version=N` query (e.g. History's "View this revision") fetches that
+  // revision via the @history endpoint instead of the current content.
+  const version = new URL(request.url).searchParams.get('version') ?? undefined;
 
   let userId = '';
   if (token) {
@@ -172,7 +175,7 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
 
   try {
     const [content, site, user] = await Promise.all([
-      cli.getContent({ path, expand }),
+      cli.getContent({ path, version, expand }),
       cli.getSite(),
       userId ? cli.getUser({ id: userId }).catch(() => null) : null,
     ]);
@@ -200,6 +203,7 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
         const [content, site] = await Promise.all([
           cli.getContent({
             path,
+            version,
             expand: expand.filter((item) => item !== 'types'),
           }),
           cli.getSite(),

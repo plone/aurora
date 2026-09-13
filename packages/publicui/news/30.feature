@@ -1,0 +1,1 @@
+Added a History button to the toolbar linking to the `@@history` route.

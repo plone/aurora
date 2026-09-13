@@ -121,6 +121,29 @@
       "forgotPassword": "Forgot password? Request a <a>new password</a>",
       "returnToHome": "Return to home page"
     },
+    "history": {
+      "label": "History",
+      "home": "Home",
+      "back": "Back",
+      "changesTo": "Changes to \"{{title}}\"",
+      "actions": "Actions",
+      "column": {
+        "action": "Action done",
+        "by": "By",
+        "time": "Time",
+        "changeNote": "Change note"
+      },
+      "reviewChanges": "Review changes",
+      "viewRevision": "View this revision",
+      "revert": "Revert to this version",
+      "modalRevert": {
+        "title": "Revert to this version?",
+        "description": "\"{{title}}\" will be reset to the state from {{time}}.",
+        "cancel": "Cancel",
+        "confirm": "Revert",
+        "error": "The version could not be restored. Please try again."
+      }
+    },
     "toolbar": {
       "settings": "Settings"
     }
