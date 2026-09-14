@@ -8,6 +8,16 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.8 (2026-09-14)
+
+### Breaking
+
+- The fixed wiring up the `rootLoaderData` utility envelope in the root loader provokes a breaking change for all `rootLoaderData` utilities so they must return a `{ status, data }` envelope (matching the PloneClient response shape), but the root loader spread the whole envelope onto the root loader data instead of merging each utility's `data`. It now merges `data`, so utilities that namespace their payload (for example `{ status, data: { likes: {...} } }`) are exposed correctly. @sneridagh 
+
+### Bugfix
+
+- Wire up the `rootLoaderData` utility envelope in the root loader. Utilities return a `{ status, data }` envelope (matching the PloneClient response shape), but the root loader spread the whole envelope onto the root loader data instead of merging each utility's `data`. It now merges `data`, so utilities that namespace their payload (for example `{ status, data: { likes: {...} } }`) are exposed correctly. Acting on `status` is left for a follow-up. @sneridagh 
+
 ## 1.0.0-alpha.7 (2026-09-05)
 
 ### Internal
