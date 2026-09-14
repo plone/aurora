@@ -22,6 +22,9 @@ It also includes tools for development and deployment.
 
 After satisfying the {doc}`system-requirements` and having {ref}`activated an LTS version of Node.js <plone-aurora-prerequisites-nodejs-label>`, generate the add-on package.
 
+```{include} ../_inc/_cookieplone-version-note.md
+```
+
 ```shell
 uvx cookieplone aurora_addon --no-input
 ```
