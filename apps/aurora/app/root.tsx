@@ -77,9 +77,19 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
       site,
       locale,
       isAuthenticated: user !== null,
+      // Each `rootLoaderData` utility returns a `{ status, data }` envelope
+      // (see `config/types.ts`). Merge each utility's `data` into the root
+      // loader data; utilities namespace their `data` to avoid clobbering.
+      // TODO: act on `status` (e.g. propagate a non-2xx to the response).
       ...rootLoaderDataUtilitiesData
         .filter((item) => item)
-        .reduce((acc, item) => ({ ...acc, ...item }), {}),
+        .reduce(
+          (acc, item) => ({
+            ...acc,
+            ...(item.data as Record<string, unknown>),
+          }),
+          {},
+        ),
     };
 
     return data(loaderData, {
