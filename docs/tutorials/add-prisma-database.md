@@ -333,9 +333,12 @@ export default function install(config: ConfigType) {
     method: async ({ path }) => {
       const like = await prisma.urlLike.findUnique({ where: { pathname: path } });
       return {
-        likes: {
-          pathname: path,
-          count: like?.count ?? 0,
+        status: 200,
+        data: {
+          likes: {
+            pathname: path,
+            count: like?.count ?? 0,
+          },
         },
       };
     },
@@ -346,7 +349,8 @@ export default function install(config: ConfigType) {
 ```
 
 Plone Aurora will call this function in the root loader, passing the current path as an argument.
-The data will be available in the `LikeButton` component via the `useRouteLoaderData` hook.
+The `method` returns a `{ status, data }` envelope, matching the shape returned by the Plone client (`@plone/client`).
+The root loader unwraps each utility's `data` and merges it into the root loader data, so the payload is available in the `LikeButton` component directly (for example, as `rootData.likes`) via the `useRouteLoaderData` hook.
 With this utility in place, `LikeButton` can read the latest count from the root loader, and React Router will revalidate the loader automatically after each POST.
 
 ## Run the development server
