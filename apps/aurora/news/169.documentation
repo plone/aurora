@@ -1,1 +1,0 @@
-Update the root-loader how-to and the Prisma tutorial so `rootLoaderData` utilities return the `{ status, data }` envelope that the root loader unwraps and merges. @sneridagh

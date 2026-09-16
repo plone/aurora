@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.9 (2026-09-16)
+
+### Documentation
+
+- Update the root-loader how-to and the Prisma tutorial so `rootLoaderData` utilities return the `{ status, data }` envelope that the root loader unwraps and merges. @sneridagh [#169](https://github.com/plone/volto/issues/169)
+
 ## 1.0.0-alpha.8 (2026-09-14)
 
 ### Breaking
