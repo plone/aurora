@@ -21,6 +21,7 @@ access-registry
 register-and-retrieve-components
 register-and-retrieve-utilities
 configure-style-fields
+couple-block-schema-fields
 register-slots
 customize-login-screen
 shadow-a-component

@@ -1,0 +1,1 @@
+The image block now stores its alignment and size as schema-driven style fields, ships its styles as a CSS module instead of a global side-effect import, floats left/right aligned images at any size so following content wraps around them (including list markers), keeps floated images selectable in the editor, and can link the image to another page. @sneridagh @TimoBroeskamp
