@@ -12,7 +12,20 @@ const IMAGE_PATH = [2];
 
 type ImageBlockOverrides = Record<string, unknown>;
 
-async function setupStyledImagePage(
+async function createImage(page: Page, imageId: string) {
+  await createContent(page, {
+    contentType: 'Image',
+    contentId: imageId,
+    contentTitle: 'Styled image',
+    image: {
+      sourceFilename: 'halfdome2022.jpg',
+      filename: 'halfdome2022.jpg',
+      'content-type': 'image/jpeg',
+    },
+  });
+}
+
+async function createImagePage(
   page: Page,
   {
     pageId,
@@ -24,17 +37,6 @@ async function setupStyledImagePage(
     imageBlock?: ImageBlockOverrides;
   },
 ) {
-  await createContent(page, {
-    contentType: 'Image',
-    contentId: imageId,
-    contentTitle: 'Styled image',
-    image: {
-      sourceFilename: 'halfdome2022.jpg',
-      filename: 'halfdome2022.jpg',
-      'content-type': 'image/jpeg',
-    },
-  });
-
   await createContent(page, {
     contentType: 'Document',
     contentId: pageId,
@@ -64,6 +66,14 @@ async function setupStyledImagePage(
   });
 }
 
+async function setupStyledImagePage(
+  page: Page,
+  args: { pageId: string; imageId: string; imageBlock?: ImageBlockOverrides },
+) {
+  await createImage(page, args.imageId);
+  await createImagePage(page, args);
+}
+
 async function openImageBlockEditor(page: Page, pageId: string) {
   await page.goto(`/@@edit/${pageId}`);
   await page.reload();
@@ -88,32 +98,75 @@ async function readImageBlock(
   return (await handle.jsonValue()) as Record<string, unknown>;
 }
 
+// Rendered width of the image relative to its column (the inner container).
+async function widthRatio(page: Page) {
+  return page
+    .locator('.image-block')
+    .first()
+    .evaluate((el) => {
+      const inner = el.closest('.block-inner-container') as HTMLElement | null;
+      const container = inner ?? (el.parentElement as HTMLElement);
+      return (
+        el.getBoundingClientRect().width /
+        container.getBoundingClientRect().width
+      );
+    });
+}
+
 function radio(page: Page, name: string) {
   return page.getByRole('radio', { name, exact: true });
 }
 
-test('centered image offers every size and an editable width', async ({
+// Select the image only when it is not already selected (re-clicking a selected
+// image would deselect it), so it is safe to call between changes in a flow.
+async function ensureSelected(page: Page, imageId: string) {
+  const form = page.locator('#sidebar form');
+  if ((await form.count()) > 0) return;
+  await imageLocator(page, imageId).click();
+  await expect(form).toHaveCount(1);
+}
+
+async function expectNode(
+  page: Page,
+  editorHandle: Awaited<ReturnType<typeof getEditorHandle>>,
+  expected: { align: string; blockWidth: string; size: string },
+) {
+  await expect
+    .poll(async () => {
+      const node = await readImageBlock(page, editorHandle);
+      return JSON.stringify({
+        align: node.align,
+        blockWidth: node.blockWidth,
+        size: node.size,
+      });
+    })
+    .toBe(JSON.stringify(expected));
+}
+
+test('centered large image is full width with no float and every control', async ({
   page,
 }) => {
   await login(page);
   await setupStyledImagePage(page, {
     pageId: 'image-style-centered',
     imageId: 'styled-image-centered',
-    imageBlock: { align: 'center', size: 'l', blockWidth: 'layout' },
+    imageBlock: { align: 'center', size: 'l', blockWidth: 'default' },
   });
   await openImageBlockEditor(page, 'image-style-centered');
   await selectImageBlock(page, 'styled-image-centered');
 
-  // All three sizes are available.
+  // Every size and an editable width are available.
   await expect(radio(page, 'Small')).toBeVisible();
   await expect(radio(page, 'Medium')).toBeVisible();
   await expect(radio(page, 'Large')).toBeVisible();
-
-  // The width control is editable.
   await expect(radio(page, 'Default')).toBeEnabled();
+
+  // Centered large fills its column and does not float.
+  await expect(page.locator('.image-block').first()).toHaveCSS('float', 'none');
+  expect(await widthRatio(page)).toBeGreaterThan(0.95);
 });
 
-test('switching to left couples width to default and coerces large to medium', async ({
+test('floating left leaves width and size untouched and floats large', async ({
   page,
 }) => {
   await login(page);
@@ -127,7 +180,7 @@ test('switching to left couples width to default and coerces large to medium', a
 
   await radio(page, 'Left').click({ force: true });
 
-  // The stored block data reflects the coupling.
+  // Only the alignment changes; width and size are left as they were.
   await expect
     .poll(async () => {
       const node = await readImageBlock(page, editorHandle);
@@ -137,20 +190,21 @@ test('switching to left couples width to default and coerces large to medium', a
         size: node.size,
       });
     })
-    .toBe(JSON.stringify({ align: 'left', blockWidth: 'default', size: 'm' }));
+    .toBe(JSON.stringify({ align: 'left', blockWidth: 'layout', size: 'l' }));
 
-  // The image is floated and following content can wrap around it.
+  // The image floats and, even at the large size, is capped so content wraps.
   await expect(page.locator('.image-block').first()).toHaveCSS('float', 'left');
+  expect(await widthRatio(page)).toBeLessThan(0.9);
 
-  // The width control is disabled and large size is no longer offered.
+  // Every size stays available and the width control stays editable.
   await selectImageBlock(page, 'styled-image-left');
-  await expect(radio(page, 'Default')).toBeDisabled();
-  await expect(radio(page, 'Large')).toHaveCount(0);
+  await expect(radio(page, 'Default')).toBeEnabled();
   await expect(radio(page, 'Small')).toBeVisible();
   await expect(radio(page, 'Medium')).toBeVisible();
+  await expect(radio(page, 'Large')).toBeVisible();
 });
 
-test('switching to right floats right and keeps the width locked', async ({
+test('floating right floats large with all size and width controls available', async ({
   page,
 }) => {
   await login(page);
@@ -173,57 +227,195 @@ test('switching to right floats right and keeps the width locked', async ({
         size: node.size,
       });
     })
-    .toBe(JSON.stringify({ align: 'right', blockWidth: 'default', size: 'm' }));
+    .toBe(JSON.stringify({ align: 'right', blockWidth: 'default', size: 'l' }));
 
   await expect(page.locator('.image-block').first()).toHaveCSS(
     'float',
     'right',
   );
+  expect(await widthRatio(page)).toBeLessThan(0.9);
+
+  await selectImageBlock(page, 'styled-image-right');
+  await expect(radio(page, 'Default')).toBeEnabled();
+  await expect(radio(page, 'Large')).toBeVisible();
 });
 
-test('a small floated image keeps its size', async ({ page }) => {
-  await login(page);
-  await setupStyledImagePage(page, {
-    pageId: 'image-style-small',
-    imageId: 'styled-image-small',
-    imageBlock: { align: 'center', size: 's', blockWidth: 'default' },
-  });
-  const editorHandle = await openImageBlockEditor(page, 'image-style-small');
-  await selectImageBlock(page, 'styled-image-small');
-
-  await radio(page, 'Left').click({ force: true });
-
-  await expect
-    .poll(async () => {
-      const node = await readImageBlock(page, editorHandle);
-      return JSON.stringify({ align: node.align, size: node.size });
-    })
-    .toBe(JSON.stringify({ align: 'left', size: 's' }));
-});
-
-test('returning to center re-enables the width and the large size', async ({
+test('block width is editable and independent while floated', async ({
   page,
 }) => {
   await login(page);
   await setupStyledImagePage(page, {
-    pageId: 'image-style-recenter',
-    imageId: 'styled-image-recenter',
-    imageBlock: { align: 'left', size: 'm', blockWidth: 'default' },
+    pageId: 'image-style-width',
+    imageId: 'styled-image-width',
+    imageBlock: { align: 'left', size: 'l', blockWidth: 'default' },
   });
-  await openImageBlockEditor(page, 'image-style-recenter');
-  await selectImageBlock(page, 'styled-image-recenter');
+  const editorHandle = await openImageBlockEditor(page, 'image-style-width');
+  await selectImageBlock(page, 'styled-image-width');
 
-  // Starts floated: width disabled, no large size.
-  await expect(radio(page, 'Default')).toBeDisabled();
-  await expect(radio(page, 'Large')).toHaveCount(0);
-
-  await radio(page, 'Center').click({ force: true });
-
-  // Back to center: width editable and large size available again.
-  await selectImageBlock(page, 'styled-image-recenter');
+  // Width options are enabled even though the image is floated.
   await expect(radio(page, 'Default')).toBeEnabled();
+  await expect(radio(page, 'Layout')).toBeEnabled();
+  await expect(radio(page, 'Narrow')).toBeEnabled();
+  await expect(radio(page, 'Full')).toBeEnabled();
+
+  // Changing the width persists and leaves alignment and size untouched.
+  await radio(page, 'Layout').click({ force: true });
+  await expect
+    .poll(async () => {
+      const node = await readImageBlock(page, editorHandle);
+      return JSON.stringify({
+        align: node.align,
+        blockWidth: node.blockWidth,
+        size: node.size,
+      });
+    })
+    .toBe(JSON.stringify({ align: 'left', blockWidth: 'layout', size: 'l' }));
+});
+
+test('floated sizes scale up, with large capped so it still floats', async ({
+  page,
+}) => {
+  test.slow(); // creates and renders three pages
+  await login(page);
+  await createImage(page, 'styled-image-scale');
+
+  const ratios: Record<string, number> = {};
+  for (const size of ['s', 'm', 'l'] as const) {
+    await createImagePage(page, {
+      pageId: `image-style-scale-${size}`,
+      imageId: 'styled-image-scale',
+      imageBlock: { align: 'left', size },
+    });
+    await page.goto(`/image-style-scale-${size}`);
+    const block = page.locator('.image-block').first();
+    await expect(block).toBeVisible();
+    // Confirms the style fields are applied in the published view too.
+    await expect(block).toHaveCSS('float', 'left');
+    ratios[size] = await widthRatio(page);
+  }
+
+  expect(ratios.s).toBeLessThan(ratios.m);
+  expect(ratios.m).toBeLessThan(ratios.l);
+  expect(ratios.l).toBeLessThan(0.9); // large stays capped, so it keeps floating
+});
+
+test('walking through every alignment and size combination in one session', async ({
+  page,
+}) => {
+  test.slow(); // exercises many combinations in sequence
+  await login(page);
+  await setupStyledImagePage(page, {
+    pageId: 'image-style-walk',
+    imageId: 'styled-image-walk',
+    imageBlock: { align: 'center', size: 'l', blockWidth: 'default' },
+  });
+  const editorHandle = await openImageBlockEditor(page, 'image-style-walk');
+  const block = page.locator('.image-block').first();
+
+  // Center + large: no float, full width, all controls available.
+  await ensureSelected(page, 'styled-image-walk');
+  await expect(block).toHaveCSS('float', 'none');
+  expect(await widthRatio(page)).toBeGreaterThan(0.95);
   await expect(radio(page, 'Large')).toBeVisible();
-  await expect(page.locator('.image-block').first()).toHaveCSS('float', 'none');
+  await expect(radio(page, 'Default')).toBeEnabled();
+
+  // -> Left: floats, large stays capped, width and size are preserved.
+  await radio(page, 'Left').click({ force: true });
+  await expectNode(page, editorHandle, {
+    align: 'left',
+    blockWidth: 'default',
+    size: 'l',
+  });
+  await expect(block).toHaveCSS('float', 'left');
+  expect(await widthRatio(page)).toBeLessThan(0.9);
+
+  // -> Small (still left).
+  await ensureSelected(page, 'styled-image-walk');
+  await radio(page, 'Small').click({ force: true });
+  await expectNode(page, editorHandle, {
+    align: 'left',
+    blockWidth: 'default',
+    size: 's',
+  });
+  const smallRatio = await widthRatio(page);
+
+  // -> Medium (still left): wider than small.
+  await ensureSelected(page, 'styled-image-walk');
+  await radio(page, 'Medium').click({ force: true });
+  await expectNode(page, editorHandle, {
+    align: 'left',
+    blockWidth: 'default',
+    size: 'm',
+  });
+  expect(await widthRatio(page)).toBeGreaterThan(smallRatio);
+
+  // -> Right: floats to the other side.
+  await ensureSelected(page, 'styled-image-walk');
+  await radio(page, 'Right').click({ force: true });
+  await expectNode(page, editorHandle, {
+    align: 'right',
+    blockWidth: 'default',
+    size: 'm',
+  });
+  await expect(block).toHaveCSS('float', 'right');
+
+  // -> Center: float released, large offered again.
+  await ensureSelected(page, 'styled-image-walk');
+  await radio(page, 'Center').click({ force: true });
+  await expectNode(page, editorHandle, {
+    align: 'center',
+    blockWidth: 'default',
+    size: 'm',
+  });
+  await expect(block).toHaveCSS('float', 'none');
+
+  // -> Large (centered): full width again.
+  await ensureSelected(page, 'styled-image-walk');
+  await expect(radio(page, 'Large')).toBeVisible();
+  await radio(page, 'Large').click({ force: true });
+  await expectNode(page, editorHandle, {
+    align: 'center',
+    blockWidth: 'default',
+    size: 'l',
+  });
+  expect(await widthRatio(page)).toBeGreaterThan(0.95);
+});
+
+test('combinations set in the editor render correctly after saving', async ({
+  page,
+}) => {
+  await login(page);
+  await setupStyledImagePage(page, {
+    pageId: 'image-style-save',
+    imageId: 'styled-image-save',
+    imageBlock: { align: 'center', size: 'l', blockWidth: 'default' },
+  });
+  const editorHandle = await openImageBlockEditor(page, 'image-style-save');
+  await selectImageBlock(page, 'styled-image-save');
+
+  // Change to a left-floated large image (a combination that differs from the
+  // seeded, centered state) so the assertion proves the save actually landed.
+  await radio(page, 'Left').click({ force: true });
+  await expectNode(page, editorHandle, {
+    align: 'left',
+    blockWidth: 'default',
+    size: 'l',
+  });
+
+  // Save the block via the toolbar and wait for the request to complete.
+  const saved = page.waitForResponse(
+    (r) => ['PATCH', 'POST'].includes(r.request().method()) && r.ok(),
+    { timeout: 15_000 },
+  );
+  await page.getByRole('button', { name: 'Save' }).click();
+  await saved;
+
+  // The published view reflects the saved combination: floated left, capped.
+  await page.goto('/image-style-save');
+  const block = page.locator('.image-block').first();
+  await expect(block).toBeVisible();
+  await expect(block).toHaveCSS('float', 'left');
+  expect(await widthRatio(page)).toBeLessThan(0.9);
 });
 
 test('an image with a link wraps the rendered image in an anchor', async ({

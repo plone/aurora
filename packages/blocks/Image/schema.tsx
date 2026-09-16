@@ -7,12 +7,6 @@ import type {
 export function ImageSchema({
   formData = {} as BlocksFormData,
 }: { formData?: BlocksFormData } = {}): JSONSchema {
-  // A floated (left/right) image reserves a fixed, narrow footprint so the
-  // following blocks can wrap around it. In that state the block width is fixed
-  // to `default` (and its control disabled) and the large size is not offered.
-  const isFloated = (align?: unknown) => align === 'left' || align === 'right';
-  const floated = isFloated(formData.align);
-
   return {
     title: 'Image',
     fieldsets: [
@@ -60,9 +54,6 @@ export function ImageSchema({
         title: 'Block width',
         widget: 'width',
         default: 'default',
-        // While floated the width is fixed to `default` and not editable.
-        value: floated ? 'default' : (formData.blockWidth ?? 'default'),
-        isDisabled: floated,
         styleField: true,
       },
       align: {
@@ -70,31 +61,12 @@ export function ImageSchema({
         widget: 'align',
         default: 'center',
         actions: ['left', 'right', 'center'],
-        // Switching to a floated alignment fixes the width and drops the large
-        // size; switching back to center releases both controls again.
-        onChangeSideEffects: (value: string, data: BlocksFormData) => {
-          if (isFloated(value)) {
-            const currentSize = (data.size as string) ?? 'l';
-            return {
-              blockWidth: 'default',
-              size: currentSize === 'l' ? 'm' : currentSize,
-            };
-          }
-          return {};
-        },
         styleField: true,
       },
       size: {
         title: 'Image size',
         widget: 'size',
         default: 'l',
-        // Large is only available for centered images.
-        actions: floated ? ['s', 'm'] : ['s', 'm', 'l'],
-        value: floated
-          ? (formData.size as string) === 'l' || !formData.size
-            ? 'm'
-            : (formData.size as string)
-          : ((formData.size as string) ?? 'l'),
         styleField: true,
       },
       href: {

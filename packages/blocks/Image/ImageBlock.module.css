@@ -42,6 +42,12 @@
 :global([data-style-align='right']) .imageBlock {
   position: relative;
   z-index: 2;
+  /*
+   * Cap the width while floated so even the large size floats with room for the
+   * surrounding content to wrap. Small/medium stay narrower than this cap, so
+   * only large is affected; tune with `--block-float-max-size`.
+   */
+  max-width: var(--block-float-max-size, 66%);
 }
 
 /*

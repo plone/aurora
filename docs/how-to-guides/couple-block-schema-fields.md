@@ -10,9 +10,13 @@ myst:
 # Couple block schema fields
 
 Sometimes changing one block field should also change another.
-For example, in the image block, choosing a left or right alignment (which floats the image) fixes the block width to `default` and drops the large image size, because a floated image needs a fixed, narrow footprint for the surrounding content to wrap around it.
+For example, a block might reset a dependent field when a mode switches, or fix its width and drop some size options when its alignment floats it, because a floated element needs a fixed, narrow footprint for surrounding content to wrap around it.
 
 This guide explains how to express that coupling with `onChangeSideEffects`, the single, schema-driven tap point for reacting to a field change in the block settings form.
+
+```{note}
+The examples below are illustrative. No shipped block enables this coupling today; the `onChangeSideEffects` tap point exists in the block settings form for blocks that need it.
+```
 
 ## How it works
 
@@ -71,12 +75,13 @@ The block settings form re-evaluates the schema on every change, so these update
 - `actions` limits the values a `choices`/`actions` widget offers.
 - `value` makes the widget controlled, so a value coerced by a side effect is reflected immediately.
 
-## Image block example
+## Example: coupling alignment with width and size
 
-The image block couples `align` with `size` and `blockWidth`:
+Suppose a block should, when floated (left or right), fix its block width to `default` and drop the large size, then release both controls when centered again.
+You could express that coupling like this:
 
 ```ts
-export function ImageSchema({
+export function BlockSchema({
   formData = {} as BlocksFormData,
 }: { formData?: BlocksFormData } = {}): JSONSchema {
   const isFloated = (align?: unknown) => align === 'left' || align === 'right';
