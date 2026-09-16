@@ -117,13 +117,30 @@ function radio(page: Page, name: string) {
   return page.getByRole('radio', { name, exact: true });
 }
 
-// Select the image only when it is not already selected (re-clicking a selected
-// image would deselect it), so it is safe to call between changes in a flow.
-async function ensureSelected(page: Page, imageId: string) {
+// Ensure the block's settings sidebar is open. Selecting is idempotent: it only
+// clicks the image when the sidebar is closed, and retries because changing a
+// style field re-renders (and deselects) the block asynchronously.
+async function selectBlock(page: Page, imageId: string) {
   const form = page.locator('#sidebar form');
-  if ((await form.count()) > 0) return;
-  await imageLocator(page, imageId).click();
-  await expect(form).toHaveCount(1);
+  await expect(async () => {
+    if ((await form.count()) === 0) {
+      await imageLocator(page, imageId).click();
+    }
+    await expect(form).toHaveCount(1);
+  }).toPass();
+}
+
+// Select the block (if needed) and click a settings radio, as one retrying unit.
+// A previous change may still be deselecting the block, so the whole
+// select-then-click is retried until the radio is actually clicked.
+async function setRadio(page: Page, imageId: string, name: string) {
+  const form = page.locator('#sidebar form');
+  await expect(async () => {
+    if ((await form.count()) === 0) {
+      await imageLocator(page, imageId).click();
+    }
+    await radio(page, name).click({ force: true, timeout: 2_000 });
+  }).toPass();
 }
 
 async function expectNode(
@@ -313,14 +330,14 @@ test('walking through every alignment and size combination in one session', asyn
   const block = page.locator('.image-block').first();
 
   // Center + large: no float, full width, all controls available.
-  await ensureSelected(page, 'styled-image-walk');
+  await selectBlock(page, 'styled-image-walk');
   await expect(block).toHaveCSS('float', 'none');
   expect(await widthRatio(page)).toBeGreaterThan(0.95);
   await expect(radio(page, 'Large')).toBeVisible();
   await expect(radio(page, 'Default')).toBeEnabled();
 
   // -> Left: floats, large stays capped, width and size are preserved.
-  await radio(page, 'Left').click({ force: true });
+  await setRadio(page, 'styled-image-walk', 'Left');
   await expectNode(page, editorHandle, {
     align: 'left',
     blockWidth: 'default',
@@ -330,8 +347,7 @@ test('walking through every alignment and size combination in one session', asyn
   expect(await widthRatio(page)).toBeLessThan(0.9);
 
   // -> Small (still left).
-  await ensureSelected(page, 'styled-image-walk');
-  await radio(page, 'Small').click({ force: true });
+  await setRadio(page, 'styled-image-walk', 'Small');
   await expectNode(page, editorHandle, {
     align: 'left',
     blockWidth: 'default',
@@ -340,8 +356,7 @@ test('walking through every alignment and size combination in one session', asyn
   const smallRatio = await widthRatio(page);
 
   // -> Medium (still left): wider than small.
-  await ensureSelected(page, 'styled-image-walk');
-  await radio(page, 'Medium').click({ force: true });
+  await setRadio(page, 'styled-image-walk', 'Medium');
   await expectNode(page, editorHandle, {
     align: 'left',
     blockWidth: 'default',
@@ -350,8 +365,7 @@ test('walking through every alignment and size combination in one session', asyn
   expect(await widthRatio(page)).toBeGreaterThan(smallRatio);
 
   // -> Right: floats to the other side.
-  await ensureSelected(page, 'styled-image-walk');
-  await radio(page, 'Right').click({ force: true });
+  await setRadio(page, 'styled-image-walk', 'Right');
   await expectNode(page, editorHandle, {
     align: 'right',
     blockWidth: 'default',
@@ -360,8 +374,7 @@ test('walking through every alignment and size combination in one session', asyn
   await expect(block).toHaveCSS('float', 'right');
 
   // -> Center: float released, large offered again.
-  await ensureSelected(page, 'styled-image-walk');
-  await radio(page, 'Center').click({ force: true });
+  await setRadio(page, 'styled-image-walk', 'Center');
   await expectNode(page, editorHandle, {
     align: 'center',
     blockWidth: 'default',
@@ -370,9 +383,9 @@ test('walking through every alignment and size combination in one session', asyn
   await expect(block).toHaveCSS('float', 'none');
 
   // -> Large (centered): full width again.
-  await ensureSelected(page, 'styled-image-walk');
+  await selectBlock(page, 'styled-image-walk');
   await expect(radio(page, 'Large')).toBeVisible();
-  await radio(page, 'Large').click({ force: true });
+  await setRadio(page, 'styled-image-walk', 'Large');
   await expectNode(page, editorHandle, {
     align: 'center',
     blockWidth: 'default',
