@@ -1,5 +1,6 @@
 import './storybook-base.css';
 import '../../theming/styles/tailwind.css';
+import '../styles/typeset.css';
 import config from '@plone/registry';
 import installPlate from '../index';
 
