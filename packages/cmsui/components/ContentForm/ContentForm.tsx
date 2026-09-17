@@ -40,6 +40,10 @@ interface ContentFormProps {
   schema: Schema;
   heading: ReactNode;
   submitMethod: 'post' | 'patch';
+  /** Per-tab sticky panels rendered left of the form (eg. translation source). */
+  asidePanels?: { header?: ReactNode; blocks?: ReactNode; content?: ReactNode };
+  /** Placeholder text per field name (eg. the source values of a translation). */
+  fieldPlaceholders?: Record<string, string>;
 }
 
 export default function ContentForm({
@@ -47,6 +51,8 @@ export default function ContentForm({
   schema,
   heading,
   submitMethod,
+  asidePanels,
+  fieldPlaceholders,
 }: ContentFormProps) {
   const { t } = useTranslation();
   const fetcher = useFetcher();
@@ -63,6 +69,68 @@ export default function ContentForm({
       });
     },
   });
+
+  const fieldsetsForm = (
+    <form>
+      {schema.fieldsets.map((fieldset) => (
+        <Accordion defaultExpandedKeys={['default']} key={fieldset.id}>
+          <AccordionItem id={fieldset.id} key={fieldset.id}>
+            <AccordionItemTrigger>{fieldset.title}</AccordionItemTrigger>
+            <AccordionPanel>
+              {(fieldset.fields as DeepKeys<Content>[]).map(
+                (schemaField, index) => (
+                  <form.AppField
+                    name={schemaField}
+                    key={index}
+                    // eslint-disable-next-line react/no-children-prop
+                    children={(field) => (
+                      <field.Quanta
+                        {...schema.properties[schemaField]}
+                        className="mb-4"
+                        label={schema.properties[field.name].title}
+                        name={field.name}
+                        defaultValue={field.state.value}
+                        required={schema.required.indexOf(schemaField) !== -1}
+                        error={field.state.meta.errors}
+                        formAtom={formAtom}
+                        value={field.state.value}
+                        {...(fieldPlaceholders?.[field.name]
+                          ? { placeholder: fieldPlaceholders[field.name] }
+                          : {})}
+                      />
+                    )}
+                  />
+                ),
+              )}
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      ))}
+    </form>
+  );
+
+  // The shared header row keeps both columns starting level; px-6 mirrors the
+  // blocks editor's own gutters, padBody pads bodies that lack them.
+  const withAside = (panel: ReactNode, body: ReactNode, padBody = false) =>
+    asidePanels ? (
+      <div
+        className={`
+          grid grid-cols-1 gap-x-8 pt-4
+          lg:grid-cols-2 lg:grid-rows-[auto_1fr]
+        `}
+      >
+        <div className="mb-4 self-end px-6">{asidePanels.header}</div>
+        <h1 className="mb-4 self-end px-6 text-2xl font-bold">{heading}</h1>
+        <aside className="sticky top-0 max-h-screen self-start overflow-y-auto px-6">
+          {panel}
+        </aside>
+        <div className={padBody ? 'flex flex-col px-6' : 'flex flex-col'}>
+          {body}
+        </div>
+      </div>
+    ) : (
+      body
+    );
 
   return (
     <Provider store={store}>
@@ -86,59 +154,22 @@ export default function ContentForm({
                 {
                   id: 'blocks',
                   title: t('cmsui.blocksEditor.blocksTab'),
-                  content: <BlocksEditor />,
+                  content: withAside(asidePanels?.blocks, <BlocksEditor />),
                 },
                 {
                   id: 'content',
                   title: t('cmsui.blocksEditor.contentTab'),
-                  content: (
-                    <div className="flex flex-col">
-                      <h1 className="mb-4 text-2xl font-bold">{heading}</h1>
-                      <form>
-                        {schema.fieldsets.map((fieldset) => (
-                          <Accordion
-                            defaultExpandedKeys={['default']}
-                            key={fieldset.id}
-                          >
-                            <AccordionItem id={fieldset.id} key={fieldset.id}>
-                              <AccordionItemTrigger>
-                                {fieldset.title}
-                              </AccordionItemTrigger>
-                              <AccordionPanel>
-                                {(fieldset.fields as DeepKeys<Content>[]).map(
-                                  (schemaField, index) => (
-                                    <form.AppField
-                                      name={schemaField}
-                                      key={index}
-                                      // eslint-disable-next-line react/no-children-prop
-                                      children={(field) => (
-                                        <field.Quanta
-                                          {...schema.properties[schemaField]}
-                                          className="mb-4"
-                                          label={
-                                            schema.properties[field.name].title
-                                          }
-                                          name={field.name}
-                                          defaultValue={field.state.value}
-                                          required={
-                                            schema.required.indexOf(
-                                              schemaField,
-                                            ) !== -1
-                                          }
-                                          error={field.state.meta.errors}
-                                          formAtom={formAtom}
-                                          value={field.state.value}
-                                        />
-                                      )}
-                                    />
-                                  ),
-                                )}
-                              </AccordionPanel>
-                            </AccordionItem>
-                          </Accordion>
-                        ))}
-                      </form>
-                    </div>
+                  content: withAside(
+                    asidePanels?.content,
+                    asidePanels ? (
+                      fieldsetsForm
+                    ) : (
+                      <div className="flex flex-col">
+                        <h1 className="mb-4 text-2xl font-bold">{heading}</h1>
+                        {fieldsetsForm}
+                      </div>
+                    ),
+                    true,
                   ),
                 },
               ]}
