@@ -17,6 +17,46 @@ Unlike {doc}`create a package with only a frontend add-on <create-package>`, thi
 Cookieplone is the recommended way to create a full Plone project.
 
 
+## What is a project?
+
+A project is a complete, deployable Plone site that you own end to end.
+Cookieplone generates it as a monorepo with three top-level areas.
+
+`backend/`
+: A Python CMFPlone backend add-on that you own and can extend with custom content types, behaviors, workflows, and REST API services.
+
+`frontend/`
+: A Plone Aurora frontend add-on, where you customize and extend the user interface.
+
+`devops/`
+: Deployment tooling, including Docker, Ansible, caching, and continuous integration, to build and ship the whole stack.
+
+Unlike a {doc}`frontend add-on package <create-package>`, a project is not primarily meant to be published and reused elsewhere.
+It is the codebase for one specific site, so it bundles everything needed to develop, test, and deploy that site.
+Crucially, because it generates its own backend source, you run and modify a real Python backend locally instead of a prebuilt, vanilla Plone Docker image.
+
+
+## Project versus add-on package
+
+Choose the template that matches what you need to build.
+
+| | Full project (this chapter) | Add-on package ({doc}`create-package`) |
+| --- | --- | --- |
+| Generator | `uvx cookieplone aurora_cmfplone` | `uvx cookieplone aurora_addon` |
+| Contents | A monorepo with `backend/`, `frontend/`, and `devops/` | A single frontend add-on package |
+| Backend | Your own Python CMFPlone backend that you run and can extend | Vanilla Plone, run from a Docker image |
+| Backend customization | Full: content types, behaviors, workflows, REST API services | Not possible in the package |
+| Deployment tooling | Docker, Ansible, caching, and CI for deploying the whole stack | Focused on publishing the frontend package (npm) |
+| Best for | Building and deploying a complete, bespoke Plone site | Reusable frontend-only functionality shared across sites |
+
+In short, create a **full project** when you need to customize the backend, or when you are building and deploying a complete site rather than a reusable package.
+Create an **add-on package** when you want to build frontend functionality that is reusable and distributable, and that does not require changes to the backend.
+
+```{seealso}
+{doc}`create-package` describes how to generate a reusable, frontend-only add-on that develops against a vanilla Plone backend.
+```
+
+
 (plone-aurora-create-project-cookieplone-generate-the-project-label)=
 
 ## Generate the project
@@ -131,7 +171,7 @@ Starting server in PID 20912.
 The Plone site created by `make install` is served at http://localhost:8080.
 
 
-### Start Plone Aurorafrontend
+### Start Plone Aurora frontend
 
 Create a second shell session in a new window.
 Change your current working directory to {file}`project-title`.
@@ -157,14 +197,3 @@ Your project runs the Plone Aurora frontend against your own Plone backend.
 You can develop the backend add-on in {file}`backend/src`, and the Aurora add-on in {file}`frontend/packages`.
 
 You can stop each server with {kbd}`ctrl-c`.
-
-
-## Rebuild after changes
-
-After you make changes to your code, install the changes and restart the servers.
-
-```shell
-make install
-make backend-start
-make frontend-start
-```

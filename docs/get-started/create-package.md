@@ -4,7 +4,7 @@ myst:
     "description": "How to create a package with only a frontend add-on using Cookieplone"
     "property=og:description": "How to create a package with only a frontend add-on using Cookieplone"
     "property=og:title": "How to create a package with only a frontend add-on using Cookieplone"
-    "keywords": "Plone, Plone 6, Plone Aurora, create, project, install, Cookieplone"
+    "keywords": "Plone, Plone 6, Plone Aurora, create, add-on, package, frontend, Docker, Cookieplone"
 ---
 
 (create-package-label)=
@@ -14,6 +14,43 @@ myst:
 This chapter describes how you can create a package with only a frontend add-on using {term}`Cookieplone`.
 Cookieplone is the recommended way to create a package as an add-on for Plone that uses the Plone Aurora frontend.
 It also includes tools for development and deployment.
+
+
+## What is an add-on package?
+
+A frontend add-on is a self-contained, publishable package that extends or customizes the Plone Aurora frontend.
+It contains only frontend code, such as configuration, React components, blocks, views, translations, and styles, and it ships no Python backend code of its own.
+
+An add-on plugs into the Plone Aurora add-on registry.
+Its `index.ts` exports a `loadConfig` function that receives the running configuration and returns it, letting you extend or override Plone Aurora's defaults without forking the core.
+Because it is a standalone package, you can publish it to npm and reuse it across many Plone sites and projects.
+
+To develop and test the add-on, this template still needs a running Plone site.
+It provides one by starting a **vanilla Plone backend in a Docker container**, so you don't need a local Python backend checkout.
+See {ref}`why-vanilla-backend-label` for the reasons and the limitations.
+
+For the anatomy of the generated files and folders, see {doc}`../conceptual-guides/cookieplone-frontend-add-on`.
+
+
+## Add-on package versus full project
+
+Choose the template that matches what you need to build.
+
+| | Add-on package (this chapter) | Full project ({doc}`create-project`) |
+| --- | --- | --- |
+| Generator | `uvx cookieplone aurora_addon` | `uvx cookieplone aurora_cmfplone` |
+| Contents | A single frontend add-on package | A monorepo with `backend/`, `frontend/`, and `devops/` |
+| Backend | Vanilla Plone, run from a Docker image | Your own Python CMFPlone backend that you can extend |
+| Backend customization | Not possible in this package | Full: content types, behaviors, workflows, REST API services |
+| Deployment tooling | Focused on publishing the frontend package (npm) | Docker, Ansible, caching, and CI for deploying the whole stack |
+| Best for | Reusable frontend-only functionality shared across sites | Building and deploying a complete, bespoke Plone site |
+
+In short, create an **add-on package** when you want to build frontend functionality that is reusable and distributable, and that does not require changes to the backend.
+Create a **full project** when you need to customize the backend, or when you are building and deploying a complete site rather than a reusable package.
+
+```{seealso}
+{doc}`create-project` describes how to generate a complete project with both a Plone Aurora frontend and a Python CMFPlone backend.
+```
 
 
 (plone-aurora-create-project-cookieplone-generate-the-package-label)=
@@ -94,6 +131,9 @@ In the currently open session, issue the following command.
 make backend-docker-start
 ```
 
+Unlike the {doc}`full project <create-project>`, which starts a Python backend that you install and run locally, an add-on package starts the backend from a prebuilt Docker image.
+This command pulls the official Plone backend image and runs it, so you don't need a local Python environment or a backend checkout to develop your add-on.
+
 The Plone backend server starts up and emits messages to the console.
 
 ```console
@@ -108,6 +148,24 @@ Starting server in PID 20912.
 ```
 
 This will start a clean Plone server for development purposes so you can start developing your add-on.
+
+
+(why-vanilla-backend-label)=
+
+#### Why only a vanilla Plone backend?
+
+The Docker image runs a **vanilla** (stock, unmodified) Plone backend, and this template cannot run a customized one.
+
+An add-on package contains only frontend code.
+It ships no Python backend package, so there is no backend source to install, no custom content types, behaviors, or REST API services to add, and therefore nothing from which to build a customized backend image.
+The prebuilt image is used as-is to provide a standard Plone REST API for your frontend to develop against.
+
+This is a deliberate trade-off.
+Running a stock backend from a container keeps the add-on lightweight and lets you focus on frontend development without maintaining a Python environment.
+The cost is that you cannot modify the backend from within an add-on package.
+
+If your work requires backend changes, such as custom content types, behaviors, workflows, or REST API endpoints, create a {doc}`full project <create-project>` instead.
+A full project generates a Python CMFPlone backend that you own and can extend, alongside the Aurora frontend.
 
 
 ### Start Plone frontend
