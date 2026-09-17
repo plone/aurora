@@ -12,11 +12,11 @@
   "version": "1.0.0-alpha.15",
   "repository": {
     "type": "git",
-    "url": "https://github.com/plone/volto.git",
+    "url": "https://github.com/plone/aurora.git",
     "directory": "packages/plate"
   },
   "bugs": {
-    "url": "https://github.com/plone/volto/issues"
+    "url": "https://github.com/plone/aurora/issues"
   },
   "homepage": "https://plone.org",
   "keywords": [
