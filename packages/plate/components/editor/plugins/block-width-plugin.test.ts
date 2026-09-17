@@ -183,7 +183,7 @@ describe('block width plugin', () => {
         },
       }),
     ).toEqual({
-      'data-style-blockWidth': 'default',
+      'data-style-block-width': 'default',
       style: {
         color: 'red',
         '--block-width': 'var(--default-container-width)',
@@ -233,7 +233,7 @@ describe('block width plugin', () => {
         },
       }),
     ).toEqual({
-      'data-style-blockWidth': 'full',
+      'data-style-block-width': 'full',
       style: {
         color: 'red',
         '--block-width': '100%',
@@ -283,7 +283,7 @@ describe('block width plugin', () => {
         },
       }),
     ).toEqual({
-      'data-style-blockWidth': 'layout',
+      'data-style-block-width': 'layout',
       style: {
         color: 'red',
         '--block-width': 'var(--layout-container-width)',
@@ -672,7 +672,7 @@ describe('block width plugin', () => {
         },
       }),
     ).toEqual({
-      'data-style-blockWidth': 'layout',
+      'data-style-block-width': 'layout',
       style: {
         color: 'red',
         '--block-width': 'var(--layout-container-width)',
@@ -738,7 +738,7 @@ describe('block width plugin', () => {
         },
       }),
     ).toEqual({
-      'data-style-blockWidth': 'default',
+      'data-style-block-width': 'default',
       style: {
         position: 'relative',
         '--block-width': 'var(--default-container-width)',
