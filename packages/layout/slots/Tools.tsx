@@ -15,7 +15,7 @@ const HeaderTools = () => {
       url: '/logout',
     },
   ];
-  // Inline styles since this is temporary during seven development
+  // Inline styles since this is temporary during Plone Aurora development
   return import.meta.env.DEV ? (
     <div style={{ display: 'flex', gap: '16px' }}>
       {links.map((tool) => (

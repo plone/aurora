@@ -188,7 +188,7 @@ export const PloneRegistryVitePlugin = () => {
             // This is still needed for internal resolution to "self"
             // in combination with shadowing
             ...addonAliases,
-            // ToDo: Deprecate `theme` feature in Seven
+            // ToDo: Deprecate `theme` feature in Plone Aurora
             ...(registry.theme
               ? // Load the theme aliases from the theme config
                 [
@@ -202,7 +202,7 @@ export const PloneRegistryVitePlugin = () => {
                   },
                 ]
               : []),
-            // This is no longer needed in Seven
+            // This is no longer needed in Plone Aurora
             {
               find: '@plone/registry/addons-loader',
               replacement: addonsLoaderPath,
