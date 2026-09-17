@@ -21,7 +21,7 @@ Prisma is an open-source toolkit that simplifies database access.
 The main purpose of this tutorial is to demonstrate how to integrate Prisma with Plone Aurora.
 You can also use the same approach but saving to a Plone REST API endpoint.
 It is not meant to be a complete, production-ready implementation of a like button.
-The complete code of this tutorial is in the GitHub repository [`collective/seven-training-addon`](https://github.com/collective/seven-training-addon).
+The complete code of this tutorial is in the GitHub repository [`collective/aurora-training-addon`](https://github.com/collective/aurora-training-addon).
 ```
 
 ## Prerequisites

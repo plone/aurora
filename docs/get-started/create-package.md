@@ -26,6 +26,35 @@ After satisfying the {doc}`system-requirements` and having {ref}`activated an LT
 ```
 
 ```shell
+uvx cookieplone aurora_addon
+```
+
+Cookieplone first runs a sanity check of your system, verifying that {term}`uv`, {term}`Node.js`, and {term}`Git` are available.
+
+
+### Answer the prompts
+
+Cookieplone then asks a series of questions to configure your add-on.
+Each question offers a sensible default that you can accept by pressing {kbd}`Enter`.
+
+| Prompt | Description | Example |
+| --- | --- | --- |
+| `Add-on Title` | Human-readable name for the add-on. | `Plone Aurora Add-on` |
+| `Frontend Add-on Name` | Short slug used as the NPM package name and output folder. | `plone-aurora-add-on` |
+| `Project Slug` | URL-friendly identifier used as the repository name. | `plone-aurora-add-on` |
+| `Description` | Short summary of the add-on, used in package metadata and the `README`. | `A new add-on for Plone Aurora.` |
+| `Author` | Name of the add-on author or organization. | `Plone Community` |
+| `Author E-mail` | Contact email for the add-on author. | `collective@plone.org` |
+| `GitHub Username or Organization` | Organization or username used to build the repository URL. | `collective` |
+| `NPM Package Name` | Name of the package as published on npm. | `plone-aurora-add-on` |
+| `Aurora Version` | Aurora frontend version to use, resolved to the latest version published on npm. | `1.0.0-alpha.7` |
+
+
+### Skip the prompts
+
+You can use the [`--no-input`](https://cookiecutter.readthedocs.io/en/latest/cli_options.html#cmdoption-cookiecutter-no-input) option to make Cookieplone skip the prompts and use the default values only.
+
+```shell
 uvx cookieplone aurora_addon --no-input
 ```
 
