@@ -33,4 +33,5 @@ configure-plate-code-block-languages
 bind-metadata-fields-to-plate-text-blocks
 customize-toolbar
 custom-content-types
+translate-content
 ```
