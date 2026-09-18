@@ -1,0 +1,1 @@
+Replaced `__dirname` with `import.meta.dirname` in `vite.config.ts` to silence the Vite native config loader deprecation warning. @sneridagh
