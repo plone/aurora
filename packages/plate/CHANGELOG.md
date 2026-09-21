@@ -8,6 +8,17 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.16 (2026-09-21)
+
+### Bugfix
+
+- Fixed React "unrecognized prop" warning by emitting style field data attributes in kebab-case (e.g. `data-style-block-width`). @sneridagh 
+
+### Internal
+
+- Replaced remaining `Seven` references with `Plone Aurora` in code comments. @sneridagh 
+- Upgraded `html2canvas-pro` to `2.x`, as the deprecated `1.5.x` series is no longer maintained. @sneridagh 
+
 ## 1.0.0-alpha.15 (2026-09-11)
 
 ### Bugfix

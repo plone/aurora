@@ -1,1 +1,0 @@
-Fixed React "unrecognized prop" warning by emitting style field data attributes in kebab-case (e.g. `data-style-block-width`). @sneridagh
