@@ -8,6 +8,18 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.10 (2026-09-21)
+
+### Internal
+
+- Replaced `__dirname` with `import.meta.dirname` and added the `.js` extension to the `./.plone/vite.loader` import in `vite.config.ts` to silence the Vite native config loader deprecation warnings. @sneridagh 
+- Replaced remaining `Seven`/`volto` references with `Plone Aurora`/`aurora` across repository docs, Makefile, and CI configuration. @sneridagh 
+- Update to support Plone 6.2.2. @sneridagh 
+
+### Documentation
+
+- Expanded the "Create a package" and "Create a project" get-started guides to explain what a frontend add-on and a full project are, when to choose one over the other, and why an add-on's backend can only run a vanilla Plone Docker image. Also added the missing `create-project` link under "Integrators" in the docs index. @sneridagh 
+
 ## 1.0.0-alpha.9 (2026-09-16)
 
 ### Documentation

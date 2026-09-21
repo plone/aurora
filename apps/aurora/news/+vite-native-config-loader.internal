@@ -1,1 +1,0 @@
-Replaced `__dirname` with `import.meta.dirname` and added the `.js` extension to the `./.plone/vite.loader` import in `vite.config.ts` to silence the Vite native config loader deprecation warnings. @sneridagh

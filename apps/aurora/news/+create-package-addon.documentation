@@ -1,1 +1,0 @@
-Expanded the "Create a package" and "Create a project" get-started guides to explain what a frontend add-on and a full project are, when to choose one over the other, and why an add-on's backend can only run a vanilla Plone Docker image. Also added the missing `create-project` link under "Integrators" in the docs index. @sneridagh
