@@ -274,12 +274,13 @@ export const resolveStyleFields = ({
 
     if (!effectiveValue) return;
 
+    values[fieldName] = effectiveValue;
+
     const definition = findStyleDefinitionByName(definitions, effectiveValue);
 
-    if (!definition?.style) return;
-
-    values[fieldName] = effectiveValue;
-    Object.assign(style, definition.style);
+    if (definition?.style) {
+      Object.assign(style, definition.style);
+    }
   });
 
   return { style, values };

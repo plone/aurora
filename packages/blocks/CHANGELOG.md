@@ -8,6 +8,42 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.14 (2026-09-21)
+
+### Internal
+
+- Updated package repository metadata and towncrier issue links from `plone/volto` to `plone/aurora`. @sneridagh 
+
+## 1.0.0-alpha.13 (2026-09-16)
+
+### Feature
+
+- The image block now stores its alignment and size as schema-driven style fields, ships its styles as a CSS module instead of a global side-effect import, floats left/right aligned images at any size so following content wraps around them (including list markers), keeps floated images selectable in the editor, and can link the image to another page. @sneridagh @TimoBroeskamp 
+
+## 1.0.0-alpha.12 (2026-09-05)
+
+### Internal
+
+- Declared the catalog-managed i18next version as a peer dependency to keep react-i18next instances unified. @sneridagh 
+- Reformatted block components for compatibility with Prettier 3.8. @sneridagh 
+
+## 1.0.0-alpha.11 (2026-07-02)
+
+### Feature
+
+- Added default Plate-native block categories for the shared block anatomy class contract. @sneridagh 
+
+### Bugfix
+
+- Update prop for objectBrowser. @sneridagh [#8246](https://github.com/plone/volto/pull/8246)
+- Fix Teaser block object browser configuration: the target field now uses single selection mode, and the required item identifier is included in the selected attributes for both the target and image fields. @iFlameing 
+- Keep block naming conventions as `<BlockName>BlockView.tsx` and `<BlockName>BlockEdit.tsx`. @frapell 
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+- Updated TypeScript configuration to resolve Aurora app types from `@plone/aurora`. @sneridagh 
+
 ## 1.0.0-alpha.10 (2026-05-13)
 
 ### Internal

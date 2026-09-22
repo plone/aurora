@@ -91,8 +91,7 @@ function PloneBlockAdapterContent(
     (data: NativeBlockData) => {
       const mapped = fromBlockData(data);
       const current = editor.api.node(pathRef.current)?.[0] as
-        | NativeBlockElement
-        | undefined;
+        NativeBlockElement | undefined;
       const next = current
         ? ({ ...current, ...mapped } as NativeBlockElement)
         : mapped;

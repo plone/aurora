@@ -1,6 +1,6 @@
 # Comments And Suggestions Integration Notes
 
-This note documents the current integration model for comments and suggestions in `@plone/plate`, why it was changed, and how a host app such as Seven should consume it.
+This note documents the current integration model for comments and suggestions in `@plone/plate`, why it was changed, and how a host app such as Aurora should consume it.
 
 ## Summary
 
@@ -267,11 +267,11 @@ Important details:
 - In view mode, the setters can be inert because the renderer only needs read access.
 - If the host app supports suggestion creation, it must expose a valid `currentUserId`.
 
-## What Seven Needs
+## What Aurora Needs
 
-If Seven wants to consume comments/suggestions in the same way, it should provide the same provider contract around the Plate editor:
+If Aurora wants to consume comments/suggestions in the same way, it should provide the same provider contract around the Plate editor:
 
-- get the current user from the Seven session/app state
+- get the current user from the Aurora session/app state
 - normalize stored user/discussion data into the `@plone/plate` shape
 - provide `setDiscussions` and `setUsers`
 - persist updated discussion data in the app-specific storage layer
@@ -279,7 +279,7 @@ If Seven wants to consume comments/suggestions in the same way, it should provid
 The important point is:
 
 - `@plone/plate` is no longer the source of truth for users/discussions
-- Seven (or any host app) must be the source of truth
+- Aurora (or any host app) must be the source of truth
 
 ## Remaining Architectural Gap
 

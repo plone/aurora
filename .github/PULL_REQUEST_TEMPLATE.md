@@ -5,7 +5,7 @@ The Volto Team has suspended its review of new pull requests from first-time con
 -----
 
 - [ ] I signed and returned the [Plone Contributor Agreement](https://plone.org/foundation/contributors-agreement), and received and accepted an invitation to join a team in the Plone GitHub organization.
-- [ ] I verified there aren't other open [pull requests](https://github.com/plone/volto/pulls) for the same change.
+- [ ] I verified there aren't other open [pull requests](https://github.com/plone/aurora/pulls) for the same change.
 - [ ] I followed the guidelines in [Contributing to Volto](https://6.docs.plone.org/volto/contributing/index.html).
 - [ ] I succesfully ran [code linting checks](https://6.docs.plone.org/volto/contributing/linting.html) on my changes locally.
 - [ ] I succesfully ran [unit tests](https://6.docs.plone.org/volto/contributing/testing.html) on my changes locally.

@@ -32,7 +32,7 @@ jobs:
 
       - name: Generate Cookieplone-based frontend addon
         run: |
-          uvx cookieplone@2.0.0b1 aurora_addon --no-input
+          uvx --prerelease allow cookieplone aurora_addon --no-input
 
       - name: Install generated package
         working-directory: plone-aurora-add-on

@@ -15,29 +15,35 @@ import {
   ploneContentContext,
   ploneSiteContext,
 } from '@plone/aurora/app/middleware.server';
-import { getAuthFromRequest, setAuthOnResponse } from '@plone/react-router';
+import {
+  redirectIfLoggedInLoader,
+  setAuthOnResponse,
+} from '@plone/react-router';
 import { TextField, Link } from '@plone/components/quanta';
 import CloseSVG from '@plone/components/icons/close.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import { Trans, useTranslation } from 'react-i18next';
 import type { RootLoader } from '@plone/aurora/app/root';
 
-export async function loader({
-  request,
-  context,
-}: LoaderFunctionArgs<RouterContextProvider>) {
-  const token = await getAuthFromRequest(request);
-  if (token) throw redirect('/');
+export async function loader(props: LoaderFunctionArgs<RouterContextProvider>) {
+  const { context } = props;
+
+  await redirectIfLoggedInLoader(props);
 
   const content = context.get(ploneContentContext);
   const site = context.get(ploneSiteContext);
-  return { content, siteTitle: site['plone.site_title'] };
+
+  return {
+    content,
+    siteTitle: site['plone.site_title'],
+    siteLogo: site['plone.site_logo'],
+  };
 }
 
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
   matches,
 }) => {
-  const rootData = matches.find((match) => match.id === 'root')?.data;
+  const rootData = matches.find((match) => match.id === 'root')?.loaderData;
 
   const siteTitle = rootData?.site?.['plone.site_title'];
 
@@ -88,8 +94,7 @@ export async function action({
 export default function Login() {
   const { content, siteTitle } = useLoaderData<typeof loader>();
   const actionResult = useActionData<typeof action>() as
-    | LoginErrorResponse
-    | undefined;
+    LoginErrorResponse | undefined;
   const location = useLocation();
   const { t } = useTranslation();
 
@@ -128,7 +133,7 @@ export default function Login() {
               id="login-header"
               className="mt-6 text-center text-2xl leading-8 font-bold tracking-wide text-gray-900"
             >
-              {t('cmsui.auth.signInTo', { site: siteTitle || 'Volto' })}
+              {t('cmsui.auth.signInTo', { site: siteTitle || 'Aurora' })}
             </h2>
           </div>
           <div className="mx-auto mt-11 w-full max-w-[360px]">

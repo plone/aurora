@@ -30,6 +30,20 @@ type ValueElement = Record<string, unknown> & {
   children?: unknown[];
 };
 
+// React only passes through `data-*` attributes whose suffix is lowercase, so
+// camelCase field names (e.g. `blockWidth`) must be kebab-cased to avoid the
+// "React does not recognize the prop" warning and end up as `data-style-block-width`.
+const toKebabCase = (value: string) =>
+  value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+
+const toStyleFieldDataAttributes = (values: Record<string, string>) =>
+  Object.fromEntries(
+    Object.entries(values).map(([fieldName, value]) => [
+      `data-style-${toKebabCase(fieldName)}`,
+      value,
+    ]),
+  );
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === 'object' && !Array.isArray(value);
 
@@ -231,17 +245,22 @@ export const BaseStyleFieldsPlugin = createSlatePlugin({
           return props;
         }
 
-        const { style } = resolveStyleFields({
+        const { style, values } = resolveStyleFields({
           data: element as Record<string, unknown>,
           fieldConfigs: getElementStyleFieldConfigs(element),
           container: undefined,
           resolveDefinitions: getStyleFieldDefinitionsFromRegistry,
         });
 
-        if (!Object.keys(style).length) return props;
+        const dataAttributes = toStyleFieldDataAttributes(values);
+
+        if (!Object.keys(style).length && !Object.keys(dataAttributes).length) {
+          return props;
+        }
 
         return {
           ...props,
+          ...dataAttributes,
           style: {
             ...(props.style ?? {}),
             ...style,

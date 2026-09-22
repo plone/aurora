@@ -11,8 +11,9 @@ import {
   type ValidationResult,
 } from 'react-aria-components';
 
-export interface TimeFieldProps<T extends TimeValue>
-  extends RACTimeFieldProps<T> {
+export interface TimeFieldProps<
+  T extends TimeValue,
+> extends RACTimeFieldProps<T> {
   label?: string;
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);

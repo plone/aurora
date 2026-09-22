@@ -18,4 +18,5 @@ This part of the documentation describes how to get started with Plone.
 
 system-requirements
 create-package
+create-project
 ```
