@@ -13,6 +13,7 @@ vi.mock('react-router', () => ({
   })),
   useRouteLoaderData: vi.fn(() => ({
     content: {
+      '@type': 'News Item',
       title: 'My news item',
       description: 'This is a news item.',
     },
