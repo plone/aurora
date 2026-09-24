@@ -37,6 +37,7 @@ if (!vscodeSettingsJSON['[markdown]']) {
   vscodeSettingsJSON['[markdown]']['editor.formatOnSave'] = false;
 }
 
+// Beware, do not replace `seven` literal paths with `aurora` since this is a migration one
 if (
   vscodeSettingsJSON['tailwindCSS.experimental.configFile'] ===
   'apps/seven/.plone/publicui.css'

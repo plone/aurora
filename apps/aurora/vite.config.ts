@@ -3,7 +3,7 @@ import path from 'node:path';
 import { defineConfig, PluginOption } from 'vite';
 import { PloneRegistryVitePlugin } from '@plone/registry/vite-plugin';
 import { PloneSVGRVitePlugin } from '@plone/components/vite-plugin-svgr';
-import applyAddonViteConfiguration from './.plone/vite.loader';
+import applyAddonViteConfiguration from './.plone/vite.loader.js';
 import babel from 'vite-plugin-babel';
 import tailwindcss from '@tailwindcss/vite';
 import { visualizer } from 'rollup-plugin-visualizer';
@@ -12,7 +12,7 @@ import devtoolsJson from 'vite-plugin-devtools-json';
 export default defineConfig(({ command, mode, isSsrBuild }) => {
   const analyze = process.env.ANALYZE === 'true';
   const target = isSsrBuild ? 'server' : 'client';
-  const statsDir = path.resolve(__dirname, 'build', 'stats');
+  const statsDir = path.resolve(import.meta.dirname, 'build', 'stats');
 
   const baseConfig = {
     plugins: [
@@ -52,7 +52,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
       exclude: [
         'i18next-fs-backend',
         'i18next-fs-backend/cjs',
-        'remix-i18next/server',
+        'remix-i18next',
       ],
       include: [
         // App-level deps (in apps/aurora/package.json)
@@ -62,8 +62,6 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
         'react-i18next',
         // Injected by babel-plugin-react-compiler, not in any package.json
         'react/compiler-runtime',
-        'remix-i18next/client',
-        'remix-i18next/react',
         // @plone/components and @plone/helpers are not registered add-ons, so
         // their deps can't be declared in vite.extend.js — list them here
         '@plone/components > @internationalized/date',
@@ -89,7 +87,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
     },
     ssr: {
       optimizeDeps: {
-        include: ['i18next-fs-backend/cjs', 'isbot', 'remix-i18next/server'],
+        include: ['i18next-fs-backend/cjs', 'isbot', 'remix-i18next'],
       },
     },
     resolve: {

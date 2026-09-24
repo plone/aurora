@@ -30,10 +30,16 @@ type ValueElement = Record<string, unknown> & {
   children?: unknown[];
 };
 
+// React only passes through `data-*` attributes whose suffix is lowercase, so
+// camelCase field names (e.g. `blockWidth`) must be kebab-cased to avoid the
+// "React does not recognize the prop" warning and end up as `data-style-block-width`.
+const toKebabCase = (value: string) =>
+  value.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+
 const toStyleFieldDataAttributes = (values: Record<string, string>) =>
   Object.fromEntries(
     Object.entries(values).map(([fieldName, value]) => [
-      `data-style-${fieldName}`,
+      `data-style-${toKebabCase(fieldName)}`,
       value,
     ]),
   );

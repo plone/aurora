@@ -42,7 +42,6 @@ import { flattenToAppURL, isInternalURL } from '@plone/helpers';
 import { buttonVariants } from '@plone/plate/components/ui/button';
 import { LinkElement } from '@plone/plate/components/ui/link-node';
 import { Separator } from '@plone/plate/components/ui/separator';
-import { LegacyLinkPlugin } from '@plone/plate/components/editor/plugins/legacy-link-plugin';
 import { ObjectBrowserProvider } from '../../ObjectBrowserWidget/ObjectBrowserContext';
 import { ObjectBrowserModal } from '../../ObjectBrowserWidget/ObjectBrowserModal';
 import { buildObjectBrowserUrl } from '../../ObjectBrowserWidget/utils';
@@ -589,7 +588,6 @@ function LinkFloatingToolbar({
 }
 
 export const LinkKit = [
-  ...LegacyLinkPlugin,
   PlateLinkPlugin.configure({
     options: {
       transformInput: normalizeLinkUrl,

@@ -8,6 +8,13 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.6 (2026-09-21)
+
+### Internal
+
+- Replaced `__dirname` with `import.meta.dirname` in `vite.config.ts` to silence the Vite native config loader deprecation warning. @sneridagh 
+- Updated package repository metadata and towncrier issue links from `plone/volto` to `plone/aurora`. @sneridagh 
+
 ## 2.0.0-alpha.5 (2026-07-02)
 
 ### Feature

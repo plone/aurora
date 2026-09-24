@@ -4,7 +4,7 @@ myst:
     "description": "How to customize the toolbar using pluggables"
     "property=og:description": "How to customize the toolbar using pluggables"
     "property=og:title": "Customize the toolbar"
-    "keywords": "Plone, Volto, Seven, Toolbar, Pluggables"
+    "keywords": "Plone, Volto, Plone Aurora, Toolbar, Pluggables"
 ---
 
 # Customize the toolbar
@@ -100,7 +100,7 @@ Then, register the menu as a pluggable, using the following code.
 import { Plug } from '@plone/layout/components/Pluggable';
 import { MyMenu } from './MyMenu';
 import { useRouteLoaderData } from 'react-router';
-import type { RootLoader } from 'seven/app/root';
+import type { RootLoader } from '@plone/aurora/app/root';
 
 // Inside your layout component:
 const rootData = useRouteLoaderData<RootLoader>('root');
@@ -112,6 +112,6 @@ const rootData = useRouteLoaderData<RootLoader>('root');
 
 Using the same `id` as an existing plug replaces it.
 
-For a full example, see the [`ContentTypesMenu`](https://github.com/plone/volto/blob/seven/packages/publicui/components/Toolbar/ContentTypesMenu.tsx) component in `@plone/publicui`.
+For a full example, see the [`ContentTypesMenu`](https://github.com/plone/aurora/blob/main/packages/publicui/components/Toolbar/ContentTypesMenu.tsx) component in `@plone/publicui`.
 
 See the {doc}`plone:volto/development/pluggables` for the full pluggable API reference.

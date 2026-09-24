@@ -8,6 +8,40 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.7 (2026-09-21)
+
+### Bugfix
+
+- Fixed aurora version check in VersionOverview. @sneridagh 
+
+### Internal
+
+- Updated package repository metadata and towncrier issue links from `plone/volto` to `plone/aurora`. @sneridagh 
+
+## 1.0.0-alpha.6 (2026-09-16)
+
+### Feature
+
+- Block schema fields can now declare an `onChangeSideEffects(value, nextData)` function to patch other fields when they change; the block settings form applies these patches centrally. @sneridagh @TimoBroeskamp 
+
+### Bugfix
+
+- The image widget now forwards `image_field` and `image_scales` from the object browser selection, so image blocks can render responsive image scales. @sneridagh @TimoBroeskamp 
+
+## 1.0.0-alpha.5 (2026-09-05)
+
+### Feature
+
+- Switched login page from Volto style to Plone style.
+  Added option to display site logo in login page. @arybakov05 [#24](https://github.com/plone/volto/issues/24)
+
+### Internal
+
+- Adapted routes to React Router v8's renamed loader/action context fields and `meta()` match shape. @sneridagh 
+- Added `vite.extend.js` and a dependency audit path to pre-bundle CMS UI runtime dependencies, reducing dev server startup reloads. @arybakov05 
+- Declared the catalog-managed i18next version as a peer dependency to keep react-i18next instances unified. @sneridagh 
+- Drop the duplicated `LegacyLinkPlugin` from the BlockEditor link kit; legacy Slate fragments pasted from a legacy volto-slate editor are now normalized by `@plone/plate`'s paste boundary instead. @sneridagh 
+
 ## 1.0.0-alpha.4 (2026-07-02)
 
 ### Breaking

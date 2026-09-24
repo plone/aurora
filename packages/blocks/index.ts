@@ -42,6 +42,57 @@ export default function install(config: ConfigType) {
       label: 'Full Width',
     },
   ];
+  config.blocks.alignments = [
+    {
+      name: 'left',
+      label: 'Left',
+      style: {
+        '--block-float': 'left',
+        '--block-margin':
+          '0 var(--block-inline-gap, 1rem) var(--block-block-gap, 1rem) 0',
+      },
+    },
+    {
+      name: 'center',
+      label: 'Center',
+      style: {
+        '--block-float': 'none',
+        '--block-margin': '0 auto',
+      },
+    },
+    {
+      name: 'right',
+      label: 'Right',
+      style: {
+        '--block-float': 'right',
+        '--block-margin':
+          '0 0 var(--block-block-gap, 1rem) var(--block-inline-gap, 1rem)',
+      },
+    },
+  ];
+  config.blocks.sizes = [
+    {
+      name: 's',
+      label: 'Small',
+      style: {
+        '--block-size': 'var(--block-size-small, 25%)',
+      },
+    },
+    {
+      name: 'm',
+      label: 'Medium',
+      style: {
+        '--block-size': 'var(--block-size-medium, 50%)',
+      },
+    },
+    {
+      name: 'l',
+      label: 'Large',
+      style: {
+        '--block-size': 'var(--block-size-large, 100%)',
+      },
+    },
+  ];
 
   config.blocks.blocksConfig.image =
     ImageBlockInfo as unknown as BlockConfigBase;
@@ -147,6 +198,16 @@ export default function install(config: ConfigType) {
     type: 'styleFieldDefinition',
     name: 'blockWidth',
     method: () => config.blocks.widths ?? [],
+  });
+  config.registerUtility({
+    type: 'styleFieldDefinition',
+    name: 'align',
+    method: () => config.blocks.alignments ?? [],
+  });
+  config.registerUtility({
+    type: 'styleFieldDefinition',
+    name: 'size',
+    method: () => config.blocks.sizes ?? [],
   });
 
   return config;

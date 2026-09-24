@@ -11,6 +11,8 @@ export interface BlocksConfig {
   requiredBlocks: string[];
   initialBlocks: Record<string, string[]> | Record<string, object[]>;
   initialBlocksFocus: Record<string, string>;
+  alignments?: StyleDefinition[];
+  sizes?: StyleDefinition[];
   themes: StyleDefinition[];
   widths: StyleDefinition[];
 }

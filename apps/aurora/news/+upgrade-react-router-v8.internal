@@ -1,1 +1,0 @@
-Upgraded React Router to v8 and migrated `remix-i18next` to its v8 middleware-based API (`createI18nextMiddleware`), replacing the removed `RemixI18Next` class and its subpath exports. @sneridagh

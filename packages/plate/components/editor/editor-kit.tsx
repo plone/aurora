@@ -21,6 +21,7 @@ import { FixedToolbarKit } from './plugins/fixed-toolbar-kit';
 import { FloatingToolbarKit } from './plugins/floating-toolbar-kit';
 import { FontKit } from './plugins/font-kit';
 import { LineHeightKit } from './plugins/line-height-kit';
+import { LegacyPastePlugin } from './plugins/legacy-paste-plugin';
 import { LinkKit } from './plugins/link-kit';
 import { ListKit } from './plugins/list-kit';
 import { MarkdownKit } from './plugins/markdown-kit';
@@ -36,6 +37,8 @@ import { TocKit } from './plugins/toc-kit';
 import { ToggleKit } from './plugins/toggle-kit';
 
 export const EditorKit = [
+  // Normalizes legacy Slate fragments pasted from a legacy volto-slate editor.
+  LegacyPastePlugin,
   ...AIKit,
   ...BlockMenuKit,
 

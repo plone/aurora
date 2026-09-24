@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.8 (2026-09-21)
+
+### Internal
+
+- Replaced remaining `Seven` references with `Plone Aurora` in code comments. @sneridagh 
+
 ## 2.0.0-alpha.7 (2026-07-02)
 
 ### Feature

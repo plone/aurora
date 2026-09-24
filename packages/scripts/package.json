@@ -1,6 +1,6 @@
 {
   "name": "@plone/scripts",
-  "description": "Volto Core scripts package - Contains scripts and dependencies for these scripts for tooling when developing Plone 6 / Volto",
+  "description": "aurora Core scripts package - Contains scripts and dependencies for these scripts for tooling when developing Plone 6 / aurora",
   "maintainers": [
     {
       "name": "Plone Foundation",
@@ -12,20 +12,21 @@
   "version": "4.0.0-alpha.0",
   "repository": {
     "type": "git",
-    "url": "git@github.com:plone/volto.git"
+    "url": "git@github.com:plone/aurora.git"
   },
   "bugs": {
-    "url": "https://github.com/plone/volto/issues",
+    "url": "https://github.com/plone/aurora/issues",
     "email": "plone-developers@lists.sourceforge.net"
   },
   "type": "module",
   "homepage": "https://plone.org",
   "keywords": [
-    "volto",
+    "aurora",
     "plone",
     "plone6",
     "react",
-    "cms"
+    "cms",
+    "scripts"
   ],
   "scripts": {
     "dry-release": "release-it --dry-run",
