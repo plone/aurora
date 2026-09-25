@@ -8,6 +8,18 @@
 
 <!-- towncrier release notes start -->
 
+## 3.0.0-alpha.5 (2026-09-21)
+
+### Internal
+
+- Replaced remaining `Seven` references with `Plone Aurora` in type definition comments. @sneridagh 
+
+## 3.0.0-alpha.4 (2026-09-16)
+
+### Feature
+
+- Add optional `alignments` and `sizes` style definitions to `BlocksConfig`. @sneridagh @TimoBroeskamp 
+
 ## 3.0.0-alpha.3 (2026-09-05)
 
 ### Internal

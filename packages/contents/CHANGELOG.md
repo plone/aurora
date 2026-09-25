@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.1 (2026-09-21)
+
+### Internal
+
+- Updated repository metadata and internal planning docs to reference `plone/aurora` instead of `plone/volto`/`Seven`. @sneridagh 
+
 ## 1.0.0-alpha.0 (2026-09-05)
 
 ### Feature

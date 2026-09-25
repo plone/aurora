@@ -8,14 +8,14 @@
     }
   ],
   "license": "MIT",
-  "version": "5.0.0-alpha.2",
+  "version": "5.0.0-alpha.3",
   "repository": {
     "type": "git",
-    "url": "http://github.com/plone/volto.git",
+    "url": "http://github.com/plone/aurora.git",
     "directory": "packages/components"
   },
   "bugs": {
-    "url": "https://github.com/plone/volto/issues"
+    "url": "https://github.com/plone/aurora/issues"
   },
   "type": "module",
   "files": [

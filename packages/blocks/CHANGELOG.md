@@ -8,6 +8,18 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.14 (2026-09-21)
+
+### Internal
+
+- Updated package repository metadata and towncrier issue links from `plone/volto` to `plone/aurora`. @sneridagh 
+
+## 1.0.0-alpha.13 (2026-09-16)
+
+### Feature
+
+- The image block now stores its alignment and size as schema-driven style fields, ships its styles as a CSS module instead of a global side-effect import, floats left/right aligned images at any size so following content wraps around them (including list markers), keeps floated images selectable in the editor, and can link the image to another page. @sneridagh @TimoBroeskamp 
+
 ## 1.0.0-alpha.12 (2026-09-05)
 
 ### Internal

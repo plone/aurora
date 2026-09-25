@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 5.0.0-alpha.3 (2026-09-21)
+
+### Documentation
+
+- Replaced remaining `Seven` naming with `Plone Aurora` in the Quanta usage documentation. @sneridagh 
+
 ## 5.0.0-alpha.2 (2026-09-05)
 
 ### Internal

@@ -8,6 +8,26 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.7 (2026-09-21)
+
+### Bugfix
+
+- Fixed aurora version check in VersionOverview. @sneridagh 
+
+### Internal
+
+- Updated package repository metadata and towncrier issue links from `plone/volto` to `plone/aurora`. @sneridagh 
+
+## 1.0.0-alpha.6 (2026-09-16)
+
+### Feature
+
+- Block schema fields can now declare an `onChangeSideEffects(value, nextData)` function to patch other fields when they change; the block settings form applies these patches centrally. @sneridagh @TimoBroeskamp 
+
+### Bugfix
+
+- The image widget now forwards `image_field` and `image_scales` from the object browser selection, so image blocks can render responsive image scales. @sneridagh @TimoBroeskamp 
+
 ## 1.0.0-alpha.5 (2026-09-05)
 
 ### Feature
