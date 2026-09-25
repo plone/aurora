@@ -66,7 +66,7 @@ const MapsBlockEdit = (props: BlockEditProps) => {
     <div className="maps-block w-full">
       {data.url ? (
         <iframe
-          title={t('blocks.maps.google-maps-embedded-block')}
+          title={t('blocks.maps.embedded-map-block')}
           src={data.url}
           className={clsx(styles.iframe, 'maps-iframe')}
           allowFullScreen

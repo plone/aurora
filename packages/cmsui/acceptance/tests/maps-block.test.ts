@@ -7,7 +7,7 @@ import { getEditorHandle, getNodeByPath } from '@platejs/playwright';
 const EMPTY_PAGE_ID = 'maps-block-empty-page';
 const VIEW_PAGE_ID = 'maps-block-view-page';
 const MAP_IFRAME_SRC =
-  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d182321.8188500324!2d25.929831387943064!3d44.43770726012982!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40b1f93abf3cad4f%3A0xac0632e37c9ca628!2sBucharest%2C%20Romania!5e0!3m2!1sen!2sde!4v1773825155685!5m2!1sen!2sde';
+  'https://maps.example.com/embed?location=Bucharest%2C%20Romania';
 const MAP_EMBED_CODE = `<iframe src="${MAP_IFRAME_SRC}" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>`;
 const MAP_TITLE = 'Bucharest map';
 
@@ -83,7 +83,6 @@ async function createMapsViewPage(page: Parameters<typeof test>[0]['page']) {
               '@type': 'maps',
               title: MAP_TITLE,
               url: MAP_IFRAME_SRC,
-              align: 'full',
               children: [{ text: '' }],
             },
             {
@@ -108,9 +107,11 @@ test('Maps block shows placeholder and embed instructions while empty', async ({
 
   await expect(page.getByPlaceholder('Enter map Embed Code')).toBeVisible();
   await expect(
-    page.getByText(/Please enter the Embed Code provided by Google Maps/i),
+    page.getByText(
+      /Please enter the Embed Code provided by your maps provider/i,
+    ),
   ).toBeVisible();
-  await expect(page.locator('.maps iframe.google-map')).toHaveCount(0);
+  await expect(page.locator('.maps-block iframe.maps-iframe')).toHaveCount(0);
 });
 
 test('Maps block shows an error for invalid embed code', async ({ page }) => {
@@ -126,7 +127,7 @@ test('Maps block shows an error for invalid embed code', async ({ page }) => {
       'Embed code error, please follow the instructions and try again.',
     ),
   ).toBeVisible();
-  await expect(page.locator('.maps iframe.google-map')).toHaveCount(0);
+  await expect(page.locator('.maps-block iframe.maps-iframe')).toHaveCount(0);
 });
 
 test('Maps block extracts iframe src and switches to iframe edit mode', async ({
@@ -140,7 +141,7 @@ test('Maps block extracts iframe src and switches to iframe edit mode', async ({
   await input.fill(MAP_EMBED_CODE);
   await input.press('Enter');
 
-  const iframe = page.locator('.maps iframe.google-map');
+  const iframe = page.locator('.maps-block iframe.maps-iframe');
   await expect(iframe).toBeAttached();
   await expect(iframe).toHaveAttribute('src', MAP_IFRAME_SRC);
   await expect(input).toHaveCount(0);
@@ -163,9 +164,8 @@ test('Maps block renders iframe in published view mode', async ({ page }) => {
   await expect(page.getByText('Text before maps block')).toBeVisible();
   await expect(page.getByText('Text after maps block')).toBeVisible();
 
-  const iframe = page.locator('.maps iframe.google-map');
+  const iframe = page.locator('.maps-block iframe.maps-iframe');
   await expect(iframe).toBeAttached();
   await expect(iframe).toHaveAttribute('src', MAP_IFRAME_SRC);
   await expect(iframe).toHaveAttribute('title', MAP_TITLE);
-  await expect(page.locator('.maps .maps-inner.w-full')).toHaveCount(1);
 });

@@ -8,9 +8,9 @@ vi.mock('react-i18next', () => ({
     t: (key: string) => {
       const translations: Record<string, string> = {
         'blocks.maps.maps-block-input-placeholder': 'Enter map Embed Code',
-        'blocks.maps.google-maps-embedded-block': 'Google Maps Embedded Block',
+        'blocks.maps.embedded-map-block': 'Embedded Map Block',
         'blocks.maps.instructions':
-          'Please enter the Embed Code provided by Google Maps',
+          'Please enter the Embed Code provided by your maps provider',
         'blocks.maps.code-error':
           'Embed code error, please follow the instructions and try again.',
       };
@@ -42,14 +42,14 @@ describe('MapsBlockEdit', () => {
     render(
       <MapsBlockEdit
         {...makeProps({
-          data: { url: 'https://maps.google.com/?q=' } as any,
+          data: { url: 'https://maps.example.com/?q=' } as any,
         })}
       />,
     );
 
-    const iframe = screen.getByTitle('Google Maps Embedded Block');
+    const iframe = screen.getByTitle('Embedded Map Block');
     expect(iframe).toBeInTheDocument();
-    expect(iframe).toHaveAttribute('src', 'https://maps.google.com/?q=');
+    expect(iframe).toHaveAttribute('src', 'https://maps.example.com/?q=');
   });
 
   it('renders input mode with translated placeholder and instructions', () => {
@@ -59,7 +59,9 @@ describe('MapsBlockEdit', () => {
       screen.getByPlaceholderText('Enter map Embed Code'),
     ).toBeInTheDocument();
     expect(
-      screen.getByText('Please enter the Embed Code provided by Google Maps'),
+      screen.getByText(
+        'Please enter the Embed Code provided by your maps provider',
+      ),
     ).toBeInTheDocument();
   });
 

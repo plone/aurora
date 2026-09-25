@@ -30,7 +30,7 @@ describe('MapsBlockView', () => {
 
   it('renders iframe when url is set', () => {
     const props = makeProps({
-      url: 'https://maps.google.com/?q=',
+      url: 'https://maps.example.com/?q=',
       title: 'Map Title',
     });
 
@@ -38,7 +38,7 @@ describe('MapsBlockView', () => {
     const iframe = screen.getByTitle('Map Title');
 
     expect(iframe).toBeInTheDocument();
-    expect(iframe).toHaveAttribute('src', 'https://maps.google.com/?q=');
+    expect(iframe).toHaveAttribute('src', 'https://maps.example.com/?q=');
     expect(container.querySelector('.maps-block')).toBeInTheDocument();
   });
 });

@@ -2,8 +2,8 @@
   "blocks": {
     "maps": {
       "maps-block-input-placeholder": "Karten-Einbettungscode eingeben",
-      "google-maps-embedded-block": "Eingebetteter Google-Maps-Block",
-      "instructions": "Bitte gib den von Google Maps bereitgestellten Einbettungscode ein (Google Maps -> Teilen -> Karte einbetten). Er muss den <iframe>-Code enthalten.",
+      "embedded-map-block": "Eingebetteter Kartenblock",
+      "instructions": "Bitte gib den von deinem Kartenanbieter bereitgestellten Einbettungscode ein. Er muss den <iframe>-Code enthalten.",
       "code-error": "Fehler im Einbettungscode. Bitte folge den Anweisungen und versuche es erneut."
     }
   }
