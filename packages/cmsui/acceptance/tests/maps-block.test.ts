@@ -1,4 +1,5 @@
 import { expect, test } from '../../../tooling/playwright/test';
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
 import { waitForPlateEditorReady } from '../../../tooling/playwright/plate';
@@ -35,7 +36,7 @@ async function createMapsEditPage(
               children: [{ text: 'Text before maps block' }],
             },
             {
-              type: 'unknown',
+              type: PLONE_BLOCK_TYPE,
               '@type': 'maps',
               children: [{ text: '' }],
               ...mapsBlockData,
@@ -79,7 +80,7 @@ async function createMapsViewPage(page: Parameters<typeof test>[0]['page']) {
               children: [{ text: 'Text before maps block' }],
             },
             {
-              type: 'unknown',
+              type: PLONE_BLOCK_TYPE,
               '@type': 'maps',
               title: MAP_TITLE,
               url: MAP_IFRAME_SRC,
@@ -151,7 +152,7 @@ test('Maps block extracts iframe src and switches to iframe edit mode', async ({
     string,
     unknown
   >;
-  expect(mapsNode.type).toBe('unknown');
+  expect(mapsNode.type).toBe(PLONE_BLOCK_TYPE);
   expect(mapsNode['@type']).toBe('maps');
   expect(mapsNode.url).toBe(MAP_IFRAME_SRC);
 });
