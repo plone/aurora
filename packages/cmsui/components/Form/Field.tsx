@@ -189,14 +189,20 @@ const renderFieldWidget = ({
         ? error.filter(Boolean).join(', ')
         : undefined;
 
+  // Forward only widget-safe props. JSON Schema metadata (`type`, `properties`,
+  // schema `default`, nested objects, etc.) must not reach RAC widgets / the DOM.
+  // Block widgets still need config like `actions` (Align/Size/Width) and
+  // object-browser options (`mode`, `selectedItemAttrs`, …).
+  const extraFieldProps = fieldProps as FieldProps & Record<string, unknown>;
+
   const widgetProps = {
     name: fieldProps.name,
     id: fieldProps.id,
     className: fieldProps.className,
     label: title ?? fieldProps.label,
     description:
-      typeof (fieldProps as { description?: unknown }).description === 'string'
-        ? (fieldProps as { description?: string }).description
+      typeof extraFieldProps.description === 'string'
+        ? extraFieldProps.description
         : undefined,
     placeholder: fieldProps.placeholder || 'Type something...',
     value: fieldProps.value,
@@ -208,6 +214,13 @@ const renderFieldWidget = ({
     choices: fieldProps.choices,
     factory: fieldProps.factory,
     widget: fieldProps.widget,
+    mode: fieldProps.mode,
+    actions: extraFieldProps.actions,
+    actionsInfoMap: extraFieldProps.actionsInfoMap,
+    selectedItemAttrs: extraFieldProps.selectedItemAttrs,
+    allowExternals: extraFieldProps.allowExternals,
+    isDisabled: extraFieldProps.isDisabled,
+    orientation: extraFieldProps.orientation,
     ...getWidgetPropsFromTaggedValues(widgetOptions),
   };
 
