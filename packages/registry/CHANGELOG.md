@@ -8,6 +8,19 @@
 
 <!-- towncrier release notes start -->
 
+## 4.0.0-alpha.3 (2026-09-21)
+
+### Internal
+
+- Replaced remaining `Seven`/`seven` references with `Plone Aurora`/`aurora` across docs, config, and comments. @sneridagh 
+
+## 4.0.0-alpha.2 (2026-09-05)
+
+### Internal
+
+- Check whether `.plone/vite.loader.js` content has changed before writing it in `PloneRegistryVitePlugin`. @arybakov05 
+- Reformatted registry source for compatibility with Prettier 3.8. @sneridagh 
+
 ## 4.0.0-alpha.1 (2026-07-02)
 
 ### Bugfix

@@ -8,6 +8,20 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.11 (2026-09-21)
+
+### Internal
+
+- Replaced remaining `Seven` references with `Plone Aurora` in code comments. @sneridagh 
+
+## 1.0.0-alpha.10 (2026-09-05)
+
+### Internal
+
+- Added `vite.extend.js` and a dependency audit path to pre-bundle layout runtime dependencies, reducing dev server startup reloads. @arybakov05 
+- Declared the catalog-managed i18next version as a peer dependency to keep react-i18next instances unified. @sneridagh 
+- Reformatted layout source for compatibility with Prettier 3.8. @sneridagh 
+
 ## 1.0.0-alpha.9 (2026-07-02)
 
 ### Breaking

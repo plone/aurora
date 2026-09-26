@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.6 (2026-09-21)
+
+### Internal
+
+- Updated package repository metadata and towncrier issue links from `plone/volto` to `plone/aurora`. @sneridagh 
+
 ## 2.0.0-alpha.5 (2026-07-02)
 
 ### Internal

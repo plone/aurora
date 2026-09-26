@@ -1,8 +1,35 @@
 {
   "name": "@plone/aurora",
-  "version": "1.0.0-alpha.4",
-  "private": true,
+  "description": "Plone Aurora is the next-generation frontend for Plone CMS",
+  "version": "1.0.0-alpha.10",
+  "maintainers": [
+    {
+      "name": "Plone Foundation",
+      "url": "https://plone.org"
+    }
+  ],
+  "funding": "https://github.com/sponsors/plone",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/plone/aurora.git",
+    "directory": "apps/aurora"
+  },
+  "bugs": {
+    "url": "https://github.com/plone/aurora/issues"
+  },
+  "homepage": "https://plone-aurora.readthedocs.io/",
+  "keywords": [
+    "aurora",
+    "plone",
+    "react",
+    "frontend",
+    "framework"
+  ],
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "scripts": {
     "dev": "pnpm exec init-loaders && react-router dev",

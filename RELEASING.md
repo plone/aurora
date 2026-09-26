@@ -8,7 +8,7 @@ To start a release, you must fulfill the following requirements:
 
 - Have permission to push to `main` branch
 - Have permission on the [`@plone` organization on npm](https://www.npmjs.com/org/plone).
-- Have an environment variable `GITHUB_TOKEN` with a GitHub personal token with permissions to write to the [Volto Release page on GitHub](https://github.com/plone/volto/releases).
+- Have an environment variable `GITHUB_TOKEN` with a GitHub personal token with permissions to write to the [Plone Aurora Release page on GitHub](https://github.com/plone/aurora/releases).
 - Install [`pipx`](https://pipx.pypa.io/stable/) in your system.
 
 To request these permissions, on GitHub tag `@plone/release-team`, or in Discord post to the [`release-team` channel](https://discord.com/channels/786421998426521600/897549410521714760).

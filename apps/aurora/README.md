@@ -1,33 +1,61 @@
-# Seven
+# Plone Aurora
+
+Plone Aurora is a fast, elegant, and intuitive React-based frontend for [Plone](https://plone.org) and [`plone.restapi`](https://github.com/plone/plone.restapi)-compatible backends.
+
+It succeeds Plone Volto and combines React 19, [React Router 8](https://reactrouter.com/), and the modular `@plone/*` packages.
 
 > [!WARNING]
-> This package and all the efforts around it are not even in an alpha state and are experimental.
-> The community offers no support whatsoever for it.
-> Breaking changes may occur without notice.
+> Plone Aurora is experimental and currently released as an alpha.
+> It isn't ready for production use and has no formal support.
+> Its public interfaces, behavior, and package structure may change without notice between alpha releases.
 
-This is the initial (and very early) implementation of Plone 7 public app.
-After the design and first implementations of all the required pieces (the `@plone/*` libraries) that will compose Plone 7, this package will concentrate all the development during the next years.
+## Get started
 
-It is based on [React Router](https://reactrouter.com/home) 7, using the `@plone/*` libraries.
+The recommended way to start a Plone Aurora project is with [Cookieplone](https://github.com/plone/cookieplone), which creates a ready-to-use frontend add-on project with development and deployment tooling.
 
-The name of this package and its folder name in `apps` may also change since it's undecided yet.
+Follow the [Create a package](https://plone-aurora.readthedocs.io/get-started/create-package.html) guide to create and run your first project.
 
-## Releases
+## Documentation
 
-Even in experimental phase, this package will be soft released periodically, under a tag.
-This will provide a way to try it out in real development and deploy scenarios.
+- [Plone Aurora documentation](https://plone-aurora.readthedocs.io/)
+- [Online demo](https://aurora.demo.plone.org/)
+- [Storybook](https://plone-storybook.readthedocs.io/?path=/docs/introduction--docs)
+- [Source code](https://github.com/plone/aurora)
+- [Issue tracker](https://github.com/plone/aurora/issues)
 
-## Development
+## Develop Plone Aurora core
 
-To start, from the root of the monorepo, issue the following commands.
+For requirements and detailed instructions, see [Develop Plone Aurora core](https://plone-aurora.readthedocs.io/contributing/developing-core.html).
+
+Clone the repository and install its dependencies:
 
 ```shell
-pnpm install
-pnpm --filter @plone/aurora run dev
+git clone https://github.com/plone/aurora.git
+cd aurora
+make install
 ```
 
-Then start the Plone backend.
+Start the backend in one terminal:
 
 ```shell
 make backend-docker-start
 ```
+
+Start the frontend in a second terminal:
+
+```shell
+pnpm start
+```
+
+The frontend is available at <http://localhost:3000> and the backend at <http://localhost:8080>.
+
+## Releases
+
+The Plone team publishes Aurora as a sequence of alpha releases during active development.
+The npm package uses the `alpha` dist-tag.
+Follow [Update Plone Aurora](https://plone-aurora.readthedocs.io/conceptual-guides/cookieplone-frontend-add-on.html#update-plone-aurora) to pin or update the Aurora version in a Cookieplone-generated project.
+
+## License
+
+The [MIT License](https://github.com/plone/aurora/blob/main/LICENSE.md) covers Plone Aurora.
+The [Plone Foundation](https://plone.org/foundation/) holds the copyrights.

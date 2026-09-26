@@ -1,4 +1,4 @@
-import PackageJson from '../../package.json';
+import PackageJson from '../../../../apps/aurora/package.json';
 
 interface VersionOverviewProps {
   plone_version: string;

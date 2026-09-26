@@ -395,36 +395,41 @@ function ImageInputBase({
   const onSelectInternalImage = useCallback(
     async (selectedItems: Partial<Brain>[]) => {
       const selectedImage = selectedItems[0];
-      if (!selectedImage || typeof selectedImage['@id'] !== 'string') return;
+if (!selectedImage || typeof selectedImage['@id'] !== 'string') return;
 
-      const title =
-        typeof selectedImage.title === 'string'
-          ? selectedImage.title
-          : undefined;
+const title =
+  typeof selectedImage.title === 'string'
+    ? selectedImage.title
+    : undefined;
 
-      if (!blobField) {
-        onValueChange(selectedImage['@id'], { title });
-        return;
-      }
+if (!blobField) {
+  onValueChange(selectedImage['@id'], {
+    title,
+    image_field: selectedImage.image_field,
+    image_scales: selectedImage.image_scales ?? undefined,
+  });
+  return;
+}
 
-      setUploadError('');
-      setIsUploading(true);
-      try {
-        const filename = title ? `${title}` : 'image';
-        const blob = await fetchExistingImageAsBlob(
-          selectedImage['@id'],
-          filename,
-        );
-        if (!blob) {
-          setUploadError('Could not load the selected image');
-          setIsUploading(false);
-          return;
-        }
-        onValueChange(blob, { title });
-        setIsUploading(false);
-      } catch {
-        setUploadError('Could not load the selected image');
-        setIsUploading(false);
+setUploadError('');
+setIsUploading(true);
+try {
+  const filename = title ? `${title}` : 'image';
+  const blob = await fetchExistingImageAsBlob(
+    selectedImage['@id'],
+    filename,
+  );
+  if (!blob) {
+    setUploadError('Could not load the selected image');
+    setIsUploading(false);
+    return;
+  }
+  onValueChange(blob, { title });
+  setIsUploading(false);
+} catch {
+  setUploadError('Could not load the selected image');
+  setIsUploading(false);
+}
       }
     },
     [onValueChange, blobField],
@@ -486,7 +491,12 @@ function ImageInputBase({
           <ObjectBrowserProvider
             config={{
               mode: objectBrowserMode,
-              selectedItemAttrs: ['@id', 'title'],
+              selectedItemAttrs: [
+                '@id',
+                'title',
+                'image_field',
+                'image_scales',
+              ],
               onChange: onSelectInternalImage,
               initialPath: resolvedCurrentPath,
               title: 'Pick an existing image',
