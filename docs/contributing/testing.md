@@ -1,8 +1,8 @@
 ---
 myst:
   html_meta:
-    "description": "We use Vitest for unit testing in Plone Aurora. The popular @testing-library/react is also available for writing your tests. For every feature or component, a unit test is mandatory in Plone Aurora core."
-    "property=og:description": "We use Vitest for unit testing in Plone Aurora. The popular @testing-library/react is also available for writing your tests. For every feature or component, a unit test is mandatory in Plone Aurora core."
+    "description": "Plone Aurora uses Vitest for unit testing. Developers may use @testing-library/react for writing tests. For every feature or component, a unit test is mandatory in Plone Aurora core."
+    "property=og:description": "Plone Aurora uses Vitest for unit testing. Developers may use @testing-library/react for writing tests. For every feature or component, a unit test is mandatory in Plone Aurora core."
     "property=og:title": "Testing Plone Aurora with Vitest"
     "keywords": "Plone Aurora, Plone, frontend, React, testing, Vitest"
 ---
@@ -12,7 +12,7 @@ myst:
 This chapter describes how to write and run unit tests in Plone Aurora.
 It covers how to use {term}`Vitest`, the unit test tool for Plone Aurora core.
 
-The popular `@testing-library/react` is also available for writing your tests.
+The popular {program}`@testing-library/react` is also available for writing your tests.
 For every feature or component, a unit test is mandatory in Plone Aurora core.
 
 
@@ -20,7 +20,7 @@ For every feature or component, a unit test is mandatory in Plone Aurora core.
 
 ## Vitest configuration
 
-Plone Aurora is a monorepo made up of the `apps/aurora` application and several packages under `packages/*`, such as `@plone/client`, `@plone/components`, and `@plone/blocks`.
+Plone Aurora is a monorepo made up of the {program}`apps/aurora` application and several packages under {file}`packages/*`, such as {program}`@plone/client`, {program}`@plone/components`, and {program}`@plone/blocks`.
 Each package has its own {file}`vitest.config.ts` file, so tests are configured and run independently per package rather than through a single shared configuration.
 
 
@@ -42,7 +42,7 @@ pnpm --filter @plone/cmsui test
 ```
 
 ```{note}
-You can also `cd` into the package directory, for example `apps/aurora` or `packages/cmsui`, and run `pnpm test` directly from there.
+You can also `cd` into the package directory, for example {file}`apps/aurora` or {file}`packages/cmsui`, and run `pnpm test` directly from there.
 ```
 
 Vitest tests must pass locally before you push commits to the remote Plone Aurora repository.
@@ -80,10 +80,9 @@ Then you can follow the Vitest prompts for keys that you can enter to trigger te
  › Press Enter to run all tests.
 ```
 
-You can also run only specific tests using the following command.
+You can also run only specific tests, specifying the path containing the tests you want to run, using the following command as a typical example.
 
 ```shell
-# will run only the tests matching this path
 pnpm test src/components/theme/Image
 ```
 
@@ -92,9 +91,9 @@ pnpm test src/components/theme/Image
 
 ## Testing @plone/client
 
-Unlike the other packages, the `@plone/client` package requires a running Plone backend to run its tests, since its tests exercise real HTTP requests against a Plone site.
+Unlike the other packages, the {program}`@plone/client` package requires a running Plone backend to run its tests, since its tests exercise real HTTP requests against a Plone site.
 
-Before running the tests for `@plone/client`, start the backend from the root of the repository.
+Before running the tests for {program}`@plone/client`, start the backend from the root of the repository.
 
 ```shell
 make acceptance-backend-start
