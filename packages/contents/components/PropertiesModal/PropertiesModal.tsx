@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useFetcher, useRevalidator, type SubmitTarget } from 'react-router';
+import { useFetcher, type SubmitTarget } from 'react-router';
 import { Button as RACButton, Heading, TextArea } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import {
@@ -44,7 +44,6 @@ export default function PropertiesModal() {
   const dataFetcher = useFetcher<{
     items: Array<PropertyItem & { '@id': string }>;
   }>();
-  const { revalidate } = useRevalidator();
   const {
     showProperties,
     setShowProperties,
@@ -99,7 +98,6 @@ export default function PropertiesModal() {
           icon: <PropertiesIcon />,
         };
         showToast(toast);
-        revalidate();
       }
       if (data?.errors?.length > 0) {
         data.errors.forEach((e: any) => {

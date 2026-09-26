@@ -7,7 +7,7 @@ import type { RequestResponse } from '../types';
 
 export const createWorkflowArgsSchema = z.object({
   path: z.string(),
-  transition: z.string().optional(),
+  transition: z.string(),
   data: createWorkflowDataSchema.optional(),
 });
 
@@ -28,9 +28,7 @@ export async function createWorkflow(
     config: this.config,
   };
 
-  const workflowPath = `${validatedArgs.path}/@workflow/${
-    validatedArgs.transition ?? 'publish'
-  }`;
+  const workflowPath = `${validatedArgs.path}/@workflow/${validatedArgs.transition}`;
 
   return apiRequest('post', workflowPath, options);
 }

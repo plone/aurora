@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useFetcher, useRevalidator, type SubmitTarget } from 'react-router';
+import { useFetcher, type SubmitTarget } from 'react-router';
 import { Heading } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import { Button, Dialog, Modal } from '@plone/components/quanta';
@@ -12,7 +12,6 @@ export default function TagsModal() {
   const { t } = useTranslation();
   const fetcher = useFetcher();
   const vocabularyFetcher = useFetcher<{ vocabulary: string[] }>();
-  const { revalidate } = useRevalidator();
   const { showTags, setShowTags, selected, setSelected, showToast } =
     useContentsContext();
 
@@ -47,7 +46,6 @@ export default function TagsModal() {
           icon: <TagIcon />,
         };
         showToast(toast);
-        revalidate();
       }
       if (data?.errors?.length > 0) {
         data.errors.forEach((e: any) => {

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useFetcher, useRevalidator, type SubmitTarget } from 'react-router';
+import { useFetcher, type SubmitTarget } from 'react-router';
 import { Button, Heading } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import { getContentIcon } from '@plone/helpers';
@@ -18,7 +18,6 @@ import { buildRenamePayload, type RenameEdit } from '../../helpers/rename';
 export default function RenameModal() {
   const { t } = useTranslation();
   const fetcher = useFetcher();
-  const { revalidate } = useRevalidator();
   const { showRename, setShowRename, selected, setSelected, showToast } =
     useContentsContext();
 
@@ -53,7 +52,6 @@ export default function RenameModal() {
           icon: <RenameIcon />,
         };
         showToast(toast);
-        revalidate();
       }
       if (data?.errors?.length > 0) {
         data.errors.forEach((e: any) => {

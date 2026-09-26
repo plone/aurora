@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useFetcher, useRevalidator } from 'react-router';
+import { useFetcher } from 'react-router';
 import { Button as RACButton, Heading } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import {
@@ -24,7 +24,6 @@ export default function WorkflowModal() {
   const { t } = useTranslation();
   const fetcher = useFetcher();
   const dataFetcher = useFetcher<WorkflowData>();
-  const { revalidate } = useRevalidator();
   const { showWorkflow, setShowWorkflow, selected, setSelected, showToast } =
     useContentsContext();
 
@@ -59,7 +58,6 @@ export default function WorkflowModal() {
           icon: <StateIcon />,
         };
         showToast(toast);
-        revalidate();
       }
       if (data?.errors?.length > 0) {
         data.errors.forEach((e: any) => {
