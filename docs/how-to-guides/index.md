@@ -21,6 +21,8 @@ access-registry
 register-and-retrieve-components
 register-and-retrieve-utilities
 configure-style-fields
+couple-block-schema-fields
+add-editor-migration
 register-slots
 customize-login-screen
 shadow-a-component
@@ -29,6 +31,7 @@ add-tailwind
 icons
 configure-plate-code-block-languages
 bind-metadata-fields-to-plate-text-blocks
+customize-toolbar
 custom-content-types
 manage-folder-contents-in-bulk
 ```

@@ -11,8 +11,9 @@
     node -v
     ```
 
-3.  Enable {term}`corepack` so that Node.js will install {term}`pnpm` as a package manager.
+3.  Install and enable the latest {term}`corepack` so that it uses the package manager version pinned by Plone Aurora.
 
     ```shell
-    npm i -g corepack@latest && corepack enable
+    npm install --global corepack@latest
+    corepack enable
     ```

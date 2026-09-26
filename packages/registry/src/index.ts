@@ -507,8 +507,7 @@ class Config {
 
     const utilityName = `${depsString ? `|${depsString}` : ''}${name}`;
     const utilitiesForType = this._data.utilities[type] as
-      | Utility<Type>
-      | undefined;
+      Utility<Type> | undefined;
 
     return utilitiesForType?.[utilityName] || {};
   }
@@ -527,8 +526,7 @@ class Config {
       .join('+');
 
     const utilitiesForType = this._data.utilities[type] as
-      | Utility<Type>
-      | undefined;
+      Utility<Type> | undefined;
     if (!utilitiesForType) return [];
 
     const utilityName = `${depsString ? `|${depsString}` : ''}`;

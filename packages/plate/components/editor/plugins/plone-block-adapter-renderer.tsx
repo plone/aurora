@@ -1,7 +1,12 @@
 import React from 'react';
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import config from '@plone/registry';
 import { createSlatePlugin, type TElement } from 'platejs';
-import { toPlatePlugin, type PlateElementProps } from 'platejs/react';
+import {
+  PlateElement,
+  toPlatePlugin,
+  type PlateElementProps,
+} from 'platejs/react';
 import { BlockInnerContainer } from '../../ui/block-inner-container';
 
 type NativeBlockElement = TElement & {
@@ -49,25 +54,25 @@ function PloneBlockAdapterRendererElement(
   const View = block?.view;
 
   if (!blockData || !View) {
-    return <div {...props.attributes}>{props.children}</div>;
+    return <PlateElement {...props}>{props.children}</PlateElement>;
   }
 
   return (
-    <div {...props.attributes}>
+    <PlateElement {...props}>
       <BlockInnerContainer>
         <View data={blockData} />
       </BlockInnerContainer>
-    </div>
+    </PlateElement>
   );
 }
 
 export const BasePloneBlockAdapterRendererPlugin = createSlatePlugin({
-  key: 'unknown',
+  key: PLONE_BLOCK_TYPE,
   node: {
     component: PloneBlockAdapterRendererElement,
     isVoid: true,
     isElement: true,
-    type: 'unknown',
+    type: PLONE_BLOCK_TYPE,
   },
 });
 

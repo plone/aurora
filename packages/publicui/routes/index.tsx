@@ -22,7 +22,7 @@ import {
   Link,
   RouterProvider as RACRouterProvider,
 } from 'react-aria-components';
-import i18next from '@plone/aurora/app/i18next.server';
+import { getLocale } from '@plone/aurora/app/i18next.server';
 import { ploneContentContext } from '@plone/aurora/app/middleware.server';
 import type { RootLoader } from '@plone/aurora/app/root';
 import { FolderIcon } from '@plone/components/Icons';
@@ -36,11 +36,13 @@ import config from '@plone/registry';
 
 import styles from '@plone/layout/slots/App/App.module.css';
 import stylesheet from '@plone/aurora/.plone/publicui.css?url';
+import { ContentTypesMenu } from '../components/Toolbar/ContentTypesMenu';
 
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
   matches,
 }) => {
-  const content = matches.find((match) => match.id === 'root')?.data?.content;
+  const content = matches.find((match) => match.id === 'root')?.loaderData
+    ?.content;
   if (!content) {
     return [];
   }
@@ -78,10 +80,9 @@ export const links: LinksFunction = () => [
 ];
 
 export async function loader({
-  request,
   context,
 }: LoaderFunctionArgs<RouterContextProvider>) {
-  const locale = await i18next.getLocale(request);
+  const locale = getLocale(context);
   const content = context.get(ploneContentContext);
   return {
     content,
@@ -101,6 +102,11 @@ export default function Index() {
     .map((match) => match.handle?.bodyClass);
   const contentLanguage = (content.language as { token?: string } | undefined)
     ?.token;
+
+  const hasContent =
+    matches.filter(
+      (match) => match.id === 'content' || match.id === 'content-index',
+    ).length > 0;
 
   const showToolbar = shouldShowToolbar(content);
 
@@ -122,34 +128,45 @@ export default function Index() {
         <link rel="stylesheet" href="/layers.css" precedence="first" />
         <RACRouterProvider navigate={navigate}>
           <PluggablesProvider>
-            <Plug
-              pluggable="toolbar-top"
-              id="button-edit"
-              // @ts-expect-error this is currently typed as never[]
-              dependencies={[location.pathname]}
-            >
-              <Link
-                className="primary"
-                aria-label="Edit"
-                href={`/@@edit${location.pathname.replace(/^\/$/, '')}`}
-              >
-                <Pencil />
-              </Link>
-            </Plug>
-            <Plug
-              pluggable="toolbar-top"
-              id="button-contents"
-              // @ts-expect-error this is currently typed as never[]
-              dependencies={[location.pathname]}
-            >
-              <Link
-                className="secondary"
-                aria-label="Contents"
-                href={`/@@contents${location.pathname.replace(/^\/$/, '')}`}
-              >
-                <FolderIcon />
-              </Link>
-            </Plug>
+            {hasContent && (
+              <>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-edit"
+                  // @ts-expect-error this is currently typed as never[]
+                  dependencies={[location.pathname]}
+                >
+                  <Link
+                    className="primary"
+                    aria-label="Edit"
+                    href={`/@@edit${location.pathname.replace(/^\/$/, '')}`}
+                  >
+                    <Pencil />
+                  </Link>
+                </Plug>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-contents"
+                  // @ts-expect-error this is currently typed as never[]
+                  dependencies={[location.pathname]}
+                >
+                  <Link
+                    className="secondary"
+                    aria-label="Contents"
+                    href={`/@@contents${location.pathname.replace(/^\/$/, '')}`}
+                  >
+                    <FolderIcon />
+                  </Link>
+                </Plug>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-add"
+                  dependencies={[location.pathname] as any}
+                >
+                  <ContentTypesMenu content={content} />
+                </Plug>
+              </>
+            )}
             {showToolbar && <Toolbar />}
             <div id="main">
               <div className={clsx(styles.app, 'app-slot')}>

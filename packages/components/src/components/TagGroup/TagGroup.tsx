@@ -12,7 +12,8 @@ import {
 } from 'react-aria-components';
 
 export interface TagGroupProps<T>
-  extends Omit<RACTagGroupProps, 'children'>,
+  extends
+    Omit<RACTagGroupProps, 'children'>,
     Pick<TagListProps<T>, 'items' | 'children' | 'renderEmptyState'> {
   label?: string;
   description?: string;

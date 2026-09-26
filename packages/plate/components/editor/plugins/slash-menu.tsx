@@ -3,6 +3,7 @@ import * as React from 'react';
 import type { PlateEditor } from 'platejs/react';
 
 import { AIChatPlugin } from '@platejs/ai/react';
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import config from '@plone/registry';
 import {
   BookA,
@@ -82,7 +83,7 @@ const insertSomersaultNativeBlock = (
 
     editor.tf.insertNodes(
       editor.api.create.block({
-        type: 'unknown',
+        type: PLONE_BLOCK_TYPE,
         '@type': nativeBlockType,
       }),
       {
@@ -91,7 +92,7 @@ const insertSomersaultNativeBlock = (
       },
     );
 
-    if (block[0].type !== 'unknown') {
+    if (block[0].type !== PLONE_BLOCK_TYPE) {
       editor.getApi(SuggestionPlugin).suggestion.withoutSuggestions(() => {
         editor.tf.removeNodes({ previousEmptyBlock: true });
       });

@@ -1,4 +1,5 @@
 import { expect, test } from '../../../tooling/playwright/test';
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import { createContent } from '../../../tooling/playwright/content';
 
 const PAGE_ID = 'somersault-renderer-page';
@@ -24,7 +25,7 @@ async function setupSomersaultPage(page: Parameters<typeof test>[0]['page']) {
               children: [{ text: 'Text before teaser' }],
             },
             {
-              type: 'unknown',
+              type: PLONE_BLOCK_TYPE,
               '@type': 'teaser',
               title: 'Teaser block title',
               description: 'Teaser block description',

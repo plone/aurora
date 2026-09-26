@@ -20,8 +20,10 @@ export type Option = {
   name: string;
 };
 
-export interface TokenSelectProps<T extends Option = Option>
-  extends Omit<AriaSelectProps<T>, 'children'> {
+export interface TokenSelectProps<T extends Option = Option> extends Omit<
+  AriaSelectProps<T>,
+  'children'
+> {
   items: Iterable<T>;
   children?: React.ReactNode | ((item: T) => React.ReactNode);
 }

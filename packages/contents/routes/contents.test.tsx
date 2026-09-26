@@ -45,8 +45,8 @@ describe('Contents route loader', () => {
       request,
       params: { '*': 'news' },
       context,
-      unstable_pattern: '/@@contents/*',
-      unstable_url: new URL(request.url),
+      pattern: '/@@contents/*',
+      url: new URL(request.url),
     });
 
     expect(searchMock).toHaveBeenCalledWith({
@@ -106,8 +106,8 @@ describe('Contents route loader', () => {
       request,
       params: {},
       context,
-      unstable_pattern: '/@@contents',
-      unstable_url: new URL(request.url),
+      pattern: '/@@contents',
+      url: new URL(request.url),
     });
 
     expect(searchMock).toHaveBeenCalledWith({

@@ -35,8 +35,9 @@ export function Breadcrumb(
   );
 }
 
-interface BreadcrumbsProps<T extends Breadcrumb = Breadcrumb>
-  extends RACBreadcrumbsProps<T> {
+interface BreadcrumbsProps<
+  T extends Breadcrumb = Breadcrumb,
+> extends RACBreadcrumbsProps<T> {
   /**
    * If we should include a root item in the breadcrumbs, we provide a Breadcrumb object.
    */

@@ -34,15 +34,15 @@ describe('Add route', () => {
       context.set(ploneClientContext, { getType: getTypeMock } as any);
 
       const request = new Request(
-        'http://example.com/my-folder/add?type=Document',
+        'http://example.com/@@add/my-folder/?type=Document',
       );
 
       await loader({
         request,
         params: { '*': 'my-folder' },
         context,
-        unstable_pattern: '/my-folder/add',
-        unstable_url: new URL(request.url),
+        pattern: '/my-folder/add',
+        url: new URL(request.url),
       });
 
       expect(getTypeMock).toHaveBeenCalledWith({ type: 'Document' });
@@ -55,15 +55,15 @@ describe('Add route', () => {
       context.set(ploneClientContext, { getType: getTypeMock } as any);
 
       const request = new Request(
-        'http://example.com/my-folder/add?type=Document',
+        'http://example.com/@@add/my-folder/?type=Document',
       );
 
       const result = await loader({
         request,
         params: { '*': 'my-folder' },
         context,
-        unstable_pattern: '/my-folder/add',
-        unstable_url: new URL(request.url),
+        pattern: '/my-folder/add',
+        url: new URL(request.url),
       });
 
       expect((result as any).data).toEqual({
@@ -84,8 +84,8 @@ describe('Add route', () => {
           request,
           params: { '*': 'my-folder' },
           context,
-          unstable_pattern: '/my-folder/add',
-          unstable_url: new URL(request.url),
+          pattern: '/my-folder/add',
+          url: new URL(request.url),
         }),
       ).rejects.toEqual(
         expect.objectContaining({
@@ -103,15 +103,15 @@ describe('Add route', () => {
       const context = new RouterContextProvider();
       context.set(ploneClientContext, { getType: getTypeMock } as any);
 
-      const request = new Request('http://example.com/add?type=Document');
+      const request = new Request('http://example.com/@@add?type=Document');
 
       // Should not throw; loader succeeds with empty params
       const result = await loader({
         request,
         params: {},
         context,
-        unstable_pattern: '/add',
-        unstable_url: new URL(request.url),
+        pattern: '/add',
+        url: new URL(request.url),
       });
 
       expect((result as any).data.type).toBe('Document');
@@ -140,8 +140,8 @@ describe('Add route', () => {
         request,
         params: { '*': 'my-folder' },
         context,
-        unstable_pattern: '/my-folder/add',
-        unstable_url: new URL(request.url),
+        pattern: '/my-folder/add',
+        url: new URL(request.url),
       });
 
       expect(createContentMock).toHaveBeenCalledWith({
@@ -170,8 +170,8 @@ describe('Add route', () => {
         request,
         params: { '*': 'my-folder' },
         context,
-        unstable_pattern: '/my-folder/add',
-        unstable_url: new URL(request.url),
+        pattern: '/my-folder/add',
+        url: new URL(request.url),
       });
 
       expect((result as Response).status).toBe(302);
@@ -200,8 +200,8 @@ describe('Add route', () => {
         request,
         params: {},
         context,
-        unstable_pattern: '/add',
-        unstable_url: new URL(request.url),
+        pattern: '/add',
+        url: new URL(request.url),
       });
 
       expect((result as Response).status).toBe(302);

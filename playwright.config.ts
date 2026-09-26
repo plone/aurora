@@ -6,6 +6,9 @@ export default defineConfig({
     'packages/*/acceptance/tests/**/*.{spec,test}.{ts,tsx}',
     'apps/*/acceptance/tests/**/*.{spec,test}.{ts,tsx}',
   ],
+  // Ignore ephemeral git worktrees (e.g. `.codex/worktrees/*`), whose duplicate
+  // test copies would otherwise be collected and fail to resolve dependencies.
+  testIgnore: ['**/.codex/**', '**/node_modules/**'],
   outputDir: 'playwright/results',
   // Disable parallel tests to avoid conflicts creating/deleting content
   workers: 1,

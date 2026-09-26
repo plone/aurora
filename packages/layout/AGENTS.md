@@ -6,11 +6,11 @@ This file applies only to `packages/layout` and its subdirectories.
 
 - `@plone/layout` provides **shared structural layout elements** for Plone Aurora.
 - It is consumed by both `@plone/cmsui` (editor UI) and `@plone/publicui` (public-facing pages).
-- It contains: page header, footer, breadcrumbs, block renderer (`RenderBlocks`, `SomersaultRenderer`, `BlockWrapper`, `DefaultBlockView`), toast notifications, and slot configuration.
+- It contains: page header, footer, breadcrumbs, block renderer (`RenderBlocks`, `SomersaultRenderer`), toast notifications, and slot configuration.
 
 ## Package Model
 
-- **Blocks rendering** (`blocks/`): `RenderBlocks` and `SomersaultRenderer` orchestrate how blocks are rendered on a page. `BlockWrapper` wraps individual blocks.
+- **Blocks rendering** (`blocks/`): `RenderBlocks` and `SomersaultRenderer` orchestrate how Somersault blocks are rendered on a page.
 - **Components** (`components/`): structural UI elements (header, footer, breadcrumbs, toast).
 - **Config** (`config/`): slot definitions (`slots.ts`), toast config (`toast.ts`), and layout settings (`settings.ts`).
 - **Styles** (`styles/`): CSS for each layout section, organized by zone (`header.css`, `footer.css`, `content-area.css`, `publicui.css`).

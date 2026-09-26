@@ -1,6 +1,6 @@
 # `@plone/contents` Implementation Plan
 
-This document tracks the work needed to bring `@plone/contents` to feature parity with Volto's folder contents view while keeping the Seven/RAC/granular architecture.
+This document tracks the work needed to bring `@plone/contents` to feature parity with Volto's folder contents view while keeping the Plone Aurora/RAC/granular architecture.
 
 ## Goals
 
@@ -67,7 +67,7 @@ Legend:
 
 ### Current Assessment
 
-- The architectural rewrite is already an improvement over Volto’s monolithic `Contents.jsx` for Seven, RAC adoption, and shadowing.
+- The architectural rewrite is already an improvement over Volto’s monolithic `Contents.jsx` for Plone Aurora, RAC adoption, and shadowing.
 - The current gap is mostly feature completeness and contract stability, not the overall package shape.
 - The highest-risk missing areas are:
   - object action modals and their backend flows
@@ -79,7 +79,7 @@ Legend:
 
 Tasks:
 - [x] Enumerate all Volto contents features and mark each one as `done`, `partial`, or `missing` in `@plone/contents`.
-- [ ] Capture the current UX states to support in Seven:
+- [ ] Capture the current UX states to support in Plone Aurora:
   - default listing
   - loading
   - empty
@@ -113,7 +113,7 @@ Tasks:
 - [ ] Support Volto-equivalent search query parameters, not only `SearchableText` and `page`.
 - [ ] Implement sort state in the loader query instead of always forcing `getObjPositionInParent`.
 - [ ] Normalize pagination state and URL handling.
-- [ ] Verify `b_start` and page index behavior matches current Seven pagination expectations.
+- [ ] Verify `b_start` and page index behavior matches current Plone Aurora pagination expectations.
 
 Primary files:
 - `packages/contents/routes/contents.tsx`
@@ -223,7 +223,7 @@ Primary files:
 
 Tasks:
 - [ ] Reintroduce or redesign the permission gating that is still commented out.
-- [ ] Define the correct unauthorized experience for Seven.
+- [ ] Define the correct unauthorized experience for Plone Aurora.
 - [ ] Add explicit empty-state and no-results-state rendering.
 - [ ] Make loader/action errors deterministic and toast/error-boundary compatible.
 
@@ -325,7 +325,7 @@ Tasks:
   - dialogs
   - drag and drop
 - [ ] Validate responsive behavior on mobile/tablet.
-- [ ] Review whether any behavior should move into shared Seven or `@plone/components` abstractions.
+- [ ] Review whether any behavior should move into shared Plone Aurora or `@plone/components` abstractions.
 
 ## Proposed PR Split
 
@@ -469,7 +469,7 @@ These are the largest remaining feature gaps.
    Dependencies:
    - none beyond base route integration
    Tasks:
-   - [ ] Define Seven-native upload UX.
+   - [ ] Define Plone Aurora-native upload UX.
    - [ ] Support file/image uploads with progress and cancellation behavior.
    - [ ] Refresh contents and preserve expected page/filter state after upload.
    Expected files:
@@ -486,7 +486,7 @@ These close the usability gaps around permissions and discoverability.
     - clearer action contract
     Tasks:
     - [ ] Reintroduce folder-contents permission checks.
-    - [ ] Define Seven-native unauthorized behavior.
+    - [ ] Define Plone Aurora-native unauthorized behavior.
     - [ ] Hide or disable actions the user cannot perform.
     Primary files:
     - `packages/contents/routes/contents.tsx`
@@ -512,7 +512,7 @@ These close the usability gaps around permissions and discoverability.
     Tasks:
     - [ ] Show pending UI for delete, paste, reorder, and action modal submissions.
     - [ ] Prevent duplicate submissions during pending states.
-    - [ ] Decide how much optimistic updating is desirable for Seven.
+    - [ ] Decide how much optimistic updating is desirable for Plone Aurora.
     Primary files:
     - `packages/contents/components/ContentsTable/ContentsTable.tsx`
     - `packages/contents/components/DeleteModal/DeleteModal.tsx`

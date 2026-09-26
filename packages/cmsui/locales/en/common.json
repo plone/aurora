@@ -3,6 +3,7 @@
     "add": "Add",
     "edit": "Edit",
     "save": "Save",
+    "cancel": "Cancel",
     "recurrence": {
       "editRecurrence": "Edit recurrence",
       "repeat": "Repeat",
@@ -119,6 +120,9 @@
       "signInTo": "Sign in to {{site}}",
       "forgotPassword": "Forgot password? Request a <a>new password</a>",
       "returnToHome": "Return to home page"
+    },
+    "toolbar": {
+      "settings": "Settings"
     }
   }
 }

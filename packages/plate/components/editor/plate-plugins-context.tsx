@@ -8,6 +8,7 @@ type PlatePluginsContextValue = {
   discussions: TDiscussion[];
   setDiscussions: React.Dispatch<React.SetStateAction<TDiscussion[]>>;
   users: Record<string, TDiscussionUser>;
+  commentEditorPlugins?: any[];
 };
 
 const PlatePluginsContext =
