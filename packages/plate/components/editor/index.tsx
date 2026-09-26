@@ -86,11 +86,18 @@ export function PlateRenderer(
 
   return (
     <Plate editor={editor} readOnly>
+      {/* shadcn/ui Typeset owns prose styling for the read-only render. The
+          static node components emit near-plain tags so the `.typeset` rules
+          (in `@layer components`) govern typography, rhythm and colour. */}
       <EditorView
         {...rest}
         editor={editor as unknown as SlateEditor}
         className={props.className}
         variant="none"
+        className={`
+          typeset
+          ${(rest as { className?: string }).className ?? ''}
+        `}
       />
     </Plate>
   );
