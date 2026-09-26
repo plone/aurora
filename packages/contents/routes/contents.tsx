@@ -13,6 +13,10 @@ import Indexes, { defaultIndexes } from '../components/Indexes';
 import { ContentsProvider } from '../providers/contents';
 import DeleteModal from '../components/DeleteModal/DeleteModal';
 import UploadModal from '../components/UploadModal/UploadModal';
+import RenameModal from '../components/RenameModal/RenameModal';
+import WorkflowModal from '../components/WorkflowModal/WorkflowModal';
+import TagsModal from '../components/TagsModal/TagsModal';
+import PropertiesModal from '../components/PropertiesModal/PropertiesModal';
 import ErrorToast from '@plone/layout/components/Toast/ErrorToast';
 
 import type { TableIndexes } from '../types';
@@ -92,12 +96,6 @@ export default function Contents() {
   const navigate = useNavigate();
   const [indexes, setIndexes] = useState(DEFAULT_TABLE_INDEXES);
 
-  const upload = () => Promise.resolve();
-  const properties = () => Promise.resolve();
-  const workflow = () => Promise.resolve();
-  const tags = () => Promise.resolve();
-  const rename = () => Promise.resolve();
-
   const onSortItems = (_: any, { value }: { value: string }) => {
     const [sort_on, sort_order] = value.split('|');
     const params = new URLSearchParams(window.location.search);
@@ -124,6 +122,10 @@ export default function Contents() {
       <ContentsProvider>
         <DeleteModal />
         <UploadModal />
+        <RenameModal />
+        <WorkflowModal />
+        <TagsModal />
+        <PropertiesModal />
         <ContentsTable
           title={content.title}
           pathname={content['@id']}
@@ -133,12 +135,6 @@ export default function Contents() {
           indexes={indexes}
           onSelectIndex={onSelectIndex}
           sortItems={(id) => onSortItems(undefined, { value: id })}
-          upload={upload}
-          rename={rename}
-          workflow={workflow}
-          tags={tags}
-          properties={properties}
-
           // addableTypes={props.addableTypes}
         />
       </ContentsProvider>

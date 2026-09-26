@@ -26,7 +26,10 @@ describe('Workflow', () => {
     };
     await cli.createContent({ path, data: contentData });
 
-    const result = await cli.createWorkflow({ path: contentData.title });
+    const result = await cli.createWorkflow({
+      path: contentData.title,
+      transition: 'publish',
+    });
 
     expect(result.data.action).toBe('publish');
   });
@@ -45,6 +48,7 @@ describe('Workflow', () => {
 
     const result = await cli.createWorkflow({
       path: contentData.title,
+      transition: 'publish',
       data: workflowData,
     });
 
@@ -66,6 +70,7 @@ describe('Workflow', () => {
     try {
       await cli.createWorkflow({
         path: 'blah',
+        transition: 'publish',
         data: workflowData,
       });
     } catch (err) {

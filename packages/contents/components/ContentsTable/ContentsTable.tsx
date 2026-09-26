@@ -62,11 +62,6 @@ interface ContentsTableProps {
   indexes: TableIndexes;
   onSelectIndex: (index: string) => void;
   sortItems: (index: string) => void;
-  upload: () => Promise<void>;
-  rename: () => Promise<void>;
-  workflow: () => Promise<void>;
-  tags: () => Promise<void>;
-  properties: () => Promise<void>;
   // cut: (item?: object) => Promise<void>;
   // copy: (item?: object) => Promise<void>;
   // paste: () => Promise<void>;
@@ -89,11 +84,6 @@ export function ContentsTable({
   indexes: baseIndexes,
   onSelectIndex,
   sortItems,
-  upload,
-  rename,
-  workflow,
-  tags,
-  properties,
   // cut,
   // copy,
   // paste,
@@ -111,6 +101,10 @@ export function ContentsTable({
     setShowDelete,
     setItemsToDelete,
     setShowUpload,
+    setShowRename,
+    setShowWorkflow,
+    setShowTags,
+    setShowProperties,
     showToast,
   } = useContentsContext();
   const fetcher = useFetcher();
@@ -168,6 +162,11 @@ export function ContentsTable({
   const openUpload = () => {
     setShowUpload(true);
   };
+
+  const openRename = () => setShowRename(true);
+  const openWorkflow = () => setShowWorkflow(true);
+  const openTags = () => setShowTags(true);
+  const openProperties = () => setShowProperties(true);
 
   const orderItem = async (id: string, delta: number | 'bottom' | 'top') => {
     await fetcher.submit(
@@ -547,10 +546,10 @@ export function ContentsTable({
               {!isMobileScreenSize && (
                 <ContentsActions
                   upload={openUpload}
-                  rename={rename}
-                  workflow={workflow}
-                  tags={tags}
-                  properties={properties}
+                  rename={openRename}
+                  workflow={openWorkflow}
+                  tags={openTags}
+                  properties={openProperties}
                   cut={cut}
                   copy={copy}
                   paste={paste}

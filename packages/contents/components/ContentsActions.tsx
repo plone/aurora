@@ -20,10 +20,10 @@ import { useContentsContext } from '../providers/contents';
 
 type Props = {
   upload: () => void | Promise<void>;
-  rename: () => Promise<void>;
-  workflow: () => Promise<void>;
-  tags: () => Promise<void>;
-  properties: () => Promise<void>;
+  rename: () => void | Promise<void>;
+  workflow: () => void | Promise<void>;
+  tags: () => void | Promise<void>;
+  properties: () => void | Promise<void>;
   cut: (item?: Brain) => void;
   copy: (item?: Brain) => void;
   paste: () => Promise<void>;
