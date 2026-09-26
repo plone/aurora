@@ -12,6 +12,7 @@ export * from '../components/Link/Link.quanta';
 export * from '../components/Menu/Menu.quanta';
 export * from '../components/Modal/Modal.quanta';
 export * from '../components/Popover/Popover.quanta';
+export * from '../components/SearchField/SearchField.quanta';
 export * from '../components/Select/Select.quanta';
 export * from '../components/TextField/TextField.quanta';
 export { SizeWidget } from '../components/SizeWidget/SizeWidget';
