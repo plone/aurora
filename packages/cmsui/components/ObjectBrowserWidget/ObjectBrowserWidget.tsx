@@ -8,7 +8,6 @@ import {
 import { tv } from 'tailwind-variants';
 import { focusRing } from '../utils';
 import { useLoaderData } from 'react-router';
-import type { loader as editLoader } from '../../routes/edit';
 import { ObjectBrowserProvider } from './ObjectBrowserContext';
 import type { UseObjectBrowserConfig } from './ObjectBrowserContext';
 import { ObjectBrowserTags } from './ObjectBrowserTags';
@@ -73,10 +72,14 @@ export function ObjectBrowserWidgetComponent(props: ObjectBrowserWidgetProps) {
 }
 
 export function ObjectBrowserWidget(props: ObjectBrowserWidgetProps) {
-  const { content } = useLoaderData<typeof editLoader>();
+  const loaderData = useLoaderData() as {
+    content?: { '@id'?: string };
+  } | null;
   const { label, description, errorMessage, ...rest } = props;
   return (
-    <ObjectBrowserProvider config={{ ...rest, initialPath: content?.['@id'] }}>
+    <ObjectBrowserProvider
+      config={{ ...rest, initialPath: loaderData?.content?.['@id'] || '/' }}
+    >
       <ObjectBrowserWidgetComponent {...{ label, description, errorMessage }} />
     </ObjectBrowserProvider>
   );

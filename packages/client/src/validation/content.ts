@@ -139,6 +139,24 @@ export const updateContentDataSchema = z
       })
       .nullable()
       .optional(),
+    image: z
+      .object({
+        'content-type': z.string(),
+        data: z.string(),
+        encoding: z.string(),
+        filename: z.string(),
+      })
+      .nullable()
+      .optional(),
+    file: z
+      .object({
+        'content-type': z.string(),
+        data: z.string(),
+        encoding: z.string(),
+        filename: z.string(),
+      })
+      .nullable()
+      .optional(),
     relatedItems: z.array(RelatedItemPayloadSchema).optional(),
     rights: z.string().nullable().optional(),
     table_of_contents: z.boolean().nullable().optional(),

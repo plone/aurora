@@ -33,6 +33,18 @@ describe('ObjectBrowserWidget utils', () => {
       expect(buildObjectBrowserUrl(undefined, undefined)).toBeNull();
     });
 
+    it('should not append CMS add/edit routes to the resource URL', () => {
+      expect(buildObjectBrowserUrl('/@@add')).toBe(
+        '/@objectBrowserWidget?path.depth=1&metadata_fields:list=is_folderish',
+      );
+      expect(buildObjectBrowserUrl('/@@add/my-folder')).toBe(
+        '/@objectBrowserWidget/my-folder?path.depth=1&metadata_fields:list=is_folderish',
+      );
+      expect(buildObjectBrowserUrl('/')).toBe(
+        '/@objectBrowserWidget?path.depth=1&metadata_fields:list=is_folderish',
+      );
+    });
+
     it('should build search URL when searchText provided', () => {
       const result = buildObjectBrowserUrl(undefined, 'test search');
       expect(result).toBe(

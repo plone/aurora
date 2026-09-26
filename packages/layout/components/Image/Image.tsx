@@ -11,6 +11,7 @@ import { useRouteLoaderData } from 'react-router';
 import type { RootLoader } from '@plone/aurora/app/root';
 
 function removeObjectIdFromURL(basePath: string, scale: string) {
+  if (typeof scale !== 'string') return scale;
   return scale.replace(`${basePath}/`, '');
 }
 
@@ -23,10 +24,16 @@ export function flattenScales(path: string, image: any) {
     download: removeObjectIdFromURL(basePath, image.download),
   };
 
+  if (!imageInfo.scales || typeof imageInfo.scales !== 'object') {
+    return imageInfo;
+  }
+
   Object.keys(imageInfo.scales).forEach((key) => {
+    const scale = image.scales?.[key];
+    if (!scale) return;
     imageInfo.scales[key].download = removeObjectIdFromURL(
       basePath,
-      image.scales[key].download,
+      scale.download,
     );
   });
 

@@ -24,6 +24,13 @@ vi.mock('@plone/components/Icons', () => ({
   LinkIcon: () => <span>link</span>,
   NavigationIcon: () => <span>nav</span>,
   UploadIcon: () => <span>upload</span>,
+  PageIcon: () => <span>page</span>,
+  FolderIcon: () => <span>folder</span>,
+  NewsIcon: () => <span>news</span>,
+  CalendarIcon: () => <span>calendar</span>,
+  AttachmentIcon: () => <span>attachment</span>,
+  VideoIcon: () => <span>video</span>,
+  CollectionIcon: () => <span>collection</span>,
 }));
 
 vi.mock('../Field/Field', () => ({
@@ -73,6 +80,24 @@ describe('ImageWidget', () => {
     const image = container.querySelector('img');
     expect(image).toBeInTheDocument();
     expect(image).toHaveAttribute('src', 'https://cdn.example.com/image.jpg');
+  });
+
+  it('normalizes NamedBlobImage objects that expose download instead of @id', () => {
+    const { container } = render(
+      <ImageWidget
+        value={{
+          'content-type': 'image/png',
+          download: 'https://example.com/image.png/@@images/image',
+          filename: 'image.png',
+          size: 12,
+        }}
+      />,
+    );
+
+    expect(container.querySelector('img')).toHaveAttribute(
+      'src',
+      'https://example.com/image.png/@@images/image',
+    );
   });
 
   it('normalizes object and array values containing @id', () => {
@@ -193,6 +218,46 @@ describe('ImageWidget', () => {
       });
     });
     expect(screen.queryByText('Image upload failed')).not.toBeInTheDocument();
+  });
+
+  it('stores a NamedBlobImage object for Image content fields instead of creating content', async () => {
+    class MockFileReader {
+      result = 'data:image/png;base64,ZmFrZS1pbWFnZS1ieXRlcw==';
+      error = null;
+      onload: null | (() => void) = null;
+      onerror: null | (() => void) = null;
+      readAsDataURL() {
+        this.onload?.();
+      }
+    }
+    vi.stubGlobal('FileReader', MockFileReader);
+
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    const onChange = vi.fn();
+    render(<ImageWidget factory="Image" onChange={onChange} />);
+
+    const fileInput = document.querySelector(
+      'input[type="file"]',
+    ) as HTMLInputElement;
+    const file = new File(['fake-image-bytes'], 'photo.png', {
+      type: 'image/png',
+    });
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(onChange).toHaveBeenCalledWith(
+        {
+          data: 'ZmFrZS1pbWFnZS1ieXRlcw==',
+          encoding: 'base64',
+          'content-type': 'image/png',
+          filename: 'photo.png',
+        },
+        { title: 'photo.png' },
+      );
+    });
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });
 

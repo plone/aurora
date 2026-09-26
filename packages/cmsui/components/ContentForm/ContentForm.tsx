@@ -18,11 +18,12 @@ import { createStore, Provider, useAtom } from 'jotai';
 import type { ReactNode } from 'react';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useFetcher, type SubmitTarget } from 'react-router';
+import { useFetcher, useLocation, type SubmitTarget } from 'react-router';
 import { useAppForm } from '../Form/Form';
 import Sidebar, { sidebarAtom } from '../Sidebar/Sidebar';
 import { formAtom } from '../../routes/atoms';
 import BlocksEditor from '../BlockEditor/BlocksEditor';
+import { getContentPathFromCmsUrl } from '../../helpers/cmsPath';
 
 interface Schema {
   title: string;
@@ -50,6 +51,9 @@ export default function ContentForm({
 }: ContentFormProps) {
   const { t } = useTranslation();
   const fetcher = useFetcher();
+  const location = useLocation();
+  const cancelHref =
+    content['@id'] || getContentPathFromCmsUrl(location.pathname) || '/';
   const storeRef = useRef(createStore());
   const store = storeRef.current;
   const [collapsed, setCollapsed] = useAtom(sidebarAtom);
@@ -116,12 +120,12 @@ export default function ContentForm({
                                           {...schema.properties[schemaField]}
                                           className="mb-4"
                                           label={
-                                            schema.properties[field.name].title
+                                            schema.properties[field.name]?.title
                                           }
                                           name={field.name}
                                           defaultValue={field.state.value}
                                           required={
-                                            schema.required.indexOf(
+                                            schema.required?.indexOf(
                                               schemaField,
                                             ) !== -1
                                           }
@@ -156,9 +160,9 @@ export default function ContentForm({
             <Plug
               pluggable="toolbar-top"
               id="button-cancel"
-              dependencies={[content['@id']] as any}
+              dependencies={[cancelHref] as any}
             >
-              <Link aria-label={t('cmsui.cancel')} href={content['@id']}>
+              <Link aria-label={t('cmsui.cancel')} href={cancelHref}>
                 <Close />
               </Link>
             </Plug>

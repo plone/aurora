@@ -1,0 +1,1 @@
+Point the add/edit form cancel control at the content path instead of a missing @id, so Close leaves the form. @aryan7081

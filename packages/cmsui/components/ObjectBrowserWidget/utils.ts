@@ -14,6 +14,7 @@ import {
   VideoIcon,
   CollectionIcon,
 } from '@plone/components/Icons';
+import { getContentPathFromCmsUrl } from '../../helpers/cmsPath';
 
 export interface ContentIconMap {
   [key: string]: React.ComponentType<any>;
@@ -47,6 +48,10 @@ function isAll(keys: unknown): keys is 'all' {
 const DEFAULT_DEPTH = 'path.depth=1';
 const DEFAULT_METADATA_FIELDS = 'metadata_fields:list=is_folderish';
 
+function normalizeObjectBrowserPath(currentPath?: string): string | undefined {
+  return getContentPathFromCmsUrl(currentPath);
+}
+
 // Can be enhanched to support more query parameters if needed
 // Like a widget that sets selectable portal_types can add that filter to this query
 function buildObjectBrowserUrl(
@@ -54,14 +59,19 @@ function buildObjectBrowserUrl(
   searchText?: string,
   widgetOptions?: WidgetPatternOptions,
 ): string | null {
-  if (!currentPath && !searchText) return null;
-
   if (searchText) {
     const searchParam = `&SearchableText=${encodeURIComponent(searchText)}`;
     return `/@objectBrowserWidget?${DEFAULT_METADATA_FIELDS}${searchParam}`;
   }
 
-  return `/@objectBrowserWidget${currentPath}?${DEFAULT_DEPTH}&${DEFAULT_METADATA_FIELDS}`;
+  const path = normalizeObjectBrowserPath(currentPath);
+  if (!path) return null;
+
+  if (path === '/') {
+    return `/@objectBrowserWidget?${DEFAULT_DEPTH}&${DEFAULT_METADATA_FIELDS}`;
+  }
+
+  return `/@objectBrowserWidget${path}?${DEFAULT_DEPTH}&${DEFAULT_METADATA_FIELDS}`;
 }
 
 function processSelection(keys: Selection, items: Brain[]): Brain[] {
@@ -244,6 +254,7 @@ export {
   useAccumulatedItems,
   getItemLabel,
   buildObjectBrowserUrl,
+  normalizeObjectBrowserPath,
   processSelection,
   initializeSelectedKeys,
   getContentIcon,

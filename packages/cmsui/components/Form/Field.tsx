@@ -75,9 +75,7 @@ const getWidgetByFactory = (
 const getWidgetByName = (
   widget: FieldProps['widget'],
 ): React.ComponentType<any> | null =>
-  typeof widget === 'string'
-    ? (config.getWidget(widget) ?? getWidgetDefault())
-    : null;
+  typeof widget === 'string' ? (config.getWidget(widget) ?? null) : null;
 
 /**
  * Get widget by tagged values
@@ -179,12 +177,51 @@ const renderFieldWidget = ({
     getWidgetByType(fieldProps.type) ||
     getWidgetDefault();
 
-  // Adding the widget props from tagged values (if any)
+  const widgetOptions = fieldProps.widgetOptions;
+  const title = fieldProps.title;
+  const error = fieldProps.error;
+  const errorMessage = (fieldProps as { errorMessage?: unknown }).errorMessage;
+
+  const resolvedErrorMessage =
+    typeof errorMessage === 'string'
+      ? errorMessage
+      : Array.isArray(error)
+        ? error.filter(Boolean).join(', ')
+        : undefined;
+
+  // Forward only widget-safe props. JSON Schema metadata (`type`, `properties`,
+  // schema `default`, nested objects, etc.) must not reach RAC widgets / the DOM.
+  // Block widgets still need config like `actions` (Align/Size/Width) and
+  // object-browser options (`mode`, `selectedItemAttrs`, …).
+  const extraFieldProps = fieldProps as FieldProps & Record<string, unknown>;
+
   const widgetProps = {
-    ...fieldProps,
-    label: fieldProps.title,
+    name: fieldProps.name,
+    id: fieldProps.id,
+    className: fieldProps.className,
+    label: title ?? fieldProps.label,
+    description:
+      typeof extraFieldProps.description === 'string'
+        ? extraFieldProps.description
+        : undefined,
     placeholder: fieldProps.placeholder || 'Type something...',
-    ...getWidgetPropsFromTaggedValues(fieldProps.widgetOptions),
+    value: fieldProps.value,
+    defaultValue: fieldProps.defaultValue,
+    required: fieldProps.required,
+    isRequired: fieldProps.required,
+    errorMessage: resolvedErrorMessage,
+    widgetOptions,
+    choices: fieldProps.choices,
+    factory: fieldProps.factory,
+    widget: fieldProps.widget,
+    mode: fieldProps.mode,
+    actions: extraFieldProps.actions,
+    actionsInfoMap: extraFieldProps.actionsInfoMap,
+    selectedItemAttrs: extraFieldProps.selectedItemAttrs,
+    allowExternals: extraFieldProps.allowExternals,
+    isDisabled: extraFieldProps.isDisabled,
+    orientation: extraFieldProps.orientation,
+    ...getWidgetPropsFromTaggedValues(widgetOptions),
   };
 
   return fieldProps.mode !== MODE_HIDDEN ? (
