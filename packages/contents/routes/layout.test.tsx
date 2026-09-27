@@ -33,6 +33,7 @@ describe('Contents layout loader', () => {
 
     expect(result).toEqual({
       locale: 'en',
+      path: '/news',
       content: {
         '@id': '/plone/news',
         title: 'News',
