@@ -66,6 +66,61 @@ describe('content migrations', () => {
     });
   });
 
+  it('migrates legacy flat blockquotes into blockquote containers', () => {
+    config.blocks = {
+      blocksConfig: {},
+    } as typeof config.blocks;
+    installMigrations();
+
+    const content: TestContent = {
+      '@id': 'http://example.com/',
+      title: 'Page title',
+      blocks: {
+        quote: {
+          '@type': 'slate',
+          value: [
+            {
+              type: 'blockquote',
+              children: [
+                { text: 'Quoted ' },
+                {
+                  type: 'link',
+                  data: { url: 'https://plone.org' },
+                  children: [{ text: 'text' }],
+                },
+              ],
+            },
+          ],
+        },
+      },
+      blocks_layout: {
+        items: ['quote'],
+      },
+    };
+
+    const migrated = migrateContent(content as unknown as Content);
+    const [blockquote] = (migrated.blocks?.[SOMERSAULT_KEY] as { value: any[] })
+      .value;
+
+    expect(blockquote).toMatchObject({
+      type: 'blockquote',
+      children: [
+        {
+          type: 'p',
+          children: [
+            { text: 'Quoted ' },
+            {
+              type: 'a',
+              url: 'https://plone.org',
+              children: [{ text: 'text' }],
+            },
+          ],
+        },
+      ],
+    });
+    expect(blockquote.children).toHaveLength(1);
+  });
+
   it('moves native blocks into the somersault field as ploneBlock nodes', () => {
     config.blocks = {
       blocksConfig: {

@@ -15,6 +15,7 @@ import {
   migrateLegacyStrikethroughInValue,
 } from './legacy-strikethrough-plugin';
 import { migrateLegacyListsInValue } from './legacy-list-plugin';
+import { migrateLegacyBlockquotesInValue } from './legacy-blockquote-plugin';
 import {
   migrateLegacyLink,
   migrateLegacyLinksInValue,
@@ -517,7 +518,180 @@ describe('legacy link migration helpers', () => {
   });
 });
 
+describe('legacy blockquote migration helpers', () => {
+  it('wraps flat blockquote text in a paragraph', () => {
+    const value: Value = [
+      {
+        type: KEYS.blockquote,
+        id: 'quote',
+        blockWidth: 'default',
+        children: [{ text: 'Quote' }],
+      },
+    ];
+
+    migrateLegacyBlockquotesInValue(value);
+
+    expect(value).toEqual([
+      {
+        type: KEYS.blockquote,
+        id: 'quote',
+        blockWidth: 'default',
+        children: [{ type: KEYS.p, children: [{ text: 'Quote' }] }],
+      },
+    ]);
+  });
+
+  it('keeps inline links in the wrapped paragraph', () => {
+    const value: Value = [
+      {
+        type: KEYS.blockquote,
+        children: [
+          { text: 'See ' },
+          {
+            type: KEYS.link,
+            url: 'https://plone.org',
+            children: [{ text: 'Plone' }],
+          },
+          { text: ' now', bold: true },
+        ],
+      },
+    ];
+
+    migrateLegacyBlockquotesInValue(value);
+
+    expect(value).toEqual([
+      {
+        type: KEYS.blockquote,
+        children: [
+          {
+            type: KEYS.p,
+            children: [
+              { text: 'See ' },
+              {
+                type: KEYS.link,
+                url: 'https://plone.org',
+                children: [{ text: 'Plone' }],
+              },
+              { text: ' now', bold: true },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('wraps inline runs while keeping existing block children', () => {
+    const value: Value = [
+      {
+        type: KEYS.blockquote,
+        children: [
+          { text: 'before' },
+          { type: KEYS.p, children: [{ text: 'block' }] },
+          { text: 'after' },
+        ],
+      },
+    ];
+
+    migrateLegacyBlockquotesInValue(value);
+
+    expect(value).toEqual([
+      {
+        type: KEYS.blockquote,
+        children: [
+          { type: KEYS.p, children: [{ text: 'before' }] },
+          { type: KEYS.p, children: [{ text: 'block' }] },
+          { type: KEYS.p, children: [{ text: 'after' }] },
+        ],
+      },
+    ]);
+  });
+
+  it('migrates blockquotes nested in other elements', () => {
+    const value: Value = [
+      {
+        type: 'column_group',
+        children: [
+          {
+            type: 'column',
+            children: [
+              { type: KEYS.blockquote, children: [{ text: 'nested' }] },
+            ],
+          },
+        ],
+      },
+    ];
+
+    migrateLegacyBlockquotesInValue(value);
+
+    expect(value).toEqual([
+      {
+        type: 'column_group',
+        children: [
+          {
+            type: 'column',
+            children: [
+              {
+                type: KEYS.blockquote,
+                children: [{ type: KEYS.p, children: [{ text: 'nested' }] }],
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('leaves container blockquotes and other blocks unchanged', () => {
+    const containerValue: Value = [
+      {
+        type: KEYS.blockquote,
+        children: [
+          { type: KEYS.p, children: [{ text: 'one' }] },
+          { type: KEYS.p, children: [{ text: 'two' }] },
+        ],
+      },
+      { type: KEYS.p, children: [{ text: 'plain' }] },
+    ];
+    const expected = structuredClone(containerValue);
+
+    migrateLegacyBlockquotesInValue(containerValue);
+    expect(containerValue).toEqual(expected);
+
+    // Running it again on migrated output is a no-op.
+    migrateLegacyBlockquotesInValue(containerValue);
+    expect(containerValue).toEqual(expected);
+  });
+});
+
 describe('normalizeLegacyValue', () => {
+  it('converts legacy flat blockquotes after migrating their legacy links', () => {
+    const value: Value = [
+      {
+        type: KEYS.blockquote,
+        children: [
+          { text: 'Read ' },
+          {
+            type: 'link',
+            data: { url: 'https://plone.org' },
+            children: [{ text: 'this' }],
+          },
+        ],
+      },
+    ];
+
+    const normalized = normalizeLegacyValue(value)!;
+    const blockquote = normalized[0] as any;
+
+    expect(blockquote.type).toBe(KEYS.blockquote);
+    expect(blockquote.children).toHaveLength(1);
+    expect(blockquote.children[0].type).toBe(KEYS.p);
+    expect(blockquote.children[0].children[1]).toMatchObject({
+      type: KEYS.link,
+      url: 'https://plone.org',
+      children: [{ text: 'this' }],
+    });
+  });
+
   it('applies bold, italic, strikethrough, list, and link migrations in one pass', () => {
     const value: Value = [
       {

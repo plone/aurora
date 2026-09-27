@@ -1,0 +1,1 @@
+Upgraded `platejs`, `@platejs/floating`, and `@platejs/link` to 53.x and configured link autolink and markdown `inputRules`. Added acceptance tests for markdown shortcuts and blockquotes. @sneridagh

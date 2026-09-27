@@ -8,6 +8,7 @@ import {
   flip,
   offset,
 } from '@platejs/floating';
+import { LinkRules } from '@platejs/link';
 import {
   LinkPlugin as PlateLinkPlugin,
   submitFloatingLink,
@@ -599,6 +600,12 @@ function LinkFloatingToolbar({
 
 export const LinkKit = [
   PlateLinkPlugin.configure({
+    inputRules: [
+      LinkRules.markdown(),
+      LinkRules.autolink({ variant: 'paste' }),
+      LinkRules.autolink({ variant: 'space' }),
+      LinkRules.autolink({ variant: 'break' }),
+    ],
     options: {
       transformInput: normalizeLinkUrl,
     },

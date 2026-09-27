@@ -29,6 +29,11 @@ export function PlateEditor(props: {
   }) => void;
 }) {
   const editor = usePlateEditor({
+    // Normalize the loaded value so plugin invariants hold from the start
+    // (e.g. the trailing paragraph from `TrailingBlockPlugin`, container
+    // blockquotes). Before Plate v53, assigning node ids on mount made every
+    // node dirty and had the same effect implicitly.
+    shouldNormalizeEditor: true,
     ...props.editorConfig,
     value: props.value,
   });
