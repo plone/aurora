@@ -49,8 +49,8 @@ describe('Sharing route', () => {
         request,
         params: { '*': 'my-page' },
         context,
-        unstable_pattern: '/@@sharing/*',
-        unstable_url: new URL(request.url),
+        pattern: '/@@sharing/*',
+        url: new URL(request.url),
       });
 
       expect(getSharingMock).toHaveBeenCalledWith({
@@ -92,8 +92,8 @@ describe('Sharing route', () => {
         request,
         params: { '*': 'my-page' },
         context,
-        unstable_pattern: '/@@sharing/*',
-        unstable_url: new URL(request.url),
+        pattern: '/@@sharing/*',
+        url: new URL(request.url),
       });
 
       expect(updateSharingMock).toHaveBeenCalledWith({
@@ -121,8 +121,8 @@ describe('Sharing route', () => {
         request,
         params: { '*': 'my-page' },
         context,
-        unstable_pattern: '/@@sharing/*',
-        unstable_url: new URL(request.url),
+        pattern: '/@@sharing/*',
+        url: new URL(request.url),
       });
 
       expect(updateSharingMock).toHaveBeenCalledWith({
@@ -149,8 +149,8 @@ describe('Sharing route', () => {
         request,
         params: { '*': 'my-page' },
         context,
-        unstable_pattern: '/@@sharing/*',
-        unstable_url: new URL(request.url),
+        pattern: '/@@sharing/*',
+        url: new URL(request.url),
       });
 
       expect((result as Response).status).toBe(302);
@@ -175,8 +175,8 @@ describe('Sharing route', () => {
         request,
         params: {},
         context,
-        unstable_pattern: '/@@sharing/*',
-        unstable_url: new URL(request.url),
+        pattern: '/@@sharing/*',
+        url: new URL(request.url),
       });
 
       expect(updateSharingMock).toHaveBeenCalledWith({
