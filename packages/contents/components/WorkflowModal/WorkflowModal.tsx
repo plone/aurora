@@ -49,12 +49,10 @@ export default function WorkflowModal() {
       const data = fetcher.data;
       if (data?.ok?.length > 0) {
         const toast: ToastItem = {
-          title:
-            data.ok.length === 1
-              ? t('contents.actions.state_changed', { title: data.ok[0].title })
-              : t('contents.actions.state_changed_multiple', {
-                  number: data.ok.length,
-                }),
+          title: t('contents.actions.state_changed', {
+            count: data.ok.length,
+            title: data.ok[0].title,
+          }),
           icon: <StateIcon />,
         };
         showToast(toast);

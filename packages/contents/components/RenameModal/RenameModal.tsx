@@ -43,12 +43,10 @@ export default function RenameModal() {
       const data = fetcher.data;
       if (data?.ok?.length > 0) {
         const toast: ToastItem = {
-          title:
-            data.ok.length === 1
-              ? t('contents.actions.renamed', { title: data.ok[0].title })
-              : t('contents.actions.renamed_multiple', {
-                  number: data.ok.length,
-                }),
+          title: t('contents.actions.renamed', {
+            count: data.ok.length,
+            title: data.ok[0].title,
+          }),
           icon: <RenameIcon />,
         };
         showToast(toast);

@@ -29,16 +29,13 @@ export default function DeleteModal() {
       const data = fetcher.data;
 
       if (data?.ok?.length > 0) {
-        const toast: ToastItem = { title: '', icon: <BinIcon /> };
-        if (data.ok.length === 1) {
-          toast.title = t('contents.actions.deleted', {
+        const toast: ToastItem = {
+          title: t('contents.actions.deleted', {
+            count: data.ok.length,
             title: data.ok[0].title,
-          });
-        } else {
-          toast.title = t('contents.actions.deleted_multiple', {
-            number: data.ok.length,
-          });
-        }
+          }),
+          icon: <BinIcon />,
+        };
 
         showToast(toast);
       }

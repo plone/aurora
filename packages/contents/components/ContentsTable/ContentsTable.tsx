@@ -197,14 +197,6 @@ export function ContentsTable({
   const showClipboardActionToast = (data: ClipboardType, toastConfig: any) => {
     const l = data?.items?.length;
     if (l > 0) {
-      if (l > 1) {
-        Object.keys(toastConfig).forEach(
-          (action) =>
-            (toastConfig[action].title =
-              `${toastConfig[action].title}_multiple`),
-        );
-      }
-
       const title = l > 1 ? undefined : data.items[0].title;
 
       const toastContent: ToastItem = data.action
@@ -214,7 +206,7 @@ export function ContentsTable({
       if (toastContent) {
         showToast({
           title: t(toastContent.title, {
-            number: l,
+            count: l,
             title,
           }),
           icon: toastContent.icon,
