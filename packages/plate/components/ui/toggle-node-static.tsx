@@ -1,7 +1,7 @@
-import type { SlateElementProps } from 'platejs';
+import type { SlateElementProps } from 'platejs/static';
 
 import { ChevronRight } from 'lucide-react';
-import { SlateElement } from 'platejs';
+import { SlateElement } from 'platejs/static';
 
 import { BlockInnerContainer } from './block-inner-container';
 

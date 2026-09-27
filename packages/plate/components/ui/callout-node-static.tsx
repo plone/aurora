@@ -1,6 +1,6 @@
-import type { SlateElementProps } from 'platejs';
+import type { SlateElementProps } from 'platejs/static';
 
-import { SlateElement } from 'platejs';
+import { SlateElement } from 'platejs/static';
 
 import { BlockInnerContainer } from './block-inner-container';
 import { cn } from '../../lib/utils';

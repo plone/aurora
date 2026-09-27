@@ -1,10 +1,10 @@
+import { type TCodeBlockElement } from 'platejs';
 import {
   type SlateElementProps,
   type SlateLeafProps,
-  type TCodeBlockElement,
   SlateElement,
   SlateLeaf,
-} from 'platejs';
+} from 'platejs/static';
 
 import { BlockInnerContainer } from './block-inner-container';
 
