@@ -9,7 +9,6 @@ export default function (config) {
         '@plone/plate > @ariakit/react',
         '@plone/plate > @platejs/ai',
         '@plone/plate > @platejs/ai/react',
-        '@plone/plate > @platejs/autoformat',
         '@plone/plate > @platejs/basic-nodes',
         '@plone/plate > @platejs/basic-nodes/react',
         '@plone/plate > @platejs/basic-styles',
