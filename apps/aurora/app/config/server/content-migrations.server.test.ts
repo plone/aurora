@@ -99,8 +99,9 @@ describe('content migrations', () => {
     };
 
     const migrated = migrateContent(content as unknown as Content);
-    const [blockquote] = (migrated.blocks?.[SOMERSAULT_KEY] as { value: any[] })
-      .value;
+    const [blockquote] = (
+      migrated.blocks?.[SOMERSAULT_KEY] as unknown as { value: any[] }
+    ).value;
 
     expect(blockquote).toMatchObject({
       type: 'blockquote',
