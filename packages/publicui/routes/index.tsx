@@ -173,7 +173,6 @@ export default function Index() {
                   dependencies={[location.pathname]}
                 >
                   <Link
-                    className="secondary"
                     aria-label="Sharing"
                     href={`/@@sharing${location.pathname.replace(/^\/$/, '')}`}
                   >
