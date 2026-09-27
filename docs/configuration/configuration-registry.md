@@ -3,13 +3,13 @@ myst:
   html_meta:
     "description": "How to access and modify the configuration registry"
     "property=og:description": "How to access and modify the configuration registry"
-    "property=og:title": "Customize Seven using the configuration registry"
-    "keywords": "Seven, @plone/registry, registry, configuration"
+    "property=og:title": "Customize Plone Aurora using the configuration registry"
+    "keywords": "Plone Aurora, @plone/registry, registry, configuration"
 ---
 
-# Customize Seven using the configuration registry
+# Customize Plone Aurora using the configuration registry
 
-The registry is the central place for configuring your Seven application.
+The registry is the central place for configuring your Plone Aurora application.
 Configuration is typically located in the {file}`index.ts` file at the add-on's root level and inside the {file}`config` directory, if it exists.
 The following configuration file example shows how to modify existing entries or add new ones.
 
@@ -20,7 +20,7 @@ import MyBlockInfo from 'my/addon/blocks/MyBlockInfo';
 export default function install(config: ConfigType) {
   // Register a new block
   config.blocks.blocksConfig.myBlock = MyBlockInfo;
-  
+
   // Add a content type to the "most used" section
   // of the content type menu in the toolbar
   config.settings.mostUsedTypes = [
@@ -29,9 +29,9 @@ export default function install(config: ConfigType) {
     ...config.settings.mostUsedTypes,
     'My Content Type',
   ];
-  
+
   // Rest of the configuration goes here
-  
+
   return config;
 }
 ```

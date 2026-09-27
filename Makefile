@@ -43,11 +43,11 @@ help: ## This help message
 	@echo -e "$$(grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:.*##\s*/:/' -e 's/^\(.\+\):\(.*\)/$(CYAN)\1$(RESET):\2/' | column -c2 -t -s :)"
 
 .PHONY: start
-start: ## Starts Seven in development mode
+start: ## Starts Plone Aurora in development mode
 	pnpm start
 
 .PHONY: start-publicui
-start-publicui: ## Starts Seven in development mode (Public UI only)
+start-publicui: ## Starts Plone Aurora in development mode (Public UI only)
 	pnpm start:publicui
 
 .PHONY: build
@@ -59,7 +59,7 @@ build-publicui: ## Build a production bundle for distribution (Public UI only)
 	pnpm build:publicui
 
 .PHONY: test
-test: ## Run Seven unit tests
+test: ## Run Plone Aurora unit tests
 	pnpm test
 
 .PHONY: clean
@@ -97,7 +97,7 @@ docs-clean:  ## Clean docs build directory
 docs-news:  ## Create or update the symlink from docs to volto package
 	if [ -f /tmp/foo.txt ]; then rm docs/news; fi
 	ln -snf ../packages/volto/news docs/news
-	@echo "Symlink to Seven news created or updated.";
+	@echo "Symlink to Plone Aurora news created or updated.";
 
 .PHONY: docs-html
 docs-html: bin/python docs-news  ## Build html
@@ -120,7 +120,7 @@ docs-linkcheck: bin/python docs-news  ## Run linkcheck
 
 .PHONY: docs-linkcheckbroken
 docs-linkcheckbroken: bin/python docs-news  ## Run linkcheck and show only broken links
-	cd $(DOCS_DIR) && $(SPHINXBUILD) -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck | GREP_COLORS='0;31' grep -wi "broken\|redirect" --color=always | GREP_COLORS='0;31' grep -vi "https://github.com/plone/volto/issues/" --color=always && if test $$? -eq 0; then exit 1; fi || test $$? -ne 0
+	cd $(DOCS_DIR) && $(SPHINXBUILD) -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck | GREP_COLORS='0;31' grep -wi "broken\|redirect" --color=always | GREP_COLORS='0;31' grep -vi "https://github.com/plone/aurora/issues/" --color=always && if test $$? -eq 0; then exit 1; fi || test $$? -ne 0
 
 .PHONY: docs-vale
 docs-vale: bin/python docs-news  ## Install (once) and run Vale style, grammar, and spell checks
@@ -176,7 +176,7 @@ backend-docker-start-no-cors: ## Starts the Docker-based backend without CORS in
 
 .PHONY: frontend-docker-start
 frontend-docker-start: ## Starts a Docker-based frontend for development
-	echo "This should start a container with the Seven frontend for demo purposes..."
+	echo "This should start a container with the Plone Aurora frontend for demo purposes..."
 
 ##### Acceptance tests
 ######### Dev mode Acceptance tests
@@ -185,7 +185,7 @@ frontend-docker-start: ## Starts a Docker-based frontend for development
 acceptance-frontend-dev-start: ## Start acceptance frontend in development mode
 	PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start
 
-######### Seven Acceptance tests
+######### Plone Aurora Acceptance tests
 
 .PHONY: acceptance-backend-start
 acceptance-backend-start: ## Start backend acceptance server

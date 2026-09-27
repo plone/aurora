@@ -85,7 +85,7 @@ test('Somersault edit mode injects the configured CSS custom property for an exp
     },
   });
 
-  const imageBlock = page.locator('.image.align.block').first();
+  const imageBlock = page.locator('.block-image').first();
   await expect(imageBlock).toBeVisible();
 
   const expectedWidth = await getRootVariable(page, '--layout-container-width');

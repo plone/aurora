@@ -33,8 +33,7 @@ const widgetStyles = tv({
 });
 
 interface ObjectBrowserWidgetProps
-  extends BaseFormFieldProps,
-    Partial<UseObjectBrowserConfig> {}
+  extends BaseFormFieldProps, Partial<UseObjectBrowserConfig> {}
 // TODO: interaction with plate and blocks schema
 export function ObjectBrowserWidgetComponent(props: ObjectBrowserWidgetProps) {
   const { label, description, errorMessage } = props;

@@ -8,6 +8,77 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.16 (2026-09-21)
+
+### Bugfix
+
+- Fixed React "unrecognized prop" warning by emitting style field data attributes in kebab-case (e.g. `data-style-block-width`). @sneridagh 
+
+### Internal
+
+- Replaced remaining `Seven` references with `Plone Aurora` in code comments. @sneridagh 
+- Upgraded `html2canvas-pro` to `2.x`, as the deprecated `1.5.x` series is no longer maintained. @sneridagh 
+
+## 1.0.0-alpha.15 (2026-09-11)
+
+### Bugfix
+
+- Add `.npmignore` so the `lib/` directory (with the shadcn `cn` helper in `lib/utils.ts`) is included in the published package. Previously pnpm fell back to the monorepo-root `.gitignore` (which ignores `/lib/`) and silently dropped it, breaking all consumers with "Can't resolve '../../lib/utils'". 
+
+## 1.0.0-alpha.14 (2026-09-05)
+
+### Internal
+
+- Added `vite.extend.js` and a dependency audit path to pre-bundle Plate runtime dependencies, reducing dev server startup reloads. @arybakov05 
+- Move legacy Slate → Plate normalization out of always-on runtime `normalizeNode` plugins and into a single `insertFragment` paste boundary (`LegacyPastePlugin`). The server now hands over already-migrated data, so the runtime legacy mark/list/link plugins were removed from the editor and renderer kits; pasting a legacy volto-slate fragment is still normalized. @sneridagh 
+- Reformatted editor source for compatibility with Prettier 3.8. @sneridagh 
+
+## 1.0.0-alpha.13 (2026-07-24)
+
+### Bugfix
+
+- Added passing the `className` from parent in renderer and editor components. @sneridagh 
+
+## 1.0.0-alpha.12 (2026-07-21)
+
+### Feature
+
+- Added possibility to extend the comments engine with `commentsPlugins`. @sneridagh [#154](https://github.com/plone/volto/issues/154)
+
+## 1.0.0-alpha.11 (2026-07-17)
+
+### Feature
+
+- Restyle the discussion and suggestion popovers, add inline Resolve/Reply actions, and support rendering comment and suggestion popovers in read-only mode with the correct suggestion colours and clicked-mark targeting. @sneridagh [#150](https://github.com/plone/volto/issues/150)
+
+## 1.0.0-alpha.10 (2026-07-06)
+
+### Internal
+
+- Fixed dependencies for `@plone/plate` given the fact that we want it to work in Volto environments too. @sneridagh [#149](https://github.com/plone/volto/issues/149)
+
+## 1.0.0-alpha.9 (2026-07-02)
+
+### Breaking
+
+- Renamed adapted registry-backed block nodes from `unknown` to `ploneBlock`, added the `BlockAnatomyPlugin` class contract, and made `blockWidth` a baseline `ploneBlock` style field. @sneridagh 
+
+### Feature
+
+- Integrate links with ObjectBrowser. @sneridagh [#8246](https://github.com/plone/volto/issues/8246)
+- Added `data-style-*` attributes for resolved style field values in the Somersault-based editor element props. @sneridagh 
+
+### Bugfix
+
+- Remove the native Plate Image block from the slash command "Text blocks" group in favor of the custom Image block available in the "Blocks" group. @iFlameing 
+- fix 'Maximum update depth exceeded' errors on @@edit. @frapell 
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+- Update to storybook 10. @sneridagh 
+- Updated Plate TypeScript configuration to resolve Aurora app modules through `@plone/aurora`. @sneridagh 
+
 ## 1.0.0-alpha.8 (2026-05-13)
 
 ### Feature

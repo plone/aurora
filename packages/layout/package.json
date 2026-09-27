@@ -9,18 +9,18 @@
   ],
   "funding": "https://github.com/sponsors/plone",
   "license": "MIT",
-  "version": "1.0.0-alpha.8",
+  "version": "1.0.0-alpha.11",
   "repository": {
     "type": "git",
-    "url": "https://github.com/plone/volto.git",
+    "url": "https://github.com/plone/aurora.git",
     "directory": "packages/layout"
   },
   "bugs": {
-    "url": "https://github.com/plone/volto/issues"
+    "url": "https://github.com/plone/aurora/issues"
   },
   "homepage": "https://plone.org",
   "keywords": [
-    "volto",
+    "aurora",
     "plone",
     "plone6",
     "react",
@@ -47,6 +47,7 @@
     "format": "pnpm prettier:fix && pnpm lint:fix && pnpm stylelint:fix"
   },
   "peerDependencies": {
+    "i18next": "catalog:",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },

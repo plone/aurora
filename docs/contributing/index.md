@@ -109,6 +109,7 @@ These checks are enforced automatically on every pull request, so you might as w
 Specifically:
 
 -   {doc}`./linting`
+-   {doc}`./testing`
 -   {doc}`./acceptance-tests`
 -   {doc}`./documentation`
 
@@ -124,6 +125,7 @@ acceptance-tests
 developing-core
 documentation
 linting
+testing
 version-policy
 language-features
 ```

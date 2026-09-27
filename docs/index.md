@@ -37,7 +37,8 @@ The following sections guide you to begin your journey with Plone Aurora.
 
 An integrator is someone who uses Plone Aurora to build a project.
 
--   {doc}`get-started/create-package` is a guide to bootstrap a new Plone Aurora project and start hacking.
+-   {doc}`get-started/create-package` is a guide to bootstrap a reusable, frontend-only Plone Aurora add-on and start hacking.
+-   {doc}`get-started/create-project` is a guide to bootstrap a complete Plone project with a Plone Aurora frontend and a Python CMFPlone backend.
 
 
 ### Users

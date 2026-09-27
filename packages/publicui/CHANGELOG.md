@@ -8,6 +8,37 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.6 (2026-09-21)
+
+### Internal
+
+- Updated package repository metadata and towncrier issue links from `plone/volto` to `plone/aurora`. @sneridagh 
+
+## 1.0.0-alpha.5 (2026-09-05)
+
+### Internal
+
+- Adapted routes to React Router v8's renamed loader/action context fields and `meta()` match shape. @sneridagh 
+- Declared the catalog-managed i18next version as a peer dependency to keep react-i18next instances unified. @sneridagh 
+
+## 1.0.0-alpha.4 (2026-07-02)
+
+### Feature
+
+- Added content types menu to the toolbar.
+  Added `ContentFolderishCondition` helper for slots.
+  Added German translations. @arybakov05 [#6653](https://github.com/plone/volto/issues/6653)
+- Added a toolbar button that opens the contents view for the current public page. @pnicolli @giuliaghisini 
+
+### Bugfix
+
+- Fix toolbar edit button pointing to stale URL on client-side navigation. @iFlameing 
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+- Updated Public UI route imports and typecheck setup to use the `@plone/aurora` app alias. @sneridagh 
+
 ## 1.0.0-alpha.3 (2026-05-07)
 
 ### Internal

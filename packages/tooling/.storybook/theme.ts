@@ -3,7 +3,7 @@ import logo from './Logo.svg';
 
 export default create({
   base: 'light',
-  brandTitle: 'Plone Seven StoryBook',
+  brandTitle: 'Plone Aurora StoryBook',
   brandUrl: 'https://plone-storybook.readthedocs.io/',
   brandImage: logo,
   brandTarget: '_self',

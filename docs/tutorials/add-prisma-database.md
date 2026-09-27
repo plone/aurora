@@ -21,7 +21,7 @@ Prisma is an open-source toolkit that simplifies database access.
 The main purpose of this tutorial is to demonstrate how to integrate Prisma with Plone Aurora.
 You can also use the same approach but saving to a Plone REST API endpoint.
 It is not meant to be a complete, production-ready implementation of a like button.
-The complete code of this tutorial is in the GitHub repository [`collective/seven-training-addon`](https://github.com/collective/seven-training-addon).
+The complete code of this tutorial is in the GitHub repository [`collective/aurora-training-addon`](https://github.com/collective/aurora-training-addon).
 ```
 
 ## Prerequisites
@@ -333,9 +333,12 @@ export default function install(config: ConfigType) {
     method: async ({ path }) => {
       const like = await prisma.urlLike.findUnique({ where: { pathname: path } });
       return {
-        likes: {
-          pathname: path,
-          count: like?.count ?? 0,
+        status: 200,
+        data: {
+          likes: {
+            pathname: path,
+            count: like?.count ?? 0,
+          },
         },
       };
     },
@@ -346,7 +349,8 @@ export default function install(config: ConfigType) {
 ```
 
 Plone Aurora will call this function in the root loader, passing the current path as an argument.
-The data will be available in the `LikeButton` component via the `useRouteLoaderData` hook.
+The `method` returns a `{ status, data }` envelope, matching the shape returned by the Plone client (`@plone/client`).
+The root loader unwraps each utility's `data` and merges it into the root loader data, so the payload is available in the `LikeButton` component directly (for example, as `rootData.likes`) via the `useRouteLoaderData` hook.
 With this utility in place, `LikeButton` can read the latest count from the root loader, and React Router will revalidate the loader automatically after each POST.
 
 ## Run the development server

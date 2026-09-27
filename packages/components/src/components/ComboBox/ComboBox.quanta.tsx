@@ -48,8 +48,10 @@ const triggerStyles = tv({
   },
 });
 
-export interface ComboBoxProps<T extends object>
-  extends Omit<RACComboBoxProps<T>, 'children'> {
+export interface ComboBoxProps<T extends object> extends Omit<
+  RACComboBoxProps<T>,
+  'children'
+> {
   label?: string;
   description?: string | null;
   errorMessage?: string | ((validation: ValidationResult) => string);

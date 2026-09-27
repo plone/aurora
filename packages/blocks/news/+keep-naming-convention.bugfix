@@ -1,1 +1,0 @@
-Keep block naming conventions as `<BlockName>BlockView.tsx` and `<BlockName>BlockEdit.tsx`. @frapell

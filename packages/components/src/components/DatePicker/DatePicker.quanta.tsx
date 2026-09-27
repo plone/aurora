@@ -6,8 +6,10 @@ import {
   type DateTimePickerProps,
 } from '../DateTimePicker/DateTimePicker.quanta';
 
-export interface DatePickerProps
-  extends Omit<DateTimePickerProps, 'granularity'> {
+export interface DatePickerProps extends Omit<
+  DateTimePickerProps,
+  'granularity'
+> {
   label?: string;
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);

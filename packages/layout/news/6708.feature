@@ -1,1 +1,0 @@
-Added the view for the Event content type @arybakov05

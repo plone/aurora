@@ -1,1 +1,0 @@
-Added Sharing service types @pnicolli

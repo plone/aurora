@@ -7,12 +7,7 @@ export declare interface MessageDescriptor {
 }
 
 export declare type PrimitiveType =
-  | string
-  | number
-  | boolean
-  | null
-  | undefined
-  | Date;
+  string | number | boolean | null | undefined | Date;
 
 export declare type FormatXMLElementFn = (...args: any[]) => string | object;
 

@@ -326,6 +326,8 @@ function ImageInputBase({
             typeof selectedImage.title === 'string'
               ? selectedImage.title
               : undefined,
+          image_field: selectedImage.image_field,
+          image_scales: selectedImage.image_scales ?? undefined,
         });
       }
     },
@@ -388,7 +390,12 @@ function ImageInputBase({
           <ObjectBrowserProvider
             config={{
               mode: objectBrowserMode,
-              selectedItemAttrs: ['@id', 'title'],
+              selectedItemAttrs: [
+                '@id',
+                'title',
+                'image_field',
+                'image_scales',
+              ],
               onChange: onSelectInternalImage,
               initialPath: resolvedCurrentPath,
               title: 'Pick an existing image',

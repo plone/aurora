@@ -1,1 +1,0 @@
-Switch the registry Vite plugin from the deprecated esbuild top-level await setting to Vite 8's oxc configuration. @sneridagh

@@ -14,7 +14,7 @@ This document explains the conventions, rules, and best practices to follow in t
 In general, the Volto Team adheres to the same models, artifacts, and conventions as in Volto, unless there's a good reason to change.
 For example, the blocks model structure stays the same since it's been well-established and widely used.
 As another example, in Volto, we use controlled forms everywhere.
-Even though React Router 7 introduced a new way to handle forms, we stuck with controlled forms for consistency.
+Even though React Router 8 introduced a new way to handle forms, we stuck with controlled forms for consistency.
 Our widgets also follow almost the same interface as in Volto, because controlled forms need controlled widgets.
 
 The configuration system remains based on `@plone/registry`, and we keep improving it.

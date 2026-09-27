@@ -14,5 +14,4 @@ myst:
 
 configuration-registry
 component-registry
-expanders
 ```

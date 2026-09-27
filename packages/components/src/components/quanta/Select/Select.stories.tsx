@@ -12,16 +12,16 @@ import {
 } from './Select';
 
 const options = [
-  { label: '1', value: 'Aerospace' },
-  { label: '2', value: 'Mechanical' },
-  { label: '3', value: 'Civil' },
-  { label: '4', value: 'Biomedical' },
-  { label: '5', value: 'Nuclear' },
-  { label: '6', value: 'Industrial' },
-  { label: '7', value: 'Chemical' },
-  { label: '8', value: 'Agricultural' },
-  { label: '9', value: 'Electrical' },
-  { label: '10', value: 'Telco' },
+  { label: 'Aerospace', value: 'aerospace' },
+  { label: 'Mechanical', value: 'mechanical' },
+  { label: 'Civil', value: 'civil' },
+  { label: 'Biomedical', value: 'biomedical' },
+  { label: 'Nuclear', value: 'nuclear' },
+  { label: 'Industrial', value: 'industrial' },
+  { label: 'Chemical', value: 'chemical' },
+  { label: 'Agricultural', value: 'agricultural' },
+  { label: 'Electrical', value: 'electrical' },
+  { label: 'Telco', value: 'telco' },
 ];
 
 const groupedOptions = [
@@ -58,13 +58,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 function ControlledValueStory(args: any) {
-  const [value, setValue] = React.useState<string>('10');
+  const [value, setValue] = React.useState<string>('telco');
 
   return (
     <>
       <QuantaSelect {...args} items={options} value={value} onChange={setValue}>
         {(item: SelectItemObject) => (
-          <SelectItem id={item.label}>{item.value}</SelectItem>
+          <SelectItem id={item.value}>{item.label}</SelectItem>
         )}
       </QuantaSelect>
       <pre style={{ fontSize: 12 }}>
@@ -95,7 +95,7 @@ export const Items: Story = {
       {...(args as SelectProps<SelectItemObject, 'single'>)}
     >
       {(item: SelectItemObject) => (
-        <SelectItem id={item.label}>{item.value}</SelectItem>
+        <SelectItem id={item.value}>{item.label}</SelectItem>
       )}
     </QuantaSelect>
   ),

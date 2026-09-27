@@ -14,8 +14,9 @@ import {
 import { composeTailwindRenderProps } from '../utils';
 import { DateInput } from '../DateInput/DateInput.quanta';
 
-export interface DateFieldProps<T extends DateValue>
-  extends AriaDateFieldProps<T> {
+export interface DateFieldProps<
+  T extends DateValue,
+> extends AriaDateFieldProps<T> {
   label?: string;
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);

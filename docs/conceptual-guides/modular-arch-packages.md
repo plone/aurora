@@ -78,7 +78,7 @@ The utility packages are:
 :   Utility functions and helpers.
 
 `@plone/react-router`
-:   React Router 7 integration.
+:   React Router 8 integration.
 
 
 ## Add-on packages (level 3)

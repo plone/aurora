@@ -47,8 +47,8 @@ describe('createContent API route action', () => {
       request,
       params: { '*': 'folder' },
       context,
-      unstable_pattern: '/@createContent/folder',
-      unstable_url: new URL(request.url),
+      pattern: '/@createContent/folder',
+      url: new URL(request.url),
     });
 
     expect(createContentMock).toHaveBeenCalledWith({

@@ -28,8 +28,7 @@ export function SlashInputElement(
   const { editor, element } = props;
   const menuConfig = (
     editor.getOptions(SlashPlugin as any) as
-      | { menu?: SlashMenuConfig }
-      | undefined
+      { menu?: SlashMenuConfig } | undefined
   )?.menu;
   const translate = React.useMemo(() => {
     const intl = getIntl(editor);

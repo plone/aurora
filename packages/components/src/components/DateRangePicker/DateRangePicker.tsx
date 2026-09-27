@@ -19,8 +19,9 @@ import {
   type ValidationResult,
 } from 'react-aria-components';
 
-export interface DateRangePickerProps<T extends DateValue>
-  extends RACDateRangePickerProps<T> {
+export interface DateRangePickerProps<
+  T extends DateValue,
+> extends RACDateRangePickerProps<T> {
   label?: string;
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);

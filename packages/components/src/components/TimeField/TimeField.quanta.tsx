@@ -8,8 +8,9 @@ import {
 import { DateInput } from '../DateInput/DateInput.quanta';
 import { Description, FieldError, Label } from '../Field/Field.quanta';
 
-export interface TimeFieldProps<T extends TimeValue>
-  extends AriaTimeFieldProps<T> {
+export interface TimeFieldProps<
+  T extends TimeValue,
+> extends AriaTimeFieldProps<T> {
   label?: string;
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);
