@@ -1,6 +1,6 @@
-import Checkbox from '@plone/components/icons/checkbox.svg?react';
-import Close from '@plone/components/icons/close.svg?react';
-import Settings from '@plone/components/icons/settings.svg?react';
+import Checkbox from '@plone/icons/svg/checkbox.svg?react';
+import Close from '@plone/icons/svg/close.svg?react';
+import Settings from '@plone/icons/svg/settings.svg?react';
 import {
   Accordion,
   AccordionItem,

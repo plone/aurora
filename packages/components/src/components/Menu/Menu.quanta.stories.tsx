@@ -12,7 +12,7 @@ import {
   MoreoptionsIcon,
   PropertiesIcon,
   SettingsIcon,
-} from '../icons';
+} from '@plone/icons';
 import {
   Menu,
   MenuItem,

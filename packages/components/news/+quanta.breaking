@@ -1,0 +1,1 @@
+Moved the icon set, the `Icon` component, the `*.svg?react` types and `PloneSVGRVitePlugin` to the new `@plone/icons` package. Removed the `Icon` root export and the `./Icons`, `./icons`, `./icons/*` and `./vite-plugin-svgr` exports. @pnicolli

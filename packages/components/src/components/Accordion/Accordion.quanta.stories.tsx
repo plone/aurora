@@ -6,7 +6,7 @@ import {
   AccordionItemTrigger,
 } from './Accordion.quanta';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { ChevronrightIcon } from '../../components/icons';
+import { ChevronrightIcon } from '@plone/icons';
 
 const meta = {
   title: 'Quanta/Accordion',

@@ -20,6 +20,10 @@ const RELEASE_GROUPS = [
     packages: ['@plone/types'],
   },
   {
+    label: 'Icons (level 0)',
+    packages: ['@plone/icons'],
+  },
+  {
     label: 'Core packages (level 1)',
     packages: ['@plone/client', '@plone/components', '@plone/registry'],
   },

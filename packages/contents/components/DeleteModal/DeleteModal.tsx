@@ -3,9 +3,9 @@ import { useFetcher } from 'react-router';
 import { Heading } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import { Button, Dialog, Modal } from '@plone/components/quanta';
-import { BinIcon } from '@plone/components/Icons';
-import CloseSVG from '@plone/components/icons/close.svg?react';
-import BinSVG from '@plone/components/icons/bin.svg?react';
+import { BinIcon } from '@plone/icons';
+import CloseSVG from '@plone/icons/svg/close.svg?react';
+import BinSVG from '@plone/icons/svg/bin.svg?react';
 import { type ToastItem } from '@plone/layout/config/toast';
 import { useContentsContext } from '../../providers/contents';
 

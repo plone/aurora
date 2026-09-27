@@ -33,7 +33,7 @@ import {
   CopyIcon,
   CutIcon,
   BinIcon,
-} from '@plone/components/Icons';
+} from '@plone/icons';
 import type { ArrayElement, Brain } from '@plone/types';
 
 import Topbar from '../Topbar';

@@ -19,7 +19,7 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
-vi.mock('@plone/components/Icons', () => ({
+vi.mock('@plone/icons', () => ({
   ArrowrightIcon: (props: Record<string, unknown>) => (
     <span data-testid="arrow-icon" {...props} />
   ),

@@ -4,7 +4,7 @@ import { useDateFormatter } from 'react-aria';
 import { getContentIcon } from '@plone/helpers';
 import type { Brain } from '@plone/types';
 import { Link, Button } from '@plone/components/quanta';
-import MoreOptionsSVG from '@plone/components/icons/more-options.svg?react';
+import MoreOptionsSVG from '@plone/icons/svg/more-options.svg?react';
 import { ItemActionsPopover } from '../ItemActionsPopover/ItemActionsPopover';
 import ReviewState from '../ReviewState';
 

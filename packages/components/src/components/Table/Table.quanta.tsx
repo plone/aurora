@@ -23,9 +23,7 @@ import { composeRenderProps } from 'react-aria-components/composeRenderProps';
 import { twMerge } from 'tailwind-merge';
 import { tv } from 'tailwind-variants';
 import { Checkbox } from '../Checkbox/Checkbox.quanta';
-import { ArrowupIcon } from '../icons/ArrowupIcon';
-import { ChevronrightIcon } from '../icons/ChevronrightIcon';
-import { DraggableIcon } from '../icons/DraggableIcon';
+import { ArrowupIcon, ChevronrightIcon, DraggableIcon } from '@plone/icons';
 import { composeTailwindRenderProps, focusRing } from '../utils';
 
 interface TableProps extends Omit<AriaTableProps, 'className'> {

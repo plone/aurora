@@ -23,7 +23,7 @@ import Toast from '@plone/layout/components/Toast/Toast';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
 import { shouldShowToolbar } from '@plone/layout/helpers';
 import config from '@plone/registry';
-import Back from '@plone/components/icons/arrow-left.svg?react';
+import Back from '@plone/icons/svg/arrow-left.svg?react';
 
 // eslint-disable-next-line import/no-unresolved
 import stylesheet from '@plone/aurora/.plone/cmsui.css?url';

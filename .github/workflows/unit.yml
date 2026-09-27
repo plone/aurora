@@ -17,6 +17,7 @@ jobs:
           - '@plone/cmsui'
           - '@plone/components'
           - '@plone/helpers'
+          - '@plone/icons'
           - '@plone/layout'
           - '@plone/react-router'
           - '@plone/registry'

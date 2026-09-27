@@ -36,7 +36,7 @@ import {
   ChevrondownIcon,
   ChevronupIcon,
   BinIcon,
-} from '../icons';
+} from '@plone/icons';
 
 const toggleStyles = tv({
   base: `

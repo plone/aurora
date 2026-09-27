@@ -12,7 +12,7 @@ import {
   CutIcon,
   CopyIcon,
   PasteIcon,
-} from '@plone/components/Icons';
+} from '@plone/icons';
 
 import type { Brain } from '@plone/types';
 

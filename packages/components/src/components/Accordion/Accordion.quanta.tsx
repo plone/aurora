@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ChevronleftIcon } from '../../components/icons/ChevronleftIcon';
+import { ChevronleftIcon } from '@plone/icons';
 import type {
   DisclosureGroupProps,
   ButtonProps,

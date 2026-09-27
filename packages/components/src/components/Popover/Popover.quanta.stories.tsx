@@ -4,7 +4,7 @@ import { Heading } from 'react-aria-components';
 import { Button } from '../Button/Button.quanta';
 import { Dialog, DialogTrigger } from '../Dialog/Dialog.quanta';
 import { Popover } from '../Popover/Popover.quanta';
-import { InfoIcon } from '../../components/icons';
+import { InfoIcon } from '@plone/icons';
 
 const meta: Meta<typeof Popover> = {
   title: 'Quanta/Popover',

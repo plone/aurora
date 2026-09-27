@@ -21,24 +21,11 @@
   "files": [
     "dist",
     "src",
-    "README.md",
-    "vite-plugin-svgr.*"
+    "README.md"
   ],
   "main": "./dist/index.js",
   "exports": {
     "./package.json": "./package.json",
-    "./icons": {
-      "types": "./src/icons.d.ts"
-    },
-    "./icons/*": "./src/icons/*",
-    "./Icons": {
-      "import": "./dist/components/icons/index.js",
-      "default": "./dist/components/icons/index.cjs"
-    },
-    "./vite-plugin-svgr": {
-      "import": "./vite-plugin-svgr.js",
-      "types": "./vite-plugin-svgr.d.ts"
-    },
     "./dist/*.css": "./dist/*.css",
     "./dist/fonts/*": "./dist/fonts/*",
     "./src/*": "./src/*",
@@ -59,8 +46,7 @@
     "react",
     "cms",
     "components",
-    "quanta",
-    "icons"
+    "quanta"
   ],
   "scripts": {
     "build": "tsup && pnpm build:css",
@@ -99,10 +85,8 @@
   ],
   "dependencies": {
     "@internationalized/date": "catalog:",
+    "@plone/icons": "workspace:*",
     "@react-aria/utils": "catalog:",
-    "@react-spectrum/utils": "catalog:",
-    "@svgr/plugin-jsx": "^8.1.0",
-    "@svgr/plugin-svgo": "^8.1.0",
     "clsx": "^2.1.1",
     "react-aria": "catalog:",
     "react-aria-components": "catalog:",
@@ -110,8 +94,7 @@
     "tailwind-merge": "catalog:",
     "tailwind-variants": "catalog:",
     "tailwindcss": "catalog:",
-    "tailwindcss-animate": "^1.0.7",
-    "vite-plugin-svgr": "^4.3.0"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.16.4",

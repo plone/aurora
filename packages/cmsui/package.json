@@ -61,6 +61,7 @@
     "@plone/blocks": "workspace:*",
     "@plone/client": "workspace:*",
     "@plone/components": "workspace:*",
+    "@plone/icons": "workspace:*",
     "@plone/helpers": "workspace:*",
     "@plone/layout": "workspace:*",
     "@plone/plate": "workspace:*",

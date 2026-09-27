@@ -11,7 +11,7 @@ export function PloneSVGRVitePlugin(customConfig = {}) {
             template: (variables, { tpl }) => {
               return tpl`
       ${variables.imports};
-      import { Icon } from '@plone/components';
+      import { Icon } from '@plone/icons';
       ${variables.interfaces};
 
       const ${variables.componentName} = (${variables.props}) =>

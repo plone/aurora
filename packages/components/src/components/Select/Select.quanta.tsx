@@ -16,7 +16,7 @@ import { Description, FieldError, Label } from '../Field/Field.quanta';
 import { DropdownItem, ListBox } from '../ListBox/ListBox.quanta';
 import { Popover } from '../Popover/Popover.quanta';
 import { composeTailwindRenderProps, focusRing } from '../utils';
-import { ChevrondownIcon } from '../icons';
+import { ChevrondownIcon } from '@plone/icons';
 import {
   SelectSectionHeader as BasicSelectSectionHeader,
   type SelectItemObject,

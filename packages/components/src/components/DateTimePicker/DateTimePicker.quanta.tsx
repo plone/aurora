@@ -1,6 +1,5 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { CalendarIcon } from '../../components/icons/CalendarIcon';
-import { CloseIcon } from '../../components/icons/CloseIcon';
+import { CalendarIcon, CloseIcon } from '@plone/icons';
 import {
   DatePicker as AriaDatePicker,
   type DatePickerProps as AriaDatePickerProps,

@@ -17,8 +17,7 @@ import type { ListData } from 'react-stately';
 import { useFilter } from 'react-aria';
 import { twMerge } from 'tailwind-merge';
 
-import { CloseIcon as Close } from '../../components/icons/CloseIcon';
-import { ChevrondownIcon } from '../../components/icons/ChevrondownIcon';
+import { CloseIcon as Close, ChevrondownIcon } from '@plone/icons';
 
 export type Option = {
   id: Key;

@@ -3,7 +3,7 @@ import { WidthWidget, defaultActionsInfo } from './WidthWidget';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Form } from 'react-aria-components';
 import { Button } from '../Button/Button.quanta';
-import { ImageIcon } from '../../components/icons/ImageIcon';
+import { ImageIcon } from '@plone/icons';
 
 const meta = {
   title: 'Quanta/WidthWidget',

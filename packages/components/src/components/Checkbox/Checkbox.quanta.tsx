@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { CheckboxIcon, DashIcon } from '../../components/icons';
+import { CheckboxIcon, DashIcon } from '@plone/icons';
 import {
   Checkbox as AriaCheckbox,
   CheckboxGroup as AriaCheckboxGroup,

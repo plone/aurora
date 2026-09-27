@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '../Button/Button.quanta';
 import { Tooltip } from './Tooltip.quanta';
 import { TooltipTrigger } from 'react-aria-components/Tooltip';
-import { BoldIcon } from '../icons/BoldIcon';
+import { BoldIcon } from '@plone/icons';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 

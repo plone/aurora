@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronrightIcon } from '../../components/icons';
+import { ChevronrightIcon } from '@plone/icons';
 import {
   Breadcrumbs as RACBreadcrumbs,
   Breadcrumb as RACBreadcrumb,

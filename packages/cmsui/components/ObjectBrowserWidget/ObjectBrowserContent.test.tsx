@@ -35,7 +35,7 @@ vi.mock('@plone/components/quanta', () => ({
   ),
 }));
 
-vi.mock('@plone/components/Icons', () => ({
+vi.mock('@plone/icons', () => ({
   SearchIcon: ({ size }: any) => (
     <span data-testid="search-icon" data-size={size}>
       🔍

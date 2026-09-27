@@ -29,6 +29,7 @@ const generateFilesArray = (packages) => {
 const nonAddons = [
   'packages/client',
   'packages/components',
+  'packages/icons',
   'packages/registry',
   'packages/helpers',
   'packages/react-router',

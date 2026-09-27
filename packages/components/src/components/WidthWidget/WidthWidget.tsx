@@ -4,10 +4,12 @@ import {
   RadioGroup,
   type RadioGroupProps,
 } from '../RadioGroup/RadioGroup.quanta';
-import { ImagewideIcon } from '../../components/icons/ImagewideIcon';
-import { ImagefitIcon } from '../../components/icons/ImagefitIcon';
-import { ImagefullIcon } from '../../components/icons/ImagefullIcon';
-import { ImagenarrowIcon } from '../../components/icons/ImagenarrowIcon';
+import {
+  ImagewideIcon,
+  ImagefitIcon,
+  ImagefullIcon,
+  ImagenarrowIcon,
+} from '@plone/icons';
 
 interface WidthWidgetProps extends Omit<RadioGroupProps, 'children'> {
   id?: string;

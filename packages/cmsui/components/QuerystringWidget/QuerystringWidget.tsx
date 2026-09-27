@@ -27,7 +27,7 @@ import {
   type QueryCriterion,
   type FieldMetadata,
 } from './QuerystringWidgetContext';
-import { BinIcon, AddIcon } from '@plone/components/Icons';
+import { BinIcon, AddIcon } from '@plone/icons';
 
 type BaseFormFieldProps = Pick<
   QuantaTextFieldProps,

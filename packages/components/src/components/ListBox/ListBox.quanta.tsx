@@ -12,7 +12,7 @@ import {
 } from 'react-aria-components';
 import { tv } from 'tailwind-variants';
 import { composeTailwindRenderProps, focusRing } from '../utils';
-import { CheckboxIcon } from '../icons/CheckboxIcon';
+import { CheckboxIcon } from '@plone/icons';
 
 interface ListBoxProps<T> extends Omit<
   AriaListBoxProps<T>,

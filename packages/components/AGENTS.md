@@ -44,10 +44,7 @@ This file applies only to `packages/components` and its subdirectories.
 
 ## Icons
 
-- Raw SVG icons live in `src/icons`.
-- Ready-to-use React icon components live in `src/components/icons`.
-- When adding an SVG icon, also add its React component counterpart and export it from the relevant index when needed.
-- Keep SVG and React component names aligned.
+- Icons, the `Icon` component and the SVGR Vite plugin live in `@plone/icons` (`packages/icons`); import them from there.
 
 ## Editing Rules
 

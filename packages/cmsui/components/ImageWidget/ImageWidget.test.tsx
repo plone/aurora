@@ -18,7 +18,7 @@ vi.mock('@plone/components/quanta', () => ({
   Input: ({ ...props }: any) => <input {...props} />,
 }));
 
-vi.mock('@plone/components/Icons', () => ({
+vi.mock('@plone/icons', () => ({
   BinIcon: () => <span>bin</span>,
   ImageIcon: () => <span>image</span>,
   LinkIcon: () => <span>link</span>,

@@ -58,6 +58,7 @@
   },
   "dependencies": {
     "@plone/components": "workspace:*",
+    "@plone/icons": "workspace:*",
     "@plone/helpers": "workspace:*",
     "@plone/plate": "workspace:*",
     "@plone/registry": "workspace:*",

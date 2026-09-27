@@ -24,7 +24,6 @@ export { DisclosureGroup } from './components/DisclosureGroup/DisclosureGroup';
 export { DropZone, Text as DropZoneText } from './components/DropZone/DropZone';
 export { Form } from './components/Form/Form';
 export { GridList, GridListItem } from './components/GridList/GridList';
-export { Icon } from './components/Icon/Icon';
 export { Link } from './components/Link/Link';
 export { ListBox, ListBoxItem } from './components/ListBox/ListBox';
 export {
@@ -76,6 +75,3 @@ export { WidthWidget } from './components/WidthWidget/WidthWidget';
 export { QuantaTextField } from './components/quanta/TextField/TextField';
 export { QuantaTextAreaField } from './components/quanta/TextAreaField/TextAreaField';
 export { QuantaSelect } from './components/quanta/Select/Select';
-
-// types
-export type { IconProps } from './components/Icon/Icon';

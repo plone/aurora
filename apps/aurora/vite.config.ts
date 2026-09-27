@@ -2,7 +2,7 @@ import { reactRouter } from '@react-router/dev/vite';
 import path from 'node:path';
 import { defineConfig, PluginOption } from 'vite';
 import { PloneRegistryVitePlugin } from '@plone/registry/vite-plugin';
-import { PloneSVGRVitePlugin } from '@plone/components/vite-plugin-svgr';
+import { PloneSVGRVitePlugin } from '@plone/icons/vite-plugin-svgr';
 import applyAddonViteConfiguration from './.plone/vite.loader.js';
 import babel from 'vite-plugin-babel';
 import tailwindcss from '@tailwindcss/vite';
@@ -62,11 +62,11 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
         'react-i18next',
         // Injected by babel-plugin-react-compiler, not in any package.json
         'react/compiler-runtime',
-        // @plone/components and @plone/helpers are not registered add-ons, so
-        // their deps can't be declared in vite.extend.js — list them here
+        // @plone/components, @plone/icons and @plone/helpers are not registered
+        // add-ons, so their deps can't be declared in vite.extend.js — list
+        // them here
         '@plone/components > @internationalized/date',
         '@plone/components > @react-aria/utils',
-        '@plone/components > @react-spectrum/utils',
         '@plone/components > clsx',
         '@plone/components > react-aria',
         '@plone/components > react-aria-components',
@@ -80,6 +80,10 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
         '@plone/components > react-stately',
         '@plone/components > tailwind-merge',
         '@plone/components > tailwind-variants',
+        '@plone/icons > @react-aria/utils',
+        '@plone/icons > @react-spectrum/utils',
+        '@plone/icons > clsx',
+        '@plone/icons > tailwind-variants',
         '@plone/helpers > jotai',
         '@plone/helpers > jotai/utils',
         '@plone/helpers > jotai-optics',

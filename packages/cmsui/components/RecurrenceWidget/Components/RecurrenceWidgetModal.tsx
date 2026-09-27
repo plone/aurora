@@ -1,7 +1,7 @@
 import { Button, FieldGroup, Select } from '@plone/components/quanta';
 import { Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components';
-import CloseIcon from '@plone/components/icons/close.svg?react';
-import CheckboxIcon from '@plone/components/icons/checkbox.svg?react';
+import CloseIcon from '@plone/icons/svg/close.svg?react';
+import CheckboxIcon from '@plone/icons/svg/checkbox.svg?react';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useState } from 'react';
 import { useAtomValue } from 'jotai';

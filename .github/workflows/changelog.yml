@@ -32,6 +32,8 @@ jobs:
               - 'packages/registry/**'
             components:
               - 'packages/components/**'
+            icons:
+              - 'packages/icons/**'
             cmsui:
               - 'packages/cmsui/**'
             helpers:
@@ -90,6 +92,14 @@ jobs:
         run: |
           git fetch --no-tags origin main
           towncrier check --compare-with origin/main --dir packages/components
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
+
+      - name: Icons changelog check
+        if: steps.filter.outputs.icons == 'true'
+        run: |
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir packages/icons
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 

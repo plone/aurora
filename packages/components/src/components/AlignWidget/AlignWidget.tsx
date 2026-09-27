@@ -5,11 +5,13 @@ import {
   RadioGroup,
   type RadioGroupProps,
 } from '../RadioGroup/RadioGroup.quanta';
-import { AlignleftIcon } from '../../components/icons/AlignleftIcon';
-import { AligncenterIcon } from '../../components/icons/AligncenterIcon';
-import { AlignrightIcon } from '../../components/icons/AlignrightIcon';
-import { ImageIcon } from '../../components/icons/ImageIcon';
-import { ImagefullIcon } from '../../components/icons/ImagefullIcon';
+import {
+  AlignleftIcon,
+  AligncenterIcon,
+  AlignrightIcon,
+  ImageIcon,
+  ImagefullIcon,
+} from '@plone/icons';
 
 interface AlignWidgetProps extends Omit<RadioGroupProps, 'children'> {
   id?: string;

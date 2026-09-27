@@ -11,7 +11,7 @@ import { Button, Container } from '@plone/components/quanta';
 import { Plug } from '@plone/layout/components/Pluggable';
 import ControlPanelsList from '../components/ControlPanel/ControlPanelsList';
 import VersionOverview from '../components/VersionOverview/VersionOverview';
-import Back from '@plone/components/icons/arrow-left.svg?react';
+import Back from '@plone/icons/svg/arrow-left.svg?react';
 
 export async function loader({
   request,

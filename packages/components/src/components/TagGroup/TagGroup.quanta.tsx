@@ -14,7 +14,7 @@ import { twMerge } from 'tailwind-merge';
 import { tv } from 'tailwind-variants';
 import { Description, Label } from '../Field/Field.quanta';
 import { focusRing } from '../utils';
-import { CloseIcon } from '../icons';
+import { CloseIcon } from '@plone/icons';
 
 const colors = {
   gray: 'bg-quanta-silver text-foreground border-gray-200 hover:border-gray-300  ',

@@ -7,7 +7,7 @@ import {
 } from '@plone/components/quanta';
 import { useEffect, useState, useRef } from 'react';
 import { isSelectable, getItemLabel } from './utils';
-import { ArrowleftIcon, ListIcon } from '@plone/components/Icons';
+import { ArrowleftIcon, ListIcon } from '@plone/icons';
 import type { PressEvent } from 'react-aria-components';
 import { useObjectBrowserNavigation } from './ObjectBrowserNavigationContext';
 import { useTranslation } from 'react-i18next';

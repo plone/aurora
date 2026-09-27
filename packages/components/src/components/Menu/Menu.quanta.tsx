@@ -17,7 +17,7 @@ import {
 } from 'react-aria-components';
 import { tv } from 'tailwind-variants';
 import { twMerge } from 'tailwind-merge';
-import { CheckboxIcon, ChevronrightIcon } from '../icons';
+import { CheckboxIcon, ChevronrightIcon } from '@plone/icons';
 import { Popover, type PopoverProps } from '../Popover/Popover.quanta';
 import { composeTailwindRenderProps, focusRing } from '../utils';
 import { getMenuTriggerChildren } from './menuTriggerChildren';

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Button } from './Button.quanta';
-import { BinIcon } from '../../components/icons/BinIcon';
+import { BinIcon } from '@plone/icons';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {

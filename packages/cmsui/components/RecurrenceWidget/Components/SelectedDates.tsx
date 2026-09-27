@@ -2,8 +2,8 @@ import { useState, type PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getLocalizedMonth, getLocalizedWeekday } from '../utils';
 import { Heading } from 'react-aria-components';
-import DeleteIcon from '@plone/components/icons/bin.svg?react';
-import AddIcon from '@plone/components/icons/add.svg?react';
+import DeleteIcon from '@plone/icons/svg/bin.svg?react';
+import AddIcon from '@plone/icons/svg/add.svg?react';
 import { Button } from '@plone/components/quanta';
 
 interface SelectedDatesProps {

@@ -1,0 +1,118 @@
+{
+  "name": "@plone/icons",
+  "description": "Icons for Plone Aurora",
+  "maintainers": [
+    {
+      "name": "Plone Foundation",
+      "url": "http://plone.org"
+    }
+  ],
+  "license": "MIT",
+  "version": "1.0.0-alpha.0",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/plone/aurora.git",
+    "directory": "packages/icons"
+  },
+  "bugs": {
+    "url": "https://github.com/plone/aurora/issues"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "vite-plugin-svgr.*"
+  ],
+  "main": "./dist/index.js",
+  "exports": {
+    "./package.json": "./package.json",
+    "./svg": {
+      "types": "./src/svg.d.ts"
+    },
+    "./svg/*": "./src/svg/*",
+    "./vite-plugin-svgr": {
+      "import": "./vite-plugin-svgr.js",
+      "types": "./vite-plugin-svgr.d.ts"
+    },
+    ".": {
+      "import": "./dist/index.js",
+      "default": "./dist/index.cjs"
+    }
+  },
+  "homepage": "https://plone.org",
+  "keywords": [
+    "volto",
+    "plone",
+    "plone6",
+    "react",
+    "cms",
+    "icons"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "build:force": "tsup",
+    "check:exports": "attw --pack .",
+    "check:ts": "tsc --project tsconfig.json",
+    "test": "vitest --passWithNoTests",
+    "coverage": "vitest run --coverage --no-threads",
+    "lint": "pnpm eslint && pnpm prettier && pnpm check:ts",
+    "format": "pnpm prettier:fix && pnpm lint:fix",
+    "eslint": "eslint 'src/**/*.{js,ts,tsx}' --quiet",
+    "eslint:fix": "eslint 'src/**/*.{js,ts,tsx}' --quiet --fix",
+    "prettier": "prettier --check 'src/**/*.{js,jsx,ts,tsx}'",
+    "prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx}'",
+    "dry-release": "release-it --dry-run",
+    "release": "release-it",
+    "release-major-alpha": "release-it major --preRelease=alpha",
+    "release-alpha": "release-it --preRelease=alpha",
+    "lint:fix": "pnpm eslint:fix"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "browserslist": [
+    ">0.5%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "dependencies": {
+    "@react-aria/utils": "catalog:",
+    "@react-spectrum/utils": "catalog:",
+    "@svgr/plugin-jsx": "^8.1.0",
+    "@svgr/plugin-svgo": "^8.1.0",
+    "clsx": "^2.1.1",
+    "tailwind-variants": "catalog:",
+    "vite-plugin-svgr": "^4.3.0"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.16.4",
+    "@react-types/shared": "^3.32.1",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@types/jest-axe": "^3.5.7",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "jest-axe": "^8.0.0",
+    "jsdom": "^28.1.0",
+    "release-it": "catalog:",
+    "tsup": "catalog:",
+    "tsconfig": "workspace:*",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react-dom": {
+      "optional": true
+    }
+  }
+}

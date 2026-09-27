@@ -7,7 +7,7 @@ import {
   LinkIcon,
   NavigationIcon,
   UploadIcon,
-} from '@plone/components/Icons';
+} from '@plone/icons';
 import type { Brain } from '@plone/types';
 import { Description, FieldError, Label } from '../Field/Field';
 import { ObjectBrowserModal } from '../ObjectBrowserWidget/ObjectBrowserModal';

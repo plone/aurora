@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { SearchIcon } from '../icons/SearchIcon';
-import { CloseIcon } from '../icons/CloseIcon';
+import { SearchIcon, CloseIcon } from '@plone/icons';
 
 import {
   SearchField as AriaSearchField,

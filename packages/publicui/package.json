@@ -64,6 +64,7 @@
     "@plone/registry": "workspace:*",
     "@plone/theming": "workspace:*",
     "@plone/components": "workspace:*",
+    "@plone/icons": "workspace:*",
     "@plone/client": "workspace:*",
     "@plone/helpers": "workspace:*",
     "clsx": "^2.1.1",

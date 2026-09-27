@@ -1,6 +1,5 @@
 import React from 'react';
-import { ChevronrightIcon } from '../../components/icons/ChevronrightIcon';
-import { ChevronleftIcon } from '../../components/icons/ChevronleftIcon';
+import { ChevronrightIcon, ChevronleftIcon } from '@plone/icons';
 
 import {
   Calendar as AriaCalendar,

@@ -2,12 +2,7 @@ import React from 'react';
 import { Breadcrumb, Breadcrumbs } from './Breadcrumbs.quanta';
 import { Button } from '../Button/Button.quanta';
 import { Menu, MenuItem, MenuTrigger } from '../Menu/Menu.quanta';
-import {
-  FolderIcon,
-  HomeIcon,
-  MoreoptionsIcon,
-  PageIcon,
-} from '../../components/icons';
+import { FolderIcon, HomeIcon, MoreoptionsIcon, PageIcon } from '@plone/icons';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 

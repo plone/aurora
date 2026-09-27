@@ -55,6 +55,7 @@
   },
   "dependencies": {
     "@plone/components": "workspace:*",
+    "@plone/icons": "workspace:*",
     "@plone/registry": "workspace:*",
     "clsx": "^2.1.1",
     "react-i18next": "catalog:"

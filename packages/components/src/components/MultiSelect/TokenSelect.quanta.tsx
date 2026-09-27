@@ -12,7 +12,7 @@ import {
   type Key,
 } from 'react-aria-components';
 import { Tag, TagGroup } from '../TagGroup/TagGroup.quanta';
-import { AddIcon } from '../icons/AddIcon';
+import { AddIcon } from '@plone/icons';
 import { SearchField } from '../SearchField/SearchField.quanta';
 
 export type Option = {
