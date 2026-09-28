@@ -41,7 +41,7 @@ export function CodeBlockElementStatic(
       {...props}
     >
       <BlockInnerContainer>
-        <div className="relative rounded-md bg-muted/50">
+        <div className="relative w-full rounded-md bg-muted/50">
           <pre
             className={`
               overflow-x-auto p-8 pr-4 font-mono text-sm leading-[normal]

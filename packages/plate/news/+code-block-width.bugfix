@@ -1,0 +1,1 @@
+Fixed code blocks shrinking to fit their content in the public view, instead of spanning their default block width. @sneridagh
