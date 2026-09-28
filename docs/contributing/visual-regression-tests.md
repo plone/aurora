@@ -156,7 +156,8 @@ Update them from a feature branch right before merging, or from the default bran
     The run summary lists the updated files.
 1.  Run **Visual Regression Tests** on the same branch to confirm that it passes.
 
-You can also start the workflow from the command line with the [GitHub CLI](https://cli.github.com/).
+Instead of the first five steps, you can start the workflow from the command line with the [GitHub CLI](https://cli.github.com/).
+A maintainer still has to approve the run.
 
 ```shell
 gh workflow run update-visual-regression-screenshots.yml --repo plone/aurora --ref my-branch

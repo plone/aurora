@@ -68,16 +68,33 @@ The environment approval is the safeguard: reviewers should only approve runs on
 
 ## Create the screenshots repository
 
-1.  Create a public repository named `aurora-visual-regression` in the Plone organization.
-    Initialize it with a README file, so that it has a `main` branch.
-    The workflows fail to check out an empty repository.
+Create a public repository named `aurora-visual-regression` in the Plone organization.
+Initialize it with a README file, so that it has a `main` branch, because the workflows fail to check out an empty repository.
+Use either the GitHub web interface or the GitHub CLI.
 
-    With the GitHub CLI, run the following command.
+`````{tab-set}
 
-    ```shell
-    gh repo create plone/aurora-visual-regression --public --add-readme \
-      --description "Baseline screenshots of the Plone Aurora visual regression tests"
-    ```
+````{tab-item} GitHub web interface
+1.  Open [New repository](https://github.com/organizations/plone/repositories/new) for the Plone organization.
+1.  In {guilabel}`Repository name`, enter `aurora-visual-regression`.
+1.  In {guilabel}`Description`, enter `Baseline screenshots of the Plone Aurora visual regression tests`.
+1.  Select {guilabel}`Public`.
+1.  Select {guilabel}`Add README`.
+1.  Select {guilabel}`Create repository`.
+````
+
+````{tab-item} GitHub CLI
+Run the following command.
+
+```shell
+gh repo create plone/aurora-visual-regression --public --add-readme \
+  --description "Baseline screenshots of the Plone Aurora visual regression tests"
+```
+````
+
+`````
+
+Then finish the setup of the repository in the GitHub web interface.
 
 1.  Optionally, explain in the README that the repository is managed by the **Update VRT Screenshots** workflow of `plone/aurora`, and that screenshots must not be added by hand.
 1.  In the repository {guilabel}`Settings`, under {guilabel}`General`, disable the features that it doesn't need, such as {guilabel}`Wikis`, {guilabel}`Issues`, and {guilabel}`Projects`.
@@ -87,34 +104,43 @@ The environment approval is the safeguard: reviewers should only approve runs on
 
 ## Create the deploy key
 
-1.  On your computer, in a temporary folder outside of any repository, generate a new SSH key pair without a passphrase.
-    GitHub Actions can't enter a passphrase.
+On your computer, in a temporary folder outside of any repository, generate a new SSH key pair without a passphrase.
+GitHub Actions can't enter a passphrase.
 
-    ```shell
-    ssh-keygen -t ed25519 -N "" -C "plone/aurora VRT screenshots" -f vrt_deploy_key
-    ```
+```shell
+ssh-keygen -t ed25519 -N "" -C "plone/aurora VRT screenshots" -f vrt_deploy_key
+```
 
-    This creates two files.
+This creates two files.
 
-    -   {file}`vrt_deploy_key` is the private key.
-        It goes into the `VRT_DEPLOY_KEY` secret.
-    -   {file}`vrt_deploy_key.pub` is the public key.
-        It goes into the deploy keys of the screenshots repository.
+-   {file}`vrt_deploy_key` is the private key.
+    It goes into the `VRT_DEPLOY_KEY` secret.
+-   {file}`vrt_deploy_key.pub` is the public key.
+    It goes into the deploy keys of the screenshots repository.
 
-1.  Add the public key to the screenshots repository, with write access.
+Add the public key to the screenshots repository, with write access.
+Use either the GitHub web interface or the GitHub CLI.
 
-    1.  Open {guilabel}`Settings` → {guilabel}`Deploy keys` of `plone/aurora-visual-regression`, and select {guilabel}`Add deploy key`.
-    1.  In {guilabel}`Title`, enter `plone/aurora Update VRT Screenshots workflow`.
-    1.  In {guilabel}`Key`, paste the content of {file}`vrt_deploy_key.pub`.
-    1.  Select {guilabel}`Allow write access`.
-    1.  Select {guilabel}`Add key`.
+`````{tab-set}
 
-    With the GitHub CLI, run the following command.
+````{tab-item} GitHub web interface
+1.  Open {guilabel}`Settings` → {guilabel}`Deploy keys` of `plone/aurora-visual-regression`, and select {guilabel}`Add deploy key`.
+1.  In {guilabel}`Title`, enter `plone/aurora Update VRT Screenshots workflow`.
+1.  In {guilabel}`Key`, paste the content of {file}`vrt_deploy_key.pub`.
+1.  Select {guilabel}`Allow write access`.
+1.  Select {guilabel}`Add key`.
+````
 
-    ```shell
-    gh repo deploy-key add vrt_deploy_key.pub --repo plone/aurora-visual-regression \
-      --allow-write --title "plone/aurora Update VRT Screenshots workflow"
-    ```
+````{tab-item} GitHub CLI
+Run the following command.
+
+```shell
+gh repo deploy-key add vrt_deploy_key.pub --repo plone/aurora-visual-regression \
+  --allow-write --title "plone/aurora Update VRT Screenshots workflow"
+```
+````
+
+`````
 
 Keep the private key until you have stored it in the environment secret, as described in {ref}`visual-regression-tests-ci-setup-environment-label`.
 Then delete both files.
@@ -148,6 +174,9 @@ With this ruleset, the update workflow can push new baselines, while people have
 
 ## Create the protected environment
 
+Create the environment and its protection rules in the GitHub web interface.
+The GitHub CLI has no command for them.
+
 1.  Open {guilabel}`Settings` → {guilabel}`Environments` of `plone/aurora`, and select {guilabel}`New environment`.
 1.  In {guilabel}`Name`, enter `visual-regression`, exactly, and select {guilabel}`Configure environment`.
     The update workflow refers to it by this name.
@@ -161,27 +190,38 @@ With this ruleset, the update workflow can push new baselines, while people have
     Baselines are updated both from the default branch and from feature branches.
     The required reviewers are the safeguard.
 1.  Select {guilabel}`Save protection rules`.
-1.  Under {guilabel}`Environment secrets`, select {guilabel}`Add environment secret`.
 
-    1.  In {guilabel}`Name`, enter `VRT_DEPLOY_KEY`, exactly.
-    1.  In {guilabel}`Value`, paste the whole content of the private key file {file}`vrt_deploy_key`, including the `-----BEGIN OPENSSH PRIVATE KEY-----` and `-----END OPENSSH PRIVATE KEY-----` lines.
-    1.  Select {guilabel}`Add secret`.
+Then store the private key as the `VRT_DEPLOY_KEY` secret of the environment.
+Use either the GitHub web interface or the GitHub CLI.
 
-    With the GitHub CLI, run the following command.
+`````{tab-set}
 
-    ```shell
-    gh secret set VRT_DEPLOY_KEY --repo plone/aurora --env visual-regression < vrt_deploy_key
-    ```
+````{tab-item} GitHub web interface
+1.  On the page of the `visual-regression` environment, under {guilabel}`Environment secrets`, select {guilabel}`Add environment secret`.
+1.  In {guilabel}`Name`, enter `VRT_DEPLOY_KEY`, exactly.
+1.  In {guilabel}`Value`, paste the whole content of the private key file {file}`vrt_deploy_key`, including the `-----BEGIN OPENSSH PRIVATE KEY-----` and `-----END OPENSSH PRIVATE KEY-----` lines.
+1.  Select {guilabel}`Add secret`.
+````
 
-1.  Delete the key files from your computer.
+````{tab-item} GitHub CLI
+Run the following command.
 
-    ```shell
-    rm vrt_deploy_key vrt_deploy_key.pub
-    ```
+```shell
+gh secret set VRT_DEPLOY_KEY --repo plone/aurora --env visual-regression < vrt_deploy_key
+```
+````
+
+`````
 
 ```{important}
 Store the key as an **environment** secret, not as a repository secret.
 Repository secrets are available to every workflow of the repository, while environment secrets are only available to jobs that run in the environment, after its reviewers approve them.
+```
+
+Finally, delete the key files from your computer.
+
+```shell
+rm vrt_deploy_key vrt_deploy_key.pub
 ```
 
 
@@ -192,18 +232,44 @@ Repository secrets are available to every workflow of the repository, while envi
 After the workflows are on the default branch, create the first set of baselines.
 
 1.  Start **Update VRT Screenshots** on the default branch.
+    Use either the GitHub web interface or the GitHub CLI.
+
+    `````{tab-set}
+
+    ````{tab-item} GitHub web interface
+    Open [Update VRT Screenshots](https://github.com/plone/aurora/actions/workflows/update-visual-regression-screenshots.yml) in the Actions tab, select {guilabel}`Run workflow`, keep the default branch and an empty pattern, and select {guilabel}`Run workflow`.
+    ````
+
+    ````{tab-item} GitHub CLI
+    Run the following command.
 
     ```shell
     gh workflow run update-visual-regression-screenshots.yml --repo plone/aurora --ref main
     ```
+    ````
+
+    `````
 
 1.  Approve the run, from its page in the Actions tab, with {guilabel}`Review deployments` → {guilabel}`Approve and deploy`.
 1.  When it finishes, check that the screenshots repository has a new commit with the screenshots, in folders named after the test files, such as {file}`packages/plate/acceptance/visual/native-blocks.test.ts/`.
 1.  Start **Visual Regression Tests** on the default branch, and check that it passes.
+    Use either the GitHub web interface or the GitHub CLI.
+
+    `````{tab-set}
+
+    ````{tab-item} GitHub web interface
+    Open [Visual Regression Tests](https://github.com/plone/aurora/actions/workflows/visual-regression.yml) in the Actions tab, select {guilabel}`Run workflow`, keep the default branch, and select {guilabel}`Run workflow`.
+    ````
+
+    ````{tab-item} GitHub CLI
+    Run the following command.
 
     ```shell
     gh workflow run visual-regression.yml --repo plone/aurora --ref main
     ```
+    ````
+
+    `````
 
 Until the first baselines exist, **Visual Regression Tests** fails, because Playwright reports every screenshot as missing.
 
