@@ -1,22 +1,26 @@
 import React from 'react';
-import { QuantaTextAreaField } from './TextAreaField';
-
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { Form } from 'react-aria-components';
+import { Button } from '../Button/Button.quanta';
+import { TextAreaField } from '../TextAreaField/TextAreaField.quanta';
 
-const meta: Meta<typeof QuantaTextAreaField> = {
-  title: 'Basic/Quanta/TextAreaField',
-  component: QuantaTextAreaField,
+const meta = {
+  title: 'Quanta/TextAreaField',
+  component: TextAreaField,
   parameters: {
     layout: 'centered',
+    backgrounds: { disable: true },
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof QuantaTextAreaField>;
+  args: {
+    label: 'Comments',
+  },
+} satisfies Meta<typeof TextAreaField>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: (args: any) => <QuantaTextAreaField {...args} />,
   args: {
     name: 'fieldname',
     label: 'Field label',
@@ -70,4 +74,19 @@ export const ReadOnly: Story = {
     defaultValue: 'Filled with value A',
     isReadOnly: true,
   },
+};
+
+export const Example = (args: any) => <TextAreaField {...args} />;
+
+export const Validation = (args: any) => (
+  <Form className="flex flex-col items-start gap-2">
+    <TextAreaField {...args} />
+    <Button type="submit" variant="primary" accent>
+      Submit
+    </Button>
+  </Form>
+);
+
+Validation.args = {
+  isRequired: true,
 };

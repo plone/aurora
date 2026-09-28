@@ -13,6 +13,7 @@ export * from '../components/Menu/Menu.quanta';
 export * from '../components/Modal/Modal.quanta';
 export * from '../components/Popover/Popover.quanta';
 export * from '../components/Select/Select.quanta';
+export * from '../components/TextAreaField/TextAreaField.quanta';
 export * from '../components/TextField/TextField.quanta';
 export { SizeWidget } from '../components/SizeWidget/SizeWidget';
 export { AlignWidget } from '../components/AlignWidget/AlignWidget';

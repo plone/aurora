@@ -4,11 +4,13 @@ import {
   Group,
   type GroupProps,
   type InputProps,
+  type TextAreaProps,
   type LabelProps,
   FieldError as RACFieldError,
   Input as RACInput,
   Label as RACLabel,
   Text,
+  TextArea as RACTextArea,
   type TextProps,
   composeRenderProps,
   useRenderProps,
@@ -178,7 +180,31 @@ export function Input(props: InputProps) {
           not-group-data-focus-within:outline-0
           group-data-focus-within:outline-0
           group-data-hovered:bg-quanta-smoke
-          read-only:border-1 read-only:border-dashed read-only:bg-quanta-air
+          read-only:border read-only:border-dashed read-only:bg-quanta-air
+          hover:bg-quanta-smoke
+          read-only:hover:bg-quanta-air
+          focus:bg-quanta-air
+          active:bg-quanta-air
+          disabled:cursor-not-allowed disabled:text-quanta-silver
+        `,
+      )}
+    />
+  );
+}
+
+export function TextArea(props: TextAreaProps) {
+  return (
+    <RACTextArea
+      {...props}
+      className={composeTailwindRenderProps(
+        props.className,
+        `
+          min-h-24 min-w-0 flex-1 resize-y bg-quanta-snow px-2 py-1.5 text-sm text-quanta-space
+          outline
+          not-group-data-focus-within:outline-0
+          group-data-focus-within:outline-0
+          group-data-hovered:bg-quanta-smoke
+          read-only:border read-only:border-dashed read-only:bg-quanta-air
           hover:bg-quanta-smoke
           read-only:hover:bg-quanta-air
           focus:bg-quanta-air

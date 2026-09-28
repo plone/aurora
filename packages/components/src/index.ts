@@ -70,8 +70,3 @@ export { Toolbar } from './components/Toolbar/Toolbar';
 export { Tooltip } from './components/Tooltip/Tooltip';
 export { Tree, TreeItem, TreeItemContent } from './components/Tree/Tree';
 export { WidthWidget } from './components/WidthWidget/WidthWidget';
-
-// Quanta components
-export { QuantaTextField } from './components/quanta/TextField/TextField';
-export { QuantaTextAreaField } from './components/quanta/TextAreaField/TextAreaField';
-export { QuantaSelect } from './components/quanta/Select/Select';

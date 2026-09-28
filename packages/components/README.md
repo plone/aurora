@@ -69,33 +69,6 @@ It uses the `plone-components` layer name to scope all the CSS declarations in t
 The basic styling uses the nested `plone-components.base` named layer.
 You can use the `plone-components` layer to override the basic styling, or use the `plone-components.base` layer to override the basic styling in a more specific way.
 
-### Quanta
-
-This package also features the Quanta components.
-These components use the basic styling as a baseline, extending them to achieve the Quanta look and feel.
-They also extend the basic React components in a composable way.
-The Quanta styling is scoped in the `plone-components.quanta` named layer.
-
-Quanta is built upon the basic styles in an additive way.
-The use of the Quanta CSS implies using it upon basic styling.
-You could take Quanta as example to build your own layer of styles over basic styling for your theme.
-
-To use a theme built upon the basic styling, you need to import both the basic and the theme CSS, in this order:
-
-```js
-import '@plone/components/dist/basic.css';
-import '@plone/components/dist/quanta.css';
-```
-
-You have the option of doing it selectively per component, too:
-
-```js
-import '@plone/components/src/styles/basic/TextField.css';
-import '@plone/components/src/styles/quanta/TextField.css';
-```
-
-Take a look at the implementation of the Quanta components, using the basic ones as baseline in the `quanta` folders.
-
 Alternatively, as RAC allows, you can also drop your own basic set of styles.
 You can take the basic styles as reference.
 You can even remove the basic styling completely and bring your own CSS framework and push a new styling from scratch in there using the utilities of your choice, targeting the default RAC class names.

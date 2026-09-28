@@ -6,7 +6,5 @@
 
 /* Components */
 @import './Popover.css';
-@import './Select.css';
 @import './Table.css';
-@import './TextField.css';
 @import './Tooltip.css';
