@@ -27,6 +27,8 @@ async function createBlockquotePage(
       ...body,
       ...(legacyVoltoBlocks
         ? {
+            // Volto content: the somersault migration reads `blocks_layout`
+            // to order the legacy blocks. Somersault content doesn't need it.
             blocks: {
               title: { '@type': 'title' },
               quote: { '@type': 'slate', value: [blockquote] },
@@ -43,7 +45,6 @@ async function createBlockquotePage(
                 ],
               },
             },
-            blocks_layout: { items: ['__somersault__'] },
           }),
     }),
   });
