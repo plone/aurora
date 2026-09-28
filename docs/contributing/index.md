@@ -122,6 +122,8 @@ Specifically:
 :maxdepth: 2
 
 acceptance-tests
+visual-regression-tests
+visual-regression-tests-ci-setup
 developing-core
 documentation
 linting
