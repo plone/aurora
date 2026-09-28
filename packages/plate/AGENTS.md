@@ -37,12 +37,13 @@ pnpm --filter @plone/plate test --run
 pnpm --filter @plone/plate check:ts
 ```
 
-Acceptance tests live under `acceptance/`:
+Acceptance and visual regression tests live under `acceptance/`:
 
 - `acceptance/fixtures/` — Plate values for each native block (`native-blocks.ts`), a page factory that creates one small page per test through the REST API (`pages.ts`), editor helpers and clipboard payloads for paste tests.
 - `acceptance/tests/` — behaviour tests, run with `pnpm acceptance-test`.
+- `acceptance/visual/` — screenshot tests, run with `pnpm visual-test`. They run nightly in CI, not per pull request. Baselines live in the external `plone/aurora-visual-regression` repository and are only generated in CI through the "Update VRT Screenshots" workflow; never commit locally generated screenshots.
 
-Only cover features reachable through Aurora's `somersault-editor` and `somersault-renderer` presets.
+Only cover features reachable through Aurora's `somersault-editor` and `somersault-renderer` presets, and keep screenshots to the essentials.
 
 For Storybook:
 

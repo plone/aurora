@@ -1,0 +1,143 @@
+name: Update VRT Screenshots
+
+# Regenerates the visual regression baselines and pushes them to the
+# plone/aurora-visual-regression repository.
+#
+# Run it on the default branch to accept intended changes reported by the
+# nightly check, or on a feature branch to prepare baselines before merging.
+#
+# Security model:
+# - Manual trigger only (`workflow_dispatch` requires write access to this
+#   repository).
+# - The job runs in the `visual-regression` environment. Configure it with
+#   required reviewers, so every run is approved before it gets the key.
+# - `VRT_DEPLOY_KEY` is an environment secret: the private half of a deploy key
+#   with write access to plone/aurora-visual-regression only.
+# - This repository's own token stays read-only.
+on:
+  workflow_dispatch:
+    inputs:
+      grep:
+        description: 'Only update tests whose title matches this pattern (empty for all)'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  AUTHOR_NAME: 'github-actions[bot]'
+  AUTHOR_EMAIL: '41898282+github-actions[bot]@users.noreply.github.com'
+
+jobs:
+  update-screenshots:
+    name: Update visual regression screenshots
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: visual-regression
+
+    # One update at a time, repository-wide: baselines are shared by branches.
+    concurrency:
+      group: visual-regression-screenshots
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Checkout visual regression baselines
+        uses: actions/checkout@v6
+        with:
+          repository: plone/aurora-visual-regression
+          ref: main
+          path: playwright/__screenshots__
+          ssh-key: ${{ secrets.VRT_DEPLOY_KEY }}
+
+      - name: Set up Node.js environment
+        uses: ./.github/actions/acceptance_tests_node_env_setup
+        with:
+          node-version: 24.x
+
+      - uses: JarvusInnovations/background-action@v1
+        name: Start Servers - Aurora and Plone
+        with:
+          run: |
+            make ci-acceptance-backend-start &
+            make acceptance-frontend-prod-start &
+          wait-on: |
+            http-get://localhost:55001/plone
+            http://localhost:3000
+          tail: true
+          log-output-resume: stderr
+          wait-for: 10m
+          log-output: stderr,stdout
+          log-output-if: failure
+
+      - name: Update visual regression screenshots
+        env:
+          GREP: ${{ inputs.grep }}
+        run: |
+          if [ -n "$GREP" ]; then
+            pnpm visual-test --update-snapshots=all --grep "$GREP"
+          else
+            pnpm visual-test --update-snapshots=all
+          fi
+
+      - name: Check for changes
+        id: changes
+        working-directory: playwright/__screenshots__
+        run: |
+          CHANGED_FILES=$(git status --porcelain | awk '{print $2}')
+          if [ -n "$CHANGED_FILES" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            {
+              echo "files<<EOF"
+              echo "$CHANGED_FILES"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push the new baselines
+        if: steps.changes.outputs.changed == 'true'
+        working-directory: playwright/__screenshots__
+        env:
+          SOURCE_REF: ${{ github.ref_name }}
+          SOURCE_SHA: ${{ github.sha }}
+          ACTOR: ${{ github.actor }}
+          ACTOR_ID: ${{ github.actor_id }}
+        run: |
+          git config user.name "$AUTHOR_NAME"
+          git config user.email "$AUTHOR_EMAIL"
+          git add -A
+          git commit -m "Update screenshots from plone/aurora@${SOURCE_SHA::9} ($SOURCE_REF)" \
+            -m "Co-authored-by: $ACTOR <$ACTOR_ID+$ACTOR@users.noreply.github.com>"
+          git push origin HEAD:main
+
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: visual-regression-update-results
+          path: playwright/results-visual/
+          retention-days: 15
+
+      - name: Summary
+        env:
+          CHANGED: ${{ steps.changes.outputs.changed }}
+          FILES: ${{ steps.changes.outputs.files }}
+          SOURCE_REF: ${{ github.ref_name }}
+        run: |
+          if [ "$CHANGED" = "true" ]; then
+            {
+              echo "### 📸 Visual regression screenshots updated from \`$SOURCE_REF\`"
+              echo
+              echo '```'
+              echo "$FILES"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "### ℹ️ Screenshots already up to date" >> "$GITHUB_STEP_SUMMARY"
+          fi

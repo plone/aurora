@@ -73,6 +73,9 @@ pnpm stylelint:fix
 # Run Playwright acceptance tests
 pnpm acceptance-test
 
+# Run Playwright visual regression tests (baselines are generated in CI only)
+pnpm visual-test
+
 # Check typings
 pnpm check:ts
 ```

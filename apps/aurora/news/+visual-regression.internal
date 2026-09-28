@@ -1,0 +1,1 @@
+Added nightly Playwright visual regression tests for native blocks and editor overlays, with baselines stored in the `plone/aurora-visual-regression` repository and a protected workflow to update the screenshots. @sneridagh
