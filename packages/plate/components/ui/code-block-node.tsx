@@ -127,6 +127,7 @@ function CodeBlockCombobox() {
           variant="ghost"
           className="h-6 justify-between gap-1 px-2 text-xs text-muted-foreground select-none"
           aria-expanded={open}
+          aria-label="Code block language"
           role="combobox"
         >
           {languages.find((language) => language.value === value)?.label ??

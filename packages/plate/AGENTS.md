@@ -37,6 +37,13 @@ pnpm --filter @plone/plate test --run
 pnpm --filter @plone/plate check:ts
 ```
 
+Acceptance tests live under `acceptance/`:
+
+- `acceptance/fixtures/` — Plate values for each native block (`native-blocks.ts`), a page factory that creates one small page per test through the REST API (`pages.ts`), editor helpers and clipboard payloads for paste tests.
+- `acceptance/tests/` — behaviour tests, run with `pnpm acceptance-test`.
+
+Only cover features reachable through Aurora's `somersault-editor` and `somersault-renderer` presets.
+
 For Storybook:
 
 ```sh

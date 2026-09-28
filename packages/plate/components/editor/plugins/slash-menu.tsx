@@ -116,20 +116,22 @@ const addGroupItem = (
       : group,
   );
 
-const createStaticGroups = (): SlashMenuGroup[] => [
-  {
-    group: 'Actions',
-    items: [
-      {
-        focusEditor: false,
-        icon: <SparklesIcon />,
-        value: 'AI',
-        onSelect: (editor) => {
-          editor.getApi(AIChatPlugin).aiChat.show();
-        },
+// Only offered when the AI chat plugin is part of the editor preset.
+const aiActionsGroup: SlashMenuGroup = {
+  group: 'Actions',
+  items: [
+    {
+      focusEditor: false,
+      icon: <SparklesIcon />,
+      value: 'AI',
+      onSelect: (editor) => {
+        editor.getApi(AIChatPlugin).aiChat.show();
       },
-    ],
-  },
+    },
+  ],
+};
+
+const createStaticGroups = (): SlashMenuGroup[] => [
   {
     group: 'Text blocks',
     items: [
@@ -269,6 +271,10 @@ export const getDefaultSlashMenuGroups = (
   context: SlashMenuContext,
 ): SlashMenuGroup[] => {
   let groups = createStaticGroups();
+
+  if (editor.plugins[AIChatPlugin.key]) {
+    groups = [aiActionsGroup, ...groups];
+  }
 
   if (!context.hasTitleBlock) {
     groups = addGroupItem(groups, 'Text blocks', {
