@@ -2,6 +2,7 @@ import type { Page } from '@playwright/test';
 
 import { createContent } from '../../../tooling/playwright/content';
 import { waitForPlateEditorReady } from '../../../tooling/playwright/plate';
+import { SOMERSAULT_KEY } from '../../constants';
 import { nativeBlockSections, type NativeBlockSection } from './native-blocks';
 
 type CreatePageOptions = {
@@ -34,9 +35,10 @@ export async function createNativeBlocksPage(
     transition: 'publish',
     bodyModifier: (body) => ({
       ...body,
+      // Aurora only reads the somersault block; `blocks_layout` isn't used.
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        [SOMERSAULT_KEY]: {
+          '@type': SOMERSAULT_KEY,
           value: [
             { type: 'title', children: [{ text: title }] },
             ...sections.flatMap((section) => nativeBlockSections[section]),
@@ -44,7 +46,6 @@ export async function createNativeBlocksPage(
           ],
         },
       },
-      blocks_layout: { items: ['__somersault__'] },
     }),
   });
 
