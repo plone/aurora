@@ -1,0 +1,1 @@
+Removed the AI entry points (slash menu action, block context menu item and floating toolbar button) from the editor when the AI chat plugin is not part of the preset, as in Aurora's presets. @sneridagh

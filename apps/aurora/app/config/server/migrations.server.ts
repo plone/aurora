@@ -5,6 +5,7 @@ import {
 } from '@plone/helpers';
 import type { BlockConfigBase, BlocksFormData } from '@plone/types';
 import {
+  migrateLegacyBlockquotesInValue,
   migrateLegacyBoldInValue,
   migrateLegacyBlockWidthsInValue,
   migrateLegacyItalicInValue,
@@ -126,6 +127,13 @@ export default function install() {
     type: 'somersaultMigration',
     method: ({ value }: SomersaultMigrationArgs) =>
       migrateLegacyListsInValue(value),
+  });
+
+  config.registerUtility({
+    name: 'somersaultMigrationLegacyBlockquotes',
+    type: 'somersaultMigration',
+    method: ({ value }: SomersaultMigrationArgs) =>
+      migrateLegacyBlockquotesInValue(value),
   });
 
   config.registerUtility({

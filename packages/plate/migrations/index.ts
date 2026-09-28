@@ -15,6 +15,7 @@ import {
   migrateLegacyStrikethroughInValue,
 } from '../components/editor/plugins/legacy-strikethrough-plugin';
 import { migrateLegacyListsInValue } from '../components/editor/plugins/legacy-list-plugin';
+import { migrateLegacyBlockquotesInValue } from '../components/editor/plugins/legacy-blockquote-plugin';
 import {
   applyNormalizedValue,
   cloneValueToWritable,
@@ -22,6 +23,7 @@ import {
 import { migrateLegacyBlockWidthsInValue } from './block-width';
 
 export {
+  migrateLegacyBlockquotesInValue,
   migrateLegacyBold,
   migrateLegacyBoldInValue,
   migrateLegacyBlockWidthsInValue,
@@ -43,12 +45,14 @@ export const normalizeLegacyValue = (value?: Value, linkType = KEYS.link) => {
   mutableValue = migrateLegacyStrikethroughInValue(mutableValue);
   mutableValue = migrateLegacyLinksInValueStatic(mutableValue, linkType);
   mutableValue = migrateLegacyListsInValue(mutableValue);
+  mutableValue = migrateLegacyBlockquotesInValue(mutableValue);
 
   applyNormalizedValue(value, mutableValue);
   return mutableValue;
 };
 
 export const legacyMigrations = {
+  migrateLegacyBlockquotesInValue,
   migrateLegacyBold,
   migrateLegacyBoldInValue,
   migrateLegacyItalic,

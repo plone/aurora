@@ -21,6 +21,14 @@ main {
     --block-width: var(--narrow-container-width);
   }
 
+  /* Nested blocks (e.g. paragraphs in a blockquote, table cell or column)
+     fill their container instead of using their category width. The inner
+     container's `justify-items: start` would otherwise shrink them to fit. */
+  .block .block {
+    --block-width: 100%;
+    justify-self: stretch;
+  }
+
   /* Category separator */
   .category-separator {
     --block-bottom-spacing: 0;

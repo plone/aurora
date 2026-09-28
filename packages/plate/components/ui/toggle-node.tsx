@@ -25,6 +25,8 @@ export function ToggleElement(props: PlateElementProps) {
             [&_svg]:size-4
           `}
           contentEditable={false}
+          aria-label="Toggle content"
+          aria-expanded={open}
           {...buttonProps}
         >
           <ChevronRight

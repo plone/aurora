@@ -1,0 +1,1 @@
+Fixed nested blocks, like paragraphs in a blockquote, table cell or column, getting their own block width instead of filling their container. The editor now also normalizes the loaded value, which restores the trailing paragraph after the title. @sneridagh

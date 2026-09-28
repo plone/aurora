@@ -357,7 +357,12 @@ export const BaseBlockWidthPlugin = createSlatePlugin({
           !element ||
           !ElementApi.isElement(element) ||
           element.type === PLONE_BLOCK_TYPE ||
-          (editor?.api?.isBlock && !editor.api.isBlock(element))
+          (editor?.api?.isBlock && !editor.api.isBlock(element)) ||
+          // Block width is a top-level layout concern (see
+          // `normalizeTopLevelBlockWidth`). Nested blocks, like paragraphs in
+          // a blockquote, table cell or column, fill their container.
+          (Array.isArray(editor?.children) &&
+            !editor.children.includes(element))
         ) {
           return props;
         }

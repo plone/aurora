@@ -56,8 +56,8 @@
     }
   },
   "dependencies": {
-    "@platejs/floating": "^49.0.0",
-    "@platejs/link": "^49.1.1",
+    "@platejs/floating": "^53.0.0",
+    "@platejs/link": "^53.3.5",
     "@plone/blocks": "workspace:*",
     "@plone/client": "workspace:*",
     "@plone/components": "workspace:*",
@@ -74,7 +74,7 @@
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.544.0",
     "optics-ts": "^2.4.1",
-    "platejs": "^49.2.21",
+    "platejs": "^53.3.14",
     "react-aria": "catalog:",
     "react-aria-components": "catalog:",
     "react-i18next": "catalog:",

@@ -1,7 +1,8 @@
-import type { SlateElementProps, TLinkElement } from 'platejs';
+import type { TLinkElement } from 'platejs';
+import type { SlateElementProps } from 'platejs/static';
 
 import { Link } from '@plone/components';
-import { SlateElement } from 'platejs';
+import { SlateElement } from 'platejs/static';
 
 export function LinkElementStatic(props: SlateElementProps<TLinkElement>) {
   return (

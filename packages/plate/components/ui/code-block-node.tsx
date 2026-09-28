@@ -57,7 +57,7 @@ export function CodeBlockElement(props: PlateElementProps<TCodeBlockElement>) {
       {...props}
     >
       <BlockInnerContainer>
-        <div className="relative rounded-md bg-muted/50">
+        <div className="relative w-full rounded-md bg-muted/50">
           <pre
             className={`
               overflow-x-auto p-8 pr-4 font-mono text-sm leading-[normal]
@@ -127,6 +127,7 @@ function CodeBlockCombobox() {
           variant="ghost"
           className="h-6 justify-between gap-1 px-2 text-xs text-muted-foreground select-none"
           aria-expanded={open}
+          aria-label="Code block language"
           role="combobox"
         >
           {languages.find((language) => language.value === value)?.label ??
