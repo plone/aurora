@@ -16,6 +16,7 @@ from datetime import datetime
 
 import os
 import json
+import re
 import urllib.request as req
 import urllib
 
@@ -305,8 +306,10 @@ latex_logo = "_static/logo_2x.png"
 # https://stackoverflow.com/a/56328457/2214933
 def source_replace(app, docname, source):
     result = source[0]
-    for key in app.config.source_replacements:
-        result = result.replace(key, app.config.source_replacements[key])
+    for key, value in app.config.source_replacements.items():
+        # Skip MyST substitutions, such as {{KEY}}, which contain the key {KEY}.
+        pattern = rf"(?<!\{{){re.escape(key)}(?!\}})"
+        result = re.sub(pattern, lambda match, value=value: value, result)
     source[0] = result
 
 
