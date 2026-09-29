@@ -27,9 +27,7 @@ jobs:
         timeout-minutes: 5
         with:
           python-version: ${{ env.python-version }}
-          cache-python: true
-          enable-cache: true
-          ignore-nothing-to-cache: true
+          enable-cache: false
 
       - name: Generate Cookieplone-based frontend addon
         run: |
