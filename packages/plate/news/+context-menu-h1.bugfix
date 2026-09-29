@@ -1,1 +1,1 @@
-Removed Heading 1 from the block context menu's "Turn into" submenu, since H1 is reserved for the title and the editor has no H1 plugin. @sneridagh
+Removed Heading 1 from the block context menu's "Turn into" submenu and from the insert toolbar menu, since H1 is reserved for the title and the editor has no H1 plugin. @sneridagh
