@@ -61,6 +61,7 @@
   "dependencies": {
     "@plone/blocks": "workspace:*",
     "@plone/layout": "workspace:*",
+    "@plone/quanta": "workspace:*",
     "@plone/registry": "workspace:*",
     "@plone/theming": "workspace:*",
     "@plone/components": "workspace:*",

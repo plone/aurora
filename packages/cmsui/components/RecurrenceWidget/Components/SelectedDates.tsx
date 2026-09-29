@@ -4,7 +4,7 @@ import { getLocalizedMonth, getLocalizedWeekday } from '../utils';
 import { Heading } from 'react-aria-components';
 import DeleteIcon from '@plone/icons/svg/bin.svg?react';
 import AddIcon from '@plone/icons/svg/add.svg?react';
-import { Button } from '@plone/components/quanta';
+import { Button } from '@plone/quanta';
 
 interface SelectedDatesProps {
   rruleDates: Date[];

@@ -54,7 +54,7 @@ vi.mock('@plone/icons/svg/bin.svg?react', () => ({
   default: () => <svg data-testid="delete-icon" />,
 }));
 
-vi.mock('@plone/components/quanta', () => ({
+vi.mock('@plone/quanta', () => ({
   Button: ({ children, onClick, onPress }: any) => (
     <button onClick={onClick ?? onPress}>{children}</button>
   ),

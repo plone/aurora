@@ -1,1 +1,1 @@
-Import icons from `@plone/icons`. @pnicolli
+Import icons from `@plone/icons`. Depend on `@plone/quanta` and pre-bundle its dependencies. @pnicolli

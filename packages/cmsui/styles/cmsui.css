@@ -1,7 +1,7 @@
 @plugin 'tailwindcss-react-aria-components';
 @plugin 'tailwindcss-animate';
 
-@source '../node_modules/@plone/components/dist/quanta';
+@source '../node_modules/@plone/quanta/dist';
 
 @custom-variant dark (&:where(.dark, .dark *));
 

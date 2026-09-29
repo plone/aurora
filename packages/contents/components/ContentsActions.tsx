@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { TooltipTrigger } from 'react-aria-components';
-import { Button, Tooltip } from '@plone/components/quanta';
+import { Button, Tooltip } from '@plone/quanta';
 
 import {
   UploadIcon,

@@ -25,7 +25,12 @@ const RELEASE_GROUPS = [
   },
   {
     label: 'Core packages (level 1)',
-    packages: ['@plone/client', '@plone/components', '@plone/registry'],
+    packages: [
+      '@plone/client',
+      '@plone/components',
+      '@plone/quanta',
+      '@plone/registry',
+    ],
   },
   {
     label: 'Utilities packages (level 2)',

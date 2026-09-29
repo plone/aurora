@@ -25,6 +25,7 @@ jobs:
           pnpm --filter @plone/client run check:ts
           pnpm --filter @plone/components run check:ts
           pnpm --filter @plone/icons run check:ts
+          pnpm --filter @plone/quanta run check:ts
           pnpm --filter @plone/registry run check:ts
           pnpm --filter @plone/blocks run check:ts
           pnpm --filter @plone/cmsui run check:ts
@@ -85,6 +86,8 @@ jobs:
       matrix:
         include:
           - name: '@plone/components'
+            files: 'src/**/*.{css,scss,less}'
+          - name: '@plone/quanta'
             files: 'src/**/*.{css,scss,less}'
           - name: '@plone/theming'
             files: 'styles/**/*.{css,scss,less}'

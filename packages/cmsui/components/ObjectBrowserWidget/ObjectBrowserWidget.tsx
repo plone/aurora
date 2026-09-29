@@ -1,4 +1,4 @@
-import type { TextFieldProps as QuantaTextFieldProps } from '@plone/components/quanta';
+import type { TextFieldProps as QuantaTextFieldProps } from '@plone/quanta';
 import {
   Description,
   fieldBorderStyles,

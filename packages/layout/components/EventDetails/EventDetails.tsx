@@ -1,5 +1,5 @@
 import EventDate from '../EventDate/EventDate';
-import { Link } from '@plone/components/quanta';
+import { Link } from '@plone/quanta';
 import * as RRuleLib from 'rrule';
 import type * as RRuleTypes from 'rrule';
 import type { EventContent } from '@plone/types';

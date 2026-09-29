@@ -1,4 +1,4 @@
-import { Button, FieldGroup, Select } from '@plone/components/quanta';
+import { Button, FieldGroup, Select } from '@plone/quanta';
 import { Dialog, Heading, Modal, ModalOverlay } from 'react-aria-components';
 import CloseIcon from '@plone/icons/svg/close.svg?react';
 import CheckboxIcon from '@plone/icons/svg/checkbox.svg?react';

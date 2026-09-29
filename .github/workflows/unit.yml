@@ -19,6 +19,7 @@ jobs:
           - '@plone/helpers'
           - '@plone/icons'
           - '@plone/layout'
+          - '@plone/quanta'
           - '@plone/react-router'
           - '@plone/registry'
         node-version: [24.x]

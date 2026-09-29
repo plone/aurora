@@ -8,7 +8,7 @@ import {
   AccordionPanel,
   Tabs,
   Link,
-} from '@plone/components/quanta';
+} from '@plone/quanta';
 import { InitAtoms } from '@plone/helpers';
 import { Plug } from '@plone/layout/components/Pluggable';
 import type { Content } from '@plone/types';

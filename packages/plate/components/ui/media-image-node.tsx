@@ -9,7 +9,7 @@ import {
 } from '@platejs/media/react';
 import { flattenToAppURL } from '@plone/helpers';
 import config from '@plone/registry';
-import { Button, Tabs, TextField } from '@plone/components/quanta';
+import { Button, Tabs, TextField } from '@plone/quanta';
 import { ResizableProvider, useResizableValue } from '@platejs/resizable';
 import {
   ExternalLinkIcon,

@@ -19,7 +19,7 @@ import {
   redirectIfLoggedInLoader,
   setAuthOnResponse,
 } from '@plone/react-router';
-import { TextField, Link } from '@plone/components/quanta';
+import { TextField, Link } from '@plone/quanta';
 import CloseSVG from '@plone/icons/svg/close.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import { Trans, useTranslation } from 'react-i18next';

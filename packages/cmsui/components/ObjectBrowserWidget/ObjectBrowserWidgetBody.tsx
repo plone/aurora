@@ -4,7 +4,7 @@ import {
   Button,
   GridList,
   GridListItem,
-} from '@plone/components/quanta';
+} from '@plone/quanta';
 import { useEffect, useState, useRef } from 'react';
 import { isSelectable, getItemLabel } from './utils';
 import { ArrowleftIcon, ListIcon } from '@plone/icons';

@@ -61,6 +61,7 @@
     "@plone/layout": "workspace:*",
     "@plone/plate": "workspace:*",
     "@plone/publicui": "workspace:*",
+    "@plone/quanta": "workspace:*",
     "@plone/react-router": "workspace:*",
     "@plone/registry": "workspace:*",
     "@plone/theming": "workspace:*",

@@ -23,7 +23,7 @@ import {
   TableBody,
   Row,
   Cell,
-} from '@plone/components/quanta';
+} from '@plone/quanta';
 import {
   // AddIcon,
   HomeIcon,

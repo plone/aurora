@@ -77,7 +77,7 @@ vi.mock('react-aria-components', () => ({
   ),
 }));
 
-vi.mock('@plone/components/quanta', () => ({
+vi.mock('@plone/quanta', () => ({
   Button: ({
     children,
     onPress,

@@ -10,7 +10,7 @@ import {
   DropZoneText,
   Input,
   Modal,
-} from '@plone/components/quanta';
+} from '@plone/quanta';
 import { BinIcon, CloseIcon, PageIcon, UploadIcon } from '@plone/icons';
 import { type ToastItem } from '@plone/layout/config/toast';
 import { useContentsContext } from '../../providers/contents';

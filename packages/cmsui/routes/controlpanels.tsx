@@ -7,7 +7,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { requireAuthCookie } from '@plone/react-router';
-import { Button, Container } from '@plone/components/quanta';
+import { Button, Container } from '@plone/quanta';
 import { Plug } from '@plone/layout/components/Pluggable';
 import ControlPanelsList from '../components/ControlPanel/ControlPanelsList';
 import VersionOverview from '../components/VersionOverview/VersionOverview';

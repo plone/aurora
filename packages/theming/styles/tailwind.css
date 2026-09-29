@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-@source '../node_modules/@plone/components/dist/quanta';
+@source '../node_modules/@plone/quanta/dist';
 
 @plugin 'tailwindcss-react-aria-components';
 @plugin 'tailwindcss-animate';

@@ -1,4 +1,4 @@
-import { Button } from '@plone/components/quanta';
+import { Button } from '@plone/quanta';
 import { CheckboxIcon, ChevronrightIcon } from '@plone/icons';
 import { flattenToAppURL } from '@plone/helpers';
 import { useTranslation } from 'react-i18next';

@@ -8,7 +8,7 @@ vi.mock('react-router', () => ({
   useFetcher: () => mockFetcher,
 }));
 
-vi.mock('@plone/components/quanta', () => ({
+vi.mock('@plone/quanta', () => ({
   Button: ({ children, onPress, ...props }: any) => (
     <button onClick={onPress} {...props}>
       {children}

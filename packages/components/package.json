@@ -27,12 +27,7 @@
   "exports": {
     "./package.json": "./package.json",
     "./dist/*.css": "./dist/*.css",
-    "./dist/fonts/*": "./dist/fonts/*",
     "./src/*": "./src/*",
-    "./quanta": {
-      "import": "./dist/quanta/index.js",
-      "default": "./dist/quanta/index.cjs"
-    },
     ".": {
       "import": "./dist/index.js",
       "default": "./dist/index.cjs"
@@ -45,16 +40,14 @@
     "plone6",
     "react",
     "cms",
-    "components",
-    "quanta"
+    "components"
   ],
   "scripts": {
     "build": "tsup && pnpm build:css",
     "build:watch": "tsup --watch && pnpm build:css",
     "build:force": "tsup && pnpm build:css",
-    "build:css": "pnpm build:basic && pnpm build:quanta",
+    "build:css": "pnpm build:basic",
     "build:basic": "lightningcss --browserslist --bundle --sourcemap src/styles/basic/main.css -o basic.css && mv basic.css* dist/.",
-    "build:quanta": "lightningcss --browserslist --bundle --sourcemap src/styles/quanta/main.css -o quanta.css && mv quanta.css* dist/. && cp -r src/styles/fonts dist/.",
     "check:exports": "attw --pack .",
     "check:ts": "tsc --project tsconfig.json",
     "test": "vitest --passWithNoTests",
