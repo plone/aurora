@@ -15,7 +15,6 @@ For the `fish` shell, see [`nvm.fish`](https://github.com/jorgebucaran/nvm.fish)
 2.  Download and run the `nvm` install and update script, and pipe it into `bash`.
 
     ```shell
-    :substitutions:
     curl -o- https://raw.githubusercontent.com/creationix/nvm/{{version nvm-sh/nvm}}/install.sh | bash
     ```
 
