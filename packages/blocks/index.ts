@@ -139,9 +139,17 @@ export default function install(config: ConfigType) {
     },
     h5: {
       category: 'text',
+      blockWidth: {
+        defaultWidth: 'narrow',
+        widths: ['narrow'],
+      },
     },
     h6: {
       category: 'text',
+      blockWidth: {
+        defaultWidth: 'narrow',
+        widths: ['narrow'],
+      },
     },
     blockquote: {
       category: 'text',
