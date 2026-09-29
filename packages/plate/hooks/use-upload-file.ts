@@ -32,7 +32,6 @@ export function useUploadFile({
     setProgress(10);
 
     try {
-      const payload = await buildCreateContentPayload(file);
       const contentPath = getCurrentContentPath();
       const endpoint =
         contentPath === '/'
@@ -43,13 +42,8 @@ export function useUploadFile({
 
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
         credentials: 'include',
-        body: JSON.stringify({
-          data: payload.data,
-        }),
+        body: buildCreateContentFormData(file),
       });
 
       if (!response.ok) {
@@ -97,28 +91,20 @@ export function useUploadFile({
   };
 }
 
-async function buildCreateContentPayload(file: File) {
+// The file is sent as a multipart/form-data part named after its field,
+// next to a `data` part with the JSON payload.
+function buildCreateContentFormData(file: File) {
   const binaryFieldName = isImageFile(file) ? 'image' : 'file';
   const contentType = binaryFieldName === 'image' ? 'Image' : 'File';
-  const encoded = await readFileAsDataURL(file);
-  const fields = encoded.match(/^data:(.*);(.*),(.*)$/);
 
-  if (!fields) {
-    throw new Error('Could not read file data');
-  }
+  const formData = new FormData();
+  formData.append(
+    'data',
+    JSON.stringify({ '@type': contentType, title: file.name }),
+  );
+  formData.append(binaryFieldName, file);
 
-  return {
-    data: {
-      '@type': contentType,
-      title: file.name,
-      [binaryFieldName]: {
-        data: fields[3],
-        encoding: fields[2],
-        'content-type': fields[1],
-        filename: file.name,
-      },
-    },
-  };
+  return formData;
 }
 
 function createUploadedFile(
@@ -167,16 +153,6 @@ function getServerErrorMessage(errorPayload: any) {
   if (typeof nested === 'string') return nested;
 
   return null;
-}
-
-function readFileAsDataURL(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result ?? ''));
-    reader.onerror = () =>
-      reject(reader.error ?? new Error('Could not read file'));
-    reader.readAsDataURL(file);
-  });
 }
 
 function getCurrentContentPath() {

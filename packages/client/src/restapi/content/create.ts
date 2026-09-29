@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type PloneClient from '../../client';
 import { apiRequest, type ApiRequestParams } from '../../api';
 import { createContentDataSchema } from '../../validation/content';
+import { toRequestBody } from '../../utils/multipart';
 import type { CreateContentResponse } from '@plone/types';
 import type { RequestResponse } from '../types';
 
@@ -22,7 +23,7 @@ export async function createContent(
   });
 
   const options: ApiRequestParams = {
-    data: validatedArgs.data,
+    data: toRequestBody(validatedArgs.data),
     config: this.config,
   };
   return apiRequest('post', validatedArgs.path, options);

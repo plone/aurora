@@ -106,34 +106,18 @@ export default function UploadModal() {
     setShowUpload(false);
   };
 
-  const fileToBase64 = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const result = reader.result as string;
-        resolve(result.split(',')[1]);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
+  const confirm = () => {
+    const formData = new FormData();
+    formData.append('path', contentPath);
+    entries.forEach(({ file, title }) => {
+      formData.append('file', file);
+      formData.append('title', title);
     });
-
-  const confirm = async () => {
-    const encodedFiles = await Promise.all(
-      entries.map(async ({ file, title }) => ({
-        name: file.name,
-        type: file.type || 'application/octet-stream',
-        data: await fileToBase64(file),
-        title,
-      })),
-    );
-    fetcher.submit(
-      { path: contentPath, files: encodedFiles },
-      {
-        method: 'POST',
-        encType: 'application/json',
-        action: '/@@contents/@@upload',
-      },
-    );
+    fetcher.submit(formData, {
+      method: 'POST',
+      encType: 'multipart/form-data',
+      action: '/@@contents/@@upload',
+    });
     close();
   };
 

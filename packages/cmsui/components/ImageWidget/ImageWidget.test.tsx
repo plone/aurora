@@ -148,18 +148,48 @@ describe('ImageWidget', () => {
     expect(screen.getByText('Explicit error')).toBeInTheDocument();
   });
 
-  it('handles wrapped action payloads returned by data()', async () => {
-    class MockFileReader {
-      result = 'data:image/png;base64,ZmFrZS1pbWFnZS1ieXRlcw==';
-      error = null;
-      onload: null | (() => void) = null;
-      onerror: null | (() => void) = null;
-      readAsDataURL() {
-        this.onload?.();
-      }
-    }
-    vi.stubGlobal('FileReader', MockFileReader);
+  it('uploads the image as multipart/form-data', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: vi.fn().mockResolvedValue({ '@id': '/folder/test.png' }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
 
+    render(
+      <ImageWidget
+        onChange={vi.fn()}
+        hideObjectBrowserPicker
+        uploadPath="/folder"
+      />,
+    );
+
+    const fileInput = document.querySelector(
+      'input[type="file"]',
+    ) as HTMLInputElement;
+    const file = new File(['fake-image-bytes'], 'test.png', {
+      type: 'image/png',
+    });
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalled();
+    });
+
+    const [url, init] = fetchMock.mock.calls[0];
+    expect(url).toBe('/@createContent/folder');
+    expect(init.headers).toBeUndefined();
+    expect(init.body).toBeInstanceOf(FormData);
+
+    const body = init.body as FormData;
+    expect(body.get('path')).toBe('/folder');
+    expect(JSON.parse(body.get('data') as string)).toEqual({
+      '@type': 'Image',
+      title: 'test.png',
+    });
+    expect((body.get('image') as File).name).toBe('test.png');
+  });
+
+  it('handles wrapped action payloads returned by data()', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: vi.fn().mockResolvedValue({

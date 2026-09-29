@@ -1,0 +1,1 @@
+`createContent` and `updateContent` send a `multipart/form-data` request when a top-level field holds a `Blob` or `File`, instead of a base64 payload. This requires plone.restapi with multipart support. @mamico
