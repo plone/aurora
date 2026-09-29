@@ -13,6 +13,8 @@ import {
   Heading2Icon,
   Heading3Icon,
   Heading4Icon,
+  Heading5Icon,
+  Heading6Icon,
   LightbulbIcon,
   ListIcon,
   ListOrdered,
@@ -158,6 +160,18 @@ const createStaticGroups = (): SlashMenuGroup[] => [
         keywords: ['subtitle', 'h4'],
         label: 'Heading 4',
         value: KEYS.h4,
+      },
+      {
+        icon: <Heading5Icon />,
+        keywords: ['subtitle', 'h5'],
+        label: 'Heading 5',
+        value: KEYS.h5,
+      },
+      {
+        icon: <Heading6Icon />,
+        keywords: ['subtitle', 'h6'],
+        label: 'Heading 6',
+        value: KEYS.h6,
       },
       {
         icon: <ListIcon />,

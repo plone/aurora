@@ -31,6 +31,9 @@ async function openContextMenu(page: Page) {
 const turnInto = [
   { label: 'Heading 2', type: 'h2' },
   { label: 'Heading 3', type: 'h3' },
+  { label: 'Heading 4', type: 'h4' },
+  { label: 'Heading 5', type: 'h5' },
+  { label: 'Heading 6', type: 'h6' },
   { label: 'Blockquote', type: 'blockquote' },
 ];
 
@@ -49,6 +52,20 @@ for (const { label, type } of turnInto) {
     expect(nodeText(await getBlock(page, editorHandle, 1))).toBe(TEXT);
   });
 }
+
+test('Block context menu does not offer Heading 1, reserved for the title', async ({
+  page,
+}) => {
+  await openContextMenu(page);
+
+  await page.getByRole('menuitem', { name: 'Turn into' }).hover();
+  await expect(
+    page.getByRole('menuitem', { name: 'Heading 2', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('menuitem', { name: 'Heading 1', exact: true }),
+  ).toHaveCount(0);
+});
 
 for (const align of ['center', 'right'] as const) {
   test(`Block context menu aligns a paragraph ${align}`, async ({ page }) => {
