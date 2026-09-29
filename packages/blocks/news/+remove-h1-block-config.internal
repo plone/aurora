@@ -1,0 +1,1 @@
+Removed the `h1` entry from `plateBlocksConfig`, since H1 is reserved for the title and the editor has no H1 plugin. @sneridagh
