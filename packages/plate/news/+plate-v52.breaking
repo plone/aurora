@@ -1,1 +1,0 @@
-Upgraded Plate.js packages to 52.x. Static rendering helpers are now imported from `platejs/static`, and the unused `@ai-sdk/google` and `@ai-sdk/openai` dependencies were removed. @sneridagh

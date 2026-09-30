@@ -21,6 +21,8 @@ const cases: SlashCase[] = [
   { label: 'Heading 2', expect: (b) => expect(b.type).toBe('h2') },
   { label: 'Heading 3', expect: (b) => expect(b.type).toBe('h3') },
   { label: 'Heading 4', expect: (b) => expect(b.type).toBe('h4') },
+  { label: 'Heading 5', expect: (b) => expect(b.type).toBe('h5') },
+  { label: 'Heading 6', expect: (b) => expect(b.type).toBe('h6') },
   {
     label: 'Bulleted list',
     expect: (b) => expect(b.listStyleType).toBe('disc'),

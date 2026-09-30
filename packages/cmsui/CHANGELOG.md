@@ -8,6 +8,28 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.9 (2026-09-29)
+
+### Internal
+
+- Covered Heading 2 to Heading 6 in the block width acceptance test for headings created with markdown shortcuts. @sneridagh 
+
+## 1.0.0-alpha.8 (2026-09-29)
+
+### Feature
+
+- Added the `@@sharing` route to manage local roles: searchable user/group listing, editable role checkboxes and inherit toggle. @jmevissen [#29](https://github.com/plone/aurora/issues/29)
+
+### Bugfix
+
+- Fixed editing an existing link from the link toolbar (Browse or Edit link search) so it keeps the link text and only updates its target. @sneridagh 
+
+### Internal
+
+- Added acceptance test coverage for Maps block. @cihanandac 
+- Upgraded `platejs`, `@platejs/floating`, and `@platejs/link` to 52.x to align with `@plone/plate`. @sneridagh 
+- Upgraded `platejs`, `@platejs/floating`, and `@platejs/link` to 53.x and configured link autolink and markdown `inputRules`. Added acceptance tests for markdown shortcuts and blockquotes. @sneridagh 
+
 ## 1.0.0-alpha.7 (2026-09-21)
 
 ### Bugfix

@@ -1,1 +1,0 @@
-Upgraded Plate.js packages to 53.x and the AI SDK to v7. Blockquotes are now stored as containers of blocks, markdown shortcuts are configured as `inputRules` on each feature kit, and `@platejs/autoformat` was removed. The `//` to `÷` substitution was dropped, since it broke typing URLs. @sneridagh

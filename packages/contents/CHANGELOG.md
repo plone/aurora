@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.2 (2026-09-29)
+
+### Feature
+
+- Implemented the Rename, Change state (workflow), Tags, and Properties bulk actions in the folder contents view, replacing the previous placeholder buttons. @nils-pzr 
+
 ## 1.0.0-alpha.1 (2026-09-21)
 
 ### Internal

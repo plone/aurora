@@ -7,7 +7,6 @@ import {
   Columns3Icon,
   FileCodeIcon,
   FilmIcon,
-  Heading1Icon,
   Heading2Icon,
   Heading3Icon,
   ImageIcon,
@@ -56,11 +55,6 @@ const groups: Group[] = [
         icon: <PilcrowIcon />,
         label: 'Paragraph',
         value: KEYS.p,
-      },
-      {
-        icon: <Heading1Icon />,
-        label: 'Heading 1',
-        value: 'h1',
       },
       {
         icon: <Heading2Icon />,

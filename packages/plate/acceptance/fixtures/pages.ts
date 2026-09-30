@@ -10,11 +10,14 @@ type CreatePageOptions = {
   title?: string;
   /** Extra Plate nodes appended after the requested sections. */
   extra?: Record<string, unknown>[];
+  /** Start the value with the title block (default). */
+  withTitle?: boolean;
 };
 
 /**
  * Creates one published Document whose somersault value contains the title
- * block followed by the requested fixture sections, in order.
+ * block (unless `withTitle` is false) followed by the requested fixture
+ * sections, in order.
  *
  * The backend is reset around every test, so each test creates exactly the
  * page it needs through the REST API (a few milliseconds) instead of relying
@@ -23,7 +26,11 @@ type CreatePageOptions = {
 export async function createNativeBlocksPage(
   page: Page,
   sections: NativeBlockSection[],
-  { title = 'Native blocks', extra = [] }: CreatePageOptions = {},
+  {
+    title = 'Native blocks',
+    extra = [],
+    withTitle = true,
+  }: CreatePageOptions = {},
 ) {
   const suffix = `${Date.now()}-${Math.round(Math.random() * 1_000_000)}`;
   const pageId = `native-blocks-${suffix}`;
@@ -40,7 +47,9 @@ export async function createNativeBlocksPage(
         [SOMERSAULT_KEY]: {
           '@type': SOMERSAULT_KEY,
           value: [
-            { type: 'title', children: [{ text: title }] },
+            ...(withTitle
+              ? [{ type: 'title', children: [{ text: title }] }]
+              : []),
             ...sections.flatMap((section) => nativeBlockSections[section]),
             ...extra,
           ],

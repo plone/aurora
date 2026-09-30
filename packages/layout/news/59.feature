@@ -1,1 +1,0 @@
-Added search widget and header sub-slots. @arybakov05
