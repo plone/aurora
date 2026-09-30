@@ -1,1 +1,0 @@
-Added accessible names to icon-only editor controls: toolbar buttons now expose their tooltip as label, list and block width split buttons, the toggle button (with `aria-expanded`) and the code block language picker are labelled. @sneridagh

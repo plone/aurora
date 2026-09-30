@@ -91,6 +91,8 @@ const turnInto = [
   { label: 'Heading 2', type: 'h2' },
   { label: 'Heading 3', type: 'h3' },
   { label: 'Heading 4', type: 'h4' },
+  { label: 'Heading 5', type: 'h5' },
+  { label: 'Heading 6', type: 'h6' },
   { label: 'Quote', type: 'blockquote' },
   { label: 'Code', type: 'code_block' },
   { label: '3 columns', type: 'column_group' },

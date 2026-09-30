@@ -134,14 +134,19 @@ export default function install(config: ConfigType) {
         widths: ['narrow'],
       },
     },
-    h1: {
-      category: 'text',
-    },
     h5: {
       category: 'text',
+      blockWidth: {
+        defaultWidth: 'narrow',
+        widths: ['narrow'],
+      },
     },
     h6: {
       category: 'text',
+      blockWidth: {
+        defaultWidth: 'narrow',
+        widths: ['narrow'],
+      },
     },
     blockquote: {
       category: 'text',

@@ -1,1 +1,0 @@
-Added acceptance tests for the native blocks of Aurora's presets (slash menu, floating toolbar, block context menu, block interactions and Word, HTML and markdown paste), with programmatic test page fixtures. @sneridagh

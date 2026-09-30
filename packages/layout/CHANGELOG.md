@@ -8,6 +8,17 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.12 (2026-09-29)
+
+### Feature
+
+- Added search widget and header sub-slots. @arybakov05 [#59](https://github.com/plone/aurora/issues/59)
+- Added News Item content type view @thet [#6709](https://github.com/plone/aurora/issues/6709)
+
+### Bugfix
+
+- Fixed nested blocks, like paragraphs in a blockquote, table cell or column, being narrowed and centered in the public view instead of filling their container. @sneridagh 
+
 ## 1.0.0-alpha.11 (2026-09-21)
 
 ### Internal

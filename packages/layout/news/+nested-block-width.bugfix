@@ -1,1 +1,0 @@
-Fixed nested blocks, like paragraphs in a blockquote, table cell or column, being narrowed and centered in the public view instead of filling their container. @sneridagh

@@ -5,8 +5,10 @@ import {
   BLOCK_CONTEXT_MENU_ID,
   BlockMenuPlugin,
   BlockSelectionPlugin,
+  copySelectedBlocks,
+  pasteSelectedBlocks,
 } from '@platejs/selection/react';
-import { KEYS } from 'platejs';
+import { KEYS, type SlateEditor } from 'platejs';
 import { useEditorPlugin, usePlateState, usePluginOption } from 'platejs/react';
 
 import {
@@ -22,6 +24,55 @@ import {
 import { useIsTouchDevice } from '../../hooks/use-is-touch-device';
 
 type Value = 'askAI' | null;
+
+const SLATE_FRAGMENT = 'application/x-slate-fragment';
+
+/**
+ * The last blocks copied or cut from this menu. The async Clipboard API can't
+ * read back the Slate fragment written to the system clipboard, so Paste uses
+ * this copy while the clipboard still holds the same text, keeping Plone
+ * blocks and every node attribute intact.
+ */
+let copiedBlocks: { text: string; fragment: string } | null = null;
+
+/** Copies the selected blocks to the system clipboard and to `copiedBlocks`. */
+function copyBlocks(editor: SlateEditor) {
+  const data = new DataTransfer();
+  if (!copySelectedBlocks(editor, data)) return false;
+
+  copiedBlocks = {
+    text: data.getData('text/plain'),
+    fragment: data.getData(SLATE_FRAGMENT),
+  };
+  copySelectedBlocks(editor);
+  return true;
+}
+
+/** Pastes the clipboard contents after the selected blocks. */
+async function pasteBlocks(editor: SlateEditor) {
+  const data = new DataTransfer();
+
+  try {
+    for (const item of await navigator.clipboard.read()) {
+      for (const type of ['text/html', 'text/plain']) {
+        if (item.types.includes(type)) {
+          data.setData(type, await (await item.getType(type)).text());
+        }
+      }
+    }
+  } catch {
+    // Clipboard access denied or unsupported: fall back to `copiedBlocks`.
+  }
+
+  const text = data.getData('text/plain');
+  if (copiedBlocks && (!text || text.trim() === copiedBlocks.text.trim())) {
+    data.setData(SLATE_FRAGMENT, copiedBlocks.fragment);
+    if (!text) data.setData('text/plain', copiedBlocks.text);
+  }
+
+  if (!data.types.length) return;
+  pasteSelectedBlocks(editor, { clipboardData: data } as ClipboardEvent);
+}
 
 export function BlockContextMenu({ children }: { children: React.ReactNode }) {
   const { api, editor } = useEditorPlugin(BlockMenuPlugin);
@@ -108,8 +159,8 @@ export function BlockContextMenu({ children }: { children: React.ReactNode }) {
             setValue(null);
           }}
         >
-          <ContextMenuGroup>
-            {hasAI && (
+          {hasAI && (
+            <ContextMenuGroup>
               <ContextMenuItem
                 onClick={() => {
                   setValue('askAI');
@@ -117,17 +168,30 @@ export function BlockContextMenu({ children }: { children: React.ReactNode }) {
               >
                 Ask AI
               </ContextMenuItem>
-            )}
+            </ContextMenuGroup>
+          )}
+
+          <ContextMenuGroup>
             <ContextMenuItem
               onClick={() => {
+                if (!copyBlocks(editor)) return;
                 editor
                   .getTransforms(BlockSelectionPlugin)
                   .blockSelection.removeNodes();
                 editor.tf.focus();
               }}
             >
-              Delete
+              Cut
             </ContextMenuItem>
+            <ContextMenuItem onClick={() => copyBlocks(editor)}>
+              Copy
+            </ContextMenuItem>
+            <ContextMenuItem onClick={() => void pasteBlocks(editor)}>
+              Paste
+            </ContextMenuItem>
+          </ContextMenuGroup>
+
+          <ContextMenuGroup>
             <ContextMenuItem
               onClick={() => {
                 editor
@@ -138,6 +202,16 @@ export function BlockContextMenu({ children }: { children: React.ReactNode }) {
               Duplicate
               {/* <ContextMenuShortcut>⌘ + D</ContextMenuShortcut> */}
             </ContextMenuItem>
+            <ContextMenuItem
+              onClick={() => {
+                editor
+                  .getTransforms(BlockSelectionPlugin)
+                  .blockSelection.removeNodes();
+                editor.tf.focus();
+              }}
+            >
+              Delete
+            </ContextMenuItem>
             <ContextMenuSub>
               <ContextMenuSubTrigger>Turn into</ContextMenuSubTrigger>
               <ContextMenuSubContent className="w-48">
@@ -145,14 +219,20 @@ export function BlockContextMenu({ children }: { children: React.ReactNode }) {
                   Paragraph
                 </ContextMenuItem>
 
-                <ContextMenuItem onClick={() => handleTurnInto(KEYS.h1)}>
-                  Heading 1
-                </ContextMenuItem>
                 <ContextMenuItem onClick={() => handleTurnInto(KEYS.h2)}>
                   Heading 2
                 </ContextMenuItem>
                 <ContextMenuItem onClick={() => handleTurnInto(KEYS.h3)}>
                   Heading 3
+                </ContextMenuItem>
+                <ContextMenuItem onClick={() => handleTurnInto(KEYS.h4)}>
+                  Heading 4
+                </ContextMenuItem>
+                <ContextMenuItem onClick={() => handleTurnInto(KEYS.h5)}>
+                  Heading 5
+                </ContextMenuItem>
+                <ContextMenuItem onClick={() => handleTurnInto(KEYS.h6)}>
+                  Heading 6
                 </ContextMenuItem>
                 <ContextMenuItem
                   onClick={() => handleTurnInto(KEYS.blockquote)}

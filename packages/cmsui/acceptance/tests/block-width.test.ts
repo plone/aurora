@@ -155,39 +155,41 @@ test('Somersault edit mode adds default block width to code blocks created with 
     );
 });
 
-test('Somersault edit mode adds default block width to headings created with autoformat', async ({
-  page,
-}) => {
-  await setupSomersaultEditPage(page, {
-    pageId: 'width-heading-autoformat-page',
-    contentTitle: 'Block width heading autoformat page',
-    paragraph: {
-      type: 'p',
-      children: [{ text: '' }],
-    },
+for (const level of [2, 3, 4, 5, 6]) {
+  test(`Somersault edit mode adds default block width to h${level} headings created with autoformat`, async ({
+    page,
+  }) => {
+    await setupSomersaultEditPage(page, {
+      pageId: `width-heading-autoformat-h${level}-page`,
+      contentTitle: 'Block width heading autoformat page',
+      paragraph: {
+        type: 'p',
+        children: [{ text: '' }],
+      },
+    });
+
+    const editorHandle = await getEditorHandle(page);
+    await clickAtPath(page, editorHandle, [1]);
+    await page.keyboard.type(`${'#'.repeat(level)} Heading from autoformat`);
+
+    await expect
+      .poll(async () => {
+        const headingHandle = await getNodeByPath(page, editorHandle, [1]);
+        const heading = (await headingHandle.jsonValue()) as Record<
+          string,
+          unknown
+        >;
+
+        return JSON.stringify({
+          type: heading.type,
+          blockWidth: heading.blockWidth,
+        });
+      })
+      .toBe(
+        JSON.stringify({
+          type: `h${level}`,
+          blockWidth: 'narrow',
+        }),
+      );
   });
-
-  const editorHandle = await getEditorHandle(page);
-  await clickAtPath(page, editorHandle, [1]);
-  await page.keyboard.type('## Heading from autoformat');
-
-  await expect
-    .poll(async () => {
-      const headingHandle = await getNodeByPath(page, editorHandle, [1]);
-      const heading = (await headingHandle.jsonValue()) as Record<
-        string,
-        unknown
-      >;
-
-      return JSON.stringify({
-        type: heading.type,
-        blockWidth: heading.blockWidth,
-      });
-    })
-    .toBe(
-      JSON.stringify({
-        type: 'h2',
-        blockWidth: 'narrow',
-      }),
-    );
-});
+}

@@ -22,7 +22,7 @@ jobs:
           - '@plone/registry'
         node-version: [24.x]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Node.js environment
         uses: ./.github/actions/node_env_setup
         with:
@@ -39,13 +39,13 @@ jobs:
       matrix:
         node-version: [24.x]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Node.js environment
         uses: ./.github/actions/acceptance_tests_node_env_setup
         with:
           node-version: ${{ matrix.node-version }}
 
-      - uses: JarvusInnovations/background-action@v1
+      - uses: JarvusInnovations/background-action@v2
         name: Start Servers
         with:
           run: |
@@ -74,7 +74,7 @@ jobs:
       matrix:
         node-version: [24.x]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Node.js environment
         uses: ./.github/actions/node_env_setup
         with:

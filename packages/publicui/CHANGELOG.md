@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.7 (2026-09-29)
+
+### Feature
+
+- Added a sharing link to the toolbar. @jmevissen [#29](https://github.com/plone/volto/issues/29)
+
 ## 1.0.0-alpha.6 (2026-09-21)
 
 ### Internal
