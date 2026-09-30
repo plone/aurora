@@ -1,0 +1,1 @@
+Fixed dragging a Plone block (e.g. an image) in the editor deleting it instead of moving it: the void block element now renders its children, so Slate can resolve the spacer text when it copies the block into the drag data. @sneridagh

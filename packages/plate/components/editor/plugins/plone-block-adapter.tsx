@@ -171,6 +171,9 @@ function PloneBlockAdapterContent(
           <View data={blockData} />
         ) : null}
       </BlockInnerContainer>
+      {/* Void elements must render their children: Slate needs the spacer
+          text in the DOM to select, copy and drag the block. */}
+      {_children}
     </PlateElement>
   );
 }
