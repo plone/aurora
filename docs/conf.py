@@ -16,9 +16,7 @@ from datetime import datetime
 
 import os
 import json
-import re
-import urllib.request as req
-import urllib
+from latest_gh_release import register_latest_gh_repease_in_sphinx_setup
 
 # -- Project information -----------------------------------------------------
 
@@ -301,51 +299,6 @@ latex_documents = [
 # the title page.
 latex_logo = "_static/logo_2x.png"
 
-# An extension that allows replacements for code blocks that
-# are not supported in `rst_epilog` or other substitutions.
-# https://stackoverflow.com/a/56328457/2214933
-def source_replace(app, docname, source):
-    result = source[0]
-    for key, value in app.config.source_replacements.items():
-        # Skip MyST substitutions, such as {{KEY}}, which contain the key {KEY}.
-        pattern = rf"(?<!\{{){re.escape(key)}(?!\}})"
-        result = re.sub(pattern, lambda match, value=value: value, result)
-    source[0] = result
-
-def include_source_replace(app, relative_path, parent_docname, content):
-    return source_replace(app, parent_docname, content)
-
-# Dict of replacements. Also used by the `repos` feature below.
-source_replacements = {}
-
-# These are the GH repos that have their latest release version accessible
-# in the docs through a special syntax: {{version nvm-sh/nvm}}. The version
-# is found only at build time.
-repos = ["nvm-sh/nvm"]
-
-def latest_release_for_github_repo(repo):
-    latest_release_url = "https://api.github.com/repos/" + repo + "/releases/latest"
-    try:
-        with req.urlopen(latest_release_url) as response:
-            commit = json.load(response)
-            return commit["name"]
-    except urllib.error.HTTPError as e:
-        # Handles HTTP errors (e.g., 404, 500)
-        print(f"HTTP Error: {e.code} - {e.reason}")
-    except urllib.error.URLError as e:
-        # Handles URL errors (e.g., DNS failure, refused connection)
-        print(f"URL Error: {e.reason}")
-    except TimeoutError:
-        # Handles timeout specifically
-        print("Request timed out.")
-    except Exception as e:
-        # Catch-all for unexpected exceptions
-        print(f"Unexpected error: {e}")
-
-for repo in repos:
-    source_replacements["{{version " + repo + "}}"] =\
-        latest_release_for_github_repo(repo)
-
 # -- sphinx-reredirects configuration ----------------------------------
 # https://documatt.com/sphinx-reredirects/usage.html
 redirects = {
@@ -353,9 +306,7 @@ redirects = {
 }
 
 def setup(app):
-    app.add_config_value("source_replacements", {}, True)
-    app.connect("source-read", source_replace)
-    app.connect("include-read", include_source_replace)
+    register_latest_gh_repease_in_sphinx_setup(app)
 
     app.add_config_value("context", "plone-aurora", "env")
     app.tags.add("plone-aurora")
