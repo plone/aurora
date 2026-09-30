@@ -1,0 +1,1 @@
+Fixed pasted or dropped images vanishing from the editor after the upload: in the `somersault-editor` preset, pasting or dropping image files now uploads them and inserts Plone image blocks, instead of image nodes that no editor kit renders. @sneridagh
