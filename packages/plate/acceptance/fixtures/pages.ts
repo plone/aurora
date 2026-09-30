@@ -72,3 +72,30 @@ export async function openInView(page: Page, pageId: string) {
   await page.goto(`/${pageId}`);
   await page.locator('[data-slate-editor]').first().waitFor();
 }
+
+/** Saves the open edit form and waits for the backend to store it. */
+export async function savePage(page: Page) {
+  const saved = page.waitForResponse(
+    (response) =>
+      ['PATCH', 'POST'].includes(response.request().method()) && response.ok(),
+    { timeout: 15_000 },
+  );
+  await page.getByRole('button', { name: 'Save' }).click();
+  await saved;
+}
+
+/** Reads the somersault value of a page straight from the REST API. */
+export async function getStoredValue(page: Page, pageId: string) {
+  const hostname = process.env.BACKEND_HOST || '127.0.0.1';
+  const siteId = process.env.SITE_ID || 'plone';
+  const apiURL = process.env.API_PATH || `http://${hostname}:55001/${siteId}`;
+  const response = await page.request.get(`${apiURL}/${pageId}`, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: `Basic ${Buffer.from('admin:secret').toString('base64')}`,
+    },
+  });
+  const content = await response.json();
+
+  return content.blocks[SOMERSAULT_KEY].value as Record<string, unknown>[];
+}
