@@ -1,5 +1,6 @@
 import type { AnyPluginConfig, SlateEditor, TElement, Value } from 'platejs';
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
+import { isDeepEqual } from '@plone/helpers';
 import { BlockSelectionPlugin } from '@platejs/selection/react';
 import {
   Plate,
@@ -40,6 +41,18 @@ export function PlateEditor(props: {
 
   (editor as any).blocksApi = props.blocksApi;
   (editor as any).intl = props.intl ?? props.blocksApi?.intl;
+
+  // Normalizing the loaded value (block width defaults, trailing paragraph...)
+  // happens before Plate mounts and does not trigger `onChange`. Report it, so
+  // saving the form stores what the editor shows instead of the raw value; an
+  // unedited page would otherwise gain these changes on its next edit.
+  useEffect(() => {
+    if (editor && props.value && !isDeepEqual(editor.children, props.value)) {
+      props.onChange?.({ editor, value: editor.children as TElement[] });
+    }
+    // Only for the value the editor was created with.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editor]);
 
   return (
     <Plate

@@ -2,6 +2,7 @@ import {
   applyStyleFieldDefaultsInData,
   getStyleFieldsFromBlockSchema,
   getStyleFieldDefinitionsFromRegistry,
+  isDeepEqual,
   PLONE_BLOCK_TYPE,
   resolveStyleFields,
   setStyleFieldValue,
@@ -11,6 +12,7 @@ import type { BlockConfigBase, BlocksFormData } from '@plone/types';
 import {
   createSlatePlugin,
   ElementApi,
+  PathApi,
   type SetNodesOptions,
   type SlateEditor,
   type TElement,
@@ -109,6 +111,32 @@ const withInsertedStyleFieldDefaults = (nodes: unknown): unknown => {
   }
 
   return applyStyleFieldDefaultsToElement(nodes);
+};
+
+const normalizeTopLevelStyleFields = (
+  editor: SlateEditor,
+  element: TElement,
+  path: number[],
+) => {
+  if (path.length !== 1 || element.type !== PLONE_BLOCK_TYPE) return false;
+
+  const nextElement = applyStyleFieldDefaultsToElement(element) as Record<
+    string,
+    unknown
+  >;
+  const patch = Object.fromEntries(
+    Object.entries(nextElement).filter(
+      ([key, value]) =>
+        key !== 'children' &&
+        !isDeepEqual((element as Record<string, unknown>)[key], value),
+    ),
+  );
+
+  if (!Object.keys(patch).length) return false;
+
+  editor.tf.setNodes(patch, { at: path });
+
+  return true;
 };
 
 const applyStyleFieldDefaultsInValue = (value: unknown[]) => {
@@ -271,16 +299,30 @@ export const BaseStyleFieldsPlugin = createSlatePlugin({
   },
   extendEditor: ({ editor }) => {
     const createBlock = editor.api.create.block.bind(editor.api.create);
-    const insertNodes = editor.tf.insertNodes.bind(editor.tf);
+    const normalizeNode =
+      typeof editor.normalizeNode === 'function'
+        ? editor.normalizeNode.bind(editor)
+        : () => undefined;
 
     editor.api.create.block = ((...args: any[]) =>
       withInsertedStyleFieldDefaults(createBlock(...args))) as any;
 
-    editor.tf.insertNodes = ((nodes: any, options?: any) =>
-      insertNodes(
-        withInsertedStyleFieldDefaults(nodes) as any,
-        options,
-      )) as any;
+    // Top-level Plone blocks always carry their style field defaults, however
+    // they got there, so the saved value is exactly what
+    // `normalizeInitialValue` produces on load.
+    editor.normalizeNode = ((entry: any) => {
+      const [node, path] = entry;
+
+      if (
+        ElementApi.isElement(node) &&
+        PathApi.isPath(path) &&
+        normalizeTopLevelStyleFields(editor, node, path)
+      ) {
+        return;
+      }
+
+      normalizeNode(entry);
+    }) as any;
 
     return editor;
   },
