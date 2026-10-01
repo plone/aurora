@@ -33,7 +33,6 @@ import { SuggestionKit } from './plugins/suggestion-kit';
 import { TableKit } from './plugins/table-kit';
 import { TocKit } from './plugins/toc-kit';
 import { ToggleKit } from './plugins/toggle-kit';
-import { SplitHotkeyPlugin } from './plugins/split-hotkey';
 
 export const BlockEditorKit = [
   // Normalizes legacy Slate fragments pasted from a legacy volto-slate editor.
@@ -74,7 +73,6 @@ export const BlockEditorKit = [
   ...CursorOverlayKit,
   // ...DndKit,
   ...ExitBreakKit,
-  SplitHotkeyPlugin,
   TrailingBlockPlugin,
 
   // Parsers

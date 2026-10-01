@@ -1,0 +1,1 @@
+Added an `I18nPlugin` and `t` / `language` props to `PlateEditor`, following react-i18next, so hosts inject their own i18n machinery, and translated the slash menu labels. Plate code reads them with the `useTranslation()` hook or `getTranslation(editor)`. The `intl` prop is deprecated. @sneridagh
