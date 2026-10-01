@@ -8,6 +8,16 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.21 (2026-10-01)
+
+### Breaking
+
+- Replaced `SlashMenuContext.translate` with `t`, following the i18next `t(key, { defaultValue, ...values })` signature, removed `getIntl`, and removed the unused `SplitHotkeyPlugin`, `split-utils` and the `blocksApi` prop of `PlateEditor`. @sneridagh 
+
+### Feature
+
+- Added an `I18nPlugin` and `t` / `language` props to `PlateEditor`, following react-i18next, so hosts inject their own i18n machinery, and translated the slash menu labels. Plate code reads them with the `useTranslation()` hook or `getTranslation(editor)`. The `intl` prop is deprecated. @sneridagh 
+
 ## 1.0.0-alpha.20 (2026-09-30)
 
 ### Feature

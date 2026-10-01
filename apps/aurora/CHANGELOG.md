@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.15 (2026-10-01)
+
+### Internal
+
+- Update to the latest @plone/plate and @plone/cmsui @sneridagh 
+
 ## 1.0.0-alpha.14 (2026-09-30)
 
 ### Internal

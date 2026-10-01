@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.10 (2026-10-01)
+
+### Feature
+
+- Passed the `react-i18next` `t` and current language to the Plate block editor for its translations. @sneridagh 
+
 ## 1.0.0-alpha.9 (2026-09-29)
 
 ### Internal
