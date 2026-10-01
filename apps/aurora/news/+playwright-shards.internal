@@ -1,0 +1,1 @@
+Split the Playwright acceptance tests in CI across 3 shards, and merge their reports into a single HTML report. @sneridagh
