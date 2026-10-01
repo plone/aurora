@@ -1,0 +1,1 @@
+Sped up CI: superseded runs on branches and pull requests are cancelled, the format and style checks skip building the packages, and the `@plone/client` unit tests no longer install Playwright. @sneridagh

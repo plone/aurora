@@ -14,6 +14,12 @@ on:
       - 'requirements-docs.txt'
       - '.vale.ini'
 
+# Cancel the runs of a branch or pull request that a newer push supersedes,
+# except on main, where every commit runs to completion.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   docs:
     name: Documentation
