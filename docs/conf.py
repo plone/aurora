@@ -4,17 +4,16 @@
 
 # -- Path setup --------------------------------------------------------------
 
-from datetime import datetime
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+import json
 import os
 import sys
-sys.path.insert(0, os.path.abspath("."))
+from datetime import datetime, timezone
 
-import json
+sys.path.insert(0, os.path.abspath("."))
 
 # -- Project information -----------------------------------------------------
 
@@ -22,7 +21,7 @@ project = "Plone Aurora Documentation"
 copyright = "Plone Aurora Foundation"
 author = "Plone Community"
 trademark_name = "Plone"
-now = datetime.now()
+now = datetime.now(timezone.utc)
 year = str(now.year)
 
 # The version info for the project you're documenting, acts as replacement for
@@ -64,7 +63,7 @@ extensions = [
     "sphinxcontrib.youtube",
     "sphinxext.opengraph",
     "sphinx_reredirects",
-    "latest_gh_version_substitution"
+    "latest_gh_version_substitution",
 ]
 
 
@@ -146,8 +145,8 @@ html_theme_options = {
             "attributes": {
                 "target": "_blank",
                 "rel": "noopener me",
-                "class": "nav-link custom-fancy-css"
-            }
+                "class": "nav-link custom-fancy-css",
+            },
         },
         {
             "name": "Mastodon",
@@ -157,8 +156,8 @@ html_theme_options = {
             "attributes": {
                 "target": "_blank",
                 "rel": "noopener me",
-                "class": "nav-link custom-fancy-css"
-            }
+                "class": "nav-link custom-fancy-css",
+            },
         },
         {
             "name": "YouTube",
@@ -168,8 +167,8 @@ html_theme_options = {
             "attributes": {
                 "target": "_blank",
                 "rel": "noopener me",
-                "class": "nav-link custom-fancy-css"
-            }
+                "class": "nav-link custom-fancy-css",
+            },
         },
         {
             "name": "X (formerly Twitter)",
@@ -179,8 +178,8 @@ html_theme_options = {
             "attributes": {
                 "target": "_blank",
                 "rel": "noopener me",
-                "class": "nav-link custom-fancy-css"
-            }
+                "class": "nav-link custom-fancy-css",
+            },
         },
     ],
     "logo": {
@@ -227,8 +226,8 @@ html_static_path = [
 # For more information see:
 # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
 myst_enable_extensions = [
-    "attrs_block", # Support parsing of block attributes.
-    "attrs_inline", # Support parsing of inline attributes.
+    "attrs_block",  # Support parsing of block attributes.
+    "attrs_inline",  # Support parsing of inline attributes.
     "colon_fence",  # You can also use ::: delimiters to denote code fences, instead of ```.
     "deflist",  # Support definition lists. https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#definition-lists
     "html_image",  # For inline images. See https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#html-images
@@ -303,6 +302,7 @@ latex_logo = "_static/logo_2x.png"
 redirects = {
     "reference/storybook": "https://plone-storybook.readthedocs.io/",
 }
+
 
 def setup(app):
     app.add_config_value("context", "plone-aurora", "env")

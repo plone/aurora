@@ -5,10 +5,11 @@
 
 import json
 import re
-import urllib.request as req
 import urllib
+import urllib.request as req
 
 gh_version_cache = {}
+
 
 def sub_replace_func(match):
     owner = match.group("owner")
@@ -18,15 +19,21 @@ def sub_replace_func(match):
         gh_version_cache[name] = latest_release_for_github_repo(name)
     return gh_version_cache[name]
 
-sub_pattern = r"(?<!\{\{)\{\{(\s*)version(\s+)(?P<owner>\S+)\/(?P<repo>\S+)(\s*)\}\}(?!\}\})"
+
+sub_pattern = (
+    r"(?<!\{\{)\{\{(\s*)version(\s+)(?P<owner>\S+)\/(?P<repo>\S+)(\s*)\}\}(?!\}\})"
+)
+
 
 def latest_gh_replace(app, docname, source):
     result = source[0]
     result = re.sub(sub_pattern, sub_replace_func, result)
     source[0] = result
 
+
 def latest_gh_include_replace(app, relative_path, parent_docname, content):
     return latest_gh_replace(app, parent_docname, content)
+
 
 def latest_release_for_github_repo(repo):
     latest_release_url = "https://api.github.com/repos/" + repo + "/releases/latest"
@@ -43,9 +50,7 @@ def latest_release_for_github_repo(repo):
     except TimeoutError:
         # Handles timeout specifically
         print("Request timed out.")
-    except Exception as e:
-        # Catch-all for unexpected exceptions
-        print(f"Unexpected error: {e}")
+
 
 def setup(app):
     app.connect("source-read", latest_gh_replace)
