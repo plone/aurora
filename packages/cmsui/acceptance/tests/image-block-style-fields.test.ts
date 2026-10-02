@@ -98,30 +98,18 @@ async function readImageBlock(
 }
 
 // Rendered width of the image relative to its column (the inner container).
-// Retries while the block's nodes are detached: right after a page load, React
-// can still replace the server-rendered nodes, which then measure 0/0.
 async function widthRatio(page: Page) {
-  let ratio = NaN;
-  await expect
-    .poll(async () => {
-      ratio = await page
-        .locator('.image-block')
-        .first()
-        .evaluate((el) => {
-          if (!el.isConnected) return NaN;
-          const inner = el.closest(
-            '.block-inner-container',
-          ) as HTMLElement | null;
-          const container = inner ?? (el.parentElement as HTMLElement);
-          return (
-            el.getBoundingClientRect().width /
-            container.getBoundingClientRect().width
-          );
-        });
-      return Number.isFinite(ratio);
-    })
-    .toBe(true);
-  return ratio;
+  return page
+    .locator('.image-block')
+    .first()
+    .evaluate((el) => {
+      const inner = el.closest('.block-inner-container') as HTMLElement | null;
+      const container = inner ?? (el.parentElement as HTMLElement);
+      return (
+        el.getBoundingClientRect().width /
+        container.getBoundingClientRect().width
+      );
+    });
 }
 
 function radio(page: Page, name: string) {
