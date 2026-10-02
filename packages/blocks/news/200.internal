@@ -1,0 +1,1 @@
+Added Stylelint rules for `styles/content.css`: no `@layer`, and no `:root`, `html`, `body` or bare element selectors. @sneridagh
