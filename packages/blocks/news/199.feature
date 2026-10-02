@@ -1,0 +1,1 @@
+Moved the image block styles from a CSS Module to `styles/content.css`, so they load in both the Public UI and the CMSUI inside the `plone-content` cascade layer and themes can override them. The link around a linked image now has the `block-image__link` class. @sneridagh

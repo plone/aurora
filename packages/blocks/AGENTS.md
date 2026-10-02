@@ -48,3 +48,7 @@ Each block lives in its own folder at the package root (e.g., `Video/`, `Image/`
 pnpm --filter @plone/blocks test --run
 pnpm --filter @plone/blocks check:ts
 ```
+
+Block content styles live in `styles/content.css`, which the app loads in both the Public UI and the CMSUI inside the `plone-content` cascade layer. Follow the authoring rules in `docs/conceptual-guides/add-on-styles-loader.md`: no CSS Modules, no `@layer`, and selectors inside `:where()`.
+
+Acceptance tests live under `acceptance/tests/` (run with `pnpm acceptance-test`) and visual regression tests under `acceptance/visual/` (run with `pnpm visual-test`). Visual baselines are only generated in CI, through the "Update VRT Screenshots" workflow; never commit locally generated screenshots.

@@ -69,6 +69,10 @@ const BlocksEditor = () => {
 
   return (
     <PlateEditor
+      // The content root, as in the Public UI: themes declare their content
+      // tokens on `.content-area`, so they apply to the blocks in the editor
+      // too without touching the CMSUI chrome.
+      className="content-area"
       editorConfig={editorConfig}
       t={t}
       language={i18n.language}

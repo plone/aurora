@@ -130,6 +130,13 @@ function PloneBlockAdapterContent(
   const className = [
     restProps.className,
     selected && 'rounded-sm outline-2 outline-quanta-sapphire',
+    // A floated image collapses its wrapper, so its selection outline would
+    // render as a stray full-width line.
+    selected &&
+      `
+        [&.block-image[data-style-align=left]]:outline-none
+        [&.block-image[data-style-align=right]]:outline-none
+      `,
   ]
     .filter(Boolean)
     .join(' ');
