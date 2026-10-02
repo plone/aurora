@@ -46,6 +46,9 @@ jobs:
       - name: Check for broken links
         run: make docs-linkcheckbroken
 
+      - name: Print Python module paths
+        run: python3 -c "import sys;print(sys.path)"
+        
       - name: Build HTML documentation
         run: make docs-html
 
