@@ -308,6 +308,3 @@ redirects = {
 def setup(app):
     app.add_config_value("context", "plone-aurora", "env")
     app.tags.add("plone-aurora")
-    return {
-        version: "1.0.0",
-    }

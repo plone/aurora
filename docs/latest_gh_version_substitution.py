@@ -50,3 +50,6 @@ def latest_release_for_github_repo(repo):
 def setup(app):
     app.connect("source-read", latest_gh_replace)
     app.connect("include-read", latest_gh_include_replace)
+    return {
+        "version": "1.0.0",
+    }
