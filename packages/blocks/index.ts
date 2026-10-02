@@ -183,9 +183,6 @@ export default function install(config: ConfigType) {
     column: {
       category: 'layout',
     },
-    img: {
-      category: 'media',
-    },
     video: {
       category: 'media',
     },
