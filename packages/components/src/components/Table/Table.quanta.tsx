@@ -202,7 +202,15 @@ export function Row<T extends object>({
     <AriaRow id={id} {...otherProps} className={rowStyles}>
       {allowsDragging && (
         <Cell>
-          <Button slot="drag">
+          {/* Reset the basic button styles explicitly instead of relying on a
+              global reset, which sits below component styles. */}
+          <Button
+            slot="drag"
+            className={`
+              rounded-none border-0 bg-transparent p-0 text-inherit
+              [font:inherit]
+            `}
+          >
             <DraggableIcon />
           </Button>
         </Cell>
