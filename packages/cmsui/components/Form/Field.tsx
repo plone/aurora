@@ -12,6 +12,7 @@ import { useFieldFocusedAtom } from '@plone/helpers';
 import { useFieldContext } from './Form';
 import { type PrimitiveAtom } from 'jotai';
 import { type DeepKeys } from '@tanstack/react-form';
+import { useTranslation } from 'react-i18next';
 
 interface BaseFieldProps {
   id?: keyof WidgetsConfigById;
@@ -75,9 +76,7 @@ const getWidgetByFactory = (
 const getWidgetByName = (
   widget: FieldProps['widget'],
 ): React.ComponentType<any> | null =>
-  typeof widget === 'string'
-    ? (config.getWidget(widget) ?? getWidgetDefault())
-    : null;
+  typeof widget === 'string' ? (config.getWidget(widget) ?? null) : null;
 
 /**
  * Get widget by tagged values
@@ -162,9 +161,11 @@ const getWidgetByType = (
 const renderFieldWidget = ({
   fieldProps,
   onFieldChange,
+  defaultPlaceholder,
 }: {
   fieldProps: FieldProps;
   onFieldChange: (value: any) => void;
+  defaultPlaceholder: string;
 }) => {
   const Widget =
     getWidgetByFieldId(
@@ -179,12 +180,51 @@ const renderFieldWidget = ({
     getWidgetByType(fieldProps.type) ||
     getWidgetDefault();
 
-  // Adding the widget props from tagged values (if any)
+  const widgetOptions = fieldProps.widgetOptions;
+  const title = fieldProps.title;
+  const error = fieldProps.error;
+  const errorMessage = (fieldProps as { errorMessage?: unknown }).errorMessage;
+
+  const resolvedErrorMessage =
+    typeof errorMessage === 'string'
+      ? errorMessage
+      : Array.isArray(error)
+        ? error.filter(Boolean).join(', ')
+        : undefined;
+
+  // Forward only widget-safe props. JSON Schema metadata (`type`, `properties`,
+  // schema `default`, nested objects, etc.) must not reach RAC widgets / the DOM.
+  // Block widgets still need config like `actions` (Align/Size/Width) and
+  // object-browser options (`mode`, `selectedItemAttrs`, …).
+  const extraFieldProps = fieldProps as FieldProps & Record<string, unknown>;
+
   const widgetProps = {
-    ...fieldProps,
-    label: fieldProps.title,
-    placeholder: fieldProps.placeholder || 'Type something...',
-    ...getWidgetPropsFromTaggedValues(fieldProps.widgetOptions),
+    name: fieldProps.name,
+    id: fieldProps.id,
+    className: fieldProps.className,
+    label: title ?? fieldProps.label,
+    description:
+      typeof extraFieldProps.description === 'string'
+        ? extraFieldProps.description
+        : undefined,
+    placeholder: fieldProps.placeholder || defaultPlaceholder,
+    value: fieldProps.value,
+    defaultValue: fieldProps.defaultValue,
+    required: fieldProps.required,
+    isRequired: fieldProps.required,
+    errorMessage: resolvedErrorMessage,
+    widgetOptions,
+    choices: fieldProps.choices,
+    factory: fieldProps.factory,
+    widget: fieldProps.widget,
+    mode: fieldProps.mode,
+    actions: extraFieldProps.actions,
+    actionsInfoMap: extraFieldProps.actionsInfoMap,
+    selectedItemAttrs: extraFieldProps.selectedItemAttrs,
+    allowExternals: extraFieldProps.allowExternals,
+    isDisabled: extraFieldProps.isDisabled,
+    orientation: extraFieldProps.orientation,
+    ...getWidgetPropsFromTaggedValues(widgetOptions),
   };
 
   return fieldProps.mode !== MODE_HIDDEN ? (
@@ -199,6 +239,7 @@ const renderFieldWidget = ({
 };
 
 const AtomField = (props: AtomFieldProps) => {
+  const { t } = useTranslation();
   const field = useFieldContext();
   const value = field.state.value;
 
@@ -217,6 +258,7 @@ const AtomField = (props: AtomFieldProps) => {
 
   return renderFieldWidget({
     fieldProps: props,
+    defaultPlaceholder: t('cmsui.form.typeSomething'),
     onFieldChange: (value: any) => {
       setField(value);
       return field.handleChange(value);
@@ -225,10 +267,12 @@ const AtomField = (props: AtomFieldProps) => {
 };
 
 const FormField = (props: FormFieldProps) => {
+  const { t } = useTranslation();
   const field = useFieldContext();
 
   return renderFieldWidget({
     fieldProps: props,
+    defaultPlaceholder: t('cmsui.form.typeSomething'),
     onFieldChange: (value: any) => field.handleChange(value),
   });
 };

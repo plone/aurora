@@ -7,14 +7,14 @@ import {
 } from '../Field/Field';
 import { tv } from 'tailwind-variants';
 import { focusRing } from '../utils';
-import { useLoaderData } from 'react-router';
-import type { loader as editLoader } from '../../routes/edit';
+import { useLoaderData, useLocation } from 'react-router';
 import { ObjectBrowserProvider } from './ObjectBrowserContext';
 import type { UseObjectBrowserConfig } from './ObjectBrowserContext';
 import { ObjectBrowserTags } from './ObjectBrowserTags';
 import { ObjectBrowserTrigger } from './ObjectBrowserTrigger';
 import { ObjectBrowserModal } from './ObjectBrowserModal';
 import { useFocusRing, useId } from 'react-aria';
+import { getContentPathFromCmsUrl } from '../../helpers/cmsPath';
 
 type BaseFormFieldProps = Pick<
   QuantaTextFieldProps,
@@ -73,10 +73,20 @@ export function ObjectBrowserWidgetComponent(props: ObjectBrowserWidgetProps) {
 }
 
 export function ObjectBrowserWidget(props: ObjectBrowserWidgetProps) {
-  const { content } = useLoaderData<typeof editLoader>();
+  const location = useLocation();
+  const loaderData = useLoaderData() as {
+    content?: { '@id'?: string };
+  } | null;
   const { label, description, errorMessage, ...rest } = props;
   return (
-    <ObjectBrowserProvider config={{ ...rest, initialPath: content?.['@id'] }}>
+    <ObjectBrowserProvider
+      config={{
+        ...rest,
+        initialPath:
+          loaderData?.content?.['@id'] ||
+          getContentPathFromCmsUrl(location.pathname),
+      }}
+    >
       <ObjectBrowserWidgetComponent {...{ label, description, errorMessage }} />
     </ObjectBrowserProvider>
   );

@@ -4,6 +4,9 @@
     "edit": "Bearbeiten",
     "save": "Speichern",
     "cancel": "Abbrechen",
+    "form": {
+      "typeSomething": "Etwas eingeben..."
+    },
     "controlpanel": "Konfiguration",
     "objectbrowserwidget": {
       "openDialog": "Inhalt auswählen",

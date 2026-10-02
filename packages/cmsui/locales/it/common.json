@@ -4,6 +4,9 @@
     "edit": "Modifica",
     "save": "Salva",
     "cancel": "Annulla",
+    "form": {
+      "typeSomething": "Digita qualcosa..."
+    },
     "recurrence": {
       "editRecurrence": "Cambia la ricorrenza",
       "repeat": "Ricorrenza",
