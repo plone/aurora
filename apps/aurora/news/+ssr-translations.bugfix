@@ -1,0 +1,1 @@
+Fixed the server not loading the translations, which made it render raw message keys and React replace the whole server-rendered page on hydration. @sneridagh
