@@ -35,3 +35,5 @@ This file applies only to `packages/publicui` and its subdirectories.
 pnpm --filter @plone/publicui test --run
 pnpm --filter @plone/publicui check:ts
 ```
+
+Visual regression tests for the site frame and the toolbar live under `acceptance/visual/` and run with `pnpm visual-test`. Baselines are only generated in CI, through the "Update VRT Screenshots" workflow; never commit locally generated screenshots.

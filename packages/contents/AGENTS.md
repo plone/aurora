@@ -49,6 +49,7 @@ This file applies only to `packages/contents` and its subdirectories.
   - `pnpm exec playwright test packages/contents/acceptance/tests --config=playwright.config.ts --project=chromium`
 - For a single spec, run:
   - `pnpm exec playwright test packages/contents/acceptance/tests/contents.test.ts --config=playwright.config.ts --project=chromium`
+- Visual regression tests live under `packages/contents/acceptance/visual/` and run with `pnpm visual-test`. Baselines are only generated in CI, through the "Update VRT Screenshots" workflow; never commit locally generated screenshots.
 - At the moment, expect validation gaps:
   - the package now has acceptance smoke tests, but still lacks package-local unit/integration tests
   - `check-ts` may surface workspace-wide issues outside this package, so separate package-local regressions from existing repo noise

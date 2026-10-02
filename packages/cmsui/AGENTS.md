@@ -36,6 +36,8 @@ pnpm --filter @plone/cmsui test --run
 pnpm --filter @plone/cmsui check:ts
 ```
 
+Visual regression tests for the CMS chrome (login, add and edit forms, block settings sidebar, sharing, control panels) live under `acceptance/visual/` and run with `pnpm visual-test`. They are the safety net for changes to CSS cascade layers and the Tailwind reset. Baselines are only generated in CI, through the "Update VRT Screenshots" workflow; never commit locally generated screenshots.
+
 For Storybook:
 
 ```sh

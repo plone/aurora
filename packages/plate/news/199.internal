@@ -1,0 +1,1 @@
+Moved the `settle` visual test helper to the shared Playwright tooling. @sneridagh
