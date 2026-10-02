@@ -16,7 +16,6 @@ from datetime import datetime
 
 import os
 import json
-from latest_gh_release import register_latest_gh_repease_in_sphinx_setup
 
 # -- Project information -----------------------------------------------------
 
@@ -66,6 +65,7 @@ extensions = [
     "sphinxcontrib.youtube",
     "sphinxext.opengraph",
     "sphinx_reredirects",
+    "latest_gh_version_substitution"
 ]
 
 
@@ -306,7 +306,8 @@ redirects = {
 }
 
 def setup(app):
-    register_latest_gh_repease_in_sphinx_setup(app)
-
     app.add_config_value("context", "plone-aurora", "env")
     app.tags.add("plone-aurora")
+    return {
+        version: "1.0.0",
+    }
