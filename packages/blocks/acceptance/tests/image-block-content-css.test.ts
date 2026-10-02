@@ -48,13 +48,16 @@ async function createImagePage(page: Page) {
           '@type': '__somersault__',
           value: [
             { type: 'title', children: [{ text: 'Image content CSS' }] },
-            imageNode({ align: 'left', size: 'm' }),
-            { type: 'p', children: [{ text: TEXT }] },
+            // The floated image goes last: a centered image right after a
+            // float is pushed below it, by an amount that depends on how
+            // tall the text next to the float is, which varies with fonts.
             imageNode({
               align: 'center',
               size: 'l',
               href: [{ '@id': 'https://plone.org' }],
             }),
+            { type: 'p', children: [{ text: TEXT }] },
+            imageNode({ align: 'left', size: 'm' }),
             { type: 'p', children: [{ text: TEXT }] },
           ],
         },
@@ -182,7 +185,8 @@ test('the image block lays out the same under any public theme reset', async ({
 
   const withPreflight = await measure(page);
   expect(withPreflight).toHaveLength(2);
-  expect(withPreflight[0].float).toBe('left');
+  expect(withPreflight[0].float).toBe('none');
+  expect(withPreflight[1].float).toBe('left');
   expect(await plainFigureMargin(page)).toBe('0px');
 
   // No reset: the browser's default styles apply.
