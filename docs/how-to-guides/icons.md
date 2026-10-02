@@ -4,14 +4,14 @@ myst:
     "description": "Use the Plone Aurora icon system to combine Quanta icons with your own SVGs."
     "property=og:description": "Use the Plone Aurora icon system to combine Quanta icons with your own SVGs."
     "property=og:title": "Use the icon system in Plone Aurora"
-    "keywords": "Plone Aurora, @plone/components, icons, Quanta, SVG, SVGR, guide"
+    "keywords": "Plone Aurora, @plone/icons, icons, Quanta, SVG, SVGR, guide"
 ---
 
 # Icon system
 
 This guide shows how to import icons, customize them, and decide when to use the pre-built React wrappers.
 
-Plone Aurora ships with an icon pipeline via `@plone/components`.
+Plone Aurora ships with an icon pipeline via `@plone/icons`.
 This system is SVG-based, so you can mix its Quanta design system icons with any custom SVGs that you add to your project.
 
 ```{tip}
@@ -51,7 +51,7 @@ To fix the TypeScript error `Cannot find module './my-icon.svg?react' or its cor
 
 ```{code-block} ts
 :caption: {file}`packages/<add-on-name>/types.d.ts`
-import '@plone/components/icons';
+import '@plone/icons/svg';
 ```
 ````
 
@@ -93,13 +93,13 @@ export interface IconProps extends DOMProps, AriaLabelingProps {
 
 ## Import Quanta SVG icons
 
-`@plone/components` bundles the Quanta icon set as raw SVG files under the `@plone/components/icons` import path.
+`@plone/icons` bundles the Quanta icon set as raw SVG files under the `@plone/icons/svg` import path.
 These icons go through the same {abbr}`SVGR (SVG to React)` transformation as your custom SVGs.
 
 The following code example shows how to import the trash can icon from the Quanta icon set.
 
 ```tsx
-import TrashSVG from '@plone/components/icons/bin.svg?react';
+import TrashSVG from '@plone/icons/svg/bin.svg?react';
 
 const MyComponent = () => (
   <TrashSVG aria-label="Delete" size="lg" color="--color-quanta-wine" />
@@ -109,12 +109,12 @@ const MyComponent = () => (
 ## Use the pre-built icon components
 
 There's a version of the Quanta icons already wrapped as React components and ready to use.
-They have been pre-built and are available under the `@plone/components/Icons` import path.
+They have been pre-built and are available under the `@plone/icons` import path.
 
 The following code example shows how to use these pre-built components.
 
 ```tsx
-import { AddIcon } from '@plone/components/Icons';
+import { AddIcon } from '@plone/icons';
 
 const MyComponent = () => {
   return <AddIcon aria-label="Add" size="lg" color="--color-quanta-sapphire" />;
@@ -124,7 +124,7 @@ const MyComponent = () => {
 ```{note}
 These pre-built components are equivalent to importing the SVGs directly, but they are bundled JavaScript modules.
 - Use them when the SVGR Vite plugin is not available, for example in Storybook, Jest, or non-Vite frameworks, such as Next.js.
-- When developing `@plone/components` itself, prefer these pre-built modules because the package build pipeline has no awareness of your app's Vite configuration.
+- When developing `@plone/icons` itself, prefer these pre-built modules because the package build pipeline has no awareness of your app's Vite configuration.
 ```
 
 ## Define an icon for a content type

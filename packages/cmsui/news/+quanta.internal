@@ -1,1 +1,2 @@
 Import icons from `@plone/icons`. Import Quanta components from `@plone/quanta`. @pnicolli
+Scan `@plone/icons` for Tailwind classes, so every icon size utility is generated. @pnicolli

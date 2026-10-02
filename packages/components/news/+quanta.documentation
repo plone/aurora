@@ -1,0 +1,1 @@
+Updated `docs/` to describe the new three-package layout: added a `@plone/components` 5.0.0 upgrade-guide section for the Quanta/icons breaking changes, and updated `docs/reference/conventions.md`, `docs/conceptual-guides/modular-arch-packages.md` and `docs/development/vite-optimize-deps.md` accordingly. @pnicolli

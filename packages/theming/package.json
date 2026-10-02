@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "@plone/components": "workspace:*",
+    "@plone/icons": "workspace:*",
     "@plone/quanta": "workspace:*",
     "@plone/registry": "workspace:*",
     "tailwind-merge": "catalog:",

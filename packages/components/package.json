@@ -77,26 +77,16 @@
     "not dead"
   ],
   "dependencies": {
-    "@internationalized/date": "catalog:",
     "@plone/icons": "workspace:*",
-    "@react-aria/utils": "catalog:",
     "clsx": "^2.1.1",
     "react-aria": "catalog:",
-    "react-aria-components": "catalog:",
-    "react-stately": "catalog:",
-    "tailwind-merge": "catalog:",
-    "tailwind-variants": "catalog:",
-    "tailwindcss": "catalog:",
-    "tailwindcss-animate": "^1.0.7"
+    "react-aria-components": "catalog:"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.16.4",
-    "@plone/types": "workspace: *",
-    "@react-types/shared": "^3.32.1",
     "@storybook/addon-docs": "^10.4.0",
     "@storybook/addon-links": "^10.4.0",
     "@storybook/react-vite": "^10.4.0",
-    "@tailwindcss/vite": "catalog:",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@types/jest-axe": "^3.5.7",

@@ -2,6 +2,7 @@
 @plugin 'tailwindcss-animate';
 
 @source '../node_modules/@plone/quanta/dist';
+@source '../node_modules/@plone/icons/dist';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
