@@ -1,0 +1,1 @@
+Added `h1` (category `text`) and `hr` (category `separator`) to `plateBlocksConfig`, so they get the block anatomy classnames. In the public view, the separator now gets the separator category spacing. @sneridagh
