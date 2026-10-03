@@ -8,6 +8,13 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.13 (2026-10-03)
+
+### Internal
+
+- Import icons from `@plone/icons`. Import Quanta components from `@plone/quanta`. @pnicolli 
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
 ## 1.0.0-alpha.12 (2026-09-29)
 
 ### Feature

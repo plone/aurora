@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UploadIcon } from '@plone/components/Icons';
+import { UploadIcon } from '@plone/icons';
 import { useContentsContext } from '../../providers/contents';
 
 interface ContentsDropZoneProps {

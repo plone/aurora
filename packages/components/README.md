@@ -69,33 +69,6 @@ It uses the `plone-components` layer name to scope all the CSS declarations in t
 The basic styling uses the nested `plone-components.base` named layer.
 You can use the `plone-components` layer to override the basic styling, or use the `plone-components.base` layer to override the basic styling in a more specific way.
 
-### Quanta
-
-This package also features the Quanta components.
-These components use the basic styling as a baseline, extending them to achieve the Quanta look and feel.
-They also extend the basic React components in a composable way.
-The Quanta styling is scoped in the `plone-components.quanta` named layer.
-
-Quanta is built upon the basic styles in an additive way.
-The use of the Quanta CSS implies using it upon basic styling.
-You could take Quanta as example to build your own layer of styles over basic styling for your theme.
-
-To use a theme built upon the basic styling, you need to import both the basic and the theme CSS, in this order:
-
-```js
-import '@plone/components/dist/basic.css';
-import '@plone/components/dist/quanta.css';
-```
-
-You have the option of doing it selectively per component, too:
-
-```js
-import '@plone/components/src/styles/basic/TextField.css';
-import '@plone/components/src/styles/quanta/TextField.css';
-```
-
-Take a look at the implementation of the Quanta components, using the basic ones as baseline in the `quanta` folders.
-
 Alternatively, as RAC allows, you can also drop your own basic set of styles.
 You can take the basic styles as reference.
 You can even remove the basic styling completely and bring your own CSS framework and push a new styling from scratch in there using the utilities of your choice, targeting the default RAC class names.
@@ -111,7 +84,6 @@ It's even possible to use TailwindCSS for styling the components in this package
 - Container
 - Dialog
 - GridList
-- Icon
 - Link
 - ListBox
 - Menu
@@ -160,80 +132,10 @@ It's even possible to use TailwindCSS for styling the components in this package
 - DefaultBlockView
 - RenderBlocks
 
-### Quanta
+## Related packages
 
-- TextField
-- TextAreaField
-- Select
-
-## Icons
-
-### Quanta icons
-
-This package provide the Quanta icons as raw SVG files.
-
-```tsx
-import addSVG from '@plone/components/icons/add.svg'
-
-const MyComponent = (props) => (
-  <img src={addSVG} alt />
-)
-```
-
-### Vite SVGR plugin
-
-This package provides a Vite plugin that uses and configures `vite-plugin-svgr` to use `@plone/components` `Icon` component under the hood.
-This plugin converts a raw SVG file into a React component, ready to be used.
-It wraps the SVG with the `@plone/components` `Icon` component.
-To use it, you have to add it to your `vite.config.ts` app configuration.
-
-```ts
-import { PloneSVGRVitePlugin } from '@plone/components/vite-plugin-svgr';
-
-export default defineConfig({
-  plugins: [
-    PloneSVGRVitePlugin(),
-    // (...other plugins)
-  ],
-  // (...more Vite config)
-})
-```
-
-Then, you use it in your code like this:
-
-```tsx
-import AddSVG from '@plone/components/icons/add.svg?react'
-
-const MyComponent = (props) => (
-  <AddSVG />
-)
-```
-
-You can pass any prop that the `Icon` component accepts:
-
-```tsx
-import AddSVG from '@plone/components/icons/add.svg?react'
-
-const MyComponent = (props) => (
-  <AddSVG size='XL' color='informative' />
-)
-```
-
-### Quanta icons as React Components
-
-This package provides an implementation of the Quanta Icon set in native React components.
-Unlike the approach above, these are full fledged components, generated via a script iven the Quanta icons and do not need additional config in the bundler.
-They can be used directly in your components as:
-
-```tsx
-import { ChevronupIcon, ChevrondownIcon, Button } from '@plone/components/components/Icons';
-
-const MyComponent = (props) => (
-  <Button aria-label="Unfold/Collapse">
-    {props.isOpen ? <ChevronupIcon /> : <ChevrondownIcon />}
-  </Button>
-)
-```
+- The Quanta design system components, the `SizeWidget`, `AlignWidget` and `WidthWidget` form widgets, and the Quanta CSS, typography and fonts live in the [`@plone/quanta`](../quanta/README.md) package.
+- The icon set, the `Icon` component, the `*.svg?react` types and the `PloneSVGRVitePlugin` Vite plugin live in the [`@plone/icons`](../icons/README.md) package.
 
 ## Helper providers
 
