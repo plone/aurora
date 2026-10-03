@@ -33,6 +33,10 @@ It is usually better and quicker to move your items into new locations and copy 
 
 ### `@plone/components` split into `@plone/quanta` and `@plone/icons`
 
+```{versionchanged} 1.0.0-alpha.16
+These steps apply when you upgrade an add-on from Plone Aurora 1.0.0-alpha.15 or earlier to 1.0.0-alpha.16 or later.
+```
+
 The Quanta design system and the icon set moved out of `@plone/components` into the new `@plone/quanta` and `@plone/icons` packages.
 For the import changes in your own code, see {ref}`plone-components-upgrade-guide`.
 
@@ -41,6 +45,10 @@ The Cookieplone templates are updated to match this release, so the recommended 
 Alternatively, apply the following changes by hand.
 
 #### Build `@plone/icons` and `@plone/quanta` before `@plone/components`
+
+```{versionadded} 1.0.0-alpha.16
+The `@plone/icons` and `@plone/quanta` packages.
+```
 
 `@plone/components` depends on `@plone/icons`, and needs its type declarations built to build its own.
 In your add-on's {file}`Makefile`, add targets for both new packages, and build them before `@plone/components` in `build-deps`.
@@ -68,6 +76,11 @@ Do the same in the `build:deps` script of your add-on's root {file}`package.json
 ```
 
 #### Point the SVG module declaration at `@plone/icons`
+
+```{versionremoved} 1.0.0-alpha.16
+The `@plone/components/icons` subpath export, without a deprecation period.
+Use `@plone/icons/svg` instead.
+```
 
 The `*.svg?react` module declaration moved from `@plone/components/icons` to `@plone/icons/svg`.
 Update the import in your add-on's {file}`types.d.ts`.
