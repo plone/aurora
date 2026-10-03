@@ -4,6 +4,10 @@ import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
 import { waitForPlateEditorReady } from '../../../tooling/playwright/plate';
+import {
+  plainElementMargin,
+  removeBaseLayer,
+} from '../../../tooling/playwright/resets';
 
 // The image block's styles come from `styles/content.css`, which both user
 // interfaces load in the `plone-content` cascade layer. These tests check that
@@ -128,44 +132,6 @@ const measure = (page: Page) =>
     }),
   );
 
-// Removes every rule in the top-level `base` layer, where the public theme's
-// reset lives (Tailwind's preflight, for Agave). Returns how many it removed.
-const removeBaseLayer = (page: Page) =>
-  page.evaluate(() => {
-    let removed = 0;
-    const strip = (rules: CSSRuleList) => {
-      for (const rule of Array.from(rules)) {
-        if (rule instanceof CSSLayerBlockRule && rule.name === 'base') {
-          while (rule.cssRules.length) {
-            rule.deleteRule(0);
-            removed++;
-          }
-        } else if (rule instanceof CSSImportRule && rule.styleSheet) {
-          strip(rule.styleSheet.cssRules);
-        }
-      }
-    };
-    for (const sheet of Array.from(document.styleSheets)) {
-      try {
-        strip(sheet.cssRules);
-      } catch {
-        // Cross-origin stylesheets (web fonts) can't be read.
-      }
-    }
-    return removed;
-  });
-
-// The margin of a plain `<figure>`, which no block styles target: it shows
-// which reset is in effect.
-const plainFigureMargin = (page: Page) =>
-  page.evaluate(() => {
-    const figure = document.createElement('figure');
-    document.body.append(figure);
-    const { margin } = getComputedStyle(figure);
-    figure.remove();
-    return margin;
-  });
-
 // A different, non-Tailwind reset in the `base` layer, with values that
 // differ from Tailwind's preflight on the elements the image block uses.
 const ALTERNATIVE_RESET = `
@@ -187,15 +153,15 @@ test('the image block lays out the same under any public theme reset', async ({
   expect(withPreflight).toHaveLength(2);
   expect(withPreflight[0].float).toBe('none');
   expect(withPreflight[1].float).toBe('left');
-  expect(await plainFigureMargin(page)).toBe('0px');
+  expect(await plainElementMargin(page, 'figure')).toBe('0px');
 
   // No reset: the browser's default styles apply.
   expect(await removeBaseLayer(page)).toBeGreaterThan(0);
-  expect(await plainFigureMargin(page)).toBe('16px 40px');
+  expect(await plainElementMargin(page, 'figure')).toBe('16px 40px');
   expect(await measure(page)).toEqual(withPreflight);
 
   // A different reset.
   await page.addStyleTag({ content: ALTERNATIVE_RESET });
-  expect(await plainFigureMargin(page)).toBe('32px 48px');
+  expect(await plainElementMargin(page, 'figure')).toBe('32px 48px');
   expect(await measure(page)).toEqual(withPreflight);
 });

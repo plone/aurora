@@ -16,3 +16,101 @@
   max-width: var(--block-width);
   margin-inline: auto;
 }
+
+/*
+ * Values read the theme's Tailwind variables when the theme defines them, and
+ * fall back to Tailwind's defaults, so they don't depend on Tailwind being
+ * loaded.
+ */
+
+/* Paragraph */
+
+:where(.slate-p) {
+  padding: calc(var(--spacing, 0.25rem) * 1) 0;
+  margin: 0;
+}
+
+/* Title */
+
+:where(.slate-title) {
+  padding-bottom: calc(var(--spacing, 0.25rem) * 1);
+  margin: 1.6em 0 0;
+  font-size: var(--text-4xl, 2.25rem);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--text-4xl--line-height, calc(2.5 / 2.25));
+}
+
+/* Headings */
+
+:where(.slate-h1, .slate-h2, .slate-h3, .slate-h4, .slate-h5, .slate-h6) {
+  position: relative;
+  margin-bottom: calc(var(--spacing, 0.25rem) * 1);
+}
+
+:where(.slate-h1) {
+  padding-bottom: calc(var(--spacing, 0.25rem) * 1);
+  margin-top: 1.6em;
+  font-size: var(--text-4xl, 2.25rem);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--text-4xl--line-height, calc(2.5 / 2.25));
+}
+
+:where(.slate-h2, .slate-h3, .slate-h4, .slate-h5, .slate-h6) {
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: var(--tracking-tight, -0.025em);
+}
+
+:where(.slate-h2) {
+  padding-bottom: 1px;
+  margin-top: 1.4em;
+  font-size: var(--text-2xl, 1.5rem);
+  line-height: var(--text-2xl--line-height, calc(2 / 1.5));
+}
+
+:where(.slate-h3) {
+  padding-bottom: 1px;
+  margin-top: 1em;
+  font-size: var(--text-xl, 1.25rem);
+  line-height: var(--text-xl--line-height, calc(1.75 / 1.25));
+}
+
+:where(.slate-h4, .slate-h5) {
+  margin-top: 0.75em;
+  font-size: var(--text-lg, 1.125rem);
+  line-height: var(--text-lg--line-height, calc(1.75 / 1.125));
+}
+
+:where(.slate-h6) {
+  margin-top: 0.75em;
+  font-size: var(--text-base, 1rem);
+  line-height: var(--text-base--line-height, 1.5);
+}
+
+/* Blockquote */
+
+:where(.slate-blockquote) {
+  margin: 0;
+}
+
+:where(.slate-blockquote > .block-inner-container) {
+  padding-left: calc(var(--spacing, 0.25rem) * 6);
+  border-left-width: 2px;
+  border-left-style: solid;
+  font-style: italic;
+  margin-block: calc(var(--spacing, 0.25rem) * 1);
+}
+
+/* Separator */
+
+:where(.block-hr__spacer) {
+  padding-block: calc(var(--spacing, 0.25rem) * 6);
+}
+
+:where(.block-hr__line) {
+  height: calc(var(--spacing, 0.25rem) * 0.5);
+  border-style: none;
+  border-radius: var(--radius-sm, 0.25rem);
+  margin: 0;
+  background-clip: content-box;
+  background-color: var(--block-separator-color, var(--muted));
+}
