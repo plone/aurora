@@ -1,6 +1,6 @@
 import type { Updater } from '@tanstack/react-form';
 import { useTranslation } from 'react-i18next';
-import { Select } from '@plone/components/quanta';
+import { Select } from '@plone/quanta';
 import { getMonthOptions } from '../utils';
 
 interface MonthOfTheYearFieldProps {

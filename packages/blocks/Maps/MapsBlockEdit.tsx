@@ -9,7 +9,7 @@ import {
 import clsx from 'clsx';
 import mapsBlockSVG from './block-maps.svg';
 import { useTranslation } from 'react-i18next';
-import { ArrowrightIcon, CloseIcon } from '@plone/components/Icons';
+import { ArrowrightIcon, CloseIcon } from '@plone/icons';
 import styles from './MapsBlock.module.css';
 
 const MapsBlockEdit = (props: BlockEditProps) => {

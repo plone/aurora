@@ -1,4 +1,4 @@
-# @plone/client Release Notes
+# @plone/components Release Notes
 
 <!-- You should *NOT* be adding new change log entries to this file.
      You should create a file in the news directory instead.
@@ -7,6 +7,20 @@
 -->
 
 <!-- towncrier release notes start -->
+
+## 5.0.0-alpha.5 (2026-10-03)
+
+### Breaking
+
+- Moved the icon set, the `Icon` component, the `*.svg?react` types and `PloneSVGRVitePlugin` to the new `@plone/icons` package. Removed the `Icon` root export and the `./Icons`, `./icons`, `./icons/*` and `./vite-plugin-svgr` exports. Removed the CSS-based `QuantaTextField`, `QuantaSelect` and `QuantaTextAreaField` root exports and their `styles/quanta/{Select,TextField}.css` overrides. Use the Tailwind Quanta `TextField` and `Select`, and the new Tailwind Quanta `TextAreaField`. Moved the Quanta components, the `SizeWidget`, `AlignWidget` and `WidthWidget` widgets, and the Quanta styles and fonts to the new `@plone/quanta` package. Removed the `./quanta` and `./dist/fonts/*` exports and the widget root exports. Removed the now-unused `@internationalized/date`, `@react-aria/utils`, `react-stately`, `tailwind-merge`, `tailwind-variants`, `tailwindcss`, `tailwindcss-animate`, `@plone/types` and `@react-types/shared` dependencies, and dropped Tailwind from the package's Vite and Storybook setup. @pnicolli 
+
+### Internal
+
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
+### Documentation
+
+- Updated `docs/` to describe the new three-package layout: added a `@plone/components` 5.0.0 upgrade-guide section for the Quanta/icons breaking changes, and updated `docs/reference/conventions.md`, `docs/conceptual-guides/modular-arch-packages.md` and `docs/development/vite-optimize-deps.md` accordingly. @pnicolli 
 
 ## 5.0.0-alpha.4 (2026-09-29)
 

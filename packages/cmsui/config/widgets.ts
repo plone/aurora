@@ -6,7 +6,7 @@ import {
   SizeWidget,
   WidthWidget,
   TextField,
-} from '@plone/components/quanta';
+} from '@plone/quanta';
 import { DateField } from '@plone/components';
 import { RecurrenceWidget } from '../components/RecurrenceWidget/RecurrenceWidget';
 import { ObjectBrowserWidget } from '../components/ObjectBrowserWidget/ObjectBrowserWidget';

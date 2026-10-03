@@ -1,6 +1,6 @@
 import { useCallback, type ComponentType } from 'react';
 import type { BlockEditProps } from '@plone/types';
-import { ImageIcon } from '@plone/components/Icons';
+import { ImageIcon } from '@plone/icons';
 import config from '@plone/registry';
 import TeaserBlockView from './TeaserBlockView';
 

@@ -19,8 +19,7 @@ import {
   type ValidationResult,
 } from 'react-aria-components';
 
-import { ChevrondownIcon } from '../icons/ChevrondownIcon';
-import { ChevronupIcon } from '../icons/ChevronupIcon';
+import { ChevrondownIcon, ChevronupIcon } from '@plone/icons';
 
 export interface SelectItemObject {
   label: string;
