@@ -10,7 +10,7 @@ import {
   WidthFullIcon,
   WidthLayoutIcon,
   WidthNarrowIcon,
-} from '@plone/components/Icons';
+} from '@plone/icons';
 
 import {
   BlockWidthPlugin,

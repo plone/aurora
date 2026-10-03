@@ -9,12 +9,8 @@ import {
   Dialog,
   Input,
   Modal,
-} from '@plone/components/quanta';
-import {
-  ArrowrightIcon,
-  CloseIcon,
-  PropertiesIcon,
-} from '@plone/components/Icons';
+} from '@plone/quanta';
+import { ArrowrightIcon, CloseIcon, PropertiesIcon } from '@plone/icons';
 import { type ToastItem } from '@plone/layout/config/toast';
 import { useContentsContext } from '../../providers/contents';
 import {
