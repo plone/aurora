@@ -1,20 +1,11 @@
 import './storybook-base.css';
-import '../../theming/styles/tailwind.css';
 import '../src/styles/basic/main.css';
 
 export const parameters = {
   backgrounds: {},
   options: {
     storySort: {
-      order: [
-        'Introduction',
-        'Styleguide',
-        'Tailwind',
-        'Basic',
-        ['Forms', 'Quanta', '*'],
-        'Quanta',
-        ['Introduction', 'Forms', '*'],
-      ],
+      order: ['Introduction', 'Styleguide', 'Basic', ['Forms', '*']],
     },
   },
   actions: { argTypesRegex: '^on[A-Z].*' },

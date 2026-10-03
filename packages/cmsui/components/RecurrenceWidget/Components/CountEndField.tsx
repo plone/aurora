@@ -1,6 +1,6 @@
 import type { Updater } from '@tanstack/react-form';
 import { useTranslation } from 'react-i18next';
-import { TextField, Label, Input } from '@plone/components/quanta';
+import { TextField, Label, Input } from '@plone/quanta';
 // import { Input } from '../../Field/Field';
 
 interface CountEndFieldProps {

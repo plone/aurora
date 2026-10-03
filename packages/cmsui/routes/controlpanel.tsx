@@ -26,10 +26,10 @@ import {
   AccordionItemTrigger,
   Button,
   Container,
-} from '@plone/components/quanta';
+} from '@plone/quanta';
 import { useAppForm } from '../components/Form/Form';
-import Back from '@plone/components/icons/arrow-left.svg?react';
-import Checkbox from '@plone/components/icons/checkbox.svg?react';
+import Back from '@plone/icons/svg/arrow-left.svg?react';
+import Checkbox from '@plone/icons/svg/checkbox.svg?react';
 import config from '@plone/registry';
 
 export async function loader({

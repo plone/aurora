@@ -1,4 +1,4 @@
-import { Input, TextField } from '@plone/components/quanta';
+import { Input, TextField } from '@plone/quanta';
 import { type Updater } from '@tanstack/react-form';
 import { useTranslation } from 'react-i18next';
 

@@ -236,7 +236,7 @@ Create a new file named {file}`LikeButton.tsx` in the {file}`slots` folder of yo
 ```{code-block} tsx
 :caption: packages/\<add-on-name>/slots/LikeButton.tsx
 import type { RootLoader } from '@plone/aurora/app/root';
-import { Button } from '@plone/components/quanta';
+import { Button } from '@plone/quanta';
 import { useFetcher, useParams, useRouteLoaderData } from 'react-router';
 
 export default function LikeButton() {
