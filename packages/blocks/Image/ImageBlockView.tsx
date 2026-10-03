@@ -25,7 +25,7 @@ const ImageBlockView = (props: BlockViewProps) => {
   );
 
   return (
-    <figure className="image-block">
+    <figure className="block-image__frame">
       {href ? (
         <Link
           className="block-image__link"

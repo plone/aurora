@@ -84,7 +84,7 @@ async function waitForImages(page: Page) {
 
 const floatMaxSize = (page: Page) =>
   page
-    .locator('.image-block')
+    .locator('.block-image__frame')
     .first()
     .evaluate((el) =>
       getComputedStyle(el).getPropertyValue('--block-float-max-size').trim(),
@@ -111,7 +111,7 @@ test('theme content tokens reach the image block in both user interfaces', async
 // Geometry of each image block relative to its inner container, plus the
 // computed styles the block sets itself.
 const measure = (page: Page) =>
-  page.locator('.image-block').evaluateAll((figures) =>
+  page.locator('.block-image__frame').evaluateAll((figures) =>
     figures.map((figure) => {
       const container = figure.closest('.block-inner-container')!;
       const box = container.getBoundingClientRect();

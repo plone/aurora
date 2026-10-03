@@ -34,7 +34,7 @@ const ImageBlockEdit = (props: BlockEditProps) => {
   );
 
   return (
-    <div className="image-block">
+    <div className="block-image__frame">
       {data.url ? (
         <Image
           item={getImageBlockItem(data)}
