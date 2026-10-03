@@ -7,7 +7,7 @@ import {
   type LinkProps,
 } from 'react-aria-components';
 import { Link } from '../Link/Link';
-import { HomeIcon } from '../../components/icons';
+import { HomeIcon } from '@plone/icons';
 
 export type Breadcrumb = {
   '@id': string;

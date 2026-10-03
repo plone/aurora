@@ -9,9 +9,7 @@ import {
 } from 'react-aria-components';
 import { Menu, MenuItem, MenuTrigger } from '../Menu/Menu';
 
-import { BoldIcon } from '../icons/BoldIcon';
-import { ItalicIcon } from '../icons/ItalicIcon';
-import { LinkIcon } from '../icons/LinkIcon';
+import { BoldIcon, ItalicIcon, LinkIcon } from '@plone/icons';
 
 import type { Meta } from '@storybook/react-vite';
 

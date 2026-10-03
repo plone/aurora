@@ -21,10 +21,10 @@ jobs:
     name: Visual regression
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Checkout visual regression baselines
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: plone/aurora-visual-regression
           ref: main
@@ -36,7 +36,7 @@ jobs:
         with:
           node-version: 24.x
 
-      - uses: JarvusInnovations/background-action@v1
+      - uses: JarvusInnovations/background-action@v2
         name: Start Servers - Aurora and Plone
         with:
           run: |

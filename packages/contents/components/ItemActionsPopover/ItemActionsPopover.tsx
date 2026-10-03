@@ -1,11 +1,11 @@
 import { Link, Button, type PopoverProps, Popover } from '@plone/components';
-import EditIcon from '@plone/components/icons/edit.svg?react';
-import EyeIcon from '@plone/components/icons/eye.svg?react';
-import RowbeforeIcon from '@plone/components/icons/row-before.svg?react';
-import RowafterIcon from '@plone/components/icons/row-after.svg?react';
-import CutIcon from '@plone/components/icons/cut.svg?react';
-import CopyIcon from '@plone/components/icons/copy.svg?react';
-import BinIcon from '@plone/components/icons/bin.svg?react';
+import EditIcon from '@plone/icons/svg/edit.svg?react';
+import EyeIcon from '@plone/icons/svg/eye.svg?react';
+import RowbeforeIcon from '@plone/icons/svg/row-before.svg?react';
+import RowafterIcon from '@plone/icons/svg/row-after.svg?react';
+import CutIcon from '@plone/icons/svg/cut.svg?react';
+import CopyIcon from '@plone/icons/svg/copy.svg?react';
+import BinIcon from '@plone/icons/svg/bin.svg?react';
 import { useTranslation } from 'react-i18next';
 import PopoverListItem from '../PopoverListItem';
 import './ItemActionsPopover.css';

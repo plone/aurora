@@ -80,7 +80,8 @@ The script inspects runtime imports in the workspace packages that require expli
 Run it when:
 
 - you add or remove a runtime import in `@plone/components`, `@plone/helpers`,
-  `@plone/cmsui`, `@plone/layout`, or `@plone/plate`
+  `@plone/icons`, `@plone/quanta`, `@plone/cmsui`, `@plone/layout`, or
+  `@plone/plate`
 - you switch an import to a different package subpath such as
   `some-lib/react`
 - you move an import between browser-only and server-only code and may need to
@@ -108,7 +109,7 @@ Recommended workflow:
 
 ## Non-add-on workspace packages and app deps: `vite.config.ts`
 
-Packages that are not registered add-ons — currently `@plone/components` and `@plone/helpers` — cannot use `vite.extend.js` because `PloneRegistryVitePlugin` never loads their files.
+Packages that are not registered add-ons — currently `@plone/components`, `@plone/icons`, `@plone/quanta`, and `@plone/helpers` — cannot use `vite.extend.js` because `PloneRegistryVitePlugin` never loads their files.
 List their dependencies directly in `apps/aurora/vite.config.ts` under `optimizeDeps.include`.
 
 The same rule applies to packages that are direct dependencies of the app itself (listed in `apps/aurora/package.json`).
@@ -122,6 +123,8 @@ optimizeDeps: {
     'some-app-dep',
     // Non-add-on workspace package dep — requires "pkg > dep" syntax
     '@plone/components > react-aria-components',
+    '@plone/icons > tailwind-variants',
+    '@plone/quanta > react-aria-components',
     '@plone/helpers > jotai',
   ]
 }

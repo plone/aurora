@@ -8,6 +8,16 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.22 (2026-10-03)
+
+### Internal
+
+- Moved the `settle` visual test helper to the shared Playwright tooling. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+- Added Playwright visual regression tests for native blocks and editor overlays. @sneridagh 
+- Import icons from `@plone/icons`. Import Quanta components from `@plone/quanta`. @pnicolli 
+- Removed the unused native Plate image (`img`) node, its components and toolbar entries; Aurora uses the Plone image block instead. @sneridagh 
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
 ## 1.0.0-alpha.21 (2026-10-01)
 
 ### Breaking

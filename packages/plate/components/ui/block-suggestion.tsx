@@ -54,7 +54,6 @@ const TYPE_TEXT_MAP: Record<string, (node?: TElement) => string> = {
   [KEYS.h5]: () => `Heading 5`,
   [KEYS.h6]: () => `Heading 6`,
   [KEYS.hr]: () => 'Horizontal Rule',
-  [KEYS.img]: () => 'Image',
   [KEYS.mediaEmbed]: () => 'Media',
   [KEYS.p]: (node) => {
     if (node?.[KEYS.listType] === KEYS.listTodo) return 'Todo List';
