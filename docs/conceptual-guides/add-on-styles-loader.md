@@ -61,8 +61,8 @@ The framework styles use zero specificity:
 
 ```css
 /* @plone/plate/styles/content.css */
-:where(.block-image .block-image__caption) {
-  color: var(--block-caption-color, var(--muted-foreground));
+:where(.slate-callout > .block-inner-container) {
+  background-color: var(--block-callout-background, var(--muted));
 }
 ```
 
@@ -71,16 +71,17 @@ A theme can either change a token, which is the preferred way, or override the r
 ```css
 /* my-theme/styles/content.css */
 .content-area {
-  --block-caption-color: var(--accent-color);
+  --block-callout-background: var(--accent-color);
 }
 
-.block-image .block-image__caption {
-  font-style: italic;
+.block-callout .block-inner-container {
+  border-left: 4px solid var(--primary);
 }
 ```
 
 The theme's rule wins because its specificity is higher.
 With equal specificity, the add-on loaded later wins.
+{doc}`/how-to-guides/style-blocks-in-a-theme` lists every block's parts and tokens.
 
 ```{warning}
 Don't wrap the rules of {file}`styles/content.css` in a `@layer`, not even `@layer custom`.
