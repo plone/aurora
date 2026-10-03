@@ -1,0 +1,1 @@
+Removed the `cmsui` cascade layer. Tailwind is now loaded with a plain import, so its reset lands in `base`, its theme variables in `theme` and its utilities in `utilities`. Add-ons that targeted the `cmsui` layer must move their styles to one of the declared layers. @sneridagh
