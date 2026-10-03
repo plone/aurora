@@ -193,18 +193,6 @@ export default function install(config: ConfigType) {
     column: {
       category: 'layout',
     },
-    video: {
-      category: 'media',
-    },
-    audio: {
-      category: 'media',
-    },
-    file: {
-      category: 'media',
-    },
-    media_embed: {
-      category: 'media',
-    },
   };
 
   config.blocks.plateBlocksConfig = plateBlocksConfig;
