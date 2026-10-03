@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
+import { EDITORIAL_MARKS, INLINE_MARKS } from '../fixtures/inline-marks';
 import { ALL_NATIVE_BLOCK_SECTIONS } from '../fixtures/native-blocks';
 import { createNativeBlocksPage, openInView } from '../fixtures/pages';
 
@@ -83,22 +84,6 @@ const PENDING: Record<string, string[]> = {
     'text-current',
     'text-muted-foreground',
     'top-1',
-  ],
-  code: [
-    'bg-muted',
-    'font-mono',
-    'px-[0.3em]',
-    'py-[0.2em]',
-    'rounded-md',
-    'text-sm',
-    'whitespace-pre-wrap',
-  ],
-  a: [
-    'decoration-primary',
-    'font-medium',
-    'text-primary',
-    'underline',
-    'underline-offset-4',
   ],
   code_block: [
     '**:[.hljs-addition]:bg-[#f0fff4]',
@@ -340,13 +325,9 @@ async function contentClasses(page: Page) {
   });
 }
 
-test('the public content only uses contract classnames', async ({ page }) => {
-  await login(page);
-  const pageId = await createNativeBlocksPage(page, ALL_NATIVE_BLOCK_SECTIONS);
-  await openInView(page, pageId);
-
+async function violations(page: Page) {
   const allowed = [...CONTRACT, ...THIRD_PARTY];
-  const violations = Object.fromEntries(
+  return Object.fromEntries(
     Object.entries(await contentClasses(page))
       .map(([owner, classes]) => [
         owner,
@@ -354,8 +335,34 @@ test('the public content only uses contract classnames', async ({ page }) => {
       ])
       .filter(([, classes]) => classes.length),
   );
+}
 
-  expect(violations).toEqual(PENDING);
+test('the public content only uses contract classnames', async ({ page }) => {
+  await login(page);
+  const pageId = await createNativeBlocksPage(page, ALL_NATIVE_BLOCK_SECTIONS);
+  await openInView(page, pageId);
+
+  expect(await violations(page)).toEqual(PENDING);
+});
+
+test('inline marks only use contract classnames', async ({ page }) => {
+  await login(page);
+  const pageId = await createNativeBlocksPage(page, [], {
+    extra: [...INLINE_MARKS, ...EDITORIAL_MARKS],
+  });
+  await openInView(page, pageId);
+
+  expect(await violations(page)).toEqual({ editor: PENDING.editor });
+
+  // Comments and suggestions are editorial: the public view shows their text
+  // as plain text, without highlight or insert/delete markup.
+  const editor = page.locator('[data-slate-editor]');
+  await expect(editor.locator('del, ins')).toHaveCount(0);
+  await expect(editor.getByText('removed')).toBeVisible();
+  await expect(editor.getByText('commented', { exact: true })).toHaveCSS(
+    'background-color',
+    'rgba(0, 0, 0, 0)',
+  );
 });
 
 test('lists render their contract hooks', async ({ page }) => {
