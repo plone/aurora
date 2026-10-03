@@ -1,4 +1,4 @@
-import { Select } from '@plone/components/quanta';
+import { Select } from '@plone/quanta';
 import type { Updater } from '@tanstack/react-form';
 
 import { getOrdinalNumbersOptions, ORDINAL_NUMBERS } from '../utils';

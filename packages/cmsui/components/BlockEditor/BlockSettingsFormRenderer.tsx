@@ -3,7 +3,7 @@ import {
   AccordionItem,
   AccordionItemTrigger,
   AccordionPanel,
-} from '@plone/components/quanta';
+} from '@plone/quanta';
 import type { PrimitiveAtom } from 'jotai';
 
 type RendererSchema = {

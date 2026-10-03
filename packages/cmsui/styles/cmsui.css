@@ -6,11 +6,14 @@
  */
 @import 'tailwindcss';
 @import '@plone/components/src/styles/basic/theme.css' layer(theme);
+/* Its own `plone-icons` layer nests in `components`, below the utilities. */
+@import '@plone/icons/icons.css' layer(components);
 
 @plugin 'tailwindcss-react-aria-components';
 @plugin 'tailwindcss-animate';
 
-@source '../node_modules/@plone/components/dist/quanta';
+@source '../node_modules/@plone/quanta/dist';
+@source '../node_modules/@plone/icons/dist';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
