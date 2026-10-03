@@ -1,11 +1,11 @@
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import type { Page } from '@playwright/test';
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
 import {
+  measureOwnedStyles,
   plainElementMargin,
   removeBaseLayer,
+  SIMPLE_RESET,
 } from '../../../tooling/playwright/resets';
 import { INLINE_MARKS } from '../fixtures/inline-marks';
 import { createNativeBlocksPage, openInView } from '../fixtures/pages';
@@ -56,27 +56,7 @@ const OWNED: Record<string, string[]> = {
   '.slate-mention[data-bold]': ['font-weight'],
 };
 
-const measure = (page: Page) =>
-  page.evaluate((owned) => {
-    return Object.fromEntries(
-      Object.entries(owned).map(([selector, properties]) => {
-        const element = document.querySelector(
-          `[data-slate-editor] ${selector}`,
-        );
-        if (!element) return [selector, null];
-        const style = getComputedStyle(element);
-        return [
-          selector,
-          Object.fromEntries(
-            properties.map((property) => [
-              property,
-              style.getPropertyValue(property),
-            ]),
-          ),
-        ];
-      }),
-    );
-  }, OWNED);
+const measure = (page: Page) => measureOwnedStyles(page, OWNED);
 
 // The highlight keeps the color of the text around it, whatever the reset.
 const highlightFollowsText = (page: Page) =>
@@ -87,15 +67,6 @@ const highlightFollowsText = (page: Page) =>
         getComputedStyle(mark).color ===
         getComputedStyle(mark.parentElement!).color,
     );
-
-// A real non-Tailwind reset, `@plone/theming`'s simple reset, moved into the
-// `base` layer where themes are expected to put their reset.
-const SIMPLE_RESET = readFileSync(
-  fileURLToPath(
-    new URL('../../../theming/styles/simple/reset.css', import.meta.url),
-  ),
-  'utf-8',
-).replace('@layer reset {', '@layer base {');
 
 test('the inline marks render the same under any public theme reset', async ({
   page,

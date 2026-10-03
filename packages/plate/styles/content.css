@@ -202,3 +202,62 @@
 :where(.slate-mention[data-underline]) {
   text-decoration-line: underline;
 }
+
+/*
+ * Lists. List items are paragraphs with a list style type, rendering
+ * `ul`/`ol` and `li` inside the paragraph block. The list style type itself
+ * is set inline from the data.
+ */
+
+:where(.block-p__list) {
+  position: relative;
+  padding: 0;
+  margin: 0;
+}
+
+/* To-do items */
+
+:where(.block-p__item[data-checked]) {
+  color: var(--muted-foreground);
+  text-decoration-line: line-through;
+}
+
+:where([data-list-style-type='todo'] .block-p__item) {
+  list-style-type: none;
+}
+
+/* The read-only checkbox of a to-do item in the rendered content. */
+:where(.block-p__checkbox) {
+  position: absolute;
+  top: calc(var(--spacing, 0.25rem) * 1);
+  left: calc(var(--spacing, 0.25rem) * -6);
+  width: calc(var(--spacing, 0.25rem) * 4);
+  height: calc(var(--spacing, 0.25rem) * 4);
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-sm, 0.25rem);
+  margin: 0;
+  appearance: none;
+  background-color: var(--background);
+  color: inherit;
+  font: inherit;
+  pointer-events: none;
+}
+
+:where(.block-p__checkbox[data-state='checked']) {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+:where(.block-p__checkmark) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
+:where(.block-p__checkmark svg) {
+  width: calc(var(--spacing, 0.25rem) * 4);
+  height: calc(var(--spacing, 0.25rem) * 4);
+}

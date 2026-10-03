@@ -1,0 +1,1 @@
+Moved the list styles from Tailwind utilities to `styles/content.css`, so themes can override them in both the Public UI and the editor. Checked to-do items have a `data-checked` attribute, and the read-only checkbox of the rendered content the `block-p__checkbox` and `block-p__checkmark` parts. @sneridagh
