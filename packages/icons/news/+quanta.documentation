@@ -1,1 +1,3 @@
 Rewrote `docs/how-to-guides/icons.md` for the icon pipeline now living in `@plone/icons`. @pnicolli
+
+Documented the `@plone/icons/icons.css` import in `docs/how-to-guides/icons.md`, the `README.md` and the `docs/upgrade-guide/plone-components.md` upgrade guide. @pnicolli

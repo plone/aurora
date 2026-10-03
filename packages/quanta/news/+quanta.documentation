@@ -1,1 +1,3 @@
 Updated `docs/how-to-guides/customize-login-screen.md` and `docs/tutorials/add-prisma-database.md` to import from `@plone/quanta`. @pnicolli
+
+Document that consumers need `@plone/icons/icons.css` and a Tailwind `@source` for `@plone/icons`. @pnicolli

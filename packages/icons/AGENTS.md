@@ -24,7 +24,8 @@ packages/icons/
     ├── icons/<Name>Icon.tsx  one React component per icon
     ├── icons/index.ts     exports every icon component
     ├── svg/<name>.svg     raw SVG files
-    └── svg.d.ts           types for `*.svg?react` imports
+    ├── svg.d.ts           types for `*.svg?react` imports
+    └── styles/icons.css   base `.q.icon` rules (plain CSS, no Tailwind)
 ```
 
 ## Icons

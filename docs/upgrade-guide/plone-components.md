@@ -70,6 +70,12 @@ Update any local `types.d.ts` or `tsconfig.json` `types`/`include` entries that 
 
 This makes the icon set, which has no Plone dependencies, independently publishable and reusable, and keeps `@plone/components` free of icon-pipeline concerns.
 
+If your project uses `@plone/quanta` or `@plone/icons` *without* `@plone/components`' basic CSS, import `@plone/icons/icons.css` to get the base `Icon` styles (color inherited from text, `inline-block`, no pointer events):
+
+```diff
++ import '@plone/icons/icons.css';
+```
+
 ### Quanta styles, fonts, and Tailwind `@source` path changed
 
 The Quanta CSS, typography, and fonts moved from `@plone/components` to `@plone/quanta`.

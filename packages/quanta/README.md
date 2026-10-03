@@ -52,9 +52,12 @@ Add the package's `dist` folder as a Tailwind source, and enable the `tailwindcs
 @plugin 'tailwindcss-animate';
 
 @source '../node_modules/@plone/quanta/dist';
+@source '../node_modules/@plone/icons/dist';
 ```
 
-Adjust the `@source` path so it's relative to your CSS file.
+Adjust the `@source` paths so they're relative to your CSS file.
+
+Consumers must also import `@plone/icons/icons.css` for the base `Icon` styles (see below), so that icon sizes from the `@source '@plone/icons'` scan and the base rules both apply.
 
 ## Styles
 

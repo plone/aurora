@@ -8,6 +8,7 @@
 
 @layer cmsui {
   @import '@plone/components/src/styles/basic/theme.css';
+  @import '@plone/icons/icons.css';
   @import 'tailwindcss/theme.css';
   @import 'tailwindcss/preflight.css';
   @import 'tailwindcss/utilities.css';

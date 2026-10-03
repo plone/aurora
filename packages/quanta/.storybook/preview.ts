@@ -1,5 +1,6 @@
 import './storybook-base.css';
 import '../../theming/styles/tailwind.css';
+import '@plone/icons/icons.css';
 import '../src/styles/main.css';
 
 export const parameters = {

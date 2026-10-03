@@ -112,6 +112,22 @@ To get the TypeScript types for `*.svg?react` imports, add `@plone/icons/svg` to
 }
 ```
 
+## Styles
+
+`Icon` relies on `@plone/icons/icons.css` for its base rules: the icon's color is inherited from the surrounding text, it renders `inline-block`, and it doesn't catch pointer events. Import it once in your app, either from JS:
+
+```ts
+import '@plone/icons/icons.css';
+```
+
+or from a Vite- or Tailwind-processed stylesheet:
+
+```css
+@import '@plone/icons/icons.css';
+```
+
+Sizes aren't included in this file; they come from the `icon-*` utilities in `@plone/theming`, or from `@plone/components`' basic CSS.
+
 ## Adding an icon
 
 1. Add the SVG file to `src/svg/`, using a kebab-case name, for example `src/svg/my-icon.svg`.

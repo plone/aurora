@@ -87,6 +87,8 @@ jobs:
         include:
           - name: '@plone/components'
             files: 'src/**/*.{css,scss,less}'
+          - name: '@plone/icons'
+            files: 'src/**/*.{css,scss,less}'
           - name: '@plone/quanta'
             files: 'src/**/*.{css,scss,less}'
           - name: '@plone/theming'

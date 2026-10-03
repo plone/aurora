@@ -32,6 +32,7 @@ This file applies only to `packages/quanta` and its subdirectories.
 
 - `src/styles/` holds the CSS assets (colors, theme, typography, fonts and the few component styles that aren't Tailwind utilities), bundled from `src/styles/main.css` into `dist/quanta.css`.
 - When adding a CSS file, wire it into `src/styles/main.css`.
+- Icon base styles come from `@plone/icons/icons.css`; don't redefine `.q.icon` in Quanta.
 
 ## Stories
 
