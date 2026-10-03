@@ -12,8 +12,8 @@ import {
   ploneUserContext,
 } from '@plone/aurora/app/middleware.server';
 import { useTranslation } from 'react-i18next';
-import { Container, Link } from '@plone/components/quanta';
-import { CloseIcon } from '@plone/components/Icons';
+import { Container, Link } from '@plone/quanta';
+import { CloseIcon } from '@plone/icons';
 import { Plug } from '@plone/layout/components/Pluggable';
 import SharingForm from '../components/Sharing/SharingForm';
 

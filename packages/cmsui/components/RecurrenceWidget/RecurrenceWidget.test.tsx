@@ -46,15 +46,15 @@ vi.mock('../Field/Field', () => ({
   Label: ({ children }: any) => <label>{children}</label>,
 }));
 
-vi.mock('@plone/components/icons/edit.svg?react', () => ({
+vi.mock('@plone/icons/svg/edit.svg?react', () => ({
   default: () => <svg data-testid="edit-icon" />,
 }));
 
-vi.mock('@plone/components/icons/bin.svg?react', () => ({
+vi.mock('@plone/icons/svg/bin.svg?react', () => ({
   default: () => <svg data-testid="delete-icon" />,
 }));
 
-vi.mock('@plone/components/quanta', () => ({
+vi.mock('@plone/quanta', () => ({
   Button: ({ children, onClick, onPress }: any) => (
     <button onClick={onClick ?? onPress}>{children}</button>
   ),

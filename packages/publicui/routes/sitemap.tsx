@@ -6,7 +6,7 @@ import {
 } from 'react-router';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import Sitemap from '@plone/layout/components/Sitemap/Sitemap';
-import { Container } from '@plone/components/quanta';
+import { Container } from '@plone/quanta';
 import type { NavigationResponse } from '@plone/types';
 import { flattenToAppURL } from '@plone/helpers';
 

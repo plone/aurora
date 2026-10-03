@@ -2,7 +2,7 @@ import React from 'react';
 import type { BlockConfigBase } from '@plone/types';
 import { MapsSchema } from './schema';
 import MapsBlockView from './MapsBlockView';
-import { WorldIcon } from '@plone/components/Icons';
+import { WorldIcon } from '@plone/icons';
 
 const MapsBlockInfo = {
   id: 'maps',
