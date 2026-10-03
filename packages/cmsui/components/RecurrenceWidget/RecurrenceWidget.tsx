@@ -1,10 +1,10 @@
 import { DialogTrigger, Group } from 'react-aria-components';
 
 import { Label } from '../Field/Field';
-import EditIcon from '@plone/components/icons/edit.svg?react';
-import DeleteIcon from '@plone/components/icons/bin.svg?react';
+import EditIcon from '@plone/icons/svg/edit.svg?react';
+import DeleteIcon from '@plone/icons/svg/bin.svg?react';
 
-import { Button } from '@plone/components/quanta';
+import { Button } from '@plone/quanta';
 
 import { lazy, Suspense, useMemo, useState } from 'react';
 

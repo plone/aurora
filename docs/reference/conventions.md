@@ -34,7 +34,7 @@ Also, the Public UI cannot rely on any CMSUI-specific styles or components.
 Storybook is a tool for building UI components in isolation with React.
 It helps you develop components by mocking their different states and interacting with them in a sandbox.
 Plone Aurora follows a Storybook-first approach, so new components should be developed in Storybook first before adding them to the app.
-This mainly applies to design system components (`@plone/components`), but you can also use it for other structural components (`@plone/layout`).
+This mainly applies to design system components (`@plone/components`, `@plone/quanta`), but you can also use it for other structural components (`@plone/layout`).
 
 You can see the Storybook for this package at [Plone Aurora Storybook](https://plone-storybook.readthedocs.io/latest/?path=/docs/introduction--docs).
 
@@ -57,28 +57,36 @@ Otherwise, we'd have to patch the resolution process for every build or bundler 
 
 ## `@plone/components` package
 
-This package is the design system for Plone 7.
-It contains reusable UI components like buttons, forms, modals, and more components.
+This package contains the basic, white-label set of reusable UI components for Plone 7, such as buttons, forms, modals, and more.
 
 When adding new components, make sure they are generic and reusable across the app.
 This package should not contain any Plone-specific logic or data handling.
 The components here have to be "dumb" and receive plain props to render its output.
 For example, they will never have the logic for fetching data from Plone or handling authentication.
-This package is a first-level Plone modular architecture package, thus it can't depend on any other Plone package except `@plone/types`.
+This package is a first-level Plone modular architecture package, and it can only depend on `@plone/types` and `@plone/icons`.
 Also, document them well and include Storybook stories to show how to use them and their different states.
 
-There are two sets of components here:
-- Tailwind-based components, which you can use directly and are styled with Tailwind CSS classes.
-- Headless components, which provide functionality without styling, so you can style them however you want.
-
-We also include a basic "baseline" CSS for the headless components to give you a common starting point.
+The components here are headless: they provide functionality without opinionated styling, so you can style them however you want.
+We also include a basic "baseline" CSS to give you a common starting point.
 These styles are very simple ("vanilla") and easy to override with your own styles.
 You can also use these in Volto projects by installing the `@plone/components` package.
 
-The Tailwind-based components are meant for public themes that also use Tailwind CSS, like the default Plone Aurora theme (`@plone/agave`).
-They're also used in the CMSUI, which is based on Tailwind CSS.
-
 Check out the Storybook for this package at [@plone/components Storybook](https://plone-components.readthedocs.io/latest/?path=/docs/introduction--docs).
+
+## `@plone/quanta` package
+
+This package contains the Quanta design system: React components styled with Tailwind CSS, the `SizeWidget`, `AlignWidget`, and `WidthWidget` form widgets, and the Quanta CSS, typography, and fonts.
+
+The Quanta components are meant for themes that also use Tailwind CSS, like the default Plone Aurora theme (`@plone/agave`).
+They're also used in the CMSUI, which is based on Tailwind CSS.
+This package never depends on `@plone/components`; it only depends on `@plone/icons`.
+
+Check out the Storybook for this package at [@plone/quanta Storybook](https://plone-quanta.readthedocs.io/).
+
+## `@plone/icons` package
+
+This package owns the Quanta icon set: the raw SVGs, a React component per icon, the `Icon` wrapper component, the `*.svg?react` type declarations, and the SVGR Vite plugin used to transform SVGs into React components at build time.
+It has no dependency on any other Plone package.
 
 ## `@plone/layout` package
 

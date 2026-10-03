@@ -1,1 +1,0 @@
-Cached the Playwright browsers in CI, and stopped installing their system dependencies with apt, which was sometimes very slow. @sneridagh
