@@ -1,0 +1,1 @@
+Moved the code block styles from Tailwind utilities to `styles/content.css`, so themes can override them in both the Public UI and the editor. The code block has the `block-code_block__frame` and `block-code_block__pre` parts, and its syntax colors are `--code-token-*` custom properties. @sneridagh
