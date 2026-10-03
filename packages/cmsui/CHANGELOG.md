@@ -8,6 +8,16 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.11 (2026-10-03)
+
+### Internal
+
+- Added visual regression tests for the CMS chrome: login, add and edit forms, block settings sidebar, sharing and control panels. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+- Import icons from `@plone/icons`. Import Quanta components from `@plone/quanta`. @pnicolli
+  Scan `@plone/icons` for Tailwind classes, so every icon size utility is generated. @pnicolli
+  Load the base icon styles from `@plone/icons`. @pnicolli 
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
 ## 1.0.0-alpha.10 (2026-10-01)
 
 ### Feature

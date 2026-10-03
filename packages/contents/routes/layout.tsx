@@ -17,19 +17,19 @@ import clsx from 'clsx';
 import { getLocale } from '@plone/aurora/app/i18next.server';
 import { ploneContentContext } from '@plone/aurora/app/middleware.server';
 import { type RootLoader } from '@plone/aurora/app/root';
-import { Link } from '@plone/components/quanta';
+import { Link } from '@plone/quanta';
 import { PluggablesProvider, Plug } from '@plone/layout/components/Pluggable';
 import Toast from '@plone/layout/components/Toast/Toast';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
 import { shouldShowToolbar } from '@plone/layout/helpers';
 import config from '@plone/registry';
-import Back from '@plone/components/icons/arrow-left.svg?react';
+import Back from '@plone/icons/svg/arrow-left.svg?react';
 
 // eslint-disable-next-line import/no-unresolved
 import stylesheet from '@plone/aurora/.plone/cmsui.css?url';
 // TODO these imports are temporary and will need to be fully replaced with quanta tailwind styles
 import basicComponentsStylesheets from '@plone/components/dist/basic.css?url';
-import quantaComponentsStylesheet from '@plone/components/dist/quanta.css?url';
+import quantaComponentsStylesheet from '@plone/quanta/dist/quanta.css?url';
 
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
   matches,

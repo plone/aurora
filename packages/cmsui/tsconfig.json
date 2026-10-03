@@ -3,7 +3,7 @@
   "include": [
     "**/*.ts",
     "**/*.tsx",
-    "../components/src/icons.d.ts",
+    "../icons/src/svg.d.ts",
     "../../apps/aurora/.react-router/types/**/*"
   ],
   "exclude": [

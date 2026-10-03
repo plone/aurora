@@ -13,6 +13,20 @@ const TARGETS = [
     sourceRoots: ['src'],
   },
   {
+    id: 'icons',
+    owner: '@plone/icons',
+    packageDir: 'packages/icons',
+    configFile: 'apps/aurora/vite.config.ts',
+    sourceRoots: ['src'],
+  },
+  {
+    id: 'quanta',
+    owner: '@plone/quanta',
+    packageDir: 'packages/quanta',
+    configFile: 'apps/aurora/vite.config.ts',
+    sourceRoots: ['src'],
+  },
+  {
     id: 'helpers',
     owner: '@plone/helpers',
     packageDir: 'packages/helpers',

@@ -11,7 +11,7 @@
   "exclude": ["packages/*"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "types": ["@react-router/node", "vite/client", "@plone/components/icons"],
+    "types": ["@react-router/node", "vite/client", "@plone/icons/svg"],
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",

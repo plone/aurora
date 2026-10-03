@@ -103,7 +103,7 @@ vi.mock('../Form/Form', () => ({
   useAppForm: useAppFormSpy,
 }));
 
-vi.mock('@plone/components/quanta', () => ({
+vi.mock('@plone/quanta', () => ({
   Accordion: ({ children }: any) => <section>{children}</section>,
   AccordionItem: ({ children }: any) => <div>{children}</div>,
   AccordionPanel: ({ children }: any) => <div>{children}</div>,
