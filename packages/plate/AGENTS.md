@@ -45,7 +45,7 @@ Acceptance and visual regression tests live under `acceptance/`:
 
 Only cover features reachable through Aurora's `somersault-editor` and `somersault-renderer` presets, and keep screenshots to the essentials.
 
-Block content must only use contract classnames in the public view (plone/aurora#200), never Tailwind utilities. `acceptance/tests/content-class-contract.test.ts` checks this against a `PENDING` list of Tailwind classes still waiting for conversion. When you convert a node to plain CSS in `styles/content.css`, remove its entries from `PENDING`. Never add entries to it.
+Block content must only use contract classnames in the public view (plone/aurora#200), never Tailwind utilities: style it in `styles/content.css` instead. `acceptance/tests/content-class-contract.test.ts` fails on any other class. Editor-only affordances (toolbars, handles, editor controls) stay Tailwind in the editable components.
 
 For Storybook:
 

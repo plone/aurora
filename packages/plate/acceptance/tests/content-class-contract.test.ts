@@ -27,133 +27,6 @@ const THIRD_PARTY = [
   /^react-aria-[\w-]+$/, // React Aria Components (links)
 ];
 
-/**
- * Classes outside the contract that are still waiting to be converted, by the
- * Plate node that renders them. This list may only shrink: each conversion
- * phase removes its entries, and the test fails both on new classes and on
- * entries that no longer render, so the list always matches reality.
- */
-const PENDING: Record<string, string[]> = {
-  editor: [
-    '**:data-slate-placeholder:!top-1/2',
-    '**:data-slate-placeholder:-translate-y-1/2',
-    '**:data-slate-placeholder:opacity-100!',
-    '**:data-slate-placeholder:text-muted-foreground/80',
-    '[&_[data-slate-node="element"]:not([data-slate-inline="true"])]:mx-auto',
-    '[&_strong]:font-bold',
-    'break-words',
-    'cursor-text',
-    'focus-visible:outline-none',
-    'group/editor',
-    'overflow-x-hidden',
-    'overflow-y-hidden',
-    'placeholder:text-muted-foreground/80',
-    'relative',
-    'ring-offset-background',
-    'rounded-md',
-    'select-text',
-    'w-full',
-    'whitespace-pre-wrap',
-  ],
-  callout: [
-    'bg-muted',
-    'flex',
-    'gap-2',
-    'my-1',
-    'p-4',
-    'pl-3',
-    'rounded-md',
-    'rounded-sm',
-    'select-none',
-    'size-6',
-    'text-[18px]',
-    'w-full',
-  ],
-  toggle: [
-    '-left-0.5',
-    '[&_svg]:size-4',
-    'absolute',
-    'cursor-pointer',
-    'duration-75',
-    'hover:bg-accent',
-    'items-center',
-    'justify-center',
-    'p-px',
-    'pl-6',
-    'relative',
-    'rotate-0',
-    'rounded-md',
-    'select-none',
-    'size-6',
-    'text-muted-foreground',
-    'top-0',
-    'transition-colors',
-    'transition-transform',
-  ],
-  column_group: [
-    'flex',
-    'group/column',
-    'mb-2',
-    'relative',
-    'rounded',
-    'size-full',
-  ],
-  column: [
-    'border',
-    'border-transparent',
-    'group-first/column:pl-0',
-    'group-last/column:pr-0',
-    'h-full',
-    'p-1.5',
-    'pt-2',
-    'px-2',
-    'relative',
-  ],
-  toc: [
-    "[&_svg:not([class*='size-'])]:size-4",
-    '[&_svg]:pointer-events-none',
-    '[&_svg]:shrink-0',
-    'aria-invalid:border-destructive',
-    'aria-invalid:ring-destructive/20',
-    'cursor-pointer',
-    'dark:aria-invalid:ring-destructive/40',
-    'dark:hover:bg-accent/50',
-    'decoration-[0.5px]',
-    'disabled:opacity-50',
-    'disabled:pointer-events-none',
-    'focus-visible:border-ring',
-    'focus-visible:ring-[3px]',
-    'focus-visible:ring-ring/50',
-    'font-medium',
-    'gap-2',
-    'h-auto',
-    'has-[>svg]:px-3',
-    'hover:bg-accent',
-    'hover:text-muted-foreground',
-    'items-center',
-    'justify-center',
-    'mb-1',
-    'outline-none',
-    'p-0',
-    'pl-0.5',
-    'pl-[26px]',
-    'pl-[50px]',
-    'px-0.5',
-    'py-1.5',
-    'rounded-none',
-    'shrink-0',
-    'text-left',
-    'text-muted-foreground',
-    'text-sm',
-    'transition-all',
-    'truncate',
-    'underline',
-    'underline-offset-4',
-    'w-full',
-    'whitespace-nowrap',
-  ],
-};
-
 async function contentClasses(page: Page) {
   return page.evaluate(() => {
     const root = document.querySelector('[data-slate-editor]')!;
@@ -202,7 +75,7 @@ test('the public content only uses contract classnames', async ({ page }) => {
   const pageId = await createNativeBlocksPage(page, ALL_NATIVE_BLOCK_SECTIONS);
   await openInView(page, pageId);
 
-  expect(await violations(page)).toEqual(PENDING);
+  expect(await violations(page)).toEqual({});
 });
 
 test('inline marks only use contract classnames', async ({ page }) => {
@@ -212,7 +85,7 @@ test('inline marks only use contract classnames', async ({ page }) => {
   });
   await openInView(page, pageId);
 
-  expect(await violations(page)).toEqual({ editor: PENDING.editor });
+  expect(await violations(page)).toEqual({});
 
   // Comments and suggestions are editorial: the public view shows their text
   // as plain text, without highlight or insert/delete markup.

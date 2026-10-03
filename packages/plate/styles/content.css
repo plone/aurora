@@ -490,3 +490,236 @@
   box-sizing: border-box;
   padding: calc(var(--spacing, 0.25rem) * 2) calc(var(--spacing, 0.25rem) * 4);
 }
+
+/*
+ * Callout. Its box is the block's inner container; a callout's own background
+ * color is set inline.
+ */
+
+:where(.slate-callout > .block-inner-container) {
+  display: flex;
+  padding: calc(var(--spacing, 0.25rem) * 4);
+  padding-left: calc(var(--spacing, 0.25rem) * 3);
+  border-radius: var(--radius-sm, 0.25rem);
+  background-color: var(--block-callout-background, var(--muted));
+  margin-block: calc(var(--spacing, 0.25rem) * 1);
+}
+
+:where(.block-callout__body) {
+  display: flex;
+  width: 100%;
+  border-radius: var(--radius-md, 0.375rem);
+  gap: calc(var(--spacing, 0.25rem) * 2);
+}
+
+:where(.block-callout__icon) {
+  width: calc(var(--spacing, 0.25rem) * 6);
+  height: calc(var(--spacing, 0.25rem) * 6);
+  font-family: var(
+    --block-callout-icon-font-family,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    NotoColorEmoji,
+    'Noto Color Emoji',
+    'Segoe UI Symbol',
+    'Android Emoji',
+    EmojiSymbols
+  );
+  font-size: 18px;
+  user-select: none;
+}
+
+:where(.block-callout__content) {
+  width: 100%;
+}
+
+/*
+ * Toggle. The rendered content shows a toggle open, with a chevron icon; in
+ * the editor, the chevron is a button that opens and closes it.
+ */
+
+:where(.slate-toggle > .block-inner-container) {
+  position: relative;
+  padding-left: calc(var(--spacing, 0.25rem) * 6);
+}
+
+:where(.block-toggle__icon) {
+  position: absolute;
+  top: 0;
+  left: calc(var(--spacing, 0.25rem) * -0.5);
+  width: calc(var(--spacing, 0.25rem) * 6);
+  height: calc(var(--spacing, 0.25rem) * 6);
+  padding: 1px;
+  border-radius: var(--radius-md, 0.375rem);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition-duration: var(--default-transition-duration, 150ms);
+  transition-property: color, background-color;
+  transition-timing-function: var(
+    --default-transition-timing-function,
+    cubic-bezier(0.4, 0, 0.2, 1)
+  );
+  user-select: none;
+}
+
+@media (hover: hover) {
+  :where(.block-toggle__icon:hover) {
+    background-color: var(--accent);
+  }
+}
+
+:where(.block-toggle__icon svg) {
+  display: block;
+  width: calc(var(--spacing, 0.25rem) * 4);
+  height: calc(var(--spacing, 0.25rem) * 4);
+  vertical-align: middle;
+}
+
+/*
+ * Columns. Each column's width is set inline on its wrapper, the
+ * `block-column_group__column` part. In the editor, a toolbar anchor wraps
+ * the inner container, so it's matched by the row it holds.
+ */
+
+:where(.block-inner-container:has(> .block-column_group__row)) {
+  margin-bottom: calc(var(--spacing, 0.25rem) * 2);
+}
+
+:where(.block-column_group__row) {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  border-radius: 0.25rem;
+}
+
+:where(.block-column_group__column) {
+  position: relative;
+}
+
+:where(.slate-column) {
+  height: 100%;
+  padding: calc(var(--spacing, 0.25rem) * 2) calc(var(--spacing, 0.25rem) * 2) 0;
+}
+
+:where(.block-column_group__column:first-child > .slate-column) {
+  padding-left: 0;
+}
+
+:where(.block-column_group__column:last-child > .slate-column) {
+  padding-right: 0;
+}
+
+:where(.block-column__content) {
+  position: relative;
+  height: 100%;
+  padding: calc(var(--spacing, 0.25rem) * 1.5);
+  border: 1px solid transparent;
+}
+
+/*
+ * Table of contents. Each entry is a button that scrolls to its heading, with
+ * its heading level in `data-depth`.
+ */
+
+:where(.slate-toc > .block-inner-container) {
+  padding: 0;
+  margin-bottom: calc(var(--spacing, 0.25rem) * 1);
+}
+
+:where(.block-toc__item) {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  height: auto;
+  flex-shrink: 0;
+  padding: calc(var(--spacing, 0.25rem) * 1.5)
+    calc(var(--spacing, 0.25rem) * 0.5);
+  border: 0 solid;
+  border-radius: 0;
+  margin: 0;
+  appearance: none;
+  background-color: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  letter-spacing: inherit;
+  line-height: var(--text-sm--line-height, calc(1.25 / 0.875));
+  outline-style: none;
+  text-align: left;
+  text-decoration-line: underline;
+  text-decoration-thickness: 0.5px;
+  text-overflow: ellipsis;
+  text-underline-offset: 4px;
+  transition-duration: var(--default-transition-duration, 150ms);
+  transition-property: all;
+  transition-timing-function: var(
+    --default-transition-timing-function,
+    cubic-bezier(0.4, 0, 0.2, 1)
+  );
+  white-space: nowrap;
+}
+
+:where(.block-toc__item[data-depth='2']) {
+  padding-left: 26px;
+}
+
+:where(.block-toc__item[data-depth='3']) {
+  padding-left: 50px;
+}
+
+@media (hover: hover) {
+  :where(.block-toc__item:hover) {
+    background-color: var(--accent);
+  }
+}
+
+:where(.block-toc__item:focus-visible) {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+}
+
+:where(.block-toc__empty) {
+  color: var(--color-gray-500, oklch(55.1% 0.027 264.364));
+  font-size: var(--text-sm, 0.875rem);
+  line-height: var(--text-sm--line-height, calc(1.25 / 0.875));
+}
+
+/* The highlight shown on a heading after jumping to it from the contents. */
+:where(.block-toc__highlight) {
+  position: absolute;
+  z-index: 1;
+  background-color: color-mix(
+    in oklab,
+    var(--color-quanta-sapphire, #0b78d0) 13%,
+    transparent
+  );
+  inset: 0;
+  pointer-events: none;
+}
+
+/*
+ * The content root, Plate's `slate-editor`. These rules come last, so they
+ * win over the block rules above, as they did as Tailwind utilities.
+ */
+
+:where(.slate-editor) {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  border-radius: var(--radius-md, 0.375rem);
+  cursor: text;
+  overflow-wrap: break-word;
+  user-select: text;
+  white-space: pre-wrap;
+}
+
+:where(
+  .slate-editor [data-slate-node='element']:not([data-slate-inline='true'])
+) {
+  margin-inline: auto;
+}
+
+:where(.slate-editor strong) {
+  font-weight: var(--font-weight-bold, 700);
+}
