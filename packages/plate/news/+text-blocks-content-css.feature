@@ -1,0 +1,1 @@
+Moved the styles of the paragraph, title, heading, blockquote and separator blocks from Tailwind utilities to `styles/content.css`, so themes can override them in both the Public UI and the editor. The separator gets the `block-hr__spacer` and `block-hr__line` parts, and the public title the `slate-title` class. @sneridagh
