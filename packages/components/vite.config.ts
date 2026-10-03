@@ -1,10 +1,9 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
-import { PloneSVGRVitePlugin } from './vite-plugin-svgr';
+import { PloneSVGRVitePlugin } from '@plone/icons/vite-plugin-svgr';
 
 export default defineConfig({
-  plugins: [tailwindcss(), PloneSVGRVitePlugin(), react()],
+  plugins: [PloneSVGRVitePlugin(), react()],
   resolve: {
     tsconfigPaths: true,
   },

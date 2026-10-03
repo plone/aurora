@@ -1,5 +1,5 @@
 import React from 'react';
-import IconSGVR from '../../icons/add.svg?react';
+import IconSGVR from '@plone/icons/svg/add.svg?react';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
@@ -29,6 +29,6 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: (args: any) => <IconSGVR {...args} />,
   args: {
-    size: 'L',
+    size: 'lg',
   },
 };

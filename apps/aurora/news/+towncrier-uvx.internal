@@ -1,1 +1,0 @@
-The release configuration of all the packages now runs `towncrier` with `uvx` instead of `pipx`. @sneridagh

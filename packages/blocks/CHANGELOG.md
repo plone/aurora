@@ -8,6 +8,14 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.17 (2026-10-03)
+
+### Internal
+
+- Import icons from `@plone/icons`. @pnicolli 
+- Removed the unused native Plate image (`img`) entry from `config.blocks.plateBlocksConfig`. @sneridagh 
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
 ## 1.0.0-alpha.16 (2026-09-29)
 
 ### Bugfix
