@@ -53,6 +53,7 @@ else:
 # They can be extensions coming with Sphinx (named "sphinx.ext.*")
 # or your custom ones.
 extensions = [
+    "latest_gh_version_substitution",
     "myst_parser",
     "sphinx.ext.ifconfig",
     "sphinx.ext.intersphinx",
@@ -63,7 +64,6 @@ extensions = [
     "sphinxcontrib.youtube",
     "sphinxext.opengraph",
     "sphinx_reredirects",
-    "latest_gh_version_substitution",
 ]
 
 
