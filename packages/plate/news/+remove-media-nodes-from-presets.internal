@@ -1,0 +1,1 @@
+Removed the Plate media nodes (video, audio, file, media embed, upload placeholder and caption) from Aurora's block editor and renderer kits; Aurora uses Plone blocks for media instead. The stock `full` preset keeps them. @sneridagh
