@@ -6,8 +6,6 @@ import type { SlateRenderElementProps } from 'platejs/static';
 import { isOrderedList } from '@platejs/list';
 import { CheckIcon } from 'lucide-react';
 
-import { cn } from '../../lib/utils';
-
 const config: Record<
   string,
   {
@@ -34,11 +32,7 @@ function List(props: SlateRenderElementProps) {
   const List = isOrderedList(props.element) ? 'ol' : 'ul';
 
   return (
-    <List
-      className="block-p__list relative m-0 p-0"
-      style={{ listStyleType }}
-      start={listStart}
-    >
+    <List className="block-p__list" style={{ listStyleType }} start={listStart}>
       {Marker && <Marker {...props} />}
       {Li ? (
         <Li {...props} />
@@ -55,22 +49,11 @@ function TodoMarkerStatic(props: SlateRenderElementProps) {
   return (
     <div contentEditable={false}>
       <button
-        className={cn(
-          `
-            peer pointer-events-none absolute top-1 -left-6 size-4 shrink-0 rounded-sm border
-            border-primary bg-background ring-offset-background
-            focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
-            focus-visible:outline-none
-            data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground
-          `,
-          props.className,
-        )}
+        className="block-p__checkbox"
         data-state={checked ? 'checked' : 'unchecked'}
         type="button"
       >
-        <div className={cn('flex items-center justify-center text-current')}>
-          {checked && <CheckIcon className="size-4" />}
-        </div>
+        <div className="block-p__checkmark">{checked && <CheckIcon />}</div>
       </button>
     </div>
   );
@@ -79,11 +62,8 @@ function TodoMarkerStatic(props: SlateRenderElementProps) {
 function TodoLiStatic(props: SlateRenderElementProps) {
   return (
     <li
-      className={cn(
-        'block-p__item list-none',
-        (props.element.checked as boolean) &&
-          'text-muted-foreground line-through',
-      )}
+      className="block-p__item"
+      data-checked={(props.element.checked as boolean) ? '' : undefined}
     >
       {props.children}
     </li>

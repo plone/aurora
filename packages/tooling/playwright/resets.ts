@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import type { Page } from '@playwright/test';
 
 /**
@@ -46,3 +48,44 @@ export const plainElementMargin = (page: Page, tagName: string) =>
     element.remove();
     return margin;
   }, tagName);
+
+/**
+ * A real non-Tailwind reset, `@plone/theming`'s simple reset, moved into the
+ * `base` layer where themes are expected to put their reset. In it, a plain
+ * `h1` has a `21.44px 0px` margin.
+ */
+export const SIMPLE_RESET = readFileSync(
+  fileURLToPath(
+    new URL('../../theming/styles/simple/reset.css', import.meta.url),
+  ),
+  'utf-8',
+).replace('@layer reset {', '@layer base {');
+
+/**
+ * The computed values of the given properties, per selector, inside the
+ * rendered content. A selector that matches nothing gives `null`.
+ */
+export const measureOwnedStyles = (
+  page: Page,
+  owned: Record<string, string[]>,
+) =>
+  page.evaluate((ownedStyles) => {
+    return Object.fromEntries(
+      Object.entries(ownedStyles).map(([selector, properties]) => {
+        const element = document.querySelector(
+          `[data-slate-editor] ${selector}`,
+        );
+        if (!element) return [selector, null];
+        const style = getComputedStyle(element);
+        return [
+          selector,
+          Object.fromEntries(
+            properties.map((property) => [
+              property,
+              style.getPropertyValue(property),
+            ]),
+          ),
+        ];
+      }),
+    );
+  }, owned);
