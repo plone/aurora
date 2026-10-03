@@ -1,0 +1,1 @@
+Moved the table styles from Tailwind utilities to `styles/content.css`, so themes can override them in both the Public UI and the editor. The table has the `block-table__scroll`, `block-table__wrapper`, `block-table__table` and `block-table__cell-content` parts, and cells mark their bordered sides with `data-border-*` attributes. @sneridagh

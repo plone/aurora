@@ -399,3 +399,94 @@
 :where(.slate-code_block .hljs-title) {
   color: var(--code-token-title, #6f42c1);
 }
+
+/*
+ * Table. The table scrolls horizontally inside the block. Cell borders are
+ * drawn by each cell's `::before`, on the sides its `data-border-*` attributes
+ * name; a cell's own background color is set inline as `--cellBackground`.
+ */
+
+:where(.slate-table) {
+  padding: calc(var(--spacing, 0.25rem) * 5) 0;
+  margin: 0;
+}
+
+:where(.block-table__scroll) {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+:where(.block-table__wrapper) {
+  position: relative;
+  width: fit-content;
+}
+
+:where(.block-table__table) {
+  display: table;
+  height: 1px;
+  margin: 0 0 0 1px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  text-indent: 0;
+}
+
+:where(.block-table__table tbody) {
+  min-width: 100%;
+}
+
+:where(.slate-tr) {
+  height: 100%;
+}
+
+:where(.slate-td, .slate-th) {
+  overflow: visible;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  border-style: none;
+  margin: 0;
+  background-color: var(--cellBackground, transparent);
+}
+
+:where(.slate-th) {
+  font-weight: var(--font-weight-normal, 400);
+  text-align: left;
+}
+
+:where(.slate-th > *) {
+  margin: 0;
+}
+
+:where(.slate-td, .slate-th)::before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 0 solid var(--block-table-border-color, var(--border));
+  content: '';
+  user-select: none;
+}
+
+:where(.slate-td[data-border-top], .slate-th[data-border-top])::before {
+  border-top-width: 1px;
+}
+
+:where(.slate-td[data-border-right], .slate-th[data-border-right])::before {
+  border-right-width: 1px;
+}
+
+:where(.slate-td[data-border-bottom], .slate-th[data-border-bottom])::before {
+  border-bottom-width: 1px;
+}
+
+:where(.slate-td[data-border-left], .slate-th[data-border-left])::before {
+  border-left-width: 1px;
+}
+
+:where(.block-table__cell-content) {
+  position: relative;
+  z-index: 20;
+  height: 100%;
+  box-sizing: border-box;
+  padding: calc(var(--spacing, 0.25rem) * 2) calc(var(--spacing, 0.25rem) * 4);
+}
