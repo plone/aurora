@@ -114,7 +114,7 @@ For example:
 
 Keep these responsibilities separate when adding new styling behavior.
 
-## Classname contract for themers
+## Classname contract for themes
 
 Block content is styled through plain CSS classnames, never through Tailwind utilities, so that any theme can style it, whether or not it uses Tailwind.
 Themes rely on the following hooks, in both the Public UI and the editor.
@@ -131,15 +131,19 @@ The following rules apply to these hooks.
 - The block type is used as is, without readable aliases, such as `block-p` or `block-code_block`.
   It matches `data-block-type` and the stored data.
 - A native Plate block and a Plone block may share a type name.
-  For example, both video blocks get `block-video`.
-  Use `.block-video.slate-video` for the native one, `.block-video.slate-ploneBlock` for the Plone one, or `.block-video` for both.
+  Both then get `block-<type>`.
+  Use `.block-<type>.slate-<type>` for the native one, `.block-<type>.slate-ploneBlock` for the Plone one, or `.block-<type>` for both.
 - Inner parts use a BEM separator, `__`, because block types may already contain `-` or `_`.
   Nested Plate nodes keep their `slate-<type>` class and get no part class.
-- Native and Plone blocks share part names when the concept is the same, such as `__caption`, `__link`, or `__item`.
+- Blocks share part names when the concept is the same, such as `__link`, `__item`, or `__image`.
 - Variants are data attributes, not modifier classes.
 
 Lists are paragraphs with a list style type.
 Their root keeps `block-p`, gets `data-list-style-type`, and renders the parts `block-p__list`, on the `ul` or `ol` element, and `block-p__item`, on the `li` element.
 
 The styles for these hooks live in each add-on's {file}`styles/content.css`.
-See {doc}`/conceptual-guides/add-on-styles-loader` for how they're loaded and how to override them.
+See {doc}`/conceptual-guides/add-on-styles-loader` for how they're loaded and how to override them, and {doc}`/how-to-guides/style-blocks-in-a-theme` for every block's parts and tokens.
+
+Two acceptance tests guard the contract in the public view: {file}`packages/plate/acceptance/tests/content-class-contract.test.ts` for the native blocks and {file}`packages/blocks/acceptance/tests/plone-blocks-class-contract.test.ts` for the Plone blocks.
+They fail on any class outside the contract, such as a Tailwind utility.
+When a new block or part needs styling, add its rules to the package's {file}`styles/content.css` and give its elements contract classnames.
