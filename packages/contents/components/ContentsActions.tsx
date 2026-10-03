@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { TooltipTrigger } from 'react-aria-components';
-import { Button, Tooltip } from '@plone/components/quanta';
+import { Button, Tooltip } from '@plone/quanta';
 
 import {
   UploadIcon,
@@ -12,7 +12,7 @@ import {
   CutIcon,
   CopyIcon,
   PasteIcon,
-} from '@plone/components/Icons';
+} from '@plone/icons';
 
 import type { Brain } from '@plone/types';
 

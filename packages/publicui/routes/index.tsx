@@ -25,8 +25,8 @@ import {
 import { getLocale } from '@plone/aurora/app/i18next.server';
 import { ploneContentContext } from '@plone/aurora/app/middleware.server';
 import type { RootLoader } from '@plone/aurora/app/root';
-import { FolderIcon, ShareIcon } from '@plone/components/Icons';
-import Pencil from '@plone/components/icons/pencil.svg?react';
+import { FolderIcon, ShareIcon } from '@plone/icons';
+import Pencil from '@plone/icons/svg/pencil.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
 import { shouldShowToolbar } from '@plone/layout/helpers';

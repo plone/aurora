@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from './Icon';
+import { Icon } from '@plone/icons';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 

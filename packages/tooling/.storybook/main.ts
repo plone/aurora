@@ -17,6 +17,10 @@ const config: StorybookConfig = {
       url: 'https://plone-components.readthedocs.io/latest/',
       expanded: true, // Optional, true by default,
     },
+    quanta: {
+      title: '@plone/quanta',
+      url: 'https://plone-quanta.readthedocs.io/',
+    },
     layout: {
       title: '@plone/layout',
       url: 'https://plone-layout.readthedocs.io/',

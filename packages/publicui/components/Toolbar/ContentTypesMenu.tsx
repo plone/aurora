@@ -1,6 +1,6 @@
 import { ToolbarMenu } from '@plone/layout/components/Toolbar/ToolbarMenu';
-import Add from '@plone/components/icons/add.svg?react';
-import Page from '@plone/components/icons/page.svg?react';
+import Add from '@plone/icons/svg/add.svg?react';
+import Page from '@plone/icons/svg/page.svg?react';
 import type { Content, GetTypesResponse, Type } from '@plone/types';
 import { Header, Menu, MenuSection, Text } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
