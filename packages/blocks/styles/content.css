@@ -7,7 +7,7 @@
 
 /* Image block */
 
-:where(.image-block) {
+:where(.block-image__frame) {
   width: min(100%, var(--block-size, 100%));
   /*
    * Alignment is float-based so that the content of following blocks wraps
@@ -19,7 +19,7 @@
   float: var(--block-float, none);
 }
 
-:where(.image-block img) {
+:where(.block-image__frame img) {
   display: block;
   width: 100%;
   height: auto;
@@ -40,8 +40,8 @@
  * block keeps it clickable. Only needed for the floated (left/right) states.
  */
 :where(
-  [data-style-align='left'] .image-block,
-  [data-style-align='right'] .image-block
+  [data-style-align='left'] .block-image__frame,
+  [data-style-align='right'] .block-image__frame
 ) {
   position: relative;
   z-index: 2;
@@ -79,4 +79,42 @@
   .block-image[data-style-align='right'] ~ .block :is(ol, ul)
 ) {
   list-style-position: inside;
+}
+
+/*
+ * Video block. The video, or the player's iframe for YouTube, Vimeo and
+ * PeerTube, fills the block's width. The block's alignment is in the
+ * wrapper's `data-align`.
+ */
+
+:where(.block-video__wrapper, .block-video__figure, .block-video__inner) {
+  width: 100%;
+}
+
+:where(.block-video__figure) {
+  margin: 0;
+}
+
+:where(.block-video__figure video, .block-video__figure iframe) {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+:where(.block-video__figure iframe) {
+  border: 0;
+  aspect-ratio: 16 / 9;
+}
+
+/* Maps block. The embedded map fills the block's width. */
+
+:where(.block-maps__frame) {
+  width: 100%;
+}
+
+:where(.block-maps__iframe) {
+  display: block;
+  width: 100%;
+  border: 0;
+  aspect-ratio: 16 / 9;
 }

@@ -1,6 +1,5 @@
 import type { BlockConfigBase, BlockViewProps } from '@plone/types';
 import type { ReactNode } from 'react';
-import clsx from 'clsx';
 import { isInternalURL } from '@plone/helpers';
 import config from '@plone/registry';
 
@@ -199,21 +198,13 @@ export const VideoBlockBody = ({
     }
 
     return (
-      <div className="invalid-video-format" aria-live="polite">
+      <div className="block-video__invalid" aria-live="polite">
         Please enter a valid URL.
       </div>
     );
   }
 
-  return (
-    <div
-      className={clsx('video-inner', {
-        'full-width': data.align === 'full',
-      })}
-    >
-      {content}
-    </div>
-  );
+  return <div className="block-video__inner">{content}</div>;
 };
 
 export type { VideoData };

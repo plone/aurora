@@ -71,18 +71,19 @@ test.describe('Hydration', () => {
     // Keep a reference to the server-rendered node, before React hydrates.
     await page.addInitScript(() => {
       document.addEventListener('DOMContentLoaded', () => {
-        (window as any).__ssrImageBlock =
-          document.querySelector('.image-block');
+        (window as any).__ssrImageBlock = document.querySelector(
+          '.block-image__frame',
+        );
       });
     });
     await page.goto(`/${PAGE_ID}`);
 
-    // Wait until React owns the current `.image-block`, i.e. hydration (or a
+    // Wait until React owns the current `.block-image__frame`, i.e. hydration (or a
     // client re-render after a failed hydration) has finished.
     await expect
       .poll(() =>
         page.evaluate(() => {
-          const el = document.querySelector('.image-block');
+          const el = document.querySelector('.block-image__frame');
           return (
             !!el && Object.keys(el).some((k) => k.startsWith('__reactFiber'))
           );
@@ -95,7 +96,7 @@ test.describe('Hydration', () => {
       return {
         found: !!ssr,
         connected: !!ssr?.isConnected,
-        same: ssr === document.querySelector('.image-block'),
+        same: ssr === document.querySelector('.block-image__frame'),
         width: ssr?.getBoundingClientRect().width ?? 0,
       };
     });
