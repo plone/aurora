@@ -8,6 +8,14 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.3 (2026-10-03)
+
+### Internal
+
+- Added a visual regression test for the contents listing. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+- Import icons from `@plone/icons`. Import Quanta components from `@plone/quanta`. @pnicolli 
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
 ## 1.0.0-alpha.2 (2026-09-29)
 
 ### Feature

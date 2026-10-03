@@ -7,11 +7,11 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { requireAuthCookie } from '@plone/react-router';
-import { Button, Container } from '@plone/components/quanta';
+import { Button, Container } from '@plone/quanta';
 import { Plug } from '@plone/layout/components/Pluggable';
 import ControlPanelsList from '../components/ControlPanel/ControlPanelsList';
 import VersionOverview from '../components/VersionOverview/VersionOverview';
-import Back from '@plone/components/icons/arrow-left.svg?react';
+import Back from '@plone/icons/svg/arrow-left.svg?react';
 
 export async function loader({
   request,

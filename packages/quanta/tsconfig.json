@@ -1,0 +1,19 @@
+{
+  "extends": "tsconfig/react-library.json",
+  "compilerOptions": {
+    "paths": {}
+  },
+  "include": ["src", "./setupTesting.ts"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "src/**/*.test.{ts,tsx}",
+    "src/**/*.stories.{ts,tsx}"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}

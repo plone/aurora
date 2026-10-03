@@ -8,7 +8,7 @@ import {
 } from 'react';
 import mapsBlockSVG from './block-maps.svg';
 import { useTranslation } from 'react-i18next';
-import { ArrowrightIcon, CloseIcon } from '@plone/components/Icons';
+import { ArrowrightIcon, CloseIcon } from '@plone/icons';
 
 const MapsBlockEdit = (props: BlockEditProps) => {
   const { t } = useTranslation();
