@@ -1,6 +1,6 @@
 import { useId, useCallback, useMemo, useEffect, useRef } from 'react';
 import { tv } from 'tailwind-variants';
-import type { TextFieldProps as QuantaTextFieldProps } from '@plone/components/quanta';
+import type { TextFieldProps as QuantaTextFieldProps } from '@plone/quanta';
 import {
   Description,
   fieldBorderStyles,
@@ -19,7 +19,7 @@ import {
   ComboBox,
   ComboBoxItem,
   Button,
-} from '@plone/components/quanta';
+} from '@plone/quanta';
 import {
   QuerystringProvider,
   useQuerystringContext,
@@ -27,7 +27,7 @@ import {
   type QueryCriterion,
   type FieldMetadata,
 } from './QuerystringWidgetContext';
-import { BinIcon, AddIcon } from '@plone/components/Icons';
+import { BinIcon, AddIcon } from '@plone/icons';
 
 type BaseFormFieldProps = Pick<
   QuantaTextFieldProps,

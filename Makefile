@@ -142,6 +142,12 @@ docs-test: docs-clean docs-linkcheckbroken docs-vale  ## Clean docs build, then 
 packages/registry/dist: $(shell find packages/registry/src -type f)
 	pnpm build:registry
 
+packages/icons/dist: $(shell find packages/icons/src -type f)
+	pnpm build:icons
+
+packages/quanta/dist: $(shell find packages/quanta/src -type f)
+	pnpm build:quanta
+
 packages/components/dist: $(shell find packages/components/src -type f)
 	pnpm build:components
 
@@ -155,7 +161,7 @@ packages/react-router/dist: $(shell find packages/react-router/src -type f)
 	pnpm build:react-router
 
 .PHONY: build-deps
-build-deps: packages/registry/dist packages/components/dist packages/client/dist packages/react-router/dist packages/helpers/dist  ## Build dependencies
+build-deps: packages/registry/dist packages/icons/dist packages/quanta/dist packages/components/dist packages/client/dist packages/react-router/dist packages/helpers/dist  ## Build dependencies
 
 ##### Release
 
