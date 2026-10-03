@@ -6,9 +6,9 @@
  */
 
 /*
- * In the Public UI, `@plone/layout`'s content area also sets the inner
- * container's spacing and `justify-items`. Those rules aren't loaded in the
- * editor yet; moving them here is part of unifying the view and edit layouts.
+ * The block's inner container. In Aurora, `@plone/layout`'s `content.css`
+ * also lays it out (category widths, spacing between blocks) in both the
+ * Public UI and the editor.
  */
 :where(.block-inner-container) {
   display: block;

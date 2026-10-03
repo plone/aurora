@@ -1,0 +1,1 @@
+Moved the block model's spatial relationships (category widths, spacing between blocks, nested blocks) from `styles/content-area.css` to `styles/content.css`, which the app loads in both the Public UI and the CMSUI editor. Blocks are now spaced the same in the editor as in the public view. @sneridagh
