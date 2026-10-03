@@ -1,0 +1,1 @@
+Moved the `.block-inner-container` styles to `styles/content.css`, shared by the Public UI and the CMSUI. The selection outline of a floated image block is now dropped by the block adapter. @sneridagh

@@ -1,0 +1,18 @@
+/*
+ * Block content styles of @plone/plate. They're loaded in both the Public UI
+ * and the CMSUI, inside the `plone-content` cascade layer. Follow the authoring
+ * rules in the "Content styles" section of the add-on styles loader docs: no
+ * `@layer`, selectors inside `:where()`, and no reliance on a particular reset.
+ */
+
+/*
+ * In the Public UI, `@plone/layout`'s content area also sets the inner
+ * container's spacing and `justify-items`. Those rules aren't loaded in the
+ * editor yet; moving them here is part of unifying the view and edit layouts.
+ */
+:where(.block-inner-container) {
+  display: block;
+  width: 100%;
+  max-width: var(--block-width);
+  margin-inline: auto;
+}

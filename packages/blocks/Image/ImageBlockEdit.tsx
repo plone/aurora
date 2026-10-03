@@ -3,9 +3,7 @@ import type { BlockEditProps } from '@plone/types';
 import Image from '@plone/layout/components/Image/Image';
 import { flattenToAppURL } from '@plone/helpers';
 import config from '@plone/registry';
-import clsx from 'clsx';
 import { getImageBlockItem, getImageBlockSrc } from './utils';
-import styles from './ImageBlock.module.css';
 
 const ImageBlockEdit = (props: BlockEditProps) => {
   const { block, data, setBlock, selected } = props;
@@ -36,7 +34,7 @@ const ImageBlockEdit = (props: BlockEditProps) => {
   );
 
   return (
-    <div className={clsx(styles.imageBlock, 'image-block')}>
+    <div className="image-block">
       {data.url ? (
         <Image
           item={getImageBlockItem(data)}
