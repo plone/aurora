@@ -1,28 +1,9 @@
 import type { PlateElementProps } from 'platejs/react';
 
 import { useTocElement, useTocElementState } from '@platejs/toc/react';
-import { cva } from 'class-variance-authority';
 import { PlateElement } from 'platejs/react';
 
 import { BlockInnerContainer } from './block-inner-container';
-import { Button } from './button';
-
-const headingItemVariants = cva(
-  `
-    block h-auto w-full cursor-pointer truncate rounded-none px-0.5 py-1.5 text-left font-medium
-    text-muted-foreground underline decoration-[0.5px] underline-offset-4
-    hover:bg-accent hover:text-muted-foreground
-  `,
-  {
-    variants: {
-      depth: {
-        1: 'pl-0.5',
-        2: 'pl-[26px]',
-        3: 'pl-[50px]',
-      },
-    },
-  },
-);
 
 export function TocElement(props: PlateElementProps) {
   const state = useTocElementState();
@@ -31,24 +12,23 @@ export function TocElement(props: PlateElementProps) {
 
   return (
     <PlateElement {...props}>
-      <BlockInnerContainer className="mb-1 p-0">
+      <BlockInnerContainer>
         <div contentEditable={false}>
           {headingList.length > 0 ? (
             headingList.map((item) => (
-              <Button
+              <button
                 key={item.id}
-                variant="ghost"
-                className={headingItemVariants({
-                  depth: item.depth as 1 | 2 | 3,
-                })}
+                type="button"
+                className="block-toc__item"
+                data-depth={item.depth}
                 onClick={(e) => btnProps.onClick(e, item, 'smooth')}
                 aria-current
               >
                 {item.title}
-              </Button>
+              </button>
             ))
           ) : (
-            <div className="text-sm text-gray-500">
+            <div className="block-toc__empty">
               Create a heading to display the table of contents.
             </div>
           )}

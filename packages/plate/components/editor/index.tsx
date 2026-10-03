@@ -3,18 +3,13 @@ import { useEffect, useMemo, type ReactNode } from 'react';
 import { BlockSelectionPlugin } from '@platejs/selection/react';
 import {
   Plate,
+  PlateView,
   usePlateEditor,
   type TPlateEditor,
   type PlateViewProps,
 } from 'platejs/react';
 
-import {
-  Editor,
-  EditorContainer,
-  EditorView,
-  editorVariants,
-} from '../ui/editor';
-import type { VariantProps } from 'class-variance-authority';
+import { Editor, EditorContainer } from '../ui/editor';
 import {
   I18nPlugin,
   defaultLanguage,
@@ -110,11 +105,10 @@ export { BlockSelectionPlugin };
 
 export function PlateRenderer(
   props: Omit<
-    PlateViewProps &
-      VariantProps<typeof editorVariants> & {
-        editorConfig: Parameters<typeof usePlateEditor>[0];
-        value: Value;
-      },
+    PlateViewProps & {
+      editorConfig: Parameters<typeof usePlateEditor>[0];
+      value: Value;
+    },
     'editor'
   >,
 ) {
@@ -127,11 +121,11 @@ export function PlateRenderer(
 
   return (
     <Plate editor={editor} readOnly>
-      <EditorView
+      {/* No Tailwind here: the content styles come from `styles/content.css`. */}
+      <PlateView
         {...rest}
         editor={editor as unknown as SlateEditor}
         className={props.className}
-        variant="none"
       />
     </Plate>
   );
