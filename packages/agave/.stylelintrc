@@ -5,6 +5,29 @@
     {
       "files": ["**/*.scss"],
       "customSyntax": "postcss-scss"
+    },
+    {
+      "files": ["**/styles/content.css"],
+      "rules": {
+        "at-rule-disallowed-list": [
+          ["layer"],
+          {
+            "message": "Don't declare a @layer in content.css: the styles loader puts the whole file in the plone-content layer."
+          }
+        ],
+        "selector-disallowed-list": [
+          [
+            "/^:root\\b/",
+            "/^(html|body)\\b/",
+            "/^[a-z][a-z0-9-]*(?=$|[\\s>+~.:#\\[])/",
+            "/^:(where|is)\\(\\s*(:root|[a-z][a-z0-9-]*)(?=$|[\\s>+~.:#\\[,)])/"
+          ],
+          {
+            "splitList": true,
+            "message": "content.css only targets the content root (.content-area) and block anatomy classnames, not :root, html, body or bare elements."
+          }
+        ]
+      }
     }
   ],
   "rules": {

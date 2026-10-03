@@ -1,0 +1,1 @@
+Added an acceptance test that checks the public block content only uses contract classnames, with a list of pending Tailwind classes that may only shrink, and Stylelint rules for `styles/content.css`. @sneridagh

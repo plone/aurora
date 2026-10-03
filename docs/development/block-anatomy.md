@@ -113,3 +113,33 @@ For example:
 - `StyleFieldsPlugin` adds styles such as `--theme-color` or `--block-width`
 
 Keep these responsibilities separate when adding new styling behavior.
+
+## Classname contract for themers
+
+Block content is styled through plain CSS classnames, never through Tailwind utilities, so that any theme can style it, whether or not it uses Tailwind.
+Themes rely on the following hooks, in both the Public UI and the editor.
+
+| Hook | Added by | Example | Use |
+|---|---|---|---|
+| Block root | `BlockAnatomyPlugin` | `block block-<type> category-<category>`, `data-block-type`, `data-block-category` | The main hook for styling a block. |
+| Plate node | Plate | `slate-p`, `slate-tr`, `slate-td`, `slate-a`, `slate-ploneBlock` | Nested nodes and inline elements, and telling native blocks from Plone blocks apart. |
+| Inner part | Each block | `block-<type>__<part>` | Elements inside a block that aren't Plate nodes. |
+| Variant | Data attributes | `data-align`, `data-style-*`, `data-list-style-type` | States and options. |
+
+The following rules apply to these hooks.
+
+- The block type is used as is, without readable aliases, such as `block-p` or `block-code_block`.
+  It matches `data-block-type` and the stored data.
+- A native Plate block and a Plone block may share a type name.
+  For example, both video blocks get `block-video`.
+  Use `.block-video.slate-video` for the native one, `.block-video.slate-ploneBlock` for the Plone one, or `.block-video` for both.
+- Inner parts use a BEM separator, `__`, because block types may already contain `-` or `_`.
+  Nested Plate nodes keep their `slate-<type>` class and get no part class.
+- Native and Plone blocks share part names when the concept is the same, such as `__caption`, `__link`, or `__item`.
+- Variants are data attributes, not modifier classes.
+
+Lists are paragraphs with a list style type.
+Their root keeps `block-p`, gets `data-list-style-type`, and renders the parts `block-p__list`, on the `ul` or `ol` element, and `block-p__item`, on the `li` element.
+
+The styles for these hooks live in each add-on's {file}`styles/content.css`.
+See {doc}`/conceptual-guides/add-on-styles-loader` for how they're loaded and how to override them.

@@ -1,0 +1,419 @@
+import type { Page } from '@playwright/test';
+import { expect, test } from '../../../tooling/playwright/test';
+import { login } from '../../../tooling/playwright/login';
+import { ALL_NATIVE_BLOCK_SECTIONS } from '../fixtures/native-blocks';
+import { createNativeBlocksPage, openInView } from '../fixtures/pages';
+
+// Block content classname contract (plone/aurora#200). In the public view,
+// every class inside the rendered content must be one of the stable hooks
+// themes rely on, never a Tailwind utility: public themes don't have to load
+// Tailwind, so utilities would leave the content unstyled.
+
+/** The contract: Plate node classes and the block anatomy. */
+const CONTRACT = [
+  /^slate-[\w-]+$/, // Plate: `slate-<type>`, `slate-indent-<n>`, …
+  /^block$/,
+  /^block-[\w-]+$/, // `block-<type>`, `block-inner-container`
+  /^block-[\w-]+__[\w-]+$/, // inner parts: `block-<type>__<part>`
+  /^category-[\w-]+$/,
+];
+
+/** Classes from third-party code that render inside the content. */
+const THIRD_PARTY = [
+  /^hljs-[\w-]+$/, // highlight.js tokens in code blocks
+  /^function_$/, // highlight.js scope modifier
+  /^lucide(-[\w-]+)?$/, // icons
+  /^react-aria-[\w-]+$/, // React Aria Components (links)
+];
+
+/**
+ * Classes outside the contract that are still waiting to be converted, by the
+ * Plate node that renders them. This list may only shrink: each conversion
+ * phase removes its entries, and the test fails both on new classes and on
+ * entries that no longer render, so the list always matches reality.
+ */
+const PENDING: Record<string, string[]> = {
+  editor: [
+    '**:data-slate-placeholder:!top-1/2',
+    '**:data-slate-placeholder:-translate-y-1/2',
+    '**:data-slate-placeholder:opacity-100!',
+    '**:data-slate-placeholder:text-muted-foreground/80',
+    '[&_[data-slate-node="element"]:not([data-slate-inline="true"])]:mx-auto',
+    '[&_strong]:font-bold',
+    'break-words',
+    'cursor-text',
+    'focus-visible:outline-none',
+    'group/editor',
+    'overflow-x-hidden',
+    'overflow-y-hidden',
+    'placeholder:text-muted-foreground/80',
+    'relative',
+    'ring-offset-background',
+    'rounded-md',
+    'select-text',
+    'w-full',
+    'whitespace-pre-wrap',
+  ],
+  title: ['font-bold', 'font-heading', 'mt-[1.6em]', 'pb-1', 'text-4xl'],
+  h2: [
+    'font-heading',
+    'font-semibold',
+    'mb-1',
+    'mt-[1.4em]',
+    'pb-px',
+    'relative',
+    'text-2xl',
+    'tracking-tight',
+  ],
+  p: [
+    '-left-6',
+    'absolute',
+    'bg-background',
+    'border',
+    'border-primary',
+    'data-[state=checked]:bg-primary',
+    'data-[state=checked]:text-primary-foreground',
+    'flex',
+    'focus-visible:outline-none',
+    'focus-visible:ring-2',
+    'focus-visible:ring-offset-2',
+    'focus-visible:ring-ring',
+    'items-center',
+    'justify-center',
+    'line-through',
+    'list-none',
+    'm-0',
+    'p-0',
+    'peer',
+    'pointer-events-none',
+    'px-0',
+    'py-1',
+    'relative',
+    'ring-offset-background',
+    'rounded-sm',
+    'shrink-0',
+    'size-4',
+    'text-current',
+    'text-muted-foreground',
+    'top-1',
+  ],
+  h3: [
+    'font-heading',
+    'font-semibold',
+    'mb-1',
+    'mt-[1em]',
+    'pb-px',
+    'relative',
+    'text-xl',
+    'tracking-tight',
+  ],
+  h4: [
+    'font-heading',
+    'font-semibold',
+    'mb-1',
+    'mt-[0.75em]',
+    'relative',
+    'text-lg',
+    'tracking-tight',
+  ],
+  code: [
+    'bg-muted',
+    'font-mono',
+    'px-[0.3em]',
+    'py-[0.2em]',
+    'rounded-md',
+    'text-sm',
+    'whitespace-pre-wrap',
+  ],
+  a: [
+    'decoration-primary',
+    'font-medium',
+    'text-primary',
+    'underline',
+    'underline-offset-4',
+  ],
+  blockquote: ['border-l-2', 'italic', 'my-1', 'pl-6'],
+  code_block: [
+    '**:[.hljs-addition]:bg-[#f0fff4]',
+    '**:[.hljs-addition]:text-[#22863a]',
+    '**:[.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable]:text-[#005cc5]',
+    '**:[.hljs-built_in,.hljs-symbol]:text-[#e36209]',
+    '**:[.hljs-bullet]:text-[#735c0f]',
+    '**:[.hljs-comment,.hljs-code,.hljs-formula]:text-[#6a737d]',
+    '**:[.hljs-deletion]:bg-[#ffeef0]',
+    '**:[.hljs-deletion]:text-[#b31d28]',
+    '**:[.hljs-emphasis]:italic',
+    '**:[.hljs-keyword,.hljs-doctag,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_]:text-[#d73a49]',
+    '**:[.hljs-name,.hljs-quote,.hljs-selector-tag,.hljs-selector-pseudo]:text-[#22863a]',
+    '**:[.hljs-regexp,.hljs-string,.hljs-meta_.hljs-string]:text-[#032f62]',
+    '**:[.hljs-section]:font-bold',
+    '**:[.hljs-section]:text-[#005cc5]',
+    '**:[.hljs-strong]:font-bold',
+    '**:[.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_]:text-[#6f42c1]',
+    '[tab-size:2]',
+    'bg-muted/50',
+    'dark:**:[.hljs-addition]:bg-[#3c5743]',
+    'dark:**:[.hljs-addition]:text-[#ceead5]',
+    'dark:**:[.hljs-attr,.hljs-attribute,.hljs-literal,.hljs-meta,.hljs-number,.hljs-operator,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-variable]:text-[#6596cf]',
+    'dark:**:[.hljs-built_in,.hljs-symbol]:text-[#c3854e]',
+    'dark:**:[.hljs-comment,.hljs-code,.hljs-formula]:text-[#6a737d]',
+    'dark:**:[.hljs-deletion]:bg-[#473235]',
+    'dark:**:[.hljs-deletion]:text-[#e7c7cb]',
+    'dark:**:[.hljs-keyword,.hljs-doctag,.hljs-template-tag,.hljs-template-variable,.hljs-type,.hljs-variable.language_]:text-[#ee6960]',
+    'dark:**:[.hljs-name,.hljs-quote,.hljs-selector-tag,.hljs-selector-pseudo]:text-[#36a84f]',
+    'dark:**:[.hljs-regexp,.hljs-string,.hljs-meta_.hljs-string]:text-[#3593ff]',
+    'dark:**:[.hljs-section]:text-[#61a5f2]',
+    'dark:**:[.hljs-title,.hljs-title.class_,.hljs-title.class_.inherited__,.hljs-title.function_]:text-[#a77bfa]',
+    'font-mono',
+    'leading-[normal]',
+    'overflow-x-auto',
+    'p-8',
+    'pr-4',
+    'print:break-inside-avoid',
+    'py-1',
+    'relative',
+    'rounded-md',
+    'text-sm',
+    'w-full',
+  ],
+  table: [
+    'border-collapse',
+    'group/table',
+    'h-px',
+    'min-w-full',
+    'ml-px',
+    'mr-0',
+    'overflow-x-auto',
+    'overflow-y-hidden',
+    'py-5',
+    'relative',
+    'table',
+    'table-fixed',
+    'w-fit',
+  ],
+  tr: ['h-full'],
+  th: [
+    '*:m-0',
+    'before:absolute',
+    'before:border-b',
+    'before:border-b-border',
+    'before:border-l',
+    'before:border-l-border',
+    'before:border-r',
+    'before:border-r-border',
+    'before:border-t',
+    'before:border-t-border',
+    'before:box-border',
+    "before:content-['']",
+    'before:select-none',
+    'before:size-full',
+    'bg-background',
+    'border-none',
+    'box-border',
+    'font-normal',
+    'h-full',
+    'overflow-visible',
+    'p-0',
+    'px-4',
+    'py-2',
+    'relative',
+    'text-left',
+    'z-20',
+  ],
+  td: [
+    'before:absolute',
+    'before:border-b',
+    'before:border-b-border',
+    'before:border-l',
+    'before:border-l-border',
+    'before:border-r',
+    'before:border-r-border',
+    'before:box-border',
+    "before:content-['']",
+    'before:select-none',
+    'before:size-full',
+    'bg-background',
+    'border-none',
+    'box-border',
+    'h-full',
+    'overflow-visible',
+    'p-0',
+    'px-4',
+    'py-2',
+    'relative',
+    'z-20',
+  ],
+  callout: [
+    'bg-muted',
+    'flex',
+    'gap-2',
+    'my-1',
+    'p-4',
+    'pl-3',
+    'rounded-md',
+    'rounded-sm',
+    'select-none',
+    'size-6',
+    'text-[18px]',
+    'w-full',
+  ],
+  toggle: [
+    '-left-0.5',
+    '[&_svg]:size-4',
+    'absolute',
+    'cursor-pointer',
+    'duration-75',
+    'hover:bg-accent',
+    'items-center',
+    'justify-center',
+    'p-px',
+    'pl-6',
+    'relative',
+    'rotate-0',
+    'rounded-md',
+    'select-none',
+    'size-6',
+    'text-muted-foreground',
+    'top-0',
+    'transition-colors',
+    'transition-transform',
+  ],
+  column_group: [
+    'flex',
+    'group/column',
+    'mb-2',
+    'relative',
+    'rounded',
+    'size-full',
+  ],
+  column: [
+    'border',
+    'border-transparent',
+    'group-first/column:pl-0',
+    'group-last/column:pr-0',
+    'h-full',
+    'p-1.5',
+    'pt-2',
+    'px-2',
+    'relative',
+  ],
+  toc: [
+    "[&_svg:not([class*='size-'])]:size-4",
+    '[&_svg]:pointer-events-none',
+    '[&_svg]:shrink-0',
+    'aria-invalid:border-destructive',
+    'aria-invalid:ring-destructive/20',
+    'cursor-pointer',
+    'dark:aria-invalid:ring-destructive/40',
+    'dark:hover:bg-accent/50',
+    'decoration-[0.5px]',
+    'disabled:opacity-50',
+    'disabled:pointer-events-none',
+    'focus-visible:border-ring',
+    'focus-visible:ring-[3px]',
+    'focus-visible:ring-ring/50',
+    'font-medium',
+    'gap-2',
+    'h-auto',
+    'has-[>svg]:px-3',
+    'hover:bg-accent',
+    'hover:text-muted-foreground',
+    'items-center',
+    'justify-center',
+    'mb-1',
+    'outline-none',
+    'p-0',
+    'pl-0.5',
+    'pl-[26px]',
+    'pl-[50px]',
+    'px-0.5',
+    'py-1.5',
+    'rounded-none',
+    'shrink-0',
+    'text-left',
+    'text-muted-foreground',
+    'text-sm',
+    'transition-all',
+    'truncate',
+    'underline',
+    'underline-offset-4',
+    'w-full',
+    'whitespace-nowrap',
+  ],
+  hr: [
+    'bg-clip-content',
+    'bg-muted',
+    'border-none',
+    'cursor-text',
+    'h-0.5',
+    'py-6',
+    'rounded-sm',
+  ],
+};
+
+async function contentClasses(page: Page) {
+  return page.evaluate(() => {
+    const root = document.querySelector('[data-slate-editor]')!;
+    const byOwner: Record<string, Set<string>> = {};
+    // The owner is the nearest Plate node with a `slate-<type>` class (or a
+    // block type), walking up from the element itself.
+    const ownerOf = (el: Element) => {
+      for (let node: Element | null = el; node; node = node.parentElement) {
+        if (node === root) return 'editor';
+        const slateClass = [...node.classList].find((c) =>
+          /^slate-[a-z_]+$/.test(c),
+        );
+        if (slateClass) return slateClass.replace(/^slate-/, '');
+        const blockType = (node as HTMLElement).dataset.blockType;
+        if (blockType) return blockType;
+      }
+      return 'editor';
+    };
+    [root, ...root.querySelectorAll('[class]')].forEach((el) => {
+      const owner = ownerOf(el);
+      el.classList.forEach((c) => (byOwner[owner] ||= new Set()).add(c));
+    });
+    return Object.fromEntries(
+      Object.entries(byOwner).map(([owner, classes]) => [
+        owner,
+        [...classes].sort(),
+      ]),
+    );
+  });
+}
+
+test('the public content only uses contract classnames', async ({ page }) => {
+  await login(page);
+  const pageId = await createNativeBlocksPage(page, ALL_NATIVE_BLOCK_SECTIONS);
+  await openInView(page, pageId);
+
+  const allowed = [...CONTRACT, ...THIRD_PARTY];
+  const violations = Object.fromEntries(
+    Object.entries(await contentClasses(page))
+      .map(([owner, classes]) => [
+        owner,
+        classes.filter((c) => !allowed.some((re) => re.test(c))),
+      ])
+      .filter(([, classes]) => classes.length),
+  );
+
+  expect(violations).toEqual(PENDING);
+});
+
+test('lists render their contract hooks', async ({ page }) => {
+  await login(page);
+  const pageId = await createNativeBlocksPage(page, ['lists']);
+  await openInView(page, pageId);
+
+  const bulleted = page.locator('.block-p[data-list-style-type="disc"]');
+  await expect(bulleted.first()).toBeAttached();
+  await expect(
+    bulleted.first().locator('ul.block-p__list > li.block-p__item'),
+  ).toBeAttached();
+  await expect(
+    page
+      .locator('.block-p[data-list-style-type="decimal"]')
+      .first()
+      .locator('ol.block-p__list > li.block-p__item'),
+  ).toBeAttached();
+});

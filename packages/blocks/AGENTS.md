@@ -40,7 +40,7 @@ Each block lives in its own folder at the package root (e.g., `Video/`, `Image/`
 - When adding a new block, create the full folder structure: View, Edit, schema, and index.
 - Make sure both Edit and View variants are exported from the block's `index.ts`.
 - Write tests for non-trivial rendering logic.
-- Keep CSS colocated with the component that uses it.
+- Put block content styles in `styles/content.css` (see Validation below). Keep any other CSS colocated with the component that uses it.
 
 ## Validation
 
