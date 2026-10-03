@@ -13,7 +13,7 @@ import {
   SearchField,
   Button,
   Description,
-} from '@plone/components/quanta';
+} from '@plone/quanta';
 import type {
   SharingEntry,
   SharingResponse,
@@ -26,7 +26,7 @@ import {
   UserIcon,
   SocialIcon,
   CheckboxIcon,
-} from '@plone/components/Icons';
+} from '@plone/icons';
 
 type UpdatedEntry = {
   id: string;

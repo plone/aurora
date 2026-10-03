@@ -1,6 +1,6 @@
 @import '@plone/components/src/styles/basic/Menu.css';
 @import '@plone/components/src/styles/basic/Popover.css';
-@import '@plone/components/src/styles/quanta/Popover.css';
+@import '@plone/quanta/src/styles/Popover.css';
 
 @property --plone-toolbar-button-background-color {
   inherits: false;

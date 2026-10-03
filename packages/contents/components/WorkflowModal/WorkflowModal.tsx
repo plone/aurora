@@ -2,15 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useFetcher } from 'react-router';
 import { Button as RACButton, Heading } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
-import {
-  Button,
-  Checkbox,
-  Dialog,
-  Input,
-  Modal,
-  Select,
-} from '@plone/components/quanta';
-import { ArrowrightIcon, CloseIcon, StateIcon } from '@plone/components/Icons';
+import { Button, Checkbox, Dialog, Input, Modal, Select } from '@plone/quanta';
+import { ArrowrightIcon, CloseIcon, StateIcon } from '@plone/icons';
 import { type ToastItem } from '@plone/layout/config/toast';
 import { useContentsContext } from '../../providers/contents';
 import type { TransitionOption } from '../../helpers/workflow';

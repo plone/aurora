@@ -14,7 +14,7 @@ vi.mock('react-router', () => ({
   useFetcher: () => ({ state: 'idle', submit: vi.fn() }),
 }));
 
-vi.mock('@plone/components/Icons', () => ({
+vi.mock('@plone/icons', () => ({
   WorldIcon: () => null,
   ArrowupIcon: () => null,
   UserIcon: () => null,
@@ -22,7 +22,7 @@ vi.mock('@plone/components/Icons', () => ({
   CheckboxIcon: () => null,
 }));
 
-vi.mock('@plone/components/quanta', () => ({
+vi.mock('@plone/quanta', () => ({
   Checkbox: ({ isSelected, isDisabled, onChange, children, ...props }: any) => (
     <label>
       {children}
