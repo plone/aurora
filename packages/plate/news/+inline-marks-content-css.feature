@@ -1,0 +1,1 @@
+Moved the styles of inline code, keyboard input, highlight, links and mentions from Tailwind utilities to `styles/content.css`, so themes can override them in both the Public UI and the editor. Mentions expose their bold, italic and underline marks as `data-bold`, `data-italic` and `data-underline`. Comments and suggestions now render as plain text in the public view. @sneridagh

@@ -114,3 +114,91 @@
   background-clip: content-box;
   background-color: var(--block-separator-color, var(--muted));
 }
+
+/* Inline code */
+
+:where(.slate-code) {
+  padding: 0.2em 0.3em;
+  border-radius: var(--radius-md, 0.375rem);
+  background-color: var(--block-code-background, var(--muted));
+  font-family: var(
+    --font-mono,
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    'Liberation Mono',
+    'Courier New',
+    monospace
+  );
+  font-size: var(--text-sm, 0.875rem);
+  line-height: var(--text-sm--line-height, calc(1.25 / 0.875));
+  white-space: pre-wrap;
+}
+
+/* Keyboard input */
+
+:where(.slate-kbd) {
+  padding: calc(var(--spacing, 0.25rem) * 0.5)
+    calc(var(--spacing, 0.25rem) * 1.5);
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  background-color: var(--block-kbd-background, var(--muted));
+  font-family: var(
+    --font-mono,
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    'Liberation Mono',
+    'Courier New',
+    monospace
+  );
+  font-size: var(--text-sm, 0.875rem);
+  line-height: var(--text-sm--line-height, calc(1.25 / 0.875));
+}
+
+/* Highlight */
+
+:where(.slate-highlight) {
+  background-color: var(--block-highlight-color, Mark);
+  color: inherit;
+}
+
+/* Link */
+
+:where(.slate-a) {
+  color: var(--primary);
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration-color: var(--primary);
+  text-decoration-line: underline;
+  text-underline-offset: 4px;
+}
+
+/* Mention */
+
+:where(.slate-mention) {
+  display: inline-block;
+  padding: calc(var(--spacing, 0.25rem) * 0.5)
+    calc(var(--spacing, 0.25rem) * 1.5);
+  border-radius: var(--radius-md, 0.375rem);
+  background-color: var(--block-mention-background, var(--muted));
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--text-sm--line-height, calc(1.25 / 0.875));
+  vertical-align: baseline;
+}
+
+:where(.slate-mention[data-bold]) {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+:where(.slate-mention[data-italic]) {
+  font-style: italic;
+}
+
+:where(.slate-mention[data-underline]) {
+  text-decoration-line: underline;
+}
