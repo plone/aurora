@@ -5,7 +5,7 @@ import type { PlateElementProps } from 'platejs/react';
 import { SlashPlugin } from '@platejs/slash-command/react';
 import { type TComboboxInputElement, ElementApi } from 'platejs';
 import { PlateElement } from 'platejs/react';
-import { getIntl } from '../editor/plugins/split-utils';
+import { useTranslation } from '../editor/plugins/i18n';
 import { TITLE_BLOCK_TYPE } from '../editor/plugins/title';
 import {
   resolveSlashMenuGroups,
@@ -30,19 +30,7 @@ export function SlashInputElement(
     editor.getOptions(SlashPlugin as any) as
       { menu?: SlashMenuConfig } | undefined
   )?.menu;
-  const translate = React.useMemo(() => {
-    const intl = getIntl(editor);
-
-    if (!intl?.formatMessage) {
-      return (id: string) => id;
-    }
-
-    return (id: string) =>
-      intl.formatMessage({
-        defaultMessage: id,
-        id,
-      });
-  }, [editor]);
+  const { t } = useTranslation();
 
   const hasTitleBlock = editor.children.some(
     (child) => ElementApi.isElement(child) && child.type === TITLE_BLOCK_TYPE,
@@ -51,9 +39,9 @@ export function SlashInputElement(
   const groups = React.useMemo(() => {
     return resolveSlashMenuGroups(editor, menuConfig, {
       hasTitleBlock,
-      translate,
+      t,
     });
-  }, [editor, hasTitleBlock, menuConfig, translate]);
+  }, [editor, hasTitleBlock, menuConfig, t]);
 
   return (
     <PlateElement {...props} as="span">
@@ -61,11 +49,15 @@ export function SlashInputElement(
         <InlineComboboxInput />
 
         <InlineComboboxContent>
-          <InlineComboboxEmpty>No results</InlineComboboxEmpty>
+          <InlineComboboxEmpty>
+            {t('plate.slashMenu.noResults', { defaultValue: 'No results' })}
+          </InlineComboboxEmpty>
 
-          {groups.map(({ group, items }) => (
+          {groups.map(({ group, label: groupLabel, items }) => (
             <InlineComboboxGroup key={group}>
-              <InlineComboboxGroupLabel>{group}</InlineComboboxGroupLabel>
+              <InlineComboboxGroupLabel>
+                {groupLabel ?? group}
+              </InlineComboboxGroupLabel>
 
               {items.map(
                 ({ focusEditor, icon, keywords, label, value, onSelect }) => (

@@ -8,6 +8,62 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.21 (2026-10-01)
+
+### Breaking
+
+- Replaced `SlashMenuContext.translate` with `t`, following the i18next `t(key, { defaultValue, ...values })` signature, removed `getIntl`, and removed the unused `SplitHotkeyPlugin`, `split-utils` and the `blocksApi` prop of `PlateEditor`. @sneridagh 
+
+### Feature
+
+- Added an `I18nPlugin` and `t` / `language` props to `PlateEditor`, following react-i18next, so hosts inject their own i18n machinery, and translated the slash menu labels. Plate code reads them with the `useTranslation()` hook or `getTranslation(editor)`. The `intl` prop is deprecated. @sneridagh 
+
+## 1.0.0-alpha.20 (2026-09-30)
+
+### Feature
+
+- Added Cut, Copy and Paste to the block context menu, and reordered its actions. @sneridagh 
+
+## 1.0.0-alpha.19 (2026-09-30)
+
+### Bugfix
+
+- Fixed dragging a Plone block (e.g. an image) in the editor deleting it instead of moving it: the void block element now renders its children, so Slate can resolve the spacer text when it copies the block into the drag data. @sneridagh 
+- Fixed pasted or dropped images vanishing from the editor after the upload: in the `somersault-editor` preset, pasting or dropping image files now uploads them and inserts Plone image blocks, instead of image nodes that no editor kit renders. @sneridagh 
+
+## 1.0.0-alpha.18 (2026-09-29)
+
+### Feature
+
+- Added Heading 5 and Heading 6 to the slash menu, the "Turn into" toolbar menu and the block context menu. @sneridagh 
+- Added a `# ` markdown shortcut that restores the title block when the page has none, like the "Title" slash menu item. With a title block present, `# ` is left as typed. @sneridagh 
+
+### Bugfix
+
+- Removed Heading 1 from the block context menu's "Turn into" submenu and from the insert toolbar menu, since H1 is reserved for the title and the editor has no H1 plugin. @sneridagh 
+
+## 1.0.0-alpha.17 (2026-09-29)
+
+### Breaking
+
+- Upgraded Plate.js packages to 52.x. Static rendering helpers are now imported from `platejs/static`, and the unused `@ai-sdk/google` and `@ai-sdk/openai` dependencies were removed. @sneridagh 
+- Upgraded Plate.js packages to 53.x and the AI SDK to v7. Blockquotes are now stored as containers of blocks, markdown shortcuts are configured as `inputRules` on each feature kit, and `@platejs/autoformat` was removed. The `//` to `÷` substitution was dropped, since it broke typing URLs. @sneridagh 
+
+### Feature
+
+- Added `migrateLegacyBlockquotesInValue` to convert legacy flat blockquotes into blockquote containers, also applied by `normalizeLegacyValue`. @sneridagh 
+- Removed the AI entry points (slash menu action, block context menu item and floating toolbar button) from the editor when the AI chat plugin is not part of the preset, as in Aurora's presets. @sneridagh 
+
+### Bugfix
+
+- Added accessible names to icon-only editor controls: toolbar buttons now expose their tooltip as label, list and block width split buttons, the toggle button (with `aria-expanded`) and the code block language picker are labelled. @sneridagh 
+- Fixed code blocks shrinking to fit their content in the public view, instead of spanning their default block width. @sneridagh 
+- Fixed nested blocks, like paragraphs in a blockquote, table cell or column, getting their own block width instead of filling their container. The editor now also normalizes the loaded value, which restores the trailing paragraph after the title. @sneridagh 
+
+### Internal
+
+- Added acceptance tests for the native blocks of Aurora's presets (slash menu, floating toolbar, block context menu, block interactions and Word, HTML and markdown paste), with programmatic test page fixtures. @sneridagh 
+
 ## 1.0.0-alpha.16 (2026-09-21)
 
 ### Bugfix

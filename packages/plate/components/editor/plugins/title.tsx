@@ -1,4 +1,4 @@
-import { ElementApi, PathApi } from 'platejs';
+import { createRuleFactory, ElementApi, KEYS, PathApi } from 'platejs';
 import {
   PlateElement,
   type PlateElementProps,
@@ -223,7 +223,33 @@ export const BaseTitleBlockPlugin = createPlatePlugin({
   },
 });
 
+/**
+ * Markdown shortcut for the title: typing `# ` at the start of a top-level
+ * paragraph turns it into the title block, but only while the document has
+ * none (it can be removed). This mirrors the slash menu, which only offers
+ * "Title" when there is no title block. There is no H1 plugin, since the title
+ * is the page's H1, so with a title present `# ` is left as typed.
+ */
+export const TitleRules = {
+  markdown: createRuleFactory({
+    type: 'blockStart',
+    match: '#',
+    trigger: ' ',
+    node: TITLE_BLOCK_TYPE,
+    enabled: ({ editor }) => {
+      if (editor.children.some(isTitleNode)) return false;
+
+      const blockEntry = editor.api.block();
+      if (!blockEntry) return false;
+
+      const [node, path] = blockEntry;
+      return path.length === 1 && node.type === editor.getType(KEYS.p);
+    },
+  }),
+};
+
 export const TitleBlock = toPlatePlugin(BaseTitleBlockPlugin as any).configure({
+  inputRules: [TitleRules.markdown()],
   render: {
     afterEditable: TitleMetadataSync,
   },

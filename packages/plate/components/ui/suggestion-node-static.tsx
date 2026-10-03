@@ -1,6 +1,7 @@
-import type { SlateLeafProps, TSuggestionText } from 'platejs';
+import type { TSuggestionText } from 'platejs';
+import type { SlateLeafProps } from 'platejs/static';
 
-import { SlateLeaf } from 'platejs';
+import { SlateLeaf } from 'platejs/static';
 
 import { cn } from '../../lib/utils';
 import { BaseSuggestionPlugin } from '../editor/plugins/suggestion-kit';

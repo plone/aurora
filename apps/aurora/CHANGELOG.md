@@ -8,6 +8,44 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.15 (2026-10-01)
+
+### Internal
+
+- Update to the latest @plone/plate and @plone/cmsui @sneridagh 
+
+## 1.0.0-alpha.14 (2026-09-30)
+
+### Internal
+
+- Use latest @plone/plate @sneridagh 
+
+## 1.0.0-alpha.13 (2026-09-30)
+
+### Internal
+
+- Use new @plone/plate release. @sneridagh 
+
+## 1.0.0-alpha.12 (2026-09-29)
+
+### Internal
+
+- Use updated @plone/plate. @sneridagh 
+
+## 1.0.0-alpha.11 (2026-09-29)
+
+### Feature
+
+- Registered a somersault migration that converts legacy flat blockquotes from volto-slate content into blockquote containers. @sneridagh 
+
+### Internal
+
+- Updated the pull request template to refer to Aurora instead of Volto. @stevepiercy 
+
+### Documentation
+
+- Added testing documentation. @pnicolli 
+
 ## 1.0.0-alpha.10 (2026-09-21)
 
 ### Internal

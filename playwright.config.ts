@@ -21,7 +21,7 @@ export default defineConfig({
     timeout: 10_000,
   },
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.BASE_URL ?? 'http://localhost:3000',
     browserName: 'chromium',
     viewport: { width: 1280, height: 720 },
     trace: 'retain-on-failure',

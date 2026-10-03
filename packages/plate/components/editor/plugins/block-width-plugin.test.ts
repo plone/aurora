@@ -1392,6 +1392,54 @@ describe('block width plugin', () => {
     });
   });
 
+  it('does not inject block width styles into blocks nested in a container', () => {
+    registryBlocks.widths = [
+      {
+        name: 'narrow',
+        label: 'Narrow',
+        style: { '--block-width': 'var(--narrow-container-width)' },
+      },
+      {
+        name: 'default',
+        label: 'Default',
+        style: { '--block-width': 'var(--default-container-width)' },
+      },
+    ];
+    registryBlocks.plateBlocksConfig = {
+      blockquote: {
+        blockWidth: { defaultWidth: 'default', widths: ['default'] },
+      },
+      p: {
+        blockWidth: { defaultWidth: 'narrow', widths: ['narrow'] },
+      },
+    };
+
+    const quotedParagraph = {
+      type: 'p',
+      children: [{ text: 'Quoted' }],
+    };
+    const blockquote = {
+      type: 'blockquote',
+      children: [quotedParagraph],
+    };
+    const editor = {
+      children: [blockquote],
+      getOptions: vi.fn(() => ({ defaultWidths: ['default'] })),
+      api: { isBlock: vi.fn(() => true) },
+    } as any;
+    const transformProps = (BaseBlockWidthPlugin as any).inject.nodeProps
+      .transformProps as TransformPropsFn;
+
+    expect(
+      transformProps({ editor, element: blockquote, props: {} } as any),
+    ).toEqual({
+      style: { '--block-width': 'var(--default-container-width)' },
+    });
+    expect(
+      transformProps({ editor, element: quotedParagraph, props: {} } as any),
+    ).toEqual({});
+  });
+
   it('derives the fallback default width from the registry definitions', () => {
     registryBlocks.widths = [
       {

@@ -1,0 +1,64 @@
+name: Visual Regression Tests
+
+# Compares the editor and public view against the baseline screenshots stored
+# in the public plone/aurora-visual-regression repository.
+#
+# It runs nightly on the default branch instead of on every pull request, so
+# contributors aren't blocked by screenshot diffs. It can also be started by
+# hand on any branch (e.g. before merging styling work). Read-only: baselines
+# are only updated through the "Update VRT Screenshots" workflow.
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  visual-regression:
+    runs-on: ubuntu-latest
+    name: Visual regression
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Checkout visual regression baselines
+        uses: actions/checkout@v7
+        with:
+          repository: plone/aurora-visual-regression
+          ref: main
+          path: playwright/__screenshots__
+          persist-credentials: false
+
+      - name: Set up Node.js environment
+        uses: ./.github/actions/acceptance_tests_node_env_setup
+        with:
+          node-version: 24.x
+
+      - uses: JarvusInnovations/background-action@v2
+        name: Start Servers - Aurora and Plone
+        with:
+          run: |
+            make ci-acceptance-backend-start &
+            make acceptance-frontend-prod-start &
+          wait-on: |
+            http-get://localhost:55001/plone
+            http://localhost:3000
+          tail: true
+          log-output-resume: stderr
+          wait-for: 10m
+          log-output: stderr,stdout
+          log-output-if: failure
+
+      - name: Run visual regression tests
+        run: pnpm visual-test --reporter=list,html
+
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: visual-regression-results
+          path: |
+            playwright/results-visual/
+            playwright-report/
+          retention-days: 15

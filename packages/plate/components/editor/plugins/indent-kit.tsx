@@ -10,7 +10,6 @@ export const IndentKit = [
         KEYS.blockquote,
         KEYS.codeBlock,
         KEYS.toggle,
-        KEYS.img,
       ],
     },
     options: {

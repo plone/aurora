@@ -26,13 +26,6 @@ export function BlockFloatingToolbarButtons() {
     <>
       {!readOnly && (
         <>
-          {/* <ToolbarGroup>
-            <AIToolbarButton tooltip="AI commands">
-              <WandSparklesIcon />
-              Ask AI
-            </AIToolbarButton>
-          </ToolbarGroup> */}
-
           <ToolbarGroup>
             <MarkToolbarButton nodeType={KEYS.bold} tooltip="Bold (⌘+B)">
               <BoldIcon />

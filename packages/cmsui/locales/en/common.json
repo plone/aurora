@@ -121,6 +121,21 @@
       "forgotPassword": "Forgot password? Request a <a>new password</a>",
       "returnToHome": "Return to home page"
     },
+    "sharing": {
+      "label": "Sharing for \"{{title}}\"",
+      "description": "You can control who can view and edit your item using the list below.",
+      "name": "Name",
+      "inherit": "Inherit permissions from higher levels",
+      "inheritDescription": "By default, permissions from the container of this item are inherited. If you disable this, only the explicitly defined sharing permissions will be valid. In the overview, a green arrow indicates an inherited value and a blue globe indicates a global role, which is managed by the site administrator.",
+      "globalRole": "Global role",
+      "inheritedValue": "Inherited value",
+      "user": "User",
+      "group": "Group",
+      "searchLabel": "Search for users and groups",
+      "searchPlaceholder": "Search for users and groups…",
+      "searchResults_one": "{{count}} entry found",
+      "searchResults_other": "{{count}} entries found"
+    },
     "toolbar": {
       "settings": "Settings"
     }

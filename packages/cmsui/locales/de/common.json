@@ -73,6 +73,21 @@
       "forgotPassword": "Passwort vergessen? <a>Neues Passwort anfordern</a>",
       "returnToHome": "Zur Startseite zurückkehren"
     },
+    "sharing": {
+      "label": "Freigabe von „{{title}}“",
+      "description": "Über die folgende Liste lässt sich festlegen, wer dieses Element sehen und bearbeiten kann.",
+      "name": "Name",
+      "inherit": "Berechtigungen von höheren Ebenen erben",
+      "inheritDescription": "Standardmäßig werden die Berechtigungen aus dem übergeordneten Container vererbt. Wird dies deaktiviert, gelten nur die explizit definierten Freigabeberechtigungen. In der Übersicht kennzeichnet ein grüner Pfeil einen geerbten Wert und ein blauer Globus eine globale Rolle, die vom Site-Administrator verwaltet wird.",
+      "globalRole": "Globale Rolle",
+      "inheritedValue": "Geerbter Wert",
+      "user": "Benutzer",
+      "group": "Gruppe",
+      "searchLabel": "Nach Benutzern und Gruppen suchen",
+      "searchPlaceholder": "Nach Benutzern und Gruppen suchen…",
+      "searchResults_one": "{{count}} Eintrag gefunden",
+      "searchResults_other": "{{count}} Einträge gefunden"
+    },
     "toolbar": {
       "settings": "Einstellungen"
     }

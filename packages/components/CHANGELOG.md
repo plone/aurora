@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 5.0.0-alpha.4 (2026-09-29)
+
+### Bugfix
+
+- Exported the Quanta `SearchField` from the `@plone/components/quanta` entry point. @jmevissen [#29](https://github.com/plone/aurora/issues/29)
+
 ## 5.0.0-alpha.3 (2026-09-21)
 
 ### Documentation

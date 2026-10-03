@@ -12,6 +12,7 @@ export * from './components/Link/Link';
 export * from './components/Menu/Menu';
 export * from './components/Modal/Modal';
 export * from './components/Popover/Popover';
+export * from './components/SearchField/SearchField';
 export * from './components/Select/Select';
 export * from './components/TextAreaField/TextAreaField';
 export * from './components/TextField/TextField';

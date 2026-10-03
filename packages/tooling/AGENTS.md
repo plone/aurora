@@ -40,3 +40,5 @@ Tooling is validated indirectly through the acceptance tests that consume it:
 ```sh
 pnpm acceptance-test
 ```
+
+Visual regression tests in any package use `settle()` from `playwright/visual.ts` to wait for network idle and web fonts before taking a screenshot.

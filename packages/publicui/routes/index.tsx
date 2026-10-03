@@ -25,7 +25,7 @@ import {
 import { getLocale } from '@plone/aurora/app/i18next.server';
 import { ploneContentContext } from '@plone/aurora/app/middleware.server';
 import type { RootLoader } from '@plone/aurora/app/root';
-import { FolderIcon } from '@plone/icons';
+import { FolderIcon, ShareIcon } from '@plone/icons';
 import Pencil from '@plone/icons/svg/pencil.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
@@ -161,9 +161,23 @@ export default function Index() {
                 <Plug
                   pluggable="toolbar-top"
                   id="button-add"
-                  dependencies={[location.pathname] as any}
+                  // @ts-expect-error this is currently typed as never[]
+                  dependencies={[location.pathname]}
                 >
                   <ContentTypesMenu content={content} />
+                </Plug>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-sharing"
+                  // @ts-expect-error this is currently typed as never[]
+                  dependencies={[location.pathname]}
+                >
+                  <Link
+                    aria-label="Sharing"
+                    href={`/@@sharing${location.pathname.replace(/^\/$/, '')}`}
+                  >
+                    <ShareIcon />
+                  </Link>
                 </Plug>
               </>
             )}

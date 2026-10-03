@@ -41,6 +41,7 @@ describe('Sharing', () => {
             type: 'group',
           },
         ],
+        inherit: false,
       },
     });
 

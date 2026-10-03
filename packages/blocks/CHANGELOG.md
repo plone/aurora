@@ -8,6 +8,22 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.16 (2026-09-29)
+
+### Bugfix
+
+- Set the default block width of Heading 5 and Heading 6 to `narrow`, like the other headings. @sneridagh 
+
+### Internal
+
+- Removed the `h1` entry from `plateBlocksConfig`, since H1 is reserved for the title and the editor has no H1 plugin. @sneridagh 
+
+## 1.0.0-alpha.15 (2026-09-29)
+
+### Feature
+
+- Added Maps block. @cihanandac 
+
 ## 1.0.0-alpha.14 (2026-09-21)
 
 ### Internal
