@@ -43,8 +43,9 @@ jobs:
         working-directory: plone-aurora-add-on
         run: |
           pnpm dlx mrs-developer missdev --no-config --fetch-https
-          echo "VAR IS"
+          echo "${{ github.repository }}"
           echo "${GITHUB_REF#refs/heads/}"
+          git remote -v
           if [[ "${GITHUB_REF#refs/heads/}" != "main" ]]; then
           (cd core && git fetch --depth 1 origin ${GITHUB_REF#refs/heads/}:${GITHUB_REF#refs/heads/} && git checkout ${GITHUB_REF#refs/heads/})
           fi
