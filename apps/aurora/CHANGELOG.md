@@ -8,6 +8,29 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.16 (2026-10-03)
+
+### Bugfix
+
+- Fixed the server not loading the translations, which made it render raw message keys and React replace the whole server-rendered page on hydration. @sneridagh 
+
+### Internal
+
+- Added nightly Playwright visual regression tests for native blocks and editor overlays, with baselines stored in the `plone/aurora-visual-regression` repository and a protected workflow to update the screenshots. @sneridagh 
+- Cached the Playwright browsers in CI, and stopped installing their system dependencies with apt, which was sometimes very slow. @sneridagh 
+- Import icons from `@plone/icons`. Depend on `@plone/quanta` and pre-bundle its dependencies. @pnicolli 
+- Sped up CI: superseded runs on branches and pull requests are cancelled, the format and style checks skip building the packages, and the `@plone/client` unit tests no longer install Playwright. @sneridagh 
+- Split the Playwright acceptance tests in CI across 3 shards, and merge their reports into a single HTML report. @sneridagh 
+- The `release` scripts of all the packages now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set. @sneridagh 
+- The release configuration of all the packages now runs `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+- Updated `actions/checkout` to v7 and `JarvusInnovations/background-action` to v2 in the visual regression workflows. @sneridagh 
+
+### Documentation
+
+- Added the "How to make a Plone Aurora release" documentation page, with the release requirements and the `prereleaser` workflow. @sneridagh 
+- Documented how to upgrade existing add-ons for the split of `@plone/components` into `@plone/quanta` and `@plone/icons`. @sneridagh 
+- Documented the visual regression tests: how to run them, review a failure and update the baseline screenshots, and how maintainers set up the GitHub infrastructure. @sneridagh 
+
 ## 1.0.0-alpha.15 (2026-10-01)
 
 ### Internal

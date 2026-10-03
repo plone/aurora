@@ -9,7 +9,7 @@
   ],
   "funding": "https://github.com/sponsors/plone",
   "license": "MIT",
-  "version": "1.0.0-alpha.7",
+  "version": "1.0.0-alpha.8",
   "repository": {
     "type": "git",
     "url": "https://github.com/plone/aurora.git",
@@ -61,9 +61,11 @@
   "dependencies": {
     "@plone/blocks": "workspace:*",
     "@plone/layout": "workspace:*",
+    "@plone/quanta": "workspace:*",
     "@plone/registry": "workspace:*",
     "@plone/theming": "workspace:*",
     "@plone/components": "workspace:*",
+    "@plone/icons": "workspace:*",
     "@plone/client": "workspace:*",
     "@plone/helpers": "workspace:*",
     "clsx": "^2.1.1",

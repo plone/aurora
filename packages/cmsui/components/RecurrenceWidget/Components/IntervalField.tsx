@@ -1,5 +1,5 @@
 import { Group } from 'react-aria-components';
-import { TextField, Input, Label } from '@plone/components/quanta';
+import { TextField, Input, Label } from '@plone/quanta';
 import type { Updater } from '@tanstack/react-form';
 import { widgetTailwindClasses } from '../utils';
 

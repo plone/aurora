@@ -8,6 +8,14 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.8 (2026-10-03)
+
+### Internal
+
+- Scan the `@plone/quanta` build for Tailwind classes, instead of the Quanta build in `@plone/components`. @pnicolli
+  Scan `@plone/icons` for Tailwind classes, so every icon size utility is generated. @pnicolli 
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
 ## 1.0.0-alpha.7 (2026-09-21)
 
 ### Internal

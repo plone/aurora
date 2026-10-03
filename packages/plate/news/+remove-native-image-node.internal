@@ -1,1 +1,0 @@
-Removed the unused native Plate image (`img`) node, its components and toolbar entries; Aurora uses the Plone image block instead. @sneridagh
