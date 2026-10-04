@@ -1,1 +1,1 @@
-Expanded brace patterns in the `tsconfig.json` `exclude` list, which TypeScript does not support, so the intended files are excluded. @sneridagh
+Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh

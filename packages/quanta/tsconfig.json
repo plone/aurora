@@ -4,15 +4,7 @@
     "paths": {}
   },
   "include": ["src", "./setupTesting.ts"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "coverage",
-    "src/**/*.test.ts",
-    "src/**/*.test.tsx",
-    "src/**/*.stories.ts",
-    "src/**/*.stories.tsx"
-  ],
+  "exclude": ["node_modules", "dist", "coverage"],
   "references": [
     {
       "path": "./tsconfig.node.json"
