@@ -1,0 +1,1 @@
+Expanded brace patterns in the `tsconfig.json` `exclude` list, which TypeScript does not support, so the intended files are excluded. @sneridagh

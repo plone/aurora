@@ -8,8 +8,10 @@
     "node_modules",
     "dist",
     "coverage",
-    "src/**/*.test.{ts,tsx}",
-    "src/**/*.stories.{ts,tsx}"
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.stories.ts",
+    "src/**/*.stories.tsx"
   ],
   "references": [
     {

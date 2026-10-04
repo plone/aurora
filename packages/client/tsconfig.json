@@ -4,7 +4,13 @@
     "strictPropertyInitialization": false,
     "useDefineForClassFields": true
   },
-  "exclude": ["node_modules", "dist", "coverage", "src/**/*.test.{ts,tsx}"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx"
+  ],
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
