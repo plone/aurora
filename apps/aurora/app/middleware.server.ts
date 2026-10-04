@@ -33,6 +33,27 @@ function getAuthorizedResourceHeaders(
   return headers;
 }
 
+/**
+ * Returns the `PloneClient` class registered as the `ploneClient` utility,
+ * extended with the methods of every registered `clientEndpoints` utility.
+ */
+export function getPloneClientClass() {
+  const PloneClient = config
+    .getUtility({
+      name: 'ploneClient',
+      type: 'client',
+    })
+    .method();
+
+  const endpoints = config
+    .getUtilities({ type: 'clientEndpoints' })
+    .map((utility) => utility.method());
+
+  return endpoints.length > 0
+    ? PloneClient.extend(Object.assign({}, ...endpoints))
+    : PloneClient;
+}
+
 export const installServerMiddleware: Route.MiddlewareFunction = async (
   { request, context },
   next,
@@ -46,12 +67,7 @@ export const PloneClientMiddleware: Route.MiddlewareFunction = async (
 ) => {
   const token = await getAuthFromRequest(request);
 
-  const PloneClient = config
-    .getUtility({
-      name: 'ploneClient',
-      type: 'client',
-    })
-    .method();
+  const PloneClient = getPloneClientClass();
 
   const cli = PloneClient.initialize({
     apiPath: config.settings.apiPath,
@@ -185,12 +201,7 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
       });
     }
     if (token && error?.status === 401) {
-      const PloneClient = config
-        .getUtility({
-          name: 'ploneClient',
-          type: 'client',
-        })
-        .method();
+      const PloneClient = getPloneClientClass();
       cli = PloneClient.initialize({
         apiPath: config.settings.apiPath,
       });

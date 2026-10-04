@@ -49,6 +49,37 @@ const { status, data } = await cli.getContent({ path: pathname });
 ```
 
 
+## Add custom endpoints
+
+Use `PloneClient.extend()` to add methods for custom REST API endpoints.
+It returns a subclass with the given methods added, and doesn't modify the class it's called on.
+Each method receives the client instance as `this`, and can use the exported `apiRequest` function to send requests with the client configuration.
+
+```ts
+import PloneClient, { apiRequest } from '@plone/client';
+
+async function getIdentityProviders(this: PloneClient) {
+  return apiRequest('get', '/@login', { config: this.config });
+}
+
+const cli = PloneClient.extend({ getIdentityProviders }).initialize({
+  apiPath: 'http://localhost:8080/Plone',
+});
+
+const { data } = await cli.getIdentityProviders();
+```
+
+To make the methods known wherever the `PloneClient` type is used, augment the `PloneClientExtensions` interface.
+
+```ts
+declare module '@plone/client' {
+  interface PloneClientExtensions {
+    getIdentityProviders: typeof getIdentityProviders;
+  }
+}
+```
+
+
 ## File structure used
 
 The file structure should match the one in the `plone.restapi` package.

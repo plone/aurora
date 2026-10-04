@@ -27,6 +27,7 @@ register-slots
 customize-login-screen
 shadow-a-component
 fetch-additional-data-root-loader
+add-client-endpoints
 add-tailwind
 icons
 configure-plate-code-block-languages

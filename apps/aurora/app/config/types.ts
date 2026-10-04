@@ -1,5 +1,6 @@
 import type { Content } from '@plone/types';
 import type PloneClient from '@plone/client';
+import type { PloneClientMethods } from '@plone/client';
 import type { Value } from '@plone/plate/components/editor';
 import type { Params } from 'react-router';
 
@@ -8,6 +9,10 @@ export type PloneClientUtility = typeof PloneClient;
 declare module '@plone/types' {
   interface UtilityTypeMap {
     client: () => PloneClientUtility;
+    // A `clientEndpoints` utility returns methods that the Plone Aurora
+    // middleware adds to the `PloneClient` instance of each request. Type
+    // them by augmenting `PloneClientExtensions` from `@plone/client`.
+    clientEndpoints: () => PloneClientMethods;
     rootContentSubRequest: (args: LoaderUtilityArgs) => Promise<unknown>;
     // A `rootLoaderData` utility returns a `{ status, data }` envelope — the
     // same shape as a PloneClient response — so a utility that queries Plone
