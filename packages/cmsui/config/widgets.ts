@@ -1,7 +1,6 @@
 import type { ConfigType } from '@plone/registry';
 import {
   AlignWidget,
-  Checkbox,
   DateTimePicker,
   SizeWidget,
   WidthWidget,
@@ -11,6 +10,7 @@ import { DateField } from '@plone/components';
 import { RecurrenceWidget } from '../components/RecurrenceWidget/RecurrenceWidget';
 import { ObjectBrowserWidget } from '../components/ObjectBrowserWidget/ObjectBrowserWidget';
 import ImageWidget from '../components/ImageWidget/ImageWidget';
+import { BooleanWidget } from '../components/BooleanWidget/BooleanWidget';
 import { QuerystringWidget } from '../components/QuerystringWidget/QuerystringWidget';
 
 export default function install(config: ConfigType) {
@@ -25,7 +25,10 @@ export default function install(config: ConfigType) {
     key: 'widget',
     definition: { datetime: DateTimePicker },
   });
-  config.registerWidget({ key: 'widget', definition: { boolean: Checkbox } });
+  config.registerWidget({
+    key: 'widget',
+    definition: { boolean: BooleanWidget },
+  });
   config.registerWidget({
     key: 'widget',
     definition: { align: AlignWidget },

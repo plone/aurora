@@ -1,0 +1,1 @@
+Fixed boolean fields not showing their label and value by adding a `BooleanWidget` adapter for the Quanta `Checkbox`. @sneridagh
