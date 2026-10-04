@@ -1,0 +1,1 @@
+Fixed the `PloneClient` constructor, which did not bind the endpoint methods to the instance, so detached methods like `const { getContent } = cli` lost `this`. @sneridagh

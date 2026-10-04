@@ -7,6 +7,19 @@ const PLONECLIENT_DEFAULT_CONFIG = {
 };
 
 /**
+ * Assigns each function of `methods` to `target`, bound to `target`, so the
+ * methods keep the client as `this` when detached from it
+ * (for example, `const { getContent } = cli`).
+ */
+function bindMethods(target: object, methods: object) {
+  for (const [key, value] of Object.entries(methods)) {
+    if (typeof value === 'function') {
+      (target as Record<string, unknown>)[key] = value.bind(target);
+    }
+  }
+}
+
+/**
  * Methods added to `PloneClient` by `PloneClient.extend()`.
  *
  * Add-ons type their own methods through module augmentation:
@@ -74,7 +87,7 @@ class PloneClient {
     const Extended = class extends (this as typeof PloneClient) {
       constructor(config: PloneClientConfig) {
         super(config);
-        Object.assign(this, extensions);
+        bindMethods(this, extensions);
       }
     };
     return Extended as unknown as ExtendedPloneClient<T, M>;
@@ -83,11 +96,7 @@ class PloneClient {
   constructor(config: PloneClientConfig) {
     this.config = config;
 
-    Object.values(this).forEach((propertyValue) => {
-      if (propertyValue instanceof Function) {
-        propertyValue = propertyValue.bind(this);
-      }
-    });
+    bindMethods(this, this);
   }
 
   getActions = restapi.getActions;
