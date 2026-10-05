@@ -191,7 +191,7 @@ export default function Index() {
                     location={location}
                   />
                 </header>
-                <div className="content-area">
+                <div className="main-slot">
                   <Outlet />
                 </div>
                 <footer id="footer">
