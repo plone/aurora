@@ -3,13 +3,12 @@ import { useEffect, useMemo, type ReactNode } from 'react';
 import { BlockSelectionPlugin } from '@platejs/selection/react';
 import {
   Plate,
-  PlateView,
   usePlateEditor,
   type TPlateEditor,
   type PlateViewProps,
 } from 'platejs/react';
 
-import { Editor, EditorContainer } from '../ui/editor';
+import { Editor, EditorContainer, EditorView } from '../ui/editor';
 import {
   I18nPlugin,
   defaultLanguage,
@@ -121,8 +120,7 @@ export function PlateRenderer(
 
   return (
     <Plate editor={editor} readOnly>
-      {/* No Tailwind here: the content styles come from `styles/content.css`. */}
-      <PlateView
+      <EditorView
         {...rest}
         editor={editor as unknown as SlateEditor}
         className={props.className}
