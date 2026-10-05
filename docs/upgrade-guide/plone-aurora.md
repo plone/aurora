@@ -31,6 +31,157 @@ It is usually better and quicker to move your items into new locations and copy 
 
 ## Upgrading to Plone Aurora
 
+(upgrade-guide-block-content-css)=
+
+### Block content is styled in `styles/content.css`
+
+```{versionchanged} 1.0.0-alpha.17
+These steps apply when you upgrade an add-on from Plone Aurora 1.0.0-alpha.16 or earlier to 1.0.0-alpha.17 or later.
+```
+
+Block content no longer depends on Tailwind.
+Blocks are styled with plain CSS classnames, in each add-on's {file}`styles/content.css`, which the app loads in both the Public UI and the CMSUI editor inside the new `plone-content` cascade layer.
+Themes can style blocks with any CSS approach and any reset, and editors see blocks as visitors do.
+{doc}`/how-to-guides/style-blocks-in-a-theme` lists every block's classnames and tokens.
+
+Nothing was deprecated: the changes below take effect directly.
+
+#### The `cmsui` cascade layer is removed
+
+```{versionremoved} 1.0.0-alpha.17
+The `cmsui` cascade layer.
+```
+
+The CMSUI used to wrap Tailwind in a `cmsui` cascade layer, the last one in the layer order.
+Tailwind is now loaded with a plain import, so its reset lands in `base`, its theme variables in `theme`, and its utilities in `utilities`.
+The reset now sits below every other layer, instead of overriding component styles.
+
+If your add-on puts styles in `@layer cmsui`, move them to one of the layers declared in `config.settings.cssLayers`, such as `custom` for overrides, or `components` for component styles.
+
+```diff
+-@layer cmsui {
++@layer custom {
+   .my-widget {
+     padding: 1rem;
+   }
+ }
+```
+
+If your component relied on the reset to drop the browser's or a library's styles, set those properties in the component itself.
+
+#### Add `plone-content` if you set `config.settings.cssLayers`
+
+```{versionadded} 1.0.0-alpha.17
+The `plone-content` cascade layer, between `plone-components` and `utilities`.
+```
+
+The default layer order is now `theme`, `base`, `components`, `plone-components`, `plone-content`, `utilities`, and `custom`.
+If your add-on replaces `config.settings.cssLayers` instead of extending it, add `plone-content` in the same position.
+
+```diff
+ config.settings.cssLayers = [
+   'theme',
+   'base',
+   'components',
+   'plone-components',
++  'plone-content',
+   'utilities',
+   'custom',
+ ];
+```
+
+#### Move block styles to `styles/content.css`
+
+```{versionadded} 1.0.0-alpha.17
+The {file}`styles/content.css` add-on entry point, loaded in both the Public UI and the CMSUI.
+```
+
+Styles in {file}`styles/publicui.css` only apply to the Public UI.
+Move the rules that target block content into a new {file}`styles/content.css` at the root of your add-on, so they also apply in the editor.
+Don't wrap them in a `@layer`: the loader puts the whole file in `plone-content`.
+See {doc}`/conceptual-guides/add-on-styles-loader` for the authoring rules.
+
+The CMSUI editor's content root now has the `content-area` class, as in the Public UI.
+Rules and tokens you set on `.content-area` now apply in the editor too.
+
+#### Block content has no Tailwind classes
+
+```{versionchanged} 1.0.0-alpha.17
+The Plate.js blocks are styled by `@plone/plate/styles/content.css` instead of Tailwind utilities.
+```
+
+The Plate.js blocks, such as paragraphs, headings, lists, code blocks, tables, callouts, toggles, columns, and the table of contents, no longer render Tailwind utility classes in the content.
+Their styles moved from the `utilities` layer to `plone-content`, inside `:where()`, so any rule of your theme wins over them.
+
+- If your theme's CSS targets Tailwind classes inside block content, target the block's classnames instead, such as `.slate-p`, `.block-callout`, or `.block-code_block__pre`.
+- The `dark:` variants of the content are removed.
+  For a dark mode, set the content tokens, such as the `--code-token-*` syntax colors, in your theme.
+- The table of contents' entries are plain `<button type="button">` elements with the `block-toc__item` class.
+- Comment and suggestion marks render as plain text in the Public UI.
+
+#### Block spacing applies in the editor
+
+```{versionchanged} 1.0.0-alpha.17
+The block spacing rules moved from {file}`@plone/layout/styles/content-area.css` to {file}`@plone/layout/styles/content.css`.
+```
+
+The block widths by category, the spacing between blocks, and the nested block rules used to load only in the Public UI, in the `custom` layer.
+They now load in both user interfaces, in `plone-content`, so the editor spaces blocks like the Public UI.
+If your theme overrides them, move the overrides to your {file}`styles/content.css`, or set the `--block-bottom-spacing` and container width tokens.
+
+#### Plone blocks' classnames are renamed
+
+```{versionchanged} 1.0.0-alpha.17
+The Plone blocks use the block content classnames, `block-<type>__<part>`.
+```
+
+```{versionremoved} 1.0.0-alpha.17
+{file}`Video/VideoBlockView.css` and {file}`Maps/MapsBlock.module.css` in `@plone/blocks`. Their rules are in `@plone/blocks/styles/content.css`.
+```
+
+Update theme CSS that targets the old classnames.
+
+| Block | Before | After |
+|---|---|---|
+| Image | `image-block` | `block-image__frame` |
+| Video | `video align block <align>` (wrapper) | `block-video__wrapper` with `data-align` |
+| Video | `video-block`, `video-inner`, `invalid-video-format` | `block-video__figure`, `block-video__inner`, `block-video__invalid` |
+| Video | `full-width` | `[data-align="full"]` on the wrapper |
+| Maps | `maps-block`, `maps-iframe` | `block-maps__frame`, `block-maps__iframe` |
+| Teaser | `teaser-item`, `teaser-image-wrapper`, `teaser-content` | `block-teaser__item`, `block-teaser__image`, `block-teaser__content` |
+| Listing | `item` | `block-listing__item` |
+| Listing | `item summary` | `block-listing__item[data-variation="summary"]` |
+
+#### Plate.js media nodes are removed from the Aurora editor
+
+```{versionremoved} 1.0.0-alpha.17
+The video, audio, file, media embed, upload placeholder, and caption Plate.js plugins in `BlockEditorKit` and `BlockBaseEditorKit`, and the `video`, `audio`, `file`, and `media_embed` entries of `config.blocks.plateBlocksConfig`.
+```
+
+Plone Aurora uses Plone blocks for media.
+Nothing in the editor could insert the Plate.js media nodes, so this only affects content that has them, such as an embed made by pasting HTML with an `<iframe>`, which no longer renders.
+Pasted `<iframe>` elements are now dropped, and their surrounding text is kept.
+If your add-on needs these nodes, add them to your own editor configuration: `MediaKit` from {file}`@plone/plate/components/editor/plugins/media-kit` for the editor, and `BaseMediaKit` from {file}`@plone/plate/components/editor/plugins/media-base-kit` for the renderer.
+Their components keep their Tailwind styling.
+
+#### `EditorView` and `PlateRenderer` don't take a `variant`
+
+```{versionremoved} 1.0.0-alpha.17
+The `variant` prop of `EditorView` and `PlateRenderer` in `@plone/plate`.
+```
+
+`EditorView`, the read-only content view that `PlateRenderer` renders, no longer applies the editor's `editorVariants` classes.
+Its root is styled by {file}`styles/content.css` through Plate's `slate-editor` class.
+Remove the `variant` prop where you pass it.
+
+```diff
+ <PlateRenderer
+   editorConfig={config}
+   value={value}
+-  variant="none"
+ />
+```
+
 ### `@plone/components` split into `@plone/quanta` and `@plone/icons`
 
 ```{versionchanged} 1.0.0-alpha.16

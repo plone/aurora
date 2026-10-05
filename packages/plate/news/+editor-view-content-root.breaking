@@ -1,0 +1,1 @@
+Removed the `variant` prop of `EditorView` and `PlateRenderer`. `EditorView` no longer applies the editor's `editorVariants` classes: the rendered content's root is styled by `styles/content.css`. @sneridagh
