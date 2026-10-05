@@ -55,16 +55,16 @@ The anatomy contract is resolved by `resolveBlockAnatomy` in `@plone/helpers`.
 
 It is consumed by:
 
-- `BlockAnatomyPlugin` in `@plone/plate` for Plate-native blocks and registry-backed Plone blocks in Plate/Somersault rendering
+- `BlockAnatomyPlugin` in `@plone/plate` for Plate.js blocks and registry-backed Plone blocks in Plate/Somersault rendering
 
 This avoids duplicating class-name rules in individual blocks.
 
 Somersault editor rendering goes through Plate and receives the same classes from `BlockAnatomyPlugin`.
 Public rendering uses `SomersaultRenderer`, which uses the Plate renderer path and the same anatomy plugin contract.
 
-## Plate-native block categories
+## Plate.js block categories
 
-Plate-native block categories are configured in `config.blocks.plateBlocksConfig`.
+Plate.js block categories are configured in `config.blocks.plateBlocksConfig`.
 
 ```ts
 config.blocks.plateBlocksConfig = {
@@ -122,7 +122,7 @@ Themes rely on the following hooks, in both the Public UI and the editor.
 | Hook | Added by | Example | Use |
 |---|---|---|---|
 | Block root | `BlockAnatomyPlugin` | `block block-<type> category-<category>`, `data-block-type`, `data-block-category` | The main hook for styling a block. |
-| Plate node | Plate | `slate-p`, `slate-tr`, `slate-td`, `slate-a`, `slate-ploneBlock` | Nested nodes and inline elements, and telling native blocks from Plone blocks apart. |
+| Plate node | Plate | `slate-p`, `slate-tr`, `slate-td`, `slate-a`, `slate-ploneBlock` | Nested nodes and inline elements, and telling Plate.js blocks from Plone blocks apart. |
 | Inner part | Each block | `block-<type>__<part>` | Elements inside a block that aren't Plate nodes. |
 | Variant | Data attributes | `data-align`, `data-style-*`, `data-list-style-type` | States and options. |
 
@@ -130,9 +130,9 @@ The following rules apply to these hooks.
 
 - The block type is used as is, without readable aliases, such as `block-p` or `block-code_block`.
   It matches `data-block-type` and the stored data.
-- A native Plate block and a Plone block may share a type name.
+- A Plate.js block and a Plone block may share a type name.
   Both then get `block-<type>`.
-  Use `.block-<type>.slate-<type>` for the native one, `.block-<type>.slate-ploneBlock` for the Plone one, or `.block-<type>` for both.
+  Use `.block-<type>.slate-<type>` for the Plate.js one, `.block-<type>.slate-ploneBlock` for the Plone one, or `.block-<type>` for both.
 - Inner parts use a BEM separator, `__`, because block types may already contain `-` or `_`.
   Nested Plate nodes keep their `slate-<type>` class and get no part class.
 - Blocks share part names when the concept is the same, such as `__link`, `__item`, or `__image`.
@@ -144,6 +144,6 @@ Their root keeps `block-p`, gets `data-list-style-type`, and renders the parts `
 The styles for these hooks live in each add-on's {file}`styles/content.css`.
 See {doc}`/conceptual-guides/add-on-styles-loader` for how they're loaded and how to override them, and {doc}`/how-to-guides/style-blocks-in-a-theme` for every block's parts and tokens.
 
-Two acceptance tests guard the contract in the public view: {file}`packages/plate/acceptance/tests/content-class-contract.test.ts` for the native blocks and {file}`packages/blocks/acceptance/tests/plone-blocks-class-contract.test.ts` for the Plone blocks.
+Two acceptance tests guard the contract in the public view: {file}`packages/plate/acceptance/tests/content-class-contract.test.ts` for the Plate.js blocks and {file}`packages/blocks/acceptance/tests/plone-blocks-class-contract.test.ts` for the Plone blocks.
 They fail on any class outside the contract, such as a Tailwind utility.
 When a new block or part needs styling, add its rules to the package's {file}`styles/content.css` and give its elements contract classnames.

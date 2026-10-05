@@ -72,11 +72,11 @@ Every block exposes the same kinds of hooks.
 | Hook | Example | Use |
 |---|---|---|
 | Block root | `.block`, `.block-callout`, `.category-text`, `[data-block-type="callout"]` | A block, a kind of block, or a category of blocks. |
-| Plate node | `.slate-p`, `.slate-h2`, `.slate-td`, `.slate-a`, `.slate-ploneBlock` | Nested nodes and inline elements, and native blocks versus Plone blocks. |
+| Plate node | `.slate-p`, `.slate-h2`, `.slate-td`, `.slate-a`, `.slate-ploneBlock` | Nested nodes and inline elements, and Plate.js blocks versus Plone blocks. |
 | Inner part | `.block-callout__icon`, `.block-listing__item` | Elements inside a block, named `block-<type>__<part>`. |
 | Variant | `[data-list-style-type="todo"]`, `[data-align="left"]`, `[data-depth="2"]` | States and options. |
 
-### Native blocks
+### Plate.js blocks
 
 | Block | Plate node | Parts and variants |
 |---|---|---|
@@ -122,7 +122,7 @@ Each value falls back to the default shown when it isn't set.
 `--block-width` holds a block's computed width, and `--block-size`, `--block-margin`, and `--block-float` hold the image block's style fields.
 The framework sets them; don't set them in a theme.
 
-### Native blocks
+### Plate.js blocks
 
 | Token | Default | What it sets |
 |---|---|---|
