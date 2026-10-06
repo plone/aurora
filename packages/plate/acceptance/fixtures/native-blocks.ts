@@ -17,12 +17,18 @@ const p = (text: string, extra: Node = {}): Node => ({
 
 export const nativeBlockSections = {
   headings: [
+    { type: 'h1', children: [{ text: 'Heading one' }] },
+    p('Paragraph below the first level heading.'),
     { type: 'h2', children: [{ text: 'Heading two' }] },
     p('Paragraph below the second level heading.'),
     { type: 'h3', children: [{ text: 'Heading three' }] },
     p('Paragraph below the third level heading.'),
     { type: 'h4', children: [{ text: 'Heading four' }] },
     p('Paragraph below the fourth level heading.'),
+    { type: 'h5', children: [{ text: 'Heading five' }] },
+    p('Paragraph below the fifth level heading.'),
+    { type: 'h6', children: [{ text: 'Heading six' }] },
+    p('Paragraph below the sixth level heading.'),
   ],
 
   marks: [
@@ -43,6 +49,36 @@ export const nativeBlockSections = {
           url: 'https://plone.org',
           children: [{ text: 'link' }],
         },
+        { text: '.' },
+      ],
+    },
+    {
+      type: 'p',
+      children: [
+        { text: 'Text with ' },
+        { text: 'underline', underline: true },
+        { text: ', H' },
+        { text: '2', subscript: true },
+        { text: 'O as subscript and E = mc' },
+        { text: '2', superscript: true },
+        { text: ' as superscript.' },
+      ],
+    },
+  ],
+
+  // Pasted content keeps the font marks; the toolbar doesn't set them.
+  fontStyles: [
+    {
+      type: 'p',
+      children: [
+        { text: 'Text with a ' },
+        { text: 'font color', color: '#c2185b' },
+        { text: ', a ' },
+        { text: 'background color', backgroundColor: '#fff3cd' },
+        { text: ', a ' },
+        { text: 'font size', fontSize: '20px' },
+        { text: ' and a ' },
+        { text: 'font family', fontFamily: 'serif' },
         { text: '.' },
       ],
     },

@@ -12,6 +12,7 @@
   ],
   "compilerOptions": {
     "types": ["vite/client"],
+    "allowImportingTsExtensions": true,
     "paths": {
       "@plone/aurora/*": ["../../apps/aurora/*"],
       "@plone/plate/*": ["./*"],
