@@ -180,3 +180,26 @@ test('Pasting a plain URL does not run the markdown parser', async ({
     (await getValue(page, editorHandle)).filter((n) => nodeText(n) !== ''),
   ).toHaveLength(2);
 });
+
+test('Pasting HTML with embedded media keeps only its text', async ({
+  page,
+}) => {
+  // Aurora has no Plate media nodes; media are Plone blocks.
+  const value = await pasteIntoEmptyParagraph(page, {
+    'text/html': [
+      '<h2>Media heading</h2>',
+      '<p>Before the media.</p>',
+      '<iframe src="https://www.youtube.com/embed/abc"></iframe>',
+      '<video src="https://example.com/video.mp4" controls></video>',
+      '<audio src="https://example.com/audio.mp3" controls></audio>',
+      '<p>After the media.</p>',
+    ].join(''),
+    'text/plain': 'Media content',
+  });
+
+  expect(outline(value)).toEqual([
+    'h2 Media heading',
+    'p Before the media.',
+    'p After the media.',
+  ]);
+});

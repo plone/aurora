@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.2 (2026-10-06)
+
+### Bugfix
+
+- Fixed the quanta table row drag handle relying on a global CSS reset to drop the basic button styles. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+
 ## 1.0.0-alpha.1 (2026-10-03)
 
 ### Feature

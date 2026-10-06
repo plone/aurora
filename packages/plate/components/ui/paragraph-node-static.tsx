@@ -3,11 +3,11 @@ import type { SlateElementProps } from 'platejs/static';
 import { SlateElement } from 'platejs/static';
 
 import { BlockInnerContainer } from './block-inner-container';
-import { cn } from '../../lib/utils';
 
+// Styled by `.slate-p` in `styles/content.css`.
 export function ParagraphElementStatic(props: SlateElementProps) {
   return (
-    <SlateElement {...props} className={cn('m-0 px-0 py-1')}>
+    <SlateElement {...props}>
       <BlockInnerContainer>{props.children}</BlockInnerContainer>
     </SlateElement>
   );

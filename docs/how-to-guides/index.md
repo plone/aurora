@@ -29,6 +29,7 @@ shadow-a-component
 fetch-additional-data-root-loader
 add-client-endpoints
 add-tailwind
+style-blocks-in-a-theme
 icons
 configure-plate-code-block-languages
 bind-metadata-fields-to-plate-text-blocks

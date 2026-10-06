@@ -8,6 +8,22 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.18 (2026-10-06)
+
+### Breaking
+
+- Removed the `video`, `audio`, `file` and `media_embed` entries from `config.blocks.plateBlocksConfig`, since Aurora's block editor no longer has those Plate nodes. @sneridagh 
+- Renamed the Plone blocks' classnames to the block content contract, `block-<type>__<part>`, and moved the video and maps styles to `styles/content.css`. Update theme CSS that targets the old names: `image-block` is now `block-image__frame`; `video-block`, `video-inner` and `invalid-video-format` are `block-video__figure`, `__inner` and `__invalid`, and the video's `video align block <align>` wrapper is `block-video__wrapper` with `data-align`; `maps-block` and `maps-iframe` are `block-maps__frame` and `__iframe`; `teaser-item`, `teaser-image-wrapper` and `teaser-content` are `block-teaser__item`, `__image` and `__content`; the listing's `item` and `summary` are `block-listing__item` and `block-listing__item[data-variation='summary']`. New parts: `block-teaser__title`, `__description`, `block-listing__headline`, `__title`, `__description`, `__image`, `__body` and `__empty`. @sneridagh 
+
+### Feature
+
+- Moved the image block styles from a CSS Module to `styles/content.css`, so they load in both the Public UI and the CMSUI inside the `plone-content` cascade layer and themes can override them. The link around a linked image now has the `block-image__link` class. @sneridagh [#199](https://github.com/plone/aurora/pull/199)
+- Added `h1` (category `text`) and `hr` (category `separator`) to `plateBlocksConfig`, so they get the block anatomy classnames. In the public view, the separator now gets the separator category spacing. @sneridagh 
+
+### Internal
+
+- Added Stylelint rules for `styles/content.css`: no `@layer`, and no `:root`, `html`, `body` or bare element selectors. @sneridagh [#200](https://github.com/plone/aurora/pull/200)
+
 ## 1.0.0-alpha.17 (2026-10-03)
 
 ### Internal

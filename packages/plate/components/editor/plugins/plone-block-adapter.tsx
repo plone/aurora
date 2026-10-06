@@ -130,6 +130,13 @@ function PloneBlockAdapterContent(
   const className = [
     restProps.className,
     selected && 'rounded-sm outline-2 outline-quanta-sapphire',
+    // A floated image collapses its wrapper, so its selection outline would
+    // render as a stray full-width line.
+    selected &&
+      `
+        [&.block-image[data-style-align=left]]:outline-none
+        [&.block-image[data-style-align=right]]:outline-none
+      `,
   ]
     .filter(Boolean)
     .join(' ');
@@ -153,24 +160,33 @@ function PloneBlockAdapterContent(
       element={element}
       className={className}
     >
-      <BlockInnerContainer>
-        {Edit ? (
-          <Edit
-            data={blockData}
-            block={blockId}
-            selected={selected}
-            setBlock={handleSetBlock}
-            onChangeBlock={handleChangeBlock}
-            onSelectBlock={handleSelectBlock}
-            blocksConfig={config.blocks.blocksConfig}
-            blocksErrors={{}}
-            navRoot={config.settings?.navRootPath}
-            contentType={blockData['@type']}
-          />
-        ) : View ? (
-          <View data={blockData} />
-        ) : null}
-      </BlockInnerContainer>
+      {/* Only the block's own UI is non-editable, and it gets its own
+          Suspense boundary for lazy Edit/View components. The element and its
+          spacer must be in the DOM, and editable, as soon as the block is
+          inserted; otherwise Slate cannot put the caret on the block and the
+          browser drops it at the start of the editor. */}
+      <div contentEditable={false}>
+        <React.Suspense fallback={null}>
+          <BlockInnerContainer>
+            {Edit ? (
+              <Edit
+                data={blockData}
+                block={blockId}
+                selected={selected}
+                setBlock={handleSetBlock}
+                onChangeBlock={handleChangeBlock}
+                onSelectBlock={handleSelectBlock}
+                blocksConfig={config.blocks.blocksConfig}
+                blocksErrors={{}}
+                navRoot={config.settings?.navRootPath}
+                contentType={blockData['@type']}
+              />
+            ) : View ? (
+              <View data={blockData} />
+            ) : null}
+          </BlockInnerContainer>
+        </React.Suspense>
+      </div>
       {/* Void elements must render their children: Slate needs the spacer
           text in the DOM to select, copy and drag the block. */}
       {_children}
@@ -184,7 +200,6 @@ export function PloneBlockAdapterElement(
   const { element, ...restProps } = props;
   const baseAttributes = {
     ...restProps.attributes,
-    contentEditable: false,
   };
   const editor = useEditorRef();
   const selected = useSelected();

@@ -6,11 +6,9 @@ import {
   type ChangeEvent,
   type KeyboardEvent,
 } from 'react';
-import clsx from 'clsx';
 import mapsBlockSVG from './block-maps.svg';
 import { useTranslation } from 'react-i18next';
 import { ArrowrightIcon, CloseIcon } from '@plone/icons';
-import styles from './MapsBlock.module.css';
 
 const MapsBlockEdit = (props: BlockEditProps) => {
   const { t } = useTranslation();
@@ -63,12 +61,12 @@ const MapsBlockEdit = (props: BlockEditProps) => {
   );
 
   return (
-    <div className="maps-block w-full">
+    <div className="block-maps__frame">
       {data.url ? (
         <iframe
           title={t('blocks.maps.embedded-map-block')}
           src={data.url}
-          className={clsx(styles.iframe, 'maps-iframe')}
+          className="block-maps__iframe"
           allowFullScreen
         />
       ) : (

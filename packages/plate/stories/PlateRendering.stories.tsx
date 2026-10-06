@@ -33,7 +33,6 @@ const PlateStory = (props: React.ComponentProps<typeof PlateEditor>) => {
         <PlateRenderer
           value={(value as Value) || (props.value as Value)}
           editorConfig={plateBlockRendererConfig}
-          variant="none"
         />
       </div>
     </div>

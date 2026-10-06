@@ -39,6 +39,6 @@ describe('MapsBlockView', () => {
 
     expect(iframe).toBeInTheDocument();
     expect(iframe).toHaveAttribute('src', 'https://maps.example.com/?q=');
-    expect(container.querySelector('.maps-block')).toBeInTheDocument();
+    expect(container.querySelector('.block-maps__frame')).toBeInTheDocument();
   });
 });

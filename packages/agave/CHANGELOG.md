@@ -8,6 +8,17 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.9 (2026-10-06)
+
+### Feature
+
+- Added `styles/content.css` for Agave's block content tokens, loaded in both the Public UI and the CMSUI editor. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+
+### Internal
+
+- Added Stylelint rules for `styles/content.css`: no `@layer`, and no `:root`, `html`, `body` or bare element selectors. @sneridagh [#200](https://github.com/plone/aurora/issues/200)
+- Updated the listing block styles to the block's renamed classnames, `block-listing__item` and its `summary` variation. @sneridagh 
+
 ## 1.0.0-alpha.8 (2026-10-03)
 
 ### Internal
