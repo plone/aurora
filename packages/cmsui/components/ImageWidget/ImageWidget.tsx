@@ -141,26 +141,6 @@ function getEditPathFromUrl(pathname: string) {
   return pathname;
 }
 
-function readFileAsDataURL(file: File) {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(String(reader.result || ''));
-    reader.onerror = () =>
-      reject(reader.error || new Error('File read failed'));
-    reader.readAsDataURL(file);
-  });
-}
-
-function parseDataUrl(dataUrl: string) {
-  const match = dataUrl.match(/^data:(.*?);base64,(.*)$/);
-  if (!match) return null;
-
-  return {
-    contentType: match[1],
-    data: match[2],
-  };
-}
-
 function ObjectBrowserButton({
   title,
   onBeforeOpen,
@@ -246,14 +226,14 @@ function ImageInputBase({
       setIsUploading(true);
 
       try {
-        const dataUrl = await readFileAsDataURL(file);
-        const parsed = parseDataUrl(dataUrl);
-
-        if (!parsed) {
-          setUploadError('Could not parse the selected file');
-          setIsUploading(false);
-          return;
-        }
+        // The image is sent as a multipart/form-data part, not base64 JSON.
+        const formData = new FormData();
+        formData.append('path', resolvedUploadPath);
+        formData.append(
+          'data',
+          JSON.stringify({ '@type': 'Image', title: file.name }),
+        );
+        formData.append('image', file);
 
         // Keep this as a direct fetch: this widget treats `@createContent`
         // like an API endpoint and needs its raw JSON payload to update local
@@ -261,23 +241,8 @@ function ImageInputBase({
         // Router's data transport instead of exposing that API-ish shape.
         const response = await fetch(uploadAction, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
           credentials: 'include',
-          body: JSON.stringify({
-            path: resolvedUploadPath,
-            data: {
-              '@type': 'Image',
-              title: file.name,
-              image: {
-                data: parsed.data,
-                encoding: 'base64',
-                'content-type': parsed.contentType,
-                filename: file.name,
-              },
-            },
-          }),
+          body: formData,
         });
 
         const responseData = await parseJsonSafe(response);
@@ -293,7 +258,7 @@ function ImageInputBase({
         }
         setIsUploading(false);
       } catch {
-        setUploadError('Could not read the selected file');
+        setUploadError('Image upload failed');
         setIsUploading(false);
       }
     },

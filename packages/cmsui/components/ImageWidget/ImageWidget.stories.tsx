@@ -205,13 +205,14 @@ const mockObjectBrowserLoader = ({ params, request }: LoaderFunctionArgs) => {
 const mockCreateContentAction = async ({
   request,
 }: ActionFunctionArgs): Promise<{ '@id': string; title: string }> => {
-  const body = (await request.json()) as {
-    path?: string;
-    data?: { title?: string };
+  const formData = await request.formData();
+  const rawData = formData.get('data');
+  const body = (typeof rawData === 'string' ? JSON.parse(rawData) : {}) as {
+    title?: string;
   };
 
-  const path = body.path || STORY_ROOT_ID;
-  const title = body.data?.title || 'uploaded-image.jpg';
+  const path = (formData.get('path') as string | null) || STORY_ROOT_ID;
+  const title = body.title || 'uploaded-image.jpg';
   const id = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
   return {

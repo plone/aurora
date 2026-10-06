@@ -1,0 +1,1 @@
+The `@createContent` action accepts `multipart/form-data` requests besides JSON, and requires authentication. The image widget uploads images as `multipart/form-data` instead of base64-encoded JSON. @mamico
