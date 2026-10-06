@@ -35,8 +35,8 @@ It is usually better and quicker to move your items into new locations and copy 
 
 ### Block content is styled in `styles/content.css`
 
-```{versionchanged} 1.0.0-alpha.17
-These steps apply when you upgrade an add-on from Plone Aurora 1.0.0-alpha.16 or earlier to 1.0.0-alpha.17 or later.
+```{versionchanged} 1.0.0-alpha.19
+These steps apply when you upgrade an add-on from Plone Aurora 1.0.0-alpha.18 or earlier to 1.0.0-alpha.19 or later.
 ```
 
 Block content no longer depends on Tailwind.
@@ -48,7 +48,7 @@ Nothing was deprecated: the changes below take effect directly.
 
 #### The `cmsui` cascade layer is removed
 
-```{versionremoved} 1.0.0-alpha.17
+```{versionremoved} 1.0.0-alpha.19
 The `cmsui` cascade layer.
 ```
 
@@ -71,7 +71,7 @@ If your component relied on the reset to drop the browser's or a library's style
 
 #### Add `plone-content` if you set `config.settings.cssLayers`
 
-```{versionadded} 1.0.0-alpha.17
+```{versionadded} 1.0.0-alpha.19
 The `plone-content` cascade layer, between `plone-components` and `utilities`.
 ```
 
@@ -92,7 +92,7 @@ If your add-on replaces `config.settings.cssLayers` instead of extending it, add
 
 #### Move block styles to `styles/content.css`
 
-```{versionadded} 1.0.0-alpha.17
+```{versionadded} 1.0.0-alpha.19
 The {file}`styles/content.css` add-on entry point, loaded in both the Public UI and the CMSUI.
 ```
 
@@ -106,7 +106,7 @@ Rules and tokens you set on `.content-area` now apply in the editor too.
 
 #### Block content has no Tailwind classes
 
-```{versionchanged} 1.0.0-alpha.17
+```{versionchanged} 1.0.0-alpha.19
 The Plate.js blocks are styled by `@plone/plate/styles/content.css` instead of Tailwind utilities.
 ```
 
@@ -121,7 +121,7 @@ Their styles moved from the `utilities` layer to `plone-content`, inside `:where
 
 #### Block spacing applies in the editor
 
-```{versionchanged} 1.0.0-alpha.17
+```{versionchanged} 1.0.0-alpha.19
 The block spacing rules moved from {file}`@plone/layout/styles/content-area.css` to {file}`@plone/layout/styles/content.css`.
 ```
 
@@ -131,11 +131,11 @@ If your theme overrides them, move the overrides to your {file}`styles/content.c
 
 #### Plone blocks' classnames are renamed
 
-```{versionchanged} 1.0.0-alpha.17
+```{versionchanged} 1.0.0-alpha.19
 The Plone blocks use the block content classnames, `block-<type>__<part>`.
 ```
 
-```{versionremoved} 1.0.0-alpha.17
+```{versionremoved} 1.0.0-alpha.19
 {file}`Video/VideoBlockView.css` and {file}`Maps/MapsBlock.module.css` in `@plone/blocks`. Their rules are in `@plone/blocks/styles/content.css`.
 ```
 
@@ -154,7 +154,7 @@ Update theme CSS that targets the old classnames.
 
 #### Plate.js media nodes are removed from the Aurora editor
 
-```{versionremoved} 1.0.0-alpha.17
+```{versionremoved} 1.0.0-alpha.19
 The video, audio, file, media embed, upload placeholder, and caption Plate.js plugins in `BlockEditorKit` and `BlockBaseEditorKit`, and the `video`, `audio`, `file`, and `media_embed` entries of `config.blocks.plateBlocksConfig`.
 ```
 
@@ -166,7 +166,7 @@ Their components keep their Tailwind styling.
 
 #### `EditorView` and `PlateRenderer` don't take a `variant`
 
-```{versionremoved} 1.0.0-alpha.17
+```{versionremoved} 1.0.0-alpha.19
 The `variant` prop of `EditorView` and `PlateRenderer` in `@plone/plate`.
 ```
 
