@@ -110,3 +110,44 @@ test('Slash menu does not offer AI actions in the Aurora preset', async ({
   ).toBeVisible();
   await expect(page.getByRole('option', { name: 'AI' })).toHaveCount(0);
 });
+
+for (const label of ['Image', 'Teaser', 'Listing']) {
+  test(`Slash menu keeps the selection on an inserted "${label}" block`, async ({
+    page,
+  }) => {
+    await login(page);
+    const pageId = await createNativeBlocksPage(page, [], {
+      extra: [{ type: 'p', children: [{ text: '' }] }],
+    });
+    await openInEditor(page, pageId);
+    const editorHandle = await getEditorHandle(page);
+
+    await insertWithSlashMenu(page, editorHandle, 1, label);
+    await expect
+      .poll(async () => (await getValue(page, editorHandle))[1]?.type)
+      .toBe('ploneBlock');
+
+    // The caret used to stay at the start of the title: the block's lazy
+    // Edit component kept the element out of the DOM when the editor was
+    // refocused, and a non-editable element could not hold the caret anyway.
+    const inserted = page.locator('[data-slate-editor] > *').nth(1);
+    await expect(inserted).toHaveAttribute('data-slate-void', 'true');
+    await expect
+      .poll(() =>
+        inserted.evaluate((block) => {
+          const anchor = window.getSelection()?.anchorNode;
+          return (
+            !!anchor &&
+            block.contains(anchor) &&
+            block.closest('[data-slate-editor]') === document.activeElement
+          );
+        }),
+      )
+      .toBe(true);
+    expect(
+      await editorHandle.evaluate(
+        (editor: any) => editor.selection?.anchor.path[0] ?? null,
+      ),
+    ).toBe(1);
+  });
+}
