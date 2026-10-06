@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 4.0.0-alpha.5 (2026-10-06)
+
+### Feature
+
+- Added the `styles/content.css` add-on styles convention: every add-on's content styles are aggregated into `.plone/content.css`, which both the Public UI and the CMSUI loaders import first, inside the `plone-content` cascade layer. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+
 ## 4.0.0-alpha.4 (2026-10-03)
 
 ### Internal

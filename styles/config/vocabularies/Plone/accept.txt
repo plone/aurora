@@ -4,6 +4,9 @@
 `plone.volto`
 [Aa]sync
 [Bb]ackend
+[Bb]lockquotes?
+[Cc]allout('s|s)?
+[Cc]lassnames?
 CMSUI
 CommonJS
 JavaScript

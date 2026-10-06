@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.9 (2026-10-06)
+
+### Feature
+
+- Added the `plone-content` cascade layer to the default layer order, between `plone-components` and `utilities`, for block content CSS. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+
 ## 1.0.0-alpha.8 (2026-10-03)
 
 ### Internal

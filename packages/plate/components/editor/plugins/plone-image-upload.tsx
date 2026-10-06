@@ -62,12 +62,14 @@ export async function insertPloneImageBlocks(
 /**
  * Pasting or dropping image files uploads them and inserts Plone image blocks.
  *
- * It takes over from the Plate media placeholder flow for images, whose image
- * nodes are not rendered by the Plone block editor.
+ * Aurora's presets have no Plate media nodes: images are Plone image blocks.
+ * In presets that do have them, it takes over from the Plate media
+ * placeholder flow for images.
  */
 export const PloneImageUploadPlugin = createPlatePlugin({
   key: PLONE_IMAGE_UPLOAD_KEY,
-  // Run before the media placeholder plugin, which handles the same events.
+  // Run before the media placeholder plugin, when there's one, which handles
+  // the same events.
   priority: 150,
   handlers: {
     onPaste: ({ editor, event }) => {

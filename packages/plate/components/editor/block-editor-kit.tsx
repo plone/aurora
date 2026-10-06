@@ -23,7 +23,6 @@ import { LineHeightKit } from './plugins/line-height-kit';
 import { LegacyPastePlugin } from './plugins/legacy-paste-plugin';
 import { ListKit } from './plugins/list-kit';
 import { MarkdownKit } from './plugins/markdown-kit';
-import { MediaKit } from './plugins/media-kit';
 import { MentionKit } from './plugins/mention-kit';
 import { BlockWidthKit } from './plugins/block-width-kit';
 import { BlockAnatomyKit } from './plugins/block-anatomy-kit';
@@ -46,7 +45,6 @@ export const BlockEditorKit = [
   ...TableKit,
   ...ToggleKit,
   ...TocKit,
-  ...MediaKit,
   ...CalloutKit,
   ...ColumnKit,
   ...MentionKit,

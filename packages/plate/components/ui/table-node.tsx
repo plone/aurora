@@ -60,6 +60,7 @@ import { useElementSelector } from 'platejs/react';
 
 import { Button } from './button';
 import { BlockInnerContainer } from './block-inner-container';
+import { cellBorderAttributes } from './table-node-static';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -110,11 +111,11 @@ export const TableElement = withHOC(
     const isSelectingTable = useBlockSelected(props.element.id as string);
 
     const content = (
-      <PlateElement {...props} className="py-5">
+      <PlateElement {...props}>
         <BlockInnerContainer>
           <div
             className={cn(
-              'overflow-x-auto overflow-y-hidden',
+              'block-table__scroll',
               hasControls &&
                 `
                   -ml-2
@@ -123,15 +124,15 @@ export const TableElement = withHOC(
             )}
             style={{ paddingLeft: marginLeft }}
           >
-            <div className="group/table relative w-fit">
+            <div className="block-table__wrapper">
               <table
                 className={cn(
-                  'mr-0 ml-px table h-px table-fixed border-collapse',
+                  'block-table__table',
                   isSelectingCell && 'selection:bg-transparent',
                 )}
                 {...tableProps}
               >
-                <tbody className="min-w-full">{children}</tbody>
+                <tbody>{children}</tbody>
               </table>
 
               {isSelectingTable && (
@@ -570,20 +571,10 @@ export function TableCellElement({
       {...props}
       as={isHeader ? 'th' : 'td'}
       className={cn(
-        'h-full overflow-visible border-none bg-background p-0',
-        element.background ? 'bg-(--cellBackground)' : 'bg-background',
-        isHeader &&
-          `
-            text-left
-            *:m-0
-          `,
-        'before:size-full',
+        // Header cells have always been bold in the editor, but not in the
+        // rendered content.
+        isHeader && 'font-bold',
         selected && 'before:z-10 before:bg-brand/5',
-        "before:absolute before:box-border before:content-[''] before:select-none",
-        borders.bottom?.size && `before:border-b before:border-b-border`,
-        borders.right?.size && `before:border-r before:border-r-border`,
-        borders.left?.size && `before:border-l before:border-l-border`,
-        borders.top?.size && `before:border-t before:border-t-border`,
       )}
       style={
         {
@@ -596,12 +587,10 @@ export function TableCellElement({
         ...props.attributes,
         colSpan: api.table.getColSpan(element),
         rowSpan: api.table.getRowSpan(element),
+        ...cellBorderAttributes(borders),
       }}
     >
-      <div
-        className="relative z-20 box-border h-full px-3 py-2"
-        style={{ minHeight }}
-      >
+      <div className="block-table__cell-content px-3" style={{ minHeight }}>
         {props.children}
       </div>
 

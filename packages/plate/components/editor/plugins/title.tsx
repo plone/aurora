@@ -101,7 +101,9 @@ export function TitleBlockElement(props: PlateElementProps) {
   return (
     <PlateElement
       as="h1"
-      className="font-heading relative mt-[1.6em] pb-1 text-4xl font-bold"
+      // Styled by `.slate-title` in `styles/content.css`; `relative`
+      // positions the placeholder.
+      className="relative"
       {...props}
     >
       <BlockInnerContainer className="relative">
