@@ -1331,9 +1331,6 @@ importers:
       '@plone/icons':
         specifier: workspace:*
         version: link:../icons
-      '@plone/quanta':
-        specifier: workspace:*
-        version: link:../quanta
       '@plone/registry':
         specifier: workspace:*
         version: link:../registry
