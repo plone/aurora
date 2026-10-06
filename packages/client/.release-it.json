@@ -8,7 +8,10 @@
       "uvx towncrier build --yes --version ${version}",
       "pnpm build"
     ],
-    "after:release": "rm .changelog.draft"
+    "after:release": [
+      "rm .changelog.draft",
+      "pnpm dist-tag add @plone/client@${version} latest"
+    ]
   },
   "npm": {
     "publish": false
