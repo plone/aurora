@@ -26,6 +26,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
         babelConfig: {
           presets: ['@babel/preset-typescript'],
           plugins: ['babel-plugin-react-compiler'],
+          sourceMaps: true,
         },
       }),
       devtoolsJson(),
