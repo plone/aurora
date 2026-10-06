@@ -51,7 +51,6 @@
     "@plone/registry": "^3.0.0 || ^4.0.0-alpha.0",
     "@plone/components": "^4.0.0 || ^5.0.0-alpha.0",
     "@plone/icons": "^1.0.0-alpha.0",
-    "@plone/quanta": "^1.0.0-alpha.0",
     "react": "^18.2.0 || ^19.0.0",
     "react-dom": "^18.2.0 || ^19.0.0"
   },
@@ -134,7 +133,6 @@
   "devDependencies": {
     "@plone/components": "workspace:*",
     "@plone/icons": "workspace:*",
-    "@plone/quanta": "workspace:*",
     "@plone/registry": "workspace:*",
     "@plone/types": "workspace:*",
     "@storybook/addon-docs": "^10.4.0",

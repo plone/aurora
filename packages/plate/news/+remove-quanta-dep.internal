@@ -1,0 +1,1 @@
+Removed the unused `@plone/quanta` peer and dev dependency. @sneridagh
