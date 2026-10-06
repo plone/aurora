@@ -9,7 +9,7 @@
   ],
   "funding": "https://github.com/sponsors/plone",
   "license": "MIT",
-  "version": "3.0.0-alpha.6",
+  "version": "3.0.0-alpha.7",
   "repository": {
     "type": "git",
     "url": "https://github.com/plone/aurora.git"
@@ -33,10 +33,10 @@
   "type": "module",
   "scripts": {
     "check:ts": "tsc --project tsconfig.json",
-    "dry-release": "release-it --dry-run",
-    "release": "release-it",
-    "release-major-alpha": "release-it major --preRelease=alpha",
-    "release-alpha": "release-it --preRelease=alpha",
+    "dry-release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --dry-run",
+    "release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it",
+    "release-major-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it major --preRelease=alpha",
+    "release-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --preRelease=alpha",
     "prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx}'",
     "lint:fix": "eslint --max-warnings=0 './**/*.{js,jsx,ts,tsx}' --fix --no-error-on-unmatched-pattern",
     "stylelint:fix": "sh -c 'if [ -f .stylelintrc ] || [ -f .stylelintrc.json ] || [ -f .stylelintrc.js ] || [ -f .stylelintrc.cjs ] || [ -f stylelint.config.js ] || [ -f stylelint.config.cjs ] || [ -f stylelint.config.mjs ]; then stylelint '''./**/*.{css,scss,less}''' --fix --allow-empty-input; else echo \"No local stylelint config, skipping\"; fi'",

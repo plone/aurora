@@ -1,4 +1,4 @@
-import { CheckboxGroup, Checkbox, Label } from '@plone/components/quanta';
+import { CheckboxGroup, Checkbox, Label } from '@plone/quanta';
 import { Days, getLocalizedWeekday, widgetTailwindClasses } from '../utils';
 import type { Updater } from '@tanstack/react-form';
 import { useTranslation } from 'react-i18next';

@@ -3,10 +3,12 @@
   "private": true,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "build:deps": "pnpm --filter @plone/registry --filter @plone/client --filter @plone/components --filter @plone/react-router --filter @plone/helpers build",
-    "build:all": "pnpm --filter @plone/registry --filter @plone/client --filter @plone/components --filter @plone/react-router --filter @plone/helpers build",
+    "build:deps": "pnpm --filter @plone/registry --filter @plone/client --filter @plone/icons --filter @plone/quanta --filter @plone/components --filter @plone/react-router --filter @plone/helpers build",
+    "build:all": "pnpm --filter @plone/registry --filter @plone/client --filter @plone/icons --filter @plone/quanta --filter @plone/components --filter @plone/react-router --filter @plone/helpers build",
     "build:registry": "pnpm --filter @plone/registry run build",
+    "build:icons": "pnpm --filter @plone/icons run build",
     "build:components": "pnpm --filter @plone/components run build",
+    "build:quanta": "pnpm --filter @plone/quanta run build",
     "build:client": "pnpm --filter @plone/client run build",
     "build:providers": "pnpm --filter @plone/providers run build",
     "build:helpers": "pnpm --filter @plone/helpers run build",
@@ -35,6 +37,8 @@
     "prereleaser": "node packages/scripts/preleaser.js",
     "acceptance-test": "pnpm exec playwright test --config=playwright.config.ts",
     "acceptance-test:open": "pnpm exec playwright test --ui --config=playwright.config.ts",
+    "visual-test": "pnpm exec playwright test --config=playwright-visual.config.ts",
+    "visual-test:open": "pnpm exec playwright test --ui --config=playwright-visual.config.ts",
     "update-baseline-browser-mapping": "pnpm update baseline-browser-mapping browserslist -r"
   },
   "devDependencies": {

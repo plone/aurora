@@ -8,6 +8,74 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.25 (2026-10-06)
+
+### Breaking
+
+- Removed the Plate media nodes (video, audio, file, media embed, upload placeholder and caption) from Aurora's block editor and renderer kits; Aurora uses Plone blocks for media instead. The stock `full` preset keeps them. @sneridagh 
+- Removed the `variant` prop of `EditorView` and `PlateRenderer`. `EditorView` no longer applies the editor's `editorVariants` classes: the rendered content's root is styled by `styles/content.css`. @sneridagh 
+
+### Feature
+
+- Added the `block-p__list` and `block-p__item` classes to list markup, and the `data-list-style-type` attribute to list blocks, as part of the block content classname contract. @sneridagh [#200](https://github.com/plone/aurora/issues/200)
+- Moved the code block styles from Tailwind utilities to `styles/content.css`, so themes can override them in both the Public UI and the editor. The code block has the `block-code_block__frame` and `block-code_block__pre` parts, and its syntax colors are `--code-token-*` custom properties. @sneridagh 
+- Moved the list styles from Tailwind utilities to `styles/content.css`, so themes can override them in both the Public UI and the editor. Checked to-do items have a `data-checked` attribute, and the read-only checkbox of the rendered content the `block-p__checkbox` and `block-p__checkmark` parts. @sneridagh 
+- Moved the styles of inline code, keyboard input, highlight, links and mentions from Tailwind utilities to `styles/content.css`, so themes can override them in both the Public UI and the editor. Mentions expose their bold, italic and underline marks as `data-bold`, `data-italic` and `data-underline`. Comments and suggestions now render as plain text in the public view. @sneridagh 
+- Moved the styles of the callout, toggle, columns and table of contents, and of the rendered content root, from Tailwind utilities to `styles/content.css`, so themes can override them in both the Public UI and the editor. The rendered content no longer has any Tailwind classes. The new parts are `block-callout__body`, `__icon` and `__content`, `block-toggle__icon`, `block-column_group__row` and `__column`, `block-column__content`, and `block-toc__item`, `__empty` and `__highlight`. Table of contents entries have their heading level in `data-depth`. @sneridagh 
+- Moved the styles of the paragraph, title, heading, blockquote and separator blocks from Tailwind utilities to `styles/content.css`, so themes can override them in both the Public UI and the editor. The separator gets the `block-hr__spacer` and `block-hr__line` parts, and the public title the `slate-title` class. @sneridagh 
+- Moved the table styles from Tailwind utilities to `styles/content.css`, so themes can override them in both the Public UI and the editor. The table has the `block-table__scroll`, `block-table__wrapper`, `block-table__table` and `block-table__cell-content` parts, and cells mark their bordered sides with `data-border-*` attributes. @sneridagh 
+
+### Internal
+
+- Added an acceptance test that checks the public block content only uses contract classnames, with a list of pending Tailwind classes that may only shrink, and Stylelint rules for `styles/content.css`. @sneridagh [#200](https://github.com/plone/aurora/issues/200)
+- Moved the `.block-inner-container` styles to `styles/content.css`, shared by the Public UI and the CMSUI. The selection outline of a floated image block is now dropped by the block adapter. @sneridagh 
+- `BlockInnerContainer` merges its classes with `clsx` instead of the Tailwind-aware `cn`, since block content no longer uses Tailwind utilities. @sneridagh 
+
+## 1.0.0-alpha.24 (2026-10-06)
+
+### Internal
+
+- Removed the unused `@plone/quanta` peer and dev dependency. @sneridagh 
+
+## 1.0.0-alpha.23 (2026-10-06)
+
+### Bugfix
+
+- Fixed the caret jumping to the start of the title after inserting a Plone block (e.g. an image, teaser or listing) from the slash menu: the block's lazy Edit component now suspends inside its own boundary, so the block element is in the DOM when the editor is refocused, and only the block's own UI is non-editable, so the browser can place the caret on it. @sneridagh 
+
+## 1.0.0-alpha.22 (2026-10-03)
+
+### Internal
+
+- Moved the `settle` visual test helper to the shared Playwright tooling. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+- Added Playwright visual regression tests for native blocks and editor overlays. @sneridagh 
+- Import icons from `@plone/icons`. Import Quanta components from `@plone/quanta`. @pnicolli 
+- Removed the unused native Plate image (`img`) node, its components and toolbar entries; Aurora uses the Plone image block instead. @sneridagh 
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
+## 1.0.0-alpha.21 (2026-10-01)
+
+### Breaking
+
+- Replaced `SlashMenuContext.translate` with `t`, following the i18next `t(key, { defaultValue, ...values })` signature, removed `getIntl`, and removed the unused `SplitHotkeyPlugin`, `split-utils` and the `blocksApi` prop of `PlateEditor`. @sneridagh 
+
+### Feature
+
+- Added an `I18nPlugin` and `t` / `language` props to `PlateEditor`, following react-i18next, so hosts inject their own i18n machinery, and translated the slash menu labels. Plate code reads them with the `useTranslation()` hook or `getTranslation(editor)`. The `intl` prop is deprecated. @sneridagh 
+
+## 1.0.0-alpha.20 (2026-09-30)
+
+### Feature
+
+- Added Cut, Copy and Paste to the block context menu, and reordered its actions. @sneridagh 
+
+## 1.0.0-alpha.19 (2026-09-30)
+
+### Bugfix
+
+- Fixed dragging a Plone block (e.g. an image) in the editor deleting it instead of moving it: the void block element now renders its children, so Slate can resolve the spacer text when it copies the block into the drag data. @sneridagh 
+- Fixed pasted or dropped images vanishing from the editor after the upload: in the `somersault-editor` preset, pasting or dropping image files now uploads them and inserts Plone image blocks, instead of image nodes that no editor kit renders. @sneridagh 
+
 ## 1.0.0-alpha.18 (2026-09-29)
 
 ### Feature

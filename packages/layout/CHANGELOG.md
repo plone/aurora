@@ -8,6 +8,19 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.14 (2026-10-06)
+
+### Feature
+
+- Moved the block model's spatial relationships (category widths, spacing between blocks, nested blocks) from `styles/content-area.css` to `styles/content.css`, which the app loads in both the Public UI and the CMSUI editor. Blocks are now spaced the same in the editor as in the public view. @sneridagh 
+
+## 1.0.0-alpha.13 (2026-10-03)
+
+### Internal
+
+- Import icons from `@plone/icons`. Import Quanta components from `@plone/quanta`. @pnicolli 
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
 ## 1.0.0-alpha.12 (2026-09-29)
 
 ### Feature

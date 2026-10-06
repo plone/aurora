@@ -6,6 +6,7 @@ import {
   PloneBlockAdapterPlugin,
   PloneBlockKeyboardPlugin,
 } from '../../components/editor/plugins/plone-block-adapter';
+import { PloneImageUploadPlugin } from '../../components/editor/plugins/plone-image-upload';
 import { PlaywrightPlugin } from '@platejs/playwright';
 
 import { TitleBlock } from '../../components/editor/plugins/title';
@@ -18,6 +19,7 @@ const native: PlateConfig = {
     ...BlockEditorKit,
     TitleBlock,
     PloneBlockAdapterPlugin,
+    PloneImageUploadPlugin,
     // Include Playwright plugin only during e2e tests
     ...(typeof window !== 'undefined'
       ? [PlaywrightPlugin.configure({ enabled: true })]

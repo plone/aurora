@@ -8,6 +8,32 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.12 (2026-10-06)
+
+### Breaking
+
+- Removed the `cmsui` cascade layer. Tailwind is now loaded with a plain import, so its reset lands in `base`, its theme variables in `theme` and its utilities in `utilities`. Add-ons that targeted the `cmsui` layer must move their styles to one of the declared layers. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+
+### Feature
+
+- Added the `content-area` class to the block editor, so themes' content tokens declared on `.content-area` also apply to the blocks in the editor. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+
+## 1.0.0-alpha.11 (2026-10-03)
+
+### Internal
+
+- Added visual regression tests for the CMS chrome: login, add and edit forms, block settings sidebar, sharing and control panels. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+- Import icons from `@plone/icons`. Import Quanta components from `@plone/quanta`. @pnicolli
+  Scan `@plone/icons` for Tailwind classes, so every icon size utility is generated. @pnicolli
+  Load the base icon styles from `@plone/icons`. @pnicolli 
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
+## 1.0.0-alpha.10 (2026-10-01)
+
+### Feature
+
+- Passed the `react-i18next` `t` and current language to the Plate block editor for its translations. @sneridagh 
+
 ## 1.0.0-alpha.9 (2026-09-29)
 
 ### Internal

@@ -59,7 +59,10 @@ export const ColumnElement = withHOC(
     });
 
     return (
-      <div className="group/column relative" style={{ width: width ?? '100%' }}>
+      <div
+        className="block-column_group__column group/column"
+        style={{ width: width ?? '100%' }}
+      >
         {!readOnly && !isSelectionAreaVisible && (
           <div
             ref={handleRef}
@@ -76,18 +79,10 @@ export const ColumnElement = withHOC(
           </div>
         )}
 
-        <PlateElement
-          {...props}
-          ref={useComposedRef(props.ref, previewRef)}
-          className={`
-            h-full px-2 pt-2
-            group-first/column:pl-0
-            group-last/column:pr-0
-          `}
-        >
+        <PlateElement {...props} ref={useComposedRef(props.ref, previewRef)}>
           <div
             className={cn(
-              'relative h-full border border-transparent p-1.5',
+              'block-column__content',
               !readOnly && 'rounded-lg border-dashed border-border',
               isDragging && 'opacity-50',
             )}
@@ -153,8 +148,8 @@ export function ColumnGroupElement(props: PlateElementProps) {
   return (
     <PlateElement {...props}>
       <ColumnFloatingToolbar>
-        <BlockInnerContainer className="mb-2">
-          <div className="flex size-full rounded">{props.children}</div>
+        <BlockInnerContainer>
+          <div className="block-column_group__row">{props.children}</div>
         </BlockInnerContainer>
       </ColumnFloatingToolbar>
     </PlateElement>

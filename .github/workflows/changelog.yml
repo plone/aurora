@@ -8,6 +8,12 @@ on:
 env:
   node-version: 24.x
 
+# Cancel the runs of a branch or pull request that a newer push supersedes,
+# except on main, where every commit runs to completion.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   towncrier:
     runs-on: ubuntu-latest
@@ -32,6 +38,10 @@ jobs:
               - 'packages/registry/**'
             components:
               - 'packages/components/**'
+            icons:
+              - 'packages/icons/**'
+            quanta:
+              - 'packages/quanta/**'
             cmsui:
               - 'packages/cmsui/**'
             helpers:
@@ -90,6 +100,22 @@ jobs:
         run: |
           git fetch --no-tags origin main
           towncrier check --compare-with origin/main --dir packages/components
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
+
+      - name: Icons changelog check
+        if: steps.filter.outputs.icons == 'true'
+        run: |
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir packages/icons
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
+
+      - name: Quanta changelog check
+        if: steps.filter.outputs.quanta == 'true'
+        run: |
+          git fetch --no-tags origin main
+          towncrier check --compare-with origin/main --dir packages/quanta
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 

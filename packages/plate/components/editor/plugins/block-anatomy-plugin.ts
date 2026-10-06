@@ -66,9 +66,17 @@ export const BaseBlockAnatomyPlugin = createSlatePlugin({
           category: blockConfig.category,
         });
 
+        // Indent-list items are paragraphs with a `listStyleType`; expose it
+        // so content styles can target list blocks without inspecting markup.
+        const listStyleType = (element as { listStyleType?: unknown })
+          .listStyleType;
+
         return {
           ...props,
           ...anatomy.dataAttributes,
+          ...(typeof listStyleType === 'string' && {
+            'data-list-style-type': listStyleType,
+          }),
           className: [props.className, anatomy.className]
             .filter((value): value is string => !!value)
             .join(' '),

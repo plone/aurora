@@ -1,13 +1,11 @@
 import type { BlockViewProps } from '@plone/types';
 import Image from '@plone/layout/components/Image/Image';
 import { Link } from '@plone/components';
-import clsx from 'clsx';
 import {
   getImageBlockHref,
   getImageBlockItem,
   getImageBlockSrc,
 } from './utils';
-import styles from './ImageBlock.module.css';
 
 const ImageBlockView = (props: BlockViewProps) => {
   const { data } = props;
@@ -27,10 +25,10 @@ const ImageBlockView = (props: BlockViewProps) => {
   );
 
   return (
-    <figure className={clsx(styles.imageBlock, 'image-block')}>
+    <figure className="block-image__frame">
       {href ? (
         <Link
-          className={styles.imageLink}
+          className="block-image__link"
           href={href}
           target={openInNewTab ? '_blank' : undefined}
           rel={openInNewTab ? 'noopener noreferrer' : undefined}

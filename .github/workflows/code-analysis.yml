@@ -4,6 +4,12 @@ on: [push, pull_request]
 env:
   node-version: 24.x
 
+# Cancel the runs of a branch or pull request that a newer push supersedes,
+# except on main, where every commit runs to completion.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   typescript:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
@@ -24,6 +30,8 @@ jobs:
           pnpm --filter @plone/types run check:ts
           pnpm --filter @plone/client run check:ts
           pnpm --filter @plone/components run check:ts
+          pnpm --filter @plone/icons run check:ts
+          pnpm --filter @plone/quanta run check:ts
           pnpm --filter @plone/registry run check:ts
           pnpm --filter @plone/blocks run check:ts
           pnpm --filter @plone/cmsui run check:ts
@@ -43,6 +51,7 @@ jobs:
         uses: ./.github/actions/node_env_setup
         with:
           node-version: ${{ env.node-version }}
+          build-deps: 'false'
 
       - name: Prettier check
         run: pnpm prettier
@@ -71,6 +80,7 @@ jobs:
         uses: ./.github/actions/node_env_setup
         with:
           node-version: ${{ env.node-version }}
+          build-deps: 'false'
 
       - name: Check optimizeDeps declarations are up to date
         run: pnpm check:vite-optimize-deps
@@ -85,6 +95,10 @@ jobs:
         include:
           - name: '@plone/components'
             files: 'src/**/*.{css,scss,less}'
+          - name: '@plone/icons'
+            files: 'src/**/*.{css,scss,less}'
+          - name: '@plone/quanta'
+            files: 'src/**/*.{css,scss,less}'
           - name: '@plone/theming'
             files: 'styles/**/*.{css,scss,less}'
           - name: '@plone/layout'
@@ -95,6 +109,7 @@ jobs:
         uses: ./.github/actions/node_env_setup
         with:
           node-version: ${{ env.node-version }}
+          build-deps: 'false'
 
       - name: Stylelint check ${{ matrix.name }}
         run: pnpm --filter ${{ matrix.name }} exec stylelint '${{ matrix.files }}'

@@ -8,7 +8,7 @@
     }
   ],
   "license": "MIT",
-  "version": "5.0.0-alpha.4",
+  "version": "5.0.0-alpha.5",
   "repository": {
     "type": "git",
     "url": "http://github.com/plone/aurora.git",
@@ -21,31 +21,13 @@
   "files": [
     "dist",
     "src",
-    "README.md",
-    "vite-plugin-svgr.*"
+    "README.md"
   ],
   "main": "./dist/index.js",
   "exports": {
     "./package.json": "./package.json",
-    "./icons": {
-      "types": "./src/icons.d.ts"
-    },
-    "./icons/*": "./src/icons/*",
-    "./Icons": {
-      "import": "./dist/components/icons/index.js",
-      "default": "./dist/components/icons/index.cjs"
-    },
-    "./vite-plugin-svgr": {
-      "import": "./vite-plugin-svgr.js",
-      "types": "./vite-plugin-svgr.d.ts"
-    },
     "./dist/*.css": "./dist/*.css",
-    "./dist/fonts/*": "./dist/fonts/*",
     "./src/*": "./src/*",
-    "./quanta": {
-      "import": "./dist/quanta/index.js",
-      "default": "./dist/quanta/index.cjs"
-    },
     ".": {
       "import": "./dist/index.js",
       "default": "./dist/index.cjs"
@@ -58,17 +40,14 @@
     "plone6",
     "react",
     "cms",
-    "components",
-    "quanta",
-    "icons"
+    "components"
   ],
   "scripts": {
     "build": "tsup && pnpm build:css",
     "build:watch": "tsup --watch && pnpm build:css",
     "build:force": "tsup && pnpm build:css",
-    "build:css": "pnpm build:basic && pnpm build:quanta",
+    "build:css": "pnpm build:basic",
     "build:basic": "lightningcss --browserslist --bundle --sourcemap src/styles/basic/main.css -o basic.css && mv basic.css* dist/.",
-    "build:quanta": "lightningcss --browserslist --bundle --sourcemap src/styles/quanta/main.css -o quanta.css && mv quanta.css* dist/. && cp -r src/styles/fonts dist/.",
     "check:exports": "attw --pack .",
     "check:ts": "tsc --project tsconfig.json",
     "test": "vitest --passWithNoTests",
@@ -81,10 +60,10 @@
     "prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx}'",
     "stylelint": "stylelint 'src/**/*.{css,scss,less}'",
     "stylelint:fix": "sh -c 'if [ -f .stylelintrc ] || [ -f .stylelintrc.json ] || [ -f .stylelintrc.js ] || [ -f .stylelintrc.cjs ] || [ -f stylelint.config.js ] || [ -f stylelint.config.cjs ] || [ -f stylelint.config.mjs ]; then stylelint '''./**/*.{css,scss,less}''' --fix --allow-empty-input; else echo \"No local stylelint config, skipping\"; fi'",
-    "dry-release": "release-it --dry-run",
-    "release": "release-it",
-    "release-major-alpha": "release-it major --preRelease=alpha",
-    "release-alpha": "release-it --preRelease=alpha",
+    "dry-release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --dry-run",
+    "release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it",
+    "release-major-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it major --preRelease=alpha",
+    "release-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --preRelease=alpha",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "lint:fix": "pnpm eslint:fix"
@@ -98,29 +77,16 @@
     "not dead"
   ],
   "dependencies": {
-    "@internationalized/date": "catalog:",
-    "@react-aria/utils": "catalog:",
-    "@react-spectrum/utils": "catalog:",
-    "@svgr/plugin-jsx": "^8.1.0",
-    "@svgr/plugin-svgo": "^8.1.0",
+    "@plone/icons": "workspace:*",
     "clsx": "^2.1.1",
     "react-aria": "catalog:",
-    "react-aria-components": "catalog:",
-    "react-stately": "catalog:",
-    "tailwind-merge": "catalog:",
-    "tailwind-variants": "catalog:",
-    "tailwindcss": "catalog:",
-    "tailwindcss-animate": "^1.0.7",
-    "vite-plugin-svgr": "^4.3.0"
+    "react-aria-components": "catalog:"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.16.4",
-    "@plone/types": "workspace: *",
-    "@react-types/shared": "^3.32.1",
     "@storybook/addon-docs": "^10.4.0",
     "@storybook/addon-links": "^10.4.0",
     "@storybook/react-vite": "^10.4.0",
-    "@tailwindcss/vite": "catalog:",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@types/jest-axe": "^3.5.7",

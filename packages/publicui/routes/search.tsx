@@ -7,7 +7,7 @@ import {
   type LoaderFunctionArgs,
 } from 'react-router';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
-import { Container, Input } from '@plone/components/quanta';
+import { Container, Input } from '@plone/quanta';
 
 export const handle = {
   bodyClass: 'search-route',

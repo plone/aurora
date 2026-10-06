@@ -67,7 +67,8 @@ You can create new test files using the `*.test.ts` naming convention.
 All test files are automatically picked up by Playwright.
 
 ```{seealso}
-[Playwright documentation](https://playwright.dev/docs/intro)
+-   [Playwright documentation](https://playwright.dev/docs/intro)
+-   {doc}`visual-regression-tests`, to check the look of Plone Aurora with screenshots
 ```
 
 

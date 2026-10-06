@@ -2,7 +2,7 @@ import { Form, Input, Label, TextField } from 'react-aria-components';
 import type { SlotComponentProps } from '../../SlotRenderer';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@plone/components';
-import Search from '@plone/components/icons/search.svg?react';
+import Search from '@plone/icons/svg/search.svg?react';
 import styles from './SearchWidget.module.css';
 import clsx from 'clsx';
 

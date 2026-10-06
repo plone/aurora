@@ -1,5 +1,5 @@
 import type { AnyPluginConfig, SlateEditor, TElement, Value } from 'platejs';
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useMemo, type ReactNode } from 'react';
 import { isDeepEqual } from '@plone/helpers';
 import { BlockSelectionPlugin } from '@platejs/selection/react';
 import {
@@ -9,18 +9,33 @@ import {
   type PlateViewProps,
 } from 'platejs/react';
 
+import { Editor, EditorContainer, EditorView } from '../ui/editor';
 import {
-  Editor,
-  EditorContainer,
-  EditorView,
-  editorVariants,
-} from '../ui/editor';
-import type { VariantProps } from 'class-variance-authority';
+  I18nPlugin,
+  defaultLanguage,
+  fallbackTranslate,
+  translationFromIntl,
+  type TranslateFunction,
+} from './plugins/i18n';
 
 export function PlateEditor(props: {
   editorConfig: Parameters<typeof usePlateEditor>[0];
   value?: Value;
-  blocksApi?: any;
+  /**
+   * Translation function, react-i18next's `t` or an adapter with the same
+   * signature. Pass a new one when the language changes to re-render
+   * translated UI.
+   */
+  t?: TranslateFunction;
+  /**
+   * The current language, e.g. react-i18next's `i18n.language`, for `Intl`
+   * formatting.
+   */
+  language?: string;
+  /**
+   * @deprecated Pass `t` and `language` instead. A react-intl `intl` object,
+   * adapted internally.
+   */
   intl?: any;
   children?: ReactNode;
   className?: string;
@@ -29,6 +44,14 @@ export function PlateEditor(props: {
     value: TElement[];
   }) => void;
 }) {
+  const legacy = useMemo(
+    () =>
+      props.intl?.formatMessage ? translationFromIntl(props.intl) : undefined,
+    [props.intl],
+  );
+  const t = props.t ?? legacy?.t ?? fallbackTranslate;
+  const language = props.language ?? legacy?.language ?? defaultLanguage;
+
   const editor = usePlateEditor({
     // Normalize the loaded value so plugin invariants hold from the start
     // (e.g. the trailing paragraph from `TrailingBlockPlugin`, container
@@ -36,11 +59,18 @@ export function PlateEditor(props: {
     // node dirty and had the same effect implicitly.
     shouldNormalizeEditor: true,
     ...props.editorConfig,
+    plugins: [
+      ...(props.editorConfig?.plugins ?? []),
+      I18nPlugin.configure({ options: { t, language } }),
+    ],
     value: props.value,
   });
 
-  (editor as any).blocksApi = props.blocksApi;
-  (editor as any).intl = props.intl ?? props.blocksApi?.intl;
+  // The editor is created once; keep its translation in sync with the host.
+  useEffect(() => {
+    editor?.setOption(I18nPlugin, 't', t);
+    editor?.setOption(I18nPlugin, 'language', language);
+  }, [editor, t, language]);
 
   // Normalizing the loaded value (block width defaults, trailing paragraph...)
   // happens before Plate mounts and does not trigger `onChange`. Report it, so
@@ -87,11 +117,10 @@ export { BlockSelectionPlugin };
 
 export function PlateRenderer(
   props: Omit<
-    PlateViewProps &
-      VariantProps<typeof editorVariants> & {
-        editorConfig: Parameters<typeof usePlateEditor>[0];
-        value: Value;
-      },
+    PlateViewProps & {
+      editorConfig: Parameters<typeof usePlateEditor>[0];
+      value: Value;
+    },
     'editor'
   >,
 ) {
@@ -108,7 +137,6 @@ export function PlateRenderer(
         {...rest}
         editor={editor as unknown as SlateEditor}
         className={props.className}
-        variant="none"
       />
     </Plate>
   );
