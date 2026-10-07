@@ -1,7 +1,8 @@
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { langmap } from '@plone/helpers';
-import { Link } from '@plone/components';
+import { Menu, MenuItem, MenuTrigger } from '@plone/components';
+import { Button } from 'react-aria-components';
 import type { RootLoader } from '@plone/aurora/app/root';
 
 import styles from './LanguageSwitcher.module.css';
@@ -34,7 +35,7 @@ const LanguageSwitcher = (props: LanguageSelectorProps) => {
   const isMultilingual = site.features?.multilingual;
   const availableLanguages = site['plone.available_languages'] || [];
   // The active language, not the site default. The content language is
-  // given by the URL — the switcher's own links target /<lang> roots — so
+  // given by the URL — the menu's own items target /<lang> roots — so
   // derive it from the first path segment when that matches an available
   // language. The i18n locale is deliberately NOT used: it is the
   // interface-strings locale (Accept-Language/cookie detection, synced
@@ -47,26 +48,49 @@ const LanguageSwitcher = (props: LanguageSelectorProps) => {
 
   return isMultilingual ? (
     <div className={clsx(styles['language-switcher'])}>
-      {availableLanguages.map((lang: string) => {
-        const isCurrent = normalizeLang(lang) === currentLang;
-        return (
-          <Link
-            aria-current={isCurrent ? 'true' : undefined}
-            aria-label={t(
-              'layout.slots.headertools.languageSwitcher.switchTo',
-              {
-                lang: langmap[lang]?.nativeName.toLowerCase(),
-              },
-            )}
-            className={clsx({ [styles.selected]: isCurrent })}
-            href={`/${lang}`}
-            onClick={props.onClickAction}
-            key={`language-switcher-${lang}`}
+      <MenuTrigger placement="bottom end">
+        <Button className={clsx(styles['language-switcher-trigger'])}>
+          {langmap[currentLang]?.nativeName}
+          <svg
+            aria-hidden="true"
+            className={styles.chevron}
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
           >
-            {langmap[lang]?.nativeName}
-          </Link>
-        );
-      })}
+            <path
+              d="M2 4l4 4 4-4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </Button>
+        <Menu
+          className={clsx(styles['language-switcher-menu'])}
+          onAction={() => props.onClickAction?.()}
+        >
+          {availableLanguages.map((lang: string) => (
+            <MenuItem
+              aria-label={t(
+                'layout.slots.headertools.languageSwitcher.switchTo',
+                {
+                  lang: langmap[lang]?.nativeName.toLowerCase(),
+                },
+              )}
+              className={clsx(styles['language-switcher-item'], {
+                [styles.selected]: normalizeLang(lang) === currentLang,
+              })}
+              href={`/${lang}`}
+              key={`language-switcher-${lang}`}
+            >
+              {langmap[lang]?.nativeName}
+            </MenuItem>
+          ))}
+        </Menu>
+      </MenuTrigger>
     </div>
   ) : null;
 };
