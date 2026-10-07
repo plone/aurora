@@ -8,6 +8,16 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.12 (2026-10-06)
+
+### Breaking
+
+- Removed the `cmsui` cascade layer. Tailwind is now loaded with a plain import, so its reset lands in `base`, its theme variables in `theme` and its utilities in `utilities`. Add-ons that targeted the `cmsui` layer must move their styles to one of the declared layers. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+
+### Feature
+
+- Added the `content-area` class to the block editor, so themes' content tokens declared on `.content-area` also apply to the blocks in the editor. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+
 ## 1.0.0-alpha.11 (2026-10-03)
 
 ### Internal

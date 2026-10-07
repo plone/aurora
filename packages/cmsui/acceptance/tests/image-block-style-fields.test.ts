@@ -100,7 +100,7 @@ async function readImageBlock(
 // Rendered width of the image relative to its column (the inner container).
 async function widthRatio(page: Page) {
   return page
-    .locator('.image-block')
+    .locator('.block-image__frame')
     .first()
     .evaluate((el) => {
       const inner = el.closest('.block-inner-container') as HTMLElement | null;
@@ -178,7 +178,10 @@ test('centered large image is full width with no float and every control', async
   await expect(radio(page, 'Default')).toBeEnabled();
 
   // Centered large fills its column and does not float.
-  await expect(page.locator('.image-block').first()).toHaveCSS('float', 'none');
+  await expect(page.locator('.block-image__frame').first()).toHaveCSS(
+    'float',
+    'none',
+  );
   expect(await widthRatio(page)).toBeGreaterThan(0.95);
 });
 
@@ -209,7 +212,10 @@ test('floating left leaves width and size untouched and floats large', async ({
     .toBe(JSON.stringify({ align: 'left', blockWidth: 'layout', size: 'l' }));
 
   // The image floats and, even at the large size, is capped so content wraps.
-  await expect(page.locator('.image-block').first()).toHaveCSS('float', 'left');
+  await expect(page.locator('.block-image__frame').first()).toHaveCSS(
+    'float',
+    'left',
+  );
   expect(await widthRatio(page)).toBeLessThan(0.9);
 
   // Every size stays available and the width control stays editable.
@@ -245,7 +251,7 @@ test('floating right floats large with all size and width controls available', a
     })
     .toBe(JSON.stringify({ align: 'right', blockWidth: 'default', size: 'l' }));
 
-  await expect(page.locator('.image-block').first()).toHaveCSS(
+  await expect(page.locator('.block-image__frame').first()).toHaveCSS(
     'float',
     'right',
   );
@@ -303,7 +309,7 @@ test('floated sizes scale up, with large capped so it still floats', async ({
       imageBlock: { align: 'left', size },
     });
     await page.goto(`/image-style-scale-${size}`);
-    const block = page.locator('.image-block').first();
+    const block = page.locator('.block-image__frame').first();
     await expect(block).toBeVisible();
     // Confirms the style fields are applied in the published view too.
     await expect(block).toHaveCSS('float', 'left');
@@ -326,7 +332,7 @@ test('walking through every alignment and size combination in one session', asyn
     imageBlock: { align: 'center', size: 'l', blockWidth: 'default' },
   });
   const editorHandle = await openImageBlockEditor(page, 'image-style-walk');
-  const block = page.locator('.image-block').first();
+  const block = page.locator('.block-image__frame').first();
 
   // Center + large: no float, full width, all controls available.
   await selectBlock(page, 'styled-image-walk');
@@ -424,7 +430,7 @@ test('combinations set in the editor render correctly after saving', async ({
 
   // The published view reflects the saved combination: floated left, capped.
   await page.goto('/image-style-save');
-  const block = page.locator('.image-block').first();
+  const block = page.locator('.block-image__frame').first();
   await expect(block).toBeVisible();
   await expect(block).toHaveCSS('float', 'left');
   expect(await widthRatio(page)).toBeLessThan(0.9);
@@ -448,7 +454,7 @@ test('an image with a link wraps the rendered image in an anchor', async ({
   // View mode (published page) renders the image block view.
   await page.goto('/image-style-linked');
 
-  const link = page.locator('.image-block a').first();
+  const link = page.locator('.block-image__frame a').first();
   await expect(link).toHaveAttribute('href', '/styled-image-linked');
   await expect(link).toHaveAttribute('target', '_blank');
   await expect(link).toHaveAttribute('rel', /noopener/);

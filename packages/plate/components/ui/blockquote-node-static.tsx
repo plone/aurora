@@ -5,9 +5,7 @@ import { BlockInnerContainer } from './block-inner-container';
 export function BlockquoteElementStatic(props: SlateElementProps) {
   return (
     <SlateElement as="blockquote" {...props}>
-      <BlockInnerContainer className="my-1 border-l-2 pl-6 italic">
-        {props.children}
-      </BlockInnerContainer>
+      <BlockInnerContainer>{props.children}</BlockInnerContainer>
     </SlateElement>
   );
 }

@@ -14,7 +14,7 @@ export function ToggleElement(props: PlateElementProps) {
 
   return (
     <PlateElement {...props}>
-      <BlockInnerContainer className="relative pl-6">
+      <BlockInnerContainer>
         <Button
           size="icon"
           variant="ghost"

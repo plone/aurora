@@ -6,15 +6,7 @@
     "../icons/src/svg.d.ts",
     "../../apps/aurora/.react-router/types/**/*"
   ],
-  "exclude": [
-    "node_modules",
-    "build",
-    "public",
-    "coverage",
-    "src/**/*.test.{js,jsx,ts,tsx}",
-    "src/**/*.spec.{js,jsx,ts,tsx}",
-    "src/**/*.stories.{js,jsx,ts,tsx}"
-  ],
+  "exclude": ["node_modules", "build", "public", "coverage"],
   "compilerOptions": {
     "types": ["vite/client"],
     "rootDirs": [

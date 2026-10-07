@@ -112,7 +112,9 @@ test('Maps block shows placeholder and embed instructions while empty', async ({
       /Please enter the Embed Code provided by your maps provider/i,
     ),
   ).toBeVisible();
-  await expect(page.locator('.maps-block iframe.maps-iframe')).toHaveCount(0);
+  await expect(
+    page.locator('.block-maps__frame iframe.block-maps__iframe'),
+  ).toHaveCount(0);
 });
 
 test('Maps block shows an error for invalid embed code', async ({ page }) => {
@@ -128,7 +130,9 @@ test('Maps block shows an error for invalid embed code', async ({ page }) => {
       'Embed code error, please follow the instructions and try again.',
     ),
   ).toBeVisible();
-  await expect(page.locator('.maps-block iframe.maps-iframe')).toHaveCount(0);
+  await expect(
+    page.locator('.block-maps__frame iframe.block-maps__iframe'),
+  ).toHaveCount(0);
 });
 
 test('Maps block extracts iframe src and switches to iframe edit mode', async ({
@@ -142,7 +146,7 @@ test('Maps block extracts iframe src and switches to iframe edit mode', async ({
   await input.fill(MAP_EMBED_CODE);
   await input.press('Enter');
 
-  const iframe = page.locator('.maps-block iframe.maps-iframe');
+  const iframe = page.locator('.block-maps__frame iframe.block-maps__iframe');
   await expect(iframe).toBeAttached();
   await expect(iframe).toHaveAttribute('src', MAP_IFRAME_SRC);
   await expect(input).toHaveCount(0);
@@ -165,7 +169,7 @@ test('Maps block renders iframe in published view mode', async ({ page }) => {
   await expect(page.getByText('Text before maps block')).toBeVisible();
   await expect(page.getByText('Text after maps block')).toBeVisible();
 
-  const iframe = page.locator('.maps-block iframe.maps-iframe');
+  const iframe = page.locator('.block-maps__frame iframe.block-maps__iframe');
   await expect(iframe).toBeAttached();
   await expect(iframe).toHaveAttribute('src', MAP_IFRAME_SRC);
   await expect(iframe).toHaveAttribute('title', MAP_TITLE);

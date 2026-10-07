@@ -11,10 +11,7 @@
     "build",
     "public",
     "coverage",
-    "acceptance/tests/**/*",
-    "src/**/*.test.{js,jsx,ts,tsx}",
-    "src/**/*.spec.{js,jsx,ts,tsx}",
-    "src/**/*.stories.{js,jsx,ts,tsx}"
+    "acceptance/tests/**/*"
   ],
   "compilerOptions": {
     "types": ["vite/client"],
