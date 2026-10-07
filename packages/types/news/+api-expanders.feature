@@ -1,1 +1,1 @@
-Added the optional `authenticated` key to `apiExpanders` settings. @sneridagh
+Added the `ContentExpander` type for Plone Aurora `apiExpanders` settings, with `match`, `expand`, and an optional `authenticated` key. @sneridagh

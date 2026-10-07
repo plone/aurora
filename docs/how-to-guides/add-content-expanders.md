@@ -21,7 +21,7 @@ import type { ConfigType } from '@plone/registry';
 export default function install(config: ConfigType) {
   config.settings.apiExpanders = [
     ...(config.settings.apiExpanders ?? []),
-    { match: '', GET_CONTENT: ['my-profile'], authenticated: true },
+    { match: '', expand: ['my-profile'], authenticated: true },
   ];
 
   return config;
@@ -35,8 +35,8 @@ Each expander has the following keys.
     `''` or `'/'` matches every page.
     `'/news'` matches `/news` and `/news/item`, but not `/newsletter`.
 
-`GET_CONTENT`
-:   The names of the components to expand.
+`expand`
+:   The names of the components to expand, as in the `expand` parameter of `plone.restapi`.
     Each name is added once, even when several expanders declare it.
 
 `authenticated`
@@ -50,6 +50,11 @@ The expanded components are available in the content, as the core ones are:
 const profile = content['@components']['my-profile'];
 ```
 
+Expanders apply to the main content request only.
+To expand components in a request that your add-on makes itself, pass `expand` to the Plone client method directly.
+
 ```{note}
-Plone Aurora does not support the `querystring` key of Volto's `apiExpanders` yet.
+Volto's expanders use the `GET_CONTENT` key, named after a Redux action, and an optional `querystring` key.
+Plone Aurora ignores them.
+To port a Volto expander, rename `GET_CONTENT` to `expand`.
 ```

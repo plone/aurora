@@ -653,8 +653,8 @@ describe('middleware', () => {
 
     it('adds the expansions of add-ons, once each', () => {
       config.settings.apiExpanders = [
-        { match: '', GET_CONTENT: ['translations', 'navigation'] },
-        { match: '/', GET_CONTENT: ['translations', 'workflow'] },
+        { match: '', expand: ['translations', 'navigation'] },
+        { match: '/', expand: ['translations', 'workflow'] },
       ];
 
       expect(getContentExpand('/news', false)).toEqual([
@@ -669,7 +669,7 @@ describe('middleware', () => {
 
     it('matches expanders by path prefix', () => {
       config.settings.apiExpanders = [
-        { match: '/news', GET_CONTENT: ['news-extra'] },
+        { match: '/news', expand: ['news-extra'] },
       ];
 
       expect(getContentExpand('/news', false)).toContain('news-extra');
@@ -680,9 +680,17 @@ describe('middleware', () => {
       expect(getContentExpand('/', false)).not.toContain('news-extra');
     });
 
+    it('ignores Volto-shaped expanders', () => {
+      config.settings.apiExpanders = [
+        { match: '', GET_CONTENT: ['translations'] },
+      ];
+
+      expect(getContentExpand('/', false)).not.toContain('translations');
+    });
+
     it('applies authenticated expanders to signed-in users only', () => {
       config.settings.apiExpanders = [
-        { match: '', GET_CONTENT: ['my-profile'], authenticated: true },
+        { match: '', expand: ['my-profile'], authenticated: true },
       ];
 
       expect(getContentExpand('/', true)).toContain('my-profile');
@@ -1022,7 +1030,7 @@ describe('middleware', () => {
 
     it('retries anonymously after a 401 and clears the auth cookie context', async () => {
       config.settings.apiExpanders = [
-        { match: '', GET_CONTENT: ['my-profile'], authenticated: true },
+        { match: '', expand: ['my-profile'], authenticated: true },
       ];
       const authContent = vi
         .fn()

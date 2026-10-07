@@ -165,9 +165,11 @@ export function getContentExpand(path: string, authenticated: boolean) {
   if (authenticated) expand.push('types');
 
   for (const expander of config.settings.apiExpanders ?? []) {
+    // Volto-shaped expanders (`GET_CONTENT`) do not apply to Plone Aurora.
+    if (!('expand' in expander)) continue;
     if (expander.authenticated && !authenticated) continue;
     if (!matchesExpanderPath(path, expander.match)) continue;
-    for (const name of expander.GET_CONTENT ?? []) {
+    for (const name of expander.expand) {
       if (!expand.includes(name)) expand.push(name);
     }
   }
