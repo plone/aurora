@@ -7,6 +7,7 @@ import PloneClient from '@plone/client';
 import {
   fetchPloneContent,
   getAPIResourceWithAuth,
+  getContentExpand,
   getPloneClientClass,
   installServerMiddleware,
   linkMiddleware,
@@ -629,9 +630,70 @@ describe('middleware', () => {
     });
   });
 
+  describe('getContentExpand', () => {
+    afterEach(() => {
+      config.settings.apiExpanders = [];
+    });
+
+    it('returns the core expansions', () => {
+      expect(getContentExpand('/', false)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'navigation',
+        'actions',
+      ]);
+      expect(getContentExpand('/', true)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'navigation',
+        'actions',
+        'types',
+      ]);
+    });
+
+    it('adds the expansions of add-ons, once each', () => {
+      config.settings.apiExpanders = [
+        { match: '', GET_CONTENT: ['translations', 'navigation'] },
+        { match: '/', GET_CONTENT: ['translations', 'workflow'] },
+      ];
+
+      expect(getContentExpand('/news', false)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'navigation',
+        'actions',
+        'translations',
+        'workflow',
+      ]);
+    });
+
+    it('matches expanders by path prefix', () => {
+      config.settings.apiExpanders = [
+        { match: '/news', GET_CONTENT: ['news-extra'] },
+      ];
+
+      expect(getContentExpand('/news', false)).toContain('news-extra');
+      expect(getContentExpand('/news/item', false)).toContain('news-extra');
+      expect(getContentExpand('/newsletter', false)).not.toContain(
+        'news-extra',
+      );
+      expect(getContentExpand('/', false)).not.toContain('news-extra');
+    });
+
+    it('applies authenticated expanders to signed-in users only', () => {
+      config.settings.apiExpanders = [
+        { match: '', GET_CONTENT: ['my-profile'], authenticated: true },
+      ];
+
+      expect(getContentExpand('/', true)).toContain('my-profile');
+      expect(getContentExpand('/', false)).not.toContain('my-profile');
+    });
+  });
+
   describe('fetchPloneContent', () => {
     afterEach(() => {
       delete config.utilities['ploneClient'];
+      config.settings.apiExpanders = [];
     });
 
     it('fetches content and site and sets them in context', async () => {
@@ -959,6 +1021,9 @@ describe('middleware', () => {
     });
 
     it('retries anonymously after a 401 and clears the auth cookie context', async () => {
+      config.settings.apiExpanders = [
+        { match: '', GET_CONTENT: ['my-profile'], authenticated: true },
+      ];
       const authContent = vi
         .fn()
         .mockRejectedValueOnce({ data: undefined, status: 401 });
@@ -1014,6 +1079,17 @@ describe('middleware', () => {
         nextMock,
       );
 
+      expect(authContent).toHaveBeenCalledWith({
+        path: '/',
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'types',
+          'my-profile',
+        ],
+      });
       expect(anonymousContent).toHaveBeenCalledWith({
         path: '/',
         expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'],

@@ -5,10 +5,11 @@ import { Controlpanel, ControlPanelSchema } from '..';
 import type { ComponentType, SVGProps } from 'react';
 
 type apiExpandersType =
-  | { match: string; GET_CONTENT: string[] }
+  | { match: string; GET_CONTENT: string[]; authenticated?: boolean }
   | {
       match: string;
       GET_CONTENT: string[];
+      authenticated?: boolean;
       querystring:
         | { [key: string]: string }
         | ((
