@@ -8,13 +8,24 @@ import applyAddonConfiguration from '../../.plone/registry.loader';
 // eslint-disable-next-line import/no-unresolved
 import applyServerAddonConfiguration from '../../.plone/registry.loader.server';
 
-import type { ListingBlockFormData } from '@plone/types';
+import type { ContentExpander, ListingBlockFormData } from '@plone/types';
 import type { LoaderUtilityArgs } from './types';
 import installMigrations from './server/migrations.server';
+
+/**
+ * The components that the main content request expands by default. Add-ons
+ * can add to, change, or remove them through `config.settings.apiExpanders`.
+ */
+export const defaultApiExpanders: ContentExpander[] = [
+  { match: '', expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'] },
+  { match: '', expand: ['types'], authenticated: true },
+];
 
 export default function install() {
   config.settings.apiPath =
     process.env.PLONE_API_PATH || 'http://localhost:8080/Plone';
+
+  config.settings.apiExpanders = [...defaultApiExpanders];
 
   config.registerUtility({
     name: 'ploneClient',

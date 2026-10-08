@@ -155,14 +155,14 @@ function matchesExpanderPath(path: string, match: string) {
 }
 
 /**
- * Returns the components to expand in the content request of `path`: the
- * core ones plus those that add-ons declare in `config.settings.apiExpanders`.
- * Expanders flagged `authenticated` apply only to signed-in users, so that
- * anonymous requests, and their cache keys, stay unchanged.
+ * Returns the components to expand in the content request of `path`, as
+ * declared in `config.settings.apiExpanders` (see `defaultApiExpanders` in
+ * `config/server.server.ts` for the core ones). Expanders flagged
+ * `authenticated` apply only to signed-in users, so that anonymous requests,
+ * and their cache keys, stay unchanged.
  */
 export function getContentExpand(path: string, authenticated: boolean) {
-  const expand = ['navroot', 'breadcrumbs', 'navigation', 'actions'];
-  if (authenticated) expand.push('types');
+  const expand: string[] = [];
 
   for (const expander of config.settings.apiExpanders ?? []) {
     // Volto-shaped expanders (`GET_CONTENT`) do not apply to Plone Aurora.

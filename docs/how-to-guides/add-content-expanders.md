@@ -9,10 +9,18 @@ myst:
 
 # Add expanders to the content request
 
-Plone Aurora fetches the content of the current page once per request, and asks `plone.restapi` to expand a fixed set of components along with it: `navroot`, `breadcrumbs`, `navigation`, `actions`, and, for signed-in users, `types`.
+Plone Aurora fetches the content of the current page once per request, and asks `plone.restapi` to expand components along with it.
+They are declared in `config.settings.apiExpanders`, which by default expands `navroot`, `breadcrumbs`, `navigation`, and `actions`, and, for signed-in users, `types`:
+
+```ts
+config.settings.apiExpanders = [
+  { match: '', expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'] },
+  { match: '', expand: ['types'], authenticated: true },
+];
+```
 
 If your add-on needs a component that the backend publishes as expandable, add it to that request instead of making one of your own.
-Declare it in `config.settings.apiExpanders`, in your add-on's {file}`packages/<add-on-name>/config/server.ts` file:
+Append it to `config.settings.apiExpanders`, in your add-on's {file}`packages/<add-on-name>/config/server.ts` file:
 
 ```{code-block} ts
 :caption: packages/\<add-on-name>/config/server.ts
@@ -44,7 +52,10 @@ Each expander has the following keys.
     When `true`, the expander applies to signed-in users only, so anonymous requests, and their cache keys, stay unchanged.
     It is also dropped when Plone Aurora retries a request anonymously after an expired token.
 
-The expanded components are available in the content, as the core ones are:
+Since the defaults are part of the same setting, an add-on can also change or remove them, for example to drop `navigation` on a site that does not render it.
+The Plone Aurora UI relies on the default components, so remove them only if you replace what uses them.
+
+The expanded components are available in the content, as the default ones are:
 
 ```ts
 const profile = content['@components']['my-profile'];

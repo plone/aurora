@@ -1,4 +1,4 @@
-import { expect, describe, it, vi, afterEach } from 'vitest';
+import { expect, describe, it, vi, afterEach, beforeEach } from 'vitest';
 import config from '@plone/registry';
 import { RouterContextProvider } from 'react-router';
 import { jwtDecode } from 'jwt-decode';
@@ -19,6 +19,7 @@ import {
   ploneSiteContext,
   ploneUserContext,
 } from './middleware.server';
+import { defaultApiExpanders } from './config/server.server';
 
 vi.mock('jwt-decode');
 vi.mock('@plone/react-router', async (importOriginal) => {
@@ -631,6 +632,10 @@ describe('middleware', () => {
   });
 
   describe('getContentExpand', () => {
+    beforeEach(() => {
+      config.settings.apiExpanders = [...defaultApiExpanders];
+    });
+
     afterEach(() => {
       config.settings.apiExpanders = [];
     });
@@ -653,6 +658,7 @@ describe('middleware', () => {
 
     it('adds the expansions of add-ons, once each', () => {
       config.settings.apiExpanders = [
+        ...config.settings.apiExpanders,
         { match: '', expand: ['translations', 'navigation'] },
         { match: '/', expand: ['translations', 'workflow'] },
       ];
@@ -688,6 +694,18 @@ describe('middleware', () => {
       expect(getContentExpand('/', false)).not.toContain('translations');
     });
 
+    it('lets add-ons change the core expansions', () => {
+      config.settings.apiExpanders = [
+        { match: '', expand: ['navroot', 'breadcrumbs', 'actions'] },
+      ];
+
+      expect(getContentExpand('/', false)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'actions',
+      ]);
+    });
+
     it('applies authenticated expanders to signed-in users only', () => {
       config.settings.apiExpanders = [
         { match: '', expand: ['my-profile'], authenticated: true },
@@ -699,6 +717,10 @@ describe('middleware', () => {
   });
 
   describe('fetchPloneContent', () => {
+    beforeEach(() => {
+      config.settings.apiExpanders = [...defaultApiExpanders];
+    });
+
     afterEach(() => {
       delete config.utilities['ploneClient'];
       config.settings.apiExpanders = [];
@@ -1030,6 +1052,7 @@ describe('middleware', () => {
 
     it('retries anonymously after a 401 and clears the auth cookie context', async () => {
       config.settings.apiExpanders = [
+        ...config.settings.apiExpanders,
         { match: '', expand: ['my-profile'], authenticated: true },
       ];
       const authContent = vi
