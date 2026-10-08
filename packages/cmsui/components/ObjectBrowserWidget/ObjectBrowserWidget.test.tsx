@@ -35,6 +35,9 @@ vi.mock('react-router', () => ({
   useLoaderData: vi.fn(() => ({
     content: { '@id': '/test-content' },
   })),
+  useLocation: vi.fn(() => ({
+    pathname: '/test-content',
+  })),
 }));
 
 // Mock jotai

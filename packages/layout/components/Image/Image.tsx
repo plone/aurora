@@ -10,7 +10,8 @@ import type {
 import { useRouteLoaderData } from 'react-router';
 import type { RootLoader } from '@plone/aurora/app/root';
 
-function removeObjectIdFromURL(basePath: string, scale: string) {
+function removeObjectIdFromURL(basePath: string, scale: unknown) {
+  if (typeof scale !== 'string') return scale;
   return scale.replace(`${basePath}/`, '');
 }
 
@@ -23,10 +24,17 @@ export function flattenScales(path: string, image: any) {
     download: removeObjectIdFromURL(basePath, image.download),
   };
 
+  // `null` is typeof 'object', so exclude it explicitly.
+  if (typeof imageInfo.scales !== 'object' || imageInfo.scales === null) {
+    return imageInfo;
+  }
+
   Object.keys(imageInfo.scales).forEach((key) => {
+    const scale = image.scales?.[key];
+    if (!scale) return;
     imageInfo.scales[key].download = removeObjectIdFromURL(
       basePath,
-      image.scales[key].download,
+      scale.download,
     );
   });
 
