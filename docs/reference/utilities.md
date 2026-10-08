@@ -1,10 +1,10 @@
 ---
 myst:
   html_meta:
-    "description": "How to type Volto utilities via UtilityTypeMap"
-    "property=og:description": "How to type Volto utilities via UtilityTypeMap"
+    "description": "How to type Plone Aurora utilities via UtilityTypeMap"
+    "property=og:description": "How to type Plone Aurora utilities via UtilityTypeMap"
     "property=og:title": "Typing utilities"
-    "keywords": "Volto, Plone, utilities, typing, TypeScript"
+    "keywords": "Plone Aurora, Plone, utilities, typing, TypeScript"
 ---
 
 # Typing utilities
@@ -13,10 +13,10 @@ myst:
 
 ## Declare utility method types
 
-Extend `UtilityTypeMap` via module augmentation (for example in `src/types/volto.d.ts`):
+Extend `UtilityTypeMap` via module augmentation (for example in `src/types/aurora.d.ts`):
 
 ```ts
-// src/types/volto.d.ts
+// src/types/aurora.d.ts
 declare module '@plone/types' {
   interface UtilityTypeMap {
     rootContentSubRequest: (options: { path: string }) => Promise<unknown>;

@@ -8,6 +8,7 @@ import {
   flip,
   offset,
 } from '@platejs/floating';
+import { LinkRules } from '@platejs/link';
 import {
   LinkPlugin as PlateLinkPlugin,
   submitFloatingLink,
@@ -42,7 +43,6 @@ import { flattenToAppURL, isInternalURL } from '@plone/helpers';
 import { buttonVariants } from '@plone/plate/components/ui/button';
 import { LinkElement } from '@plone/plate/components/ui/link-node';
 import { Separator } from '@plone/plate/components/ui/separator';
-import { LegacyLinkPlugin } from '@plone/plate/components/editor/plugins/legacy-link-plugin';
 import { ObjectBrowserProvider } from '../../ObjectBrowserWidget/ObjectBrowserContext';
 import { ObjectBrowserModal } from '../../ObjectBrowserWidget/ObjectBrowserModal';
 import { buildObjectBrowserUrl } from '../../ObjectBrowserWidget/utils';
@@ -404,13 +404,23 @@ function LinkFloatingToolbar({
       const selectedText = selectionToRestore
         ? editor.api.string(selectionToRestore).trim()
         : '';
+      // Editing an existing link: keep its text, only the URL changes.
+      const existingLinkEntry = selectionToRestore
+        ? editor.api.node<TLinkElement>({
+            at: selectionToRestore,
+            match: { type: editor.getType(KEYS.link) },
+          })
+        : undefined;
       const shouldUseFallbackText =
         !selectedText &&
+        !existingLinkEntry &&
         selectionToRestore &&
         RangeApi.isCollapsed(selectionToRestore);
 
       if (selectedText) {
         setOption('text', selectedText);
+      } else if (existingLinkEntry) {
+        setOption('text', editor.api.string(existingLinkEntry[1]));
       } else if (shouldUseFallbackText && fallbackText) {
         setOption('text', fallbackText);
       }
@@ -589,8 +599,13 @@ function LinkFloatingToolbar({
 }
 
 export const LinkKit = [
-  ...LegacyLinkPlugin,
   PlateLinkPlugin.configure({
+    inputRules: [
+      LinkRules.markdown(),
+      LinkRules.autolink({ variant: 'paste' }),
+      LinkRules.autolink({ variant: 'space' }),
+      LinkRules.autolink({ variant: 'break' }),
+    ],
     options: {
       transformInput: normalizeLinkUrl,
     },

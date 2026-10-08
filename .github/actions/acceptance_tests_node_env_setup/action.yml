@@ -5,20 +5,22 @@ runs:
   using: "composite"
   steps:
     - name: Use Node.js ${{ inputs.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v7
       with:
         node-version: ${{ inputs.node-version }}
 
-    - name: Enable corepack
+    - name: Install and enable Corepack
       shell: bash
-      run: corepack enable
+      run: |
+        npm install --global corepack@latest
+        corepack enable
 
     - name: Get pnpm store directory
       shell: bash
       run: |
         echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-    - uses: actions/cache@v4
+    - uses: actions/cache@v6
       name: Setup pnpm cache
       with:
         path: ${{ env.STORE_PATH }}
@@ -30,9 +32,26 @@ runs:
       shell: bash
       run: make install
 
-    - name: Install Playwright Browsers
+    - name: Get Playwright version
+      id: playwright-version
       shell: bash
-      run: pnpm exec playwright install --with-deps chromium
+      run: |
+        echo "version=$(pnpm exec playwright --version | tail -1 | awk '{print $2}')" >> $GITHUB_OUTPUT
+
+    - uses: actions/cache@v6
+      id: playwright-cache
+      name: Setup Playwright browsers cache
+      with:
+        path: ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+
+    # The system dependencies (--with-deps) are not installed, because the
+    # GitHub Ubuntu runners already ship them, and fetching them with apt is
+    # sometimes very slow.
+    - name: Install Playwright Browsers
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: pnpm exec playwright install chromium
 
 inputs:
   node-version:

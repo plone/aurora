@@ -4,7 +4,7 @@ This file applies only to `packages/publicui` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/publicui` provides the **public-facing routes and page rendering for Seven**.
+- `@plone/publicui` provides the **public-facing routes and page rendering for Plone Aurora**.
 - It is the surface that anonymous visitors and authenticated users see when browsing the site.
 - It covers content views, search results, and the sitemap.
 - It consumes `@plone/layout` for structural page elements and `@plone/blocks` for block rendering.
@@ -35,3 +35,5 @@ This file applies only to `packages/publicui` and its subdirectories.
 pnpm --filter @plone/publicui test --run
 pnpm --filter @plone/publicui check:ts
 ```
+
+Visual regression tests for the site frame and the toolbar live under `acceptance/visual/` and run with `pnpm visual-test`. Baselines are only generated in CI, through the "Update VRT Screenshots" workflow; never commit locally generated screenshots.

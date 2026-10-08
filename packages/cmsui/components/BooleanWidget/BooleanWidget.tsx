@@ -1,8 +1,7 @@
 import type { FormWidgetProps } from '@plone/types';
-import { Checkbox } from '@plone/components/quanta';
-import { Description } from '../Field/Field';
+import { Checkbox, Description } from '@plone/quanta';
 
-type BooleanWidgetProps = FormWidgetProps<boolean> & {
+export type BooleanWidgetProps = FormWidgetProps<boolean> & {
   error?: unknown[];
 };
 
@@ -17,6 +16,10 @@ const getErrorMessage = ({
     .map((value) => String(value))
     .join(', ');
 
+/**
+ * Adapts the schema field props (`label`, `value`, `onChange(value)`) to the
+ * Quanta `Checkbox` control.
+ */
 export function BooleanWidget({
   name,
   value,
@@ -38,23 +41,26 @@ export function BooleanWidget({
     errors,
     error,
   });
+  const descriptionId = description ? `${name}-description` : undefined;
 
   return (
     <div className={className}>
       <Checkbox
         name={name}
-        isSelected={!!value}
-        defaultSelected={!!defaultValue}
+        isSelected={!!(value ?? defaultValue)}
         isRequired={required}
         isDisabled={disabled}
         isReadOnly={readOnly}
         isInvalid={!!resolvedErrorMessage}
         onBlur={onBlur}
         onChange={onChange}
+        aria-describedby={descriptionId}
       >
         {label}
       </Checkbox>
-      {description && <Description>{description}</Description>}
+      {description && (
+        <Description id={descriptionId}>{description}</Description>
+      )}
       {resolvedErrorMessage && (
         <p
           className={`

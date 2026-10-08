@@ -8,6 +8,117 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.12 (2026-10-06)
+
+### Breaking
+
+- Removed the `cmsui` cascade layer. Tailwind is now loaded with a plain import, so its reset lands in `base`, its theme variables in `theme` and its utilities in `utilities`. Add-ons that targeted the `cmsui` layer must move their styles to one of the declared layers. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+
+### Feature
+
+- Added the `content-area` class to the block editor, so themes' content tokens declared on `.content-area` also apply to the blocks in the editor. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+
+## 1.0.0-alpha.11 (2026-10-03)
+
+### Internal
+
+- Added visual regression tests for the CMS chrome: login, add and edit forms, block settings sidebar, sharing and control panels. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+- Import icons from `@plone/icons`. Import Quanta components from `@plone/quanta`. @pnicolli
+  Scan `@plone/icons` for Tailwind classes, so every icon size utility is generated. @pnicolli
+  Load the base icon styles from `@plone/icons`. @pnicolli 
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
+## 1.0.0-alpha.10 (2026-10-01)
+
+### Feature
+
+- Passed the `react-i18next` `t` and current language to the Plate block editor for its translations. @sneridagh 
+
+## 1.0.0-alpha.9 (2026-09-29)
+
+### Internal
+
+- Covered Heading 2 to Heading 6 in the block width acceptance test for headings created with markdown shortcuts. @sneridagh 
+
+## 1.0.0-alpha.8 (2026-09-29)
+
+### Feature
+
+- Added the `@@sharing` route to manage local roles: searchable user/group listing, editable role checkboxes and inherit toggle. @jmevissen [#29](https://github.com/plone/aurora/issues/29)
+
+### Bugfix
+
+- Fixed editing an existing link from the link toolbar (Browse or Edit link search) so it keeps the link text and only updates its target. @sneridagh 
+
+### Internal
+
+- Added acceptance test coverage for Maps block. @cihanandac 
+- Upgraded `platejs`, `@platejs/floating`, and `@platejs/link` to 52.x to align with `@plone/plate`. @sneridagh 
+- Upgraded `platejs`, `@platejs/floating`, and `@platejs/link` to 53.x and configured link autolink and markdown `inputRules`. Added acceptance tests for markdown shortcuts and blockquotes. @sneridagh 
+
+## 1.0.0-alpha.7 (2026-09-21)
+
+### Bugfix
+
+- Fixed aurora version check in VersionOverview. @sneridagh 
+
+### Internal
+
+- Updated package repository metadata and towncrier issue links from `plone/volto` to `plone/aurora`. @sneridagh 
+
+## 1.0.0-alpha.6 (2026-09-16)
+
+### Feature
+
+- Block schema fields can now declare an `onChangeSideEffects(value, nextData)` function to patch other fields when they change; the block settings form applies these patches centrally. @sneridagh @TimoBroeskamp 
+
+### Bugfix
+
+- The image widget now forwards `image_field` and `image_scales` from the object browser selection, so image blocks can render responsive image scales. @sneridagh @TimoBroeskamp 
+
+## 1.0.0-alpha.5 (2026-09-05)
+
+### Feature
+
+- Switched login page from Volto style to Plone style.
+  Added option to display site logo in login page. @arybakov05 [#24](https://github.com/plone/volto/issues/24)
+
+### Internal
+
+- Adapted routes to React Router v8's renamed loader/action context fields and `meta()` match shape. @sneridagh 
+- Added `vite.extend.js` and a dependency audit path to pre-bundle CMS UI runtime dependencies, reducing dev server startup reloads. @arybakov05 
+- Declared the catalog-managed i18next version as a peer dependency to keep react-i18next instances unified. @sneridagh 
+- Drop the duplicated `LegacyLinkPlugin` from the BlockEditor link kit; legacy Slate fragments pasted from a legacy volto-slate editor are now normalized by `@plone/plate`'s paste boundary instead. @sneridagh 
+
+## 1.0.0-alpha.4 (2026-07-02)
+
+### Breaking
+
+- Refactored the `Content` type to properly match the basic Plone types and allow TypeScript to narrow this type automatically. @pnicolli 
+
+### Feature
+
+- Added German translations. @arybakov05 [#6653](https://github.com/plone/volto/issues/6653)
+- Implement login view according to Volto Quanta UI. @arybakov05 [#6656](https://github.com/plone/volto/issues/6656)
+- Added querystringWidget for seven @nileshgulia1 [#8007](https://github.com/plone/volto/issues/8007)
+- Integrate links with ObjectBrowser. @sneridagh [#8246](https://github.com/plone/volto/issues/8246)
+- Added recurrence widget. @sabrina-bongiovanni 
+
+### Bugfix
+
+- Renamed `quanta-lemmon` color to `quanta-lemon`. @arybakov05 [#6656](https://github.com/plone/volto/issues/6656)
+- Fix several issues in the Object Browser widget: single selection mode now behaves correctly, clicking a non-folder item no longer attempts navigation, the maximum selection limit is ignored in single mode, and the API for specifying which item attributes to return has been renamed for consistency across the codebase. @iFlameing 
+- Fix the sidebar to take 100% vertical space. @frapell 
+- Fix toolbar cancel button navigating to site root instead of current content page. @iFlameing 
+- Fixed Somersault editor sidebar state when navigating registry-backed Plone blocks and switching edited content. @sneridagh 
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+- Update to storybook 10. @sneridagh 
+- Updated CMS UI route imports and typecheck setup to use the `@plone/aurora` app alias. @sneridagh 
+- Updated the CMS UI layout loader to read content and locale from route context. @pnicolli 
+
 ## 1.0.0-alpha.3 (2026-05-07)
 
 ### Bugfix

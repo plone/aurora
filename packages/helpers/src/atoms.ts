@@ -53,7 +53,7 @@ export function useFieldFocusAtom<T, K extends DeepKeys<T>>(
 }
 
 // Returns the [value, setter] (`useAtom`-ed) ready to use focused atom of a field
-// (when referring to a Seven Form)
+// (when referring to a Plone Aurora Form)
 export function useFieldFocusedAtom<T, K extends DeepKeys<T>>(
   atom: PrimitiveAtom<T>,
   field: K,

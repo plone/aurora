@@ -1,18 +1,13 @@
-import type { SlateElementProps } from 'platejs';
+import type { SlateElementProps } from 'platejs/static';
 
-import { SlateElement } from 'platejs';
+import { SlateElement } from 'platejs/static';
 
-import { cn } from '../../lib/utils';
-
+// Styled by `.block-hr__spacer` and `.block-hr__line` in `styles/content.css`.
 export function HrElementStatic(props: SlateElementProps) {
   return (
     <SlateElement {...props}>
-      <div className="cursor-text py-6" contentEditable={false}>
-        <hr
-          className={cn(
-            'h-0.5 rounded-sm border-none bg-muted bg-clip-content',
-          )}
-        />
+      <div className="block-hr__spacer" contentEditable={false}>
+        <hr className="block-hr__line" />
       </div>
       {props.children}
     </SlateElement>

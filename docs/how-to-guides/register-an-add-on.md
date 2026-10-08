@@ -4,7 +4,7 @@ myst:
     "description": "How to register an add-on in @plone/registry"
     "property=og:description": "How to register an add-on in @plone/registry"
     "property=og:title": "Register an add-on"
-    "keywords": "Seven, @plone/registry, registry, add-on"
+    "keywords": "Plone Aurora, @plone/registry, registry, add-on"
 ---
 
 # Register an add-on
@@ -28,7 +28,7 @@ The following code sample shows how to register your add-on in your app through 
   "addons": [
     "acme-volto-foo-addon",
     "@plone/some-addon",
-    "collective-another-seven-addon"
+    "collective-another-plone-aurora-addon"
   ]
 }
 ```
@@ -83,7 +83,7 @@ You must define it in [CommonJS](https://en.wikipedia.org/wiki/CommonJS) format.
 
 ```js
 module.exports = {
-  addons: ['my-seven-config-addon'],
+  addons: ['my-plone-aurora-config-addon'],
 };
 ```
 

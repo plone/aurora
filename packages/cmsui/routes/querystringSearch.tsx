@@ -3,7 +3,7 @@ import {
   RouterContextProvider,
   type LoaderFunctionArgs,
 } from 'react-router';
-import { ploneClientContext } from 'seven/app/middleware.server';
+import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import type { Brain, Query } from '@plone/types';
 
 export interface QuerystringSearchResult {

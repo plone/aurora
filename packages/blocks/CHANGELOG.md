@@ -8,6 +8,82 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.18 (2026-10-06)
+
+### Breaking
+
+- Removed the `video`, `audio`, `file` and `media_embed` entries from `config.blocks.plateBlocksConfig`, since Aurora's block editor no longer has those Plate nodes. @sneridagh 
+- Renamed the Plone blocks' classnames to the block content contract, `block-<type>__<part>`, and moved the video and maps styles to `styles/content.css`. Update theme CSS that targets the old names: `image-block` is now `block-image__frame`; `video-block`, `video-inner` and `invalid-video-format` are `block-video__figure`, `__inner` and `__invalid`, and the video's `video align block <align>` wrapper is `block-video__wrapper` with `data-align`; `maps-block` and `maps-iframe` are `block-maps__frame` and `__iframe`; `teaser-item`, `teaser-image-wrapper` and `teaser-content` are `block-teaser__item`, `__image` and `__content`; the listing's `item` and `summary` are `block-listing__item` and `block-listing__item[data-variation='summary']`. New parts: `block-teaser__title`, `__description`, `block-listing__headline`, `__title`, `__description`, `__image`, `__body` and `__empty`. @sneridagh 
+
+### Feature
+
+- Moved the image block styles from a CSS Module to `styles/content.css`, so they load in both the Public UI and the CMSUI inside the `plone-content` cascade layer and themes can override them. The link around a linked image now has the `block-image__link` class. @sneridagh [#199](https://github.com/plone/aurora/pull/199)
+- Added `h1` (category `text`) and `hr` (category `separator`) to `plateBlocksConfig`, so they get the block anatomy classnames. In the public view, the separator now gets the separator category spacing. @sneridagh 
+
+### Internal
+
+- Added Stylelint rules for `styles/content.css`: no `@layer`, and no `:root`, `html`, `body` or bare element selectors. @sneridagh [#200](https://github.com/plone/aurora/pull/200)
+
+## 1.0.0-alpha.17 (2026-10-03)
+
+### Internal
+
+- Import icons from `@plone/icons`. @pnicolli 
+- Removed the unused native Plate image (`img`) entry from `config.blocks.plateBlocksConfig`. @sneridagh 
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
+## 1.0.0-alpha.16 (2026-09-29)
+
+### Bugfix
+
+- Set the default block width of Heading 5 and Heading 6 to `narrow`, like the other headings. @sneridagh 
+
+### Internal
+
+- Removed the `h1` entry from `plateBlocksConfig`, since H1 is reserved for the title and the editor has no H1 plugin. @sneridagh 
+
+## 1.0.0-alpha.15 (2026-09-29)
+
+### Feature
+
+- Added Maps block. @cihanandac 
+
+## 1.0.0-alpha.14 (2026-09-21)
+
+### Internal
+
+- Updated package repository metadata and towncrier issue links from `plone/volto` to `plone/aurora`. @sneridagh 
+
+## 1.0.0-alpha.13 (2026-09-16)
+
+### Feature
+
+- The image block now stores its alignment and size as schema-driven style fields, ships its styles as a CSS module instead of a global side-effect import, floats left/right aligned images at any size so following content wraps around them (including list markers), keeps floated images selectable in the editor, and can link the image to another page. @sneridagh @TimoBroeskamp 
+
+## 1.0.0-alpha.12 (2026-09-05)
+
+### Internal
+
+- Declared the catalog-managed i18next version as a peer dependency to keep react-i18next instances unified. @sneridagh 
+- Reformatted block components for compatibility with Prettier 3.8. @sneridagh 
+
+## 1.0.0-alpha.11 (2026-07-02)
+
+### Feature
+
+- Added default Plate-native block categories for the shared block anatomy class contract. @sneridagh 
+
+### Bugfix
+
+- Update prop for objectBrowser. @sneridagh [#8246](https://github.com/plone/volto/pull/8246)
+- Fix Teaser block object browser configuration: the target field now uses single selection mode, and the required item identifier is included in the selected attributes for both the target and image fields. @iFlameing 
+- Keep block naming conventions as `<BlockName>BlockView.tsx` and `<BlockName>BlockEdit.tsx`. @frapell 
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+- Updated TypeScript configuration to resolve Aurora app types from `@plone/aurora`. @sneridagh 
+
 ## 1.0.0-alpha.10 (2026-05-13)
 
 ### Internal

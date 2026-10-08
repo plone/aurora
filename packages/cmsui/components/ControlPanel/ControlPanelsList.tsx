@@ -18,7 +18,7 @@ export const ControlPanelsList = ({
   const addonsControlPanels: ControlPanel[] =
     config.settings.controlpanels || [];
 
-  const sevenControlPanels = [
+  const auroraControlPanels = [
     {
       '@id': '/addons',
       group: t('cmsui.panelgroups.general'),
@@ -72,7 +72,7 @@ export const ControlPanelsList = ({
   ];
 
   let allControlPanels = controlpanels.concat(
-    sevenControlPanels,
+    auroraControlPanels,
     addonsControlPanels,
   );
   // Apply filter function

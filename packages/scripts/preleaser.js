@@ -20,8 +20,17 @@ const RELEASE_GROUPS = [
     packages: ['@plone/types'],
   },
   {
+    label: 'Icons (level 0)',
+    packages: ['@plone/icons'],
+  },
+  {
     label: 'Core packages (level 1)',
-    packages: ['@plone/client', '@plone/components', '@plone/registry'],
+    packages: [
+      '@plone/client',
+      '@plone/components',
+      '@plone/quanta',
+      '@plone/registry',
+    ],
   },
   {
     label: 'Utilities packages (level 2)',
@@ -37,11 +46,12 @@ const RELEASE_GROUPS = [
       '@plone/agave',
       '@plone/cmsui',
       '@plone/publicui',
+      '@plone/contents',
     ],
   },
   {
     label: 'Application',
-    packages: ['seven'],
+    packages: ['@plone/aurora'],
   },
 ];
 

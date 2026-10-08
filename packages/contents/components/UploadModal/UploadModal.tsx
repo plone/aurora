@@ -10,13 +10,8 @@ import {
   DropZoneText,
   Input,
   Modal,
-} from '@plone/components/quanta';
-import {
-  BinIcon,
-  CloseIcon,
-  PageIcon,
-  UploadIcon,
-} from '@plone/components/Icons';
+} from '@plone/quanta';
+import { BinIcon, CloseIcon, PageIcon, UploadIcon } from '@plone/icons';
 import { type ToastItem } from '@plone/layout/config/toast';
 import { useContentsContext } from '../../providers/contents';
 
@@ -75,16 +70,13 @@ export default function UploadModal() {
     if (fetcher.state === 'idle') {
       const responseData = fetcher.data;
       if (responseData?.ok?.length > 0) {
-        const toast: ToastItem = { title: '', icon: <UploadIcon /> };
-        if (responseData.ok.length === 1) {
-          toast.title = t('contents.actions.uploaded', {
+        const toast: ToastItem = {
+          title: t('contents.actions.uploaded', {
+            count: responseData.ok.length,
             title: responseData.ok[0].title,
-          });
-        } else {
-          toast.title = t('contents.actions.uploaded_multiple', {
-            number: responseData.ok.length,
-          });
-        }
+          }),
+          icon: <UploadIcon />,
+        };
         showToast(toast);
       }
       if (responseData?.errors?.length > 0) {

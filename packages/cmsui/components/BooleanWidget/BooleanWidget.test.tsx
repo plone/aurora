@@ -29,6 +29,34 @@ describe('BooleanWidget', () => {
     expect(screen.getByRole('checkbox')).toBeChecked();
   });
 
+  it('falls back to the default value', () => {
+    render(
+      <BooleanWidget
+        name="flag"
+        label="Flag"
+        defaultValue
+        onChange={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole('checkbox', { name: 'Flag' })).toBeChecked();
+  });
+
+  it('links the description to the checkbox', () => {
+    render(
+      <BooleanWidget
+        name="share_social_data"
+        label="Share social data"
+        description="Include meta tags"
+        onChange={vi.fn()}
+      />,
+    );
+
+    expect(
+      screen.getByRole('checkbox', { name: 'Share social data' }),
+    ).toHaveAccessibleDescription('Include meta tags');
+  });
+
   it('emits normalized boolean values', () => {
     const onChange = vi.fn();
 

@@ -21,12 +21,14 @@ import { FixedToolbarKit } from './plugins/fixed-toolbar-kit';
 import { FloatingToolbarKit } from './plugins/floating-toolbar-kit';
 import { FontKit } from './plugins/font-kit';
 import { LineHeightKit } from './plugins/line-height-kit';
+import { LegacyPastePlugin } from './plugins/legacy-paste-plugin';
 import { LinkKit } from './plugins/link-kit';
 import { ListKit } from './plugins/list-kit';
 import { MarkdownKit } from './plugins/markdown-kit';
 import { MediaKit } from './plugins/media-kit';
 import { MentionKit } from './plugins/mention-kit';
 import { BlockWidthKit } from './plugins/block-width-kit';
+import { BlockAnatomyKit } from './plugins/block-anatomy-kit';
 import { StyleFieldsKit } from './plugins/style-fields-kit';
 import { SlashKit } from './plugins/slash-kit';
 // import { SuggestionKit } from './plugins/suggestion-kit';
@@ -35,6 +37,8 @@ import { TocKit } from './plugins/toc-kit';
 import { ToggleKit } from './plugins/toggle-kit';
 
 export const EditorKit = [
+  // Normalizes legacy Slate fragments pasted from a legacy volto-slate editor.
+  LegacyPastePlugin,
   ...AIKit,
   ...BlockMenuKit,
 
@@ -55,8 +59,8 @@ export const EditorKit = [
   ...FontKit,
 
   // Block Style
+  ...BlockAnatomyKit,
   ...StyleFieldsKit,
-  ...BlockWidthKit,
   ...ListKit,
   ...AlignKit,
   ...LineHeightKit,
@@ -77,6 +81,8 @@ export const EditorKit = [
   // Parsers
   ...DocxKit,
   ...MarkdownKit,
+
+  ...BlockWidthKit,
 
   // UI
   ...BlockPlaceholderKit,

@@ -10,8 +10,9 @@ import {
   Text,
 } from 'react-aria-components';
 
-export interface RangeCalendarProps<T extends DateValue>
-  extends RACRangeCalendarProps<T> {
+export interface RangeCalendarProps<
+  T extends DateValue,
+> extends RACRangeCalendarProps<T> {
   errorMessage?: string;
 }
 

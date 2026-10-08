@@ -1,19 +1,11 @@
 {
   "extends": "tsconfig/react-library.json",
-  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts", "../components/src/icons.d.ts"],
-  "exclude": [
-    "node_modules",
-    "build",
-    "public",
-    "coverage",
-    "src/**/*.test.{js,jsx,ts,tsx}",
-    "src/**/*.spec.{js,jsx,ts,tsx}",
-    "src/**/*.stories.{js,jsx,ts,tsx}"
-  ],
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts", "../icons/src/svg.d.ts"],
+  "exclude": ["node_modules", "build", "public", "coverage"],
   "compilerOptions": {
     "types": ["vite/client"],
     "paths": {
-      "seven/*": ["../../apps/seven/*"],
+      "@plone/aurora/*": ["../../apps/aurora/*"],
       "@plone/plate/*": ["./*"],
       "@/*": ["./*"]
     }

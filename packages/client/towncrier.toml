@@ -5,7 +5,7 @@ title_format = "## {version} ({project_date})"
 underlines = ["", "", ""]
 template = "../scripts/templates/towncrier_template.jinja"
 start_string = "<!-- towncrier release notes start -->\n"
-issue_format = "[#{issue}](https://github.com/plone/volto/pull/{issue})"
+issue_format = "[#{issue}](https://github.com/plone/aurora/pull/{issue})"
 
 [[tool.towncrier.type]]
 directory = "breaking"

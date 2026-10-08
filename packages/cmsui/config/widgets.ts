@@ -5,12 +5,12 @@ import {
   SizeWidget,
   WidthWidget,
   TextField,
-} from '@plone/components/quanta';
+} from '@plone/quanta';
 import { DateField } from '@plone/components';
-import { BooleanWidget } from '../components/BooleanWidget/BooleanWidget';
 import { RecurrenceWidget } from '../components/RecurrenceWidget/RecurrenceWidget';
 import { ObjectBrowserWidget } from '../components/ObjectBrowserWidget/ObjectBrowserWidget';
 import ImageWidget from '../components/ImageWidget/ImageWidget';
+import { BooleanWidget } from '../components/BooleanWidget/BooleanWidget';
 import { QuerystringWidget } from '../components/QuerystringWidget/QuerystringWidget';
 
 export default function install(config: ConfigType) {

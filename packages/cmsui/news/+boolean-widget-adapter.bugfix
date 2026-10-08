@@ -1,1 +1,1 @@
-Register a CMS boolean widget adapter instead of the raw checkbox control.
+Fixed boolean fields not showing their label and value by adding a `BooleanWidget` adapter for the Quanta `Checkbox`. @sneridagh

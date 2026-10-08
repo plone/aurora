@@ -1,12 +1,11 @@
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
-import { waitForPlateEditorReady } from '../../../tooling/playwright/plate';
 import {
-  clickAtPath,
-  getEditorHandle,
-  setSelection,
-} from '@platejs/playwright';
+  selectPlateEditorText,
+  waitForPlateEditorReady,
+} from '../../../tooling/playwright/plate';
+import { clickAtPath, getEditorHandle } from '@platejs/playwright';
 
 const TARGET_TITLE = 'Link target document';
 const SECOND_TARGET_TITLE = 'Second link target document';
@@ -74,22 +73,51 @@ async function setupLinkPage(page: Parameters<typeof test>[0]['page']) {
 async function openLinkToolbar(page: Parameters<typeof test>[0]['page']) {
   const editorHandle = await getEditorHandle(page);
   await clickAtPath(page, editorHandle, [1]);
-  await setSelection(page, editorHandle, {
-    anchor: { path: [1, 0], offset: 0 },
-    focus: { path: [1, 0], offset: SELECTED_TEXT.length },
-  });
+  await selectPlateEditorText(
+    page,
+    editorHandle,
+    {
+      anchor: { path: [1, 0], offset: 0 },
+      focus: { path: [1, 0], offset: SELECTED_TEXT.length },
+    },
+    SELECTED_TEXT,
+  );
 
   const toolbar = page.getByLabel('Editor toolbar');
   await expect(toolbar).toBeVisible();
   await toolbar.locator('button:has(.lucide-link)').click();
 }
 
-async function selectHelloLink(page: Parameters<typeof test>[0]['page']) {
+// The link edit popover only opens with a collapsed cursor inside the link.
+async function placeCursorInHelloLink(
+  page: Parameters<typeof test>[0]['page'],
+) {
   const editorHandle = await getEditorHandle(page);
-  await setSelection(page, editorHandle, {
-    anchor: { path: [1, 0, 0], offset: 0 },
-    focus: { path: [1, 0, 0], offset: SELECTED_TEXT.length },
-  });
+  await selectPlateEditorText(
+    page,
+    editorHandle,
+    {
+      anchor: { path: [1, 1, 0], offset: 2 },
+      focus: { path: [1, 1, 0], offset: 2 },
+    },
+    '',
+  );
+}
+
+async function createHelloLink(
+  page: Parameters<typeof test>[0]['page'],
+  targetId: string,
+) {
+  await openLinkToolbar(page);
+
+  const input = page.getByPlaceholder('Paste link or search content');
+  await input.fill(TARGET_TITLE);
+  await expect(page.getByText('Search results')).toBeVisible();
+  await page.getByText(TARGET_TITLE, { exact: true }).click();
+
+  await expect(
+    page.locator(`[data-slate-editor] a[href="/${targetId}"]`),
+  ).toHaveText(SELECTED_TEXT);
 }
 
 test('Link kit browse button opens the object browser', async ({ page }) => {
@@ -143,23 +171,14 @@ test('Link kit can create an internal link from inline search results', async ({
   ).toHaveText(SELECTED_TEXT);
 });
 
-test('Link kit edit Browse button opens the object browser and updates the link', async ({
+test('Link kit edit Browse button updates the link target and keeps its text', async ({
   page,
 }) => {
   await login(page);
   const { targetId, secondTargetId } = await setupLinkPage(page);
-  await openLinkToolbar(page);
+  await createHelloLink(page, targetId);
 
-  const input = page.getByPlaceholder('Paste link or search content');
-  await input.fill(TARGET_TITLE);
-  await expect(page.getByText('Search results')).toBeVisible();
-  await page.getByText(TARGET_TITLE, { exact: true }).click();
-
-  await expect(
-    page.locator(`[data-slate-editor] a[href="/${targetId}"]`),
-  ).toHaveText(SELECTED_TEXT);
-
-  await selectHelloLink(page);
+  await placeCursorInHelloLink(page);
   await expect(page.getByRole('button', { name: 'Browse' })).toBeVisible();
   await page.getByRole('button', { name: 'Browse' }).click();
 
@@ -174,4 +193,40 @@ test('Link kit edit Browse button opens the object browser and updates the link'
   await expect(
     page.locator(`[data-slate-editor] a[href="/${secondTargetId}"]`),
   ).toHaveText(SELECTED_TEXT);
+  await expect(
+    page.locator(`[data-slate-editor] a[href="/${targetId}"]`),
+  ).toHaveCount(0);
+});
+
+test('Link kit Edit link search result updates the link target and keeps its text', async ({
+  page,
+}) => {
+  await login(page);
+  const { targetId, secondTargetId } = await setupLinkPage(page);
+  await createHelloLink(page, targetId);
+
+  await placeCursorInHelloLink(page);
+  await expect(page.getByRole('button', { name: 'Edit link' })).toBeVisible();
+  await page.getByRole('button', { name: 'Edit link' }).click();
+
+  // The hidden insert popover renders the same input and results; target the
+  // visible ones.
+  const input = page
+    .getByPlaceholder('Paste link or search content')
+    .filter({ visible: true });
+  await input.fill(SECOND_TARGET_TITLE);
+  await expect(
+    page.getByText('Search results').filter({ visible: true }),
+  ).toBeVisible();
+  await page
+    .getByText(SECOND_TARGET_TITLE, { exact: true })
+    .filter({ visible: true })
+    .click();
+
+  await expect(
+    page.locator(`[data-slate-editor] a[href="/${secondTargetId}"]`),
+  ).toHaveText(SELECTED_TEXT);
+  await expect(
+    page.locator(`[data-slate-editor] a[href="/${targetId}"]`),
+  ).toHaveCount(0);
 });

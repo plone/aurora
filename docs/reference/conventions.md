@@ -4,7 +4,7 @@ myst:
     "description": "Development conventions, rules, and best practices"
     "property=og:description": "Development conventions, rules, and best practices"
     "property=og:title": "Development conventions, rules, and best practices"
-    "keywords": "Plone, Seven, frontend, best practices, conventions, rules, reference"
+    "keywords": "Plone, Plone Aurora, frontend, best practices, conventions, rules, reference"
 ---
 
 # Development conventions, rules, and best practices
@@ -14,7 +14,7 @@ This document explains the conventions, rules, and best practices to follow in t
 In general, the Volto Team adheres to the same models, artifacts, and conventions as in Volto, unless there's a good reason to change.
 For example, the blocks model structure stays the same since it's been well-established and widely used.
 As another example, in Volto, we use controlled forms everywhere.
-Even though React Router 7 introduced a new way to handle forms, we stuck with controlled forms for consistency.
+Even though React Router 8 introduced a new way to handle forms, we stuck with controlled forms for consistency.
 Our widgets also follow almost the same interface as in Volto, because controlled forms need controlled widgets.
 
 The configuration system remains based on `@plone/registry`, and we keep improving it.
@@ -33,10 +33,10 @@ Also, the Public UI cannot rely on any CMSUI-specific styles or components.
 
 Storybook is a tool for building UI components in isolation with React.
 It helps you develop components by mocking their different states and interacting with them in a sandbox.
-Seven follows a Storybook-first approach, so new components should be developed in Storybook first before adding them to the app.
-This mainly applies to design system components (`@plone/components`), but you can also use it for other structural components (`@plone/layout`).
+Plone Aurora follows a Storybook-first approach, so new components should be developed in Storybook first before adding them to the app.
+This mainly applies to design system components (`@plone/components`, `@plone/quanta`), but you can also use it for other structural components (`@plone/layout`).
 
-You can see the Storybook for this package at [Seven Storybook](https://plone-storybook.readthedocs.io/latest/?path=/docs/introduction--docs).
+You can see the Storybook for this package at [Plone Aurora Storybook](https://plone-storybook.readthedocs.io/latest/?path=/docs/introduction--docs).
 
 ## Routes naming
 
@@ -51,38 +51,46 @@ When defining routes in React Router, follow these rules:
 
 In the past, Volto add-ons had a `src` folder with all the code.
 Since Volto add-ons weren't meant to be compiled, the build process had to be patched to make it work.
-In Seven, we decided to drop the `src` folder and put all code directly in the package root.
+In Plone Aurora, we decided to drop the `src` folder and put all code directly in the package root.
 This makes the build process work out of the box without any patching, following ecosystem conventions.
 Otherwise, we'd have to patch the resolution process for every build or bundler tool.
 
 ## `@plone/components` package
 
-This package is the design system for Plone 7.
-It contains reusable UI components like buttons, forms, modals, and more components.
+This package contains the basic, white-label set of reusable UI components for Plone 7, such as buttons, forms, modals, and more.
 
 When adding new components, make sure they are generic and reusable across the app.
 This package should not contain any Plone-specific logic or data handling.
 The components here have to be "dumb" and receive plain props to render its output.
 For example, they will never have the logic for fetching data from Plone or handling authentication.
-This package is a first-level Plone modular architecture package, thus it can't depend on any other Plone package except `@plone/types`.
+This package is a first-level Plone modular architecture package, and it can only depend on `@plone/types` and `@plone/icons`.
 Also, document them well and include Storybook stories to show how to use them and their different states.
 
-There are two sets of components here:
-- Tailwind-based components, which you can use directly and are styled with Tailwind CSS classes.
-- Headless components, which provide functionality without styling, so you can style them however you want.
-
-We also include a basic "baseline" CSS for the headless components to give you a common starting point.
+The components here are headless: they provide functionality without opinionated styling, so you can style them however you want.
+We also include a basic "baseline" CSS to give you a common starting point.
 These styles are very simple ("vanilla") and easy to override with your own styles.
 You can also use these in Volto projects by installing the `@plone/components` package.
 
-The Tailwind-based components are meant for public themes that also use Tailwind CSS, like the default Seven theme (`@plone/agave`).
-They're also used in the CMSUI, which is based on Tailwind CSS.
-
 Check out the Storybook for this package at [@plone/components Storybook](https://plone-components.readthedocs.io/latest/?path=/docs/introduction--docs).
+
+## `@plone/quanta` package
+
+This package contains the Quanta design system: React components styled with Tailwind CSS, the `SizeWidget`, `AlignWidget`, and `WidthWidget` form widgets, and the Quanta CSS, typography, and fonts.
+
+The Quanta components are meant for themes that also use Tailwind CSS, like the default Plone Aurora theme (`@plone/agave`).
+They're also used in the CMSUI, which is based on Tailwind CSS.
+This package never depends on `@plone/components`; it only depends on `@plone/icons`.
+
+Check out the Storybook for this package at [@plone/quanta Storybook](https://plone-quanta.readthedocs.io/).
+
+## `@plone/icons` package
+
+This package owns the Quanta icon set: the raw SVGs, a React component per icon, the `Icon` wrapper component, the `*.svg?react` type declarations, and the SVGR Vite plugin used to transform SVGs into React components at build time.
+It has no dependency on any other Plone package.
 
 ## `@plone/layout` package
 
-This package is a Seven add-on and thus, a third-level Plone modular architecture package.
+This package is a Plone Aurora add-on and thus, a third-level Plone modular architecture package.
 This package holds the structural components of the Plone 7 frontend, such as `Header`, `Footer`, and `ContentArea`.
 These components handle the overall layout and structure of the app.
 When adding new structural components, add them as slots so they can be easily customized.
@@ -99,6 +107,6 @@ The rule of thumb is that if a component has props that take Plone-specific data
 ## All structural components are slots
 
 Slots let you define areas in your layout where components can be dynamically added.
-In Seven, all structural components—such as `Header`, `Footer`, or `Sidebar`—are slots.
+In Plone Aurora, all structural components—such as `Header`, `Footer`, or `Sidebar`—are slots.
 This makes it easy to customize the layout by adding or removing components without changing the core layout code.
 Slots are defined in the `@plone/layout` package.

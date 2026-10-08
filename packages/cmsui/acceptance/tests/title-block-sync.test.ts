@@ -1,13 +1,16 @@
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
-import { waitForPlateEditorReady } from '../../../tooling/playwright/plate';
+import {
+  selectPlateEditorPoint,
+  selectPlateEditorText,
+  waitForPlateEditorReady,
+} from '../../../tooling/playwright/plate';
 import {
   clickAtPath,
   getEditorHandle,
   getNodeByPath,
   getSelection,
-  setSelection,
 } from '@platejs/playwright';
 
 async function expectTitleNodeText(
@@ -68,10 +71,15 @@ test('Title block and metadata title stay in sync', async ({ page }) => {
   await expectTitleNodeText(page, editorHandle, 'Metadata updated title');
 
   await clickAtPath(page, editorHandle, [0]);
-  await setSelection(page, editorHandle, {
-    anchor: { path: [0, 0], offset: 0 },
-    focus: { path: [0, 0], offset: 'Metadata updated title'.length },
-  });
+  await selectPlateEditorText(
+    page,
+    editorHandle,
+    {
+      anchor: { path: [0, 0], offset: 0 },
+      focus: { path: [0, 0], offset: 'Metadata updated title'.length },
+    },
+    'Metadata updated title',
+  );
   await page.keyboard.type('Editor updated title', { delay: 0 });
 
   await expectTitleNodeText(page, editorHandle, 'Editor updated title');
@@ -220,9 +228,9 @@ test('Enter on title inserts a new empty paragraph before existing next block', 
 
   const editorHandle = await getEditorHandle(page);
   await clickAtPath(page, editorHandle, [0]);
-  await setSelection(page, editorHandle, {
-    anchor: { path: [0, 0], offset: titleText.length },
-    focus: { path: [0, 0], offset: titleText.length },
+  await selectPlateEditorPoint(page, editorHandle, {
+    path: [0, 0],
+    offset: titleText.length,
   });
   await page.keyboard.press('Enter');
 
@@ -279,10 +287,15 @@ test('Empty title block keeps showing its placeholder when another block is sele
   await waitForPlateEditorReady(page);
   const editorHandle = await getEditorHandle(page);
   await clickAtPath(page, editorHandle, [0]);
-  await setSelection(page, editorHandle, {
-    anchor: { path: [0, 0], offset: 0 },
-    focus: { path: [0, 0], offset: titleText.length },
-  });
+  await selectPlateEditorText(
+    page,
+    editorHandle,
+    {
+      anchor: { path: [0, 0], offset: 0 },
+      focus: { path: [0, 0], offset: titleText.length },
+    },
+    titleText,
+  );
   await page.keyboard.press('Backspace');
 
   await expect
@@ -345,7 +358,7 @@ test('Fast typing in add view keeps the caret in the title block', async ({
 
   const editorHandle = await getEditorHandle(page);
   await clickAtPath(page, editorHandle, [0]);
-  await setSelection(page, editorHandle, {
+  await selectPlateEditorPoint(page, editorHandle, {
     path: [0, 0],
     offset: 0,
   });

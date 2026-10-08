@@ -9,14 +9,14 @@
   ],
   "funding": "https://github.com/sponsors/plone",
   "license": "MIT",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.12",
   "repository": {
     "type": "git",
-    "url": "https://github.com/plone/volto.git",
+    "url": "https://github.com/plone/aurora.git",
     "directory": "packages/cmsui"
   },
   "bugs": {
-    "url": "https://github.com/plone/volto/issues"
+    "url": "https://github.com/plone/aurora/issues"
   },
   "homepage": "https://plone.org",
   "keywords": [
@@ -33,11 +33,11 @@
   "main": "index.ts",
   "scripts": {
     "test": "vitest --coverage",
-    "check:ts": "pnpm --filter seven run typegen && tsc --project tsconfig.json",
-    "dry-release": "release-it --dry-run",
-    "release": "release-it",
-    "release-major-alpha": "release-it major --preRelease=alpha",
-    "release-alpha": "release-it --preRelease=alpha",
+    "check:ts": "pnpm --filter @plone/aurora run typegen && tsc --project tsconfig.json",
+    "dry-release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --dry-run",
+    "release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it",
+    "release-major-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it major --preRelease=alpha",
+    "release-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --preRelease=alpha",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx}'",
@@ -46,6 +46,7 @@
     "format": "pnpm prettier:fix && pnpm lint:fix && pnpm stylelint:fix"
   },
   "peerDependencies": {
+    "i18next": "catalog:",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
@@ -55,14 +56,16 @@
     }
   },
   "dependencies": {
-    "@platejs/floating": "^49.0.0",
-    "@platejs/link": "^49.1.1",
+    "@platejs/floating": "^53.0.0",
+    "@platejs/link": "^53.3.5",
     "@plone/blocks": "workspace:*",
     "@plone/client": "workspace:*",
     "@plone/components": "workspace:*",
+    "@plone/icons": "workspace:*",
     "@plone/helpers": "workspace:*",
     "@plone/layout": "workspace:*",
     "@plone/plate": "workspace:*",
+    "@plone/quanta": "workspace:*",
     "@plone/react-router": "workspace:*",
     "@plone/registry": "workspace:*",
     "@tanstack/react-form": "^1.3.3",
@@ -73,7 +76,7 @@
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.544.0",
     "optics-ts": "^2.4.1",
-    "platejs": "^49.2.21",
+    "platejs": "^53.3.14",
     "react-aria": "catalog:",
     "react-aria-components": "catalog:",
     "react-i18next": "catalog:",

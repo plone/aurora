@@ -1,17 +1,17 @@
 ---
 myst:
   html_meta:
-    "description": "Volto code recipe for images"
-    "property=og:description": "Volto code recipe for images"
-    "property=og:title": "Volto code recipe for images"
-    "keywords": "Plone, Volto, code, recipe, images"
+    "description": "Plone Aurora code recipe for images"
+    "property=og:description": "Plone Aurora code recipe for images"
+    "property=og:title": "Plone Aurora code recipe for images"
+    "keywords": "Plone, Plone Aurora, code, recipe, images"
 ---
 
 (images-label)=
 
 # Images
 
-Volto comes with an `Image` component that loads images in an optimal way.
+Plone Aurora comes with an `Image` component that loads images in an optimal way.
 
 Features of the `Image` component are the following.
 
@@ -23,9 +23,7 @@ The component can accept all the regular HTML `<img>` attributes and a few extra
 The following example demonstrates how the code with attributes will render to HTML.
 
 ```jsx
-import config from '@plone/volto/registry';
-
-const Image = config.getComponent({ name: 'Image' }).component;
+import Image from '@plone/layout/components/Image/Image';
 
 <Image
   src="https://picsum.photos/200/300"

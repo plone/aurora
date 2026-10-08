@@ -4,43 +4,54 @@ on: [push, pull_request]
 env:
   node-version: 24.x
 
+# Cancel the runs of a branch or pull request that a newer push supersedes,
+# except on main, where every commit runs to completion.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   typescript:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: TypeScript
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Node.js environment
         uses: ./.github/actions/node_env_setup
         with:
           node-version: ${{ env.node-version }}
 
-      - name: Seven app TypeScript check
-        run: pnpm --filter seven exec init-loaders && pnpm --filter seven run typecheck
+      - name: Aurora app TypeScript check
+        run: pnpm --filter @plone/aurora exec init-loaders && pnpm --filter @plone/aurora run typecheck
 
       - name: Package TypeScript checks
         run: |
           pnpm --filter @plone/types run check:ts
           pnpm --filter @plone/client run check:ts
           pnpm --filter @plone/components run check:ts
+          pnpm --filter @plone/icons run check:ts
+          pnpm --filter @plone/quanta run check:ts
           pnpm --filter @plone/registry run check:ts
           pnpm --filter @plone/blocks run check:ts
           pnpm --filter @plone/cmsui run check:ts
           pnpm --filter @plone/layout run check:ts
           pnpm --filter @plone/plate run check:ts
           pnpm --filter @plone/publicui run check:ts
+          # Enable when ready
+          # pnpm --filter @plone/contents run check:ts
 
   prettier:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: Prettier
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Node.js environment
         uses: ./.github/actions/node_env_setup
         with:
           node-version: ${{ env.node-version }}
+          build-deps: 'false'
 
       - name: Prettier check
         run: pnpm prettier
@@ -50,7 +61,7 @@ jobs:
     name: ESlint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Node.js environment
         uses: ./.github/actions/node_env_setup
         with:
@@ -59,6 +70,21 @@ jobs:
       - name: Main ESlint check
         run: pnpm lint
 
+  vite-optimize-deps:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    name: Vite optimizeDeps audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Node.js environment
+        uses: ./.github/actions/node_env_setup
+        with:
+          node-version: ${{ env.node-version }}
+          build-deps: 'false'
+
+      - name: Check optimizeDeps declarations are up to date
+        run: pnpm check:vite-optimize-deps
+
   stylelint:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: Stylelint ${{ matrix.name }}
@@ -66,13 +92,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: ['@plone/components', '@plone/theming', '@plone/layout']
+        include:
+          - name: '@plone/components'
+            files: 'src/**/*.{css,scss,less}'
+          - name: '@plone/icons'
+            files: 'src/**/*.{css,scss,less}'
+          - name: '@plone/quanta'
+            files: 'src/**/*.{css,scss,less}'
+          - name: '@plone/theming'
+            files: 'styles/**/*.{css,scss,less}'
+          - name: '@plone/layout'
+            files: '{components,slots,styles,views}/**/*.{css,scss,less}'
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Node.js environment
         uses: ./.github/actions/node_env_setup
         with:
           node-version: ${{ env.node-version }}
+          build-deps: 'false'
 
       - name: Stylelint check ${{ matrix.name }}
-        run: pnpm --filter ${{ matrix.name }} stylelint
+        run: pnpm --filter ${{ matrix.name }} exec stylelint '${{ matrix.files }}'

@@ -1,15 +1,15 @@
 ---
 myst:
   html_meta:
-    "description": "How to manage slots using @plone/registry in Seven."
-    "property=og:description": "How to manage slots using @plone/registry in Seven."
+    "description": "How to manage slots using @plone/registry in Plone Aurora."
+    "property=og:description": "How to manage slots using @plone/registry in Plone Aurora."
     "property=og:title": "How to manage Slots"
-    "keywords": "Seven, Plone, frontend, React, manage, configuration, slots"
+    "keywords": "Plone Aurora, Plone, frontend, React, manage, configuration, slots"
 ---
 
 # Manage slot component registration
 
-This chapter describes how to manage slot component registration using `@plone/registry` in Seven.
+This chapter describes how to manage slot component registration using `@plone/registry` in Plone Aurora.
 It includes how to register, get, reorder, and unregister slot components.
 
 

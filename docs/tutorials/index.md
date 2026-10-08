@@ -9,7 +9,7 @@ myst:
 
 # Tutorials
 
-This part of the documentation contains tutorials for developing with Seven.
+This part of the documentation contains tutorials for developing with Plone Aurora.
 
 ```{toctree}
 :maxdepth: 2

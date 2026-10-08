@@ -14,25 +14,33 @@
       "tags": "Tags",
       "properties": "Properties",
       "cut": "Cut",
-      "cutted": "Content '{{title}}' successfully cutted",
-      "cutted_multiple": "{{number}} contents successfully cutted",
+      "cutted_one": "Item '{{title}}' successfully cutted",
+      "cutted_other": "{{count}} items successfully cutted",
       "copy": "Copy",
-      "copied": "Content '{{title}}' successfully copied",
-      "copied_multiple": "{{number}} contents successfully copied",
+      "copied_one": "Item '{{title}}' successfully copied",
+      "copied_other": "{{count}} items successfully copied",
       "paste": "Paste",
-      "pasted": "Content '{{title}}' successfully pasted",
-      "pasted_multiple": "{{number}} contents successfully pasted",
+      "pasted_one": "Item '{{title}}' successfully pasted",
+      "pasted_other": "{{count}} items successfully pasted",
       "delete": "Delete",
-      "deleted": "Content '{{title}}' successfully deleted",
-      "deleted_multiple": "{{number}} contents successfully deleted",
+      "deleted_one": "Item '{{title}}' successfully deleted",
+      "deleted_other": "{{count}} items successfully deleted",
       "filter": "Filter…",
       "edit": "Edit",
       "view": "View",
       "add": "Add content",
       "move_to_top_folder": "Move to top folder",
       "move_to_bottom_folder": "Move to bottom folder",
-      "uploaded": "Content '{{title}}' successfully uploaded",
-      "uploaded_multiple": "{{number}} contents successfully uploaded"
+      "uploaded_one": "Item '{{title}}' successfully uploaded",
+      "uploaded_other": "{{count}} items successfully uploaded",
+      "renamed_one": "Item '{{title}}' successfully renamed",
+      "renamed_other": "{{count}} items successfully renamed",
+      "tagged_one": "Tags of '{{title}}' successfully updated",
+      "tagged_other": "Tags of {{count}} items successfully updated",
+      "properties_saved_one": "Properties of '{{title}}' successfully updated",
+      "properties_saved_other": "Properties of {{count}} items successfully updated",
+      "state_changed_one": "State of '{{title}}' successfully changed",
+      "state_changed_other": "State of {{count}} items successfully changed"
     },
     "item": {
       "expired": "Expired",
@@ -93,6 +101,43 @@
       },
       "description": "This action cannot be undone.",
       "confirm": "Delete"
+    },
+    "modal_rename": {
+      "title": "Rename selection",
+      "confirm": "Rename",
+      "name": "Name",
+      "url": "URL"
+    },
+    "modal_tags": {
+      "title": "Edit tags",
+      "confirm": "Save tags",
+      "current_label": "Tags",
+      "add_label": "Add a tag",
+      "add_placeholder": "Type a tag…",
+      "add_hint": "Press Enter to add. Suggestions come from existing tags.",
+      "empty": "No tags on the selected items.",
+      "remove": "Remove tag {{tag}}"
+    },
+    "modal_properties": {
+      "title": "Selection properties",
+      "confirm": "Save properties",
+      "mixed": "Mixed values",
+      "effective": "Publishing date",
+      "expires": "Expiration date",
+      "rights": "Rights",
+      "creators": "Creators",
+      "creators_hint": "Comma-separated user names",
+      "exclude_from_nav": "Exclude from navigation"
+    },
+    "modal_workflow": {
+      "title": "Change state",
+      "confirm": "Change state",
+      "current_state": "Current state",
+      "transition": "Transition",
+      "select_transition": "Select new state…",
+      "no_common_transitions": "The selected items share no common transition.",
+      "comment": "Comment",
+      "include_children": "Apply to contained items"
     }
   }
 }

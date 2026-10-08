@@ -1,4 +1,4 @@
-import { DatePicker } from '@plone/components/quanta';
+import { DatePicker } from '@plone/quanta';
 import type { Updater } from '@tanstack/react-form';
 import { useAtomValue } from 'jotai';
 import { formAtom } from '../../../routes/atoms';

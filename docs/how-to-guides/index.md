@@ -1,15 +1,15 @@
 ---
 myst:
   html_meta:
-    "description": "Seven how-to guides"
-    "property=og:description": "Seven how-to guides"
+    "description": "Plone Aurora how-to guides"
+    "property=og:description": "Plone Aurora how-to guides"
     "property=og:title": "How-to guides"
-    "keywords": "Seven, frontend, Plone, how-to guides"
+    "keywords": "Plone Aurora, frontend, Plone, how-to guides"
 ---
 
 # How-to guides
 
-This section of the documentation contains how-to guides for developing with Seven.
+This section of the documentation contains how-to guides for developing with Plone Aurora.
 
 ```{toctree}
 :maxdepth: 2
@@ -21,13 +21,19 @@ access-registry
 register-and-retrieve-components
 register-and-retrieve-utilities
 configure-style-fields
+couple-block-schema-fields
+add-editor-migration
 register-slots
 customize-login-screen
 shadow-a-component
 fetch-additional-data-root-loader
+add-client-endpoints
 add-tailwind
+style-blocks-in-a-theme
 icons
 configure-plate-code-block-languages
 bind-metadata-fields-to-plate-text-blocks
+customize-toolbar
 custom-content-types
+manage-folder-contents-in-bulk
 ```

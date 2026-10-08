@@ -1,13 +1,13 @@
 import { useCallback, useMemo, useRef, useState, type DragEvent } from 'react';
-import { Button, DialogTrigger, Input } from '@plone/components/quanta';
-import type { TextFieldProps as QuantaTextFieldProps } from '@plone/components/quanta';
+import { Button, DialogTrigger, Input } from '@plone/quanta';
+import type { TextFieldProps as QuantaTextFieldProps } from '@plone/quanta';
 import {
   BinIcon,
   ImageIcon,
   LinkIcon,
   NavigationIcon,
   UploadIcon,
-} from '@plone/components/Icons';
+} from '@plone/icons';
 import type { Brain } from '@plone/types';
 import { Description, FieldError, Label } from '../Field/Field';
 import { ObjectBrowserModal } from '../ObjectBrowserWidget/ObjectBrowserModal';
@@ -326,6 +326,8 @@ function ImageInputBase({
             typeof selectedImage.title === 'string'
               ? selectedImage.title
               : undefined,
+          image_field: selectedImage.image_field,
+          image_scales: selectedImage.image_scales ?? undefined,
         });
       }
     },
@@ -388,7 +390,12 @@ function ImageInputBase({
           <ObjectBrowserProvider
             config={{
               mode: objectBrowserMode,
-              selectedItemAttrs: ['@id', 'title'],
+              selectedItemAttrs: [
+                '@id',
+                'title',
+                'image_field',
+                'image_scales',
+              ],
               onChange: onSelectInternalImage,
               initialPath: resolvedCurrentPath,
               title: 'Pick an existing image',

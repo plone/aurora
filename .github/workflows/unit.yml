@@ -4,6 +4,12 @@ on: [push, pull_request]
 env:
   node-version: 24.x
 
+# Cancel the runs of a branch or pull request that a newer push supersedes,
+# except on main, where every commit runs to completion.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   unitTests:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
@@ -17,21 +23,24 @@ jobs:
           - '@plone/cmsui'
           - '@plone/components'
           - '@plone/helpers'
+          - '@plone/icons'
           - '@plone/layout'
+          - '@plone/quanta'
           - '@plone/react-router'
           - '@plone/registry'
         node-version: [24.x]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Node.js environment
         uses: ./.github/actions/node_env_setup
         with:
           node-version: ${{ matrix.node-version }}
 
       - name: Run unit tests ${{ matrix.name }}
-        run: pnpm --filter seven exec init-loaders && pnpm --filter ${{ matrix.name }} test
+        run: pnpm --filter @plone/aurora exec init-loaders && pnpm --filter ${{ matrix.name }} test
 
   client:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: '@plone/client'
     runs-on: ubuntu-latest
     strategy:
@@ -39,13 +48,13 @@ jobs:
       matrix:
         node-version: [24.x]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Node.js environment
-        uses: ./.github/actions/acceptance_tests_node_env_setup
+        uses: ./.github/actions/node_env_setup
         with:
           node-version: ${{ matrix.node-version }}
 
-      - uses: JarvusInnovations/background-action@v1
+      - uses: JarvusInnovations/background-action@v2
         name: Start Servers
         with:
           run: |
@@ -66,15 +75,16 @@ jobs:
 
       - run: pnpm --filter @plone/client test
 
-  seven:
-    name: 'Seven'
+  aurora:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    name: '@plone/aurora'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         node-version: [24.x]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Node.js environment
         uses: ./.github/actions/node_env_setup
         with:
@@ -82,4 +92,4 @@ jobs:
 
       - run: make build-deps
 
-      - run: pnpm --filter seven test
+      - run: pnpm --filter @plone/aurora test

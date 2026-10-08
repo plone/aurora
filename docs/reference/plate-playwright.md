@@ -1,15 +1,15 @@
 ---
 myst:
   html_meta:
-    "description": "Use the Plate Playwright adapter to drive Slate-based editors in Seven end-to-end tests."
-    "property=og:description": "Use the Plate Playwright adapter to drive Slate-based editors in Seven end-to-end tests."
-    "property=og:title": "Plate Playwright adapter reference for Seven"
-    "keywords": "Plone, Seven, Plate, Slate, Playwright, editor testing, reference"
+    "description": "Use the Plate Playwright adapter to drive Slate-based editors in Plone Aurora end-to-end tests."
+    "property=og:description": "Use the Plate Playwright adapter to drive Slate-based editors in Plone Aurora end-to-end tests."
+    "property=og:title": "Plate Playwright adapter reference for Plone Aurora"
+    "keywords": "Plone, Plone Aurora, Plate, Slate, Playwright, editor testing, reference"
 ---
 
 # Plate editor helpers in Playwright
 
-Seven uses `@platejs/playwright` so you can drive Plate editors from Playwright tests while keeping support for multiple editors on the page.
+Plone Aurora uses `@platejs/playwright` so you can drive Plate editors from Playwright tests while keeping support for multiple editors on the page.
 
 ## Prerequisites
 

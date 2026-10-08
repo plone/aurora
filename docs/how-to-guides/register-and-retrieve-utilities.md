@@ -4,7 +4,7 @@ myst:
     "description": "How to register and retrieve utilities in @plone/registry"
     "property=og:description": "How to register and retrieve utilities in @plone/registry"
     "property=og:title": "Register and retrieve utilities"
-    "keywords": "Seven, @plone/registry, registry, utilities, register, retrieve"
+    "keywords": "Plone Aurora, @plone/registry, registry, utilities, register, retrieve"
 ---
 
 # Register and retrieve utilities

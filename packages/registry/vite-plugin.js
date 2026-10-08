@@ -79,7 +79,14 @@ const load = (config, context = {}) => {
 export default load;
 `;
 
-  fs.writeFileSync(viteLoaderPath, code);
+  // Only write if content changed — vite.loader.js is imported by vite.config.ts
+  // so any write triggers a Vite server restart, causing an infinite loop
+  const existing = fs.existsSync(viteLoaderPath)
+    ? fs.readFileSync(viteLoaderPath, 'utf-8')
+    : null;
+  if (existing !== code) {
+    fs.writeFileSync(viteLoaderPath, code);
+  }
   return viteLoaderPath;
 }
 
@@ -171,11 +178,7 @@ export const PloneRegistryVitePlugin = () => {
             exclude: addOns,
           },
         },
-        esbuild: {
-          supported: {
-            'top-level-await': true, //browsers can handle top-level-await features
-          },
-        },
+        oxc: {},
         optimizeDeps: {
           exclude: addOns,
         },
@@ -185,7 +188,7 @@ export const PloneRegistryVitePlugin = () => {
             // This is still needed for internal resolution to "self"
             // in combination with shadowing
             ...addonAliases,
-            // ToDo: Deprecate `theme` feature in Seven
+            // ToDo: Deprecate `theme` feature in Plone Aurora
             ...(registry.theme
               ? // Load the theme aliases from the theme config
                 [
@@ -199,7 +202,7 @@ export const PloneRegistryVitePlugin = () => {
                   },
                 ]
               : []),
-            // This is no longer needed in Seven
+            // This is no longer needed in Plone Aurora
             {
               find: '@plone/registry/addons-loader',
               replacement: addonsLoaderPath,

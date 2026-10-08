@@ -4,7 +4,7 @@ import {
   type ActionFunctionArgs,
 } from 'react-router';
 import { requireAuthCookie } from '@plone/react-router';
-import { ploneClientContext } from 'seven/app/middleware.server';
+import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { HandleCatchedError } from '../helpers/Errors';
 
 interface UploadFilePayload {

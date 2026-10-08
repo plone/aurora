@@ -4,7 +4,7 @@ This file applies only to `packages/scripts` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/scripts` is a collection of **Node.js automation scripts** used in Volto and Seven development workflows.
+- `@plone/scripts` is a collection of **Node.js automation scripts** used in Plone Volto and Plone Aurora development workflows.
 - Scripts cover: i18n message extraction, release management, PR tooling, pnpm lock hook, VS Code settings, and changelog automation.
 - This is **not a React package** — it contains plain Node.js scripts.
 

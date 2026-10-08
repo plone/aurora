@@ -5,7 +5,7 @@ import { RouterContextProvider } from 'react-router';
 import {
   ploneClientContext,
   ploneContentContext,
-} from 'seven/app/middleware.server';
+} from '@plone/aurora/app/middleware.server';
 
 vi.mock('@plone/react-router', () => ({
   requireAuthCookie: vi.fn().mockResolvedValue('fake-token'),
@@ -52,8 +52,8 @@ describe('Edit route', () => {
         request,
         params: { '*': 'my-page' },
         context,
-        unstable_pattern: '/my-page/edit',
-        unstable_url: new URL(request.url),
+        pattern: '/my-page/edit',
+        url: new URL(request.url),
       });
 
       expect(getTypeMock).toHaveBeenCalledWith({ type: 'Document' });
@@ -72,8 +72,8 @@ describe('Edit route', () => {
         request,
         params: { '*': 'my-page' },
         context,
-        unstable_pattern: '/my-page/edit',
-        unstable_url: new URL(request.url),
+        pattern: '/my-page/edit',
+        url: new URL(request.url),
       });
 
       const resultData = (result as any).data;
@@ -104,8 +104,8 @@ describe('Edit route', () => {
         request,
         params: { '*': 'my-page' },
         context,
-        unstable_pattern: '/my-page/edit',
-        unstable_url: new URL(request.url),
+        pattern: '/my-page/edit',
+        url: new URL(request.url),
       });
 
       expect(updateContentMock).toHaveBeenCalledWith({
@@ -132,8 +132,8 @@ describe('Edit route', () => {
         request,
         params: { '*': 'my-page' },
         context,
-        unstable_pattern: '/my-page/edit',
-        unstable_url: new URL(request.url),
+        pattern: '/my-page/edit',
+        url: new URL(request.url),
       });
 
       expect((result as Response).status).toBe(302);
@@ -158,8 +158,8 @@ describe('Edit route', () => {
         request,
         params: {},
         context,
-        unstable_pattern: '/edit',
-        unstable_url: new URL(request.url),
+        pattern: '/edit',
+        url: new URL(request.url),
       });
 
       expect((result as Response).status).toBe(302);

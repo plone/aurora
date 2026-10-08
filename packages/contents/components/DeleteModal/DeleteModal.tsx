@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { useFetcher } from 'react-router';
 import { Heading } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
-import { Button, Dialog, Modal } from '@plone/components/quanta';
-import { BinIcon } from '@plone/components/Icons';
-import CloseSVG from '@plone/components/icons/close.svg?react';
-import BinSVG from '@plone/components/icons/bin.svg?react';
+import { Button, Dialog, Modal } from '@plone/quanta';
+import { BinIcon } from '@plone/icons';
+import CloseSVG from '@plone/icons/svg/close.svg?react';
+import BinSVG from '@plone/icons/svg/bin.svg?react';
 import { type ToastItem } from '@plone/layout/config/toast';
 import { useContentsContext } from '../../providers/contents';
 
@@ -29,16 +29,13 @@ export default function DeleteModal() {
       const data = fetcher.data;
 
       if (data?.ok?.length > 0) {
-        const toast: ToastItem = { title: '', icon: <BinIcon /> };
-        if (data.ok.length === 1) {
-          toast.title = t('contents.actions.deleted', {
+        const toast: ToastItem = {
+          title: t('contents.actions.deleted', {
+            count: data.ok.length,
             title: data.ok[0].title,
-          });
-        } else {
-          toast.title = t('contents.actions.deleted_multiple', {
-            number: data.ok.length,
-          });
-        }
+          }),
+          icon: <BinIcon />,
+        };
 
         showToast(toast);
       }

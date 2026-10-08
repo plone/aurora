@@ -1,10 +1,10 @@
 ---
 myst:
   html_meta:
-    "description": "How to bind a metadata field to a text-like Plate block in Seven."
-    "property=og:description": "How to bind a metadata field to a text-like Plate block in Seven."
+    "description": "How to bind a metadata field to a text-like Plate block in Plone Aurora."
+    "property=og:description": "How to bind a metadata field to a text-like Plate block in Plone Aurora."
     "property=og:title": "Bind metadata fields to Plate text blocks"
-    "keywords": "Seven, Plate, metadata, title block, how-to"
+    "keywords": "Plone Aurora, Plate, metadata, title block, how-to"
 ---
 
 # Bind Metadata Fields To Plate Text Blocks

@@ -3,7 +3,7 @@ import {
   RouterContextProvider,
   type LoaderFunctionArgs,
 } from 'react-router';
-import { ploneClientContext } from 'seven/app/middleware.server';
+import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 
 export interface BackendOperator {
   title: string;

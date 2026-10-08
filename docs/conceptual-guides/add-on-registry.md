@@ -1,10 +1,10 @@
 ---
 myst:
   html_meta:
-    "description": "An explanation of the add-on registry in @plone/registry and how it works for Seven."
-    "property=og:description": "An explanation of the add-on registry in @plone/registry and how it works for Seven."
+    "description": "An explanation of the add-on registry in @plone/registry and how it works for Plone Aurora."
+    "property=og:description": "An explanation of the add-on registry in @plone/registry and how it works for Plone Aurora."
     "property=og:title": "Add-on registry"
-    "keywords": "Seven, @plone/registry, registry, add-on"
+    "keywords": "Plone Aurora, @plone/registry, registry, add-on"
 ---
 
 # Add-on registry

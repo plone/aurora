@@ -3,11 +3,11 @@ import type { PlateElementProps } from 'platejs/react';
 import { PlateElement } from 'platejs/react';
 
 import { BlockInnerContainer } from './block-inner-container';
-import { cn } from '../../lib/utils';
 
+// Styled by `.slate-p` in `styles/content.css`.
 export function ParagraphElement(props: PlateElementProps) {
   return (
-    <PlateElement {...props} className={cn('m-0 px-0 py-1')}>
+    <PlateElement {...props}>
       <BlockInnerContainer>{props.children}</BlockInnerContainer>
     </PlateElement>
   );

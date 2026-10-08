@@ -1,27 +1,27 @@
 ---
 myst:
   html_meta:
-    "description": "Volto release management uses Semantic Versioning to communicate bugfixes, new features, and breaking changes."
-    "property=og:description": "Volto release management uses Semantic Versioning to communicate bugfixes, new features, and breaking changes."
+    "description": "Plone Aurora release management uses Semantic Versioning to communicate bugfixes, new features, and breaking changes."
+    "property=og:description": "Plone Aurora release management uses Semantic Versioning to communicate bugfixes, new features, and breaking changes."
     "property=og:title": "Version policy"
-    "keywords": "Volto, Plone, frontend, React, Release, Version, Semantic"
+    "keywords": "Plone Aurora, Plone, frontend, React, Release, Version, Semantic"
 ---
 
 (volto-versioning-policy)=
 
 # Version policy
 
-This chapter describes the versions of software that Volto supports and how Volto communicates its releases through its branch policy.
+This chapter describes the versions of software that Plone Aurora supports and how Plone Aurora communicates its releases through its branch policy.
 
 
 (version-policy-plone-python-and-plone-rest-api-compatibility)=
 
 ## Plone, Python, and Plone REST API compatibility
 
-Seven relies on [Plone core (`Products.CMFPlone`)](https://github.com/plone/Products.CMFPlone) and [Plone REST API](https://github.com/plone/plone.restapi).
+Plone Aurora relies on [Plone core (`Products.CMFPlone`)](https://github.com/plone/Products.CMFPlone) and [Plone REST API](https://github.com/plone/plone.restapi).
 We will always support the [latest major Plone release](https://plone.org/download/releases) and the version of Plone REST API that ships with it.
 
-The versions of Python that are supported in Volto depend on the version of Plone that you use.
+The versions of Python that are supported in legacy Volto depend on the version of Plone that you use.
 
 | Plone | Python       | Volto            |
 | ----- | ------------ | ---------------- |
@@ -56,13 +56,13 @@ See also [Plone REST API Python and Plone compatibility](https://github.com/plon
 
 ## Node.js
 
-Seven runs using [Node.js](https://nodejs.org/en).
-Seven supports only the latest two [LTS versions of Node.js](https://github.com/nodejs/release#release-schedule).
+Plone Aurora runs using [Node.js](https://nodejs.org/en).
+Plone Aurora supports only the latest two [LTS versions of Node.js](https://github.com/nodejs/release#release-schedule).
 We recommend using the current LTS version.
 
-| Node.js | Seven         |
+| Node.js | Plone Aurora         |
 | ------- | ------------- |
-| 22      | 1.0.0 (alpha) |
+| 24      | 1.0.0 (alpha) |
 
 (version-policy-supported-browsers)=
 
@@ -82,7 +82,7 @@ We recommend using the current LTS version.
 
 ### Semantic Versioning
 
-Seven uses [Semantic Versioning](https://semver.org/) to communicate bugfixes, new features, and breaking changes in a release.
+Plone Aurora uses [Semantic Versioning](https://semver.org/) to communicate bugfixes, new features, and breaking changes in a release.
 We use a three-digit dotted version scheme that follows the [Breaking-Feature-Bugfix](
 https://medium.com/sapioit/why-having-3-numbers-in-the-version-name-is-bad-92fc1f6bc73c) naming convention.
 
@@ -91,7 +91,7 @@ The following sections show examples of the terms and changes in version numberi
 
 #### Breaking (or major release)
 
-A breaking or major release indicates a breaking change that might break an application or third-party add-on that relies on Volto.
+A breaking or major release indicates a breaking change that might break an application or third-party add-on that relies on Plone Aurora.
 
 ```text
 4.2.0 -> 5.0.0
@@ -102,7 +102,7 @@ For every breaking release, detailed documentation of the breaking changes is in
 
 #### Feature
 
-A feature release indicates that new features have been added to Volto in a non-breaking fashion.
+A feature release indicates that new features have been added to Plone Aurora in a non-breaking fashion.
 
 ```text
 4.2.0 -> 4.3.0
@@ -115,7 +115,7 @@ If so, the feature must be under a feature flag and disabled by default, such th
 
 #### Bugfix
 
-A bugfix release indicates one or more bugs in Volto have been fixed.
+A bugfix release indicates one or more bugs in Plone Aurora have been fixed.
 
 ```text
 4.2.0 -> 4.2.1

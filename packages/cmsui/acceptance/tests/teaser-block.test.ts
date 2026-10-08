@@ -1,4 +1,5 @@
 import { expect, test } from '../../../tooling/playwright/test';
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
 import { waitForPlateEditorReady } from '../../../tooling/playwright/plate';
@@ -37,7 +38,7 @@ async function setupTeaserBlockPage(page: Parameters<typeof test>[0]['page']) {
               children: [{ text: 'Text before teaser' }],
             },
             {
-              type: 'unknown',
+              type: PLONE_BLOCK_TYPE,
               '@type': 'teaser',
               children: [{ text: '' }],
             },
@@ -75,7 +76,7 @@ test('Teaser block shows placeholder while source is not selected', async ({
   ).toBeVisible();
 });
 
-test('Teaser block integrates seven object browser trigger in edit mode', async ({
+test('Teaser block integrates Aurora object browser trigger in edit mode', async ({
   page,
 }) => {
   await login(page);

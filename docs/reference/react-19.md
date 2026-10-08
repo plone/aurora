@@ -4,7 +4,7 @@ myst:
     "description": "React 19: what's new compared to React 18"
     "property=og:description": "React 19: what's new compared to React 18"
     "property=og:title": "React 19: what's new compared to React 18"
-    "keywords": "Plone, Seven, frontend, React 19, reference"
+    "keywords": "Plone, Plone Aurora, frontend, React 19, reference"
 ---
 
 # React 19: what's new compared to React 18

@@ -4,7 +4,7 @@ myst:
     "description": "Legacy Slate to Plate converters"
     "property=og:description": "Legacy Slate to Plate converters"
     "property=og:title": "Legacy Slate to Plate converters"
-    "keywords": "Plone, Seven, plate, slate, reference"
+    "keywords": "Plone, Plone Aurora, plate, slate, reference"
 ---
 
 # Legacy Slate to Plate converters

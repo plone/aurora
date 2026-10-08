@@ -4,7 +4,7 @@ This file applies only to `packages/theming` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/theming` provides the **CSS foundations for Seven theming**.
+- `@plone/theming` provides the **CSS foundations for Plone Aurora theming**.
 - It defines the core design tokens and primitives that other packages and themes build on:
   - CSS custom properties for colors (`styles/colors.css`)
   - Typography scale (`styles/typography.css`)

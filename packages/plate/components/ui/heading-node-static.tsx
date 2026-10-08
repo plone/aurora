@@ -1,35 +1,20 @@
 import * as React from 'react';
 
-import type { SlateElementProps } from 'platejs';
+import type { SlateElementProps } from 'platejs/static';
 
-import { type VariantProps, cva } from 'class-variance-authority';
-import { SlateElement } from 'platejs';
+import { SlateElement } from 'platejs/static';
 
 import { BlockInnerContainer } from './block-inner-container';
 
-const headingVariants = cva('relative mb-1', {
-  variants: {
-    variant: {
-      h1: 'font-heading mt-[1.6em] pb-1 text-4xl font-bold',
-      h2: 'font-heading mt-[1.4em] pb-px text-2xl font-semibold tracking-tight',
-      h3: 'font-heading mt-[1em] pb-px text-xl font-semibold tracking-tight',
-      h4: 'font-heading mt-[0.75em] text-lg font-semibold tracking-tight',
-      h5: 'mt-[0.75em] text-lg font-semibold tracking-tight',
-      h6: 'mt-[0.75em] text-base font-semibold tracking-tight',
-    },
-  },
-});
+// Styled by `.slate-h1` … `.slate-h6` in `styles/content.css`.
+type HeadingVariant = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
 export function HeadingElementStatic({
   variant = 'h1',
   ...props
-}: SlateElementProps & VariantProps<typeof headingVariants>) {
+}: SlateElementProps & { variant?: HeadingVariant | null }) {
   return (
-    <SlateElement
-      as={variant!}
-      className={headingVariants({ variant })}
-      {...props}
-    >
+    <SlateElement as={variant!} {...props}>
       <BlockInnerContainer>{props.children}</BlockInnerContainer>
     </SlateElement>
   );

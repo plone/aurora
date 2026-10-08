@@ -9,18 +9,18 @@
   ],
   "funding": "https://github.com/sponsors/plone",
   "license": "MIT",
-  "version": "1.0.0-alpha.8",
+  "version": "1.0.0-alpha.14",
   "repository": {
     "type": "git",
-    "url": "https://github.com/plone/volto.git",
+    "url": "https://github.com/plone/aurora.git",
     "directory": "packages/layout"
   },
   "bugs": {
-    "url": "https://github.com/plone/volto/issues"
+    "url": "https://github.com/plone/aurora/issues"
   },
   "homepage": "https://plone.org",
   "keywords": [
-    "volto",
+    "aurora",
     "plone",
     "plone6",
     "react",
@@ -34,11 +34,11 @@
   "main": "index.ts",
   "scripts": {
     "test": "vitest",
-    "check:ts": "pnpm --filter seven run typegen && tsc --project tsconfig.json",
-    "dry-release": "release-it --dry-run",
-    "release": "release-it",
-    "release-major-alpha": "release-it major --preRelease=alpha",
-    "release-alpha": "release-it --preRelease=alpha",
+    "check:ts": "pnpm --filter @plone/aurora run typegen && tsc --project tsconfig.json",
+    "dry-release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --dry-run",
+    "release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it",
+    "release-major-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it major --preRelease=alpha",
+    "release-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --preRelease=alpha",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx}'",
@@ -47,6 +47,7 @@
     "format": "pnpm prettier:fix && pnpm lint:fix && pnpm stylelint:fix"
   },
   "peerDependencies": {
+    "i18next": "catalog:",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
@@ -57,12 +58,15 @@
   },
   "dependencies": {
     "@plone/components": "workspace:*",
+    "@plone/icons": "workspace:*",
     "@plone/helpers": "workspace:*",
     "@plone/plate": "workspace:*",
+    "@plone/quanta": "workspace:*",
     "@plone/registry": "workspace:*",
     "clsx": "^2.1.1",
     "lodash.sortby": "^4.7.0",
     "pretty-bytes": "^7.1.0",
+    "react-aria": "catalog:",
     "react-aria-components": "catalog:",
     "react-i18next": "catalog:",
     "react-router": "catalog:",

@@ -8,6 +8,40 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.9 (2026-10-06)
+
+### Feature
+
+- Added the `plone-content` cascade layer to the default layer order, between `plone-components` and `utilities`, for block content CSS. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+
+## 1.0.0-alpha.8 (2026-10-03)
+
+### Internal
+
+- Scan the `@plone/quanta` build for Tailwind classes, instead of the Quanta build in `@plone/components`. @pnicolli
+  Scan `@plone/icons` for Tailwind classes, so every icon size utility is generated. @pnicolli 
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
+## 1.0.0-alpha.7 (2026-09-21)
+
+### Internal
+
+- Updated package repository metadata and towncrier issue links from `plone/volto` to `plone/aurora`. @sneridagh 
+
+## 1.0.0-alpha.6 (2026-07-02)
+
+### Feature
+
+- Added muted-background CSS variable. @sabrina-bongiovanni 
+
+### Bugfix
+
+- Renamed `quanta-lemmon` color to `quanta-lemon`. @arybakov05 [#6656](https://github.com/plone/volto/issues/6656)
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+
 ## 1.0.0-alpha.5 (2026-05-07)
 
 ### Internal

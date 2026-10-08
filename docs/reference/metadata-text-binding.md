@@ -3,8 +3,8 @@ myst:
   html_meta:
     "description": "Reference for metadata-backed text bindings in Plate plugins."
     "property=og:description": "Reference for metadata-backed text bindings in Plate plugins."
-    "property=og:title": "Metadata text binding reference for Seven"
-    "keywords": "Seven, Plate, metadata, title block, editor binding"
+    "property=og:title": "Metadata text binding reference for Plone Aurora"
+    "keywords": "Plone Aurora, Plate, metadata, title block, editor binding"
 ---
 
 # Metadata Text Binding

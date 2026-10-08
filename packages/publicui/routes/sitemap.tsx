@@ -4,9 +4,9 @@ import {
   RouterContextProvider,
   type LoaderFunctionArgs,
 } from 'react-router';
-import { ploneClientContext } from 'seven/app/middleware.server';
+import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import Sitemap from '@plone/layout/components/Sitemap/Sitemap';
-import { Container } from '@plone/components/quanta';
+import { Container } from '@plone/quanta';
 import type { NavigationResponse } from '@plone/types';
 import { flattenToAppURL } from '@plone/helpers';
 
@@ -52,9 +52,11 @@ export default function SitemapRoute({ loaderData }: SitemapRouteProps) {
   const { sitemapnavigation } = loaderData;
 
   return (
-    <Container width="default" className="route-sitemap">
-      <h1 className="documentFirstHeading">{t('publicui.sitemap')}</h1>
-      <Sitemap items={sitemapnavigation.items} />
-    </Container>
+    <div className="content-area">
+      <Container width="default" className="route-sitemap">
+        <h1 className="documentFirstHeading">{t('publicui.sitemap')}</h1>
+        <Sitemap items={sitemapnavigation.items} />
+      </Container>
+    </div>
   );
 }

@@ -5,7 +5,7 @@ import {
   type LoaderFunctionArgs,
 } from 'react-router';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
-import { ploneContentContext } from 'seven/app/middleware.server';
+import { ploneContentContext } from '@plone/aurora/app/middleware.server';
 
 export async function loader({
   context,

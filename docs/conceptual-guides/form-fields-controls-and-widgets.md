@@ -1,18 +1,18 @@
 ---
 myst:
   html_meta:
-    "description": "An explanation of fields, controls, widgets, and widget adapters in Seven forms"
-    "property=og:description": "An explanation of fields, controls, widgets, and widget adapters in Seven forms"
+    "description": "An explanation of fields, controls, widgets, and widget adapters in Plone Aurora forms"
+    "property=og:description": "An explanation of fields, controls, widgets, and widget adapters in Plone Aurora forms"
     "property=og:title": "Form fields, controls, and widgets"
-    "keywords": "Seven, forms, fields, controls, widgets, @tanstack/form, @plone/cmsui"
+    "keywords": "Plone Aurora, forms, fields, controls, widgets, @tanstack/form, @plone/cmsui"
 ---
 
 (form-fields-controls-and-widgets-label)=
 
 # Form fields, controls, and widgets
 
-Seven forms are schema-driven.
-A content schema describes metadata fields, and the form generators in Aurora turn those fields into interactive form elements.
+Plone Aurora forms are schema-driven.
+A content schema describes metadata fields, and the form generators turn those fields into interactive form elements.
 This process is intentionally split into several concepts: fields, controls, widgets, and adapters.
 The distinction matters because not every visual input component can be registered directly as a widget.
 
@@ -71,8 +71,10 @@ For example, a boolean widget can adapt a checkbox control by mapping `value` to
 
 ```tsx
 import type { FormWidgetProps } from '@plone/types';
+import { Checkbox } from '@plone/quanta';
 
 function BooleanWidget({
+  name,
   value,
   defaultValue,
   onChange,
@@ -84,17 +86,19 @@ function BooleanWidget({
   className,
 }: FormWidgetProps<boolean>) {
   return (
-    <Checkbox
-      className={className}
-      isSelected={!!value}
-      defaultSelected={!!defaultValue}
-      isRequired={required}
-      isDisabled={disabled || readOnly}
-      onChange={onChange}
-      onBlur={onBlur}
-    >
-      {label}
-    </Checkbox>
+    <div className={className}>
+      <Checkbox
+        name={name}
+        isSelected={!!(value ?? defaultValue)}
+        isRequired={required}
+        isDisabled={disabled}
+        isReadOnly={readOnly}
+        onChange={onChange}
+        onBlur={onBlur}
+      >
+        {label}
+      </Checkbox>
+    </div>
   );
 }
 ```
@@ -152,7 +156,7 @@ The widget registry answers a different question than the form state system.
 The form state system asks, "What is the value and validation state of this field?"
 The widget registry asks, "Which widget should render this field?"
 
-Seven can resolve a widget from several schema hints.
+Plone Aurora can resolve a widget from several schema hints.
 The field ID, explicit widget name, choices, vocabulary, factory, and type can all influence the result.
 This lets the same schema-driven form render very different field experiences without hard-coding every field in the form component.
 

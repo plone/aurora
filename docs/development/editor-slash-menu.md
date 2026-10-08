@@ -1,15 +1,15 @@
 ---
 myst:
   html_meta:
-    "description": "Configure and extend the Editor slash menu per editor in Seven"
-    "property=og:description": "Configure and extend the Editor slash menu per editor in Seven"
+    "description": "Configure and extend the Editor slash menu per editor in Plone Aurora"
+    "property=og:description": "Configure and extend the Editor slash menu per editor in Plone Aurora"
     "property=og:title": "Configure Editor slash menus"
-    "keywords": "Seven, Editor, Plate, slash menu, editor, extensibility, shadowing"
+    "keywords": "Plone Aurora, Editor, Plate, slash menu, editor, extensibility, shadowing"
 ---
 
 # Editor slash menus
 
-This guide explains how the Plate Editor slash menu is wired in Seven, how to extend it without bloating the registry or the bundle, and how to configure different slash menus for different editors.
+This guide explains how the Plate Editor slash menu is wired in Plone Aurora, how to extend it without bloating the registry or the bundle, and how to configure different slash menus for different editors.
 
 The key design choice is that the slash menu is configured at editor composition time, not by globally shadowing the UI component.
 

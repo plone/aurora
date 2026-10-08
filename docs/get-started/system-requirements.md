@@ -4,10 +4,10 @@ myst:
     "description": "System requirements and prerequisites for Plone"
     "property=og:description": "System requirements and prerequisites for Plone"
     "property=og:title": "System requirements and prerequisites for Plone"
-    "keywords": "Plone, Seven, system, requirements, prerequisites, uv, nvm, Node.js, GNU make, git, Cookieplone"
+    "keywords": "Plone, Plone Aurora, system, requirements, prerequisites, uv, nvm, Node.js, GNU make, git, Cookieplone"
 ---
 
-(install-seven-cookieplone-label)=
+(install-plone-aurora-cookieplone-label)=
 
 # System requirements
 
@@ -16,7 +16,7 @@ This chapter describes the system requirements for using Plone.
 Plone has both hardware requirements and software prerequisites.
 
 
-(seven-create-project-cookieplone-hardware-requirements-label)=
+(plone-aurora-create-project-cookieplone-hardware-requirements-label)=
 
 ## Hardware requirements
 
@@ -29,7 +29,7 @@ Plone has both hardware requirements and software prerequisites.
 ```
 
 
-(seven-create-project-cookieplone-prerequisites-for-installation-label)=
+(plone-aurora-create-project-cookieplone-prerequisites-for-installation-label)=
 
 ## Prerequisites for installation
 
@@ -52,19 +52,19 @@ Plone has both hardware requirements and software prerequisites.
 ### nvm
 
 ```{note}
-This prerequisite is optional when working only with backend add-ons. 
+This prerequisite is optional when working only with backend add-ons.
 ```
 
 ```{include} ../_inc/_install-nvm.md
 ```
 
 
-(seven-prerequisites-nodejs-label)=
+(plone-aurora-prerequisites-nodejs-label)=
 
 ### Node.js
 
 ```{note}
-This prerequisite is optional when working only with backend add-ons. 
+This prerequisite is optional when working only with backend add-ons.
 ```
 
 ```{include} ../_inc/_install-nodejs.md

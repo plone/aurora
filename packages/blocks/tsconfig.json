@@ -4,25 +4,17 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.d.ts",
-    "../../apps/seven/.react-router/types/**/*"
+    "../../apps/aurora/.react-router/types/**/*"
   ],
-  "exclude": [
-    "node_modules",
-    "build",
-    "public",
-    "coverage",
-    "src/**/*.test.{js,jsx,ts,tsx}",
-    "src/**/*.spec.{js,jsx,ts,tsx}",
-    "src/**/*.stories.{js,jsx,ts,tsx}"
-  ],
+  "exclude": ["node_modules", "build", "public", "coverage"],
   "compilerOptions": {
     "rootDirs": [
       ".",
-      "../../apps/seven/app",
-      "../../apps/seven/.react-router/types/app"
+      "../../apps/aurora/app",
+      "../../apps/aurora/.react-router/types/app"
     ],
     "paths": {
-      "seven/*": ["../../apps/seven/*"]
+      "@plone/aurora/*": ["../../apps/aurora/*"]
     }
   }
 }

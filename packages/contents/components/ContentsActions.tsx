@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { TooltipTrigger } from 'react-aria-components';
-import { Button, Tooltip } from '@plone/components/quanta';
+import { Button, Tooltip } from '@plone/quanta';
 
 import {
   UploadIcon,
@@ -12,7 +12,7 @@ import {
   CutIcon,
   CopyIcon,
   PasteIcon,
-} from '@plone/components/Icons';
+} from '@plone/icons';
 
 import type { Brain } from '@plone/types';
 
@@ -20,10 +20,10 @@ import { useContentsContext } from '../providers/contents';
 
 type Props = {
   upload: () => void | Promise<void>;
-  rename: () => Promise<void>;
-  workflow: () => Promise<void>;
-  tags: () => Promise<void>;
-  properties: () => Promise<void>;
+  rename: () => void | Promise<void>;
+  workflow: () => void | Promise<void>;
+  tags: () => void | Promise<void>;
+  properties: () => void | Promise<void>;
   cut: (item?: Brain) => void;
   copy: (item?: Brain) => void;
   paste: () => Promise<void>;

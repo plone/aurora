@@ -4,7 +4,7 @@ This file applies only to `packages/agave` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/agave` is the **example base theme for Seven** (Plone 7).
+- `@plone/agave` is the **example base theme for Plone Aurora**.
 - It is a CSS-only theme that consumes design tokens and primitives from `@plone/theming`.
 - It is intended as a starting point that end users will most likely **remove and replace** with their own custom theme.
 - TypeScript or React code may be added in the future if needed, but this is not planned — keep it CSS-first.

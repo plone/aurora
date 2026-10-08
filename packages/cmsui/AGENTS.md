@@ -4,7 +4,7 @@ This file applies only to `packages/cmsui` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/cmsui` is the **full editing and administration UI for Seven** (Plone 7).
+- `@plone/cmsui` is the **full editing and administration UI for Plone Aurora**.
 - It is the interface that content editors use to create, edit, and manage content.
 - It contains routes, widgets, forms, a sidebar, and control panels.
 - The block editor inside `add` and `edit` routes is powered by `@plone/plate`.
@@ -35,6 +35,8 @@ This file applies only to `packages/cmsui` and its subdirectories.
 pnpm --filter @plone/cmsui test --run
 pnpm --filter @plone/cmsui check:ts
 ```
+
+Visual regression tests for the CMS chrome (login, add and edit forms, block settings sidebar, sharing, control panels) live under `acceptance/visual/` and run with `pnpm visual-test`. They are the safety net for changes to CSS cascade layers and the Tailwind reset. Baselines are only generated in CI, through the "Update VRT Screenshots" workflow; never commit locally generated screenshots.
 
 For Storybook:
 

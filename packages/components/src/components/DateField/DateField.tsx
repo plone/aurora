@@ -11,8 +11,9 @@ import {
   type ValidationResult,
 } from 'react-aria-components';
 
-export interface DateFieldProps<T extends DateValue>
-  extends RACDateFieldProps<T> {
+export interface DateFieldProps<
+  T extends DateValue,
+> extends RACDateFieldProps<T> {
   label?: string;
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);

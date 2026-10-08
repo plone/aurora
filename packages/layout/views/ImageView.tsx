@@ -1,6 +1,6 @@
 import { Container, Link } from '@plone/components';
 import { useRouteLoaderData } from 'react-router';
-import type { RootLoader } from 'seven/app/root';
+import type { RootLoader } from '@plone/aurora/app/root';
 import { useTranslation } from 'react-i18next';
 import prettybytes from 'pretty-bytes';
 import Image from '../components/Image/Image';

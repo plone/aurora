@@ -2,7 +2,7 @@ import { useRouteLoaderData } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import prettybytes from 'pretty-bytes';
 import { Container, Link } from '@plone/components';
-import type { RootLoader } from 'seven/app/root';
+import type { RootLoader } from '@plone/aurora/app/root';
 
 export default function FileView() {
   const rootData = useRouteLoaderData<RootLoader>('root');

@@ -1,0 +1,32 @@
+{
+  "plugins": {
+    "../../packages/scripts/prepublish.js": {}
+  },
+  "hooks": {
+    "after:bump": [
+      "uvx towncrier build --draft --yes --version ${version} > .changelog.draft",
+      "uvx towncrier build --yes --version ${version}"
+    ],
+    "after:release": [
+      "rm .changelog.draft",
+      "pnpm dist-tag add @plone/aurora@${version} latest"
+    ]
+  },
+  "npm": {
+    "publish": false
+  },
+  "git": {
+    "commitArgs": ["--no-verify"],
+    "changelog": "uvx towncrier build --draft --yes --version 0.0.0",
+    "requireUpstream": false,
+    "requireCleanWorkingDir": false,
+    "commitMessage": "Releasing @plone/aurora ${version}",
+    "tagName": "${version}",
+    "tagAnnotation": "${version}"
+  },
+  "github": {
+    "release": true,
+    "releaseName": "${version}",
+    "releaseNotes": "cat .changelog.draft"
+  }
+}

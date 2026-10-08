@@ -1,25 +1,33 @@
 name: Acceptance Tests
 on: [push, pull_request]
+# Cancel the runs of a branch or pull request that a newer push supersedes,
+# except on main, where every commit runs to completion.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
-  seven:
+  aurora:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
-    name: Seven
+    name: Aurora (shard ${{ matrix.shard }})
     timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
         node-version: [24.x]
+        # Each shard runs on its own runner, with its own isolated backend.
+        shard: [1/3, 2/3, 3/3]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Set up Node.js environment
         uses: ./.github/actions/acceptance_tests_node_env_setup
         with:
           node-version: ${{ matrix.node-version }}
 
-      - uses: JarvusInnovations/background-action@v1
-        name: Start Servers - Plone 7 frontend and backend
+      - uses: JarvusInnovations/background-action@v2
+        name: Start Servers - Aurora and Plone
         with:
           run: |
             make ci-acceptance-backend-start &
@@ -40,10 +48,46 @@ jobs:
 
       - name: Run Playwright Acceptance Tests
         shell: bash
-        run: pnpm exec playwright test --reporter=list,html
+        run: pnpm exec playwright test --shard=${{ matrix.shard }} --reporter=list,blob
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
+        with:
+          name: blob-report-${{ strategy.job-index }}
+          path: blob-report/
+          retention-days: 1
+
+  aurora-report:
+    if: ${{ !cancelled() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name) }}
+    needs: [aurora]
+    runs-on: ubuntu-latest
+    name: Aurora (merge reports)
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+
+      - name: Install and enable Corepack
+        run: |
+          npm install --global corepack@latest
+          corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - uses: actions/download-artifact@v8
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge Playwright reports into an HTML report
+        run: pnpm exec playwright merge-reports --reporter html ./all-blob-reports
+
+      - uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: playwright-report/

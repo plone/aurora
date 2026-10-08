@@ -3,13 +3,12 @@ import {
   RouterContextProvider,
   useFetcher,
   useLoaderData,
-  useNavigate,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { atom } from 'jotai';
-import { ploneClientContext } from 'seven/app/middleware.server';
+import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import type { DeepKeys } from '@tanstack/react-form';
 import { requireAuthCookie } from '@plone/react-router';
 import { InitAtoms } from '@plone/helpers';
@@ -24,12 +23,12 @@ import {
   AccordionItem,
   AccordionPanel,
   AccordionItemTrigger,
-  Button,
   Container,
-} from '@plone/components/quanta';
+  Link,
+} from '@plone/quanta';
 import { useAppForm } from '../components/Form/Form';
-import Back from '@plone/components/icons/arrow-left.svg?react';
-import Checkbox from '@plone/components/icons/checkbox.svg?react';
+import Back from '@plone/icons/svg/arrow-left.svg?react';
+import Checkbox from '@plone/icons/svg/checkbox.svg?react';
 import config from '@plone/registry';
 
 export async function loader({
@@ -50,28 +49,19 @@ export async function loader({
 export async function action({
   params,
   request,
-  // context,
+  context,
 }: ActionFunctionArgs<RouterContextProvider>) {
   await requireAuthCookie(request);
 
-  // const cli = context.get(ploneClientContext);
+  const cli = context.get(ploneClientContext);
+  const panel_id = params.id || 'navigation';
 
-  // const path = `/${params['*'] || ''}`;
+  await cli.updateControlpanel({
+    path: panel_id,
+    data: await request.json(),
+  });
 
-  // const formData = await request.json();
-
-  // TODO: Activate update of control panel data
-  // eslint-disable-next-line no-console
-  console.warn('Updating control panel data not yet implemented');
-  // console.log('formData', formData);
-  // await cli.updateContent({
-  //   path,
-  //   data: formData,
-  // });
-
-  return redirect(`/controlpanel/${params.id}`);
-
-  // return { ok: true };
+  return redirect(`/controlpanel/${panel_id}`);
 }
 
 const formAtom = atom<Controlpanel>({} as Controlpanel);
@@ -81,7 +71,6 @@ export default function SingleControlPanel() {
   const controlpanel = loaderData.controlpanel;
   const { filterControlPanelsSchema } = config.settings;
   const schema = filterControlPanelsSchema(controlpanel);
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const fetcher = useFetcher();
@@ -89,14 +78,10 @@ export default function SingleControlPanel() {
   const form = useAppForm({
     defaultValues: controlpanel.data,
     onSubmit: async ({ value }) => {
-      // bug fix: @ts-expect-error: For some reason, the type of value is not inferred correctly
-      // as `useLoaderData` turns every "unknown" type into `undefined`
       fetcher.submit(value, {
         method: 'post',
         encType: 'application/json',
       });
-
-      // return redirect(`/${content['@id']}`);
     },
   });
 
@@ -104,13 +89,9 @@ export default function SingleControlPanel() {
   return (
     <InitAtoms atomValues={[[formAtom, controlpanel.data]]}>
       <Plug pluggable="toolbar-top" id="button-back">
-        <Button
-          aria-label="back"
-          size="L"
-          onPress={() => navigate('/controlpanel')}
-        >
+        <Link aria-label="back" href="/controlpanel">
           <Back />
-        </Button>
+        </Link>
       </Plug>
       <main>
         <Container width="default" className="route-controlpanel">
@@ -141,6 +122,7 @@ export default function SingleControlPanel() {
                               }
                               error={field.state.meta.errors}
                               formAtom={formAtom}
+                              value={field.state.value}
                             />
                           )}
                         />
@@ -151,17 +133,16 @@ export default function SingleControlPanel() {
               </Accordion>
             ))}
             <Plug pluggable="toolbar-top" id="edit-save-button">
-              <Button
+              {/* A native button: react-aria's onPress does not fire inside
+                  the toolbar's shadow root. */}
+              <button
                 aria-label={t('cmsui.save')}
                 type="submit"
-                // Trigger the TS form submission
-                onPress={() => form.handleSubmit()}
-                variant="primary"
-                accent
-                size="L"
+                onClick={() => form.handleSubmit()}
+                className="primary"
               >
                 <Checkbox />
-              </Button>
+              </button>
             </Plug>
           </form>
         </Container>

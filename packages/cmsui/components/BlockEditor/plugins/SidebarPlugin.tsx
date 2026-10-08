@@ -7,6 +7,7 @@ import {
   useEditorRef,
   useEditorSelector,
 } from '@plone/plate/components/editor';
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import type { BlockConfigBase } from '@plone/types';
 import config from '@plone/registry';
 import BlockSettingsForm from '../BlockSettingsForm';
@@ -18,10 +19,12 @@ type SelectedNativeBlock = {
   schema: BlockConfigBase['blockSchema'];
 };
 
-const isUnknownElement = (node: unknown) =>
-  ElementApi.isElement(node) && node.type === 'unknown';
+const isPloneBlockElement = (node: unknown) =>
+  ElementApi.isElement(node) && node.type === PLONE_BLOCK_TYPE;
 
-const getUnknownFromBlockSelection = (editor: any): [any, number[]] | null => {
+const getPloneBlockFromBlockSelection = (
+  editor: any,
+): [any, number[]] | null => {
   const entries =
     editor
       .getApi(BlockSelectionPlugin)
@@ -30,13 +33,15 @@ const getUnknownFromBlockSelection = (editor: any): [any, number[]] | null => {
 
   for (let index = entries.length - 1; index >= 0; index -= 1) {
     const [node, path] = entries[index];
-    if (isUnknownElement(node)) return [node, path];
+    if (isPloneBlockElement(node)) return [node, path];
   }
 
   return null;
 };
 
-const getUnknownFromActiveElement = (editor: any): [any, number[]] | null => {
+const getPloneBlockFromActiveElement = (
+  editor: any,
+): [any, number[]] | null => {
   if (typeof document === 'undefined') return null;
 
   const activeElement = document.activeElement as HTMLElement | null;
@@ -45,7 +50,7 @@ const getUnknownFromActiveElement = (editor: any): [any, number[]] | null => {
 
   try {
     const node = editor.api.toSlateNode(blockElement);
-    if (!isUnknownElement(node)) return null;
+    if (!isPloneBlockElement(node)) return null;
     const path = editor.api.findPath(node);
     return path ? [node, path] : null;
   } catch {
@@ -53,15 +58,28 @@ const getUnknownFromActiveElement = (editor: any): [any, number[]] | null => {
   }
 };
 
+const getPloneBlockFromSelection = (editor: any): [any, number[]] | null => {
+  const path = editor.selection?.anchor?.path;
+  const rootIndex = Array.isArray(path) ? path[0] : undefined;
+  if (typeof rootIndex !== 'number') return null;
+
+  const entry = editor.api.node([rootIndex]);
+  if (!entry) return null;
+
+  const [node, nodePath] = entry;
+  return isPloneBlockElement(node) ? [node, nodePath] : null;
+};
+
 const getSelectedNativeBlock = (editor: any): SelectedNativeBlock | null => {
   const entry =
-    getUnknownFromBlockSelection(editor) ??
-    getUnknownFromActiveElement(editor) ??
+    getPloneBlockFromBlockSelection(editor) ??
+    getPloneBlockFromActiveElement(editor) ??
+    getPloneBlockFromSelection(editor) ??
     editor.api.block({ highest: true });
   if (!entry) return null;
 
   const [node, path] = entry;
-  if (!isUnknownElement(node)) return null;
+  if (!isPloneBlockElement(node)) return null;
 
   const blockType = node['@type'];
   if (typeof blockType !== 'string') return null;

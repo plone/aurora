@@ -14,8 +14,10 @@ export type WidgetOptions = Record<string, unknown> & {
 
 export interface FormWidgetProps<TValue = unknown> {
   name: string;
-  value: TValue;
-  defaultValue?: TValue;
+  /** The stored value. It can be empty when the content has no value yet. */
+  value?: TValue | null;
+  defaultValue?: TValue | null;
+  /** Emits the next normalized value. */
   onChange: (value: TValue) => void;
   onBlur?: () => void;
   label?: string;
@@ -100,8 +102,7 @@ export type WidgetsConfigByWidget<
 }>;
 
 export type WidgetVocabularyTypes =
-  | (string & {})
-  | 'plone.app.vocabularies.Catalog';
+  (string & {}) | 'plone.app.vocabularies.Catalog';
 
 export type WidgetsConfigByVocabulary<
   K extends WidgetVocabularyTypes = WidgetVocabularyTypes,
@@ -111,9 +112,7 @@ export type WidgetsConfigByVocabulary<
 }>;
 
 export type WidgetFactortTypes =
-  | (string & {})
-  | 'Relation List'
-  | 'Relation Choice';
+  (string & {}) | 'Relation List' | 'Relation Choice';
 
 export type WidgetsConfigByFactory<
   K extends WidgetFactortTypes = WidgetFactortTypes,
@@ -141,11 +140,7 @@ export type WidgetsConfigByType<
   [widgetType in K]: React.ComponentType<P>;
 }>;
 export type WidgetViewsIdTypes =
-  | (string & {})
-  | 'file'
-  | 'image'
-  | 'relatedItems'
-  | 'subjects';
+  (string & {}) | 'file' | 'image' | 'relatedItems' | 'subjects';
 
 export type WidgetsConfigViewById<
   K extends WidgetViewsIdTypes = WidgetViewsIdTypes,

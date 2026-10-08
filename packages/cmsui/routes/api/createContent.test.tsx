@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import config from '@plone/registry';
 import { action } from './createContent';
 import { RouterContextProvider } from 'react-router';
-import { ploneClientContext } from 'seven/app/middleware.server';
+import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 
 describe('createContent API route action', () => {
   afterEach(() => {
@@ -47,8 +47,8 @@ describe('createContent API route action', () => {
       request,
       params: { '*': 'folder' },
       context,
-      unstable_pattern: '/@createContent/folder',
-      unstable_url: new URL(request.url),
+      pattern: '/@createContent/folder',
+      url: new URL(request.url),
     });
 
     expect(createContentMock).toHaveBeenCalledWith({

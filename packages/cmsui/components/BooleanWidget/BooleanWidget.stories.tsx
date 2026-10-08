@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { BooleanWidget } from './BooleanWidget';
 
 const meta = {
-  title: 'CMS UI/Widgets/BooleanWidget',
+  title: 'CMSUI/Widgets/BooleanWidget',
   component: BooleanWidget,
   args: {
     name: 'exclude_from_nav',

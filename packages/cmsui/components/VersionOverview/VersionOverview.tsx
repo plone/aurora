@@ -1,4 +1,4 @@
-import PackageJson from '../../package.json';
+import PackageJson from '../../../../apps/aurora/package.json';
 
 interface VersionOverviewProps {
   plone_version: string;
@@ -25,12 +25,12 @@ const VersionOverview = ({
   ['@id']: id,
   upgrade,
 }: VersionOverviewProps) => {
-  const sevenVersion = PackageJson.version;
+  const auroraVersion = PackageJson.version;
   return (
     <div className="versionoverview-container">
       <h2>Version Overview</h2>
       <ul>
-        <li>Seven: {sevenVersion}</li>
+        <li>Plone Aurora: {auroraVersion}</li>
         <li>Plone Version: {plone_version}</li>
         <li>CMF Version: {cmf_version}</li>
         <li>Python Version: {python_version}</li>

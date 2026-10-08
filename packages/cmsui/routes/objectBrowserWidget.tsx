@@ -3,7 +3,7 @@ import {
   RouterContextProvider,
   type LoaderFunctionArgs,
 } from 'react-router';
-import { ploneClientContext } from 'seven/app/middleware.server';
+import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { flattenToAppURL } from '@plone/helpers';
 
 export async function loader({

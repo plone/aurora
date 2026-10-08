@@ -4,7 +4,7 @@ myst:
     "description": "How to fetch additional data in the root loader"
     "property=og:description": "How to fetch additional data in the root loader"
     "property=og:title": "Fetch additional data in the root loader"
-    "keywords": "Seven, @plone/registry, registry, configuration, guide, root, data, fetching"
+    "keywords": "Plone Aurora, @plone/registry, registry, configuration, guide, root, data, fetching"
 ---
 
 # Fetch additional data in the root loader
@@ -30,9 +30,12 @@ export default function install(config: ConfigType) {
         where: { pathname: path },
       });
       return {
-        likes: {
-          pathname: path,
-          count: like?.count ?? 0,
+        status: 200,
+        data: {
+          likes: {
+            pathname: path,
+            count: like?.count ?? 0,
+          },
         },
       };
     },
@@ -45,6 +48,10 @@ export default function install(config: ConfigType) {
 Where the `method` function fetches the number of likes for the current path from an external database using Prisma.
 The `type` should be set to `rootLoaderData` to indicate that this utility is for fetching additional data in the root loader.
 You can set the `name` to any string that describes the utility.
+
+The `method` returns a `{ status, data }` envelope, matching the shape returned by the Plone client (`@plone/client`).
+The root loader unwraps each utility's `data` and merges it into the root loader data, so your components access the payload directly (for example, as `rootData.likes`).
+The `status` lets a utility signal the outcome of its own request without breaking the root loader.
 
 ## Accessing the additional data in your components
 

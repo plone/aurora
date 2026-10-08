@@ -4,7 +4,7 @@ This file applies only to `packages/tooling` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/tooling` provides **shared Playwright test harness and ESLint devDependencies** for Seven packages.
+- `@plone/tooling` provides **shared Playwright test harness and ESLint devDependencies** for Plone Aurora packages.
 - It houses the shared Playwright fixtures, test utilities, and launcher scripts used across packages that run acceptance tests.
 - It also provides ESLint as a shared devDependency so packages do not need to manage it individually.
 
@@ -40,3 +40,5 @@ Tooling is validated indirectly through the acceptance tests that consume it:
 ```sh
 pnpm acceptance-test
 ```
+
+Visual regression tests in any package use `settle()` from `playwright/visual.ts` to wait for network idle and web fonts before taking a screenshot.

@@ -1,16 +1,16 @@
 ---
 myst:
   html_meta:
-    "description": "How to create a route in Seven"
-    "property=og:description": "How to create a route in Seven"
-    "property=og:title": "How to create a route in Seven"
-    "keywords": "Seven, frontend, Plone, routes"
+    "description": "How to create a route in Plone Aurora"
+    "property=og:description": "How to create a route in Plone Aurora"
+    "property=og:title": "How to create a route in Plone Aurora"
+    "keywords": "Plone Aurora, frontend, Plone, routes"
 ---
 
 
-# Create a route in Seven
+# Create a route in Plone Aurora
 
-In Seven, you register routes in the configuration registry via your add-on.
+In Plone Aurora, you register routes in the configuration registry via your add-on.
 
 ## Conventions
 
@@ -143,10 +143,10 @@ config.registerRoute({
 });
 ```
 
-## Define a Seven core add-on route
+## Define a Plone Aurora core add-on route
 
 The following example comes from the `@plone/cmsui` add-on.
-Its route registration defines the `/edit` interface in Seven.
+Its route registration defines the `/edit` interface in Plone Aurora.
 It demonstrates how to nest a `prefix` route under a `layout`, and use both `index` and wildcard routes within the same branch.
 
 ```ts

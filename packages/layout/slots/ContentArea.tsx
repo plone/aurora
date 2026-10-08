@@ -12,11 +12,7 @@ const ContentArea = (props: SlotComponentProps) => {
   ) {
     return (
       <>
-        <RenderBlocks
-          content={content}
-          blocksConfig={config.blocks.blocksConfig}
-          pathname="/"
-        />
+        <RenderBlocks content={content} />
       </>
     );
   } else {
