@@ -1,0 +1,1 @@
+Apply the server configuration once per process instead of on every request, which made `config.routes` and the slot components grow without bound. @sneridagh

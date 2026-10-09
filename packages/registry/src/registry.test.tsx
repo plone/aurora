@@ -1359,6 +1359,20 @@ describe('Routes registry', () => {
     ]);
   });
 
+  it('does not register the same route twice', () => {
+    const install = () =>
+      config.registerRoute({
+        type: 'layout',
+        file: 'layout.tsx',
+        children: [{ type: 'route', path: '/login', file: 'login.tsx' }],
+      });
+
+    install();
+    install();
+
+    expect(config.routes).toHaveLength(1);
+  });
+
   it('registers a couple of routes', () => {
     config.registerRoute({
       type: 'route',

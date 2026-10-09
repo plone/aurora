@@ -540,7 +540,13 @@ class Config {
 
   registerRoute(options: ReactRouterRouteEntry) {
     const route = this._data.routes || [];
-    route.push(options);
+    // Routes are plain serializable data, so a route that is structurally
+    // identical to one already registered is a repeated registration (e.g.
+    // an add-on configuration applied again) and is skipped.
+    const serialized = JSON.stringify(options);
+    if (!route.some((entry) => JSON.stringify(entry) === serialized)) {
+      route.push(options);
+    }
     this._data.routes = route;
   }
 

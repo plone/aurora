@@ -95,6 +95,41 @@ describe('middleware', () => {
           .method(),
       ).toHaveProperty('initialize');
     });
+
+    it('applies the configuration only once per process', async () => {
+      const request = new Request('http://example.com');
+      const runMiddleware = () =>
+        installServerMiddleware(
+          {
+            request,
+            context: new RouterContextProvider(),
+            params: {},
+            pattern: '/',
+            url: new URL(request.url),
+          },
+          vi.fn(),
+        );
+      const countSlotComponents = () =>
+        Object.values(config.slots).reduce(
+          (total, slot) =>
+            total +
+            Object.values(slot.data).reduce(
+              (sum, components) => sum + components.length,
+              0,
+            ),
+          0,
+        );
+
+      await runMiddleware();
+      const routes = config.routes?.length;
+      const slotComponents = countSlotComponents();
+
+      await runMiddleware();
+      await runMiddleware();
+
+      expect(config.routes?.length).toBe(routes);
+      expect(countSlotComponents()).toBe(slotComponents);
+    });
   });
 
   describe('getPloneClientClass', () => {
