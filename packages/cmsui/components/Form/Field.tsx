@@ -59,7 +59,7 @@ const getWidgetDefault = (): React.ComponentType<any> =>
 const getWidgetByFieldId = (
   id: FieldProps['name'],
 ): React.ComponentType<any> | null =>
-  typeof id === 'string' ? (config.getWidget(id) ?? null) : null;
+  typeof id === 'string' ? (config.getWidget(id, 'id') ?? null) : null;
 
 /**
  * Get widget by factory attribute
@@ -67,16 +67,18 @@ const getWidgetByFieldId = (
 const getWidgetByFactory = (
   factory: FieldProps['factory'],
 ): React.ComponentType<any> | null =>
-  factory ? (config.getWidget(factory) ?? null) : null;
+  factory ? (config.getWidget(factory, 'factory') ?? null) : null;
 
 /**
- * Get widget by field's `widget` attribute
+ * Get widget by field's `widget` attribute. An unknown widget name does not
+ * stop the lookup, so the field can still resolve by its choices, vocabulary,
+ * factory or type.
  */
 const getWidgetByName = (
   widget: FieldProps['widget'],
 ): React.ComponentType<any> | null =>
   typeof widget === 'string'
-    ? (config.getWidget(widget) ?? getWidgetDefault())
+    ? (config.getWidget(widget, 'widget') ?? null)
     : null;
 
 /**
@@ -95,7 +97,7 @@ const getWidgetFromTaggedValues = (widgetOptions?: {
   frontendOptions?: { widget: FieldProps['widget']; widgetProps: any };
 }): React.ComponentType<any> | null =>
   typeof widgetOptions?.frontendOptions?.widget === 'string'
-    ? (config.getWidget(widgetOptions.frontendOptions.widget) ?? null)
+    ? (config.getWidget(widgetOptions.frontendOptions.widget, 'widget') ?? null)
     : null;
 
 /**
@@ -127,7 +129,7 @@ const getWidgetByVocabulary = (
   if (!vocabId) return null;
 
   const key = vocabId.replace(/^.*\/@vocabularies\//, '');
-  return config.getWidget(key) ?? null;
+  return config.getWidget(key, 'vocabulary') ?? null;
 };
 
 /**
@@ -140,7 +142,7 @@ const getWidgetByVocabularyFromHint = (
   if (!vocabId) return null;
 
   const key = vocabId.replace(/^.*\/@vocabularies\//, '');
-  return config.getWidget(key) ?? null;
+  return config.getWidget(key, 'vocabulary') ?? null;
 };
 
 /**
@@ -157,7 +159,7 @@ const getWidgetByChoices = (
 const getWidgetByType = (
   type: FieldProps['type'],
 ): React.ComponentType<any> | null =>
-  type ? (config.getWidget(type) ?? null) : null;
+  type ? (config.getWidget(type, 'type') ?? null) : null;
 
 const renderFieldWidget = ({
   fieldProps,

@@ -601,10 +601,23 @@ class Config {
   /**
    * Gets a widget configuration from the registry.
    *
-   * @param key - A key from the WidgetsConfig interface.
+   * @param key - The key the widget is registered under (e.g. a field id, a
+   * widget name, a vocabulary or a factory).
+   * @param category - Look the key up only in this category (e.g. `'widget'`
+   * or `'factory'`). Without it, the first category that has the key wins,
+   * which lets a field named like a widget match that widget.
    */
-  getWidget(key: string): React.ComponentType<any> | undefined {
+  getWidget(
+    key: string,
+    category?: MappableWidgetKeys,
+  ): React.ComponentType<any> | undefined {
     const widgets = this.widgets;
+
+    if (category) {
+      const group = widgets?.[category] as
+        Record<string, React.ComponentType<any>> | undefined;
+      return group && Object.hasOwn(group, key) ? group[key] : undefined;
+    }
 
     for (const category of Object.keys(widgets) as WidgetKey[]) {
       const group = widgets[category];
