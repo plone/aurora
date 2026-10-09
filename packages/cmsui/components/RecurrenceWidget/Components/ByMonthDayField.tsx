@@ -1,9 +1,8 @@
 import { Input, TextField } from '@plone/quanta';
-import { type Updater } from '@tanstack/react-form';
 import { useTranslation } from 'react-i18next';
 
 interface ByMonthDayFieldProps {
-  onChange: (updater: Updater<number>) => void;
+  onChange: (value: number) => void;
   defaultValue: number;
 }
 
