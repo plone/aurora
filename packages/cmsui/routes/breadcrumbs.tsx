@@ -15,9 +15,16 @@ export async function loader({
   const path = `/${params['*'] || ''}`;
 
   // Call the breadcrumbs endpoint
-  const { data: breadcrumbs } = await cli.getBreadcrumbs({
-    path,
-  });
+  let breadcrumbs;
+  try {
+    ({ data: breadcrumbs } = await cli.getBreadcrumbs({
+      path,
+    }));
+  } catch (error) {
+    const status = (error as { status?: number })?.status;
+    if (!status) throw error;
+    throw data('Content Not Found', { status });
+  }
 
   return data(flattenToAppURL(breadcrumbs), {
     headers: {

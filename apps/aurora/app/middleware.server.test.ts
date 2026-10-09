@@ -8,6 +8,7 @@ import {
   fetchPloneContent,
   getAPIResourceWithAuth,
   getPloneClientClass,
+  getSkipContentPatterns,
   installServerMiddleware,
   linkMiddleware,
   ploneClearAuthCookieContext,
@@ -17,6 +18,7 @@ import {
   ploneContentContext,
   ploneSiteContext,
   ploneUserContext,
+  routeSkipsContent,
 } from './middleware.server';
 
 vi.mock('jwt-decode');
@@ -634,6 +636,56 @@ describe('middleware', () => {
       delete config.utilities['ploneClient'];
     });
 
+    it('skips fetching for routes that set skipContent', async () => {
+      const routes = config.routes;
+      config.routes = [
+        {
+          type: 'prefix',
+          path: '@objectBrowserWidget',
+          skipContent: true,
+          children: [{ type: 'route', path: '*', file: 'browser.tsx' }],
+        },
+      ];
+      const getContentMock = vi.fn();
+      const getSiteMock = vi.fn();
+      const getUserMock = vi.fn();
+      config.settings.apiPath = 'http://example.com';
+      registerPloneClientFactory({
+        getContent: getContentMock,
+        getSite: getSiteMock,
+        getUser: getUserMock,
+      });
+      vi.mocked(getAuthFromRequest).mockResolvedValue('valid.jwt.token');
+      vi.mocked(jwtDecode).mockReturnValue({ sub: 'admin' });
+      const request = new Request(
+        'http://example.com/@objectBrowserWidget/missing',
+      );
+      const context = new RouterContextProvider();
+
+      await initializePloneClientContext(request, context);
+
+      try {
+        const result = await fetchPloneContent(
+          {
+            request,
+            params: { '*': 'missing' },
+            context,
+            pattern: '@objectBrowserWidget/*',
+            url: new URL(request.url),
+          },
+          vi.fn(),
+        );
+
+        expect(result).toBeUndefined();
+        expect(getContentMock).not.toHaveBeenCalled();
+        expect(getSiteMock).not.toHaveBeenCalled();
+        expect(getUserMock).not.toHaveBeenCalled();
+        expect(() => context.get(ploneContentContext)).toThrow();
+      } finally {
+        config.routes = routes;
+      }
+    });
+
     it('fetches content and site and sets them in context', async () => {
       const mockContent = {
         data: { '@id': 'http://example.com/', title: 'Home' },
@@ -1151,6 +1203,97 @@ describe('middleware', () => {
       const result = await linkMiddleware(makeArgs(context), vi.fn());
 
       expect(result).toBeUndefined();
+    });
+
+    it('does nothing for routes that set skipContent, without content', async () => {
+      const context = new RouterContextProvider();
+
+      const result = await linkMiddleware(
+        { ...makeArgs(context), pattern: 'reset-fetcher' },
+        vi.fn(),
+      );
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('getSkipContentPatterns', () => {
+    it('returns the patterns of the flagged routes and their descendants', () => {
+      const patterns = getSkipContentPatterns([
+        { type: 'route', path: 'ok', file: 'ok.tsx', skipContent: true },
+        {
+          type: 'prefix',
+          path: '@search',
+          skipContent: true,
+          children: [{ type: 'route', path: '*', file: 'search.tsx' }],
+        },
+        {
+          type: 'layout',
+          file: 'layout.tsx',
+          children: [
+            {
+              type: 'prefix',
+              path: '@@contents',
+              children: [
+                {
+                  type: 'route',
+                  path: '@@delete/*',
+                  file: 'delete.tsx',
+                  skipContent: true,
+                },
+                { type: 'route', path: '*', file: 'contents.tsx' },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'prefix',
+          path: 'api',
+          skipContent: true,
+          children: [
+            { type: 'index', file: 'api.tsx' },
+            {
+              type: 'route',
+              path: 'content/*',
+              file: 'content.tsx',
+              skipContent: false,
+            },
+          ],
+        },
+        { type: 'route', path: '*', file: 'content.tsx' },
+      ]);
+
+      expect([...patterns].sort()).toEqual([
+        '@@contents/@@delete/*',
+        '@search/*',
+        'api',
+        'ok',
+      ]);
+    });
+  });
+
+  describe('routeSkipsContent', () => {
+    it('matches the request pattern against the app and registry routes', () => {
+      const routes = config.routes;
+      config.routes = [
+        {
+          type: 'prefix',
+          path: '@objectBrowserWidget',
+          skipContent: true,
+          children: [{ type: 'route', path: '*', file: 'browser.tsx' }],
+        },
+      ];
+
+      try {
+        expect(routeSkipsContent('@objectBrowserWidget/*')).toBe(true);
+        expect(routeSkipsContent('/@objectBrowserWidget/*')).toBe(true);
+        expect(routeSkipsContent('reset-fetcher')).toBe(true);
+        expect(routeSkipsContent('ok')).toBe(true);
+        expect(routeSkipsContent('*')).toBe(false);
+        expect(routeSkipsContent('/')).toBe(false);
+      } finally {
+        config.routes = routes;
+      }
     });
   });
 });

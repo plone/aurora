@@ -1,0 +1,1 @@
+Added the `skipContent` route entry option: the root middleware no longer loads the Plone content, site and user for requests to routes that set it, which saves three backend requests per call. The `ok` and `reset-fetcher` routes set it. @sneridagh
