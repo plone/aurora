@@ -3,71 +3,97 @@ myst:
   html_meta:
     "description": "An explanation of fields, controls, widgets, and widget adapters in Plone Aurora forms"
     "property=og:description": "An explanation of fields, controls, widgets, and widget adapters in Plone Aurora forms"
-    "property=og:title": "Form fields, controls, and widgets"
-    "keywords": "Plone Aurora, forms, fields, controls, widgets, @tanstack/form, @plone/cmsui"
+    "property=og:title": "Form fields, controls, widgets, and adapters"
+    "keywords": "Plone Aurora, forms, fields, controls, widgets, adapters, @plone/cmsui"
 ---
 
 (form-fields-controls-and-widgets-label)=
 
-# Form fields, controls, and widgets
+# Form fields, controls, widgets, and adapters
 
 Plone Aurora forms are schema-driven.
-A content schema describes metadata fields, and the form generators turn those fields into interactive form elements.
-This process is intentionally split into several concepts: fields, controls, widgets, and adapters.
-The distinction matters because not every visual input component can be registered directly as a widget.
+A content type's schema describes its fields, and the form generator turns each field into something the editor can interact with.
+Four concepts take part in that process: fields, controls, widgets, and adapters.
+This guide explains each of them, how they work together, and why Plone Aurora keeps them apart.
+
+## The big picture
+
+The following diagram follows one field, `exclude_from_nav`, from its schema to the checkbox an editor clicks, and back.
+
+```{image} /_static/conceptual-guides/form-field-widget-control.svg
+:alt: The schema describes a field. The form keeps the field's value and state, and asks the widget registry which widget renders it. The widget receives the field props and renders a control. When the user clicks the control, the widget reports the new value with onChange(true), and the form stores it.
+```
+
+Read the diagram from left to right for the way down:
+
+1.  The **schema field** describes the data: its name, type, title, and default value.
+2.  The **form** holds the field's current value and state, and asks the widget registry which **widget** renders it.
+3.  The **widget** receives a fixed set of field props, such as `value`, `label`, and `required`, and renders one or more **controls**.
+4.  The **control** is the interactive element the editor sees, here a checkbox.
+
+The dashed arrows are the way back.
+The control reports its own change, `isSelected = true`, and the widget translates it into the field's value, `onChange(true)`, which the form stores.
+
+If you already know HTML forms or relational databases, the following comparisons can help:
+
+| Concept | Similar to | But in Plone Aurora |
+| --- | --- | --- |
+| Field | A column in a relational table, plus the value being edited | It also carries form state: validation errors, required, touched, and so on. |
+| Control | An [HTML form control](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Basic_native_form_controls), such as `<input type="checkbox">` | Usually a component of a design system, such as a Quanta or React Aria component, which renders the HTML control. |
+| Widget | A complex input, such as a date range picker | **Every** field gets a widget, even a simple one. A widget can be as small as a text input or as large as an image picker. |
+| Adapter | Glue code | A widget whose only job is to translate between the widget contract and a control's API. |
 
 ## Field
 
-A field is the form-level representation of one piece of content data.
-It has a name, a current value, validation state, and schema metadata.
-In a content form, a field usually comes from a Plone schema property.
-For example, `title`, `description`, and `effective` are fields when the form renders them as editable metadata.
+A field is one piece of content data, as the form sees it.
+It comes from a property in the content type's schema.
+For example, `title`, `description`, and `exclude_from_nav` are fields of a page.
 
-A field belongs to the form system.
-It participates in form state, validation, submission, and synchronization with the content object.
-In Aurora, `@tanstack/react-form` owns this part of the model.
-The field component connects TanStack Form state to the widget registry and to any additional state that the editing UI needs.
+A field has more than a value.
+The form also tracks its validation state and whether it is required, and the schema adds hints such as its title, description, default value, choices, vocabulary, and widget options.
 
-A field is not just the visible input.
-It also includes the surrounding form concerns that make the input meaningful in a CMS.
-These concerns include the label, required state, error state, default value, field path, schema hints, choices, vocabulary, and widget options.
+A field belongs to the form.
+It takes part in the form's state, validation, and submission.
+It does not decide how it is displayed: that is the widget's job.
 
 ## Control
 
-A control is a lower-level interactive component.
-It is usually part of a design system.
-Examples include a text input, checkbox, select, date picker, button, or segmented control.
+A control is the lowest layer of a form: the interactive element itself.
+Examples include a text input, a checkbox, a select, a date picker, and a segmented control.
+In Plone Aurora, controls usually come from a design system, such as the Quanta components in `@plone/quanta`, which build on React Aria.
 
-A control knows how to render and manage a specific interaction pattern.
-It does not necessarily know anything about Plone schemas, content fields, fieldsets, vocabularies, submission, or validation messages.
-It may also expose a prop API that reflects the accessibility library or design system that implements it.
+A control knows how to render one interaction pattern and how to make it accessible.
+It knows nothing about Plone: schemas, fields, vocabularies, validation messages, or how the content API stores a value.
+Its props follow the interaction pattern and the library that implements it.
 
-For example, a React Aria checkbox uses checkbox-specific concepts such as `isSelected`, `defaultSelected`, and `onChange(isSelected)`.
-That is a good API for a checkbox control.
-It is not automatically the right API for a CMS widget, because a schema-driven form passes a normalized field value, a field name, label text, required state, and validation state.
+For example, a React Aria checkbox has `isSelected`, `isRequired`, and `onChange(isSelected)`.
+That is a good API for a checkbox.
+It is not the API that a schema-driven form uses, which passes every field a `value`, a `label`, `required`, and an `onChange(value)` callback.
 
 ## Widget
 
-A widget is a CMS-level field renderer.
-It receives a field-oriented prop contract and renders the appropriate control or group of controls.
-It is the component that the widget registry returns when the form resolves a schema field.
+A widget renders a field.
+It is the component that the widget registry returns for a field, and it receives the same set of props as every other widget: the widget contract.
 
-A widget is responsible for adapting the field model to the visual controls that implement the interaction.
-It should render the field label, expose the current value, report changes with a normalized `onChange(value)` callback, and display validation state.
-It should also preserve common field semantics such as required, disabled, read-only, description, and placeholder when those semantics apply.
+A widget turns the field into controls.
+It renders the field's label and description, shows the current value, and reports changes with `onChange(value)`, using the shape of value that the content API expects.
+It shows the field as required, disabled, read-only, or invalid when the form says so.
 
-This makes a widget larger in scope than a control.
-A text field widget may be a thin wrapper around a text input control.
-An image widget may combine an object browser, upload button, link input, preview, clear action, and validation message.
-Both are widgets if they satisfy the same field contract from the form generator.
+Widgets differ in size, not in contract.
+A text widget can be a thin wrapper around one text input.
+An image widget can combine an object browser, an upload button, a link input, a preview, and a clear button.
+Both are widgets, because both take the same field props and emit the field's value.
 
 ## Adapter
 
-An adapter is a wrapper that turns a control into a widget.
-It maps the form field contract to the control contract.
-This is the right place to translate names, normalize values, and convert validation metadata into the shape expected by the control.
+An adapter is a widget that wraps a single control.
+It translates the widget contract to the control's API: it renames props, converts values, and passes validation state in the shape the control expects.
 
-For example, a boolean widget can adapt a checkbox control by mapping `value` to `isSelected` and by mapping `onChange(value)` to the checkbox's selected state callback.
+### Example: the boolean widget
+
+The checkbox control speaks `isSelected`.
+The form speaks `value`.
+`BooleanWidget` adapts one to the other:
 
 ```tsx
 import type { FormWidgetProps } from '@plone/types';
@@ -103,89 +129,165 @@ function BooleanWidget({
 }
 ```
 
-The adapter keeps the registry contract stable.
-It also lets design-system controls evolve without forcing schema-driven forms to learn every control-specific API.
+The following table shows how each prop is mapped.
 
-## Minimum widget contract
+| Widget contract (from the form) | Checkbox control |
+| --- | --- |
+| `value`, falling back to `defaultValue` | `isSelected` |
+| `required` | `isRequired` |
+| `disabled` | `isDisabled` |
+| `readOnly` | `isReadOnly` |
+| `label` | the checkbox's children |
+| `onChange(value)` | `onChange(isSelected)`, which already emits a boolean |
 
-A registered CMS widget should accept a small common contract.
-The essential props are `name`, `value`, `onChange`, `label`, `required`, and validation state.
-Other props are contextual, but they let the widget behave consistently across the CMS.
+### Example: a date widget
+
+Some adapters must also convert values.
+A React Aria date field works with `DateValue` objects, while the content API stores a date as an ISO string such as `"2026-10-09"`.
+A date widget converts the string to a `DateValue` for the control, and converts the control's `DateValue` back to a string for `onChange`:
 
 ```ts
-import type { FormWidget, FormWidgetProps } from '@plone/types';
+import { parseDate } from '@internationalized/date';
+import type { FormWidgetProps } from '@plone/types';
+import { DateField } from '@plone/components';
+
+// The value can be cleared, so the widget emits `null` too.
+type DateWidgetProps = FormWidgetProps<string | null>;
 ```
 
-`FormWidgetProps` describes the props that a widget receives from the form generator.
-Use it when you implement a widget or adapter.
+```tsx
+function DateWidget({ value, onChange, label, required }: DateWidgetProps) {
+  return (
+    <DateField
+      label={label}
+      isRequired={required}
+      value={value ? parseDate(value) : null}
+      onChange={(date) => onChange(date ? date.toString() : null)}
+    />
+  );
+}
+```
+
+The form never sees a `DateValue`.
+It passes a string in and receives a string back, the same as for any other field.
+
+## The widget contract
+
+Every registered widget accepts the same props.
+`@plone/types` describes them with two types.
+
+`FormWidgetProps<T>` describes the props a widget receives.
+`T` is the type of the field's value.
+Use it when you write a widget or an adapter:
 
 ```tsx
+import type { FormWidgetProps } from '@plone/types';
+
 function BooleanWidget(props: FormWidgetProps<boolean>) {
   // ...
 }
 ```
 
-`FormWidget` describes the widget component itself.
-Use it when you want to type a variable, registry entry, or exported component as a form-compatible widget.
+`FormWidget<T>` describes the widget component itself.
+Use it to type a variable, a registry entry, or an exported component:
 
 ```tsx
+import type { FormWidget } from '@plone/types';
+
 const BooleanWidget: FormWidget<boolean> = (props) => {
   // ...
 };
 ```
 
-The contract is intentionally value-oriented.
-The form generator should not need to know whether a widget uses an HTML input, a React Aria component, a modal picker, or several controls working together.
-The form only needs to provide the current value and receive the next value.
+The essential props are the following.
 
-## Why raw controls should not usually be registered
+`name`
+:   The field's name in the form data.
 
-Raw controls often use APIs that are correct for their interaction pattern but incomplete for CMS forms.
-A checkbox control may use `isSelected` instead of `value`.
-A date picker may emit a date object while the content API expects an ISO string.
-A select control may know about option labels but not about Plone vocabularies.
-An object browser may need content context, selectable type constraints, and a normalized relation value.
+`value`
+:   The stored value.
+    It can be `null` or `undefined` when the content has no value yet.
 
-Registering those controls directly makes the form generator depend on many incompatible prop conventions.
-That weakens the registry because the registry can no longer promise what a widget receives or returns.
-Adapters keep the boundary explicit.
+`onChange(value)`
+:   Reports the next value, always in the shape that the content API expects.
 
-## Field resolution
+`label`, `description`, and `placeholder`
+:   Text for the editor.
 
-The widget registry answers a different question than the form state system.
-The form state system asks, "What is the value and validation state of this field?"
-The widget registry asks, "Which widget should render this field?"
+`required`, `disabled`, and `readOnly`
+:   The field's state.
 
-Plone Aurora can resolve a widget from several schema hints.
-The field ID, explicit widget name, choices, vocabulary, factory, and type can all influence the result.
-This lets the same schema-driven form render very different field experiences without hard-coding every field in the form component.
+`errorMessage` and `errors`
+:   The field's validation errors.
 
-The resolved widget still receives the same field contract.
-That consistency is what lets the form generator stay generic.
+The contract is about values.
+The form does not need to know whether a widget uses an HTML input, a React Aria component, a modal picker, or several controls together.
+It passes the current value in and receives the next value back.
 
-## Practical boundary
+## Why controls are not registered as widgets
 
-Use this boundary when evaluating a component:
+A control's API is right for its interaction pattern, but it does not follow the widget contract.
 
-`Control`
-:   A reusable visual interaction component that exposes a control-specific API.
+-   A checkbox uses `isSelected` instead of `value`.
+-   A date picker emits a date object, while the content API expects an ISO string.
+-   A select knows about option labels, but not about Plone vocabularies.
+-   An object browser needs the current content, the content types it can select, and a relation value.
 
-`Widget`
-:   A CMS field renderer that accepts the form field contract and emits normalized field values.
+If controls were registered directly, the form generator would have to know each of these APIs.
+The registry could no longer promise what a widget receives and what it emits.
+Adapters keep that promise in one place: the widget.
 
-`Adapter`
-:   A wrapper that maps between the two.
+A control can be registered as a widget only when its API already matches the widget contract.
+A plain text input comes close.
+Checkboxes, date pickers, object browsers, image pickers, and rich text editors need adapters.
 
-A component can be both a control and a widget only when its prop API already matches the form field contract.
-Text inputs often come close to this shape.
-Checkboxes, date pickers, object browsers, image pickers, and rich editors usually need adapters.
+## How the form picks a widget
+
+The form and the widget registry answer different questions.
+The form asks, "What is the value and state of this field?"
+The widget registry asks, "Which widget renders this field?"
+
+The form looks the widget up from the field's schema hints, in this order:
+
+1.  The field's name, for example `recurrence`.
+2.  The widget named in the field's tagged values, `frontendOptions.widget`.
+3.  The field's `widget` hint, for example `textarea` or `datetime`.
+4.  The field's choices or vocabulary.
+5.  The field's factory, for example `Relation List`.
+6.  The field's type, for example `boolean`.
+7.  The default widget.
+
+Whichever widget it finds, the widget receives the same contract.
+That is what lets the form generator stay generic.
 
 ## Design implications
 
 The form generator should be basic.
-It should resolve widgets, pass normalized field props, and connect changes back to form state.
+It should resolve widgets, pass normalized field props, and connect changes back to the form state.
 It should not contain special cases for checkbox selection state, date serialization, upload workflows, relation values, or vocabulary fetching.
-
 Widgets should own those differences.
-That keeps each widget testable in isolation and keeps the schema-driven form renderer understandable.
-It also makes the registry safer for add-ons, because add-ons can register widgets against one documented contract instead of reverse-engineering the current form implementation.
+
+That keeps each widget testable on its own, and keeps the schema-driven form renderer easy to understand.
+It also makes the registry safer for add-ons, because an add-on can register widgets against one documented contract, instead of working out what the form currently passes.
+
+## Glossary
+
+Field
+:   One piece of content data as the form sees it: its value, its state, and the hints from its schema property.
+
+Control
+:   An interactive element of a form, such as a text input or a checkbox, usually provided by a design system.
+    It has its own API and knows nothing about Plone.
+
+Widget
+:   The component that renders a field.
+    Every widget accepts the same props, the widget contract, and emits the field's value with `onChange(value)`.
+
+Adapter
+:   A widget that wraps a single control and translates between the widget contract and the control's API.
+
+Widget contract
+:   The props that every widget receives from the form, described by `FormWidgetProps` in `@plone/types`.
+
+Widget registry
+:   The part of the configuration registry that maps fields to widgets, by field name, widget name, vocabulary, factory, or type.
