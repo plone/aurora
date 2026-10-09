@@ -299,6 +299,17 @@ The form looks the widget up from the field's schema hints, in this order:
 Whichever widget it finds, the widget receives the same contract.
 That is what lets the form generator stay generic.
 
+## Validation
+
+The form validates fields with validators, not widgets.
+A widget only shows the errors it receives, through `invalid` and `errorMessage`.
+
+A required field must not be empty: the form checks this itself, from the schema's `required` list.
+Any other check is a validator: a `validator` utility in the configuration registry, matched to fields by their format, type, widget, behavior, or block.
+Add-ons register their own validators the same way, and can override the ones Plone Aurora provides.
+
+See {ref}`validate-form-fields-label` for the default validators, and how to register and write your own.
+
 ## Design implications
 
 The form generator should be basic.

@@ -13,6 +13,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import ContentForm from '../components/ContentForm/ContentForm';
+import { getServerValidationErrors } from '../components/Form/validation';
 
 export async function loader({
   params,
@@ -47,10 +48,18 @@ export async function action({
   const path = `/${params['*'] || ''}`;
   const formData = await request.json();
 
-  const createdContent = await cli.createContent({
-    path,
-    data: formData,
-  });
+  let createdContent;
+  try {
+    createdContent = await cli.createContent({
+      path,
+      data: formData,
+    });
+  } catch (error) {
+    // Validation errors go back to the form, on their fields.
+    const errors = getServerValidationErrors(error);
+    if (errors) return data({ errors }, { status: 400 });
+    throw error;
+  }
 
   const isRoot = /\/$/.test(path);
   const redir = `${isRoot ? path : `${path}/`}${createdContent.data.id}`;
