@@ -72,6 +72,14 @@ export function buildSchemaValidators<T>(
   { t, blockType }: { t: Translate; blockType?: string },
 ): Record<string, FieldValidator<T>> {
   const required = new Set(schema.required ?? []);
+  // Validators written for Volto translate with react-intl's formatMessage.
+  const formatMessage = (
+    message: { id: string; defaultMessage?: string } | string,
+    values?: Record<string, unknown>,
+  ) =>
+    typeof message === 'string'
+      ? t(message, values)
+      : t(message.id, { defaultValue: message.defaultMessage, ...values });
 
   return Object.fromEntries(
     Object.entries(schema.properties).map(([fieldName, schemaField]) => {
@@ -91,7 +99,14 @@ export function buildSchemaValidators<T>(
         }
         return validators
           .map((validator) =>
-            validator({ value, field, fieldName, formData: values, t }),
+            validator({
+              value,
+              field,
+              fieldName,
+              formData: values,
+              t,
+              formatMessage,
+            }),
           )
           .filter((message): message is string => !!message);
       };

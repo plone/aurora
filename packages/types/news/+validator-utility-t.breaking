@@ -1,1 +1,0 @@
-The `validator` utility receives `t` (i18next) instead of `formatMessage`, and the field's name as `fieldName`. @sneridagh

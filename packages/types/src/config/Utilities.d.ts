@@ -24,6 +24,14 @@ export type ValidatorUtilityArgs = {
   formData: any;
   /** Translates a message (i18next). */
   t: (key: string, options?: Record<string, unknown>) => string;
+  /**
+   * Translates a message descriptor (react-intl style), as validators
+   * written for Volto expect.
+   */
+  formatMessage: (
+    message: { id: string; defaultMessage?: string } | string,
+    values?: Record<string, unknown>,
+  ) => string;
 };
 
 /**
