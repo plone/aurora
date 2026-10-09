@@ -8,8 +8,7 @@ import {
 } from '../Field/Field';
 import { tv } from 'tailwind-variants';
 import { focusRing } from '../utils';
-import { useLoaderData } from 'react-router';
-import type { loader as editLoader } from '../../routes/edit';
+import { useWidgetContext } from '../Form/WidgetContext';
 import { ObjectBrowserProvider } from './ObjectBrowserContext';
 import type { UseObjectBrowserConfig } from './ObjectBrowserContext';
 import { ObjectBrowserTags } from './ObjectBrowserTags';
@@ -76,17 +75,19 @@ export function ObjectBrowserWidgetComponent(props: ObjectBrowserWidgetProps) {
 export function ObjectBrowserWidget(
   props: ObjectBrowserWidgetProps & { value?: Brain[] | null },
 ) {
-  const { content } = useLoaderData<typeof editLoader>();
+  // The browser starts from the object the form is about (or the container
+  // a new object is added to), whichever route the form is in.
+  const { path } = useWidgetContext();
   const { label, description, errorMessage, value, defaultValue, ...rest } =
     props;
   return (
     <ObjectBrowserProvider
       config={{
         ...rest,
-        // The browser keeps its own selection, starting from the field value.
-        defaultValue: value ?? defaultValue ?? undefined,
+        // The selection follows the field value.
+        value: value ?? defaultValue ?? [],
         title: label,
-        initialPath: content?.['@id'],
+        initialPath: path,
       }}
     >
       <ObjectBrowserWidgetComponent {...{ label, description, errorMessage }} />

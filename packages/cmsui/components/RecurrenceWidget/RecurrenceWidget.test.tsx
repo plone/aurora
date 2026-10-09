@@ -1,9 +1,11 @@
-import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { RecurrenceWidget } from './RecurrenceWidget';
 
-const Widget = RecurrenceWidget as React.ComponentType<any>;
+// The widget reads its own value from the `value` prop.
+const Widget = (props: any) => (
+  <RecurrenceWidget value={mockFormContext.recurrence} {...props} />
+);
 
 const { mockRruleStr, mockGetRruleText } = vi.hoisted(() => ({
   mockRruleStr: vi.fn(),
