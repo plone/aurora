@@ -156,6 +156,24 @@
       "startEventRange": "Event start date must be on or before {{end}}.",
       "endEventRange": "Event end date must be on or after {{start}}.",
       "defaultLanguage": "The selected default language must be in the list of the field 'Available languages'."
+    },
+    "widgets": {
+      "select": {
+        "noValue": "No value",
+        "placeholder": "Select…"
+      },
+      "array": {
+        "placeholder": "Type to add…"
+      },
+      "file": {
+        "choose": "Choose a file",
+        "replace": "Replace the file",
+        "orDrop": "or drop it here",
+        "remove": "Remove {{filename}}",
+        "dropZone": "Drop a file for {{label}}",
+        "imageOnly": "Choose an image file.",
+        "readError": "The file could not be read."
+      }
     }
   }
 }

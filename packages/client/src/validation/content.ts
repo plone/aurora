@@ -65,7 +65,8 @@ export const createContentDataSchema = z
     '@id': z.string().optional(),
     '@static_behaviors': z.unknown().optional(),
     '@type': z.string(),
-    allow_discussion: z.boolean().optional(),
+    // A boolean, or the token of its choices: `True` or `False`.
+    allow_discussion: z.union([z.boolean(), z.string()]).nullable().optional(),
     blocks: z.unknown().optional(),
     blocks_layout: z.object({ items: z.array(z.string()) }).optional(),
     changeNote: z.string().optional(),
@@ -82,6 +83,8 @@ export const createContentDataSchema = z
         encoding: z.string(),
         filename: z.string(),
       })
+      .passthrough()
+      .nullable()
       .optional(),
     id: z.string().optional(),
     image: z
@@ -91,6 +94,8 @@ export const createContentDataSchema = z
         encoding: z.string(),
         filename: z.string(),
       })
+      .passthrough()
+      .nullable()
       .optional(),
     language: z.string().optional(),
     preview_caption: z.string().optional(),
@@ -101,6 +106,8 @@ export const createContentDataSchema = z
         encoding: z.string(),
         filename: z.string(),
       })
+      .passthrough()
+      .nullable()
       .optional(),
     relatedItems: z.array(RelatedItemPayloadSchema).optional(),
     rights: z.string().nullable().optional(),
@@ -111,7 +118,8 @@ export const createContentDataSchema = z
 
 export const updateContentDataSchema = z
   .object({
-    allow_discussion: z.boolean().optional(),
+    // A boolean, or the token of its choices: `True` or `False`.
+    allow_discussion: z.union([z.boolean(), z.string()]).nullable().optional(),
     blocks: z.unknown().optional(),
     blocks_layout: z.object({ items: z.array(z.string()) }).optional(),
     changeNote: z.string().optional(),
@@ -130,13 +138,15 @@ export const updateContentDataSchema = z
       })
       .optional(),
     preview_caption: z.string().nullable().optional(),
+    // A new file, or the stored one as the API sent it.
     preview_image: z
       .object({
         'content-type': z.string(),
-        data: z.string(),
-        encoding: z.string(),
+        data: z.string().optional(),
+        encoding: z.string().optional(),
         filename: z.string(),
       })
+      .passthrough()
       .nullable()
       .optional(),
     relatedItems: z.array(RelatedItemPayloadSchema).optional(),

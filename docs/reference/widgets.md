@@ -4,7 +4,7 @@ myst:
     "description": "The core widgets of Plone Aurora's forms: what they are registered for, the value they read and write, and their widget options"
     "property=og:description": "The core widgets of Plone Aurora's forms: what they are registered for, the value they read and write, and their widget options"
     "property=og:title": "Core widgets"
-    "keywords": "Plone Aurora, forms, widgets, widget options, extraFields, object browser, image widget, block schema"
+    "keywords": "Plone Aurora, forms, widgets, widget options, extraFields, object browser, image widget, select, vocabulary, tags, file upload, block schema"
 ---
 
 (core-widgets-label)=
@@ -43,13 +43,20 @@ const blockSchema = {
 | --- | --- | --- |
 | `TextWidget` | the default widget | a string |
 | `TextareaWidget` | `widget: 'textarea'` | a string, which can span several lines |
+| `EmailWidget` | `widget: 'email'` | an email address |
+| `PasswordWidget` | `widget: 'password'` | a password |
+| `UrlWidget` | `widget: 'url'` | an absolute URL |
+| `NumberWidget` | `type: 'number'`, `type: 'integer'` | a number, or `null` |
 | `BooleanWidget` | `type: 'boolean'` | a boolean |
+| `SelectWidget` | the choices widget: fields with `choices` or a `vocabulary`, `widget: 'select'` | the token of the chosen option, or `null` |
+| `ArrayWidget` | `type: 'array'`, `widget: 'array'`, `widget: 'token'` | a list of tokens |
 | `DateWidget` | `widget: 'date'` | an ISO date, `YYYY-MM-DD`, or `null` |
 | `DateTimeWidget` | `widget: 'datetime'` | an ISO 8601 date and time in UTC, such as `2026-10-09T10:00:00Z`, or `null` |
 | `AlignWidget` | `widget: 'align'` | the chosen action, such as `left` |
 | `SizeWidget` | `widget: 'size'` | the chosen action, such as `m` |
 | `WidthWidget` | `widget: 'width'` | the chosen action, such as `full` |
-| `ImageWidget` | `widget: 'image'`, `factory: 'Image'` | the image's URL, an app path for site content, or `null` |
+| `FileWidget` | `factory: 'File'`, `factory: 'Image'`, `widget: 'file'` | the file, or `null` |
+| `ImageWidget` | `widget: 'image'` | the image's URL, an app path for site content, or `null` |
 | `ObjectBrowserWidget` | `widget: 'object_browser'`, `factory: 'Relation List'`, `vocabulary: 'plone.app.vocabularies.Catalog'` | a list of the selected items |
 | `QuerystringWidget` | `widget: 'querystring'` | a query object |
 | `RecurrenceWidget` | the `recurrence` field | an RFC 5545 recurrence rule, or `null` |
@@ -59,6 +66,63 @@ const blockSchema = {
 `TextWidget` is the default widget: it renders any field that no other widget is registered for.
 `TextareaWidget` renders multi-line text, such as the summary of a page.
 Neither has widget options.
+
+## Input widgets: `EmailWidget`, `PasswordWidget`, and `UrlWidget`
+
+Text inputs for an email address, a password, and a URL.
+On a phone, they show the keyboard for their kind of text.
+The browser doesn't fill a password field in with the editor's own password.
+None has widget options.
+
+The form checks that the value of a field with `widget: 'email'` or `widget: 'url'` is an email address or a URL, see {ref}`validate-form-fields-label`.
+
+## `NumberWidget`
+
+A number input, with buttons to step the value up and down.
+It shows the number in the editor's locale.
+The value is a number, or `null` when the editor empties the field.
+
+It reads the schema's `minimum` and `maximum`: the buttons stop there, and a number out of range is brought back within it.
+An `integer` field takes whole numbers only.
+
+## `SelectWidget`
+
+A select, where the editor picks one option.
+It is the choices widget: it renders the fields with `choices` or a `vocabulary` for which no more specific widget is registered.
+The value is the token of the chosen option.
+
+The options are the schema's `choices`, or the terms of the field's vocabulary, which the widget loads from the site.
+An optional field also has a "No value" option, which empties the field.
+
+The content API sends some values as a term, an object with its token and its title, such as `{ "token": "en", "title": "English" }`.
+The widget reads a term, and writes its token.
+
+## `ArrayWidget`
+
+A list of tokens, such as the tags of a page.
+The editor types a token and presses {kbd}`Enter` to add it, and removes a token from the list.
+The value is the list of tokens.
+
+The schema's `items` decide which tokens are valid:
+
+-   With `choices` or a `vocabulary` in `items`, the editor picks the tokens from those options only.
+-   Otherwise, the editor can add any token.
+    A vocabulary in the field's `widgetOptions`, such as the keywords of the `subjects` field, suggests tokens as the editor types.
+
+```ts
+days: {
+  title: 'Days',
+  type: 'array',
+  items: {
+    choices: [
+      ['MO', 'Monday'],
+      ['TU', 'Tuesday'],
+    ],
+  },
+},
+```
+
+Like `SelectWidget`, it reads a list of terms, and writes a list of tokens.
 
 ## `BooleanWidget`
 
@@ -91,11 +155,36 @@ align: {
 },
 ```
 
+## `FileWidget`
+
+Picks a file for a field that stores a file, such as the file of a File, the image of an Image, or the lead image of a page.
+The editor chooses a file, or drops it on the widget.
+The widget shows the file's name and size, and a preview of an image.
+
+The value is the file, as the content API sends and receives it.
+A new file has its content encoded in base64:
+
+```json
+{
+  "data": "iVBORw0KGgo…",
+  "encoding": "base64",
+  "content-type": "image/png",
+  "filename": "photo.png"
+}
+```
+
+A stored file comes with its `download` URL instead, and the widget leaves it as it is.
+Removing the file sets the value to `null`.
+
+A field with the `Image` factory only takes images.
+
 ## `ImageWidget`
 
 Picks an image: from the site with the object browser, by uploading a file, or by entering a URL.
 Its value is the image's URL.
 For an image of the site, it's an app path, such as `/news/photo.jpg`.
+It is for the fields that store the URL of an image, such as the image block's `url`.
+A field that stores the image itself uses `FileWidget`.
 
 The widget browses the site from where the form is, and uploads to the form's container.
 See {ref}`form-fields-controls-and-widgets-label` for how a widget learns where the form is.

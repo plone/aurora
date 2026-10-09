@@ -377,3 +377,24 @@ The old names still work, but are deprecated and will be removed in a future rel
 ```
 
 The `align`, `size`, and `width` widgets that the forms use are now adapters in `@plone/cmsui`, around these pickers.
+
+#### File and image fields store files
+
+```{versionchanged} 1.0.0-alpha.20
+The fields with the `File` or `Image` factory use `FileWidget`, instead of `ImageWidget`.
+```
+
+```{versionadded} 1.0.0-alpha.20
+`SelectWidget`, `ArrayWidget`, `NumberWidget`, `FileWidget`, `EmailWidget`, `PasswordWidget`, and `UrlWidget` in `@plone/cmsui`, and `NumberField` in `@plone/quanta`.
+```
+
+A field with the `File` or `Image` factory stores the file itself, such as the image of an Image, or the lead image of a News Item.
+`ImageWidget` stored the URL of an image in such a field, which the content API can't save.
+These fields now use `FileWidget`, which uploads the file.
+`ImageWidget` stays the widget of the fields with `widget: 'image'`, which store the URL of an image, such as the image block's `url`.
+
+If your add-on registered a widget for the `Image` factory, it still overrides `FileWidget`.
+
+Plone Aurora now registers widgets for the fields with choices or a vocabulary, lists, numbers, files, email addresses, passwords, and URLs.
+These fields used to render as text inputs.
+See {ref}`core-widgets-label`.

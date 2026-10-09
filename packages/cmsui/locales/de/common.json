@@ -90,6 +90,24 @@
     },
     "toolbar": {
       "settings": "Einstellungen"
+    },
+    "widgets": {
+      "select": {
+        "noValue": "Kein Wert",
+        "placeholder": "Auswählen…"
+      },
+      "array": {
+        "placeholder": "Zum Hinzufügen tippen…"
+      },
+      "file": {
+        "choose": "Datei auswählen",
+        "replace": "Datei ersetzen",
+        "orDrop": "oder hier ablegen",
+        "remove": "{{filename}} entfernen",
+        "dropZone": "Datei für {{label}} ablegen",
+        "imageOnly": "Wählen Sie eine Bilddatei aus.",
+        "readError": "Die Datei konnte nicht gelesen werden."
+      }
     }
   }
 }
