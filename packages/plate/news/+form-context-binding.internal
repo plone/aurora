@@ -1,0 +1,1 @@
+The metadata title binding reads and writes the title through the form it is rendered in (`useOptionalFormContext`), instead of the `formAtom` registry utility. @sneridagh

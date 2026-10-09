@@ -37,7 +37,7 @@ import {
   usePluginOption,
 } from 'platejs/react';
 import { useFetcher } from 'react-router';
-import { flattenToAppURL, isInternalURL } from '@plone/helpers';
+import { flattenToAppURL, isInternalURL, useFieldValue } from '@plone/helpers';
 
 import { buttonVariants } from '@plone/plate/components/ui/button';
 import { LinkElement } from '@plone/plate/components/ui/link-node';
@@ -45,7 +45,6 @@ import { Separator } from '@plone/plate/components/ui/separator';
 import { ObjectBrowserProvider } from '../../ObjectBrowserWidget/ObjectBrowserContext';
 import { ObjectBrowserModal } from '../../ObjectBrowserWidget/ObjectBrowserModal';
 import { buildObjectBrowserUrl } from '../../ObjectBrowserWidget/utils';
-import { useFormFieldValue } from '../../../routes/atoms';
 
 const popoverVariants = cva(
   'z-50 rounded-md border bg-popover p-1 text-popover-foreground shadow-md outline-hidden',
@@ -279,7 +278,7 @@ function LinkFloatingToolbar({
 }) {
   const editor = useEditorRef();
   const selection = useEditorSelection();
-  const currentContentPath = useFormFieldValue<string>('@id');
+  const currentContentPath = useFieldValue<string>('@id');
   const { setOption } = useEditorPlugin(PlateLinkPlugin);
   const searchFetcher = useFetcher<{ results?: { items?: SearchItem[] } }>();
   const inputProps = useFormInputProps({

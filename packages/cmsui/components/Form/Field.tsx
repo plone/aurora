@@ -1,17 +1,9 @@
-import { useEffect } from 'react';
 import config from '@plone/registry';
-import type {
-  Content,
-  FieldSchema,
-  FormWidgetProps,
-  WidgetOptions,
-} from '@plone/types';
-import { useFieldFocusedAtom } from '@plone/helpers';
-import { useFieldContext } from './Form';
-import { type PrimitiveAtom } from 'jotai';
-import { type DeepKeys } from '@tanstack/react-form';
+import type { FieldSchema, FormWidgetProps, WidgetOptions } from '@plone/types';
+import { useSchemaField } from '@plone/helpers';
 
-interface BaseFieldProps {
+/** The values `buildWidgetProps` builds the widget props from. */
+interface WidgetPropsSource {
   /** The field's name in the form data. */
   name: string;
   /** The field's schema property. */
@@ -21,20 +13,24 @@ interface BaseFieldProps {
   /** The field's validation errors, as the form reports them. */
   errors?: Array<unknown>;
   className?: string;
-  /** Called with the next value, in addition to updating the form. */
-  onChange?: (value: any) => void;
-  onBlur?: () => void;
 }
 
-type AtomFieldProps = BaseFieldProps & {
-  formAtom: PrimitiveAtom<Content>;
-};
-
-type FormFieldProps = BaseFieldProps & {
-  formAtom?: undefined;
-};
-
-export type FieldProps = AtomFieldProps | FormFieldProps;
+export interface FieldProps {
+  /** The field's name (path) in the form data. */
+  name: string;
+  /** The field's schema property. */
+  schema: FieldSchema;
+  required?: boolean;
+  className?: string;
+  /** Called with the next value, in addition to updating the form. */
+  onChange?: (value: any) => void;
+  /**
+   * Writes the next value instead of the form's default write. Block settings
+   * use it to apply side effects on other fields in the same change.
+   */
+  setValue?: (value: any) => void;
+  onBlur?: () => void;
+}
 
 /** What the widget lookup reads: the field schema and the field's name. */
 type ResolvableField = FieldSchema & { name: string };
@@ -198,10 +194,7 @@ export const buildWidgetProps = ({
   required,
   errors,
   className,
-}: Omit<BaseFieldProps, 'onChange' | 'onBlur'>): Omit<
-  FormWidgetProps,
-  'onChange' | 'onBlur'
-> &
+}: WidgetPropsSource): Omit<FormWidgetProps, 'onChange' | 'onBlur'> &
   Record<string, unknown> => {
   const widgetOptions = Object.fromEntries(
     Object.entries(schema).filter(([key]) => !RESERVED_SCHEMA_KEYS.has(key)),
@@ -228,88 +221,52 @@ export const buildWidgetProps = ({
   };
 };
 
-const renderFieldWidget = ({
-  fieldProps,
-  onFieldChange,
-  onFieldBlur,
-}: {
-  fieldProps: FieldProps;
-  onFieldChange: (value: any) => void;
-  onFieldBlur: () => void;
-}) => {
-  const { schema, name } = fieldProps;
+/**
+ * Renders the widget of one schema field of the current form.
+ *
+ * It reads the field's value and state from the form (`useSchemaField`),
+ * resolves the widget from the field schema, and passes it the widget
+ * contract.
+ */
+const SchemaField = (props: FieldProps) => {
+  const { name, schema, required, className } = props;
+  const field = useSchemaField(name);
+
   if (schema.mode === MODE_HIDDEN) return null;
 
-  const field: ResolvableField = { ...schema, name };
+  const resolvable: ResolvableField = { ...schema, name };
   const Widget =
     getWidgetByFieldId(name) ||
     getWidgetFromTaggedValues(schema.widgetOptions) ||
     getWidgetByName(schema.widget) ||
-    getWidgetByChoices(field) ||
+    getWidgetByChoices(resolvable) ||
     getWidgetByVocabulary(schema.vocabulary) ||
-    getWidgetByVocabularyFromHint(field) ||
+    getWidgetByVocabularyFromHint(resolvable) ||
     getWidgetByFactory(schema.factory) ||
     getWidgetByType(schema.type) ||
     getWidgetDefault();
 
   return (
     <Widget
-      {...buildWidgetProps(fieldProps)}
+      {...buildWidgetProps({
+        name,
+        schema,
+        value: field.value,
+        required,
+        errors: field.meta.errors,
+        className,
+      })}
       onChange={(value: any) => {
-        fieldProps.onChange?.(value);
-        onFieldChange(value);
+        props.onChange?.(value);
+        if (props.setValue) props.setValue(value);
+        else field.onChange(value);
       }}
       onBlur={() => {
-        fieldProps.onBlur?.();
-        onFieldBlur();
+        props.onBlur?.();
+        field.onBlur();
       }}
     />
   );
 };
 
-const AtomField = (props: AtomFieldProps) => {
-  const field = useFieldContext();
-  const value = field.state.value;
-
-  const [fieldValue, setField] = useFieldFocusedAtom<
-    Content,
-    DeepKeys<Content>
-  >(props.formAtom, props.name as DeepKeys<Content>);
-
-  // atom -> form (programmatic update; runs TanStack Form’s flow)
-  useEffect(() => {
-    if (fieldValue !== value) {
-      // prefer handleChange to keep validators/touched consistent
-      field.handleChange(fieldValue as typeof value);
-    }
-  }, [fieldValue, value, field]);
-
-  return renderFieldWidget({
-    fieldProps: props,
-    onFieldBlur: () => field.handleBlur(),
-    onFieldChange: (value: any) => {
-      setField(value);
-      return field.handleChange(value);
-    },
-  });
-};
-
-const FormField = (props: FormFieldProps) => {
-  const field = useFieldContext();
-
-  return renderFieldWidget({
-    fieldProps: props,
-    onFieldBlur: () => field.handleBlur(),
-    onFieldChange: (value: any) => field.handleChange(value),
-  });
-};
-
-const Field = (props: FieldProps) => {
-  if ('formAtom' in props && props.formAtom) {
-    return <AtomField {...props} />;
-  }
-
-  return <FormField {...props} />;
-};
-
-export default Field;
+export default SchemaField;

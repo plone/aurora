@@ -1,6 +1,10 @@
 import { useEffect } from 'react';
-import { isDeepEqual } from '@plone/helpers';
-import { useAppForm } from '../Form/Form';
+import {
+  FormProvider,
+  isDeepEqual,
+  setByPath,
+  useFormStore,
+} from '@plone/helpers';
 import type { BlockConfigBase } from '@plone/types';
 import BlockSettingsFormRenderer from './BlockSettingsFormRenderer';
 
@@ -10,48 +14,24 @@ type BlockSettingsFormProps = {
   onFormDataChange?: (next: Record<string, unknown>) => void;
 };
 
-const setValueByPath = (
-  source: Record<string, unknown>,
-  path: string,
-  value: unknown,
-): Record<string, unknown> => {
-  const segments = path.split('.');
-  const root: Record<string, unknown> = { ...source };
-
-  let current: any = root;
-
-  for (let index = 0; index < segments.length - 1; index += 1) {
-    const segment = segments[index];
-    const nextSegment = segments[index + 1];
-    const nextIsArrayIndex = /^\d+$/.test(nextSegment);
-    const existing = current[segment];
-
-    if (Array.isArray(existing)) {
-      current[segment] = [...existing];
-    } else if (existing && typeof existing === 'object') {
-      current[segment] = { ...(existing as Record<string, unknown>) };
-    } else {
-      current[segment] = nextIsArrayIndex ? [] : {};
-    }
-
-    current = current[segment];
-  }
-
-  const lastSegment = segments[segments.length - 1];
-  current[lastSegment] = value;
-
-  return root;
-};
-
+/**
+ * The settings form of the selected block. The block's data lives in the
+ * Plate node: the form starts from it, writes every change back with
+ * `onFormDataChange`, and starts over when the node changes outside the form
+ * (for example, on undo).
+ */
 const BlockSettingsForm = (props: BlockSettingsFormProps) => {
-  const { schema: schemaProp, formData = {} } = props;
+  const { schema: schemaProp, formData = {}, onFormDataChange } = props;
 
-  const form = useAppForm({
-    defaultValues: formData,
+  // The sidebar remounts this form for each block.
+  const form = useFormStore<Record<string, unknown>>({
+    key: 'block-settings',
+    initialValues: formData,
+    onValuesChange: onFormDataChange,
   });
 
   useEffect(() => {
-    if (isDeepEqual(form.state.values, formData)) return;
+    if (isDeepEqual(form.getValues(), formData)) return;
     form.reset(formData);
   }, [form, formData]);
 
@@ -66,37 +46,34 @@ const BlockSettingsForm = (props: BlockSettingsFormProps) => {
       : schemaProp;
 
   return (
-    <BlockSettingsFormRenderer
-      schema={schema as any}
-      form={form}
-      getFieldProps={(fieldName) => ({
-        onChange: (value: unknown) => {
-          let nextData = setValueByPath(
-            (form.state.values as Record<string, unknown>) ?? {},
-            fieldName,
-            value,
-          );
+    <FormProvider form={form}>
+      <BlockSettingsFormRenderer
+        schema={schema as any}
+        getFieldProps={(fieldName) => ({
+          setValue: (value: unknown) => {
+            let nextData = setByPath(form.getValues(), fieldName, value);
 
-          // A field's schema may declare side effects on other fields when it
-          // changes, via `onChangeSideEffects(value, nextData)` returning a map
-          // of `fieldName -> value` patches. This is the single place block
-          // fields can react to each other (eg. coupling alignment and size).
-          const fieldSchema = (schema as any)?.properties?.[fieldName];
-          const sideEffects = fieldSchema?.onChangeSideEffects?.(
-            value,
-            nextData,
-          );
-
-          if (sideEffects) {
-            for (const [key, patchValue] of Object.entries(sideEffects)) {
-              nextData = setValueByPath(nextData, key, patchValue);
+            // A field's schema may declare side effects on other fields when
+            // it changes, via `onChangeSideEffects(value, nextData)` returning
+            // a map of `fieldName -> value` patches. This is the single place
+            // block fields can react to each other (eg. coupling alignment and
+            // size). The change and its side effects are written at once.
+            const fieldSchema = (schema as any)?.properties?.[fieldName];
+            const sideEffects = fieldSchema?.onChangeSideEffects?.(
+              value,
+              nextData,
+            );
+            if (sideEffects) {
+              for (const [key, patchValue] of Object.entries(sideEffects)) {
+                nextData = setByPath(nextData, key, patchValue);
+              }
             }
-          }
 
-          props.onFormDataChange?.(nextData);
-        },
-      })}
-    />
+            form.setValues(nextData);
+          },
+        })}
+      />
+    </FormProvider>
   );
 };
 

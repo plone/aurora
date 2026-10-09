@@ -5,7 +5,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import type { PrimitiveAtom, WritableAtom } from 'jotai';
 import { focusAtom } from 'jotai-optics';
 import type { OpticFor } from 'optics-ts';
-import type { DeepKeys, DeepValue } from '@tanstack/react-form';
+import type { Path, PathValue } from './form/path';
 
 /**
  * Initialises atoms with the provided values.
@@ -41,11 +41,11 @@ export const InitAtoms = ({
 
 // Returns the Readable/Writeable focused Atom of a field
 // given a formAtom and a field name
-export function useFieldFocusAtom<T, K extends DeepKeys<T>>(
+export function useFieldFocusAtom<T, K extends Path<T>>(
   anAtom: PrimitiveAtom<T>,
   field: K,
 ) {
-  return focusAtom<T, DeepValue<T, K>, void>(
+  return focusAtom<T, PathValue<T, K>, void>(
     anAtom,
     // @ts-expect-error https://github.com/jotaijs/jotai-optics/issues/6
     useCallback((optic: OpticFor<T>) => optic.prop(field as keyof T), [field]),
@@ -54,12 +54,12 @@ export function useFieldFocusAtom<T, K extends DeepKeys<T>>(
 
 // Returns the [value, setter] (`useAtom`-ed) ready to use focused atom of a field
 // (when referring to a Plone Aurora Form)
-export function useFieldFocusedAtom<T, K extends DeepKeys<T>>(
+export function useFieldFocusedAtom<T, K extends Path<T>>(
   atom: PrimitiveAtom<T>,
   field: K,
 ) {
   return useAtom(
-    focusAtom<T, DeepValue<T, K>, void>(
+    focusAtom<T, PathValue<T, K>, void>(
       atom,
       // @ts-expect-error https://github.com/jotaijs/jotai-optics/issues/6
       useCallback(
@@ -72,12 +72,12 @@ export function useFieldFocusedAtom<T, K extends DeepKeys<T>>(
 
 // Returns the setter of a focused atom of a field
 // given a formAtom and a field name
-export function useSetFieldFocusedAtom<T, K extends DeepKeys<T>>(
+export function useSetFieldFocusedAtom<T, K extends Path<T>>(
   atom: PrimitiveAtom<T>,
   field: K,
 ) {
   return useSetAtom(
-    focusAtom<T, DeepValue<T, K>, void>(
+    focusAtom<T, PathValue<T, K>, void>(
       atom,
       // @ts-expect-error https://github.com/jotaijs/jotai-optics/issues/6
       useCallback(
@@ -90,12 +90,12 @@ export function useSetFieldFocusedAtom<T, K extends DeepKeys<T>>(
 
 // Returns the value of focused atom of a field
 // given a formAtom and a field name
-export function useFieldValueFocusedAtom<T, K extends DeepKeys<T>>(
+export function useFieldValueFocusedAtom<T, K extends Path<T>>(
   atom: PrimitiveAtom<T>,
   field: K,
 ) {
   return useAtomValue(
-    focusAtom<T, DeepValue<T, K>, void>(
+    focusAtom<T, PathValue<T, K>, void>(
       atom,
       // @ts-expect-error https://github.com/jotaijs/jotai-optics/issues/6
       useCallback(
