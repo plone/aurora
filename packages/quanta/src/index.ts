@@ -16,9 +16,24 @@ export * from './components/SearchField/SearchField';
 export * from './components/Select/Select';
 export * from './components/TextAreaField/TextAreaField';
 export * from './components/TextField/TextField';
-export { SizeWidget } from './components/SizeWidget/SizeWidget';
-export { AlignWidget } from './components/AlignWidget/AlignWidget';
-export { WidthWidget } from './components/WidthWidget/WidthWidget';
+export {
+  SizePicker,
+  type SizePickerProps,
+} from './components/SizePicker/SizePicker';
+export {
+  AlignPicker,
+  type AlignPickerProps,
+} from './components/AlignPicker/AlignPicker';
+export {
+  WidthPicker,
+  type WidthPickerProps,
+} from './components/WidthPicker/WidthPicker';
+/** @deprecated Use `SizePicker`. The `size` widget is now an adapter in `@plone/cmsui`. */
+export { SizePicker as SizeWidget } from './components/SizePicker/SizePicker';
+/** @deprecated Use `AlignPicker`. The `align` widget is now an adapter in `@plone/cmsui`. */
+export { AlignPicker as AlignWidget } from './components/AlignPicker/AlignPicker';
+/** @deprecated Use `WidthPicker`. The `width` widget is now an adapter in `@plone/cmsui`. */
+export { WidthPicker as WidthWidget } from './components/WidthPicker/WidthPicker';
 
 export * from './components/DateTimePicker/DateTimePicker';
 export * from './components/DatePicker/DatePicker';

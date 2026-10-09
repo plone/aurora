@@ -1,11 +1,16 @@
 import type { ConfigType } from '@plone/registry';
-import { AlignWidget, SizeWidget, WidthWidget } from '@plone/quanta';
-import { DateField } from '@plone/components';
 import { RecurrenceWidget } from '../components/RecurrenceWidget/RecurrenceWidget';
 import { ObjectBrowserWidget } from '../components/ObjectBrowserWidget/ObjectBrowserWidget';
 import ImageWidget from '../components/ImageWidget/ImageWidget';
 import { BooleanWidget } from '../components/BooleanWidget/BooleanWidget';
 import { TextWidget } from '../components/TextWidget/TextWidget';
+import { TextareaWidget } from '../components/TextareaWidget/TextareaWidget';
+import { DateWidget } from '../components/DateWidget/DateWidget';
+import {
+  AlignWidget,
+  SizeWidget,
+  WidthWidget,
+} from '../components/PickerWidgets/PickerWidgets';
 import { DateTimeWidget } from '../components/DateTimeWidget/DateTimeWidget';
 import { QuerystringWidget } from '../components/QuerystringWidget/QuerystringWidget';
 
@@ -16,7 +21,11 @@ export default function install(config: ConfigType) {
     key: 'id',
     definition: { recurrence: RecurrenceWidget },
   });
-  config.registerWidget({ key: 'widget', definition: { date: DateField } });
+  config.registerWidget({ key: 'widget', definition: { date: DateWidget } });
+  config.registerWidget({
+    key: 'widget',
+    definition: { textarea: TextareaWidget },
+  });
   config.registerWidget({
     key: 'widget',
     definition: { datetime: DateTimeWidget },
