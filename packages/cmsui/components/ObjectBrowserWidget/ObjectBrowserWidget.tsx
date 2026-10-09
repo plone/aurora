@@ -1,3 +1,4 @@
+import type { Brain } from '@plone/types';
 import type { TextFieldProps as QuantaTextFieldProps } from '@plone/quanta';
 import {
   Description,
@@ -72,11 +73,22 @@ export function ObjectBrowserWidgetComponent(props: ObjectBrowserWidgetProps) {
   );
 }
 
-export function ObjectBrowserWidget(props: ObjectBrowserWidgetProps) {
+export function ObjectBrowserWidget(
+  props: ObjectBrowserWidgetProps & { value?: Brain[] | null },
+) {
   const { content } = useLoaderData<typeof editLoader>();
-  const { label, description, errorMessage, ...rest } = props;
+  const { label, description, errorMessage, value, defaultValue, ...rest } =
+    props;
   return (
-    <ObjectBrowserProvider config={{ ...rest, initialPath: content?.['@id'] }}>
+    <ObjectBrowserProvider
+      config={{
+        ...rest,
+        // The browser keeps its own selection, starting from the field value.
+        defaultValue: value ?? defaultValue ?? undefined,
+        title: label,
+        initialPath: content?.['@id'],
+      }}
+    >
       <ObjectBrowserWidgetComponent {...{ label, description, errorMessage }} />
     </ObjectBrowserProvider>
   );

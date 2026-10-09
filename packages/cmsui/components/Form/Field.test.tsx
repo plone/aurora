@@ -10,22 +10,31 @@ const marker = (name: string) => {
   return Widget;
 };
 
-function TestForm(fieldProps: Record<string, unknown>) {
+function TestForm({
+  name,
+  ...schema
+}: { name: string } & Record<string, unknown>) {
   const form = useAppForm({
-    defaultValues: { [fieldProps.name as string]: '' },
+    defaultValues: { [name]: '' },
   });
   return (
     <form.AppField
-      name={fieldProps.name as string}
+      name={name}
       // eslint-disable-next-line react/no-children-prop
       children={(field: any) => (
-        <field.Quanta {...fieldProps} value={field.state.value} />
+        <field.SchemaField
+          name={name}
+          schema={schema}
+          value={field.state.value}
+        />
       )}
     />
   );
 }
 
-const renderedWidget = (fieldProps: Record<string, unknown>) => {
+const renderedWidget = (
+  fieldProps: { name: string } & Record<string, unknown>,
+) => {
   render(<TestForm {...fieldProps} />);
   return screen.getByTestId('widget').textContent;
 };
