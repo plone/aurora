@@ -1421,4 +1421,16 @@ describe('Widgets registry: getWidget', () => {
     const Widget = config.getWidget('default');
     expect(Widget).not.toBe(config.widgets.default);
   });
+
+  it('gets a widget from the given category', () => {
+    expect(config.getWidget('special', 'widget')).toBe(
+      config.widgets.widget.special,
+    );
+    expect(config.getWidget('title', 'id')).toBe(config.widgets.id.title);
+  });
+
+  it('does not match a key registered in another category', () => {
+    expect(config.getWidget('title', 'widget')).toBeUndefined();
+    expect(config.getWidget('special', 'id')).toBeUndefined();
+  });
 });
