@@ -32,7 +32,7 @@ export default function WorkflowModal() {
       setIncludeChildren(false);
       const params = new URLSearchParams();
       items.forEach((item) => params.append('path', item['@id']));
-      dataFetcher.load(`/@@contents/@@workflow?${params.toString()}`);
+      dataFetcher.load(`/@contents/workflow?${params.toString()}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showWorkflow]);
@@ -88,7 +88,7 @@ export default function WorkflowModal() {
       {
         method: 'POST',
         encType: 'application/json',
-        action: '/@@contents/@@workflow',
+        action: '/@contents/workflow',
       },
     );
     close();

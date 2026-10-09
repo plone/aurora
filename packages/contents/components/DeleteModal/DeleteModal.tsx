@@ -73,7 +73,7 @@ export default function DeleteModal() {
       {
         method: 'DELETE',
         encType: 'application/json',
-        action: '/@@contents/@@delete',
+        action: '/@contents/delete',
       },
     );
     close();

@@ -27,7 +27,7 @@ export default function TagsModal() {
       setAdded([]);
       setRemoved([]);
       setInput('');
-      vocabularyFetcher.load('/@@contents/@@tags');
+      vocabularyFetcher.load('/@contents/tags');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showTags]);
@@ -92,7 +92,7 @@ export default function TagsModal() {
     fetcher.submit({ items: itemsToTag } as unknown as SubmitTarget, {
       method: 'PATCH',
       encType: 'application/json',
-      action: '/@@contents/@@tags',
+      action: '/@contents/tags',
     });
     close();
   };

@@ -60,7 +60,7 @@ export default function PropertiesModal() {
     if (showProperties) {
       const params = new URLSearchParams();
       items.forEach((item) => params.append('path', item['@id']));
-      dataFetcher.load(`/@@contents/@@properties?${params.toString()}`);
+      dataFetcher.load(`/@contents/properties?${params.toString()}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showProperties]);
@@ -139,7 +139,7 @@ export default function PropertiesModal() {
       {
         method: 'PATCH',
         encType: 'application/json',
-        action: '/@@contents/@@properties',
+        action: '/@contents/properties',
       },
     );
     close();
