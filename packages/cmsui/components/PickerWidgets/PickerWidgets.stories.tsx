@@ -21,7 +21,8 @@ function Controlled({
   Widget,
   ...args
 }: React.ComponentProps<typeof AlignWidget> & {
-  Widget: typeof AlignWidget | typeof SizeWidget | typeof WidthWidget;
+  // The three pickers take different `actionsInfoMap` shapes.
+  Widget: React.ComponentType<any>;
 }) {
   const [value, setValue] = useState(args.value ?? null);
   return <Widget {...args} value={value} onChange={setValue} />;
