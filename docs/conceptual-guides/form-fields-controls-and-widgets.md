@@ -239,6 +239,10 @@ For example, the align widget of a block schema reads its `actions` this way.
 {ref}`core-widgets-label` lists the widget options of each core widget.
 Widget props from the field's tagged values, `frontendOptions.widgetProps`, are applied last.
 
+In Plone Aurora, the widget registry checks this contract when it is type-checked.
+`@plone/cmsui` declares it in the `WidgetPropsMap` of `@plone/types`, so registering a widget that doesn't take the contract's props is a type error.
+To test a widget's behavior against the contract, see {ref}`test-a-widget-label`.
+
 The contract is about values.
 The form does not need to know whether a widget uses an HTML input, a React Aria component, a modal picker, or several controls together.
 It passes the current value in and receives the next value back.
