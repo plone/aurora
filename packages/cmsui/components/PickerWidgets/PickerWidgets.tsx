@@ -8,7 +8,7 @@ import {
   type WidthPickerProps,
 } from '@plone/quanta';
 
-type PickerWidgetProps<P> = FormWidgetProps<string | null> &
+type PickerWidgetProps<P> = FormWidgetProps<string> &
   Pick<P, Extract<keyof P, 'actions' | 'actionsInfoMap'>>;
 
 /**
@@ -29,7 +29,7 @@ const toPickerProps = ({
   invalid,
   errorMessage,
   className,
-}: FormWidgetProps<string | null>) => ({
+}: FormWidgetProps<string>) => ({
   name,
   value: value ?? defaultValue ?? null,
   onChange: (next: string) => onChange(next),

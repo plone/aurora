@@ -333,6 +333,20 @@ If your add-on renders `ContentForm`, pass it the `path` of the edited object, o
 + const { path } = useWidgetContext();
 ```
 
+#### Registered widgets are type-checked against the contract
+
+```{versionchanged} 1.0.0-alpha.20
+The widget registry types the widgets it accepts with the widget contract, `FormWidgetProps`, once `@plone/cmsui` is installed.
+```
+
+```{versionadded} 1.0.0-alpha.20
+`WidgetPropsMap` and `RegisteredWidgetProps` in `@plone/types`, and the `describeWidgetContract` test helper in `@plone/cmsui/testing/widgetContract`.
+```
+
+If your add-on registers a widget whose props don't follow the widget contract, the type check now fails.
+Type the widget with `FormWidgetProps`, and adapt the props it reads, as described in the previous steps.
+Test it with `describeWidgetContract`, see {ref}`test-a-widget-label`.
+
 #### Validators receive `t`
 
 ```{versionadded} 1.0.0-alpha.20

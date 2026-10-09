@@ -285,9 +285,10 @@ const meta = {
   },
   tags: ['autodocs'],
   args: {
+    name: 'relatedItems',
     label: 'Related items',
     description: 'Select content to feature on the page.',
-    title: 'Select Content',
+    onChange: () => {},
   },
 } satisfies Meta<ObjectBrowserWidgetStoryProps>;
 
