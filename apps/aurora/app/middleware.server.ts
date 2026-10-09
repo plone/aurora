@@ -54,11 +54,18 @@ export function getPloneClientClass() {
     : PloneClient;
 }
 
+// Module-level, so the configuration is applied once per process. During
+// development, editing the configuration re-evaluates this module through
+// HMR, which resets the flag and applies the new configuration.
+let serverConfigInstalled = false;
+
 export const installServerMiddleware: Route.MiddlewareFunction = async (
   { request, context },
   next,
 ) => {
+  if (serverConfigInstalled) return;
   installServer();
+  serverConfigInstalled = true;
 };
 
 export const PloneClientMiddleware: Route.MiddlewareFunction = async (
