@@ -87,7 +87,7 @@ export default function RenameModal() {
     fetcher.submit({ items: itemsToRename } as unknown as SubmitTarget, {
       method: 'PATCH',
       encType: 'application/json',
-      action: '/@@contents/@@rename',
+      action: '/@contents/rename',
     });
     close();
   };

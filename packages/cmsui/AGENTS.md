@@ -15,6 +15,7 @@ This file applies only to `packages/cmsui` and its subdirectories.
 ## Package Model
 
 - **Routes** are declared in `config/routes.ts`.
+- Route paths follow the Plone conventions: views (routes that render a page) use `@@`, like `@@edit`; resource routes (data or actions for the UI) use a single `@`, like `@search` and the REST API endpoints.
 - **Widgets** (form input components) are registered in `config/widgets.ts`.
 - **Control panels** configuration lives in `config/controlpanels.ts`.
 - **Components** are organized under `components/<ComponentName>/`.

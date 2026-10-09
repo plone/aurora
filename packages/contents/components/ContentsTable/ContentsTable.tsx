@@ -178,7 +178,7 @@ export function ContentsTable({
       {
         method: 'PATCH',
         encType: 'application/json',
-        action: `/@@contents/@@order`,
+        action: `/@contents/order`,
       },
     );
   };
@@ -310,7 +310,7 @@ export function ContentsTable({
     await fetcher.submit(clipboard, {
       method: 'POST',
       encType: 'application/json',
-      action: `/@@contents/@@paste${pathname}`,
+      action: `/@contents/paste${pathname}`,
     });
     // TODO when do we clean the clipboard?
   };

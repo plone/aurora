@@ -1,0 +1,1 @@
+Moved the Contents view resource routes from `/@@contents/@@<action>` to `/@contents/<action>` (`delete`, `upload`, `rename`, `workflow`, `tags`, `properties`, `order` and `paste`): resources use a single `@`, like the REST API endpoints, and views use `@@`. Update any code that calls the old URLs. @sneridagh

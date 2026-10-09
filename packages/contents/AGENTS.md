@@ -26,6 +26,7 @@ This file applies only to `packages/contents` and its subdirectories.
 ## Routes And Mutations
 
 - Route files live under `routes/` and should stay focused on auth, request parsing, and Plone client calls.
+- The Contents view is the `@@contents` route. The resource routes it calls (delete, upload, rename, workflow, tags, properties, order, paste) live under the `@contents` prefix: views use `@@`, resources use a single `@`, like the REST API endpoints.
 - Keep mutation contracts explicit and small. Prefer passing the minimum payload required for delete, paste, and ordering actions.
 - Error handling should remain compatible with React Router error boundaries and toast reporting.
 

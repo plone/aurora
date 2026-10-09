@@ -126,7 +126,7 @@ export default function UploadModal() {
       {
         method: 'POST',
         encType: 'application/json',
-        action: '/@@contents/@@upload',
+        action: '/@contents/upload',
       },
     );
     close();
