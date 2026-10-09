@@ -18,6 +18,7 @@ import {
   firstInvalidField,
   focusField,
 } from '../Form/validation';
+import { WidgetContextProvider } from '../Form/WidgetContext';
 import Sidebar, { sidebarAtom } from '../Sidebar/Sidebar';
 import BlocksEditor from '../BlockEditor/BlocksEditor';
 
@@ -27,6 +28,11 @@ interface Schema extends FieldsetsSchema {
 
 interface ContentFormProps {
   content: Content;
+  /**
+   * The path the form is about: the edited object, or the container a new
+   * object is added to. Widgets such as the object browser start from it.
+   */
+  path: string;
   schema: Schema;
   heading: ReactNode;
   submitMethod: 'post' | 'patch';
@@ -34,6 +40,7 @@ interface ContentFormProps {
 
 export default function ContentForm({
   content,
+  path,
   schema,
   heading,
   submitMethod,
@@ -84,76 +91,81 @@ export default function ContentForm({
 
   return (
     <FormProvider form={form}>
-      <div
-        id="main"
-        className={clsx(
-          `
-            grid grid-rows-[minmax(100vh,auto)] transition-[grid-template-columns] duration-200
-            ease-linear
-          `,
-          {
-            'grid-cols-[1fr_300px]': !collapsed,
-            'grid-cols-[1fr_0px]': collapsed,
-          },
-        )}
+      <WidgetContextProvider
+        mode={submitMethod === 'post' ? 'add' : 'edit'}
+        path={path}
       >
-        <main className="mx-4 pt-8">
-          <Tabs
-            selectedKey={selectedTab}
-            onSelectionChange={setSelectedTab}
-            tabs={[
-              {
-                id: 'blocks',
-                title: t('cmsui.blocksEditor.blocksTab'),
-                content: <BlocksEditor />,
-              },
-              {
-                id: 'content',
-                title: t('cmsui.blocksEditor.contentTab'),
-                content: (
-                  <div className="flex flex-col">
-                    <h1 className="mb-4 text-2xl font-bold">{heading}</h1>
-                    <form>
-                      <SchemaFieldsets schema={schema} />
-                    </form>
-                  </div>
-                ),
-              },
-            ]}
-          />
-          <Plug pluggable="toolbar-top" id="edit-save-button">
-            <button
-              aria-label={t('cmsui.save')}
-              type="submit"
-              onClick={async () => {
-                const result = await form.submit();
-                if (!result.ok) showErrors(result.errors);
-              }}
-              className="primary"
+        <div
+          id="main"
+          className={clsx(
+            `
+              grid grid-rows-[minmax(100vh,auto)] transition-[grid-template-columns] duration-200
+              ease-linear
+            `,
+            {
+              'grid-cols-[1fr_300px]': !collapsed,
+              'grid-cols-[1fr_0px]': collapsed,
+            },
+          )}
+        >
+          <main className="mx-4 pt-8">
+            <Tabs
+              selectedKey={selectedTab}
+              onSelectionChange={setSelectedTab}
+              tabs={[
+                {
+                  id: 'blocks',
+                  title: t('cmsui.blocksEditor.blocksTab'),
+                  content: <BlocksEditor />,
+                },
+                {
+                  id: 'content',
+                  title: t('cmsui.blocksEditor.contentTab'),
+                  content: (
+                    <div className="flex flex-col">
+                      <h1 className="mb-4 text-2xl font-bold">{heading}</h1>
+                      <form>
+                        <SchemaFieldsets schema={schema} />
+                      </form>
+                    </div>
+                  ),
+                },
+              ]}
+            />
+            <Plug pluggable="toolbar-top" id="edit-save-button">
+              <button
+                aria-label={t('cmsui.save')}
+                type="submit"
+                onClick={async () => {
+                  const result = await form.submit();
+                  if (!result.ok) showErrors(result.errors);
+                }}
+                className="primary"
+              >
+                <Checkbox />
+              </button>
+            </Plug>
+            <Plug
+              pluggable="toolbar-top"
+              id="button-cancel"
+              dependencies={[content['@id']] as any}
             >
-              <Checkbox />
-            </button>
-          </Plug>
-          <Plug
-            pluggable="toolbar-top"
-            id="button-cancel"
-            dependencies={[content['@id']] as any}
-          >
-            <Link aria-label={t('cmsui.cancel')} href={content['@id']}>
-              <Close />
-            </Link>
-          </Plug>
-          <Plug pluggable="toolbar-bottom" id="button-settings">
-            <button
-              aria-label={t('cmsui.toolbar.settings')}
-              onClick={() => setCollapsed((state) => !state)}
-            >
-              <Settings />
-            </button>
-          </Plug>
-        </main>
-        <Sidebar />
-      </div>
+              <Link aria-label={t('cmsui.cancel')} href={content['@id']}>
+                <Close />
+              </Link>
+            </Plug>
+            <Plug pluggable="toolbar-bottom" id="button-settings">
+              <button
+                aria-label={t('cmsui.toolbar.settings')}
+                onClick={() => setCollapsed((state) => !state)}
+              >
+                <Settings />
+              </button>
+            </Plug>
+          </main>
+          <Sidebar />
+        </div>
+      </WidgetContextProvider>
     </FormProvider>
   );
 }

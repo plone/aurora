@@ -6,6 +6,7 @@ import {
   redirect,
   useLoaderData,
   useLocation,
+  useParams,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   type RouterContextProvider,
@@ -70,6 +71,7 @@ export default function Add() {
   const { schema, type } = useLoaderData<typeof loader>();
   const { t } = useTranslation();
   const location = useLocation();
+  const params = useParams();
 
   const emptyContent = {
     '@type': type,
@@ -84,6 +86,7 @@ export default function Add() {
       // container or another type.
       key={`${location.pathname}${location.search}`}
       content={emptyContent}
+      path={`/${params['*'] || ''}`}
       schema={schema}
       heading={`${t('cmsui.add')} ${schema.title}`}
       submitMethod="post"

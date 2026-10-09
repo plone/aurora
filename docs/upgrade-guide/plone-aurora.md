@@ -315,6 +315,24 @@ The forms no longer use TanStack Form, and `@plone/cmsui` no longer depends on `
 + const setTitle = useSetFieldValue<string>('title');
 ```
 
+#### Widgets read where the form is from `useWidgetContext`
+
+```{versionadded} 1.0.0-alpha.20
+`useWidgetContext` and `WidgetContextProvider` in `@plone/cmsui`, and the `path` prop of `ContentForm`.
+```
+
+Widgets must not read the route's loader data or the URL to know which content they are in.
+Read the form's `mode`, `path`, and `containerPath` with `useWidgetContext` instead.
+If your add-on renders `ContentForm`, pass it the `path` of the edited object, or of the container when adding.
+
+```diff
+- const { content } = useLoaderData<typeof editLoader>();
+- const path = content['@id'];
++ import { useWidgetContext } from '@plone/cmsui/components/Form/WidgetContext';
++
++ const { path } = useWidgetContext();
+```
+
 #### Validators receive `t`
 
 ```{versionadded} 1.0.0-alpha.20

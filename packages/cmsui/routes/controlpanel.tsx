@@ -26,6 +26,7 @@ import {
   focusField,
   getServerValidationErrors,
 } from '../components/Form/validation';
+import { WidgetContextProvider } from '../components/Form/WidgetContext';
 import Back from '@plone/icons/svg/arrow-left.svg?react';
 import Checkbox from '@plone/icons/svg/checkbox.svg?react';
 import config from '@plone/registry';
@@ -135,36 +136,38 @@ function ControlPanelForm({
   // TODO: filter fields with filterControlPanelsSchema from config.settings
   return (
     <FormProvider form={form}>
-      <Plug pluggable="toolbar-top" id="button-back">
-        <Link aria-label="back" href="/controlpanel">
-          <Back />
-        </Link>
-      </Plug>
-      <main>
-        <Container width="default" className="route-controlpanel">
-          <h1 className="documentFirstHeading">
-            {controlpanel.title || 'a control panel'}
-          </h1>
-          <form>
-            <SchemaFieldsets schema={schema as FieldsetsSchema} />
-            <Plug pluggable="toolbar-top" id="edit-save-button">
-              {/* A native button: react-aria's onPress does not fire inside
+      <WidgetContextProvider mode="settings" path="/">
+        <Plug pluggable="toolbar-top" id="button-back">
+          <Link aria-label="back" href="/controlpanel">
+            <Back />
+          </Link>
+        </Plug>
+        <main>
+          <Container width="default" className="route-controlpanel">
+            <h1 className="documentFirstHeading">
+              {controlpanel.title || 'a control panel'}
+            </h1>
+            <form>
+              <SchemaFieldsets schema={schema as FieldsetsSchema} />
+              <Plug pluggable="toolbar-top" id="edit-save-button">
+                {/* A native button: react-aria's onPress does not fire inside
                   the toolbar's shadow root. */}
-              <button
-                aria-label={t('cmsui.save')}
-                type="submit"
-                onClick={async () => {
-                  const result = await form.submit();
-                  if (!result.ok) showErrors(result.errors);
-                }}
-                className="primary"
-              >
-                <Checkbox />
-              </button>
-            </Plug>
-          </form>
-        </Container>
-      </main>
+                <button
+                  aria-label={t('cmsui.save')}
+                  type="submit"
+                  onClick={async () => {
+                    const result = await form.submit();
+                    if (!result.ok) showErrors(result.errors);
+                  }}
+                  className="primary"
+                >
+                  <Checkbox />
+                </button>
+              </Plug>
+            </form>
+          </Container>
+        </main>
+      </WidgetContextProvider>
     </FormProvider>
   );
 }

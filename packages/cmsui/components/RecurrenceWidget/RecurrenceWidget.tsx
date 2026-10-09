@@ -11,7 +11,6 @@ import { lazy, Suspense, useMemo, useState } from 'react';
 const RecurrenceWidgetModal = lazy(
   () => import('./Components/RecurrenceWidgetModal'),
 );
-import { useFieldValue } from '@plone/helpers';
 
 import { rrulestr } from './rrule';
 import SelectedDates from './Components/SelectedDates';
@@ -20,8 +19,12 @@ import type { FormWidgetProps } from '@plone/types';
 
 type RecurrenceWidgetProps = FormWidgetProps<string | null>;
 
-export function RecurrenceWidget({ label, onChange }: RecurrenceWidgetProps) {
-  const recurrence = useFieldValue<string | null>('recurrence') ?? null;
+export function RecurrenceWidget({
+  label,
+  value,
+  onChange,
+}: RecurrenceWidgetProps) {
+  const recurrence = value ?? null;
 
   const rrule = recurrence ? rrulestr(recurrence) : null;
   const rruleText = getRruleText(rrule);

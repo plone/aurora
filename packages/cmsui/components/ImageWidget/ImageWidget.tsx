@@ -10,6 +10,8 @@ import {
 } from '@plone/icons';
 import type { Brain } from '@plone/types';
 import { Description, FieldError, Label } from '../Field/Field';
+import { setByPath, useOptionalFormContext } from '@plone/helpers';
+import { useWidgetContext } from '../Form/WidgetContext';
 import { ObjectBrowserModal } from '../ObjectBrowserWidget/ObjectBrowserModal';
 import {
   ObjectBrowserProvider,
@@ -63,6 +65,12 @@ type ImageWidgetProps = BaseFormFieldProps &
   CommonImageInputProps & {
     onChange?: ImageWidgetChange;
     error?: Array<unknown>;
+    /**
+     * The details of a picked image (`image_field`, `image_scales`, `title`)
+     * to also store, in the form fields of the same name. Block schemas set
+     * it as a widget option, for example on the image block's `url` field.
+     */
+    extraFields?: Array<keyof ImageChangeExtras>;
   };
 
 type CreateContentResponse = {
@@ -131,14 +139,6 @@ function getBasePath(path: string) {
 
   if (segments.length <= 1) return '/';
   return `/${segments.slice(0, -1).join('/')}`;
-}
-
-function getEditPathFromUrl(pathname: string) {
-  if (pathname.startsWith('/@@edit/')) {
-    return `/${pathname.replace(/^\/@@edit\//, '')}`;
-  }
-  if (pathname === '/@@edit') return '/';
-  return pathname;
 }
 
 function readFileAsDataURL(file: File) {
@@ -212,18 +212,13 @@ function ImageInputBase({
   const [uploadError, setUploadError] = useState<string>('');
   const [linkValue, setLinkValue] = useState(imageValue);
 
-  const resolvedCurrentPath = useMemo(() => {
-    const fallbackPath =
-      typeof window !== 'undefined'
-        ? getEditPathFromUrl(window.location.pathname)
-        : '/';
-    return currentPath || fallbackPath;
-  }, [currentPath]);
-
-  const resolvedUploadPath = useMemo(
-    () => uploadPath || getBasePath(resolvedCurrentPath),
-    [resolvedCurrentPath, uploadPath],
-  );
+  // Where the form is: the object browser starts there, and uploads go to
+  // its container. Explicit paths win.
+  const widgetContext = useWidgetContext();
+  const resolvedCurrentPath = currentPath || widgetContext.path;
+  const resolvedUploadPath =
+    uploadPath ||
+    (currentPath ? getBasePath(currentPath) : widgetContext.containerPath);
   const uploadAction = useMemo(
     () =>
       resolvedUploadPath === '/'
@@ -492,8 +487,10 @@ export default function ImageWidget(props: ImageWidgetProps) {
     error,
     onChange,
     className,
+    extraFields,
     ...rest
   } = props;
+  const form = useOptionalFormContext();
 
   const fieldError =
     typeof errorMessage === 'string'
@@ -509,7 +506,19 @@ export default function ImageWidget(props: ImageWidgetProps) {
         className={className}
         value={props.value}
         currentPath={rest.currentPath}
-        onValueChange={(value, extras) => onChange?.(value, extras)}
+        onValueChange={(value, extras) => {
+          // Store the declared details of the picked image in their own
+          // fields, in one change, before the field itself.
+          if (form && extraFields?.length) {
+            form.setValues(
+              extraFields.reduce(
+                (values, field) => setByPath(values, field, extras?.[field]),
+                form.getValues(),
+              ),
+            );
+          }
+          onChange?.(value, extras);
+        }}
       />
 
       {description && <Description>{description}</Description>}

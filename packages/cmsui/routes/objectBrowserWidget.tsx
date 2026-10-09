@@ -3,7 +3,10 @@ import {
   RouterContextProvider,
   type LoaderFunctionArgs,
 } from 'react-router';
-import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+import {
+  ploneClientContext,
+  ploneContentContext,
+} from '@plone/aurora/app/middleware.server';
 import { flattenToAppURL } from '@plone/helpers';
 
 export async function loader({
@@ -24,36 +27,46 @@ export async function loader({
 
   delete query['path.depth'];
   delete query['path.query'];
-  const { data: results } = await cli.search({
-    query: {
-      path: pathQuery,
-      ...query,
-      SearchableText: query.SearchableText
-        ? `${query.SearchableText}*`
-        : undefined,
-    },
-  });
-  // const items = response.items;
-  // const firstLevelIds = items
-  //   .filter((i) => i['@id'].split('/').length > 1)
-  //   .map((i) => i['@id']);
+  // The root middleware has already loaded the browsed folder, in this same
+  // request, with its breadcrumbs expanded: they are as fresh as a separate
+  // request would get, without the extra call. If the folder doesn't exist,
+  // the middleware fails the request before this loader runs.
+  const breadcrumbs = context.get(ploneContentContext)['@components']
+    ?.breadcrumbs ?? { '@id': '', items: [] };
 
-  // const results = firstLevelIds.reduce((acc, curr) => {
-  //   const child = items.some((item) => item['@id'] === curr);
+  let results;
+  try {
+    ({ data: results } = await cli.search({
+      query: {
+        path: pathQuery,
+        ...query,
+        SearchableText: query.SearchableText
+          ? `${query.SearchableText}*`
+          : undefined,
+      },
+    }));
+    // const items = response.items;
+    // const firstLevelIds = items
+    //   .filter((i) => i['@id'].split('/').length > 1)
+    //   .map((i) => i['@id']);
 
-  //   return [acc, ...;
-  // }, []);
-  // Has to be used?
-  // const strippedRequest = new Request(request.url.replace(/\?.*$/, ''), {
-  //   headers: request.headers,
-  // });
+    // const results = firstLevelIds.reduce((acc, curr) => {
+    //   const child = items.some((item) => item['@id'] === curr);
 
-  // TODO replace with reading from the context expander
-  // const content = context.get(ploneContentContext),
-  // content.data['@components'].breadcrumbs....
-  const { data: breadcrumbs } = await cli.getBreadcrumbs({
-    path,
-  });
+    //   return [acc, ...;
+    // }, []);
+    // Has to be used?
+    // const strippedRequest = new Request(request.url.replace(/\?.*$/, ''), {
+    //   headers: request.headers,
+    // });
+  } catch (error) {
+    // A search the API rejects (for example, an invalid query) gives an
+    // empty listing, instead of the error page replacing the form the
+    // browser is used in.
+    const status = (error as { status?: number })?.status;
+    if (!status || status >= 500) throw error;
+    results = { '@id': '', items: [], items_total: 0 };
+  }
 
   return data(flattenToAppURL({ results, breadcrumbs }), {
     headers: {
