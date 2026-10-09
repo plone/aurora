@@ -75,12 +75,3 @@ release-management-notes/index
 release-notes/index
 tutorials/index
 ```
-
-% Only check change log entries in Plone Aurora documentation—not when it is included in the main Plone documentation—to ensure links work and do not redirect.
-% It is OK to ignore warnings, such as the following:
-% docs/source/news/5280.bugfix: WARNING: document isn't included in any toctree
-````{ifconfig} context in ("plone-aurora",)
-```{toctree}
-news*
-```
-````
