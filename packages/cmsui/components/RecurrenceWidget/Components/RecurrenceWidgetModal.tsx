@@ -4,7 +4,8 @@ import CloseIcon from '@plone/icons/svg/close.svg?react';
 import CheckboxIcon from '@plone/icons/svg/checkbox.svg?react';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useState } from 'react';
-import { useFieldValue } from '@plone/helpers';
+import { useFieldValue, useFormStore } from '@plone/helpers';
+import { useAtomValue } from 'jotai';
 import {
   byMonthOptions,
   byYearOptions,
@@ -24,19 +25,6 @@ import {
   type RecurrenceEndOption,
   type YearlyOption,
 } from '../utils';
-import {
-  createFormHook,
-  createFormHookContexts,
-  useStore,
-} from '@tanstack/react-form';
-
-const { fieldContext, formContext } = createFormHookContexts();
-const { useAppForm } = createFormHook({
-  fieldComponents: {},
-  formComponents: {},
-  fieldContext,
-  formContext,
-});
 
 import {
   RRule,
@@ -144,11 +132,19 @@ const RecurrenceWidgetModal = ({
     return [];
   });
 
-  const form = useAppForm({
-    defaultValues,
+  // The modal's own form. It is not provided as the current form: the fields
+  // inside the modal still read the event's values (`start`, `end`) from the
+  // content form.
+  const form = useFormStore<FormDefaultValues>({
+    key: 'recurrence',
+    initialValues: defaultValues,
   });
-
-  const formValues = useStore(form.store, (state) => state.values);
+  // The rule summary and the visible fields depend on every value.
+  const formValues = useAtomValue(form.valuesAtom, { store: form.store });
+  const setField =
+    <K extends keyof FormDefaultValues>(name: K) =>
+    (value: FormDefaultValues[K]) =>
+      form.setFieldValue(name, value as never);
 
   const resetForm = () => {
     setExdates([]);
@@ -316,42 +312,29 @@ const RecurrenceWidgetModal = ({
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               {/* Sets type of recurrence: daily, monthly, etc */}
               <div className="flex max-h-[65vh] flex-col gap-4 overflow-y-auto">
-                <form.AppField
-                  name="freq"
-                  children={(field) => (
-                    <>
-                      <Select
-                        onChange={(value) => {
-                          if (formValues !== defaultValues) resetForm();
-                          if (value && isFrequency(value))
-                            field.handleChange(value);
-                        }}
-                        className={widgetTailwindClasses.fieldComponent}
-                        defaultValue={Object.keys(OPTIONS.frequences).find(
-                          (el) => el === formValues.freq,
-                        )}
-                        label={t('cmsui.recurrence.repeat')}
-                        labelClassnames={widgetTailwindClasses.labelComponent}
-                        items={selectOptions}
-                      />
-                    </>
+                <Select
+                  onChange={(value) => {
+                    if (formValues !== defaultValues) resetForm();
+                    if (value && isFrequency(value)) setField('freq')(value);
+                  }}
+                  className={widgetTailwindClasses.fieldComponent}
+                  defaultValue={Object.keys(OPTIONS.frequences).find(
+                    (el) => el === formValues.freq,
                   )}
+                  label={t('cmsui.recurrence.repeat')}
+                  labelClassnames={widgetTailwindClasses.labelComponent}
+                  items={selectOptions}
                 />
 
                 {/* Sets how often the recurrence repeats. */}
                 {/*Eg. every x week, every y days, every z months */}
                 {OPTIONS.frequences[formValues.freq]?.interval && (
-                  <form.AppField
-                    name="interval"
-                    children={(field) => (
-                      <IntervalField
-                        labelAfter={t(
-                          `cmsui.recurrence.intervals.interval_${formValues.freq}`,
-                        )}
-                        label={t('cmsui.recurrence.interval_label')}
-                        onChange={field.handleChange}
-                      />
+                  <IntervalField
+                    labelAfter={t(
+                      `cmsui.recurrence.intervals.interval_${formValues.freq}`,
                     )}
+                    label={t('cmsui.recurrence.interval_label')}
+                    onChange={setField('interval')}
                   />
                 )}
 
@@ -359,15 +342,10 @@ const RecurrenceWidgetModal = ({
                 {/* i.e. if repeat value is byday (weekday) */}
                 {/*Eg. event repeats on each monday, each tuesday and thursday, etc. */}
                 {OPTIONS.frequences[formValues.freq]?.byday && (
-                  <form.AppField
-                    name="byweekday"
-                    children={(field) => (
-                      <ByDayField
-                        onChange={field.handleChange}
-                        label={t('cmsui.recurrence.repeaton_label')}
-                        defaultValue={defaultWeekday?.toString() ?? ''}
-                      />
-                    )}
+                  <ByDayField
+                    onChange={setField('byweekday')}
+                    label={t('cmsui.recurrence.repeaton_label')}
+                    defaultValue={defaultWeekday?.toString() ?? ''}
                   />
                 )}
 
@@ -376,219 +354,139 @@ const RecurrenceWidgetModal = ({
                 - by month day (e.g. day 22 of the month)
                 - by week day (e.g. every third wednesday of the month) */}
                 {OPTIONS.frequences[formValues.freq]?.bymonth && (
-                  <form.AppField
-                    name="monthly"
-                    children={(field) => (
-                      <RadioOptionsField
-                        label={t('cmsui.recurrence.repeaton_label')}
-                        onChange={field.handleChange}
-                        options={byMonthOptions(t)}
-                        checkboxValue={formValues['monthly']}
-                      />
-                    )}
+                  <RadioOptionsField
                     key={formValues.freq}
+                    label={t('cmsui.recurrence.repeaton_label')}
+                    onChange={setField('monthly')}
+                    options={byMonthOptions(t)}
+                    checkboxValue={formValues['monthly']}
                   />
                 )}
 
-                <form.Subscribe
-                  selector={(store) => store.values}
-                  children={(values) => {
-                    if (
-                      values.freq === 'monthly' &&
-                      values.monthly === 'bymonthday'
-                    ) {
-                      return (
-                        <form.AppField
-                          name="bymonthday"
-                          children={(field) => (
-                            <SubFieldWrapper>
-                              <ByMonthDayField
-                                onChange={field.handleChange}
-                                defaultValue={defaultValues.bymonthday}
-                              />
-                            </SubFieldWrapper>
-                          )}
+                {((values) => {
+                  if (
+                    values.freq === 'monthly' &&
+                    values.monthly === 'bymonthday'
+                  ) {
+                    return (
+                      <SubFieldWrapper>
+                        <ByMonthDayField
+                          onChange={setField('bymonthday')}
+                          defaultValue={defaultValues.bymonthday}
                         />
-                      );
-                    } else if (
-                      values.freq === 'monthly' &&
-                      values.monthly === 'byweekday'
-                    )
-                      return (
-                        <SubFieldWrapper>
-                          <FieldGroup
-                            className={
-                              widgetTailwindClasses.fieldGroupComponent
+                      </SubFieldWrapper>
+                    );
+                  } else if (
+                    values.freq === 'monthly' &&
+                    values.monthly === 'byweekday'
+                  )
+                    return (
+                      <SubFieldWrapper>
+                        <FieldGroup
+                          className={widgetTailwindClasses.fieldGroupComponent}
+                        >
+                          <div>The</div>
+                          <ByWeekdayOfTheMonthIndex
+                            onChange={setField('weekdayOfTheMonthIndex')}
+                            defaultValue={
+                              defaultValues.weekdayOfTheMonthIndex as keyof typeof ORDINAL_NUMBERS
                             }
-                          >
-                            <div>The</div>
-                            <form.AppField
-                              name="weekdayOfTheMonthIndex"
-                              children={(field) => (
-                                <ByWeekdayOfTheMonthIndex
-                                  onChange={field.handleChange}
-                                  defaultValue={
-                                    defaultValues.weekdayOfTheMonthIndex as keyof typeof ORDINAL_NUMBERS
-                                  }
-                                />
-                              )}
-                            />
-                            <form.AppField
-                              name="weekdayOfTheMonth"
-                              children={(field) => (
-                                <ByWeekdayOfTheMonth
-                                  onChange={field.handleChange}
-                                  defaultValue={defaultValues.weekdayOfTheMonth}
-                                />
-                              )}
-                            />
-                          </FieldGroup>
-                        </SubFieldWrapper>
-                      );
-                  }}
-                />
+                          />
+                          <ByWeekdayOfTheMonth
+                            onChange={setField('weekdayOfTheMonth')}
+                            defaultValue={defaultValues.weekdayOfTheMonth}
+                          />
+                        </FieldGroup>
+                      </SubFieldWrapper>
+                    );
+                })(formValues)}
 
                 {/* Only appears if recurrence is yearly */}
                 {/* selection between:
                 - by month day (e.g. on january 3rd)
                 - by week day (e.g. on first monday of january) */}
                 {OPTIONS.frequences[formValues.freq]?.byyear && (
-                  <form.AppField
-                    name="yearly"
-                    children={(field) => (
-                      <RadioOptionsField
-                        label={t('cmsui.recurrence.repeaton_label')}
-                        onChange={field.handleChange}
-                        options={byYearOptions(t)}
-                        checkboxValue={formValues['yearly']}
-                      />
-                    )}
+                  <RadioOptionsField
+                    label={t('cmsui.recurrence.repeaton_label')}
+                    onChange={setField('yearly')}
+                    options={byYearOptions(t)}
+                    checkboxValue={formValues['yearly']}
                   />
                 )}
 
-                <form.Subscribe
-                  selector={(store) => store.values}
-                  children={(values) => {
-                    if (
-                      values.freq === 'yearly' &&
-                      values.yearly === 'bymonthday'
-                    ) {
-                      return (
-                        <SubFieldWrapper>
-                          <FieldGroup
-                            className={
-                              widgetTailwindClasses.fieldGroupComponent
+                {((values) => {
+                  if (
+                    values.freq === 'yearly' &&
+                    values.yearly === 'bymonthday'
+                  ) {
+                    return (
+                      <SubFieldWrapper>
+                        <FieldGroup
+                          className={widgetTailwindClasses.fieldGroupComponent}
+                        >
+                          <ByMonthDayField
+                            onChange={setField('bymonthday')}
+                            defaultValue={defaultValues.bymonthday}
+                          />
+                          <MonthOfTheYearField
+                            onChange={setField('monthOfTheYear')}
+                            defaultValue={defaultValues.monthOfTheYear}
+                          />
+                        </FieldGroup>
+                      </SubFieldWrapper>
+                    );
+                  } else if (
+                    values.freq === 'yearly' &&
+                    values.yearly === 'byday'
+                  )
+                    return (
+                      <SubFieldWrapper>
+                        <FieldGroup
+                          className={widgetTailwindClasses.fieldGroupComponent}
+                        >
+                          <div>{t('cmsui.recurrence.on_the_label')}</div>
+                          <ByWeekdayOfTheMonthIndex
+                            onChange={setField('weekdayOfTheMonthIndex')}
+                            defaultValue={
+                              defaultValues.weekdayOfTheMonthIndex as keyof typeof ORDINAL_NUMBERS
                             }
-                          >
-                            <form.AppField
-                              name="bymonthday"
-                              children={(field) => (
-                                <ByMonthDayField
-                                  onChange={field.handleChange}
-                                  defaultValue={defaultValues.bymonthday}
-                                />
-                              )}
-                            />
-                            <form.AppField
-                              name="monthOfTheYear"
-                              children={(field) => (
-                                <MonthOfTheYearField
-                                  onChange={field.handleChange}
-                                  defaultValue={defaultValues.monthOfTheYear}
-                                />
-                              )}
-                            />
-                          </FieldGroup>
-                        </SubFieldWrapper>
-                      );
-                    } else if (
-                      values.freq === 'yearly' &&
-                      values.yearly === 'byday'
-                    )
-                      return (
-                        <SubFieldWrapper>
-                          <FieldGroup
-                            className={
-                              widgetTailwindClasses.fieldGroupComponent
-                            }
-                          >
-                            <div>{t('cmsui.recurrence.on_the_label')}</div>
-                            <form.AppField
-                              name="weekdayOfTheMonthIndex"
-                              children={(field) => (
-                                <ByWeekdayOfTheMonthIndex
-                                  onChange={field.handleChange}
-                                  defaultValue={
-                                    defaultValues.weekdayOfTheMonthIndex as keyof typeof ORDINAL_NUMBERS
-                                  }
-                                />
-                              )}
-                            />
-                            <form.AppField
-                              name="weekdayOfTheMonth"
-                              children={(field) => (
-                                <ByWeekdayOfTheMonth
-                                  onChange={field.handleChange}
-                                  defaultValue={defaultValues.weekdayOfTheMonth}
-                                />
-                              )}
-                            />
-                            {t('cmsui.recurrence.ofmonth_label')}
-                            <form.AppField
-                              name="monthOfTheYear"
-                              children={(field) => (
-                                <MonthOfTheYearField
-                                  onChange={field.handleChange}
-                                  defaultValue={defaultValues.monthOfTheYear}
-                                />
-                              )}
-                            />
-                          </FieldGroup>
-                        </SubFieldWrapper>
-                      );
-                  }}
+                          />
+                          <ByWeekdayOfTheMonth
+                            onChange={setField('weekdayOfTheMonth')}
+                            defaultValue={defaultValues.weekdayOfTheMonth}
+                          />
+                          {t('cmsui.recurrence.ofmonth_label')}
+                          <MonthOfTheYearField
+                            onChange={setField('monthOfTheYear')}
+                            defaultValue={defaultValues.monthOfTheYear}
+                          />
+                        </FieldGroup>
+                      </SubFieldWrapper>
+                    );
+                })(formValues)}
+
+                <RadioOptionsField
+                  label={t('cmsui.recurrence.ends_label')}
+                  onChange={setField('recurrenceEnd')}
+                  options={recurrenceEndOptions(t)}
+                  checkboxValue={formValues['recurrenceEnd']}
                 />
 
-                <form.AppField
-                  name="recurrenceEnd"
-                  children={(field) => (
-                    <RadioOptionsField
-                      label={t('cmsui.recurrence.ends_label')}
-                      onChange={field.handleChange}
-                      options={recurrenceEndOptions(t)}
-                      checkboxValue={formValues['recurrenceEnd']}
-                    />
-                  )}
-                />
-
-                <form.Subscribe
-                  selector={(store) => store.values.recurrenceEnd}
-                  children={(recurrenceEnd) => {
-                    if (recurrenceEnd === 'count') {
-                      return (
-                        <form.AppField
-                          name="count"
-                          children={(field) => (
-                            <SubFieldWrapper>
-                              <CountEndField onChange={field.handleChange} />
-                            </SubFieldWrapper>
-                          )}
-                        />
-                      );
-                    } else if (recurrenceEnd === 'until') {
-                      return (
-                        <form.AppField
-                          name="until"
-                          children={(field) => (
-                            <SubFieldWrapper>
-                              <UntilEndField onChange={field.handleChange} />
-                            </SubFieldWrapper>
-                          )}
-                        />
-                      );
-                    }
-                  }}
-                />
+                {((recurrenceEnd) => {
+                  if (recurrenceEnd === 'count') {
+                    return (
+                      <SubFieldWrapper>
+                        <CountEndField onChange={setField('count')} />
+                      </SubFieldWrapper>
+                    );
+                  } else if (recurrenceEnd === 'until') {
+                    return (
+                      <SubFieldWrapper>
+                        <UntilEndField onChange={setField('until')} />
+                      </SubFieldWrapper>
+                    );
+                  }
+                })(formValues.recurrenceEnd)}
 
                 <div className="bg-muted-foreground/10 p-2 font-semibold text-muted-foreground">
                   {rruleText && <div>{rruleText}</div>}

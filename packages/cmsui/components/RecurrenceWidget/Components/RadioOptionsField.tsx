@@ -1,10 +1,9 @@
-import type { Updater } from '@tanstack/react-form';
 import { Radio, RadioGroup, Label } from '@plone/quanta';
 import { widgetTailwindClasses } from '../utils';
 
 interface RadioOptionsFieldProps<T extends string> {
   label: string;
-  onChange: (updater: Updater<T>) => void;
+  onChange: (value: T) => void;
   options: { id: T; title: string; description?: string }[];
   checkboxValue: T;
 }

@@ -1,0 +1,1 @@
+Moved the recurrence modal's form to the form store from `@plone/helpers`, and removed the `@tanstack/react-form` dependency. @sneridagh

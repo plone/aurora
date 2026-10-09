@@ -1,10 +1,9 @@
-import type { Updater } from '@tanstack/react-form';
 import { useTranslation } from 'react-i18next';
 import { TextField, Label, Input } from '@plone/quanta';
 // import { Input } from '../../Field/Field';
 
 interface CountEndFieldProps {
-  onChange: (updater: Updater<number>) => void;
+  onChange: (value: number) => void;
 }
 
 const CountEndField = ({ onChange }: CountEndFieldProps) => {

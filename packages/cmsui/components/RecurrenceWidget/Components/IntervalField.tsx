@@ -1,12 +1,11 @@
 import { Group } from 'react-aria-components';
 import { TextField, Input, Label } from '@plone/quanta';
-import type { Updater } from '@tanstack/react-form';
 import { widgetTailwindClasses } from '../utils';
 
 interface IntervalFieldProps {
   labelAfter?: string;
   label: string;
-  onChange: (updater: Updater<number>) => void;
+  onChange: (value: number) => void;
 }
 
 const IntervalField = ({ labelAfter, label, onChange }: IntervalFieldProps) => {
