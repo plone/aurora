@@ -278,6 +278,55 @@ The form looks the widget up from the field's schema hints, in this order:
 Whichever widget it finds, the widget receives the same contract.
 That is what lets the form generator stay generic.
 
+## Validation
+
+The form validates fields with validators, not widgets.
+A widget only shows the errors it receives, through `invalid` and `errorMessage`.
+
+A required field must not be empty.
+The form checks this itself, from the schema's `required` list, and skips booleans and read-only fields.
+Any other validator only runs on a field that has a value.
+
+Validators are `validator` utilities in the configuration registry.
+The form matches them to each field by their dependencies:
+
+`fieldType`
+:   The field's `type`, for example `string`, `integer`, or `array`.
+
+`widget`
+:   The field's widget, for example `email` or `url`.
+
+`format`
+:   The field's `format`.
+
+`behaviorName` and `fieldName`
+:   One field of a behavior, for example the `start` field of `plone.eventbasic`.
+
+`blockType` and `fieldName`
+:   One field of a block's settings.
+
+A validator receives the field's value, its schema, its name, all the form's values, and a translation function `t`.
+It returns an error message, or nothing if the value is valid.
+The following example registers a validator for the `slug` field of an add-on's block.
+
+```ts
+import type { ConfigType } from '@plone/registry';
+
+export default function install(config: ConfigType) {
+  config.registerUtility({
+    name: 'slug',
+    type: 'validator',
+    dependencies: { blockType: 'myBlock', fieldName: 'slug' },
+    method: ({ value, t }) =>
+      /^[a-z0-9-]+$/.test(value) ? null : t('myaddon.validation.slug'),
+  });
+  return config;
+}
+```
+
+Plone Aurora registers validators for string lengths and patterns, email addresses, URLs, numbers, list sizes, unique items, and event date ranges.
+When the server rejects a save with validation errors, the form shows them on their fields too.
+
 ## Design implications
 
 The form generator should be basic.

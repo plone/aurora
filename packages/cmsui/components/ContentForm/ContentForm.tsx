@@ -7,10 +7,17 @@ import { Plug } from '@plone/layout/components/Pluggable';
 import type { Content } from '@plone/types';
 import clsx from 'clsx';
 import { useAtom } from 'jotai';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
+import type { Key } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import { useFetcher, type SubmitTarget } from 'react-router';
 import SchemaFieldsets, { type FieldsetsSchema } from '../Form/SchemaFieldsets';
+import {
+  buildSchemaValidators,
+  firstInvalidField,
+  focusField,
+} from '../Form/validation';
 import Sidebar, { sidebarAtom } from '../Sidebar/Sidebar';
 import BlocksEditor from '../BlockEditor/BlocksEditor';
 
@@ -34,6 +41,11 @@ export default function ContentForm({
   const { t } = useTranslation();
   const fetcher = useFetcher();
   const [collapsed, setCollapsed] = useAtom(sidebarAtom);
+  const [selectedTab, setSelectedTab] = useState<Key>('blocks');
+  const validators = useMemo(
+    () => buildSchemaValidators<Content>(schema, { t }),
+    [schema, t],
+  );
 
   // The form's values are the single source of truth for the content being
   // edited: the fields, the blocks editor and Plate's title binding all read
@@ -41,6 +53,7 @@ export default function ContentForm({
   const form = useFormStore<Content>({
     key: content['@id'] ?? 'add',
     initialValues: content,
+    validators,
     onSubmit: (values) => {
       fetcher.submit(values as unknown as SubmitTarget, {
         method: submitMethod,
@@ -48,6 +61,26 @@ export default function ContentForm({
       });
     },
   });
+
+  // Shows the fields with errors: they are in the Content tab.
+  const showErrors = useCallback(
+    (errors: Record<string, unknown>) => {
+      const field = firstInvalidField(schema, errors);
+      if (!field) return;
+      setSelectedTab('content');
+      focusField(field);
+    },
+    [schema],
+  );
+
+  // The save action returns the server's validation errors, by field.
+  useEffect(() => {
+    const errors = (fetcher.data as { errors?: Record<string, string[]> })
+      ?.errors;
+    if (!errors) return;
+    form.setServerErrors(errors);
+    showErrors(errors);
+  }, [fetcher.data, form, showErrors]);
 
   return (
     <FormProvider form={form}>
@@ -66,6 +99,8 @@ export default function ContentForm({
       >
         <main className="mx-4 pt-8">
           <Tabs
+            selectedKey={selectedTab}
+            onSelectionChange={setSelectedTab}
             tabs={[
               {
                 id: 'blocks',
@@ -90,7 +125,10 @@ export default function ContentForm({
             <button
               aria-label={t('cmsui.save')}
               type="submit"
-              onClick={() => form.submit()}
+              onClick={async () => {
+                const result = await form.submit();
+                if (!result.ok) showErrors(result.errors);
+              }}
               className="primary"
             >
               <Checkbox />

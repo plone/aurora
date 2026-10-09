@@ -14,6 +14,7 @@ import {
   ploneContentContext,
 } from '@plone/aurora/app/middleware.server';
 import ContentForm from '../components/ContentForm/ContentForm';
+import { getServerValidationErrors } from '../components/Form/validation';
 
 export async function loader({
   request,
@@ -41,10 +42,17 @@ export async function action({
   const path = `/${params['*'] || ''}`;
   const formData = await request.json();
 
-  await cli.updateContent({
-    path,
-    data: formData,
-  });
+  try {
+    await cli.updateContent({
+      path,
+      data: formData,
+    });
+  } catch (error) {
+    // Validation errors go back to the form, on their fields.
+    const errors = getServerValidationErrors(error);
+    if (errors) return data({ errors }, { status: 400 });
+    throw error;
+  }
 
   return redirect(path);
 }
