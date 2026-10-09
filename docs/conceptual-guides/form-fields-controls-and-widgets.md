@@ -318,7 +318,7 @@ The form looks the widget up from the field's schema hints, in this order:
 8.  The default widget.
 
 A widget registered for a vocabulary is more specific than the choices widget, which renders all the other fields with choices or a vocabulary as a select.
-Register the choices widget with `config.registerChoicesWidget`.
+Register the choices widget with `config.registerWidget({ key: 'choices', definition: MySelectWidget })`.
 
 Whichever widget it finds, the widget receives the same contract.
 That is what lets the form generator stay generic.

@@ -385,7 +385,7 @@ The fields with the `File` or `Image` factory use `FileWidget`, instead of `Imag
 ```
 
 ```{versionadded} 1.0.0-alpha.20
-`SelectWidget`, `ArrayWidget`, `NumberWidget`, `FileWidget`, `EmailWidget`, `PasswordWidget`, and `UrlWidget` in `@plone/cmsui`, `NumberField` in `@plone/quanta`, and `config.registerChoicesWidget` in `@plone/registry`.
+`SelectWidget`, `ArrayWidget`, `NumberWidget`, `FileWidget`, `EmailWidget`, `PasswordWidget`, and `UrlWidget` in `@plone/cmsui`, and `NumberField` in `@plone/quanta`.
 ```
 
 A field with the `File` or `Image` factory stores the file itself, such as the image of an Image, or the lead image of a News Item.

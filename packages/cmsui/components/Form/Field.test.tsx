@@ -54,7 +54,7 @@ describe('Field widget resolution', () => {
       key: 'type',
       definition: { boolean: marker('type') },
     });
-    config.registerChoicesWidget(marker('choices'));
+    config.registerWidget({ key: 'choices', definition: marker('choices') });
   });
 
   it('resolves by field id first', () => {

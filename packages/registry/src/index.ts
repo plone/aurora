@@ -54,6 +54,19 @@ type MappableWidgetKeys = {
     : never;
 }[keyof WidgetsConfig];
 
+// The widget slots that hold one widget, instead of a map of widgets. The
+// default widget has its own method, `registerDefaultWidget`.
+type SingleWidgetKeys = 'choices';
+
+// A component, as opposed to a map of components. Components can have keys
+// of their own, such as `displayName`, so counting keys doesn't tell them
+// apart.
+const isComponent = (definition: unknown) =>
+  typeof definition === 'function' ||
+  (typeof definition === 'object' &&
+    definition !== null &&
+    '$$typeof' in definition);
+
 class Config {
   public _data: ConfigData | Record<string, never>;
   static instance: ConfigType;
@@ -550,15 +563,14 @@ class Config {
    *
    * @template K - A key from the WidgetsConfig interface.
    * @param options - An object containing the widget key and its corresponding implementation.
-   * @param options.key - The name of the widget configuration key (e.g., 'default', 'factory').
-   * @param options.definition - The actual widget configuration, which must match the expected structure of WidgetsConfig[K].
+   * @param options.key - The name of the widget configuration key (e.g., 'widget', 'factory', 'choices').
+   * @param options.definition - The actual widget configuration, which must match the expected structure of WidgetsConfig[K]:
+   * a map of widgets, or one widget for the `choices` slot.
    *
    */
-  registerWidget<K extends MappableWidgetKeys>(options: {
+  registerWidget<K extends MappableWidgetKeys | SingleWidgetKeys>(options: {
     key: K;
-    definition: WidgetsConfig[K] extends Record<string, any>
-      ? WidgetsConfig[K]
-      : never;
+    definition: WidgetsConfig[K];
   }) {
     // Aliasing helper types to make TS understand that, in this case, it'll recieve an object
     // with keys that are valid for WidgetsConfig[K].
@@ -575,8 +587,7 @@ class Config {
       throw new Error('Use registerDefaultWidget to set the default widget');
     }
 
-    const definitionIsObject = Object.keys(definition).length;
-    if (!definitionIsObject) {
+    if (isComponent(definition)) {
       this._data.widgets[key] = definition;
     } else {
       for (const widgetKey of Object.keys(definition) as DefinitionKey[]) {
@@ -597,17 +608,6 @@ class Config {
    */
   registerDefaultWidget(component: React.ComponentType<RegisteredWidgetProps>) {
     this._data.widgets.default = component;
-  }
-
-  /**
-   * Registers the widget of the fields with choices or a vocabulary, when no
-   * more specific widget matches them.
-   *
-   * @param component - The widget component to register.
-   *
-   */
-  registerChoicesWidget(component: React.ComponentType<RegisteredWidgetProps>) {
-    this._data.widgets.choices = component;
   }
 
   /**

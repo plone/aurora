@@ -1300,8 +1300,10 @@ describe('Widgets registry: registerWidget/registerDefaultWidget', () => {
     expect(config.widgets?.default.displayName).toBe('AnotherWidget');
   });
   it('registers the choices widget', () => {
-    config.registerChoicesWidget(DummyWidget);
-    expect(config.widgets?.choices.displayName).toBe('DummyWidget');
+    // A component with keys of its own, such as `displayName`, is still
+    // registered as the widget of the slot.
+    config.registerWidget({ key: 'choices', definition: DummyWidget });
+    expect(config.widgets?.choices).toBe(DummyWidget);
   });
   it('errors when trying to register a default widget with the wrong API', () => {
     expect(() => {

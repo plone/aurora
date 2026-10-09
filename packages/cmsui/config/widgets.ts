@@ -26,7 +26,7 @@ import {
 export default function install(config: ConfigType) {
   config.registerDefaultWidget(TextWidget);
   // Fields with choices or a vocabulary, without a more specific widget.
-  config.registerChoicesWidget(SelectWidget);
+  config.registerWidget({ key: 'choices', definition: SelectWidget });
 
   config.registerWidget({
     key: 'id',
