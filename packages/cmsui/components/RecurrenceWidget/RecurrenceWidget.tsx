@@ -13,14 +13,13 @@ const RecurrenceWidgetModal = lazy(
 );
 import { useAtomValue } from 'jotai';
 import { formAtom } from '../../routes/atoms';
-import type { FieldProps } from '../Form/Field';
 
 import { rrulestr } from './rrule';
 import SelectedDates from './Components/SelectedDates';
 import { getRruleText } from './utils';
-import type { EventContent } from '@plone/types';
+import type { EventContent, FormWidgetProps } from '@plone/types';
 
-type RecurrenceWidgetProps = FieldProps;
+type RecurrenceWidgetProps = FormWidgetProps<string | null>;
 
 export function RecurrenceWidget({ label, onChange }: RecurrenceWidgetProps) {
   const eventFormContext = useAtomValue(formAtom) as EventContent;

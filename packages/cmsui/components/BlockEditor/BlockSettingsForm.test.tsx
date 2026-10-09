@@ -59,13 +59,13 @@ const { useAppFormSpy, getLastForm } = vi.hoisted(() => {
           name: string;
           children: (field: any) => JSX.Element;
         }) => {
-          const Quanta = ({ label, defaultValue, onChange, required }: any) => (
+          const SchemaField = ({ schema, value, onChange, required }: any) => (
             <label>
-              {label}
+              {schema.title}
               <input
-                aria-label={label}
+                aria-label={schema.title}
                 data-required={required ? 'true' : 'false'}
-                defaultValue={defaultValue ?? ''}
+                defaultValue={value ?? ''}
                 onChange={(event) => {
                   const nextValue = event.target.value;
                   const nextValues = deepClone(state.values ?? {});
@@ -87,7 +87,7 @@ const { useAppFormSpy, getLastForm } = vi.hoisted(() => {
               value: getValueByPath(state.values, String(name)),
               meta: { errors: [] },
             },
-            Quanta,
+            SchemaField,
           });
         },
       };

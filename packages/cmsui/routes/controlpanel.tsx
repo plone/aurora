@@ -9,24 +9,15 @@ import {
 import { useTranslation } from 'react-i18next';
 import { atom } from 'jotai';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
-import type { DeepKeys } from '@tanstack/react-form';
 import { requireAuthCookie } from '@plone/react-router';
 import { InitAtoms } from '@plone/helpers';
-import type {
-  Controlpanel,
-  ControlPanelFieldset,
-  ControlPanelSchema,
-} from '@plone/types';
+import type { Controlpanel } from '@plone/types';
 import { Plug } from '@plone/layout/components/Pluggable';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionPanel,
-  AccordionItemTrigger,
-  Container,
-  Link,
-} from '@plone/quanta';
+import { Container, Link } from '@plone/quanta';
 import { useAppForm } from '../components/Form/Form';
+import SchemaFieldsets, {
+  type FieldsetsSchema,
+} from '../components/Form/SchemaFieldsets';
 import Back from '@plone/icons/svg/arrow-left.svg?react';
 import Checkbox from '@plone/icons/svg/checkbox.svg?react';
 import config from '@plone/registry';
@@ -99,39 +90,11 @@ export default function SingleControlPanel() {
             {controlpanel.title || 'a control panel'}
           </h1>
           <form>
-            {schema.fieldsets.map((fieldset: ControlPanelFieldset) => (
-              <Accordion defaultExpandedKeys={['default']} key={fieldset.id}>
-                <AccordionItem id={fieldset.id} key={fieldset.id}>
-                  <AccordionItemTrigger>{fieldset.title}</AccordionItemTrigger>
-                  <AccordionPanel>
-                    {(fieldset.fields as DeepKeys<ControlPanelSchema>[]).map(
-                      (schemaField, index) => (
-                        <form.AppField
-                          name={schemaField}
-                          key={index}
-                          // eslint-disable-next-line react/no-children-prop
-                          children={(field) => (
-                            <field.Quanta
-                              {...schema.properties[schemaField]}
-                              className="mb-4"
-                              label={schema.properties[field.name].title}
-                              name={field.name}
-                              defaultValue={field.state.value}
-                              required={
-                                schema.required.indexOf(schemaField) !== -1
-                              }
-                              error={field.state.meta.errors}
-                              formAtom={formAtom}
-                              value={field.state.value}
-                            />
-                          )}
-                        />
-                      ),
-                    )}
-                  </AccordionPanel>
-                </AccordionItem>
-              </Accordion>
-            ))}
+            <SchemaFieldsets
+              schema={schema as FieldsetsSchema}
+              form={form}
+              formAtom={formAtom}
+            />
             <Plug pluggable="toolbar-top" id="edit-save-button">
               {/* A native button: react-aria's onPress does not fire inside
                   the toolbar's shadow root. */}
