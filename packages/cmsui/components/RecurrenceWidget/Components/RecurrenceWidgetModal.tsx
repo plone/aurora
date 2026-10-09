@@ -4,7 +4,7 @@ import CloseIcon from '@plone/icons/svg/close.svg?react';
 import CheckboxIcon from '@plone/icons/svg/checkbox.svg?react';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useState } from 'react';
-import { useFormFieldValue } from '../../../routes/atoms';
+import { useFieldValue } from '@plone/helpers';
 import {
   byMonthOptions,
   byYearOptions,
@@ -96,9 +96,9 @@ const RecurrenceWidgetModal = ({
   const { t } = useTranslation();
   const selectOptions = getSelectOptions(t);
 
-  const start = useFormFieldValue<string>('start');
-  const end = useFormFieldValue<string>('end');
-  const recurrence = useFormFieldValue<string | null>('recurrence');
+  const start = useFieldValue<string>('start');
+  const end = useFieldValue<string>('end');
+  const recurrence = useFieldValue<string | null>('recurrence');
 
   const startDate = new Date(start as string);
 

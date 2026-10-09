@@ -1,13 +1,13 @@
 import { DatePicker } from '@plone/quanta';
 import type { Updater } from '@tanstack/react-form';
-import { useFormFieldValue } from '../../../routes/atoms';
+import { useFieldValue } from '@plone/helpers';
 
 interface UntilEndFieldProps {
   onChange: (updater: Updater<string>) => void;
 }
 
 const UntilEndField = ({ onChange }: UntilEndFieldProps) => {
-  const end = useFormFieldValue<string>('end');
+  const end = useFieldValue<string>('end');
 
   const endDate = new Date(end as string);
   const defaultYear = endDate.getFullYear();

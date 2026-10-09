@@ -13,7 +13,6 @@ export default function (config) {
         '@plone/cmsui > clsx',
         '@plone/cmsui > jotai',
         '@plone/cmsui > jotai-optics',
-        '@plone/cmsui > jotai/utils',
         '@plone/cmsui > jwt-decode',
         '@plone/cmsui > lucide-react',
         '@plone/cmsui > platejs',
