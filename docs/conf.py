@@ -108,11 +108,6 @@ linkcheck_retries = 1
 # The suffix of source filenames.
 source_suffix = {
     ".md": "markdown",
-    ".bugfix": "markdown",
-    ".breaking": "markdown",
-    ".documentation": "markdown",
-    ".feature": "markdown",
-    ".internal": "markdown",
 }
 
 # The master toctree document.
