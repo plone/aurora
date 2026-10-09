@@ -73,7 +73,11 @@ test('Adding an image shows its image field, browsing from the container', async
     page.getByText('Browse the site, drop an image, or use a URL'),
   ).toBeVisible();
 
-  // The object browser starts in the container the image is added to.
+  // The object browser starts in the container the image is added to, and
+  // shows where it is.
   await page.getByRole('button', { name: 'Pick an existing image' }).click();
-  await expect(page.getByRole('dialog').getByText('Sunset')).toBeVisible();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog.getByText('Sunset')).toBeVisible();
+  // The listing shows the folder's children; its name is in the breadcrumbs.
+  await expect(dialog.getByText('Gallery', { exact: true })).toBeVisible();
 });
