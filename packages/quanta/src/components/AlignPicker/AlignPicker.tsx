@@ -13,7 +13,7 @@ import {
   ImagefullIcon,
 } from '@plone/icons';
 
-interface AlignWidgetProps extends Omit<RadioGroupProps, 'children'> {
+export interface AlignPickerProps extends Omit<RadioGroupProps, 'children'> {
   id?: string;
   actions?: string[];
   actionsInfoMap?: Record<string, [React.ComponentType<any>, string]>;
@@ -31,7 +31,7 @@ export const defaultActionsInfo: Record<
   full: [ImagefullIcon, 'Full'],
 };
 
-export function AlignWidget(props: AlignWidgetProps) {
+export function AlignPicker(props: AlignPickerProps) {
   const {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     id,

@@ -6,7 +6,7 @@ import {
   type RadioGroupProps,
 } from '../RadioGroup/RadioGroup';
 
-interface SizeWidgetProps extends Omit<RadioGroupProps, 'children'> {
+export interface SizePickerProps extends Omit<RadioGroupProps, 'children'> {
   id?: string;
   actions?: string[];
   actionsInfoMap?: Record<string, [string, string]>;
@@ -18,7 +18,7 @@ export const defaultSizeActionsInfo: Record<string, [string, string]> = {
   l: ['L', 'Large'],
 };
 
-export function SizeWidget(props: SizeWidgetProps) {
+export function SizePicker(props: SizePickerProps) {
   const {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     id,
@@ -56,4 +56,4 @@ export function SizeWidget(props: SizeWidgetProps) {
   );
 }
 
-export default SizeWidget;
+export default SizePicker;

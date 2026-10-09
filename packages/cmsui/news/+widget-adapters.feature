@@ -1,0 +1,1 @@
+Added the `TextareaWidget` (registered for `textarea`, e.g. the summary), `DateWidget` (registered for `date`, an ISO date string) and the `align`, `size` and `width` widget adapters around the Quanta pickers. All of them follow the widget contract, and show the required and invalid state. @sneridagh

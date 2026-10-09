@@ -40,7 +40,7 @@ const MyComponent = () => (
 export default MyComponent;
 ```
 
-The form widgets `SizeWidget`, `AlignWidget` and `WidthWidget` are exported from the package root as well.
+The pickers `SizePicker`, `AlignPicker` and `WidthPicker` are exported from the package root as well. They are controls; the form widgets that use them live in `@plone/cmsui`.
 
 ## Tailwind requirement
 
