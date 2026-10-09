@@ -99,7 +99,7 @@ linkcheck_ignore = [
     r"https://docs.cypress.io/guides/references/migration-guide#Migrating-to-Cypress-version-10-0",
     r"https://medium.com",
     # Ignore MyST linkify flukes
-    r"http://agents.md",
+    r"http://AGENTS.md",
 ]
 linkcheck_anchors = True
 linkcheck_timeout = 5
