@@ -259,6 +259,27 @@ A control can be registered as a widget only when its API already matches the wi
 A plain text input comes close.
 Checkboxes, date pickers, object browsers, image pickers, and rich text editors need adapters.
 
+## Where controls and widgets live
+
+Controls and widgets live in different packages, because they speak different APIs.
+How simple a component is does not decide where it lives; the API it speaks does.
+
+`@plone/quanta`
+:   The CMS design system.
+    It provides controls, with the API of their interaction pattern and of React Aria.
+    It does not know the widget contract, and does not depend on `@plone/types`.
+    Name its components after what they are, such as `Checkbox` or `RadioGroup`, not after a widget.
+
+`@plone/cmsui`
+:   The CMS forms.
+    It provides the widgets and adapters that use the widget contract, and registers them in the widget registry.
+
+For example, `BooleanWidget` is small, but it is an adapter: it takes the widget contract and maps it to the Quanta `Checkbox` control.
+So it lives in `@plone/cmsui`, next to complex widgets such as `ObjectBrowserWidget`, and not in `@plone/quanta`.
+
+A form for another audience, such as a public contact form, uses the controls of its own design system.
+It needs adapters of its own, for those controls.
+
 ## How the form picks a widget
 
 The form and the widget registry answer different questions.
