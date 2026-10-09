@@ -26,7 +26,7 @@ export default function install(config: ConfigType) {
     definition: { datetime: DateTimePicker },
   });
   config.registerWidget({
-    key: 'widget',
+    key: 'type',
     definition: { boolean: BooleanWidget },
   });
   config.registerWidget({
@@ -49,6 +49,9 @@ export default function install(config: ConfigType) {
     key: 'factory',
     definition: {
       'Relation List': ObjectBrowserWidget,
+      // Image fields (e.g. the lead image) used to match the `image` widget
+      // only because the lookup ignored categories.
+      Image: ImageWidget,
     },
   });
   config.registerWidget({

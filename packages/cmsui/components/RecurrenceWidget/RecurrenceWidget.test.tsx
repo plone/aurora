@@ -12,13 +12,8 @@ const { mockRruleStr, mockGetRruleText } = vi.hoisted(() => ({
 
 let mockFormContext: any = { recurrence: null };
 
-vi.mock('jotai', () => ({
-  atom: vi.fn(),
-  useAtomValue: () => mockFormContext,
-}));
-
 vi.mock('../../routes/atoms', () => ({
-  formAtom: Symbol('formAtom'),
+  useFormFieldValue: (name: string) => mockFormContext[name],
 }));
 
 vi.mock('./rrule', () => ({
