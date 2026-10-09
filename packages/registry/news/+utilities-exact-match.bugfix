@@ -1,0 +1,1 @@
+Fixed `getUtilities` and `getUtility` so a dependency set matches exactly: a lookup for `{ widget: 'url' }` no longer returns utilities registered for `{ widget: 'url_list' }`, and dependency keys can be passed in any order. @sneridagh

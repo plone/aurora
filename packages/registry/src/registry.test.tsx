@@ -1185,6 +1185,109 @@ describe('Utilities registry', () => {
       }),
     ).toEqual([]);
   });
+
+  it('getUtilities - does not match dependency values that share a prefix', () => {
+    config.registerUtility({
+      name: 'url',
+      type: 'validator',
+      dependencies: { widget: 'url' },
+      method: () => 'url validator',
+    });
+    config.registerUtility({
+      name: 'urlList',
+      type: 'validator',
+      dependencies: { widget: 'url_list' },
+      method: () => 'url_list validator',
+    });
+
+    const utilities = config.getUtilities({
+      type: 'validator',
+      dependencies: { widget: 'url' },
+    });
+    expect(utilities.map((utility) => utility.method())).toEqual([
+      'url validator',
+    ]);
+  });
+
+  it('getUtilities - matches multiple dependencies regardless of key order', () => {
+    config.registerUtility({
+      name: 'required',
+      type: 'validator',
+      dependencies: { fieldName: 'title', behaviorName: 'dublincore' },
+      method: () => 'required validator',
+    });
+
+    const sorted = config.getUtilities({
+      type: 'validator',
+      dependencies: { behaviorName: 'dublincore', fieldName: 'title' },
+    });
+    const unsorted = config.getUtilities({
+      type: 'validator',
+      dependencies: { fieldName: 'title', behaviorName: 'dublincore' },
+    });
+    expect(sorted.map((utility) => utility.method())).toEqual([
+      'required validator',
+    ]);
+    expect(unsorted.map((utility) => utility.method())).toEqual([
+      'required validator',
+    ]);
+  });
+
+  it('getUtilities - without dependencies returns every utility of the type', () => {
+    config.registerUtility({
+      name: 'plain',
+      type: 'validator',
+      method: () => 'plain',
+    });
+    config.registerUtility({
+      name: 'withDeps',
+      type: 'validator',
+      dependencies: { widget: 'url' },
+      method: () => 'withDeps',
+    });
+
+    expect(
+      config
+        .getUtilities({ type: 'validator' })
+        .map((utility) => utility.method()),
+    ).toEqual(['plain', 'withDeps']);
+  });
+
+  it('getUtility - finds the utility with unsorted dependency keys', () => {
+    config.registerUtility({
+      name: 'required',
+      type: 'validator',
+      dependencies: { fieldName: 'title', behaviorName: 'dublincore' },
+      method: () => 'required validator',
+    });
+
+    expect(
+      config
+        .getUtility({
+          name: 'required',
+          type: 'validator',
+          dependencies: { fieldName: 'title', behaviorName: 'dublincore' },
+        })
+        .method(),
+    ).toEqual('required validator');
+  });
+
+  it('getUtility - does not mix the dependencies and the name', () => {
+    config.registerUtility({
+      name: 'url',
+      type: 'validator',
+      dependencies: { widget: 'url' },
+      method: () => 'url validator',
+    });
+
+    expect(
+      config.getUtility({
+        name: 'rl',
+        type: 'validator',
+        dependencies: { widget: 'urlu' },
+      }),
+    ).toEqual({});
+  });
 });
 
 describe('Routes registry', () => {
