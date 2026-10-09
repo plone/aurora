@@ -4,8 +4,7 @@ import CloseIcon from '@plone/icons/svg/close.svg?react';
 import CheckboxIcon from '@plone/icons/svg/checkbox.svg?react';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useMemo, useState } from 'react';
-import { useAtomValue } from 'jotai';
-import { formAtom } from '../../../routes/atoms';
+import { useFormFieldValue } from '../../../routes/atoms';
 import {
   byMonthOptions,
   byYearOptions,
@@ -97,13 +96,13 @@ const RecurrenceWidgetModal = ({
   const { t } = useTranslation();
   const selectOptions = getSelectOptions(t);
 
-  const eventFormContext = useAtomValue(formAtom);
+  const start = useFormFieldValue<string>('start');
+  const end = useFormFieldValue<string>('end');
+  const recurrence = useFormFieldValue<string | null>('recurrence');
 
-  // @ts-ignore
-  const startDate = new Date(eventFormContext.start);
+  const startDate = new Date(start as string);
 
-  // @ts-ignore
-  const defaultEndDate = new Date(eventFormContext.end);
+  const defaultEndDate = new Date(end as string);
 
   const defaultWeekday = startDate
     ? getWeekday(startDate.getDay() - 1)
@@ -129,16 +128,14 @@ const RecurrenceWidgetModal = ({
         count: 0,
         // @ts-ignore
         until: '',
-        // @ts-ignore
-        dtstart: eventFormContext?.start,
+        dtstart: start,
       }) as FormDefaultValues,
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
   const [exdates, setExdates] = useState<Date[]>(() => {
-    // @ts-ignore
-    const saved = eventFormContext?.recurrence;
+    const saved = recurrence;
     if (!saved) return [];
     try {
       const parsed = rrulestr(saved);
@@ -159,12 +156,10 @@ const RecurrenceWidgetModal = ({
   };
 
   useEffect(() => {
-    // @ts-ignore
-    if (!eventFormContext.recurrence) {
+    if (!recurrence) {
       form.reset(defaultValues);
     }
-    // @ts-ignore
-  }, [defaultValues, eventFormContext.recurrence, form]);
+  }, [defaultValues, recurrence, form]);
 
   const calculateWeekDay = () => {
     const weekday = getWeekday(formValues.weekdayOfTheMonth);
