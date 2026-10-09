@@ -95,6 +95,7 @@ export default function install(config: ConfigType) {
   config.registerRoute({
     type: 'prefix',
     path: '@search',
+    skipContent: true,
     children: [
       {
         type: 'route',
@@ -106,6 +107,7 @@ export default function install(config: ConfigType) {
   config.registerRoute({
     type: 'prefix',
     path: '@breadcrumbs',
+    skipContent: true,
     children: [
       {
         type: 'route',
@@ -117,6 +119,7 @@ export default function install(config: ConfigType) {
   config.registerRoute({
     type: 'prefix',
     path: '@objectBrowserWidget',
+    skipContent: true,
     children: [
       {
         type: 'route',
@@ -128,6 +131,7 @@ export default function install(config: ConfigType) {
   config.registerRoute({
     type: 'prefix',
     path: '@queryStringOptions',
+    skipContent: true,
     children: [
       {
         type: 'route',
@@ -139,6 +143,7 @@ export default function install(config: ConfigType) {
   config.registerRoute({
     type: 'prefix',
     path: '@createContent',
+    skipContent: true,
     children: [
       {
         type: 'route',

@@ -24,15 +24,33 @@ export async function loader({
 
   delete query['path.depth'];
   delete query['path.query'];
-  const { data: results } = await cli.search({
-    query: {
-      path: pathQuery,
-      ...query,
-      SearchableText: query.SearchableText
-        ? `${query.SearchableText}*`
-        : undefined,
-    },
-  });
+  // The root middleware doesn't load the browsed folder for this route
+  // (`skipContent`), so a folder that doesn't exist gets here. It gives an
+  // empty listing, instead of an error replacing the form the browser is
+  // used in.
+  let results;
+  let breadcrumbs;
+  try {
+    [{ data: results }, { data: breadcrumbs }] = await Promise.all([
+      cli.search({
+        query: {
+          path: pathQuery,
+          ...query,
+          SearchableText: query.SearchableText
+            ? `${query.SearchableText}*`
+            : undefined,
+        },
+      }),
+      cli.getBreadcrumbs({
+        path,
+      }),
+    ]);
+  } catch (error) {
+    const status = (error as { status?: number })?.status;
+    if (!status || status >= 500) throw error;
+    results = { '@id': '', items: [], items_total: 0 };
+    breadcrumbs = { '@id': '', items: [] };
+  }
   // const items = response.items;
   // const firstLevelIds = items
   //   .filter((i) => i['@id'].split('/').length > 1)
@@ -47,13 +65,6 @@ export async function loader({
   // const strippedRequest = new Request(request.url.replace(/\?.*$/, ''), {
   //   headers: request.headers,
   // });
-
-  // TODO replace with reading from the context expander
-  // const content = context.get(ploneContentContext),
-  // content.data['@components'].breadcrumbs....
-  const { data: breadcrumbs } = await cli.getBreadcrumbs({
-    path,
-  });
 
   return data(flattenToAppURL({ results, breadcrumbs }), {
     headers: {
