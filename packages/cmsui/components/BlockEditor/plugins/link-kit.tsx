@@ -28,7 +28,6 @@ import {
   Search,
   Unlink,
 } from 'lucide-react';
-import { useAtomValue } from 'jotai';
 import { KEYS, RangeApi } from 'platejs';
 import {
   useEditorPlugin,
@@ -46,7 +45,7 @@ import { Separator } from '@plone/plate/components/ui/separator';
 import { ObjectBrowserProvider } from '../../ObjectBrowserWidget/ObjectBrowserContext';
 import { ObjectBrowserModal } from '../../ObjectBrowserWidget/ObjectBrowserModal';
 import { buildObjectBrowserUrl } from '../../ObjectBrowserWidget/utils';
-import { formAtom } from '../../../routes/atoms';
+import { useFormFieldValue } from '../../../routes/atoms';
 
 const popoverVariants = cva(
   'z-50 rounded-md border bg-popover p-1 text-popover-foreground shadow-md outline-hidden',
@@ -280,8 +279,7 @@ function LinkFloatingToolbar({
 }) {
   const editor = useEditorRef();
   const selection = useEditorSelection();
-  const content = useAtomValue(formAtom);
-  const currentContentPath = content?.['@id'];
+  const currentContentPath = useFormFieldValue<string>('@id');
   const { setOption } = useEditorPlugin(PlateLinkPlugin);
   const searchFetcher = useFetcher<{ results?: { items?: SearchItem[] } }>();
   const inputProps = useFormInputProps({
