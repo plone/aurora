@@ -90,6 +90,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
         '@plone/quanta > tailwind-variants',
         '@plone/helpers > jotai',
         '@plone/helpers > jotai/utils',
+        '@plone/helpers > jotai/vanilla',
         '@plone/helpers > jotai-optics',
       ],
     },
