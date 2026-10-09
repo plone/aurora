@@ -5,6 +5,7 @@ import {
   data,
   redirect,
   useLoaderData,
+  useLocation,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   type RouterContextProvider,
@@ -59,6 +60,7 @@ export async function action({
 export default function Add() {
   const { schema, type } = useLoaderData<typeof loader>();
   const { t } = useTranslation();
+  const location = useLocation();
 
   const emptyContent = {
     '@type': type,
@@ -69,6 +71,9 @@ export default function Add() {
 
   return (
     <ContentForm
+      // Remount the form, and with it its store, when adding in another
+      // container or another type.
+      key={`${location.pathname}${location.search}`}
       content={emptyContent}
       schema={schema}
       heading={`${t('cmsui.add')} ${schema.title}`}
