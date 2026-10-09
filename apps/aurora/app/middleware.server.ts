@@ -149,11 +149,38 @@ export const getAPIResourceWithAuth: Route.MiddlewareFunction = async (
   }
 };
 
+function matchesExpanderPath(path: string, match: string) {
+  const prefix = match.replace(/\/+$/, '');
+  return prefix === '' || path === prefix || path.startsWith(`${prefix}/`);
+}
+
+/**
+ * Returns the components to expand in the content request of `path`, as
+ * declared in `config.settings.apiExpanders` (see `defaultApiExpanders` in
+ * `config/server.server.ts` for the core ones). Expanders flagged
+ * `authenticated` apply only to signed-in users, so that anonymous requests,
+ * and their cache keys, stay unchanged.
+ */
+export function getContentExpand(path: string, authenticated: boolean) {
+  const expand: string[] = [];
+
+  for (const expander of config.settings.apiExpanders ?? []) {
+    // Volto-shaped expanders (`GET_CONTENT`) do not apply to Plone Aurora.
+    if (!('expand' in expander)) continue;
+    if (expander.authenticated && !authenticated) continue;
+    if (!matchesExpanderPath(path, expander.match)) continue;
+    for (const name of expander.expand) {
+      if (!expand.includes(name)) expand.push(name);
+    }
+  }
+
+  return expand;
+}
+
 export const fetchPloneContent: Route.MiddlewareFunction = async (
   { request, params, context },
   next,
 ) => {
-  const expand = ['navroot', 'breadcrumbs', 'navigation', 'actions'];
   const token = await getAuthFromRequest(request);
 
   let cli = context.get(ploneClientContext);
@@ -172,7 +199,7 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
     } catch {}
   }
 
-  if (userId) expand.push('types');
+  const expand = getContentExpand(path, !!userId);
 
   const setPloneContext = (
     content: Awaited<ReturnType<PloneClient['getContent']>>,
@@ -211,7 +238,7 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
         const [content, site] = await Promise.all([
           cli.getContent({
             path,
-            expand: expand.filter((item) => item !== 'types'),
+            expand: getContentExpand(path, false),
           }),
           cli.getSite(),
         ]);

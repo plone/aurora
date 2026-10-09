@@ -17,6 +17,18 @@ type apiExpandersType =
           ) => { [key: string]: string });
     };
 
+/**
+ * A Plone Aurora expander: components to expand in the main content request.
+ */
+export type ContentExpander = {
+  /** The path the expander applies to, and every path below it. `''` or `'/'` matches every page. */
+  match: string;
+  /** The names of the `plone.restapi` components to expand. */
+  expand: string[];
+  /** When `true`, the expander applies to signed-in users only. */
+  authenticated?: boolean;
+};
+
 type styleClassNameExtendersType = ({
   block,
   content,
@@ -55,7 +67,7 @@ export interface SettingsConfig {
   port: string;
   publicURL: string;
   apiPath: string;
-  apiExpanders: apiExpandersType[] | [];
+  apiExpanders: Array<apiExpandersType | ContentExpander>;
   devProxyToApiPath: string | undefined;
   proxyRewriteTarget: string | undefined;
   actions_raising_api_errors: string[];

@@ -27,6 +27,7 @@ register-slots
 customize-login-screen
 shadow-a-component
 fetch-additional-data-root-loader
+add-content-expanders
 add-client-endpoints
 add-tailwind
 style-blocks-in-a-theme
