@@ -4,19 +4,16 @@
 
 # -- Path setup --------------------------------------------------------------
 
-from datetime import datetime
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath("."))
-
-import os
 import json
+import os
+import sys
+from datetime import datetime, timezone
 
+sys.path.insert(0, os.path.abspath("."))
 
 # -- Project information -----------------------------------------------------
 
@@ -24,7 +21,7 @@ project = "Plone Aurora Documentation"
 copyright = "Plone Aurora Foundation"
 author = "Plone Community"
 trademark_name = "Plone"
-now = datetime.now()
+now = datetime.now(timezone.utc)
 year = str(now.year)
 
 # The version info for the project you're documenting, acts as replacement for
@@ -56,6 +53,7 @@ else:
 # They can be extensions coming with Sphinx (named "sphinx.ext.*")
 # or your custom ones.
 extensions = [
+    "latest_gh_version_substitution",
     "myst_parser",
     "sphinx.ext.ifconfig",
     "sphinx.ext.intersphinx",
@@ -147,8 +145,8 @@ html_theme_options = {
             "attributes": {
                 "target": "_blank",
                 "rel": "noopener me",
-                "class": "nav-link custom-fancy-css"
-            }
+                "class": "nav-link custom-fancy-css",
+            },
         },
         {
             "name": "Mastodon",
@@ -158,8 +156,8 @@ html_theme_options = {
             "attributes": {
                 "target": "_blank",
                 "rel": "noopener me",
-                "class": "nav-link custom-fancy-css"
-            }
+                "class": "nav-link custom-fancy-css",
+            },
         },
         {
             "name": "YouTube",
@@ -169,8 +167,8 @@ html_theme_options = {
             "attributes": {
                 "target": "_blank",
                 "rel": "noopener me",
-                "class": "nav-link custom-fancy-css"
-            }
+                "class": "nav-link custom-fancy-css",
+            },
         },
         {
             "name": "X (formerly Twitter)",
@@ -180,8 +178,8 @@ html_theme_options = {
             "attributes": {
                 "target": "_blank",
                 "rel": "noopener me",
-                "class": "nav-link custom-fancy-css"
-            }
+                "class": "nav-link custom-fancy-css",
+            },
         },
     ],
     "logo": {
@@ -228,8 +226,8 @@ html_static_path = [
 # For more information see:
 # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
 myst_enable_extensions = [
-    "attrs_block", # Support parsing of block attributes.
-    "attrs_inline", # Support parsing of inline attributes.
+    "attrs_block",  # Support parsing of block attributes.
+    "attrs_inline",  # Support parsing of inline attributes.
     "colon_fence",  # You can also use ::: delimiters to denote code fences, instead of ```.
     "deflist",  # Support definition lists. https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#definition-lists
     "html_image",  # For inline images. See https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#html-images
@@ -299,21 +297,6 @@ latex_documents = [
 # the title page.
 latex_logo = "_static/logo_2x.png"
 
-
-# An extension that allows replacements for code blocks that
-# are not supported in `rst_epilog` or other substitutions.
-# https://stackoverflow.com/a/56328457/2214933
-# def source_replace(app, docname, source):
-#     result = source[0]
-#     for key in app.config.source_replacements:
-#         result = result.replace(key, app.config.source_replacements[key])
-#     source[0] = result
-
-
-# Dict of replacements.
-# source_replacements = {
-# }
-
 # -- sphinx-reredirects configuration ----------------------------------
 # https://documatt.com/sphinx-reredirects/usage.html
 redirects = {
@@ -322,7 +305,5 @@ redirects = {
 
 
 def setup(app):
-    # app.add_config_value("source_replacements", {}, True)
-    # app.connect("source-read", source_replace)
     app.add_config_value("context", "plone-aurora", "env")
     app.tags.add("plone-aurora")
