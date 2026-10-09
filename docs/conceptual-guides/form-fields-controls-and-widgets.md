@@ -236,6 +236,7 @@ The form builds these props from the field's schema and state.
 The form turns the schema keys it understands into these props.
 Any other key of the field schema is a widget option and is passed to the widget as is.
 For example, the align widget of a block schema reads its `actions` this way.
+{ref}`core-widgets-label` lists the widget options of each core widget.
 Widget props from the field's tagged values, `frontendOptions.widgetProps`, are applied last.
 
 The contract is about values.
