@@ -55,6 +55,8 @@ export default function Edit() {
 
   return (
     <ContentForm
+      // Remount the form, and with it its store, when editing another item.
+      key={content['@id']}
       content={content}
       schema={schema}
       heading={`${content.title} - ${t('cmsui.edit')}`}
