@@ -1,21 +1,9 @@
+import type { FormWidgetProps } from '@plone/types';
 import { Checkbox, Description } from '@plone/quanta';
 
-export interface BooleanWidgetProps {
-  name: string;
-  value?: boolean | null;
-  defaultValue?: boolean | null;
-  onChange?: (value: boolean) => void;
-  onBlur?: () => void;
-  label?: string;
-  description?: string;
-  errorMessage?: string;
-  errors?: unknown[];
+export type BooleanWidgetProps = FormWidgetProps<boolean> & {
   error?: unknown[];
-  required?: boolean;
-  disabled?: boolean;
-  readOnly?: boolean;
-  className?: string;
-}
+};
 
 const getErrorMessage = ({
   errorMessage,

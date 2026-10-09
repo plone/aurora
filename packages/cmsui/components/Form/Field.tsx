@@ -21,6 +21,8 @@ interface BaseFieldProps {
   defaultValue?: unknown;
   required?: boolean;
   error?: Array<unknown>;
+  errors?: Array<unknown>;
+  errorMessage?: string;
   widget?: keyof WidgetsConfigByWidget;
   vocabulary?: { '@id': keyof WidgetsConfigByVocabulary };
   choices?: Array<[string, string]>;
@@ -31,6 +33,7 @@ interface BaseFieldProps {
   };
   factory?: keyof WidgetsConfigByFactory;
   onChange?: (value: any) => void;
+  onBlur?: () => void;
   placeholder?: string;
   title?: string /* To remove? */;
   value: any;
@@ -164,9 +167,11 @@ const getWidgetByType = (
 const renderFieldWidget = ({
   fieldProps,
   onFieldChange,
+  onFieldBlur,
 }: {
   fieldProps: FieldProps;
   onFieldChange: (value: any) => void;
+  onFieldBlur: () => void;
 }) => {
   const Widget =
     getWidgetByFieldId(
@@ -182,9 +187,19 @@ const renderFieldWidget = ({
     getWidgetDefault();
 
   // Adding the widget props from tagged values (if any)
+  const errors = fieldProps.errors ?? fieldProps.error;
+  const errorMessage =
+    fieldProps.errorMessage ??
+    errors
+      ?.filter(Boolean)
+      .map((value) => String(value))
+      .join(', ');
+
   const widgetProps = {
     ...fieldProps,
-    label: fieldProps.title,
+    errors,
+    errorMessage,
+    label: fieldProps.label ?? fieldProps.title,
     placeholder: fieldProps.placeholder || 'Type something...',
     ...getWidgetPropsFromTaggedValues(fieldProps.widgetOptions),
   };
@@ -195,6 +210,10 @@ const renderFieldWidget = ({
       onChange={(value: any) => {
         fieldProps.onChange?.(value);
         onFieldChange(value);
+      }}
+      onBlur={() => {
+        fieldProps.onBlur?.();
+        onFieldBlur();
       }}
     />
   ) : null;
@@ -219,6 +238,7 @@ const AtomField = (props: AtomFieldProps) => {
 
   return renderFieldWidget({
     fieldProps: props,
+    onFieldBlur: () => field.handleBlur(),
     onFieldChange: (value: any) => {
       setField(value);
       return field.handleChange(value);
@@ -231,6 +251,7 @@ const FormField = (props: FormFieldProps) => {
 
   return renderFieldWidget({
     fieldProps: props,
+    onFieldBlur: () => field.handleBlur(),
     onFieldChange: (value: any) => field.handleChange(value),
   });
 };
