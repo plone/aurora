@@ -113,7 +113,7 @@ docs-livehtml: bin/python docs-news  ## Rebuild Sphinx documentation on changes,
 
 .PHONY: docs-linkcheck
 docs-linkcheck: bin/python docs-news  ## Run linkcheck
-	cd $(DOCS_DIR) && $(SPHINXBUILD) -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck
+	cd $(DOCS_DIR) && $(SPHINXBUILD) -b linkcheck -W $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck
 	@echo
 	@echo "Link check complete; look for any errors in the above output " \
 		"or in $(BUILDDIR)/linkcheck/ ."
