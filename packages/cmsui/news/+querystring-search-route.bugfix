@@ -1,0 +1,1 @@
+Registered the `@querystringSearch` route, so the Querystring widget results preview no longer gets a 404. @sneridagh
