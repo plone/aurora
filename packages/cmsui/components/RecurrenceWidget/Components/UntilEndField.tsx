@@ -1,17 +1,15 @@
 import { DatePicker } from '@plone/quanta';
 import type { Updater } from '@tanstack/react-form';
-import { useAtomValue } from 'jotai';
-import { formAtom } from '../../../routes/atoms';
+import { useFormFieldValue } from '../../../routes/atoms';
 
 interface UntilEndFieldProps {
   onChange: (updater: Updater<string>) => void;
 }
 
 const UntilEndField = ({ onChange }: UntilEndFieldProps) => {
-  const formContext = useAtomValue(formAtom);
+  const end = useFormFieldValue<string>('end');
 
-  // @ts-ignore
-  const endDate = new Date(formContext.end);
+  const endDate = new Date(end as string);
   const defaultYear = endDate.getFullYear();
   const defaultMonth = endDate.getMonth() + 1;
   const defaultDay = endDate.getDate();

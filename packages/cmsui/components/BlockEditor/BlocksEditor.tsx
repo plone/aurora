@@ -1,4 +1,4 @@
-import { useAtom, useAtomValue } from 'jotai';
+import { useSetAtom, useStore } from 'jotai';
 import * as React from 'react';
 import { useLocation } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -23,10 +23,13 @@ const getDefaultSomersaultValue = (title = ''): Value => [
 
 const BlocksEditor = () => {
   const somersaultBlockAtom = blockAtomFamily(SOMERSAULT_KEY);
-  const [somersaultBlock, setSomersaultBlock] = useAtom(somersaultBlockAtom);
-  const content = useAtomValue(formAtom);
+  // The editor only writes the blocks. It reads the form once, below, to build
+  // Plate's initial value, so it does not subscribe to the form: every
+  // keystroke in Plate changes the blocks, and a subscription would re-render
+  // the editor host each time.
+  const store = useStore();
+  const setSomersaultBlock = useSetAtom(somersaultBlockAtom);
   const location = useLocation();
-  const metadataTitle = content?.title ?? '';
   // Plate's i18n contract follows react-i18next, so `t` is passed as is.
   // Plate re-renders its translated UI when the language changes.
   const { t, i18n } = useTranslation();
@@ -38,13 +41,11 @@ const BlocksEditor = () => {
     key: string;
     value: Value;
   } | null>(null);
-  const stableInitialValueKey =
-    location.pathname ??
-    (content?.['@id'] as string | undefined) ??
-    (content?.id as string | undefined) ??
-    metadataTitle;
+  const stableInitialValueKey = location.pathname;
 
   if (stableInitialValueRef.current?.key !== stableInitialValueKey) {
+    const somersaultBlock = store.get(somersaultBlockAtom);
+    const metadataTitle = store.get(formAtom)?.title ?? '';
     stableInitialValueRef.current = {
       key: stableInitialValueKey,
       value:

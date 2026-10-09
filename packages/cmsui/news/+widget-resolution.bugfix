@@ -1,0 +1,1 @@
+Fixed widget resolution: each lookup step now only searches its own category, and an unknown `widget` name no longer stops the lookup before choices, vocabulary, factory and type. @sneridagh
