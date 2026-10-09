@@ -1,6 +1,8 @@
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
+import { waitForPlateEditorReady } from '../../../tooling/playwright/plate';
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 
 test('The edit form resolves image and boolean fields to their widgets', async ({
   page,
@@ -15,10 +17,10 @@ test('The edit form resolves image and boolean fields to their widgets', async (
   await page.goto('/@@edit/widget-news', { waitUntil: 'networkidle' });
   await page.getByRole('tab', { name: 'Content' }).click();
 
-  // The lead image is an `Image` factory field.
+  // The lead image is an `Image` factory field: it stores the image file.
   await expect(
-    page.getByText('Browse the site, drop an image, or use a URL'),
-  ).toBeVisible();
+    page.locator('input[type="file"][name="image"][accept="image/*"]'),
+  ).toHaveCount(1);
 
   // Boolean fields resolve by their `boolean` type.
   await page.locator('button', { hasText: /^Settings$/ }).click();
@@ -47,37 +49,58 @@ test('A page summary is edited in a multi-line text area', async ({ page }) => {
   expect(await summary.evaluate((element) => element.tagName)).toBe('TEXTAREA');
 });
 
-test('Adding an image shows its image field, browsing from the container', async ({
-  page,
-}) => {
+test('The image widget browses from the edited page', async ({ page }) => {
   await login(page);
   await createContent(page, {
     // With plone.volto, pages are folderish.
     contentType: 'Document',
-    contentId: 'gallery',
-    contentTitle: 'Gallery',
+    contentId: 'album',
+    contentTitle: 'Album',
   });
   await createContent(page, {
     contentType: 'Image',
-    contentId: 'sunset',
-    contentTitle: 'Sunset',
-    path: 'gallery',
+    contentId: 'sunrise',
+    contentTitle: 'Sunrise',
+    path: 'album',
     image: true,
   });
+  await createContent(page, {
+    contentType: 'Document',
+    contentId: 'album-page',
+    contentTitle: 'Album page',
+    path: 'album',
+    bodyModifier: (body) => ({
+      ...body,
+      blocks: {
+        __somersault__: {
+          '@type': '__somersault__',
+          value: [
+            { type: 'title', children: [{ text: 'Album page' }] },
+            {
+              type: PLONE_BLOCK_TYPE,
+              '@type': 'image',
+              children: [{ text: '' }],
+            },
+          ],
+        },
+      },
+      blocks_layout: { items: ['__somersault__'] },
+    }),
+  });
 
-  // The add form used to crash here (#163): the image widget guessed its
-  // location from the URL, and the object browser asked for `/@@add`.
-  await page.goto('/@@add/gallery?type=Image', { waitUntil: 'networkidle' });
-  await page.getByRole('tab', { name: 'Content' }).click();
-  await expect(
-    page.getByText('Browse the site, drop an image, or use a URL'),
-  ).toBeVisible();
+  await page.goto('/@@edit/album/album-page', { waitUntil: 'networkidle' });
+  await waitForPlateEditorReady(page);
+  await page
+    .locator('#toolbar')
+    .getByRole('button', { name: 'Settings' })
+    .click();
 
-  // The object browser starts in the container the image is added to, and
-  // shows where it is.
+  // The object browser starts at the edited page, and shows where it is
+  // (#163: it used to guess its location from the URL).
   await page.getByRole('button', { name: 'Pick an existing image' }).click();
   const dialog = page.getByRole('dialog');
-  await expect(dialog.getByText('Sunset')).toBeVisible();
-  // The listing shows the folder's children; its name is in the breadcrumbs.
-  await expect(dialog.getByText('Gallery', { exact: true })).toBeVisible();
+  await expect(dialog.getByRole('link', { name: 'Album page' })).toBeVisible();
+  // From there, the editor goes up to the folder, and finds its image.
+  await dialog.getByRole('link', { name: 'Album', exact: true }).click();
+  await expect(dialog.getByText('Sunrise')).toBeVisible();
 });

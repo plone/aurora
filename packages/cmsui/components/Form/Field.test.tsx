@@ -54,6 +54,7 @@ describe('Field widget resolution', () => {
       key: 'type',
       definition: { boolean: marker('type') },
     });
+    config.registerChoicesWidget(marker('choices'));
   });
 
   it('resolves by field id first', () => {
@@ -92,6 +93,41 @@ describe('Field widget resolution', () => {
             '@id':
               'http://localhost/@vocabularies/plone.app.vocabularies.Catalog',
           },
+        },
+      }),
+    ).toBe('vocabulary');
+  });
+
+  it('resolves by choices', () => {
+    expect(
+      renderedWidget({
+        name: 'field',
+        type: 'string',
+        choices: [['a', 'A']],
+      }),
+    ).toBe('choices');
+  });
+
+  it('resolves a field with a vocabulary by choices', () => {
+    expect(
+      renderedWidget({
+        name: 'field',
+        type: 'string',
+        vocabulary: {
+          '@id':
+            'http://localhost/@vocabularies/plone.app.vocabularies.SupportedContentLanguages',
+        },
+      }),
+    ).toBe('choices');
+  });
+
+  it('prefers the widget of a vocabulary over the choices widget', () => {
+    expect(
+      renderedWidget({
+        name: 'field',
+        vocabulary: {
+          '@id':
+            'http://localhost/@vocabularies/plone.app.vocabularies.Catalog',
         },
       }),
     ).toBe('vocabulary');

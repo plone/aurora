@@ -128,6 +128,24 @@
     },
     "toolbar": {
       "settings": "Impostazioni"
+    },
+    "widgets": {
+      "select": {
+        "noValue": "Nessun valore",
+        "placeholder": "Seleziona…"
+      },
+      "array": {
+        "placeholder": "Digita per aggiungere…"
+      },
+      "file": {
+        "choose": "Scegli un file",
+        "replace": "Sostituisci il file",
+        "orDrop": "o trascinalo qui",
+        "remove": "Rimuovi {{filename}}",
+        "dropZone": "Trascina un file per {{label}}",
+        "imageOnly": "Scegli un file immagine.",
+        "readError": "Impossibile leggere il file."
+      }
     }
   }
 }

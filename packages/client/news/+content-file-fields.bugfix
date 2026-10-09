@@ -1,0 +1,1 @@
+Accepted the choice tokens of `allow_discussion`, a stored `preview_image`, and `null` for the file fields, in the content data of `createContent` and `updateContent`. @sneridagh

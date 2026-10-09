@@ -600,6 +600,17 @@ class Config {
   }
 
   /**
+   * Registers the widget of the fields with choices or a vocabulary, when no
+   * more specific widget matches them.
+   *
+   * @param component - The widget component to register.
+   *
+   */
+  registerChoicesWidget(component: React.ComponentType<RegisteredWidgetProps>) {
+    this._data.widgets.choices = component;
+  }
+
+  /**
    * Gets a widget configuration from the registry.
    *
    * @param key - The key the widget is registered under (e.g. a field id, a
