@@ -88,6 +88,9 @@ linkcheck_ignore = [
     r"http://localhost",
     # Ignore pages that require authentication
     r"https://github.com/plone/aurora/issues/new/choose",  # requires auth
+    r"https://github.com/organizations/plone/repositories/new",  # requires auth
+    # Ignore blocked pages
+    r"https://www.npmjs.com",
     # Ignore github.com pages with anchors
     r"https://github.com/.*#.*",
     # Ignore other specific anchors
@@ -95,6 +98,8 @@ linkcheck_ignore = [
     r"https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS/Errors#Identifying_the_issue",
     r"https://docs.cypress.io/guides/references/migration-guide#Migrating-to-Cypress-version-10-0",
     r"https://medium.com",
+    # Ignore MyST linkify flukes
+    r"http://AGENTS.md",
 ]
 linkcheck_anchors = True
 linkcheck_timeout = 5
@@ -103,11 +108,6 @@ linkcheck_retries = 1
 # The suffix of source filenames.
 source_suffix = {
     ".md": "markdown",
-    ".bugfix": "markdown",
-    ".breaking": "markdown",
-    ".documentation": "markdown",
-    ".feature": "markdown",
-    ".internal": "markdown",
 }
 
 # The master toctree document.

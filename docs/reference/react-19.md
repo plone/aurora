@@ -13,7 +13,7 @@ React 19 builds on React 18's concurrent rendering and Suspense foundations.
 Its goals are to simplify async logic, stabilize Server Components, and improve hydration, performance, and developer experience.
 
 ```{seealso}
-[Official React 19 announcement](https://react.dev/blog/2024/05/14/react-19)
+[Official React 19 announcement](https://react.dev/blog/2024/12/05/react-19)
 ```
 
 ## Actions (async UI)
