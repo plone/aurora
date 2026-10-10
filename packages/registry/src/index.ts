@@ -37,6 +37,20 @@ type GetComponentResult = {
   component: React.ComponentType<any> | undefined;
 };
 
+/**
+ * Builds the part of a utility key that encodes its dependencies:
+ * `|<key:value pairs sorted by key, joined by '+'>|`, or an empty string when
+ * there are none. The trailing separator keeps the dependencies apart from the
+ * utility name, so a dependency set only ever matches itself.
+ */
+function utilityDepsPrefix(dependencies: Record<string, string>): string {
+  const depsString = Object.keys(dependencies)
+    .sort()
+    .map((key) => `${key}:${dependencies[key]}`)
+    .join('+');
+  return depsString ? `|${depsString}|` : '';
+}
+
 type UtilityMethodFor<Type extends string> = Type extends keyof UtilityTypeMap
   ? UtilityTypeMap[Type]
   : (...args: any[]) => any;
@@ -472,16 +486,10 @@ class Config {
     method: UtilityMethodFor<Type>;
   }) {
     const { name, type, method, dependencies = {} } = options;
-    let depsString: string = '';
     if (!method) {
       throw new Error('No method provided');
-    } else {
-      depsString = Object.keys(dependencies)
-        .sort()
-        .map((key) => `${key}:${dependencies[key]}`)
-        .join('+');
     }
-    const utilityName = `${depsString ? `|${depsString}` : ''}${name}`;
+    const utilityName = `${utilityDepsPrefix(dependencies)}${name}`;
 
     let utilityType = this._data.utilities[type] as Utility<Type> | undefined;
     if (!utilityType) {
@@ -500,12 +508,7 @@ class Config {
 
     if (!name || !type) return {};
 
-    let depsString: string = '';
-    depsString = Object.keys(dependencies)
-      .map((key) => `${key}:${dependencies[key]}`)
-      .join('+');
-
-    const utilityName = `${depsString ? `|${depsString}` : ''}${name}`;
+    const utilityName = `${utilityDepsPrefix(dependencies)}${name}`;
     const utilitiesForType = this._data.utilities[type] as
       Utility<Type> | undefined;
 
@@ -520,18 +523,15 @@ class Config {
 
     if (!type) return [];
 
-    let depsString: string = '';
-    depsString = Object.keys(dependencies)
-      .map((key) => `${key}:${dependencies[key]}`)
-      .join('+');
-
     const utilitiesForType = this._data.utilities[type] as
       Utility<Type> | undefined;
     if (!utilitiesForType) return [];
 
-    const utilityName = `${depsString ? `|${depsString}` : ''}`;
+    // Without dependencies, every utility of the type matches. With them, the
+    // prefix ends in the separator, so only that exact dependency set matches.
+    const depsPrefix = utilityDepsPrefix(dependencies);
     const utilitiesKeys = Object.keys(utilitiesForType).filter((key) =>
-      key.startsWith(utilityName),
+      key.startsWith(depsPrefix),
     );
     const utilities = utilitiesKeys.map((key) => utilitiesForType[key]);
 
