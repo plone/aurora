@@ -135,12 +135,29 @@ export async function requireAuthCookie(request: Request) {
   return token;
 }
 
+/**
+ * Where a login sends the visitor afterwards: the request's `return_url`
+ * query parameter when it names a path on this site — it starts with `/`,
+ * not with `//` or `/\` (both of which a browser reads as another host), and
+ * carries no line break — otherwise `fallback`, the site root. This is the
+ * receiving half of the convention the header's login link
+ * (`AnonymousTools`) sends; Plone Classic's `came_from` and Volto's
+ * `return_url` behave the same way, and neither leaves the site.
+ */
+export function getReturnUrl(request: Request, fallback = '/'): string {
+  const returnUrl = new URL(request.url).searchParams.get('return_url');
+  if (returnUrl && /^\/(?![/\\])[^\r\n]*$/.test(returnUrl)) {
+    return returnUrl;
+  }
+  return fallback;
+}
+
 export async function redirectIfLoggedInLoader({
   request,
 }: LoaderFunctionArgs) {
   const token = await getAuthFromRequest(request);
   if (token) {
-    throw redirect('/');
+    throw redirect(getReturnUrl(request));
   }
   return null;
 }

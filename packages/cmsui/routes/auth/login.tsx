@@ -16,6 +16,7 @@ import {
   ploneSiteContext,
 } from '@plone/aurora/app/middleware.server';
 import {
+  getReturnUrl,
   redirectIfLoggedInLoader,
   setAuthOnResponse,
 } from '@plone/react-router';
@@ -77,7 +78,9 @@ export async function action({
       fullname: string | null;
     }>(data.token);
     const expires = new Date(decodedToken.exp * 1000);
-    const response = redirect('/');
+    // Back to the page the login link was pressed on (its `return_url`),
+    // the site root when none was sent.
+    const response = redirect(getReturnUrl(request));
     return await setAuthOnResponse(response, data.token, { expires });
   } catch (error: any) {
     return {
