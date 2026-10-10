@@ -1,13 +1,5 @@
 import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs/blocks';
-import {
-  quantaColors,
-  quantaGreys,
-  quantaBlues,
-  quantaReds,
-  quantaYellows,
-  quantaGreens,
-  quantaBlueGreens,
-} from './colors';
+import { quantaColors, quantaGreys, quantaBlues, quantaReds, quantaYellows, quantaGreens, quantaBlueGreens } from './colors';
 
 <Meta title="Styleguide/Quanta Colors" />
 
@@ -22,11 +14,39 @@ In non-Tailwind builds, they are available as CSS properties with the `--quanta-
 &nbsp;&nbsp;
 
 <ColorPalette>
-  <ColorItem title="Quanta slate" subtitle="" colors={quantaColors} />
-  <ColorItem title="Quanta greys" subtitle="" colors={quantaGreys} />
-  <ColorItem title="Quanta blues" subtitle="" colors={quantaBlues} />
-  <ColorItem title="Quanta reds" subtitle="" colors={quantaReds} />
-  <ColorItem title="Quanta yellows" subtitle="" colors={quantaYellows} />
-  <ColorItem title="Quanta greens" subtitle="" colors={quantaGreens} />
-  <ColorItem title="Quanta blue-greens" subtitle="" colors={quantaBlueGreens} />
+  <ColorItem
+    title="Quanta slate"
+    subtitle=""
+    colors={ quantaColors }
+  />
+  <ColorItem
+    title="Quanta greys"
+    subtitle=""
+    colors={ quantaGreys }
+  />
+  <ColorItem
+    title="Quanta blues"
+    subtitle=""
+    colors={ quantaBlues }
+  />
+  <ColorItem
+    title="Quanta reds"
+    subtitle=""
+    colors={ quantaReds }
+  />
+  <ColorItem
+    title="Quanta yellows"
+    subtitle=""
+    colors={ quantaYellows }
+  />
+  <ColorItem
+    title="Quanta greens"
+    subtitle=""
+    colors={ quantaGreens }
+  />
+  <ColorItem
+    title="Quanta blue-greens"
+    subtitle=""
+    colors={ quantaBlueGreens }
+  />
 </ColorPalette>
