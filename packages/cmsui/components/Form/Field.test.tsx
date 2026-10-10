@@ -2,7 +2,8 @@ import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import config from '@plone/registry';
 import type { WidgetsConfig } from '@plone/types';
-import { useAppForm } from './Form';
+import { FormProvider, useFormStore } from '@plone/helpers';
+import SchemaField from './Field';
 
 const marker = (name: string) => {
   const Widget = () => <div data-testid="widget">{name}</div>;
@@ -14,21 +15,11 @@ function TestForm({
   name,
   ...schema
 }: { name: string } & Record<string, unknown>) {
-  const form = useAppForm({
-    defaultValues: { [name]: '' },
-  });
+  const form = useFormStore({ key: name, initialValues: { [name]: '' } });
   return (
-    <form.AppField
-      name={name}
-      // eslint-disable-next-line react/no-children-prop
-      children={(field: any) => (
-        <field.SchemaField
-          name={name}
-          schema={schema}
-          value={field.state.value}
-        />
-      )}
-    />
+    <FormProvider form={form}>
+      <SchemaField name={name} schema={schema} />
+    </FormProvider>
   );
 }
 

@@ -1,24 +1,20 @@
 import SchemaFieldsets, { type FieldsetsSchema } from '../Form/SchemaFieldsets';
+import type { FieldProps } from '../Form/Field';
 
 type BlockSettingsFormRendererProps = {
   schema: FieldsetsSchema;
-  form: any;
-  getFieldProps: (fieldName: string) => {
-    onChange?: (value: unknown) => void;
-  };
+  getFieldProps?: (
+    fieldName: string,
+  ) => Partial<Pick<FieldProps, 'onChange' | 'setValue' | 'onBlur'>>;
 };
 
+/** Renders the block settings fields. Must be inside a `FormProvider`. */
 const BlockSettingsFormRenderer = ({
   schema,
-  form,
   getFieldProps,
 }: BlockSettingsFormRendererProps) => (
   <form>
-    <SchemaFieldsets
-      schema={schema}
-      form={form}
-      getFieldProps={getFieldProps}
-    />
+    <SchemaFieldsets schema={schema} getFieldProps={getFieldProps} />
   </form>
 );
 

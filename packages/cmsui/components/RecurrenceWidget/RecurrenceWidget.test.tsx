@@ -12,8 +12,9 @@ const { mockRruleStr, mockGetRruleText } = vi.hoisted(() => ({
 
 let mockFormContext: any = { recurrence: null };
 
-vi.mock('../../routes/atoms', () => ({
-  useFormFieldValue: (name: string) => mockFormContext[name],
+vi.mock('@plone/helpers', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@plone/helpers')>()),
+  useFieldValue: (name: string) => mockFormContext[name],
 }));
 
 vi.mock('./rrule', () => ({
