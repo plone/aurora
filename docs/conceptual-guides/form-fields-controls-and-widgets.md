@@ -199,7 +199,7 @@ const BooleanWidget: FormWidget<boolean> = (props) => {
 };
 ```
 
-The essential props are the following.
+The form builds these props from the field's schema and state.
 
 `name`
 :   The field's name in the form data.
@@ -208,17 +208,35 @@ The essential props are the following.
 :   The stored value.
     It can be `null` or `undefined` when the content has no value yet.
 
+`defaultValue`
+:   The default value from the field's schema.
+
 `onChange(value)`
 :   Reports the next value, always in the shape that the content API expects.
 
-`label`, `description`, and `placeholder`
-:   Text for the editor.
+`onBlur()`
+:   Reports that the editor left the field.
+
+`label` and `description`
+:   The field's title and description from its schema.
 
 `required`, `disabled`, and `readOnly`
 :   The field's state.
+    `readOnly` comes from the schema's `readonly`.
 
-`errorMessage` and `errors`
-:   The field's validation errors.
+`invalid` and `errorMessage`
+:   Whether the field has validation errors, and those errors as one message.
+
+`choices`, `vocabulary`, and `widgetOptions`
+:   The field's options and schema hints, as plone.restapi describes them.
+
+`schema`
+:   The field's whole schema, for widgets that need more than the contract, such as validation limits.
+
+The form turns the schema keys it understands into these props.
+Any other key of the field schema is a widget option and is passed to the widget as is.
+For example, the align widget of a block schema reads its `actions` this way.
+Widget props from the field's tagged values, `frontendOptions.widgetProps`, are applied last.
 
 The contract is about values.
 The form does not need to know whether a widget uses an HTML input, a React Aria component, a modal picker, or several controls together.

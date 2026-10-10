@@ -12,26 +12,55 @@ export type WidgetOptions = Record<string, unknown> & {
   vocabulary?: WidgetVocabulary;
 };
 
+/**
+ * A field's schema property, as plone.restapi or a block schema describes it.
+ */
+export type FieldSchema = Record<string, unknown> & {
+  title?: string;
+  description?: string;
+  type?: string;
+  default?: unknown;
+  widget?: string;
+  factory?: string;
+  readonly?: boolean;
+  mode?: string;
+  choices?: WidgetChoice[];
+  vocabulary?: WidgetVocabulary;
+  widgetOptions?: WidgetOptions;
+};
+
+/**
+ * The props every form widget receives: the widget contract.
+ *
+ * The form builds them from the field's schema and state. Any other key of
+ * the field schema is passed to the widget as is, as a widget option.
+ */
 export interface FormWidgetProps<TValue = unknown> {
+  /** The field's name in the form data. */
   name: string;
   /** The stored value. It can be empty when the content has no value yet. */
   value?: TValue | null;
+  /** The schema's default value. */
   defaultValue?: TValue | null;
-  /** Emits the next normalized value. */
+  /** Emits the next value, in the shape the content API expects. */
   onChange: (value: TValue) => void;
   onBlur?: () => void;
   label?: string;
   description?: string;
-  errorMessage?: string;
-  errors?: unknown[];
+  placeholder?: string;
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
+  /** Whether the field has validation errors. */
+  invalid?: boolean;
+  /** The field's validation errors, as one message. */
+  errorMessage?: string;
   className?: string;
-  placeholder?: string;
   choices?: WidgetChoice[];
   vocabulary?: WidgetVocabulary;
   widgetOptions?: WidgetOptions;
+  /** The raw field schema, for widgets that need more than the contract. */
+  schema?: FieldSchema;
 }
 
 export type FormWidget<TValue = unknown> = React.ComponentType<

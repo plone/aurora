@@ -1,20 +1,7 @@
 import type { FormWidgetProps } from '@plone/types';
 import { Checkbox, Description } from '@plone/quanta';
 
-export type BooleanWidgetProps = FormWidgetProps<boolean> & {
-  error?: unknown[];
-};
-
-const getErrorMessage = ({
-  errorMessage,
-  errors,
-  error,
-}: Pick<BooleanWidgetProps, 'errorMessage' | 'errors' | 'error'>) =>
-  errorMessage ??
-  (errors ?? error)
-    ?.filter(Boolean)
-    .map((value) => String(value))
-    .join(', ');
+export type BooleanWidgetProps = FormWidgetProps<boolean>;
 
 /**
  * Adapts the schema field props (`label`, `value`, `onChange(value)`) to the
@@ -29,18 +16,12 @@ export function BooleanWidget({
   label,
   description,
   errorMessage,
-  errors,
-  error,
+  invalid,
   required,
   disabled,
   readOnly,
   className,
 }: BooleanWidgetProps) {
-  const resolvedErrorMessage = getErrorMessage({
-    errorMessage,
-    errors,
-    error,
-  });
   const descriptionId = description ? `${name}-description` : undefined;
 
   return (
@@ -51,7 +32,7 @@ export function BooleanWidget({
         isRequired={required}
         isDisabled={disabled}
         isReadOnly={readOnly}
-        isInvalid={!!resolvedErrorMessage}
+        isInvalid={!!invalid}
         onBlur={onBlur}
         onChange={onChange}
         aria-describedby={descriptionId}
@@ -61,14 +42,14 @@ export function BooleanWidget({
       {description && (
         <Description id={descriptionId}>{description}</Description>
       )}
-      {resolvedErrorMessage && (
+      {invalid && errorMessage && (
         <p
           className={`
             text-xs font-normal text-quanta-candy
             forced-colors:text-[Mark]
           `}
         >
-          {resolvedErrorMessage}
+          {errorMessage}
         </p>
       )}
     </div>

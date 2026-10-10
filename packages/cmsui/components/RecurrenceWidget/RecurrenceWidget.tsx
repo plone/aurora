@@ -12,13 +12,13 @@ const RecurrenceWidgetModal = lazy(
   () => import('./Components/RecurrenceWidgetModal'),
 );
 import { useFormFieldValue } from '../../routes/atoms';
-import type { FieldProps } from '../Form/Field';
 
 import { rrulestr } from './rrule';
 import SelectedDates from './Components/SelectedDates';
 import { getRruleText } from './utils';
+import type { FormWidgetProps } from '@plone/types';
 
-type RecurrenceWidgetProps = FieldProps;
+type RecurrenceWidgetProps = FormWidgetProps<string | null>;
 
 export function RecurrenceWidget({ label, onChange }: RecurrenceWidgetProps) {
   const recurrence = useFormFieldValue<string | null>('recurrence') ?? null;

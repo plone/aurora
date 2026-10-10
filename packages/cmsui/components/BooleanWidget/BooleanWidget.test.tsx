@@ -82,7 +82,8 @@ describe('BooleanWidget', () => {
         value={false}
         onChange={vi.fn()}
         description="Confirm before publishing."
-        errors={['This field is required.']}
+        invalid
+        errorMessage="This field is required."
       />,
     );
 

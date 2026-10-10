@@ -1,18 +1,10 @@
 import Checkbox from '@plone/icons/svg/checkbox.svg?react';
 import Close from '@plone/icons/svg/close.svg?react';
 import Settings from '@plone/icons/svg/settings.svg?react';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionItemTrigger,
-  AccordionPanel,
-  Tabs,
-  Link,
-} from '@plone/quanta';
+import { Tabs, Link } from '@plone/quanta';
 import { InitAtoms } from '@plone/helpers';
 import { Plug } from '@plone/layout/components/Pluggable';
 import type { Content } from '@plone/types';
-import type { DeepKeys } from '@tanstack/react-form';
 import clsx from 'clsx';
 import { createStore, Provider, useAtom } from 'jotai';
 import type { ReactNode } from 'react';
@@ -20,19 +12,13 @@ import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFetcher, type SubmitTarget } from 'react-router';
 import { useAppForm } from '../Form/Form';
+import SchemaFieldsets, { type FieldsetsSchema } from '../Form/SchemaFieldsets';
 import Sidebar, { sidebarAtom } from '../Sidebar/Sidebar';
 import { formAtom } from '../../routes/atoms';
 import BlocksEditor from '../BlockEditor/BlocksEditor';
 
-interface Schema {
+interface Schema extends FieldsetsSchema {
   title: string;
-  fieldsets: Array<{
-    id: string;
-    title: string;
-    fields: string[];
-  }>;
-  properties: Record<string, { title: string; [key: string]: unknown }>;
-  required: string[];
 }
 
 interface ContentFormProps {
@@ -95,48 +81,11 @@ export default function ContentForm({
                     <div className="flex flex-col">
                       <h1 className="mb-4 text-2xl font-bold">{heading}</h1>
                       <form>
-                        {schema.fieldsets.map((fieldset) => (
-                          <Accordion
-                            defaultExpandedKeys={['default']}
-                            key={fieldset.id}
-                          >
-                            <AccordionItem id={fieldset.id} key={fieldset.id}>
-                              <AccordionItemTrigger>
-                                {fieldset.title}
-                              </AccordionItemTrigger>
-                              <AccordionPanel>
-                                {(fieldset.fields as DeepKeys<Content>[]).map(
-                                  (schemaField, index) => (
-                                    <form.AppField
-                                      name={schemaField}
-                                      key={index}
-                                      // eslint-disable-next-line react/no-children-prop
-                                      children={(field) => (
-                                        <field.Quanta
-                                          {...schema.properties[schemaField]}
-                                          className="mb-4"
-                                          label={
-                                            schema.properties[field.name].title
-                                          }
-                                          name={field.name}
-                                          defaultValue={field.state.value}
-                                          required={
-                                            schema.required.indexOf(
-                                              schemaField,
-                                            ) !== -1
-                                          }
-                                          error={field.state.meta.errors}
-                                          formAtom={formAtom}
-                                          value={field.state.value}
-                                        />
-                                      )}
-                                    />
-                                  ),
-                                )}
-                              </AccordionPanel>
-                            </AccordionItem>
-                          </Accordion>
-                        ))}
+                        <SchemaFieldsets
+                          schema={schema}
+                          form={form}
+                          formAtom={formAtom}
+                        />
                       </form>
                     </div>
                   ),

@@ -1,5 +1,5 @@
 import { createFormHookContexts, createFormHook } from '@tanstack/react-form';
-import Quanta from './Field';
+import SchemaField from './Field';
 
 // export useFieldContext for use in your custom components
 export const { fieldContext, formContext, useFieldContext, useFormContext } =
@@ -10,7 +10,9 @@ export const { useAppForm } = createFormHook({
   formContext,
   // We'll learn more about these options later
   fieldComponents: {
-    Quanta,
+    SchemaField,
+    /** @deprecated Use `SchemaField`. */
+    Quanta: SchemaField,
   },
   formComponents: {},
 });

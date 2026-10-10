@@ -43,7 +43,8 @@ export const WithError: Story = {
     label: 'Confirm publishing',
     value: false,
     onChange: () => {},
-    errors: ['This field is required.'],
+    invalid: true,
+    errorMessage: 'This field is required.',
   },
   render: (args) => <BooleanWidgetStory {...args} />,
 };
