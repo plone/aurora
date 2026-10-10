@@ -8,7 +8,6 @@ export default function (config) {
         '@plone/cmsui > @platejs/floating',
         '@plone/cmsui > @platejs/link',
         '@plone/cmsui > @platejs/link/react',
-        '@plone/cmsui > @tanstack/react-form',
         '@plone/cmsui > class-variance-authority',
         '@plone/cmsui > clsx',
         '@plone/cmsui > jotai',
