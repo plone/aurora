@@ -138,6 +138,24 @@
     },
     "toolbar": {
       "settings": "Settings"
+    },
+    "validation": {
+      "required": "Required input is missing.",
+      "minLength": "Minimum length is {{len}}.",
+      "maxLength": "Maximum length is {{len}}.",
+      "minimum": "Minimum value is {{len}}.",
+      "maximum": "Maximum value is {{len}}.",
+      "number": "Input must be a number.",
+      "integer": "Input must be an integer.",
+      "email": "Input must be a valid email address (something@domain.com).",
+      "url": "Input must be a valid URL (www.something.com or http(s)://www.something.com).",
+      "pattern": "The value does not match the pattern {{pattern}}.",
+      "minItems": "The number of items must be greater than or equal to {{minItems}}.",
+      "maxItems": "The number of items must be less than or equal to {{maxItems}}.",
+      "uniqueItems": "Items must be unique.",
+      "startEventRange": "Event start date must be on or before {{end}}.",
+      "endEventRange": "Event end date must be on or after {{start}}.",
+      "defaultLanguage": "The selected default language must be in the list of the field 'Available languages'."
     }
   }
 }

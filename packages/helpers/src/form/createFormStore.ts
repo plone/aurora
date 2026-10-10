@@ -6,11 +6,25 @@ import type { Path, PathValue } from './path';
 
 type Store = ReturnType<typeof createStore>;
 
-/** Validates one field. Returns an error message, or `undefined` if valid. */
-export type FieldValidator<T> = (value: any, values: T) => string | undefined;
+/**
+ * Validates one field. Returns its error messages, one message, or nothing if
+ * the value is valid.
+ */
+export type FieldValidator<T> = (
+  value: any,
+  values: T,
+) => string | string[] | null | undefined;
 
 /** Error messages by field path. */
-export type FieldErrors = Record<string, string>;
+export type FieldErrors = Record<string, string[]>;
+
+/** Error messages by field path, as one message or several. */
+export type FieldErrorsInput = Record<string, string | string[]>;
+
+const toMessages = (errors: string | string[] | null | undefined) =>
+  (Array.isArray(errors) ? errors : [errors]).filter(
+    (error): error is string => !!error,
+  );
 
 export type SubmitResult = { ok: true } | { ok: false; errors: FieldErrors };
 
@@ -28,7 +42,9 @@ export type FormOptions<T> = {
    * return errors by field path, for example the validation errors of the
    * server, to show them on the fields.
    */
-  onSubmit?: (values: T) => void | FieldErrors | Promise<void | FieldErrors>;
+  onSubmit?: (
+    values: T,
+  ) => void | FieldErrorsInput | Promise<void | FieldErrorsInput>;
 };
 
 export type FieldMeta = {
@@ -74,6 +90,11 @@ export interface FormApi<T> {
   reset(values?: T): void;
   /** The current errors of all validated fields, shown or not. */
   getErrors(): FieldErrors;
+  /**
+   * Shows errors on fields, for example the validation errors the server
+   * returned after a submit. A field's error is cleared when it changes.
+   */
+  setServerErrors(errors: FieldErrorsInput): void;
   submit(): Promise<SubmitResult>;
   /** Updates the callbacks (`onValuesChange`, `onSubmit`). */
   setOptions(
@@ -133,9 +154,9 @@ export function createFormStore<T>(initialOptions: FormOptions<T>): FormApi<T> {
     touchedAtoms.set(path, touched);
     return touched;
   });
-  const serverErrorAtoms = new Map<string, PrimitiveAtom<string | undefined>>();
+  const serverErrorAtoms = new Map<string, PrimitiveAtom<string[]>>();
   const serverErrorAtom = perPath((path) => {
-    const serverError = atom<string | undefined>(undefined);
+    const serverError = atom<string[]>([]);
     serverErrorAtoms.set(path, serverError);
     return serverError;
   });
@@ -145,13 +166,10 @@ export function createFormStore<T>(initialOptions: FormOptions<T>): FormApi<T> {
       const value = get(fieldAtom(path));
       const validator = validators[path];
       // Only a validated field depends on the other values.
-      const validationError = validator
-        ? validator(value, get(valuesAtom))
-        : undefined;
-      const serverError = get(serverErrorAtom(path));
-      const allErrors = [validationError, serverError].filter(
-        (error): error is string => !!error,
-      );
+      const allErrors = [
+        ...(validator ? toMessages(validator(value, get(valuesAtom))) : []),
+        ...get(serverErrorAtom(path)),
+      ];
       const touched = get(touchedAtom(path));
       const visible = touched || get(submittedAtom);
       return {
@@ -180,10 +198,16 @@ export function createFormStore<T>(initialOptions: FormOptions<T>): FormApi<T> {
     const values = getValues();
     const errors: FieldErrors = {};
     for (const [path, validator] of Object.entries(validators)) {
-      const error = validator(getByPath(values, path), values);
-      if (error) errors[path] = error;
+      const messages = toMessages(validator(getByPath(values, path), values));
+      if (messages.length > 0) errors[path] = messages;
     }
     return errors;
+  };
+
+  const setServerErrors = (errors: FieldErrorsInput) => {
+    for (const [path, messages] of Object.entries(errors)) {
+      store.set(serverErrorAtom(path), toMessages(messages));
+    }
   };
 
   return {
@@ -197,8 +221,7 @@ export function createFormStore<T>(initialOptions: FormOptions<T>): FormApi<T> {
     setFieldValue: (path, value) => {
       // A server error is about the value that was sent: changing the field
       // clears it.
-      if (serverErrorAtoms.has(path))
-        store.set(serverErrorAtom(path), undefined);
+      if (serverErrorAtoms.has(path)) store.set(serverErrorAtom(path), []);
       setValues(setByPath(getValues(), path, value));
     },
     setValues,
@@ -209,10 +232,10 @@ export function createFormStore<T>(initialOptions: FormOptions<T>): FormApi<T> {
       store.set(valuesAtom, next);
       store.set(submittedAtom, false);
       for (const touched of touchedAtoms.values()) store.set(touched, false);
-      for (const error of serverErrorAtoms.values())
-        store.set(error, undefined);
+      for (const error of serverErrorAtoms.values()) store.set(error, []);
     },
     getErrors,
+    setServerErrors,
     submit: async () => {
       store.set(submittedAtom, true);
       const errors = getErrors();
@@ -222,10 +245,16 @@ export function createFormStore<T>(initialOptions: FormOptions<T>): FormApi<T> {
       try {
         const serverErrors = await options.onSubmit?.(getValues());
         if (serverErrors && Object.keys(serverErrors).length > 0) {
-          for (const [path, message] of Object.entries(serverErrors)) {
-            store.set(serverErrorAtom(path), message);
-          }
-          return { ok: false, errors: serverErrors };
+          setServerErrors(serverErrors);
+          return {
+            ok: false,
+            errors: Object.fromEntries(
+              Object.entries(serverErrors).map(([path, messages]) => [
+                path,
+                toMessages(messages),
+              ]),
+            ),
+          };
         }
         return { ok: true };
       } finally {

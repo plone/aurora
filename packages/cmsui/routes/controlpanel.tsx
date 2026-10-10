@@ -1,4 +1,5 @@
 import {
+  data,
   redirect,
   RouterContextProvider,
   useFetcher,
@@ -8,6 +9,7 @@ import {
   type LoaderFunctionArgs,
   type SubmitTarget,
 } from 'react-router';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { requireAuthCookie } from '@plone/react-router';
@@ -18,6 +20,12 @@ import { Container, Link } from '@plone/quanta';
 import SchemaFieldsets, {
   type FieldsetsSchema,
 } from '../components/Form/SchemaFieldsets';
+import {
+  buildSchemaValidators,
+  firstInvalidField,
+  focusField,
+  getServerValidationErrors,
+} from '../components/Form/validation';
 import Back from '@plone/icons/svg/arrow-left.svg?react';
 import Checkbox from '@plone/icons/svg/checkbox.svg?react';
 import config from '@plone/registry';
@@ -47,10 +55,17 @@ export async function action({
   const cli = context.get(ploneClientContext);
   const panel_id = params.id || 'navigation';
 
-  await cli.updateControlpanel({
-    path: panel_id,
-    data: await request.json(),
-  });
+  try {
+    await cli.updateControlpanel({
+      path: panel_id,
+      data: await request.json(),
+    });
+  } catch (error) {
+    // Validation errors go back to the form, on their fields.
+    const errors = getServerValidationErrors(error);
+    if (errors) return data({ errors }, { status: 400 });
+    throw error;
+  }
 
   return redirect(`/controlpanel/${panel_id}`);
 }
@@ -82,10 +97,16 @@ function ControlPanelForm({
   const { t } = useTranslation();
 
   const fetcher = useFetcher();
+  const validators = useMemo(
+    () => buildSchemaValidators(schema as FieldsetsSchema, { t }),
+    [schema, t],
+  );
+
   // Each panel gets a form store of its own.
   const form = useFormStore({
     key: panelId,
     initialValues: controlpanel.data,
+    validators,
     onSubmit: (values) => {
       fetcher.submit(values as unknown as SubmitTarget, {
         method: 'post',
@@ -93,6 +114,23 @@ function ControlPanelForm({
       });
     },
   });
+
+  const showErrors = useCallback(
+    (errors: Record<string, unknown>) => {
+      const field = firstInvalidField(schema as FieldsetsSchema, errors);
+      if (field) focusField(field);
+    },
+    [schema],
+  );
+
+  // The save action returns the server's validation errors, by field.
+  useEffect(() => {
+    const errors = (fetcher.data as { errors?: Record<string, string[]> })
+      ?.errors;
+    if (!errors) return;
+    form.setServerErrors(errors);
+    showErrors(errors);
+  }, [fetcher.data, form, showErrors]);
 
   // TODO: filter fields with filterControlPanelsSchema from config.settings
   return (
@@ -115,7 +153,10 @@ function ControlPanelForm({
               <button
                 aria-label={t('cmsui.save')}
                 type="submit"
-                onClick={() => form.submit()}
+                onClick={async () => {
+                  const result = await form.submit();
+                  if (!result.ok) showErrors(result.errors);
+                }}
                 className="primary"
               >
                 <Checkbox />

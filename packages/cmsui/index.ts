@@ -3,6 +3,7 @@ import installWidgets from './config/widgets';
 import installControlpanels from './config/controlpanels';
 import installRoutes from './config/routes';
 import installSlots from './config/slots';
+import installValidators from './config/validators';
 import type { BlockConfigBase } from '@plone/types';
 
 declare module '@plone/types' {
@@ -16,6 +17,7 @@ export default function install(config: ConfigType) {
   installControlpanels(config);
   installRoutes(config);
   installSlots(config);
+  installValidators(config);
 
   return config;
 }

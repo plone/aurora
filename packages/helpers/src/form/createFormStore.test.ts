@@ -90,7 +90,7 @@ describe('createFormStore', () => {
       },
     });
 
-    expect(form.getErrors()).toEqual({ end: 'End must be after start' });
+    expect(form.getErrors()).toEqual({ end: ['End must be after start'] });
     form.setFieldValue('end', 3);
     expect(form.getErrors()).toEqual({});
   });
@@ -105,7 +105,7 @@ describe('createFormStore', () => {
 
     expect(await form.submit()).toEqual({
       ok: false,
-      errors: { title: 'Required' },
+      errors: { title: ['Required'] },
     });
     expect(onSubmit).not.toHaveBeenCalled();
   });
@@ -135,7 +135,7 @@ describe('createFormStore', () => {
 
     expect(await form.submit()).toEqual({
       ok: false,
-      errors: { title: 'Already taken' },
+      errors: { title: ['Already taken'] },
     });
     expect(form.store.get(form.metaAtom('title')).errors).toEqual([
       'Already taken',
@@ -160,5 +160,31 @@ describe('createFormStore', () => {
       dirty: false,
     });
     expect(onValuesChange).not.toHaveBeenCalled();
+  });
+  it('keeps every message of a validator', () => {
+    const form = createFormStore<Values>({
+      initialValues: { title: 'x', description: '' },
+      validators: { title: () => ['Too short', 'Not allowed'] },
+    });
+    form.touch('title');
+
+    expect(form.store.get(form.metaAtom('title')).errors).toEqual([
+      'Too short',
+      'Not allowed',
+    ]);
+    expect(form.getErrors()).toEqual({ title: ['Too short', 'Not allowed'] });
+  });
+
+  it('shows errors set from outside, until the field changes', () => {
+    const form = createFormStore<Values>({ initialValues });
+    form.touch('description');
+    form.setServerErrors({ description: 'Not allowed here' });
+
+    expect(form.store.get(form.metaAtom('description')).errors).toEqual([
+      'Not allowed here',
+    ]);
+
+    form.setFieldValue('description', 'Changed');
+    expect(form.store.get(form.metaAtom('description')).errors).toEqual([]);
   });
 });

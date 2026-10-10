@@ -1,20 +1,16 @@
 import type { ConfigType } from '@plone/registry';
-import {
-  AlignWidget,
-  DateTimePicker,
-  SizeWidget,
-  WidthWidget,
-  TextField,
-} from '@plone/quanta';
+import { AlignWidget, SizeWidget, WidthWidget } from '@plone/quanta';
 import { DateField } from '@plone/components';
 import { RecurrenceWidget } from '../components/RecurrenceWidget/RecurrenceWidget';
 import { ObjectBrowserWidget } from '../components/ObjectBrowserWidget/ObjectBrowserWidget';
 import ImageWidget from '../components/ImageWidget/ImageWidget';
 import { BooleanWidget } from '../components/BooleanWidget/BooleanWidget';
+import { TextWidget } from '../components/TextWidget/TextWidget';
+import { DateTimeWidget } from '../components/DateTimeWidget/DateTimeWidget';
 import { QuerystringWidget } from '../components/QuerystringWidget/QuerystringWidget';
 
 export default function install(config: ConfigType) {
-  config.registerDefaultWidget(TextField);
+  config.registerDefaultWidget(TextWidget);
 
   config.registerWidget({
     key: 'id',
@@ -23,7 +19,7 @@ export default function install(config: ConfigType) {
   config.registerWidget({ key: 'widget', definition: { date: DateField } });
   config.registerWidget({
     key: 'widget',
-    definition: { datetime: DateTimePicker },
+    definition: { datetime: DateTimeWidget },
   });
   config.registerWidget({
     key: 'type',
