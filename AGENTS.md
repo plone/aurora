@@ -23,7 +23,7 @@ Plone Aurora is composed of focused packages that are assembled into `apps/auror
 | -------------------------- | ----------------------------------------------------------------------------------- |
 | App shell                  | `apps/aurora`                                                                        |
 | Public UI (visitor-facing) | `@plone/publicui`, `@plone/layout`, `@plone/blocks`                                 |
-| CMS UI (editor-facing)     | `@plone/cmsui`, `@plone/contents`, `@plone/plate`, `@plone/blocks`, `@plone/layout`, `@plone/quanta` |
+| CMS UI (editor-facing)     | `@plone/cmsui`, `@plone/contents`, `@plone/controlpanels`, `@plone/plate`, `@plone/blocks`, `@plone/layout`, `@plone/quanta` |
 | Shared infrastructure      | `@plone/client`, `@plone/registry`, `@plone/react-router`                           |
 | Utilities and types        | `@plone/helpers`, `@plone/types`                                                    |
 | Theming                    | `@plone/theming`, `@plone/agave`, `@plone/components`, `@plone/quanta`, `@plone/icons` |
