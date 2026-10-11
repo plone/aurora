@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { SizeWidget, defaultSizeActionsInfo } from './SizeWidget';
+import { SizePicker, defaultSizeActionsInfo } from './SizePicker';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Form } from 'react-aria-components';
 import { Button } from '../Button/Button';
 
 const meta = {
-  title: 'Quanta/SizeWidget',
-  component: SizeWidget,
+  title: 'Quanta/SizePicker',
+  component: SizePicker,
   parameters: {
     layout: 'centered',
     backgrounds: { disable: true },
@@ -14,7 +14,7 @@ const meta = {
   tags: ['autodocs'],
   argTypes: {},
   args: {},
-} satisfies Meta<typeof SizeWidget>;
+} satisfies Meta<typeof SizePicker>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -63,7 +63,7 @@ const ControlledExample = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <SizeWidget
+      <SizePicker
         id="controlled-size"
         value={value}
         onChange={(size) => setValue(size)}
@@ -86,12 +86,12 @@ const ControlledExample = () => {
   );
 };
 
-export const Controlled: StoryObj<typeof SizeWidget> = {
+export const Controlled: StoryObj<typeof SizePicker> = {
   render: ControlledExample,
   parameters: {
     docs: {
       description: {
-        story: 'Controlled SizeWidget example with external state management',
+        story: 'Controlled SizePicker example with external state management',
       },
     },
   },
@@ -118,7 +118,7 @@ const FormExample = () => {
 
   return (
     <Form>
-      <SizeWidget
+      <SizePicker
         name="content-size"
         label="Content Size"
         description="Select the size of your content (form integration)"

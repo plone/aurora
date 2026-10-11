@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { AlignWidget, defaultActionsInfo } from './AlignWidget';
+import { AlignPicker, defaultActionsInfo } from './AlignPicker';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '../Button/Button';
 import { AligncenterIcon } from '@plone/icons';
 import { Form } from 'react-aria-components';
 
 const meta = {
-  title: 'Quanta/AlignWidget',
-  component: AlignWidget,
+  title: 'Quanta/AlignPicker',
+  component: AlignPicker,
   parameters: {
     layout: 'centered',
     backgrounds: { disable: true },
@@ -15,7 +15,7 @@ const meta = {
   tags: ['autodocs'],
   argTypes: {},
   args: {},
-} satisfies Meta<typeof AlignWidget>;
+} satisfies Meta<typeof AlignPicker>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -69,7 +69,7 @@ const ControlledExample = () => {
 
   return (
     <>
-      <AlignWidget
+      <AlignPicker
         id="controlled-align"
         value={value}
         onChange={(action) => setValue(action)}
@@ -95,12 +95,12 @@ const ControlledExample = () => {
   );
 };
 
-export const Controlled: StoryObj<typeof AlignWidget> = {
+export const Controlled: StoryObj<typeof AlignPicker> = {
   render: ControlledExample,
   parameters: {
     docs: {
       description: {
-        story: 'Controlled AlignWidget example with external state management',
+        story: 'Controlled AlignPicker example with external state management',
       },
     },
   },
@@ -129,7 +129,7 @@ const FormExample = () => {
 
   return (
     <Form>
-      <AlignWidget
+      <AlignPicker
         name="alignment"
         label="Image Alignment"
         description="Select how to align your image (form integration)"

@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { WidthWidget, defaultActionsInfo } from './WidthWidget';
+import { WidthPicker, defaultActionsInfo } from './WidthPicker';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Form } from 'react-aria-components';
 import { Button } from '../Button/Button';
 import { ImageIcon } from '@plone/icons';
 
 const meta = {
-  title: 'Quanta/WidthWidget',
-  component: WidthWidget,
+  title: 'Quanta/WidthPicker',
+  component: WidthPicker,
   parameters: {
     layout: 'centered',
     backgrounds: { disable: true },
@@ -15,7 +15,7 @@ const meta = {
   tags: ['autodocs'],
   argTypes: {},
   args: {},
-} satisfies Meta<typeof WidthWidget>;
+} satisfies Meta<typeof WidthPicker>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -61,7 +61,7 @@ const ControlledExample = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      <WidthWidget
+      <WidthPicker
         id="controlled-width"
         value={value}
         onChange={(width) => setValue(width)}
@@ -87,12 +87,12 @@ const ControlledExample = () => {
   );
 };
 
-export const Controlled: StoryObj<typeof WidthWidget> = {
+export const Controlled: StoryObj<typeof WidthPicker> = {
   render: ControlledExample,
   parameters: {
     docs: {
       description: {
-        story: 'Controlled WidthWidget example with external state management',
+        story: 'Controlled WidthPicker example with external state management',
       },
     },
   },
@@ -117,7 +117,7 @@ const FormExample = () => {
 
   return (
     <Form className="flex flex-col items-start gap-4">
-      <WidthWidget
+      <WidthPicker
         name="block-width"
         label="Block Width"
         description="Select the width of your content block (form integration)"

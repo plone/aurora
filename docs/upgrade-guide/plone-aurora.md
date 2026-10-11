@@ -252,3 +252,96 @@ Then add `@plone/icons` to your add-on's {file}`package.json` dependencies.
 +    "@plone/icons": "workspace:*"
    },
 ```
+
+### Forms and widgets
+
+```{versionchanged} 1.0.0-alpha.20
+These steps apply when you upgrade an add-on from Plone Aurora 1.0.0-alpha.19 or earlier to 1.0.0-alpha.20 or later.
+```
+
+The schema-driven forms (content, control panels, and block settings) now render their fields through one field renderer, keep their values in a form store from `@plone/helpers`, and pass every widget the same props, the widget contract.
+For the concepts, see {ref}`form-fields-controls-and-widgets-label`.
+
+#### Widgets receive the widget contract
+
+```{versionchanged} 1.0.0-alpha.20
+Registered widgets receive the widget contract, `FormWidgetProps` in `@plone/types`.
+```
+
+```{versionremoved} 1.0.0-alpha.20
+The `error` widget prop, and the raw field schema keys that the form understands, such as `type`, `title`, and `factory`, as widget props.
+```
+
+A registered widget now receives the props described by `FormWidgetProps` in `@plone/types`.
+If your add-on registers a widget, check the following changes.
+
+-   Validation errors arrive as `invalid` and a joined `errorMessage`, instead of the `error` list.
+-   `defaultValue` is the schema's `default`, not the current value.
+    Read the current value from `value`.
+-   The schema keys that the form understands, such as `type`, `title`, `default`, and `factory`, are no longer passed as props.
+    Read the label from `label`, and the whole field schema from `schema`.
+    Any other key of the field schema is still passed as a prop.
+-   The form no longer passes a "Type something..." placeholder to every widget.
+
+```diff
+- function MyWidget({ title, error, defaultValue, onChange }) {
++ function MyWidget({ label, invalid, errorMessage, value, onChange }: FormWidgetProps<string>) {
+```
+
+#### The form engine changed
+
+```{versionremoved} 1.0.0-alpha.20
+`useAppForm` and the `field.Quanta` field component of `@plone/cmsui`, the `formAtom` registry utility, and `formAtom`, `blockAtomFamily`, and `useFormFieldValue` from `@plone/cmsui/routes/atoms`.
+```
+
+```{versionadded} 1.0.0-alpha.20
+The form store of `@plone/helpers`: `useFormStore`, `FormProvider`, `useFormContext`, `useOptionalFormContext`, `useSchemaField`, `useFieldValue`, `useSetFieldValue`, and `useFormState`.
+`SchemaFieldsets` in `@plone/cmsui`.
+```
+
+The forms no longer use TanStack Form, and `@plone/cmsui` no longer depends on `@tanstack/react-form`.
+
+-   `useAppForm` and the `field.Quanta` field component are removed.
+    Render schema fields with `SchemaFieldsets` inside a `FormProvider` instead.
+-   The `formAtom` registry utility, and `formAtom`, `blockAtomFamily`, and `useFormFieldValue` from `@plone/cmsui/routes/atoms`, are removed.
+    Read and write the form your component is rendered in with the hooks from `@plone/helpers`.
+
+```diff
+- const formAtom = config.getUtility({ name: 'formAtom', type: 'atom' }).method();
+- const title = useAtomValue(focusAtom(formAtom, (optic) => optic.prop('title')));
++ import { useFieldValue, useSetFieldValue } from '@plone/helpers';
++
++ const title = useFieldValue<string>('title');
++ const setTitle = useSetFieldValue<string>('title');
+```
+
+#### Validators receive `t`
+
+```{versionadded} 1.0.0-alpha.20
+The `t` and `fieldName` arguments of `validator` utilities.
+```
+
+The `validator` utilities receive i18next's `t` and the field's name as `fieldName`, next to `formatMessage`.
+Existing validators keep working.
+See {ref}`validate-form-fields-label`.
+
+#### Quanta's pickers are renamed
+
+```{versionadded} 1.0.0-alpha.20
+`AlignPicker`, `SizePicker`, and `WidthPicker` in `@plone/quanta`.
+```
+
+```{deprecated} 1.0.0-alpha.20
+`AlignWidget`, `SizeWidget`, and `WidthWidget` in `@plone/quanta`.
+```
+
+The `AlignWidget`, `SizeWidget`, and `WidthWidget` components of `@plone/quanta` are controls, not widgets.
+They are renamed `AlignPicker`, `SizePicker`, and `WidthPicker`.
+The old names still work, but are deprecated and will be removed in a future release.
+
+```diff
+- import { AlignWidget, SizeWidget, WidthWidget } from '@plone/quanta';
++ import { AlignPicker, SizePicker, WidthPicker } from '@plone/quanta';
+```
+
+The `align`, `size`, and `width` widgets that the forms use are now adapters in `@plone/cmsui`, around these pickers.

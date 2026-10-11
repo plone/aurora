@@ -11,7 +11,7 @@ import {
   ImagenarrowIcon,
 } from '@plone/icons';
 
-interface WidthWidgetProps extends Omit<RadioGroupProps, 'children'> {
+export interface WidthPickerProps extends Omit<RadioGroupProps, 'children'> {
   id?: string;
   actions?: string[];
   actionsInfoMap?: Record<string, [React.ComponentType<any>, string]>;
@@ -27,7 +27,7 @@ export const defaultActionsInfo: Record<
   full: [ImagefullIcon, 'Full'],
 };
 
-export function WidthWidget(props: WidthWidgetProps) {
+export function WidthPicker(props: WidthPickerProps) {
   const {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     id,
