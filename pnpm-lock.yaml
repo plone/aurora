@@ -1090,9 +1090,6 @@ importers:
       tsconfig:
         specifier: workspace:*
         version: link:../tsconfig
-      tsup:
-        specifier: 'catalog:'
-        version: 8.5.0(@microsoft/api-extractor@7.43.0(@types/node@26.6.5))(jiti@2.6.1)(postcss@8.5.9)(supports-color@8.1.1)(typescript@5.9.2)(yaml@2.8.1)
       typescript:
         specifier: 'catalog:'
         version: 5.9.2
