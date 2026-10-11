@@ -22,12 +22,15 @@ export type AddonRoutesEntry = {
 
 type ReactRouterRouteEntryMetadata = {
   /**
-   * Don't load the Plone content, site and user in the root middleware for
-   * requests to this route or its descendants.
-   * `ploneContentContext`, `ploneSiteContext` and `ploneUserContext` are then
-   * not set, so only use it for resource routes that don't read them, for
-   * example ones that only call the Plone client.
-   * A descendant can set it to `false` to load them again.
+   * Whether the root middleware skips loading the Plone content, site and
+   * user for requests to this route or its descendants.
+   * By default, it skips them for resource routes, whose path has a segment
+   * that starts with a single `@` (`@search`, `@@contents/@delete`), and
+   * loads them for any other route.
+   * Set it to `true` for a resource route without an `@` path, or to `false`
+   * for an `@` route that reads the content.
+   * When skipped, `ploneContentContext`, `ploneSiteContext` and
+   * `ploneUserContext` are not set.
    */
   skipContent?: boolean;
 };

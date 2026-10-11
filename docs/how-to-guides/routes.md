@@ -49,10 +49,11 @@ See the {ref}`route-registration-api-reference` for the complete API reference.
 
 `skipContent`
 :   An optional boolean.
-    When `true`, the root middleware doesn't load the Plone content, site, and user for requests to this route or its descendants.
-    Use it for resource routes that only call the Plone client, to save the backend requests.
-    Their loaders and actions must not read `ploneContentContext`, `ploneSiteContext`, or `ploneUserContext`, because these are not set.
-    A descendant can set it to `false` to load them again.
+    It sets whether the root middleware skips loading the Plone content, site, and user for requests to this route or its descendants.
+    By default, the middleware skips them for resource routes, whose path has a segment that starts with a single `@`, such as `@search` or `@@contents/@delete`, and loads them for any other route.
+    Set it to `true` for a resource route whose path doesn't start with `@`.
+    Set it to `false` for an `@` route that needs the content.
+    When skipped, `ploneContentContext`, `ploneSiteContext`, and `ploneUserContext` are not set, so the route's loaders and actions must not read them.
 
 ### `route` – standard route
 
