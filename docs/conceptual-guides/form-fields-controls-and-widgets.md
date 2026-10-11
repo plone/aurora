@@ -311,10 +311,14 @@ The form looks the widget up from the field's schema hints, in this order:
 1.  The field's name, for example `recurrence`.
 2.  The widget named in the field's tagged values, `frontendOptions.widget`.
 3.  The field's `widget` hint, for example `textarea` or `datetime`.
-4.  The field's choices or vocabulary.
-5.  The field's factory, for example `Relation List`.
-6.  The field's type, for example `boolean`.
-7.  The default widget.
+4.  The field's vocabulary, for example `plone.app.vocabularies.Catalog`, when a widget is registered for it.
+5.  The choices widget, when the field has choices or a vocabulary.
+6.  The field's factory, for example `Relation List`.
+7.  The field's type, for example `boolean`.
+8.  The default widget.
+
+A widget registered for a vocabulary is more specific than the choices widget, which renders all the other fields with choices or a vocabulary as a select.
+Register the choices widget with `config.registerWidget({ key: 'choices', definition: MySelectWidget })`.
 
 Whichever widget it finds, the widget receives the same contract.
 That is what lets the form generator stay generic.

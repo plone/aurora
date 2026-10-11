@@ -16,6 +16,7 @@ export * from './components/SearchField/SearchField';
 export * from './components/Select/Select';
 export * from './components/TextAreaField/TextAreaField';
 export * from './components/TextField/TextField';
+export * from './components/NumberField/NumberField';
 export {
   SizePicker,
   type SizePickerProps,

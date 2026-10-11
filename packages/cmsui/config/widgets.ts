@@ -13,9 +13,20 @@ import {
 } from '../components/PickerWidgets/PickerWidgets';
 import { DateTimeWidget } from '../components/DateTimeWidget/DateTimeWidget';
 import { QuerystringWidget } from '../components/QuerystringWidget/QuerystringWidget';
+import { SelectWidget } from '../components/SelectWidget/SelectWidget';
+import { ArrayWidget } from '../components/ArrayWidget/ArrayWidget';
+import { NumberWidget } from '../components/NumberWidget/NumberWidget';
+import { FileWidget } from '../components/FileWidget/FileWidget';
+import {
+  EmailWidget,
+  PasswordWidget,
+  UrlWidget,
+} from '../components/InputWidgets/InputWidgets';
 
 export default function install(config: ConfigType) {
   config.registerDefaultWidget(TextWidget);
+  // Fields with choices or a vocabulary, without a more specific widget.
+  config.registerWidget({ key: 'choices', definition: SelectWidget });
 
   config.registerWidget({
     key: 'id',
@@ -32,7 +43,24 @@ export default function install(config: ConfigType) {
   });
   config.registerWidget({
     key: 'type',
-    definition: { boolean: BooleanWidget },
+    definition: {
+      boolean: BooleanWidget,
+      array: ArrayWidget,
+      number: NumberWidget,
+      integer: NumberWidget,
+    },
+  });
+  config.registerWidget({
+    key: 'widget',
+    definition: {
+      select: SelectWidget,
+      array: ArrayWidget,
+      token: ArrayWidget,
+      file: FileWidget,
+      email: EmailWidget,
+      password: PasswordWidget,
+      url: UrlWidget,
+    },
   });
   config.registerWidget({
     key: 'widget',
@@ -54,9 +82,11 @@ export default function install(config: ConfigType) {
     key: 'factory',
     definition: {
       'Relation List': ObjectBrowserWidget,
-      // Image fields (e.g. the lead image) used to match the `image` widget
-      // only because the lookup ignored categories.
-      Image: ImageWidget,
+      // File and image fields store the file itself, such as the file of a
+      // File, the image of an Image, or a lead image. The `image` widget
+      // is for fields that store the URL of an image.
+      File: FileWidget,
+      Image: FileWidget,
     },
   });
   config.registerWidget({

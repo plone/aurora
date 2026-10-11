@@ -239,9 +239,11 @@ const SchemaField = (props: FieldProps) => {
     getWidgetByFieldId(name) ||
     getWidgetFromTaggedValues(schema.widgetOptions) ||
     getWidgetByName(schema.widget) ||
-    getWidgetByChoices(resolvable) ||
+    // A widget registered for the vocabulary is more specific than the
+    // widget of all the fields with choices.
     getWidgetByVocabulary(schema.vocabulary) ||
     getWidgetByVocabularyFromHint(resolvable) ||
+    getWidgetByChoices(resolvable) ||
     getWidgetByFactory(schema.factory) ||
     getWidgetByType(schema.type) ||
     getWidgetDefault();
