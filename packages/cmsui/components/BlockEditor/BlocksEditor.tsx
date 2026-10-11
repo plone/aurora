@@ -1,4 +1,3 @@
-import { useSetAtom, useStore } from 'jotai';
 import * as React from 'react';
 import { useLocation } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +7,7 @@ import { TITLE_BLOCK_TYPE } from '@plone/plate/components/editor/plugins/title';
 import { SOMERSAULT_KEY } from '@plone/plate/constants';
 import { LinkKit } from './plugins/link-kit';
 import { SidebarPlugin } from './plugins/SidebarPlugin';
-import { blockAtomFamily, formAtom } from '../../routes/atoms';
+import { useFormContext } from '@plone/helpers';
 
 const getDefaultSomersaultValue = (title = ''): Value => [
   {
@@ -22,13 +21,12 @@ const getDefaultSomersaultValue = (title = ''): Value => [
 ];
 
 const BlocksEditor = () => {
-  const somersaultBlockAtom = blockAtomFamily(SOMERSAULT_KEY);
   // The editor only writes the blocks. It reads the form once, below, to build
   // Plate's initial value, so it does not subscribe to the form: every
   // keystroke in Plate changes the blocks, and a subscription would re-render
   // the editor host each time.
-  const store = useStore();
-  const setSomersaultBlock = useSetAtom(somersaultBlockAtom);
+  const form = useFormContext();
+  const somersaultPath = `blocks.${SOMERSAULT_KEY}`;
   const location = useLocation();
   // Plate's i18n contract follows react-i18next, so `t` is passed as is.
   // Plate re-renders its translated UI when the language changes.
@@ -44,8 +42,8 @@ const BlocksEditor = () => {
   const stableInitialValueKey = location.pathname;
 
   if (stableInitialValueRef.current?.key !== stableInitialValueKey) {
-    const somersaultBlock = store.get(somersaultBlockAtom);
-    const metadataTitle = store.get(formAtom)?.title ?? '';
+    const somersaultBlock = form.getFieldValue(somersaultPath);
+    const metadataTitle = (form.getFieldValue('title') as string) ?? '';
     stableInitialValueRef.current = {
       key: stableInitialValueKey,
       value:
@@ -79,11 +77,13 @@ const BlocksEditor = () => {
       language={i18n.language}
       value={stableInitialValueRef.current.value}
       onChange={(options) => {
-        setSomersaultBlock((previousBlock: Record<string, unknown>) => ({
+        const previousBlock = form.getFieldValue(somersaultPath) as
+          Record<string, unknown> | undefined;
+        form.setFieldValue(somersaultPath, {
           ...(previousBlock ?? {}),
           '@type': SOMERSAULT_KEY,
           value: options.value as unknown as Value[],
-        }));
+        });
       }}
     />
   );

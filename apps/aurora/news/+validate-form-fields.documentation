@@ -1,0 +1,1 @@
+Added the "Validate form fields" how-to: default validators, registering validators by format, type, widget, behavior or block, overriding them, writing them, translating their messages, and invariants. Updated the block schema side effects how-to to the current block settings form. @sneridagh

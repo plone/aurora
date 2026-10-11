@@ -11,17 +11,20 @@ import { lazy, Suspense, useMemo, useState } from 'react';
 const RecurrenceWidgetModal = lazy(
   () => import('./Components/RecurrenceWidgetModal'),
 );
-import { useFormFieldValue } from '../../routes/atoms';
-import type { FieldProps } from '../Form/Field';
 
 import { rrulestr } from './rrule';
 import SelectedDates from './Components/SelectedDates';
 import { getRruleText } from './utils';
+import type { FormWidgetProps } from '@plone/types';
 
-type RecurrenceWidgetProps = FieldProps;
+type RecurrenceWidgetProps = FormWidgetProps<string | null>;
 
-export function RecurrenceWidget({ label, onChange }: RecurrenceWidgetProps) {
-  const recurrence = useFormFieldValue<string | null>('recurrence') ?? null;
+export function RecurrenceWidget({
+  label,
+  value,
+  onChange,
+}: RecurrenceWidgetProps) {
+  const recurrence = value ?? null;
 
   const rrule = recurrence ? rrulestr(recurrence) : null;
   const rruleText = getRruleText(rrule);

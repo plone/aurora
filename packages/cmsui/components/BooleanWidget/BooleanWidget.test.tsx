@@ -30,7 +30,14 @@ describe('BooleanWidget', () => {
   });
 
   it('falls back to the default value', () => {
-    render(<BooleanWidget name="flag" label="Flag" defaultValue />);
+    render(
+      <BooleanWidget
+        name="flag"
+        label="Flag"
+        defaultValue
+        onChange={vi.fn()}
+      />,
+    );
 
     expect(screen.getByRole('checkbox', { name: 'Flag' })).toBeChecked();
   });
@@ -41,6 +48,7 @@ describe('BooleanWidget', () => {
         name="share_social_data"
         label="Share social data"
         description="Include meta tags"
+        onChange={vi.fn()}
       />,
     );
 
@@ -74,7 +82,8 @@ describe('BooleanWidget', () => {
         value={false}
         onChange={vi.fn()}
         description="Confirm before publishing."
-        errors={['This field is required.']}
+        invalid
+        errorMessage="This field is required."
       />,
     );
 

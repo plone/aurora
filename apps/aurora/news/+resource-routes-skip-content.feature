@@ -1,0 +1,1 @@
+The root middleware no longer loads the Plone content, site and user for resource routes, whose path has a segment that starts with a single `@` (`@search`, `@@contents/@delete`), which saves three backend requests per call. The `skipContent` route entry option overrides it either way; the `ok` and `reset-fetcher` routes set it. @sneridagh

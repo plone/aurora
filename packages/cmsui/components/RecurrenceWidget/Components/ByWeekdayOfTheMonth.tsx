@@ -1,10 +1,9 @@
 import { Select } from '@plone/quanta';
 import { getDaysOptions } from '../utils';
 import { useTranslation } from 'react-i18next';
-import type { Updater } from '@tanstack/react-form';
 
 interface ByWeekdayOfTheMonth {
-  onChange: (updater: Updater<number>) => void;
+  onChange: (value: number) => void;
   defaultValue: number;
 }
 

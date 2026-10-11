@@ -41,6 +41,11 @@ export interface UseObjectBrowserConfig {
   // TODO: Also add blockchange/slate signature compat
   onChange?: (selected: Partial<Brain>[]) => void;
   defaultValue?: Brain[];
+  /**
+   * The selected items, when the selection is controlled: the browser shows
+   * them, and follows when they change outside it.
+   */
+  value?: Brain[] | null;
   title?: string;
   initialPath?: string;
 }
@@ -53,6 +58,7 @@ const useObjectBrowserInternal = (config: UseObjectBrowserConfig = {}) => {
     selectedItemAttrs = ['@id', 'title', 'description', '@type', 'UID'],
     onChange,
     defaultValue = [],
+    value,
     title,
   } = config;
   const ariaControlsId = useId();
@@ -63,7 +69,24 @@ const useObjectBrowserInternal = (config: UseObjectBrowserConfig = {}) => {
   const [SearchableText, setSearchableText] = useDebounceValue<string>('', 350);
   const [selectedKeys, setSelectedKeys] = useState<
     Set<{ id: string; title: string }>
-  >(() => initializeSelectedKeys(defaultValue));
+  >(() => initializeSelectedKeys(value ?? defaultValue));
+
+  // A controlled selection follows its value when it changes outside the
+  // browser (for example when another field's side effect sets it).
+  const valueIds = Array.isArray(value)
+    ? value.map((item: any) => (typeof item === 'string' ? item : item['@id']))
+    : undefined;
+  const valueKey = valueIds?.join('\n');
+  useEffect(() => {
+    if (valueKey === undefined) return;
+    setSelectedKeys((current) => {
+      const currentKey = Array.from(current)
+        .map((item) => item.id)
+        .join('\n');
+      return currentKey === valueKey ? current : initializeSelectedKeys(value);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [valueKey]);
   const { currentPath } = useObjectBrowserNavigation();
 
   // Funzioni esatte dal widget originale
