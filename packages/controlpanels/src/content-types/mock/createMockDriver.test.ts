@@ -5,7 +5,7 @@ describe('createMockDriver', () => {
     const driver = createMockDriver();
     const types = await driver.listTypes();
     expect(types.map((type) => type.id)).toContain('Event');
-    expect(types.find((type) => type.id === 'Folder')).toMatchObject({
+    expect(types.find((type) => type.id === 'Document')).toMatchObject({
       count: 3,
       globalAllow: true,
       workflow: {
@@ -62,7 +62,7 @@ describe('createMockDriver', () => {
 
   it("doesn't delete types that have items, or the site", async () => {
     const driver = createMockDriver();
-    await expect(driver.deleteType('Folder')).rejects.toThrow('has items');
+    await expect(driver.deleteType('Document')).rejects.toThrow('has items');
     await expect(driver.deleteType('Plone Site')).rejects.toThrow(
       "can't be deleted",
     );
@@ -84,10 +84,33 @@ describe('createMockDriver', () => {
         },
       ],
     });
+    // Also for behaviors no fixture type has enabled.
+    expect(
+      behaviors.find((behavior) => behavior.name === 'plone.leadimage')
+        ?.fieldsets,
+    ).toEqual([
+      { id: 'default', title: 'Default', fields: ['image', 'image_caption'] },
+    ]);
     expect(
       behaviors.find((behavior) => behavior.name === 'plone.locking')
         ?.fieldsets,
     ).toEqual([]);
+  });
+
+  it('lists add-on behaviors like core ones', async () => {
+    const behaviors = await createMockDriver().listBehaviors();
+    expect(
+      behaviors.find((behavior) => behavior.name === 'collective.sponsors'),
+    ).toMatchObject({ title: 'Sponsors' });
+  });
+
+  it('leaves out behavior fields without the capability', async () => {
+    const behaviors = await createMockDriver({
+      capabilities: { behaviorDetails: false },
+    }).listBehaviors();
+    expect(behaviors.every((behavior) => !('fieldsets' in behavior))).toBe(
+      true,
+    );
   });
 
   it('previews the schema without a behavior', async () => {
@@ -104,11 +127,11 @@ describe('createMockDriver', () => {
   it('previews a workflow change with counts and suggestions', async () => {
     const driver = createMockDriver();
     const preview = await driver.previewWorkflowChange!({
-      types: ['Folder', 'Collection'],
+      types: ['Document', 'Collection'],
       workflow: 'intranet_workflow',
     });
     expect(preview.groups).toHaveLength(1);
-    expect(preview.groups[0].types).toEqual(['Folder', 'Collection']);
+    expect(preview.groups[0].types).toEqual(['Document', 'Collection']);
     expect(preview.groups[0].states).toEqual([
       { state: 'private', count: 1, suggested: 'private' },
       { state: 'pending', count: 0, suggested: 'private' },
@@ -119,7 +142,7 @@ describe('createMockDriver', () => {
   it('runs a workflow change as a job', async () => {
     const driver = createMockDriver({ jobSteps: 2 });
     const job = await driver.changeWorkflow!({
-      types: ['Folder'],
+      types: ['Document'],
       workflow: 'intranet_workflow',
       stateMap: {
         simple_publication_workflow: { published: 'internally_published' },
@@ -135,12 +158,12 @@ describe('createMockDriver', () => {
       progress: 1,
       changed: 3,
     });
-    expect((await driver.getType('Folder')).workflow).toEqual({
+    expect((await driver.getType('Document')).workflow).toEqual({
       workflow: 'intranet_workflow',
       followsDefault: false,
     });
     const preview = await driver.previewWorkflowChange!({
-      types: ['Folder'],
+      types: ['Document'],
       workflow: 'intranet_workflow',
     });
     expect(
