@@ -21,51 +21,52 @@ export default function install(config: ConfigType) {
     ],
   });
 
-  // Resources the Contents view calls (`@`, like the REST API endpoints).
-  // Views use `@@`, like `@@contents` above.
+  // Resources the Contents view calls use a single `@`, like the REST API
+  // endpoints, and views use `@@`. They are nested in the view's path, so
+  // they don't collide with other add-ons' resources: `/@@contents/@delete`.
   config.registerRoute({
     type: 'prefix',
-    path: '@contents',
+    path: '@@contents',
     skipContent: true,
     children: [
       {
         type: 'route',
-        path: 'delete/*',
+        path: '@delete/*',
         file: '@plone/contents/routes/delete.tsx',
       },
       {
         type: 'route',
-        path: 'upload/*',
+        path: '@upload/*',
         file: '@plone/contents/routes/upload.tsx',
       },
       {
         type: 'route',
-        path: 'rename/*',
+        path: '@rename/*',
         file: '@plone/contents/routes/rename.tsx',
       },
       {
         type: 'route',
-        path: 'workflow/*',
+        path: '@workflow/*',
         file: '@plone/contents/routes/workflow.tsx',
       },
       {
         type: 'route',
-        path: 'tags/*',
+        path: '@tags/*',
         file: '@plone/contents/routes/tags.tsx',
       },
       {
         type: 'route',
-        path: 'properties/*',
+        path: '@properties/*',
         file: '@plone/contents/routes/properties.tsx',
       },
       {
         type: 'route',
-        path: 'order/*',
+        path: '@order/*',
         file: '@plone/contents/routes/order.tsx',
       },
       {
         type: 'route',
-        path: 'paste/*',
+        path: '@paste/*',
         file: '@plone/contents/routes/paste.tsx',
       },
     ],

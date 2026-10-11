@@ -3,7 +3,7 @@ import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
 
-// The Contents view actions call the `@contents/<action>` resource routes.
+// The Contents view actions call the `@@contents/@<action>` resource routes.
 
 async function setupFolder(page: Page, titles: string[]) {
   const folderId = `contents-actions-${Date.now()}-${Math.round(Math.random() * 1_000_000)}`;

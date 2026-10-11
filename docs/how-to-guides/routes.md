@@ -22,7 +22,8 @@ Name the route paths after their kind, following the Plone conventions.
 
 -   Views, the routes that render a page, use a `@@` prefix, like `@@edit`, `@@add`, or `@@contents`.
 -   Resources, the routes that only return data or handle an action for the UI, use a single `@` prefix, like the Plone REST API endpoints.
-    Examples are `@search`, `@objectBrowserWidget`, or the `@contents/delete` action of the Contents view.
+    Examples are `@search`, `@objectBrowserWidget`, or the `@delete` action of the Contents view.
+    Resources that belong to one view can be nested in its path, like `/@@contents/@delete`, so they don't collide with the resources of other add-ons.
 
 ## Route definition
 
