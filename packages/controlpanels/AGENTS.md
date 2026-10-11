@@ -20,7 +20,7 @@ This file applies only to `packages/controlpanels` and its subdirectories.
   - `mock/`: `createMockDriver()` and its fixtures, captured from a real site.
   - `workflow/`: pure workflow logic, such as `suggestStateMapping` and `stateColor`.
 - Everything public is exported from `src/index.ts`.
-- The package is compiled with **tsup**.
+- Like the other add-on packages, it ships its TypeScript source and has no build step: the app that uses it (Aurora with Vite, Volto with Babel) compiles it.
 
 ## Dependency Rules
 
@@ -43,5 +43,4 @@ This file applies only to `packages/controlpanels` and its subdirectories.
 ```sh
 pnpm --filter @plone/controlpanels test --run
 pnpm --filter @plone/controlpanels check:ts
-pnpm --filter @plone/controlpanels build
 ```

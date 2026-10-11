@@ -31,23 +31,8 @@
     "access": "public"
   },
   "type": "module",
-  "files": [
-    "dist",
-    "src",
-    "README.md"
-  ],
   "main": "src/index.ts",
-  "exports": {
-    "./package.json": "./package.json",
-    ".": {
-      "import": "./dist/index.js",
-      "default": "./dist/index.cjs"
-    }
-  },
   "scripts": {
-    "build": "tsup",
-    "build:force": "tsup",
-    "watch": "tsup --watch",
     "test": "vitest",
     "check:ts": "tsc --project tsconfig.json",
     "storybook": "storybook dev -p 6007",
@@ -91,7 +76,6 @@
     "tailwindcss-animate": "^1.0.7",
     "tailwindcss-react-aria-components": "catalog:",
     "tsconfig": "workspace:*",
-    "tsup": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"
