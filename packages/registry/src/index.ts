@@ -13,6 +13,7 @@ import type {
   UtilitiesConfig,
   ViewsConfig,
   WidgetsConfig,
+  RegisteredWidgetProps,
   ReactRouterRouteEntry,
   WidgetKey,
   UtilityTypeMap,
@@ -594,7 +595,7 @@ class Config {
    * @param component - The default widget component to register.
    *
    */
-  registerDefaultWidget(component: React.ComponentType<any>) {
+  registerDefaultWidget(component: React.ComponentType<RegisteredWidgetProps>) {
     this._data.widgets.default = component;
   }
 

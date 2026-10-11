@@ -10,6 +10,11 @@ export type WidgetOptions = Record<string, unknown> & {
     widgetProps?: Record<string, unknown>;
   };
   vocabulary?: WidgetVocabulary;
+  /**
+   * Options of relation fields, e.g. the content types the object browser
+   * can select (`selectableTypes`).
+   */
+  pattern_options?: Record<string, unknown>;
 };
 
 /**
@@ -63,6 +68,31 @@ export interface FormWidgetProps<TValue = unknown> {
   schema?: FieldSchema;
 }
 
+/**
+ * The props of the widgets in the widget registry (the `default`, `id`,
+ * `widget`, `vocabulary`, `factory`, `choices` and `type` slots).
+ *
+ * Empty by default, so a registered widget can take any props. An app
+ * declares its widget contract here, to check every registered widget
+ * against it at compile time. Plone Aurora's CMS UI declares
+ * `FormWidgetProps`:
+ *
+ * ```ts
+ * declare module '@plone/types' {
+ *   interface WidgetPropsMap {
+ *     props: FormWidgetProps<any>;
+ *   }
+ * }
+ * ```
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface WidgetPropsMap {}
+
+/** The props registered widgets take: see `WidgetPropsMap`. */
+export type RegisteredWidgetProps = WidgetPropsMap extends { props: infer P }
+  ? P
+  : any;
+
 export type FormWidget<TValue = unknown> = React.ComponentType<
   FormWidgetProps<TValue>
 >;
@@ -80,7 +110,7 @@ export type WidgetIdsTypes =
 
 export type WidgetsConfigById<
   K extends WidgetIdsTypes = WidgetIdsTypes,
-  P = any,
+  P = RegisteredWidgetProps,
 > = Partial<{
   [id in K]: React.ComponentType<P>;
 }> & {
@@ -125,7 +155,7 @@ export type WidgetByWidgetTypes =
 
 export type WidgetsConfigByWidget<
   K extends WidgetByWidgetTypes = WidgetByWidgetTypes,
-  P = any,
+  P = RegisteredWidgetProps,
 > = Partial<{
   [widgetType in K]: React.ComponentType<P>;
 }>;
@@ -135,7 +165,7 @@ export type WidgetVocabularyTypes =
 
 export type WidgetsConfigByVocabulary<
   K extends WidgetVocabularyTypes = WidgetVocabularyTypes,
-  P = any,
+  P = RegisteredWidgetProps,
 > = Partial<{
   [vocabularyName in K]: React.ComponentType<P>;
 }>;
@@ -145,7 +175,7 @@ export type WidgetFactortTypes =
 
 export type WidgetsConfigByFactory<
   K extends WidgetFactortTypes = WidgetFactortTypes,
-  P = any,
+  P = RegisteredWidgetProps,
 > = Partial<{
   [factoryName in K]: React.ComponentType<P>;
 }>;
@@ -164,7 +194,7 @@ export type WidgetByTypeTypes =
 
 export type WidgetsConfigByType<
   K extends WidgetByTypeTypes = WidgetByTypeTypes,
-  P = any,
+  P = RegisteredWidgetProps,
 > = Partial<{
   [widgetType in K]: React.ComponentType<P>;
 }>;
@@ -228,12 +258,12 @@ export interface WidgetsConfigViews<P = any> {
 }
 
 export interface WidgetsConfig {
-  default: React.ComponentType<any>;
+  default: React.ComponentType<RegisteredWidgetProps>;
   id: WidgetsConfigById;
   widget: WidgetsConfigByWidget;
   vocabulary: WidgetsConfigByVocabulary;
   factory: WidgetsConfigByFactory;
-  choices: React.ComponentType<any>;
+  choices: React.ComponentType<RegisteredWidgetProps>;
   type: WidgetsConfigByType;
   views: WidgetsConfigViews;
 }

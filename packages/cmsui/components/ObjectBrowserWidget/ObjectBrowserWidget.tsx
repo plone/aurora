@@ -1,4 +1,4 @@
-import type { Brain } from '@plone/types';
+import type { Brain, FormWidgetProps } from '@plone/types';
 import type { TextFieldProps as QuantaTextFieldProps } from '@plone/quanta';
 import {
   Description,
@@ -72,20 +72,38 @@ export function ObjectBrowserWidgetComponent(props: ObjectBrowserWidgetProps) {
   );
 }
 
-export function ObjectBrowserWidget(
-  props: ObjectBrowserWidgetProps & { value?: Brain[] | null },
-) {
+type ObjectBrowserFormWidgetProps = FormWidgetProps<Partial<Brain>[] | null> &
+  Pick<UseObjectBrowserConfig, 'mode' | 'selectedItemAttrs'>;
+
+/**
+ * Picks content with the object browser. Its value is a list of the
+ * selected items, each with the attributes in `selectedItemAttrs` (by
+ * default `@id`, `title`, `description`, `@type` and `UID`).
+ */
+export function ObjectBrowserWidget(props: ObjectBrowserFormWidgetProps) {
   // The browser starts from the object the form is about (or the container
   // a new object is added to), whichever route the form is in.
   const { path } = useWidgetContext();
-  const { label, description, errorMessage, value, defaultValue, ...rest } =
-    props;
+  const {
+    label,
+    description,
+    errorMessage,
+    value,
+    defaultValue,
+    onChange,
+    mode,
+    selectedItemAttrs,
+    widgetOptions,
+  } = props;
   return (
     <ObjectBrowserProvider
       config={{
-        ...rest,
+        mode,
+        selectedItemAttrs,
+        widgetOptions: widgetOptions as UseObjectBrowserConfig['widgetOptions'],
+        onChange,
         // The selection follows the field value.
-        value: value ?? defaultValue ?? [],
+        value: (value ?? defaultValue ?? []) as Brain[],
         title: label,
         initialPath: path,
       }}

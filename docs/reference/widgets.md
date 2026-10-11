@@ -177,3 +177,50 @@ Its value is an object with the query's criteria, and its sorting and size.
 Edits the recurrence of an event in a dialog.
 Its value is a recurrence rule in the iCalendar format (RFC 5545), such as `RRULE:FREQ=WEEKLY;BYDAY=MO`, or `null` when the event doesn't repeat.
 It reads the event's `start` and `end` from the form, to offer the right days and end date.
+
+(test-a-widget-label)=
+
+## Test your widget against the contract
+
+`@plone/cmsui` ships a test helper that checks a widget against the widget contract.
+Run it for each widget you register.
+It checks that the widget:
+
+-   renders its label and description;
+-   marks a required field;
+-   shows its validation error when invalid, and only then;
+-   renders without a value;
+-   ignores the widget options it doesn't know;
+-   reports a change with `onChange(value)`, if you tell it how to make one.
+
+```ts
+import { fireEvent, screen } from '@testing-library/react';
+import { describeWidgetContract } from '@plone/cmsui/testing/widgetContract';
+import { PhoneWidget } from './PhoneWidget';
+
+describeWidgetContract('PhoneWidget', PhoneWidget, {
+  // A valid value, as the content API stores it.
+  value: '+49 89 1234567',
+  // Optional: how an editor changes the value, and the value to expect.
+  change: {
+    perform: () =>
+      fireEvent.change(screen.getByRole('textbox'), {
+        target: { value: '+49 89 7654321' },
+      }),
+    expected: '+49 89 7654321',
+  },
+});
+```
+
+The options also take extra `props` for the widget, a `wrapper` for the providers it needs, and `skip`, to skip a check the widget doesn't pass yet.
+`skip` takes a reason for each check, so the test report shows what is missing.
+
+```ts
+describeWidgetContract('MapWidget', MapWidget, {
+  value: { lat: 48.14, lng: 11.58 },
+  skip: { required: 'The map has no required state yet.' },
+});
+```
+
+The core widgets run the same checks, in {file}`packages/cmsui/config/widgets.contract.test.tsx`.
+
