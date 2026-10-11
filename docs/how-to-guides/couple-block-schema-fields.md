@@ -20,24 +20,24 @@ The examples below are illustrative. No shipped block enables this coupling toda
 
 ## How it works
 
-The block settings form has one place where a field change flows out: the `onChange` handler in `BlockSettingsForm`.
+The block settings form has one place where a field change flows out: the `setValue` handler that `BlockSettingsForm` gives each field.
 After it writes the changed value into a copy of the block data, it looks up the changed field's schema property and, if present, calls its `onChangeSideEffects` function.
-Whatever that function returns is merged into the block data before the change is committed.
+Whatever that function returns is merged into the block data, and the change and its side effects are written to the block in one step.
 
 ```ts
-onChange: (value) => {
-  let nextData = setValueByPath(currentData, fieldName, value);
+setValue: (value) => {
+  let nextData = setByPath(form.getValues(), fieldName, value);
 
   const sideEffects =
     schema.properties[fieldName]?.onChangeSideEffects?.(value, nextData);
 
   if (sideEffects) {
     for (const [key, patchValue] of Object.entries(sideEffects)) {
-      nextData = setValueByPath(nextData, key, patchValue);
+      nextData = setByPath(nextData, key, patchValue);
     }
   }
 
-  onFormDataChange(nextData);
+  form.setValues(nextData);
 };
 ```
 

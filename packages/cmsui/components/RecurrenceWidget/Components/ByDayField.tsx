@@ -1,11 +1,10 @@
 import { CheckboxGroup, Checkbox, Label } from '@plone/quanta';
 import { Days, getLocalizedWeekday, widgetTailwindClasses } from '../utils';
-import type { Updater } from '@tanstack/react-form';
 import { useTranslation } from 'react-i18next';
 import { twMerge } from 'tailwind-merge';
 
 interface ByDayFieldProps {
-  onChange: (updater: Updater<string[]>) => void;
+  onChange: (value: string[]) => void;
   label: string;
   defaultValue: string;
 }
