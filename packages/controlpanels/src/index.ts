@@ -29,6 +29,10 @@ export {
   compareVisibility,
   suggestStateMapping,
 } from './content-types/workflow/suggestStateMapping';
+export {
+  DEFAULT_STATE_COLORS,
+  stateColor,
+} from './content-types/workflow/stateColor';
 export { createMockDriver } from './content-types/mock/createMockDriver';
 export type { MockDriverOptions } from './content-types/mock/createMockDriver';
 export type { MockData } from './content-types/mock/fixtures';

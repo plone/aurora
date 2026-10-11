@@ -136,11 +136,22 @@ export interface BehaviorInfo {
  */
 export type StateVisibility = 'anyone' | 'members' | 'restricted' | 'unknown';
 
+/**
+ * The color the UI shows a workflow state with, e.g. in a state badge. One
+ * of the six Quanta color families, so themes and dark mode can style it.
+ */
+export type StateColor = 'gray' | 'blue' | 'teal' | 'green' | 'yellow' | 'red';
+
 export interface WorkflowState {
   id: string;
   title: string;
   description?: string;
   visibility: StateVisibility;
+  /**
+   * The state's color when the backend sets one. Use `stateColor()` to get
+   * the color to show, which also covers states without one.
+   */
+  color?: StateColor;
 }
 
 export interface WorkflowTransition {
