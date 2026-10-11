@@ -1,6 +1,5 @@
 import type { ContentTypesCapabilities, ContentTypesDriver } from '../driver';
 import type {
-  BehaviorInfo,
   ContentTypeSettings,
   ContentTypeSummary,
   TypeSchema,
@@ -30,38 +29,6 @@ const BEHAVIOR_ALIASES: Record<string, string> = {
 };
 
 const clone = <T>(value: T): T => structuredClone(value);
-
-/** Fills in which fields each behavior adds, from the schemas we know. */
-function behaviorDetails(
-  behaviors: BehaviorInfo[],
-  schemas: Record<string, TypeSchema>,
-): BehaviorInfo[] {
-  const found = new Map<string, Map<string, BehaviorFieldset>>();
-  for (const schema of Object.values(schemas)) {
-    for (const fieldset of schema.fieldsets) {
-      for (const field of fieldset.fields) {
-        const raw = schema.properties[field]?.behavior;
-        if (!raw || raw === CUSTOM_FIELD_BEHAVIOR) continue;
-        const name = BEHAVIOR_ALIASES[raw] ?? raw;
-        const fieldsets = found.get(name) ?? new Map();
-        const entry = fieldsets.get(fieldset.id) ?? {
-          id: fieldset.id,
-          title: fieldset.title,
-          fields: [],
-        };
-        if (!entry.fields.includes(field)) entry.fields.push(field);
-        fieldsets.set(fieldset.id, entry);
-        found.set(name, fieldsets);
-      }
-    }
-  }
-  return behaviors.map((behavior) => ({
-    ...behavior,
-    fieldsets: [...(found.get(behavior.name)?.values() ?? [])],
-  }));
-}
-
-type BehaviorFieldset = NonNullable<BehaviorInfo['fieldsets']>[number];
 
 function toId(title: string): string {
   return title
@@ -327,8 +294,8 @@ export function createMockDriver(
     listBehaviors: () =>
       wait(
         capabilities.behaviorDetails
-          ? behaviorDetails(data.behaviors, data.schemas)
-          : data.behaviors,
+          ? data.behaviors
+          : data.behaviors.map(({ fieldsets, ...behavior }) => behavior),
       ),
 
     listWorkflows: () => wait(data.workflows),

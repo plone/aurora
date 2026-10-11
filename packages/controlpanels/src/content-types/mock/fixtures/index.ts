@@ -8,12 +8,14 @@ import type {
 import behaviors from './behaviors.json';
 import documentSchema from './schema-Document.json';
 import eventSchema from './schema-Event.json';
-import folderSchema from './schema-Folder.json';
 import { workflows } from './workflows';
 
 // Captured from a Plone 6.2 site with plone.volto (the acceptance test
-// backend), then completed by hand with what plone.restapi doesn't expose yet:
+// backend). Folder is left out: plone.volto replaces folders with folderish
+// pages, then completed by hand with what plone.restapi doesn't expose yet:
 // the per-type settings, the behavior order, workflows and state counts.
+// The fields of each behavior come from scratch types with every behavior
+// enabled. `collective.sponsors` stands for an add-on behavior.
 
 export interface MockData {
   types: ContentTypeSettings[];
@@ -88,23 +90,6 @@ export const mockData: MockData = {
       behaviors: PAGE_BEHAVIORS,
     }),
     settings({
-      id: 'Folder',
-      title: 'Folder',
-      folderish: true,
-      allowedContents: { mode: 'all' },
-      versioning: 'off',
-      behaviors: [
-        'plone.dublincore',
-        'plone.namefromtitle',
-        'plone.shortname',
-        'plone.allowdiscussion',
-        'plone.excludefromnavigation',
-        'plone.relateditems',
-        'plone.constraintypes',
-        'plone.nextprevioustoggle',
-      ],
-    }),
-    settings({
       id: 'Link',
       title: 'Link',
       behaviors: ['plone.dublincore', 'plone.namefromtitle'],
@@ -170,7 +155,6 @@ export const mockData: MockData = {
   schemas: {
     Document: documentSchema as TypeSchema,
     Event: eventSchema as TypeSchema,
-    Folder: folderSchema as TypeSchema,
   },
   behaviors,
   workflows,
@@ -186,7 +170,6 @@ export const mockData: MockData = {
         workflow: 'simple_publication_workflow',
         followsDefault: true,
       },
-      Folder: { workflow: 'simple_publication_workflow', followsDefault: true },
       Link: { workflow: 'simple_publication_workflow', followsDefault: true },
       File: { workflow: null, followsDefault: false },
       Image: { workflow: null, followsDefault: false },
@@ -204,7 +187,7 @@ export const mockData: MockData = {
   stateCounts: {
     'Plone Site': { '': 1 },
     Collection: { published: 2 },
-    Folder: { private: 1, published: 2 },
+    Document: { private: 1, published: 2 },
   },
   siteDefaults: {
     workflow: 'simple_publication_workflow',
