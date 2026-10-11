@@ -18,7 +18,7 @@ This file applies only to `packages/controlpanels` and its subdirectories.
   - `types.ts`: the data model the screens show and edit. It is not a backend payload.
   - `driver.tsx`: the `ContentTypesDriver` interface, its `capabilities`, and `ContentTypesDriverProvider`.
   - `mock/`: `createMockDriver()` and its fixtures, captured from a real site.
-  - `workflow/`: pure workflow logic, such as `suggestStateMapping`.
+  - `workflow/`: pure workflow logic, such as `suggestStateMapping` and `stateColor`.
 - Everything public is exported from `src/index.ts`.
 - The package is compiled with **tsup**.
 
