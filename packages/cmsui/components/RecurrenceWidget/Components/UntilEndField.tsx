@@ -1,6 +1,5 @@
 import { DatePicker } from '@plone/quanta';
-import type { Updater } from '@tanstack/react-form';
-import { useFormFieldValue } from '../../../routes/atoms';
+import { useFieldValue } from '@plone/helpers';
 
 const pad = (value: number) => String(value).padStart(2, '0');
 
@@ -9,11 +8,11 @@ export const toISODate = (date: Date) =>
   `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 
 interface UntilEndFieldProps {
-  onChange: (updater: Updater<string>) => void;
+  onChange: (value: string) => void;
 }
 
 const UntilEndField = ({ onChange }: UntilEndFieldProps) => {
-  const end = useFormFieldValue<string>('end');
+  const end = useFieldValue<string>('end');
 
   // The event's end date, or today without one, as an ISO date (YYYY-MM-DD).
   const endDate = end ? new Date(end) : new Date();

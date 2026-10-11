@@ -2,7 +2,8 @@ import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import config from '@plone/registry';
 import type { WidgetsConfig } from '@plone/types';
-import { useAppForm } from './Form';
+import { FormProvider, useFormStore } from '@plone/helpers';
+import SchemaField from './Field';
 
 const marker = (name: string) => {
   const Widget = () => <div data-testid="widget">{name}</div>;
@@ -10,22 +11,21 @@ const marker = (name: string) => {
   return Widget;
 };
 
-function TestForm(fieldProps: Record<string, unknown>) {
-  const form = useAppForm({
-    defaultValues: { [fieldProps.name as string]: '' },
-  });
+function TestForm({
+  name,
+  ...schema
+}: { name: string } & Record<string, unknown>) {
+  const form = useFormStore({ key: name, initialValues: { [name]: '' } });
   return (
-    <form.AppField
-      name={fieldProps.name as string}
-      // eslint-disable-next-line react/no-children-prop
-      children={(field: any) => (
-        <field.Quanta {...fieldProps} value={field.state.value} />
-      )}
-    />
+    <FormProvider form={form}>
+      <SchemaField name={name} schema={schema} />
+    </FormProvider>
   );
 }
 
-const renderedWidget = (fieldProps: Record<string, unknown>) => {
+const renderedWidget = (
+  fieldProps: { name: string } & Record<string, unknown>,
+) => {
   render(<TestForm {...fieldProps} />);
   return screen.getByTestId('widget').textContent;
 };
@@ -54,6 +54,7 @@ describe('Field widget resolution', () => {
       key: 'type',
       definition: { boolean: marker('type') },
     });
+    config.registerWidget({ key: 'choices', definition: marker('choices') });
   });
 
   it('resolves by field id first', () => {
@@ -92,6 +93,41 @@ describe('Field widget resolution', () => {
             '@id':
               'http://localhost/@vocabularies/plone.app.vocabularies.Catalog',
           },
+        },
+      }),
+    ).toBe('vocabulary');
+  });
+
+  it('resolves by choices', () => {
+    expect(
+      renderedWidget({
+        name: 'field',
+        type: 'string',
+        choices: [['a', 'A']],
+      }),
+    ).toBe('choices');
+  });
+
+  it('resolves a field with a vocabulary by choices', () => {
+    expect(
+      renderedWidget({
+        name: 'field',
+        type: 'string',
+        vocabulary: {
+          '@id':
+            'http://localhost/@vocabularies/plone.app.vocabularies.SupportedContentLanguages',
+        },
+      }),
+    ).toBe('choices');
+  });
+
+  it('prefers the widget of a vocabulary over the choices widget', () => {
+    expect(
+      renderedWidget({
+        name: 'field',
+        vocabulary: {
+          '@id':
+            'http://localhost/@vocabularies/plone.app.vocabularies.Catalog',
         },
       }),
     ).toBe('vocabulary');

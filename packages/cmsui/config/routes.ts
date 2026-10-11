@@ -142,6 +142,17 @@ export default function install(config: ConfigType) {
   });
   config.registerRoute({
     type: 'prefix',
+    path: '@vocabulary',
+    children: [
+      {
+        type: 'route',
+        path: '*',
+        file: '@plone/cmsui/routes/vocabulary.tsx',
+      },
+    ],
+  });
+  config.registerRoute({
+    type: 'prefix',
     path: '@createContent',
     skipContent: true,
     children: [

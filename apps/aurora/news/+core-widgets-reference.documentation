@@ -1,0 +1,1 @@
+Added the "Core widgets" reference: what each widget is registered for, the value it reads and writes, and its widget options, such as the image widget's `extraFields`. @sneridagh

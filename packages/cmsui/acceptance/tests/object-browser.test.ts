@@ -84,18 +84,15 @@ test('The object browser gives an empty listing for a folder that does not exist
 }) => {
   await login(page);
 
-  // On the add form, the image field browses a path that doesn't exist
-  // (`/@@add`). The object browser gives an empty listing for it, instead of
-  // an error replacing the form.
-  await page.goto('/@@add?type=Image', { waitUntil: 'networkidle' });
-  const listing = page.waitForResponse((response) =>
-    response.url().includes('/@objectBrowserWidget/'),
+  // The root middleware doesn't load the folder for this resource route, so
+  // its loader answers instead of a 404 from the middleware.
+  const response = await page.request.get(
+    '/@objectBrowserWidget/does-not-exist?path.depth=1',
   );
-  await page.getByRole('tab', { name: 'Content' }).click();
-  expect((await listing).status()).toBe(200);
 
-  await expect(
-    page.getByText('Browse the site, drop an image, or use a URL'),
-  ).toBeVisible();
-  await expect(page.getByRole('tab', { name: 'Content' })).toBeVisible();
+  expect(response.status()).toBe(200);
+  expect(await response.json()).toEqual({
+    results: { '@id': '', items: [], items_total: 0 },
+    breadcrumbs: { '@id': '', items: [] },
+  });
 });
