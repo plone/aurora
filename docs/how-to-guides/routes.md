@@ -25,6 +25,9 @@ Name the route paths after their kind, following the Plone conventions.
     Examples are `@search`, `@objectBrowserWidget`, or the `@delete` action of the Contents view.
     Resources that belong to one view can be nested in its path, like `/@@contents/@delete`, so they don't collide with the resources of other add-ons.
 
+The root middleware doesn't load the Plone content for resource routes, since they don't render a page.
+See the `skipContent` option to change that for a route.
+
 ## Route definition
 
 This section describes the parts that comprise and define a route.

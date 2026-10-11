@@ -24,10 +24,10 @@ export default function install(config: ConfigType) {
   // Resources the Contents view calls use a single `@`, like the REST API
   // endpoints, and views use `@@`. They are nested in the view's path, so
   // they don't collide with other add-ons' resources: `/@@contents/@delete`.
+  // Being resources, the root middleware doesn't load the content for them.
   config.registerRoute({
     type: 'prefix',
     path: '@@contents',
-    skipContent: true,
     children: [
       {
         type: 'route',
