@@ -1,0 +1,1 @@
+Added the `Switch` (on React Aria's `SwitchField`, with an optional description), `ToggleButton` and `ToggleButtonGroup`, `ProgressBar` and `Drawer` components, and stories for `Table`, `GridList` (with drag and drop), `Dialog` and `ComboBox`. @sneridagh

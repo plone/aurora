@@ -50,3 +50,7 @@ export * from './components/Table/Table';
 export * from './components/TagGroup/TagGroup';
 export * from './components/Toolbar/Toolbar';
 export * from './components/Tooltip/Tooltip';
+export * from './components/Switch/Switch';
+export * from './components/ToggleButton/ToggleButton';
+export * from './components/ProgressBar/ProgressBar';
+export * from './components/Drawer/Drawer';
