@@ -12,59 +12,62 @@ export default function install(config: ConfigType) {
         path: '@@contents',
         children: [
           {
-            path: '@@delete/*',
-            type: 'route',
-            file: '@plone/contents/routes/delete.tsx',
-            skipContent: true,
-          },
-          {
-            path: '@@upload/*',
-            type: 'route',
-            file: '@plone/contents/routes/upload.tsx',
-            skipContent: true,
-          },
-          {
-            path: '@@rename/*',
-            type: 'route',
-            file: '@plone/contents/routes/rename.tsx',
-            skipContent: true,
-          },
-          {
-            path: '@@workflow/*',
-            type: 'route',
-            file: '@plone/contents/routes/workflow.tsx',
-            skipContent: true,
-          },
-          {
-            path: '@@tags/*',
-            type: 'route',
-            file: '@plone/contents/routes/tags.tsx',
-            skipContent: true,
-          },
-          {
-            path: '@@properties/*',
-            type: 'route',
-            file: '@plone/contents/routes/properties.tsx',
-            skipContent: true,
-          },
-          {
-            path: '@@order/*',
-            type: 'route',
-            file: '@plone/contents/routes/order.tsx',
-            skipContent: true,
-          },
-          {
-            path: '@@paste/*',
-            type: 'route',
-            file: '@plone/contents/routes/paste.tsx',
-            skipContent: true,
-          },
-          {
             type: 'route',
             path: '*',
             file: '@plone/contents/routes/contents.tsx',
           },
         ],
+      },
+    ],
+  });
+
+  // Resources the Contents view calls use a single `@`, like the REST API
+  // endpoints, and views use `@@`. They are nested in the view's path, so
+  // they don't collide with other add-ons' resources: `/@@contents/@delete`.
+  // Being resources, the root middleware doesn't load the content for them.
+  config.registerRoute({
+    type: 'prefix',
+    path: '@@contents',
+    children: [
+      {
+        type: 'route',
+        path: '@delete/*',
+        file: '@plone/contents/routes/delete.tsx',
+      },
+      {
+        type: 'route',
+        path: '@upload/*',
+        file: '@plone/contents/routes/upload.tsx',
+      },
+      {
+        type: 'route',
+        path: '@rename/*',
+        file: '@plone/contents/routes/rename.tsx',
+      },
+      {
+        type: 'route',
+        path: '@workflow/*',
+        file: '@plone/contents/routes/workflow.tsx',
+      },
+      {
+        type: 'route',
+        path: '@tags/*',
+        file: '@plone/contents/routes/tags.tsx',
+      },
+      {
+        type: 'route',
+        path: '@properties/*',
+        file: '@plone/contents/routes/properties.tsx',
+      },
+      {
+        type: 'route',
+        path: '@order/*',
+        file: '@plone/contents/routes/order.tsx',
+      },
+      {
+        type: 'route',
+        path: '@paste/*',
+        file: '@plone/contents/routes/paste.tsx',
       },
     ],
   });

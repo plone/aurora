@@ -1,1 +1,1 @@
-Made the contents action routes (`@@delete`, `@@upload`, `@@rename`, `@@workflow`, `@@tags`, `@@properties`, `@@order` and `@@paste`) skip loading the content in the root middleware. @sneridagh
+The Contents view resource routes (`@@contents/@delete`, `@upload`, `@rename`, `@workflow`, `@tags`, `@properties`, `@order` and `@paste`) no longer get the content loaded by the root middleware. @sneridagh
