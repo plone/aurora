@@ -236,11 +236,27 @@ The form builds these props from the field's schema and state.
 The form turns the schema keys it understands into these props.
 Any other key of the field schema is a widget option and is passed to the widget as is.
 For example, the align widget of a block schema reads its `actions` this way.
+{ref}`core-widgets-label` lists the widget options of each core widget.
 Widget props from the field's tagged values, `frontendOptions.widgetProps`, are applied last.
 
 The contract is about values.
 The form does not need to know whether a widget uses an HTML input, a React Aria component, a modal picker, or several controls together.
 It passes the current value in and receives the next value back.
+
+## What a widget may read besides its props
+
+A widget is rendered by the form, in a route, but it should not depend on either.
+It gets everything else it needs through hooks, never by reading the route or the URL.
+
+The other values of the form
+:   Read them with `useFieldValue`, and change them with `useSetFieldValue`, from `@plone/helpers`.
+    For example, the recurrence widget reads the event's `start` and `end`.
+
+Where the form is
+:   `useWidgetContext` from `@plone/cmsui` gives the form's `mode` (`add`, `edit`, or `settings`), its `path` (the edited object, or the container a new object is added to), and its `containerPath` (where new objects go).
+    For example, the object browser starts browsing from `path`, and the image widget uploads to `containerPath`.
+
+This way, the same widget works in the add form, the edit form, a control panel, and the block settings.
 
 ## Why controls are not registered as widgets
 

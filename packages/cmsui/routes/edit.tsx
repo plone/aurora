@@ -66,6 +66,7 @@ export default function Edit() {
       // Remount the form, and with it its store, when editing another item.
       key={content['@id']}
       content={content}
+      path={content['@id']}
       schema={schema}
       heading={`${content.title} - ${t('cmsui.edit')}`}
       submitMethod="patch"
