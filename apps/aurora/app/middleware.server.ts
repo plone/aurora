@@ -4,7 +4,9 @@ import { flattenToAppURL } from '@plone/helpers';
 import { clearAuthOnResponse, getAuthFromRequest } from '@plone/react-router';
 import config from '@plone/registry';
 import type PloneClient from '@plone/client';
+import type { ReactRouterRouteEntry } from '@plone/types';
 import type { Route } from './+types/root';
+import { appRoutes } from './app-routes';
 import installServer from './config/server.server';
 import { migrateContent } from './config/server/content-migrations.server';
 
@@ -52,6 +54,71 @@ export function getPloneClientClass() {
   return endpoints.length > 0
     ? PloneClient.extend(Object.assign({}, ...endpoints))
     : PloneClient;
+}
+
+function normalizePattern(pattern: string) {
+  return pattern.split('/').filter(Boolean).join('/');
+}
+
+/**
+ * Returns the `skipContent` value of the routes that set it, or inherit it,
+ * keyed by their pattern as React Router passes it to middleware (`pattern`).
+ */
+export function getSkipContentPatterns(
+  routes: ReactRouterRouteEntry[],
+  parentPath = '',
+  parentSkipContent: boolean | undefined = undefined,
+  patterns = new Map<string, boolean>(),
+): Map<string, boolean> {
+  for (const route of routes) {
+    const skipContent = route.skipContent ?? parentSkipContent;
+    const path =
+      route.type === 'route' || route.type === 'prefix'
+        ? `${parentPath}/${route.path}`
+        : parentPath;
+
+    if (
+      skipContent !== undefined &&
+      (route.type === 'route' || route.type === 'index')
+    ) {
+      patterns.set(normalizePattern(path), skipContent);
+    }
+    if ('children' in route && route.children) {
+      getSkipContentPatterns(route.children, path, skipContent, patterns);
+    }
+  }
+  return patterns;
+}
+
+/**
+ * Whether a route pattern names a resource: one of its segments starts with
+ * a single `@`, like `@search/*` or `@@contents/@delete/*`. Views use `@@`.
+ */
+export function isResourcePattern(pattern: string) {
+  return pattern.split('/').some((segment) => /^@(?!@)/.test(segment));
+}
+
+// Routes are fixed once the add-ons are installed, so compute the patterns
+// once per `config.routes` array.
+const skipContentPatternsCache = new WeakMap<
+  ReactRouterRouteEntry[],
+  Map<string, boolean>
+>();
+
+/**
+ * Whether the route matched by a request doesn't need the Plone content,
+ * site and user. Resource routes (see `isResourcePattern`) don't, other
+ * routes do. A route entry overrides it with `skipContent`.
+ */
+export function routeSkipsContent(pattern: string) {
+  const routes = config.routes ?? [];
+  let patterns = skipContentPatternsCache.get(routes);
+  if (!patterns) {
+    patterns = getSkipContentPatterns([...appRoutes, ...routes]);
+    skipContentPatternsCache.set(routes, patterns);
+  }
+  const normalized = normalizePattern(pattern);
+  return patterns.get(normalized) ?? isResourcePattern(normalized);
 }
 
 export const installServerMiddleware: Route.MiddlewareFunction = async (
@@ -150,9 +217,11 @@ export const getAPIResourceWithAuth: Route.MiddlewareFunction = async (
 };
 
 export const fetchPloneContent: Route.MiddlewareFunction = async (
-  { request, params, context },
+  { request, params, context, pattern },
   next,
 ) => {
+  if (routeSkipsContent(pattern)) return;
+
   const expand = ['navroot', 'breadcrumbs', 'navigation', 'actions'];
   const token = await getAuthFromRequest(request);
 
@@ -236,9 +305,11 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
 };
 
 export const linkMiddleware: Route.MiddlewareFunction = async (
-  { context },
+  { context, pattern },
   next,
 ) => {
+  if (routeSkipsContent(pattern)) return;
+
   const content = context.get(ploneContentContext);
 
   if (

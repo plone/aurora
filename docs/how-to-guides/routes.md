@@ -47,6 +47,14 @@ See the {ref}`route-registration-api-reference` for the complete API reference.
 :   An optional array of child routes.
     It is an array of route definitions that can be nested within the parent route.
 
+`skipContent`
+:   An optional boolean.
+    It sets whether the root middleware skips loading the Plone content, site, and user for requests to this route or its descendants.
+    By default, the middleware skips them for resource routes, whose path has a segment that starts with a single `@`, such as `@search` or `@@contents/@delete`, and loads them for any other route.
+    Set it to `true` for a resource route whose path doesn't start with `@`.
+    Set it to `false` for an `@` route that needs the content.
+    When skipped, `ploneContentContext`, `ploneSiteContext`, and `ploneUserContext` are not set, so the route's loaders and actions must not read them.
+
 ### `route` – standard route
 
 Use the route type `route` to define a route for a specific path.
@@ -213,42 +221,48 @@ In `@plone/cmsui/`, each of the files shown in the above diagram performs a spec
 The following type describes the API of route registration.
 
 ```ts
-export type ReactRouterRouteEntry =
-  | {
-      type: 'route';
-      path: string;
-      file: string;
-      options?: {
-        id?: string;
-        index?: boolean;
-        caseSensitive?: boolean;
-      };
-      children?: ReactRouterRouteEntry[];
-    }
-  | {
-      type: 'index';
-      file: string;
-      options?: {
-        id?: string;
-        index?: boolean;
-        caseSensitive?: boolean;
-      };
-    }
-  | {
-      type: 'layout';
-      file: string;
-      options?: {
-        id?: string;
-        index?: boolean;
-        caseSensitive?: boolean;
-      };
-      children: ReactRouterRouteEntry[];
-    }
-  | {
-      type: 'prefix';
-      path: string;
-      children: ReactRouterRouteEntry[];
-    };
+type ReactRouterRouteEntryMetadata = {
+  skipContent?: boolean;
+};
+
+export type ReactRouterRouteEntry = ReactRouterRouteEntryMetadata &
+  (
+    | {
+        type: 'route';
+        path: string;
+        file: string;
+        options?: {
+          id?: string;
+          index?: boolean;
+          caseSensitive?: boolean;
+        };
+        children?: ReactRouterRouteEntry[];
+      }
+    | {
+        type: 'index';
+        file: string;
+        options?: {
+          id?: string;
+          index?: boolean;
+          caseSensitive?: boolean;
+        };
+      }
+    | {
+        type: 'layout';
+        file: string;
+        options?: {
+          id?: string;
+          index?: boolean;
+          caseSensitive?: boolean;
+        };
+        children: ReactRouterRouteEntry[];
+      }
+    | {
+        type: 'prefix';
+        path: string;
+        children: ReactRouterRouteEntry[];
+      }
+  );
 
 registerRoute(options: ReactRouterRouteEntry): void;
 ```

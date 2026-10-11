@@ -1,0 +1,1 @@
+The `@search`, `@breadcrumbs`, `@objectBrowserWidget`, `@queryStringOptions` and `@createContent` resource routes no longer get the content loaded by the root middleware, so each object browser navigation makes two backend requests instead of five. @sneridagh

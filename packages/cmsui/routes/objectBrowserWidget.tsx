@@ -3,11 +3,16 @@ import {
   RouterContextProvider,
   type LoaderFunctionArgs,
 } from 'react-router';
-import {
-  ploneClientContext,
-  ploneContentContext,
-} from '@plone/aurora/app/middleware.server';
+import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { flattenToAppURL } from '@plone/helpers';
+
+function emptyOnClientError<T>(empty: T) {
+  return (error: unknown): T => {
+    const status = (error as { status?: number })?.status;
+    if (!status || status >= 500) throw error;
+    return empty;
+  };
+}
 
 export async function loader({
   params,
@@ -27,46 +32,29 @@ export async function loader({
 
   delete query['path.depth'];
   delete query['path.query'];
-  // The root middleware has already loaded the browsed folder, in this same
-  // request, with its breadcrumbs expanded: they are as fresh as a separate
-  // request would get, without the extra call. If the folder doesn't exist,
-  // the middleware fails the request before this loader runs.
-  const breadcrumbs = context.get(ploneContentContext)['@components']
-    ?.breadcrumbs ?? { '@id': '', items: [] };
-
-  let results;
-  try {
-    ({ data: results } = await cli.search({
-      query: {
-        path: pathQuery,
-        ...query,
-        SearchableText: query.SearchableText
-          ? `${query.SearchableText}*`
-          : undefined,
-      },
-    }));
-    // const items = response.items;
-    // const firstLevelIds = items
-    //   .filter((i) => i['@id'].split('/').length > 1)
-    //   .map((i) => i['@id']);
-
-    // const results = firstLevelIds.reduce((acc, curr) => {
-    //   const child = items.some((item) => item['@id'] === curr);
-
-    //   return [acc, ...;
-    // }, []);
-    // Has to be used?
-    // const strippedRequest = new Request(request.url.replace(/\?.*$/, ''), {
-    //   headers: request.headers,
-    // });
-  } catch (error) {
-    // A search the API rejects (for example, an invalid query) gives an
-    // empty listing, instead of the error page replacing the form the
-    // browser is used in.
-    const status = (error as { status?: number })?.status;
-    if (!status || status >= 500) throw error;
-    results = { '@id': '', items: [], items_total: 0 };
-  }
+  // The root middleware doesn't load the browsed folder for this route
+  // (`skipContent`), so a folder that doesn't exist gets here. A request the
+  // API rejects (that folder, or an invalid query) gives an empty part,
+  // instead of an error replacing the form the browser is used in.
+  const [results, breadcrumbs] = await Promise.all([
+    cli
+      .search({
+        query: {
+          path: pathQuery,
+          ...query,
+          SearchableText: query.SearchableText
+            ? `${query.SearchableText}*`
+            : undefined,
+        },
+      })
+      .then(
+        ({ data }) => data,
+        emptyOnClientError({ '@id': '', items: [], items_total: 0 }),
+      ),
+    cli
+      .getBreadcrumbs({ path })
+      .then(({ data }) => data, emptyOnClientError({ '@id': '', items: [] })),
+  ]);
 
   return data(flattenToAppURL({ results, breadcrumbs }), {
     headers: {
