@@ -9,6 +9,7 @@ import {
   getAPIResourceWithAuth,
   getPloneClientClass,
   getSkipContentPatterns,
+  isResourcePattern,
   installServerMiddleware,
   linkMiddleware,
   ploneClearAuthCookieContext,
@@ -636,13 +637,12 @@ describe('middleware', () => {
       delete config.utilities['ploneClient'];
     });
 
-    it('skips fetching for routes that set skipContent', async () => {
+    it('skips fetching for resource routes', async () => {
       const routes = config.routes;
       config.routes = [
         {
           type: 'prefix',
           path: '@objectBrowserWidget',
-          skipContent: true,
           children: [{ type: 'route', path: '*', file: 'browser.tsx' }],
         },
       ];
@@ -1218,7 +1218,7 @@ describe('middleware', () => {
   });
 
   describe('getSkipContentPatterns', () => {
-    it('returns the patterns of the flagged routes and their descendants', () => {
+    it('returns the value of the flagged routes and their descendants', () => {
       const patterns = getSkipContentPatterns([
         { type: 'route', path: 'ok', file: 'ok.tsx', skipContent: true },
         {
@@ -1263,34 +1263,63 @@ describe('middleware', () => {
         { type: 'route', path: '*', file: 'content.tsx' },
       ]);
 
-      expect([...patterns].sort()).toEqual([
-        '@@contents/@@delete/*',
-        '@search/*',
-        'api',
-        'ok',
-      ]);
+      expect(Object.fromEntries(patterns)).toEqual({
+        '@@contents/@@delete/*': true,
+        '@search/*': true,
+        api: true,
+        'api/content/*': false,
+        ok: true,
+      });
+    });
+  });
+
+  describe('isResourcePattern', () => {
+    it('matches a segment that starts with a single @', () => {
+      expect(isResourcePattern('@search/*')).toBe(true);
+      expect(isResourcePattern('@@contents/@delete/*')).toBe(true);
+      expect(isResourcePattern('@@edit/*')).toBe(false);
+      expect(isResourcePattern('@@contents/*')).toBe(false);
+      expect(isResourcePattern('*')).toBe(false);
+      expect(isResourcePattern('layers.css')).toBe(false);
     });
   });
 
   describe('routeSkipsContent', () => {
-    it('matches the request pattern against the app and registry routes', () => {
+    it('skips resource routes and the routes that set skipContent', () => {
       const routes = config.routes;
       config.routes = [
         {
           type: 'prefix',
           path: '@objectBrowserWidget',
-          skipContent: true,
           children: [{ type: 'route', path: '*', file: 'browser.tsx' }],
+        },
+        {
+          type: 'prefix',
+          path: '@needs-content',
+          skipContent: false,
+          children: [{ type: 'route', path: '*', file: 'needs.tsx' }],
+        },
+        {
+          type: 'route',
+          path: 'layers.css',
+          file: 'layers.tsx',
+          skipContent: true,
         },
       ];
 
       try {
+        // By convention.
         expect(routeSkipsContent('@objectBrowserWidget/*')).toBe(true);
         expect(routeSkipsContent('/@objectBrowserWidget/*')).toBe(true);
-        expect(routeSkipsContent('reset-fetcher')).toBe(true);
-        expect(routeSkipsContent('ok')).toBe(true);
+        expect(routeSkipsContent('@@contents/@delete/*')).toBe(true);
+        expect(routeSkipsContent('@@edit/*')).toBe(false);
         expect(routeSkipsContent('*')).toBe(false);
         expect(routeSkipsContent('/')).toBe(false);
+        // Overridden by the route entries, including the app's own.
+        expect(routeSkipsContent('@needs-content/*')).toBe(false);
+        expect(routeSkipsContent('layers.css')).toBe(true);
+        expect(routeSkipsContent('reset-fetcher')).toBe(true);
+        expect(routeSkipsContent('ok')).toBe(true);
       } finally {
         config.routes = routes;
       }

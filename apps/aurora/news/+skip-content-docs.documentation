@@ -1,1 +1,1 @@
-Documented the `skipContent` route option. @sneridagh
+Documented the `skipContent` route option and when the root middleware skips loading the content. @sneridagh

@@ -61,15 +61,15 @@ function normalizePattern(pattern: string) {
 }
 
 /**
- * Returns the patterns of the routes that set `skipContent`, or inherit it,
- * as React Router passes them to middleware (`pattern`).
+ * Returns the `skipContent` value of the routes that set it, or inherit it,
+ * keyed by their pattern as React Router passes it to middleware (`pattern`).
  */
 export function getSkipContentPatterns(
   routes: ReactRouterRouteEntry[],
   parentPath = '',
-  parentSkipContent = false,
-  patterns = new Set<string>(),
-): Set<string> {
+  parentSkipContent: boolean | undefined = undefined,
+  patterns = new Map<string, boolean>(),
+): Map<string, boolean> {
   for (const route of routes) {
     const skipContent = route.skipContent ?? parentSkipContent;
     const path =
@@ -77,8 +77,11 @@ export function getSkipContentPatterns(
         ? `${parentPath}/${route.path}`
         : parentPath;
 
-    if (skipContent && (route.type === 'route' || route.type === 'index')) {
-      patterns.add(normalizePattern(path));
+    if (
+      skipContent !== undefined &&
+      (route.type === 'route' || route.type === 'index')
+    ) {
+      patterns.set(normalizePattern(path), skipContent);
     }
     if ('children' in route && route.children) {
       getSkipContentPatterns(route.children, path, skipContent, patterns);
@@ -87,16 +90,25 @@ export function getSkipContentPatterns(
   return patterns;
 }
 
+/**
+ * Whether a route pattern names a resource: one of its segments starts with
+ * a single `@`, like `@search/*` or `@@contents/@delete/*`. Views use `@@`.
+ */
+export function isResourcePattern(pattern: string) {
+  return pattern.split('/').some((segment) => /^@(?!@)/.test(segment));
+}
+
 // Routes are fixed once the add-ons are installed, so compute the patterns
 // once per `config.routes` array.
 const skipContentPatternsCache = new WeakMap<
   ReactRouterRouteEntry[],
-  Set<string>
+  Map<string, boolean>
 >();
 
 /**
- * Whether the route matched by a request opts out of loading the Plone
- * content, site and user, with `skipContent` in its route entry.
+ * Whether the route matched by a request doesn't need the Plone content,
+ * site and user. Resource routes (see `isResourcePattern`) don't, other
+ * routes do. A route entry overrides it with `skipContent`.
  */
 export function routeSkipsContent(pattern: string) {
   const routes = config.routes ?? [];
@@ -105,7 +117,8 @@ export function routeSkipsContent(pattern: string) {
     patterns = getSkipContentPatterns([...appRoutes, ...routes]);
     skipContentPatternsCache.set(routes, patterns);
   }
-  return patterns.has(normalizePattern(pattern));
+  const normalized = normalizePattern(pattern);
+  return patterns.get(normalized) ?? isResourcePattern(normalized);
 }
 
 export const installServerMiddleware: Route.MiddlewareFunction = async (
