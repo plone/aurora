@@ -1,4 +1,4 @@
-import { expect, describe, it, vi, afterEach } from 'vitest';
+import { expect, describe, it, vi, afterEach, beforeEach } from 'vitest';
 import config from '@plone/registry';
 import { RouterContextProvider } from 'react-router';
 import { jwtDecode } from 'jwt-decode';
@@ -7,6 +7,7 @@ import PloneClient from '@plone/client';
 import {
   fetchPloneContent,
   getAPIResourceWithAuth,
+  getContentExpand,
   getPloneClientClass,
   getSkipContentPatterns,
   isResourcePattern,
@@ -21,6 +22,7 @@ import {
   ploneUserContext,
   routeSkipsContent,
 } from './middleware.server';
+import { defaultApiExpanders } from './config/server.server';
 
 vi.mock('jwt-decode');
 vi.mock('@plone/react-router', async (importOriginal) => {
@@ -667,9 +669,99 @@ describe('middleware', () => {
     });
   });
 
+  describe('getContentExpand', () => {
+    beforeEach(() => {
+      config.settings.apiExpanders = [...defaultApiExpanders];
+    });
+
+    afterEach(() => {
+      config.settings.apiExpanders = [];
+    });
+
+    it('returns the core expansions', () => {
+      expect(getContentExpand('/', false)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'navigation',
+        'actions',
+      ]);
+      expect(getContentExpand('/', true)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'navigation',
+        'actions',
+        'types',
+      ]);
+    });
+
+    it('adds the expansions of add-ons, once each', () => {
+      config.settings.apiExpanders = [
+        ...config.settings.apiExpanders,
+        { match: '', expand: ['translations', 'navigation'] },
+        { match: '/', expand: ['translations', 'workflow'] },
+      ];
+
+      expect(getContentExpand('/news', false)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'navigation',
+        'actions',
+        'translations',
+        'workflow',
+      ]);
+    });
+
+    it('matches expanders by path prefix', () => {
+      config.settings.apiExpanders = [
+        { match: '/news', expand: ['news-extra'] },
+      ];
+
+      expect(getContentExpand('/news', false)).toContain('news-extra');
+      expect(getContentExpand('/news/item', false)).toContain('news-extra');
+      expect(getContentExpand('/newsletter', false)).not.toContain(
+        'news-extra',
+      );
+      expect(getContentExpand('/', false)).not.toContain('news-extra');
+    });
+
+    it('ignores Volto-shaped expanders', () => {
+      config.settings.apiExpanders = [
+        { match: '', GET_CONTENT: ['translations'] },
+      ];
+
+      expect(getContentExpand('/', false)).not.toContain('translations');
+    });
+
+    it('lets add-ons change the core expansions', () => {
+      config.settings.apiExpanders = [
+        { match: '', expand: ['navroot', 'breadcrumbs', 'actions'] },
+      ];
+
+      expect(getContentExpand('/', false)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'actions',
+      ]);
+    });
+
+    it('applies authenticated expanders to signed-in users only', () => {
+      config.settings.apiExpanders = [
+        { match: '', expand: ['my-profile'], authenticated: true },
+      ];
+
+      expect(getContentExpand('/', true)).toContain('my-profile');
+      expect(getContentExpand('/', false)).not.toContain('my-profile');
+    });
+  });
+
   describe('fetchPloneContent', () => {
+    beforeEach(() => {
+      config.settings.apiExpanders = [...defaultApiExpanders];
+    });
+
     afterEach(() => {
       delete config.utilities['ploneClient'];
+      config.settings.apiExpanders = [];
     });
 
     it('skips fetching for resource routes', async () => {
@@ -1046,6 +1138,10 @@ describe('middleware', () => {
     });
 
     it('retries anonymously after a 401 and clears the auth cookie context', async () => {
+      config.settings.apiExpanders = [
+        ...config.settings.apiExpanders,
+        { match: '', expand: ['my-profile'], authenticated: true },
+      ];
       const authContent = vi
         .fn()
         .mockRejectedValueOnce({ data: undefined, status: 401 });
@@ -1101,6 +1197,17 @@ describe('middleware', () => {
         nextMock,
       );
 
+      expect(authContent).toHaveBeenCalledWith({
+        path: '/',
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'types',
+          'my-profile',
+        ],
+      });
       expect(anonymousContent).toHaveBeenCalledWith({
         path: '/',
         expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'],
