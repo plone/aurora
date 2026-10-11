@@ -91,7 +91,7 @@ A select, where the editor picks one option.
 It is the choices widget: it renders the fields with `choices` or a `vocabulary` for which no more specific widget is registered.
 The value is the token of the chosen option.
 
-The options are the schema's `choices`, or the terms of the field's vocabulary, which the widget loads from the site.
+The options are the schema's `choices`, or all the terms of the field's vocabulary, which the widget loads from the site.
 An optional field also has a "No value" option, which empties the field.
 
 The content API sends some values as a term, an object with its token and its title, such as `{ "token": "en", "title": "English" }`.
@@ -108,6 +108,8 @@ The schema's `items` decide which tokens are valid:
 -   With `choices` or a `vocabulary` in `items`, the editor picks the tokens from those options only.
 -   Otherwise, the editor can add any token.
     A vocabulary in the field's `widgetOptions`, such as the keywords of the `subjects` field, suggests tokens as the editor types.
+
+The widget loads up to 25 suggestions from a vocabulary, those whose title matches what the editor types.
 
 ```ts
 days: {

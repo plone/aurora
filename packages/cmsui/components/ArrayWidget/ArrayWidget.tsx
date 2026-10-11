@@ -13,6 +13,9 @@ export type ArrayWidgetProps = FormWidgetProps<TermValue[] | null>;
 
 type TokenItem = { id: string; name: string };
 
+// How many suggestions the widget loads from a vocabulary.
+const SUGGESTIONS = 25;
+
 /** Waits until the editor stops typing before searching the vocabulary. */
 function useDebouncedValue(value: string, delay = 250) {
   const [debounced, setDebounced] = useState(value);
@@ -71,6 +74,8 @@ export function ArrayWidget({
     choices,
     vocabulary,
     title: title || undefined,
+    // Suggestions only: the editor narrows them down by typing.
+    batchSize: SUGGESTIONS,
   });
 
   // The labels of the tokens, kept while the options change with the search.

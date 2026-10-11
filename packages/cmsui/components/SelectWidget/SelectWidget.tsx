@@ -40,6 +40,8 @@ export function SelectWidget({
   const { options } = useChoices({
     choices,
     vocabulary: vocabulary ?? widgetOptions?.vocabulary,
+    // A select offers every option.
+    batchSize: -1,
   });
 
   // The content API can send the value of a choice as a term object, or as

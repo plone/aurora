@@ -11,8 +11,11 @@ export type VocabularyTerm = { token: string; title: string };
  * The terms of a vocabulary, for the widgets of fields with a vocabulary.
  *
  * `/@vocabulary?name=plone.app.vocabularies.Keywords&title=news` returns
- * `{ items: [{ token, title }] }`: all the terms, or the ones whose title
+ * `{ items: [{ token, title }] }`: the terms, or the ones whose title
  * matches `title`.
+ *
+ * `b_size` is the number of terms to return, and `-1` returns them all.
+ * Without it, the content API returns its default batch.
  */
 export async function loader({
   request,
@@ -22,6 +25,7 @@ export async function loader({
   const searchParams = new URL(request.url).searchParams;
   const name = searchParams.get('name');
   const title = searchParams.get('title') || undefined;
+  const batchSize = Number.parseInt(searchParams.get('b_size') ?? '', 10);
 
   let items: VocabularyTerm[] = [];
   if (name) {
@@ -29,7 +33,7 @@ export async function loader({
       const { data: vocabulary } = await cli.getVocabulary({
         path: name,
         title,
-        b_size: -1,
+        b_size: Number.isNaN(batchSize) ? undefined : batchSize,
       });
       items = (vocabulary.items ?? []).map(({ token, title }) => ({
         token,

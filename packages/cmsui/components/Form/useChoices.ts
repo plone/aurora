@@ -38,20 +38,28 @@ export const vocabularyName = (vocabulary?: WidgetVocabulary) => {
  *
  * Fields with choices have their options in the schema. For a vocabulary,
  * the terms are loaded from the `@vocabulary` resource route; with `title`,
- * only the terms whose title matches it.
+ * only the terms whose title matches it. `batchSize` is the number of terms
+ * to load, and `-1` loads them all; without it, the content API's default
+ * batch is loaded.
  */
 export function useChoices({
   choices,
   vocabulary,
   title,
+  batchSize,
 }: {
   choices?: WidgetChoice[];
   vocabulary?: WidgetVocabulary;
   title?: string;
+  batchSize?: number;
 }): { options: ChoiceOption[]; loading: boolean } {
   const name = choices ? undefined : vocabularyName(vocabulary);
   const query = name
-    ? new URLSearchParams({ name, ...(title ? { title } : {}) }).toString()
+    ? new URLSearchParams({
+        name,
+        ...(title ? { title } : {}),
+        ...(batchSize !== undefined ? { b_size: String(batchSize) } : {}),
+      }).toString()
     : '';
   const [loaded, setLoaded] = useState<{
     query: string;
