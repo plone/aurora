@@ -33,7 +33,6 @@ const nonAddons = [
   'packages/quanta',
   'packages/registry',
   'packages/helpers',
-  'packages/controlpanels',
   'packages/react-router',
   'packages/scripts',
   'packages/tooling',
