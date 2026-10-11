@@ -1,0 +1,234 @@
+{
+  "fieldsets": [
+    {
+      "behavior": "plone",
+      "fields": ["title", "description"],
+      "id": "default",
+      "title": "Default"
+    },
+    {
+      "behavior": "plone",
+      "description": "",
+      "fields": ["subjects", "language", "relatedItems"],
+      "id": "categorization",
+      "title": "Categorization"
+    },
+    {
+      "behavior": "plone",
+      "description": "",
+      "fields": ["effective", "expires"],
+      "id": "dates",
+      "title": "Dates"
+    },
+    {
+      "behavior": "plone",
+      "description": "",
+      "fields": ["creators", "contributors", "rights"],
+      "id": "ownership",
+      "title": "Ownership"
+    },
+    {
+      "behavior": "plone",
+      "description": "",
+      "fields": [
+        "exclude_from_nav",
+        "id",
+        "nextPreviousEnabled",
+        "allow_discussion"
+      ],
+      "id": "settings",
+      "title": "Settings"
+    }
+  ],
+  "layouts": [
+    "album_view",
+    "full_view",
+    "listing_view",
+    "summary_view",
+    "tabular_view",
+    "event_listing"
+  ],
+  "properties": {
+    "allow_discussion": {
+      "behavior": "plone.app.discussion.behavior.IAllowDiscussion",
+      "choices": [
+        ["True", "Yes"],
+        ["False", "No"]
+      ],
+      "description": "Allow discussion for this content object.",
+      "enum": ["True", "False"],
+      "enumNames": ["Yes", "No"],
+      "factory": "Choice",
+      "title": "Allow discussion",
+      "type": "string",
+      "vocabulary": {
+        "@id": "/@sources/allow_discussion"
+      }
+    },
+    "contributors": {
+      "additionalItems": true,
+      "behavior": "plone.dublincore",
+      "description": "The names of people that have contributed to this item. Each contributor should be on a separate line.",
+      "factory": "Tuple",
+      "items": {
+        "description": "",
+        "factory": "Text line (String)",
+        "title": "",
+        "type": "string"
+      },
+      "title": "Contributors",
+      "type": "array",
+      "uniqueItems": true,
+      "widgetOptions": {
+        "vocabulary": {
+          "@id": "/@vocabularies/plone.app.vocabularies.Users"
+        }
+      }
+    },
+    "creators": {
+      "additionalItems": true,
+      "behavior": "plone.dublincore",
+      "description": "Persons responsible for creating the content of this item. Please enter a list of user names, one per line. The principal creator should come first.",
+      "factory": "Tuple",
+      "items": {
+        "description": "",
+        "factory": "Text line (String)",
+        "title": "",
+        "type": "string"
+      },
+      "title": "Creators",
+      "type": "array",
+      "uniqueItems": true,
+      "widgetOptions": {
+        "vocabulary": {
+          "@id": "/@vocabularies/plone.app.vocabularies.Users"
+        }
+      }
+    },
+    "description": {
+      "behavior": "plone.dublincore",
+      "description": "Used in item listings and search results.",
+      "factory": "Text",
+      "maxLength": 10000,
+      "title": "Summary",
+      "type": "string",
+      "widget": "textarea"
+    },
+    "effective": {
+      "behavior": "plone.dublincore",
+      "description": "If this date is in the future, the content will not show up in listings and searches until this date.",
+      "factory": "Date/Time",
+      "title": "Publishing Date",
+      "type": "string",
+      "widget": "datetime"
+    },
+    "exclude_from_nav": {
+      "behavior": "plone.excludefromnavigation",
+      "default": false,
+      "description": "If selected, this item will not appear in the navigation tree",
+      "factory": "Yes/No",
+      "title": "Exclude from navigation",
+      "type": "boolean"
+    },
+    "expires": {
+      "behavior": "plone.dublincore",
+      "description": "When this date is reached, the content will no longer be visible in listings and searches.",
+      "factory": "Date/Time",
+      "title": "Expiration Date",
+      "type": "string",
+      "widget": "datetime"
+    },
+    "id": {
+      "behavior": "plone.shortname",
+      "description": "This name will be displayed in the URL.",
+      "factory": "Text line (String)",
+      "title": "Short name",
+      "type": "string"
+    },
+    "language": {
+      "behavior": "plone.dublincore",
+      "default": "en",
+      "description": "",
+      "factory": "Choice",
+      "title": "Language",
+      "type": "string",
+      "vocabulary": {
+        "@id": "/@vocabularies/plone.app.vocabularies.SupportedContentLanguages"
+      }
+    },
+    "nextPreviousEnabled": {
+      "behavior": "plone.nextprevioustoggle",
+      "default": false,
+      "description": "This enables next/previous widget on content items contained in this folder.",
+      "factory": "Yes/No",
+      "title": "Enable next previous navigation",
+      "type": "boolean"
+    },
+    "relatedItems": {
+      "additionalItems": true,
+      "behavior": "plone.relateditems",
+      "default": [],
+      "description": "",
+      "factory": "Relation List",
+      "items": {
+        "description": "",
+        "factory": "Relation Choice",
+        "title": "Related",
+        "type": "string",
+        "vocabulary": {
+          "@id": "/@vocabularies/plone.app.vocabularies.Catalog"
+        }
+      },
+      "title": "Related Items",
+      "type": "array",
+      "uniqueItems": true,
+      "widgetOptions": {
+        "pattern_options": {
+          "recentlyUsed": true
+        },
+        "vocabulary": {
+          "@id": "/@vocabularies/plone.app.vocabularies.Catalog"
+        }
+      }
+    },
+    "rights": {
+      "behavior": "plone.dublincore",
+      "description": "Copyright statement or other rights information on this item.",
+      "factory": "Text",
+      "title": "Rights",
+      "type": "string",
+      "widget": "textarea"
+    },
+    "subjects": {
+      "additionalItems": true,
+      "behavior": "plone.dublincore",
+      "description": "Tags are commonly used for ad-hoc organization of content.",
+      "factory": "Tuple",
+      "items": {
+        "description": "",
+        "factory": "Text line (String)",
+        "title": "",
+        "type": "string"
+      },
+      "title": "Tags",
+      "type": "array",
+      "uniqueItems": true,
+      "widgetOptions": {
+        "vocabulary": {
+          "@id": "/@vocabularies/plone.app.vocabularies.Keywords"
+        }
+      }
+    },
+    "title": {
+      "behavior": "plone.dublincore",
+      "description": "",
+      "factory": "Text line (String)",
+      "maxLength": 1024,
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "required": ["title"],
+  "title": "Folder",
+  "type": "object"
+}

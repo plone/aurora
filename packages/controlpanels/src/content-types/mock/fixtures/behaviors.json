@@ -1,0 +1,182 @@
+[
+  {
+    "name": "plone.allowdiscussion",
+    "title": "Allow discussion",
+    "description": "Allow discussion on this item"
+  },
+  {
+    "name": "plone.basic",
+    "title": "Basic metadata",
+    "description": "Adds title and description fields."
+  },
+  {
+    "name": "volto.blocks",
+    "title": "Blocks",
+    "description": "Enables Volto Blocks support"
+  },
+  {
+    "name": "volto.blocks.editable.layout",
+    "title": "Blocks (Editable Layout)",
+    "description": "Enables Volto Blocks (editable layout) support"
+  },
+  {
+    "name": "plone.categorization",
+    "title": "Categorization",
+    "description": "Adds keywords and language fields."
+  },
+  {
+    "name": "plone.collection",
+    "title": "Collection",
+    "description": "Adds collection behavior"
+  },
+  {
+    "name": "plone.publication",
+    "title": "Date range",
+    "description": "Adds effective date and expiration date fields."
+  },
+  {
+    "name": "plone.dublincore",
+    "title": "Dublin Core metadata",
+    "description": "Adds standard metadata fields (equals Basic metadata + Categorization + Effective range + Ownership)"
+  },
+  {
+    "name": "plone.eventattendees",
+    "title": "Event Attendees",
+    "description": "Attendees extension for Events."
+  },
+  {
+    "name": "plone.eventbasic",
+    "title": "Event Basic",
+    "description": "Basic Event schema."
+  },
+  {
+    "name": "plone.eventcontact",
+    "title": "Event Contact",
+    "description": "Contact extension for Events."
+  },
+  {
+    "name": "plone.eventlocation",
+    "title": "Event Location",
+    "description": "Location extension for Events."
+  },
+  {
+    "name": "plone.eventrecurrence",
+    "title": "Event Recurrence",
+    "description": "Recurrence extension for Events."
+  },
+  {
+    "name": "plone.excludefromnavigation",
+    "title": "Exclude From navigation",
+    "description": "Allow items to be excluded from navigation"
+  },
+  {
+    "name": "plone.constraintypes",
+    "title": "Folder Addable Constrains",
+    "description": "Restrict the content types that can be added to folderish content"
+  },
+  {
+    "name": "plone.textindexer",
+    "title": "Full-Text Indexing",
+    "description": "Enables the enhanced full-text indexing for a content type ('plone.textindexer'). If a field is marked 'searchable', its content gets added to the 'SearchableText' index in the catalog."
+  },
+  {
+    "name": "volto.head_title",
+    "title": "Head title field",
+    "description": "Deprecated (use volto.kicker instead)"
+  },
+  {
+    "name": "volto.kicker",
+    "title": "Kicker field",
+    "description": "Adds kicker field (text to be shown above the headline)"
+  },
+  {
+    "name": "plone.leadimage",
+    "title": "Lead Image",
+    "description": "Adds image and image caption fields"
+  },
+  {
+    "name": "plone.locking",
+    "title": "Locking",
+    "description": "Locking support for dexterity"
+  },
+  {
+    "name": "plone.translatable",
+    "title": "Multilingual Support",
+    "description": "Make this content type multilingual aware"
+  },
+  {
+    "name": "plone.namefromfilename",
+    "title": "Name from file name",
+    "description": "Automatically generate short URL name for content based on its primary field file name"
+  },
+  {
+    "name": "plone.namefromtitle",
+    "title": "Name from title",
+    "description": "Automatically generate short URL name for content based on its initial title"
+  },
+  {
+    "name": "plone.navigationroot",
+    "title": "Navigation root",
+    "description": "Make all items of this type a navigation root"
+  },
+  {
+    "name": "volto.navtitle",
+    "title": "Navigation title",
+    "description": "Navigation title used in sections, menus and doormats"
+  },
+  {
+    "name": "plone.nextpreviousenabled",
+    "title": "Next previous navigation",
+    "description": "Enable next previous navigation for all items of this type"
+  },
+  {
+    "name": "plone.nextprevioustoggle",
+    "title": "Next previous navigation toggle",
+    "description": "Allow items to have next previous navigation enabled"
+  },
+  {
+    "name": "plone.ownership",
+    "title": "Ownership",
+    "description": "Adds creator, contributor, and rights fields."
+  },
+  {
+    "name": "volto.preview_image",
+    "title": "Preview Image",
+    "description": "Preview image for listings"
+  },
+  {
+    "name": "volto.preview_image_link",
+    "title": "Preview Image Link",
+    "description": "Preview image for listings based on links"
+  },
+  {
+    "name": "plone.relateditems",
+    "title": "Related items",
+    "description": "Adds the ability to assign related items"
+  },
+  {
+    "name": "plone.richtext",
+    "title": "RichText",
+    "description": "Adds richtext behavior"
+  },
+  {
+    "name": "plone.shortname",
+    "title": "Short name",
+    "description": "Gives the ability to rename an item from its edit form."
+  },
+  {
+    "name": "plone.tableofcontents",
+    "title": "Table of contents",
+    "description": "Adds a table of contents"
+  },
+  {
+    "name": "plone.thumb_icon",
+    "title": "Thumbs and icon handling",
+    "description": "Options to suppress thumbs and/or icons and to override thumb size in listings, tables etc."
+  },
+  {
+    "name": "plone.versioning",
+    "title": "Versioning",
+    "description": "Versioning support with CMFEditions"
+  }
+]
