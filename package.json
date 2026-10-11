@@ -3,8 +3,8 @@
   "private": true,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "build:deps": "pnpm --filter @plone/registry --filter @plone/client --filter @plone/icons --filter @plone/quanta --filter @plone/components --filter @plone/react-router --filter @plone/helpers build",
-    "build:all": "pnpm --filter @plone/registry --filter @plone/client --filter @plone/icons --filter @plone/quanta --filter @plone/components --filter @plone/react-router --filter @plone/helpers build",
+    "build:deps": "pnpm --filter @plone/registry --filter @plone/client --filter @plone/icons --filter @plone/quanta --filter @plone/components --filter @plone/react-router --filter @plone/helpers --filter @plone/controlpanels build",
+    "build:all": "pnpm --filter @plone/registry --filter @plone/client --filter @plone/icons --filter @plone/quanta --filter @plone/components --filter @plone/react-router --filter @plone/helpers --filter @plone/controlpanels build",
     "build:registry": "pnpm --filter @plone/registry run build",
     "build:icons": "pnpm --filter @plone/icons run build",
     "build:components": "pnpm --filter @plone/components run build",
@@ -12,6 +12,7 @@
     "build:client": "pnpm --filter @plone/client run build",
     "build:providers": "pnpm --filter @plone/providers run build",
     "build:helpers": "pnpm --filter @plone/helpers run build",
+    "build:controlpanels": "pnpm --filter @plone/controlpanels run build",
     "build:react-router": "pnpm --filter @plone/react-router run build",
     "dev": "pnpm --filter @plone/aurora dev",
     "start": "pnpm dev",
