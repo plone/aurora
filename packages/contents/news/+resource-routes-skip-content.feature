@@ -1,0 +1,1 @@
+The Contents view resource routes (`@@contents/@delete`, `@upload`, `@rename`, `@workflow`, `@tags`, `@properties`, `@order` and `@paste`) no longer get the content loaded by the root middleware. @sneridagh

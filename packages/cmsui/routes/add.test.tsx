@@ -245,8 +245,13 @@ describe('Add route', () => {
       // Dynamic imports to pick up the mocks
       const { render, screen } = await import('@testing-library/react');
       const { default: AddMocked } = await import('./add');
+      const { MemoryRouter } = await import('react-router');
 
-      render(<AddMocked />);
+      render(
+        <MemoryRouter initialEntries={['/folder/@@add?type=Document']}>
+          <AddMocked />
+        </MemoryRouter>,
+      );
 
       const form = screen.getByTestId('content-form');
       expect(form).toHaveAttribute('data-submit-method', 'post');

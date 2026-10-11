@@ -16,6 +16,7 @@ export default function install(config: ConfigType) {
         type: 'route',
         path: 'layers.css',
         file: '@plone/publicui/routes/layers.css.tsx',
+        skipContent: true,
       },
       {
         type: 'route',

@@ -59,7 +59,7 @@
     "tailwind-variants": "catalog:",
     "tailwindcss": "catalog:",
     "tailwindcss-animate": "^1.0.7",
-    "tailwindcss-react-aria-components": "^2.0.0"
+    "tailwindcss-react-aria-components": "catalog:"
   },
   "devDependencies": {
     "@plone/types": "workspace:*",

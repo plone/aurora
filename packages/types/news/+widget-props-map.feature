@@ -1,0 +1,1 @@
+Added `WidgetPropsMap` and `RegisteredWidgetProps`: an app declares the props its registered widgets take, and the widget registry types its widget slots with them. Without a declaration, any props are accepted, as before. Added `pattern_options` to `WidgetOptions`. @sneridagh

@@ -252,3 +252,149 @@ Then add `@plone/icons` to your add-on's {file}`package.json` dependencies.
 +    "@plone/icons": "workspace:*"
    },
 ```
+
+### Forms and widgets
+
+```{versionchanged} 1.0.0-alpha.20
+These steps apply when you upgrade an add-on from Plone Aurora 1.0.0-alpha.19 or earlier to 1.0.0-alpha.20 or later.
+```
+
+The schema-driven forms (content, control panels, and block settings) now render their fields through one field renderer, keep their values in a form store from `@plone/helpers`, and pass every widget the same props, the widget contract.
+For the concepts, see {ref}`form-fields-controls-and-widgets-label`.
+
+#### Widgets receive the widget contract
+
+```{versionchanged} 1.0.0-alpha.20
+Registered widgets receive the widget contract, `FormWidgetProps` in `@plone/types`.
+```
+
+```{versionremoved} 1.0.0-alpha.20
+The `error` widget prop, and the raw field schema keys that the form understands, such as `type`, `title`, and `factory`, as widget props.
+```
+
+A registered widget now receives the props described by `FormWidgetProps` in `@plone/types`.
+If your add-on registers a widget, check the following changes.
+
+-   Validation errors arrive as `invalid` and a joined `errorMessage`, instead of the `error` list.
+-   `defaultValue` is the schema's `default`, not the current value.
+    Read the current value from `value`.
+-   The schema keys that the form understands, such as `type`, `title`, `default`, and `factory`, are no longer passed as props.
+    Read the label from `label`, and the whole field schema from `schema`.
+    Any other key of the field schema is still passed as a prop.
+-   The form no longer passes a "Type something..." placeholder to every widget.
+
+```diff
+- function MyWidget({ title, error, defaultValue, onChange }) {
++ function MyWidget({ label, invalid, errorMessage, value, onChange }: FormWidgetProps<string>) {
+```
+
+#### The form engine changed
+
+```{versionremoved} 1.0.0-alpha.20
+`useAppForm` and the `field.Quanta` field component of `@plone/cmsui`, the `formAtom` registry utility, and `formAtom`, `blockAtomFamily`, and `useFormFieldValue` from `@plone/cmsui/routes/atoms`.
+```
+
+```{versionadded} 1.0.0-alpha.20
+The form store of `@plone/helpers`: `useFormStore`, `FormProvider`, `useFormContext`, `useOptionalFormContext`, `useSchemaField`, `useFieldValue`, `useSetFieldValue`, and `useFormState`.
+`SchemaFieldsets` in `@plone/cmsui`.
+```
+
+The forms no longer use TanStack Form, and `@plone/cmsui` no longer depends on `@tanstack/react-form`.
+
+-   `useAppForm` and the `field.Quanta` field component are removed.
+    Render schema fields with `SchemaFieldsets` inside a `FormProvider` instead.
+-   The `formAtom` registry utility, and `formAtom`, `blockAtomFamily`, and `useFormFieldValue` from `@plone/cmsui/routes/atoms`, are removed.
+    Read and write the form your component is rendered in with the hooks from `@plone/helpers`.
+
+```diff
+- const formAtom = config.getUtility({ name: 'formAtom', type: 'atom' }).method();
+- const title = useAtomValue(focusAtom(formAtom, (optic) => optic.prop('title')));
++ import { useFieldValue, useSetFieldValue } from '@plone/helpers';
++
++ const title = useFieldValue<string>('title');
++ const setTitle = useSetFieldValue<string>('title');
+```
+
+#### Widgets read where the form is from `useWidgetContext`
+
+```{versionadded} 1.0.0-alpha.20
+`useWidgetContext` and `WidgetContextProvider` in `@plone/cmsui`, and the `path` prop of `ContentForm`.
+```
+
+Widgets must not read the route's loader data or the URL to know which content they are in.
+Read the form's `mode`, `path`, and `containerPath` with `useWidgetContext` instead.
+If your add-on renders `ContentForm`, pass it the `path` of the edited object, or of the container when adding.
+
+```diff
+- const { content } = useLoaderData<typeof editLoader>();
+- const path = content['@id'];
++ import { useWidgetContext } from '@plone/cmsui/components/Form/WidgetContext';
++
++ const { path } = useWidgetContext();
+```
+
+#### Registered widgets are type-checked against the contract
+
+```{versionchanged} 1.0.0-alpha.20
+The widget registry types the widgets it accepts with the widget contract, `FormWidgetProps`, once `@plone/cmsui` is installed.
+```
+
+```{versionadded} 1.0.0-alpha.20
+`WidgetPropsMap` and `RegisteredWidgetProps` in `@plone/types`, and the `describeWidgetContract` test helper in `@plone/cmsui/testing/widgetContract`.
+```
+
+If your add-on registers a widget whose props don't follow the widget contract, the type check now fails.
+Type the widget with `FormWidgetProps`, and adapt the props it reads, as described in the previous steps.
+Test it with `describeWidgetContract`, see {ref}`test-a-widget-label`.
+
+#### Validators receive `t`
+
+```{versionadded} 1.0.0-alpha.20
+The `t` and `fieldName` arguments of `validator` utilities.
+```
+
+The `validator` utilities receive i18next's `t` and the field's name as `fieldName`, next to `formatMessage`.
+Existing validators keep working.
+See {ref}`validate-form-fields-label`.
+
+#### Quanta's pickers are renamed
+
+```{versionadded} 1.0.0-alpha.20
+`AlignPicker`, `SizePicker`, and `WidthPicker` in `@plone/quanta`.
+```
+
+```{deprecated} 1.0.0-alpha.20
+`AlignWidget`, `SizeWidget`, and `WidthWidget` in `@plone/quanta`.
+```
+
+The `AlignWidget`, `SizeWidget`, and `WidthWidget` components of `@plone/quanta` are controls, not widgets.
+They are renamed `AlignPicker`, `SizePicker`, and `WidthPicker`.
+The old names still work, but are deprecated and will be removed in a future release.
+
+```diff
+- import { AlignWidget, SizeWidget, WidthWidget } from '@plone/quanta';
++ import { AlignPicker, SizePicker, WidthPicker } from '@plone/quanta';
+```
+
+The `align`, `size`, and `width` widgets that the forms use are now adapters in `@plone/cmsui`, around these pickers.
+
+#### File and image fields store files
+
+```{versionchanged} 1.0.0-alpha.20
+The fields with the `File` or `Image` factory use `FileWidget`, instead of `ImageWidget`.
+```
+
+```{versionadded} 1.0.0-alpha.20
+`SelectWidget`, `ArrayWidget`, `NumberWidget`, `FileWidget`, `EmailWidget`, `PasswordWidget`, and `UrlWidget` in `@plone/cmsui`, and `NumberField` in `@plone/quanta`.
+```
+
+A field with the `File` or `Image` factory stores the file itself, such as the image of an Image, or the lead image of a News Item.
+`ImageWidget` stored the URL of an image in such a field, which the content API can't save.
+These fields now use `FileWidget`, which uploads the file.
+`ImageWidget` stays the widget of the fields with `widget: 'image'`, which store the URL of an image, such as the image block's `url`.
+
+If your add-on registered a widget for the `Image` factory, it still overrides `FileWidget`.
+
+Plone Aurora now registers widgets for the fields with choices or a vocabulary, lists, numbers, files, email addresses, passwords, and URLs.
+These fields used to render as text inputs.
+See {ref}`core-widgets-label`.

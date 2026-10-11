@@ -1,0 +1,1 @@
+The widget registry checks registered widgets against the widget contract at compile time (`@plone/cmsui` declares `FormWidgetProps` in `WidgetPropsMap`). Added the `describeWidgetContract` test helper (`@plone/cmsui/testing/widgetContract`), which every core widget runs. `ObjectBrowserWidget` is typed with the widget contract. @sneridagh

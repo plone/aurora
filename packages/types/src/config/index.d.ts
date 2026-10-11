@@ -20,42 +20,59 @@ export type AddonRoutesEntry = {
   exact?: boolean;
 };
 
-export type ReactRouterRouteEntry =
-  | {
-      type: 'route';
-      path: string;
-      file: string;
-      options?: {
-        id?: string;
-        index?: boolean;
-        caseSensitive?: boolean;
-      };
-      children?: ReactRouterRouteEntry[];
-    }
-  | {
-      type: 'index';
-      file: string;
-      options?: {
-        id?: string;
-        index?: boolean;
-        caseSensitive?: boolean;
-      };
-    }
-  | {
-      type: 'layout';
-      file: string;
-      options?: {
-        id?: string;
-        index?: boolean;
-        caseSensitive?: boolean;
-      };
-      children: ReactRouterRouteEntry[];
-    }
-  | {
-      type: 'prefix';
-      path: string;
-      children: ReactRouterRouteEntry[];
-    };
+type ReactRouterRouteEntryMetadata = {
+  /**
+   * Whether the root middleware skips loading the Plone content, site and
+   * user for requests to this route or its descendants.
+   * By default, it skips them for resource routes, whose path has a segment
+   * that starts with a single `@` (`@search`, `@@contents/@delete`), and
+   * loads them for any other route.
+   * Set it to `true` for a resource route without an `@` path, or to `false`
+   * for an `@` route that reads the content.
+   * When skipped, `ploneContentContext`, `ploneSiteContext` and
+   * `ploneUserContext` are not set.
+   */
+  skipContent?: boolean;
+};
+
+export type ReactRouterRouteEntry = ReactRouterRouteEntryMetadata &
+  (
+    | {
+        type: 'route';
+        path: string;
+        file: string;
+        options?: {
+          id?: string;
+          index?: boolean;
+          caseSensitive?: boolean;
+        };
+        children?: ReactRouterRouteEntry[];
+      }
+    | {
+        type: 'index';
+        file: string;
+        options?: {
+          id?: string;
+          index?: boolean;
+          caseSensitive?: boolean;
+        };
+      }
+    | {
+        type: 'layout';
+        file: string;
+        options?: {
+          id?: string;
+          index?: boolean;
+          caseSensitive?: boolean;
+        };
+        children: ReactRouterRouteEntry[];
+      }
+    | {
+        type: 'prefix';
+        path: string;
+        children: ReactRouterRouteEntry[];
+      }
+  );
 
 export type ComponentsConfig = Record<
   string,

@@ -33,6 +33,9 @@ export function ImageSchema({
       url: {
         title: 'Image URL',
         widget: 'image',
+        // Store the picked image's field and scales with the block, as the
+        // block's own image picker does.
+        extraFields: ['image_field', 'image_scales'],
       },
       alt: {
         title: 'Alt text',
