@@ -160,11 +160,8 @@ packages/helpers/dist: $(shell find packages/helpers/src -type f)
 packages/react-router/dist: $(shell find packages/react-router/src -type f)
 	pnpm build:react-router
 
-packages/controlpanels/dist: $(shell find packages/controlpanels/src -type f)
-	pnpm build:controlpanels
-
 .PHONY: build-deps
-build-deps: packages/registry/dist packages/icons/dist packages/quanta/dist packages/components/dist packages/client/dist packages/react-router/dist packages/helpers/dist packages/controlpanels/dist  ## Build dependencies
+build-deps: packages/registry/dist packages/icons/dist packages/quanta/dist packages/components/dist packages/client/dist packages/react-router/dist packages/helpers/dist  ## Build dependencies
 
 ##### Release
 
