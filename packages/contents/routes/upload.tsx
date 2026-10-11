@@ -7,13 +7,6 @@ import { requireAuthCookie } from '@plone/react-router';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { HandleCatchedError } from '../helpers/Errors';
 
-interface UploadFilePayload {
-  name: string;
-  type: string;
-  data: string; // base64-encoded content
-  title: string;
-}
-
 export async function action({
   request,
   context,
@@ -22,38 +15,28 @@ export async function action({
 
   const cli = context.get(ploneClientContext);
 
-  const payload = await request.json();
+  const formData = await request.formData();
+  const path = formData.get('path') as string;
+  const files = formData.getAll('file') as File[];
+  const titles = formData.getAll('title') as string[];
+  const uploads = files.map((file, i) => ({
+    name: file.name,
+    type: file.type,
+    title: titles[i] || file.name,
+  }));
   const errors: Array<Record<string, any>> = [];
   const ok: Array<any> = [];
   let responses: Array<any> = [];
 
   try {
     responses = await Promise.allSettled(
-      payload.files.map(async (file: UploadFilePayload) => {
-        const isImage = file.type.startsWith('image/');
-        const contentData = isImage
-          ? {
-              '@type': 'Image' as const,
-              title: file.title,
-              image: {
-                'content-type': file.type,
-                data: file.data,
-                encoding: 'base64' as const,
-                filename: file.name,
-              },
-            }
-          : {
-              '@type': 'File' as const,
-              title: file.title,
-              file: {
-                'content-type': file.type,
-                data: file.data,
-                encoding: 'base64' as const,
-                filename: file.name,
-              },
-            };
+      files.map(async (file, i) => {
+        // Files are sent to Plone as multipart/form-data parts.
+        const contentData = file.type.startsWith('image/')
+          ? { '@type': 'Image' as const, title: uploads[i].title, image: file }
+          : { '@type': 'File' as const, title: uploads[i].title, file };
 
-        return cli.createContent({ path: payload.path, data: contentData });
+        return cli.createContent({ path, data: contentData });
       }),
     );
   } catch (e) {
@@ -62,9 +45,9 @@ export async function action({
 
   responses.forEach((r, i) => {
     if (r.status === 'fulfilled') {
-      ok.push(payload.files[i]);
+      ok.push(uploads[i]);
     } else {
-      errors.push({ ...payload.files[i], __error: r.reason });
+      errors.push({ ...uploads[i], __error: r.reason });
     }
   });
 

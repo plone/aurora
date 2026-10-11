@@ -2,6 +2,7 @@ import { apiRequest, type ApiRequestParams } from '../../api';
 import type PloneClient from '../../client';
 import { z } from 'zod';
 import { updateContentDataSchema } from '../../validation/content';
+import { toRequestBody } from '../../utils/multipart';
 import type { UpdateContentResponse } from '@plone/types';
 import type { RequestResponse } from '../types';
 
@@ -22,7 +23,7 @@ export async function updateContent(
   });
 
   const options: ApiRequestParams = {
-    data: validatedArgs.data,
+    data: toRequestBody(validatedArgs.data),
     config: this.config,
   };
   return apiRequest('patch', validatedArgs.path, options);

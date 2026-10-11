@@ -2,6 +2,7 @@ import { setup, teardown } from '../../utils/test';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import PloneClient from '../../client';
 import type { RequestError } from '../types';
+import type { FileContent } from '@plone/types';
 
 const cli = PloneClient.initialize({
   apiPath: 'http://localhost:55001/plone',
@@ -39,6 +40,34 @@ describe('Update Content', () => {
 
     expect(page.data['@id']).toBe('http://localhost:55001/plone/my-page');
     expect(page.data.title).toBe('My Page updated');
+  });
+
+  test('Upload a file as multipart/form-data', async () => {
+    await cli.createContent({
+      path: '/',
+      data: {
+        '@type': 'File',
+        title: 'My File',
+        file: new File(['Spam and Eggs'], 'test.txt', { type: 'text/plain' }),
+      },
+    });
+
+    const result = await cli.updateContent({
+      path: '/my-file',
+      data: {
+        file: new File(['Cheese and Eggs!'], 'test2.txt', {
+          type: 'text/plain',
+        }),
+      },
+    });
+
+    expect(result.status).toBe(204);
+
+    const content = await cli.getContent({ path: '/my-file' });
+    const file = (content.data as FileContent).file;
+
+    expect(file?.filename).toBe('test2.txt');
+    expect(file?.size).toBe(16);
   });
 
   test('Failure', async () => {

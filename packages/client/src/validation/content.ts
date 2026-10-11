@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isBlob } from '../utils/multipart';
 
 // TODO: DISCUSS
 // No brain has this much metadata fields at the same time.
@@ -60,6 +61,20 @@ export const RelatedItemPayloadSchema = z
     title: true,
   });
 
+const base64FileSchema = z.object({
+  'content-type': z.string(),
+  data: z.string(),
+  encoding: z.string(),
+  filename: z.string(),
+});
+
+// A Blob or File value is sent as a multipart/form-data part.
+const binarySchema = z.custom<Blob>(isBlob, {
+  message: 'Expected a Blob or File',
+});
+
+const namedFilePayloadSchema = z.union([base64FileSchema, binarySchema]);
+
 export const createContentDataSchema = z
   .object({
     '@id': z.string().optional(),
@@ -75,33 +90,12 @@ export const createContentDataSchema = z
     effective: z.string().nullable().optional(),
     exclude_from_nav: z.boolean().optional(),
     expires: z.string().nullable().optional(),
-    file: z
-      .object({
-        'content-type': z.string(),
-        data: z.string(),
-        encoding: z.string(),
-        filename: z.string(),
-      })
-      .optional(),
+    file: namedFilePayloadSchema.optional(),
     id: z.string().optional(),
-    image: z
-      .object({
-        'content-type': z.string(),
-        data: z.string(),
-        encoding: z.string(),
-        filename: z.string(),
-      })
-      .optional(),
+    image: namedFilePayloadSchema.optional(),
     language: z.string().optional(),
     preview_caption: z.string().optional(),
-    preview_image: z
-      .object({
-        'content-type': z.string(),
-        data: z.string(),
-        encoding: z.string(),
-        filename: z.string(),
-      })
-      .optional(),
+    preview_image: namedFilePayloadSchema.optional(),
     relatedItems: z.array(RelatedItemPayloadSchema).optional(),
     rights: z.string().nullable().optional(),
     title: z.string(),
@@ -121,7 +115,9 @@ export const updateContentDataSchema = z
     effective: z.string().nullable().optional(),
     exclude_from_nav: z.boolean().optional(),
     expires: z.string().nullable().optional(),
+    file: namedFilePayloadSchema.nullable().optional(),
     id: z.string().nullable().optional(),
+    image: namedFilePayloadSchema.nullable().optional(),
     ordering: z
       .object({
         obj_id: z.string(),
@@ -130,15 +126,7 @@ export const updateContentDataSchema = z
       })
       .optional(),
     preview_caption: z.string().nullable().optional(),
-    preview_image: z
-      .object({
-        'content-type': z.string(),
-        data: z.string(),
-        encoding: z.string(),
-        filename: z.string(),
-      })
-      .nullable()
-      .optional(),
+    preview_image: namedFilePayloadSchema.nullable().optional(),
     relatedItems: z.array(RelatedItemPayloadSchema).optional(),
     rights: z.string().nullable().optional(),
     subjects: z.array(z.string()).optional(),

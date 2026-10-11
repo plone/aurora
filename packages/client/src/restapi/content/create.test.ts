@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import PloneClient from '../../client';
 import type { CreateContentArgs } from './create';
 import type { RequestError } from '../types';
+import type { FileContent } from '@plone/types';
 
 const cli = PloneClient.initialize({
   apiPath: 'http://localhost:55001/plone',
@@ -60,6 +61,26 @@ describe('createContent', () => {
       'http://localhost:55001/plone/my-page/my-nested-page',
     );
     expect(result.data.title).toBe('My nested Page');
+  });
+
+  test('Upload a file as multipart/form-data', async () => {
+    const data: CreateContentArgs['data'] = {
+      '@type': 'File',
+      title: 'My File',
+      file: new File(['Spam and Eggs'], 'test.txt', { type: 'text/plain' }),
+    };
+
+    const result = await cli.createContent({
+      path: '/',
+      data,
+    });
+
+    const file = (result.data as FileContent).file;
+
+    expect(result.status).toBe(201);
+    expect(file?.filename).toBe('test.txt');
+    expect(file?.['content-type']).toBe('text/plain');
+    expect(file?.size).toBe(13);
   });
 
   test('Failure', async () => {
