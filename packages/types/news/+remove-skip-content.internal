@@ -1,0 +1,1 @@
+Removed the unreleased `skipContent` option from `ReactRouterRouteEntry`: the root middleware decides from the route path whether it loads the content. @sneridagh
