@@ -25,8 +25,9 @@ Name the route paths after their kind, following the Plone conventions.
     Examples are `@search`, `@objectBrowserWidget`, or the `@delete` action of the Contents view.
     Resources that belong to one view can be nested in its path, like `/@@contents/@delete`, so they don't collide with the resources of other add-ons.
 
-The root middleware doesn't load the Plone content for resource routes, since they don't render a page.
-See the `skipContent` option to change that for a route.
+The root middleware doesn't load the Plone content, site, and user for resource routes, the routes whose path has a segment that starts with a single `@`, since they don't render a page.
+Their loaders and actions must not read `ploneContentContext`, `ploneSiteContext`, or `ploneUserContext`, because these are not set.
+Use the Plone client from `ploneClientContext` to request what they need.
 
 ## Route definition
 
@@ -56,14 +57,6 @@ See the {ref}`route-registration-api-reference` for the complete API reference.
 `children`
 :   An optional array of child routes.
     It is an array of route definitions that can be nested within the parent route.
-
-`skipContent`
-:   An optional boolean.
-    It sets whether the root middleware skips loading the Plone content, site, and user for requests to this route or its descendants.
-    By default, the middleware skips them for resource routes, whose path has a segment that starts with a single `@`, such as `@search` or `@@contents/@delete`, and loads them for any other route.
-    Set it to `true` for a resource route whose path doesn't start with `@`.
-    Set it to `false` for an `@` route that needs the content.
-    When skipped, `ploneContentContext`, `ploneSiteContext`, and `ploneUserContext` are not set, so the route's loaders and actions must not read them.
 
 ### `route` – standard route
 
@@ -231,48 +224,42 @@ In `@plone/cmsui/`, each of the files shown in the above diagram performs a spec
 The following type describes the API of route registration.
 
 ```ts
-type ReactRouterRouteEntryMetadata = {
-  skipContent?: boolean;
-};
-
-export type ReactRouterRouteEntry = ReactRouterRouteEntryMetadata &
-  (
-    | {
-        type: 'route';
-        path: string;
-        file: string;
-        options?: {
-          id?: string;
-          index?: boolean;
-          caseSensitive?: boolean;
-        };
-        children?: ReactRouterRouteEntry[];
-      }
-    | {
-        type: 'index';
-        file: string;
-        options?: {
-          id?: string;
-          index?: boolean;
-          caseSensitive?: boolean;
-        };
-      }
-    | {
-        type: 'layout';
-        file: string;
-        options?: {
-          id?: string;
-          index?: boolean;
-          caseSensitive?: boolean;
-        };
-        children: ReactRouterRouteEntry[];
-      }
-    | {
-        type: 'prefix';
-        path: string;
-        children: ReactRouterRouteEntry[];
-      }
-  );
+export type ReactRouterRouteEntry =
+  | {
+      type: 'route';
+      path: string;
+      file: string;
+      options?: {
+        id?: string;
+        index?: boolean;
+        caseSensitive?: boolean;
+      };
+      children?: ReactRouterRouteEntry[];
+    }
+  | {
+      type: 'index';
+      file: string;
+      options?: {
+        id?: string;
+        index?: boolean;
+        caseSensitive?: boolean;
+      };
+    }
+  | {
+      type: 'layout';
+      file: string;
+      options?: {
+        id?: string;
+        index?: boolean;
+        caseSensitive?: boolean;
+      };
+      children: ReactRouterRouteEntry[];
+    }
+  | {
+      type: 'prefix';
+      path: string;
+      children: ReactRouterRouteEntry[];
+    };
 
 registerRoute(options: ReactRouterRouteEntry): void;
 ```
