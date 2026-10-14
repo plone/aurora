@@ -25,6 +25,7 @@ couple-block-schema-fields
 validate-form-fields
 add-editor-migration
 register-slots
+create-a-slot
 customize-login-screen
 shadow-a-component
 fetch-additional-data-root-loader
