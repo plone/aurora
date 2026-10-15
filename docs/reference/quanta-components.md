@@ -137,7 +137,7 @@ Consumers to update:
 | `DialogTrigger` | none | extra | Re-exported from RAC. Used by `cmsui` (ImageWidget, ObjectBrowserTrigger). |
 | `Modal` | `Modal.tsx` | `aligned` | None. |
 | `Tooltip` | `Tooltip.tsx` | `aligned` | None. |
-| `Drawer` | `Sheet.tsx` | to decide | Not on `main` yet (`feat/quanta-controls`). See {ref}`quanta-side-panel-label`. |
+| `Drawer` | `Sheet.tsx` | replaced | Not on `main` (`feat/quanta-controls`). Quanta adds the starter's `Sheet` instead. See {ref}`quanta-side-panel-label`. |
 
 ## Navigation and structure
 
@@ -174,7 +174,7 @@ The deprecated `SizeWidget`, `AlignWidget` and `WidthWidget` aliases of the pick
 
 Quanta adds these when something needs them:
 
--   Overlays: `AlertDialog`, `Sheet`, `Toast` (Plone Aurora's toast lives in `@plone/layout`)
+-   Overlays: `AlertDialog`, `Toast` (Plone Aurora's toast lives in `@plone/layout`)
 -   Collections: `Tree`, `NavigationTree`, `CommandPalette`, `TokenField`
 -   Dates: `RangeCalendar`, `DateRangePicker`
 -   Controls: `Meter`, `Slider`, `FieldButton`
@@ -207,13 +207,17 @@ Plone's content API stores dates as ISO strings: `YYYY-MM-DD` for dates, and UTC
 The widgets in `@plone/cmsui` convert them to date values and back, and decide the time zone policy: store UTC, show the browser's local time.
 The conversion helpers live in `@plone/cmsui`, next to the date widgets, and `@plone/contents` uses them too.
 
-## Open decisions
-
 (quanta-side-panel-label)=
 
 ### Side panel
 
-`Drawer` (from `feat/quanta-controls`) is built on `ModalOverlay` and `Modal`, slides in from the right or left, and closes on an outside click or {kbd}`Esc`.
-The starter's `Sheet` is built on RAC's newer `Sheet` API: it opens from any edge or the center, can be swiped or dragged to dismiss, has snap points, and stacks.
-It needs its own CSS file.
-Which one Quanta uses is decided in [plone/aurora#275](https://github.com/plone/aurora/issues/275).
+Quanta's side panel is the starter's `Sheet`, built on React Aria's `Sheet` API, with Quanta's styles.
+It replaces the `Drawer` from `feat/quanta-controls`, which was never released.
+
+On desktop, a `Sheet` with `position="right"` works like a drawer: it slides in from the edge, dims the page, keeps the focus inside, and closes on an outside click or {kbd}`Esc`.
+On touch devices it can also be swiped away, and it supports snap points and stacked sheets.
+`position` also accepts `start` and `end`, which follow the text direction.
+
+The starter styles the side positions as a rounded, inset card 300 pixels wide.
+Quanta styles them as a full-height panel, flush with the edge.
+`Sheet` needs its own keyframes (`Sheet.css`), which Quanta bundles in its CSS.
