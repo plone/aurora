@@ -35,6 +35,17 @@ export default defineConfig({
     viewport: { width: 1280, height: 720 },
     trace: 'retain-on-failure',
   },
+  // Serves Quanta's static Storybook build for its component screenshots
+  // (`pnpm --filter @plone/quanta build-storybook`). The app and the backend
+  // are started separately.
+  webServer: {
+    command:
+      'python3 -m http.server 6007 --directory packages/quanta/storybook-static',
+    port: 6007,
+    reuseExistingServer: true,
+    stdout: 'ignore',
+    stderr: 'ignore',
+  },
   projects: [
     {
       name: 'chromium',
