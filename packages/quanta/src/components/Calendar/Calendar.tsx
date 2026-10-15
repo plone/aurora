@@ -9,14 +9,14 @@ import {
   CalendarGrid,
   CalendarGridBody,
   CalendarHeaderCell,
+  CalendarHeading,
   type DateValue,
-  Heading,
   Text,
   useLocale,
 } from 'react-aria-components';
 import { tv } from 'tailwind-variants';
 import { Button } from '../Button/Button';
-import { focusRing } from '../../utils';
+import { composeTailwindRenderProps, focusRing } from '../../utils';
 
 const cellStyles = tv({
   extend: focusRing,
@@ -50,10 +50,9 @@ const cellStyles = tv({
   },
 });
 
-export interface CalendarProps<T extends DateValue> extends Omit<
-  AriaCalendarProps<T>,
-  'visibleDuration'
-> {
+export interface CalendarProps<
+  T extends DateValue,
+> extends AriaCalendarProps<T> {
   errorMessage?: string;
 }
 
@@ -61,15 +60,30 @@ export function Calendar<T extends DateValue>({
   errorMessage,
   ...props
 }: CalendarProps<T>) {
+  const months = props.visibleDuration?.months || 1;
   return (
-    <AriaCalendar {...props}>
-      <CalendarHeader />
-      <CalendarGrid>
-        <CalendarGridHeader />
-        <CalendarGridBody>
-          {(date) => <CalendarCell date={date} className={cellStyles} />}
-        </CalendarGridBody>
-      </CalendarGrid>
+    <AriaCalendar
+      {...props}
+      className={composeTailwindRenderProps(
+        props.className,
+        months > 1 ? 'flex gap-6' : '',
+      )}
+    >
+      {Array.from({ length: months }, (_, i) => (
+        <div key={i}>
+          <CalendarHeader
+            offset={i}
+            hasPrevious={i === 0}
+            hasNext={i === months - 1}
+          />
+          <CalendarGrid offset={{ months: i }}>
+            <CalendarGridHeader />
+            <CalendarGridBody>
+              {(date) => <CalendarCell date={date} className={cellStyles} />}
+            </CalendarGridBody>
+          </CalendarGrid>
+        </div>
+      ))}
       {errorMessage && (
         <Text slot="errorMessage" className="text-sm text-red-600">
           {errorMessage}
@@ -79,31 +93,44 @@ export function Calendar<T extends DateValue>({
   );
 }
 
-export function CalendarHeader() {
+function CalendarHeader({
+  offset,
+  hasPrevious,
+  hasNext,
+}: {
+  offset: number;
+  hasPrevious: boolean;
+  hasNext: boolean;
+}) {
   const { direction } = useLocale();
 
   return (
     <header className="flex w-full items-center gap-1 px-1 pb-4">
-      <Button slot="previous">
-        {direction === 'rtl' ? (
-          <ChevronrightIcon aria-hidden />
-        ) : (
-          <ChevronleftIcon aria-hidden />
-        )}
-      </Button>
-      <Heading
+      {hasPrevious && (
+        <Button slot="previous">
+          {direction === 'rtl' ? (
+            <ChevronrightIcon aria-hidden />
+          ) : (
+            <ChevronleftIcon aria-hidden />
+          )}
+        </Button>
+      )}
+      <CalendarHeading
+        offset={{ months: offset }}
         className={`
           mx-2 flex-1 text-center text-xl font-semibold text-zinc-900
           dark:text-zinc-200
         `}
       />
-      <Button slot="next">
-        {direction === 'rtl' ? (
-          <ChevronleftIcon aria-hidden />
-        ) : (
-          <ChevronrightIcon aria-hidden />
-        )}
-      </Button>
+      {hasNext && (
+        <Button slot="next">
+          {direction === 'rtl' ? (
+            <ChevronleftIcon aria-hidden />
+          ) : (
+            <ChevronrightIcon aria-hidden />
+          )}
+        </Button>
+      )}
     </header>
   );
 }

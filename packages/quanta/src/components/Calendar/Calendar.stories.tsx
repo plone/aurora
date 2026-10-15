@@ -47,3 +47,10 @@ export const WithError: Story = {
     errorMessage: 'Pick a weekday.',
   },
 };
+
+export const TwoMonths: Story = {
+  args: {
+    defaultValue: parseDate('2026-01-15'),
+    visibleDuration: { months: 2 },
+  },
+};

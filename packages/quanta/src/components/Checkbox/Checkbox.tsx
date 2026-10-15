@@ -1,43 +1,15 @@
-import React, { type ReactNode } from 'react';
+import React from 'react';
 import { CheckboxIcon, DashIcon } from '@plone/icons';
 import {
-  Checkbox as AriaCheckbox,
-  CheckboxGroup as AriaCheckboxGroup,
-  type CheckboxGroupProps as AriaCheckboxGroupProps,
-  type CheckboxProps,
+  CheckboxButton,
+  CheckboxField,
+  type CheckboxFieldProps,
   type ValidationResult,
   composeRenderProps,
 } from 'react-aria-components';
 import { tv } from 'tailwind-variants';
-import { Description, FieldError, Label } from '../Field/Field';
-import { composeTailwindRenderProps, focusRing } from '../../utils';
-
-export interface CheckboxGroupProps extends Omit<
-  AriaCheckboxGroupProps,
-  'children'
-> {
-  label?: string;
-  children?: ReactNode;
-  description?: string;
-  errorMessage?: string | ((validation: ValidationResult) => string);
-}
-
-export function CheckboxGroup(props: CheckboxGroupProps) {
-  return (
-    <AriaCheckboxGroup
-      {...props}
-      className={composeTailwindRenderProps(
-        props.className,
-        'flex flex-col gap-2',
-      )}
-    >
-      <Label>{props.label}</Label>
-      {props.children}
-      {props.description && <Description>{props.description}</Description>}
-      <FieldError>{props.errorMessage}</FieldError>
-    </AriaCheckboxGroup>
-  );
-}
+import { Description, FieldError } from '../Field/Field';
+import { focusRing } from '../../utils';
 
 const checkboxStyles = tv({
   base: 'group flex items-center gap-2 text-sm transition',
@@ -86,31 +58,47 @@ const boxStyles = tv({
 const iconStyles =
   'w-4 h-4 text-white group-disabled:text-quanta-iron forced-colors:text-[HighlightText]';
 
+export interface CheckboxProps extends CheckboxFieldProps {
+  children?: React.ReactNode;
+  description?: string;
+  errorMessage?: string | ((validation: ValidationResult) => string);
+}
+
 export function Checkbox(props: CheckboxProps) {
   return (
-    <AriaCheckbox
-      {...props}
-      className={composeRenderProps(props.className, (className, renderProps) =>
-        checkboxStyles({ ...renderProps, className }),
+    <CheckboxField {...props} className="group flex flex-col gap-1">
+      <CheckboxButton
+        className={composeRenderProps(
+          props.className,
+          (className, renderProps) =>
+            checkboxStyles({ ...renderProps, className }),
+        )}
+      >
+        {composeRenderProps(
+          props.children,
+          (children, { isSelected, isIndeterminate, ...renderProps }) => (
+            <>
+              <div
+                className={boxStyles({
+                  isSelected: isSelected || isIndeterminate,
+                  ...renderProps,
+                })}
+              >
+                {isIndeterminate ? (
+                  <DashIcon aria-hidden className={iconStyles} />
+                ) : isSelected ? (
+                  <CheckboxIcon aria-hidden className={iconStyles} />
+                ) : null}
+              </div>
+              {children}
+            </>
+          ),
+        )}
+      </CheckboxButton>
+      {props.description && (
+        <Description className="ms-7">{props.description}</Description>
       )}
-    >
-      {({ isSelected, isIndeterminate, ...renderProps }) => (
-        <>
-          <div
-            className={boxStyles({
-              isSelected: isSelected || isIndeterminate,
-              ...renderProps,
-            })}
-          >
-            {isIndeterminate ? (
-              <DashIcon aria-hidden className={iconStyles} />
-            ) : isSelected ? (
-              <CheckboxIcon aria-hidden className={iconStyles} />
-            ) : null}
-          </div>
-          {props.children}
-        </>
-      )}
-    </AriaCheckbox>
+      <FieldError className="ms-7">{props.errorMessage}</FieldError>
+    </CheckboxField>
   );
 }

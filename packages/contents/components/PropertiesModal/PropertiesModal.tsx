@@ -12,6 +12,10 @@ import {
 } from '@plone/quanta';
 import { ArrowrightIcon, CloseIcon, PropertiesIcon } from '@plone/icons';
 import { type ToastItem } from '@plone/layout/config/toast';
+import {
+  dateValueToIsoDateTime,
+  isoDateTimeToDateValue,
+} from '@plone/cmsui/helpers/dates';
 import { useContentsContext } from '../../providers/contents';
 import {
   buildPropertiesPatch,
@@ -174,18 +178,18 @@ export default function PropertiesModal() {
         <div className="mx-auto grid max-w-sm gap-4">
           <DateTimePicker
             label={t('contents.modal_properties.effective')}
-            value={values.effective ?? null}
+            value={isoDateTimeToDateValue(values.effective)}
             granularity="minute"
             description={mixedPlaceholder('effective')}
-            onChange={(v) => setField('effective', v)}
+            onChange={(v) => setField('effective', dateValueToIsoDateTime(v))}
             className={dateFieldClasses}
           />
           <DateTimePicker
             label={t('contents.modal_properties.expires')}
-            value={values.expires ?? null}
+            value={isoDateTimeToDateValue(values.expires)}
             granularity="minute"
             description={mixedPlaceholder('expires')}
-            onChange={(v) => setField('expires', v)}
+            onChange={(v) => setField('expires', dateValueToIsoDateTime(v))}
             className={dateFieldClasses}
           />
           <Field label={t('contents.modal_properties.rights')}>

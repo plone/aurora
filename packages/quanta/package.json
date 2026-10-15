@@ -78,7 +78,6 @@
   "dependencies": {
     "@internationalized/date": "catalog:",
     "@plone/icons": "workspace:*",
-    "@react-aria/utils": "catalog:",
     "clsx": "^2.1.1",
     "react-aria": "catalog:",
     "react-aria-components": "catalog:",
