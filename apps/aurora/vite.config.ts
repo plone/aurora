@@ -74,7 +74,6 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
         '@plone/icons > clsx',
         '@plone/icons > tailwind-variants',
         '@plone/quanta > @internationalized/date',
-        '@plone/quanta > @react-aria/utils',
         '@plone/quanta > clsx',
         '@plone/quanta > react-aria',
         '@plone/quanta > react-aria-components',

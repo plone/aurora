@@ -56,13 +56,14 @@
     }
   },
   "dependencies": {
+    "@internationalized/date": "catalog:",
     "@platejs/floating": "^53.0.0",
     "@platejs/link": "^53.3.5",
     "@plone/blocks": "workspace:*",
     "@plone/client": "workspace:*",
     "@plone/components": "workspace:*",
-    "@plone/icons": "workspace:*",
     "@plone/helpers": "workspace:*",
+    "@plone/icons": "workspace:*",
     "@plone/layout": "workspace:*",
     "@plone/plate": "workspace:*",
     "@plone/quanta": "workspace:*",

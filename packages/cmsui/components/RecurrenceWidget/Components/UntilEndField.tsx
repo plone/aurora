@@ -1,5 +1,6 @@
 import { DatePicker } from '@plone/quanta';
 import { useFieldValue } from '@plone/helpers';
+import { dateValueToIsoDate, isoDateToDateValue } from '../../../helpers/dates';
 
 const pad = (value: number) => String(value).padStart(2, '0');
 
@@ -23,11 +24,11 @@ const UntilEndField = ({ onChange }: UntilEndFieldProps) => {
   return (
     <DatePicker
       onChange={(value) => {
-        if (value && new Date(value).getFullYear().toString().length === 4) {
-          onChange(value);
+        if (value && value.year.toString().length === 4) {
+          onChange(dateValueToIsoDate(value)!);
         }
       }}
-      defaultValue={defaultDate}
+      defaultValue={isoDateToDateValue(defaultDate)}
       className="**:dark:text-foreground"
       resettable={false}
     />

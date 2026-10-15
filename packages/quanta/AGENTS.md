@@ -20,6 +20,18 @@ This file applies only to `packages/quanta` and its subdirectories.
 - Do not reinvent component behavior that RAC already provides.
 - Keep forwarding supported props through to the underlying RAC component, so upstream RAC documentation and expectations continue to apply.
 
+## React Aria's Tailwind Starter
+
+- The reference is React Aria's Tailwind starter at the tag matching the RAC version: `react-aria-components@1.22.1`, [`starters/tailwind/src`](https://github.com/adobe/react-spectrum/tree/react-aria-components%401.22.1/starters/tailwind/src). Update the tag when RAC is updated.
+- A component with a counterpart in the starter has the **same exports and props**. Read the starter's file before adding or changing a component, and don't invent props it doesn't have.
+- Keep **Quanta's look**: its styles, markup and tokens. Don't copy the starter's classes or DOM.
+- Not a full mirror: add starter components only when something needs them.
+- Components without a counterpart are extensions. They live next to the others, and are documented in the Plone docs.
+- Plone-specific components (`Breadcrumbs`, `Table`, `Accordion`, `Link`'s `asButton`, `Button`'s variants) keep their API. Change them only when the RAC API forces it.
+- Extras (a Quanta-only export or prop on a component that has a starter counterpart) are kept and documented when the monorepo uses them, and removed when it doesn't.
+- Date controls take and return RAC date values (`DateValue`). Converting Plone's ISO strings is the widgets' job, in `@plone/cmsui`. Quanta doesn't depend on `@plone/helpers` or any other Plone package except `@plone/icons`.
+- The per-component inventory, with the status and the changes each component still needs, is `docs/reference/quanta-components.md`. Update it when a component changes.
+
 ## Layout and Naming
 
 - The package is Tailwind-only.
@@ -38,6 +50,18 @@ This file applies only to `packages/quanta` and its subdirectories.
 
 - Every public component should have a Storybook story, colocated with the component.
 - Keep story titles under `Quanta/…`.
+
+## Visual Regression Tests
+
+- `acceptance/visual/quanta.test.ts` screenshots every story from the static Storybook build, plus the hover, focus and open states that a story doesn't show by itself (overlays, menus, pickers).
+- They are the safety net for API changes: a component's look must not change unless that's the goal of the change. A new story gets a screenshot automatically, so keep stories deterministic (fixed dates, no random data).
+- Baselines are generated in CI only (the "Update VRT Screenshots" workflow). The tests don't use the backend or the app, so they run in parallel, in their own `quanta` Playwright project.
+- Run them locally:
+
+  ```sh
+  pnpm --filter @plone/quanta build-storybook
+  pnpm exec playwright test --config=playwright-visual.config.ts --project quanta
+  ```
 
 ## Editing Rules
 
