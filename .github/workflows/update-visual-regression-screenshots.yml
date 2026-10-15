@@ -60,6 +60,11 @@ jobs:
         with:
           node-version: 24.x
 
+      # The Quanta component screenshots run against the static Storybook,
+      # which the visual config serves itself.
+      - name: Build the Quanta Storybook
+        run: pnpm --filter @plone/quanta build-storybook --quiet
+
       - uses: JarvusInnovations/background-action@v2
         name: Start Servers - Aurora and Plone
         with:

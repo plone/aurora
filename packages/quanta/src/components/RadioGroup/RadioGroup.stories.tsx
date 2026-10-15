@@ -1,5 +1,5 @@
 import React from 'react';
-import { RadioGroup, Radio } from './RadioGroup';
+import { CustomRadio, RadioGroup, Radio } from './RadioGroup';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
@@ -26,4 +26,47 @@ export const Default: Story = {
   args: {
     label: 'Favorite sport',
   },
+};
+
+export const Selected: Story = {
+  ...Default,
+  args: { label: 'Favorite sport', defaultValue: 'baseball' },
+};
+
+export const Horizontal: Story = {
+  ...Default,
+  args: { label: 'Favorite sport', orientation: 'horizontal' },
+};
+
+export const WithDescription: Story = {
+  ...Default,
+  args: {
+    label: 'Favorite sport',
+    description: 'Pick the one you watch the most.',
+  },
+};
+
+export const Disabled: Story = {
+  ...Default,
+  args: { label: 'Favorite sport', defaultValue: 'soccer', isDisabled: true },
+};
+
+export const Invalid: Story = {
+  ...Default,
+  args: {
+    label: 'Favorite sport',
+    isInvalid: true,
+    errorMessage: 'Pick a sport.',
+  },
+};
+
+export const Custom: Story = {
+  render: (args: any) => (
+    <RadioGroup {...args}>
+      <CustomRadio value="soccer">Soccer</CustomRadio>
+      <CustomRadio value="baseball">Baseball</CustomRadio>
+      <CustomRadio value="basketball">Basketball</CustomRadio>
+    </RadioGroup>
+  ),
+  args: { label: 'Favorite sport', defaultValue: 'soccer' },
 };
