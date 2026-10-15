@@ -12,8 +12,8 @@ const run = async (
   search: ReturnType<typeof vi.fn>,
   getBreadcrumbs = vi.fn().mockResolvedValue({ data: breadcrumbs }),
 ) => {
-  // The root middleware doesn't load the content for this route
-  // (`skipContent`), so only the client is in the context.
+  // The root middleware doesn't load the content for this resource route,
+  // so only the client is in the context.
   const context = new RouterContextProvider();
   context.set(ploneClientContext, { search, getBreadcrumbs } as any);
   const request = new Request('http://localhost/@objectBrowserWidget/news');

@@ -32,8 +32,8 @@ export async function loader({
 
   delete query['path.depth'];
   delete query['path.query'];
-  // The root middleware doesn't load the browsed folder for this route
-  // (`skipContent`), so a folder that doesn't exist gets here. A request the
+  // The root middleware doesn't load the browsed folder for this resource
+  // route, so a folder that doesn't exist gets here. A request the
   // API rejects (that folder, or an invalid query) gives an empty part,
   // instead of an error replacing the form the browser is used in.
   const [results, breadcrumbs] = await Promise.all([
