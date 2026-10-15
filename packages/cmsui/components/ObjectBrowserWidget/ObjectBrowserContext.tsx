@@ -152,7 +152,7 @@ const useObjectBrowserInternal = (config: UseObjectBrowserConfig = {}) => {
 
   function reset() {
     setSearchableText('');
-    fetcher.load('/reset-fetcher');
+    fetcher.load('/@reset-fetcher');
   }
 
   async function loadData(currentPath?: string, SearchableText?: string) {

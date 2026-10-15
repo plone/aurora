@@ -1,0 +1,1 @@
+The CMS UI layout links the `/@layers.css` stylesheet, and the object browser resets its fetcher through `/@reset-fetcher`, following the resource route naming convention. @sneridagh
