@@ -94,30 +94,18 @@ Quanta keeps the RAC `*Field` parts as the reference for hand-written forms.
 
 ## Collections
 
-| Component | Starter | Status | Changes needed |
+| Component | Starter | Status | Notes |
 | --- | --- | --- | --- |
-| `ListBox`, `ListBoxItem`, `DropdownItem`, `DropdownSection`, `itemStyles`, `dropdownItemStyles` | `ListBox.tsx` | `API changes` | Export them from the package. `DropdownSectionProps` extends `ListBoxSectionProps`. |
-| `Select`, `SelectItem` | `Select.tsx` | `API changes` | `SelectSection` takes `title` and `items`, like the starter. `SelectValue` shows the selected text, so multiple selection works. |
-| `SelectItemObject`, optional `children`, `labelClassnames` | none | extra | Keep: `cmsui` widgets and `contents` modals use them. |
-| `SelectListBox`, `SelectSectionHeader` | none | extra | Not used outside Quanta. Replaced by `SelectSection`'s `title`: remove. |
-| `ComboBox`, `ComboBoxItem` | `ComboBox.tsx` | `API changes` | Add `ComboBoxSection`. Accept `selectionMode="multiple"`, which renders `ComboBoxValue`. |
-| `ComboBoxListBox` | none | extra | Not used outside Quanta. Keep its "No results found" empty state inside `ComboBox`, and remove the export. |
-| `GridList`, `GridListItem` | `GridList.tsx` | `API changes` | Add `GridListHeader`. Use `composeRenderProps` for item children. Show the checkbox for any selection mode. |
+| `ListBox`, `ListBoxItem`, `DropdownItem`, `DropdownSection`, `itemStyles`, `dropdownItemStyles` | `ListBox.tsx` | `aligned` | |
+| `Select`, `SelectItem`, `SelectSection` | `Select.tsx` | `aligned` | `SelectSection` takes `title` and `items`. |
+| `SelectItemObject`, optional `children`, `labelClassnames` | none | extra | Without `children`, `Select` renders `SelectItemObject` items by their `label`. Used by the `cmsui` widgets and the `contents` modals. |
+| `ComboBox`, `ComboBoxItem`, `ComboBoxSection` | `ComboBox.tsx` | `aligned` | Takes `selectionMode="multiple"`. Shows "No results found" when nothing matches. |
+| `GridList`, `GridListItem`, `GridListHeader` | `GridList.tsx` | `aligned` | `GridListItem` also merges a `className`. |
 | `Table`, `TableHeader`, `Column`, `TableBody`, `Row`, `Cell` | `Table.tsx` | `Plone-specific` | Keeps the drag column header and width props. `TableFooter` can be added when needed. |
-| `TagGroup`, `Tag` | `TagGroup.tsx` | `aligned` | Use `composeRenderProps` for `Tag` children. |
-| `Menu`, `MenuItem`, `MenuSeparator`, `MenuTrigger`, `SubmenuTrigger` | `Menu.tsx` | `aligned` | None. |
-| `MenuSection` | `Menu.tsx` | `API changes` | Takes `title` and `items`, like the starter. Export `MenuSectionProps`. |
-| `MenuSectionHeader` | none | extra | Not used outside Quanta. Replaced by `MenuSection`'s `title`: remove. |
+| `TagGroup`, `Tag` | `TagGroup.tsx` | `aligned` | |
+| `Menu`, `MenuItem`, `MenuSection`, `MenuSeparator`, `MenuTrigger`, `SubmenuTrigger` | `Menu.tsx` | `aligned` | `MenuSection` takes `title` and `items`. `Menu`, `MenuItem`, `MenuSection` and `MenuSeparator` also merge a `className`. |
 | `MultiSelect` | none | `extension` | The starter's `TokenField` is a different component (free text with tokens). |
 | `TokenSelect` | none | internal | Not exported. Demo-grade (hard-coded label). Remove, or finish. |
-
-Across the family, generics drop `extends object` (`<T>` instead of `<T extends object>`), like the starter.
-
-Consumers to update:
-
--   `Select`: `cmsui` (SelectWidget, QuerystringWidget, recurrence fields), `contents` (WorkflowModal).
--   `ComboBox`: `cmsui` (QuerystringWidget, ArrayWidget).
--   `GridList`: `cmsui` (ObjectBrowserWidgetBody).
 
 ## Overlays
 

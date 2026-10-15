@@ -2,7 +2,6 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   Autocomplete,
-  Collection,
   Group,
   Select as RACSelect,
   SelectValue,
@@ -11,15 +10,14 @@ import {
 
 import { Button } from '../Button/Button';
 import { Label } from '../Field/Field';
+import { ListBox } from '../ListBox/ListBox';
 import { Popover } from '../Popover/Popover';
 import { SearchField } from '../SearchField/SearchField';
 import { Tag, TagGroup } from '../TagGroup/TagGroup';
 import {
   Select,
   SelectItem,
-  SelectListBox,
   SelectSection,
-  SelectSectionHeader,
   type SelectItemObject,
   type SelectProps,
 } from './Select';
@@ -154,11 +152,14 @@ function AutocompletePopoverStory() {
             placeholder="Search categories"
             autoFocus
           />
-          <SelectListBox items={categories}>
+          <ListBox
+            items={categories}
+            className="max-h-72 min-w-(--trigger-width) p-1"
+          >
             {(item: (typeof categories)[number]) => (
               <SelectItem id={item.id}>{item.name}</SelectItem>
             )}
-          </SelectListBox>
+          </ListBox>
         </Autocomplete>
       </Popover>
     </RACSelect>
@@ -210,11 +211,14 @@ function TagGroupValueStory() {
             placeholder="Search states"
             autoFocus
           />
-          <SelectListBox items={states}>
+          <ListBox
+            items={states}
+            className="max-h-72 min-w-(--trigger-width) p-1"
+          >
             {(item: (typeof states)[number]) => (
               <SelectItem id={item.id}>{item.name}</SelectItem>
             )}
-          </SelectListBox>
+          </ListBox>
         </Autocomplete>
       </Popover>
     </RACSelect>
@@ -262,13 +266,14 @@ export const Sections: Story = {
       items={groupedOptions}
     >
       {(section: (typeof groupedOptions)[number]) => (
-        <SelectSection id={section.name}>
-          <SelectSectionHeader>{section.name}</SelectSectionHeader>
-          <Collection items={section.children}>
-            {(item: (typeof groupedOptions)[number]['children'][number]) => (
-              <SelectItem id={item.id}>{item.name}</SelectItem>
-            )}
-          </Collection>
+        <SelectSection
+          id={section.name}
+          title={section.name}
+          items={section.children}
+        >
+          {(item: (typeof groupedOptions)[number]['children'][number]) => (
+            <SelectItem id={item.id}>{item.name}</SelectItem>
+          )}
         </SelectSection>
       )}
     </Select>
