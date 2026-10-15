@@ -473,3 +473,34 @@ Use React Aria's field components, such as `TextField`, with Quanta's `Label`, `
 
 `TextField`'s `minValue` prop had no effect.
 Remove it.
+
+#### Collection sections take a title
+
+```{versionchanged} 1.0.0-alpha.20
+`SelectSection` and `MenuSection` in `@plone/quanta` take `title` and `items`.
+```
+
+```{versionremoved} 1.0.0-alpha.20
+`SelectListBox`, `SelectSectionHeader`, `ComboBoxListBox`, and `MenuSectionHeader` in `@plone/quanta`.
+```
+
+```{versionadded} 1.0.0-alpha.20
+`ListBox`, `ComboBoxSection`, and `GridListHeader` in `@plone/quanta`, and multiple selection in `ComboBox`.
+```
+
+Like in React Aria's starter, the sections of `Select`, `ComboBox`, and `Menu` render their header from a `title` prop, and their items from `items` or their children.
+
+```diff
+- <SelectSection id="fruit">
+-   <SelectSectionHeader>Fruit</SelectSectionHeader>
+-   <SelectItem id="apple">Apple</SelectItem>
+- </SelectSection>
++ <SelectSection id="fruit" title="Fruit">
++   <SelectItem id="apple">Apple</SelectItem>
++ </SelectSection>
+```
+
+`MenuSection` works the same way, with `title` instead of `MenuSectionHeader`.
+If you composed your own select with `SelectListBox`, use `ListBox`, which `@plone/quanta` now exports.
+
+The collection components no longer require their item type to be an object, like React Aria's.
