@@ -28,6 +28,8 @@ This file applies only to `packages/quanta` and its subdirectories.
 - Not a full mirror: add starter components only when something needs them.
 - Components without a counterpart are extensions. They live next to the others, and are documented in the Plone docs.
 - Plone-specific components (`Breadcrumbs`, `Table`, `Accordion`, `Link`'s `asButton`, `Button`'s variants) keep their API. Change them only when the RAC API forces it.
+- Extras (a Quanta-only export or prop on a component that has a starter counterpart) are kept and documented when the monorepo uses them, and removed when it doesn't.
+- Date controls take and return RAC date values (`DateValue`). Converting Plone's ISO strings is the widgets' job, in `@plone/cmsui`. Quanta doesn't depend on `@plone/helpers` or any other Plone package except `@plone/icons`.
 - The per-component inventory, with the status and the changes each component still needs, is `docs/reference/quanta-components.md`. Update it when a component changes.
 
 ## Layout and Naming

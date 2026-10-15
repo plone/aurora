@@ -91,15 +91,15 @@ Quanta keeps the RAC `*Field` parts as the reference for hand-written forms.
 | `DateInput` | `DateField.tsx` | `aligned` | None. The starter keeps it in `DateField.tsx`. |
 | `TimeField` | `TimeField.tsx` | `aligned` | Compose `className` on the root, like the starter. |
 | `Calendar` | `Calendar.tsx` | `API changes` | Accept `visibleDuration`. `CalendarHeader` isn't used outside Quanta: make it private, or document it. |
-| `DatePicker` | `DatePicker.tsx` | `API changes` | Generic `DateValue` API instead of ISO strings, and accept `granularity`. Move the string API and `resettable` to `DateTimePicker`, and update the date widgets in `@plone/cmsui`. |
-| `DateTimePicker` | none | `extension` | Plone's date and time picker: ISO strings in UTC, reset button, current time on first pick. |
+| `DatePicker` | `DatePicker.tsx` | `API changes` | Generic `DateValue` API instead of ISO strings, and accept `granularity`. The widgets convert the ISO strings, see {ref}`quanta-dates-label`. |
+| `DateTimePicker` | none | `extension` | Takes `DateValue` instead of ISO strings. Keeps the reset button and the current time on first pick. |
 
 Consumers to update:
 
 -   `Checkbox`: `contents` (WorkflowModal, PropertiesModal), `cmsui` (SharingForm, BooleanWidget, ByDayField).
 -   `Radio`: `cmsui` (RadioOptionsField).
 -   `TextField`: `cmsui` widgets, recurrence fields and the login route.
--   `DatePicker`: `cmsui` (DateWidget, recurrence UntilEndField).
+-   `DatePicker` and `DateTimePicker`: `cmsui` (DateWidget, DateTimeWidget, recurrence UntilEndField), `contents` (PropertiesModal).
 
 ## Collections
 
@@ -146,7 +146,7 @@ Consumers to update:
 | `Tabs`, `TabList`, `Tab`, `TabPanel` | `Tabs.tsx` | `API changes` | Composition API: remove the `tabs` array prop, add `TabPanels`. Update `cmsui` ContentForm. |
 | `Accordion`, `AccordionItem`, `AccordionItemTrigger`, `AccordionPanel` | `Disclosure.tsx`, `DisclosureGroup.tsx` | `Plone-specific` | Keeps its names. |
 | `Breadcrumbs`, `Breadcrumb` | `Breadcrumbs.tsx` | `Plone-specific` | Takes Plone items (`@id`, `title`) and a `root` item. |
-| `Button` | `Button.tsx` | `aligned` | Keeps Quanta's `variant`, `accent` and `size`. See {ref}`quanta-button-variants-label`. |
+| `Button` | `Button.tsx` | `Plone-specific` | Keeps all of Quanta's variants. Gets ready for an optional pending spinner. See {ref}`quanta-button-label`. |
 | `Link` | `Link.tsx` | `Plone-specific` | Keeps the `asButton` prop. |
 | `Toolbar` | `Toolbar.tsx` | `API changes` | Provide `ToggleButtonGroupContext` with the toolbar's orientation, like the starter. |
 | `ToggleButton`, `ToggleButtonGroup` | `ToggleButton.tsx`, `ToggleButtonGroup.tsx` | `aligned` | Not on `main` yet (`feat/quanta-controls`). One file per component, like the starter. |
@@ -161,7 +161,7 @@ These components have no counterpart in the starter.
 | Component | What it is | Used by |
 | --- | --- | --- |
 | `SizePicker`, `AlignPicker`, `WidthPicker` | Block settings pickers, built on `RadioGroup` and `CustomRadio`. | `cmsui` (PickerWidgets) |
-| `DateTimePicker` | Date and time picker with ISO strings in UTC. | `contents` (PropertiesModal), `cmsui` (DateTimeWidget) |
+| `DateTimePicker` | Date and time picker with a reset button, which fills in the current time on first pick. | `contents` (PropertiesModal), `cmsui` (DateTimeWidget) |
 | `TextAreaField` | Multiline text field. | `cmsui` (TextareaWidget) |
 | `MultiSelect` | Multiple selection from a list, with tags. | none |
 | `Container` | Layout container with width variants. | `contents`, `cmsui` and `publicui` routes |
@@ -180,16 +180,34 @@ Quanta adds these when something needs them:
 -   Controls: `Meter`, `Slider`, `FieldButton`
 -   Color: `ColorArea`, `ColorField`, `ColorPicker`, `ColorSlider`, `ColorSwatch`, `ColorSwatchPicker`, `ColorThumb`, `ColorWheel`
 
-## Open decisions
+## Decisions
 
-(quanta-button-variants-label)=
+(quanta-button-label)=
 
-### Button variants
+### Button
 
-The starter's `Button` has `variant` values `primary` (default), `secondary`, `destructive` and `quiet`, and shows a spinner when `isPending`.
+The starter's `Button` has `variant` values `primary` (default), `secondary`, `destructive` and `quiet`.
 Quanta's has `neutral` (default), `primary`, `destructive` and `icon`, plus `accent` and `size`.
-Quanta keeps its variants, because they are its look.
-Supporting `isPending` is still open.
+Quanta keeps all of its variants, because they are its look.
+
+React Aria's `isPending` prop marks a button whose action is in progress, such as a {guilabel}`Save` button while the request runs.
+The button ignores presses, stays focusable, and tells screen readers that the action is in progress.
+Quanta's `Button` already forwards `isPending` to React Aria, but shows nothing.
+The starter shows a spinner over the label.
+Quanta's `Button` gets ready to show one, as an optional feature.
+
+(quanta-dates-label)=
+
+### Dates
+
+Quanta's date controls take and return React Aria's date values (`DateValue`), like the starter's, and as React Aria's docs describe.
+`@plone/quanta` doesn't know about Plone's data formats.
+
+Plone's content API stores dates as ISO strings: `YYYY-MM-DD` for dates, and UTC date-times.
+The widgets in `@plone/cmsui` convert them to date values and back, and decide the time zone policy: store UTC, show the browser's local time.
+The conversion helpers live in `@plone/cmsui`, next to the date widgets, and `@plone/contents` uses them too.
+
+## Open decisions
 
 (quanta-side-panel-label)=
 
