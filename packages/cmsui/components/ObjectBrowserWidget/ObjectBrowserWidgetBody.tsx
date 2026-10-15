@@ -155,7 +155,7 @@ export function ObjectBrowserWidgetBody() {
             viewMode
               ? `
                 group data-[layout="grid"] grid h-fit grid-cols-2 gap-4 border-0 py-4
-                [&_label[slot="selection"]]:hidden
+                [&_[slot="selection"]]:hidden
                 [&>div]:rounded-lg [&>div]:p-0 [&>div]:transition-all [&>div]:duration-200
               `
               : `
