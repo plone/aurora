@@ -43,12 +43,12 @@ This file applies only to `packages/quanta` and its subdirectories.
 
 - `acceptance/visual/quanta.test.ts` screenshots every story from the static Storybook build, plus the hover, focus and open states that a story doesn't show by itself (overlays, menus, pickers).
 - They are the safety net for API changes: a component's look must not change unless that's the goal of the change. A new story gets a screenshot automatically, so keep stories deterministic (fixed dates, no random data).
-- Baselines are generated in CI only (the "Update VRT Screenshots" workflow). The tests don't use the backend or the app.
+- Baselines are generated in CI only (the "Update VRT Screenshots" workflow). The tests don't use the backend or the app, so they run in parallel, in their own `quanta` Playwright project.
 - Run them locally:
 
   ```sh
   pnpm --filter @plone/quanta build-storybook
-  pnpm exec playwright test --config=playwright-visual.config.ts "^$PWD/packages/quanta/acceptance/visual/"
+  pnpm exec playwright test --config=playwright-visual.config.ts --project quanta
   ```
 
 ## Editing Rules

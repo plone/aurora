@@ -14,8 +14,9 @@ export default defineConfig({
   ],
   testIgnore: ['**/.codex/**', '**/node_modules/**'],
   outputDir: 'playwright/results-visual',
-  // Tests share one backend that is reset around every test.
-  workers: 1,
+  // The total worker limit. The app suites limit themselves to one worker, see
+  // `projects`.
+  workers: isCI ? '100%' : '50%',
   forbidOnly: isCI,
   retries: isCI ? 1 : 0,
   timeout: 30_000,
@@ -48,7 +49,21 @@ export default defineConfig({
   },
   projects: [
     {
+      // The app and the backend. Tests share one backend that is reset around
+      // every test, so they run one at a time.
       name: 'chromium',
+      testIgnore: ['packages/quanta/**'],
+      workers: 1,
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      // Quanta's components, from the static Storybook. No backend, so the
+      // tests run in parallel.
+      name: 'quanta',
+      testMatch: [
+        'packages/quanta/acceptance/visual/**/*.{spec,test}.{ts,tsx}',
+      ],
+      fullyParallel: true,
       use: { ...devices['Desktop Chrome'] },
     },
   ],
