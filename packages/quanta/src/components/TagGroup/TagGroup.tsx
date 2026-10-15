@@ -72,7 +72,7 @@ export interface TagProps extends AriaTagProps {
   color?: Color;
 }
 
-export function TagGroup<T extends object>({
+export function TagGroup<T>({
   label,
   description,
   errorMessage,
@@ -125,7 +125,7 @@ export function Tag({ children, color, ...props }: TagProps) {
         tagStyles({ ...renderProps, className, color: color || groupColor }),
       )}
     >
-      {({ allowsRemoving }) => (
+      {composeRenderProps(children, (children, { allowsRemoving }) => (
         <>
           {children}
           {allowsRemoving && (
@@ -134,7 +134,7 @@ export function Tag({ children, color, ...props }: TagProps) {
             </Button>
           )}
         </>
-      )}
+      ))}
     </AriaTag>
   );
 }

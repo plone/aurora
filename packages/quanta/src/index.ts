@@ -10,6 +10,7 @@ export * from './components/Dialog/Dialog';
 export * from './components/DropZone/DropZone';
 export * from './components/Field/Field';
 export * from './components/Link/Link';
+export * from './components/ListBox/ListBox';
 export * from './components/Menu/Menu';
 export * from './components/Modal/Modal';
 export * from './components/Popover/Popover';
