@@ -1,7 +1,7 @@
 import Checkbox from '@plone/icons/svg/checkbox.svg?react';
 import Close from '@plone/icons/svg/close.svg?react';
 import Settings from '@plone/icons/svg/settings.svg?react';
-import { Tabs, Link } from '@plone/quanta';
+import { Link, Tab, TabList, TabPanel, Tabs } from '@plone/quanta';
 import { FormProvider, useFormStore } from '@plone/helpers';
 import { Plug } from '@plone/layout/components/Pluggable';
 import type { Content } from '@plone/types';
@@ -109,29 +109,23 @@ export default function ContentForm({
           )}
         >
           <main className="mx-4 pt-8">
-            <Tabs
-              selectedKey={selectedTab}
-              onSelectionChange={setSelectedTab}
-              tabs={[
-                {
-                  id: 'blocks',
-                  title: t('cmsui.blocksEditor.blocksTab'),
-                  content: <BlocksEditor />,
-                },
-                {
-                  id: 'content',
-                  title: t('cmsui.blocksEditor.contentTab'),
-                  content: (
-                    <div className="flex flex-col">
-                      <h1 className="mb-4 text-2xl font-bold">{heading}</h1>
-                      <form>
-                        <SchemaFieldsets schema={schema} />
-                      </form>
-                    </div>
-                  ),
-                },
-              ]}
-            />
+            <Tabs selectedKey={selectedTab} onSelectionChange={setSelectedTab}>
+              <TabList>
+                <Tab id="blocks">{t('cmsui.blocksEditor.blocksTab')}</Tab>
+                <Tab id="content">{t('cmsui.blocksEditor.contentTab')}</Tab>
+              </TabList>
+              <TabPanel id="blocks" className="p-3">
+                <BlocksEditor />
+              </TabPanel>
+              <TabPanel id="content" className="p-3">
+                <div className="flex flex-col">
+                  <h1 className="mb-4 text-2xl font-bold">{heading}</h1>
+                  <form>
+                    <SchemaFieldsets schema={schema} />
+                  </form>
+                </div>
+              </TabPanel>
+            </Tabs>
             <Plug pluggable="toolbar-top" id="edit-save-button">
               <button
                 aria-label={t('cmsui.save')}

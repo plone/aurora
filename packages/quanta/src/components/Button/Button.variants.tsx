@@ -43,6 +43,14 @@ export const button = tv({
         pressed:bg-quanta-cobalt pressed:[&_svg]:text-white
       `,
     },
+    isPending: {
+      // The label stays, to keep the button's size, but is hidden behind the
+      // pending spinner.
+      true: `
+        relative text-transparent!
+        [&_svg]:invisible
+      `,
+    },
     accent: {
       true: '',
     },

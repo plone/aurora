@@ -1,12 +1,11 @@
 import React from 'react';
 import {
   Toolbar as RACToolbar,
+  ToggleButtonGroupContext,
   composeRenderProps,
-  type ToolbarProps as RACToolbarProps,
+  type ToolbarProps,
 } from 'react-aria-components';
 import { tv } from 'tailwind-variants';
-
-export type ToolbarProps = RACToolbarProps;
 
 const toolbarStyles = tv({
   base: `
@@ -35,14 +34,21 @@ const toolbarStyles = tv({
 
 export function Toolbar(props: ToolbarProps) {
   return (
-    <RACToolbar
-      {...props}
-      className={composeRenderProps(props.className, (className, renderProps) =>
-        toolbarStyles({
-          orientation: props.orientation ?? renderProps.orientation,
-          className,
-        }),
-      )}
-    />
+    // Toggle button groups in a toolbar follow its orientation.
+    <ToggleButtonGroupContext.Provider
+      value={{ orientation: props.orientation }}
+    >
+      <RACToolbar
+        {...props}
+        className={composeRenderProps(
+          props.className,
+          (className, renderProps) =>
+            toolbarStyles({
+              orientation: props.orientation ?? renderProps.orientation,
+              className,
+            }),
+        )}
+      />
+    </ToggleButtonGroupContext.Provider>
   );
 }
