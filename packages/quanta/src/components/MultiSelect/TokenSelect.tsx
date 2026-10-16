@@ -41,7 +41,10 @@ export function TokenSelect<T extends Option>(props: TokenSelectProps<T>) {
       <Label>States</Label>
       <div
         ref={triggerRef}
-        className="flex w-[250px] items-center gap-2 rounded-lg border border-black/10 bg-white p-2"
+        className={`
+          flex w-[250px] items-center gap-2 rounded-lg border border-quanta-space/10 bg-quanta-air
+          p-2
+        `}
       >
         <SelectValue<Option> className="flex-1">
           {({ selectedItems, state }) => (
@@ -49,7 +52,9 @@ export function TokenSelect<T extends Option>(props: TokenSelectProps<T>) {
               aria-label="Selected states"
               items={selectedItems.filter((item) => item != null)}
               renderEmptyState={() => (
-                <i className="pl-2 text-sm text-gray-600">No selected items</i>
+                <i className="pl-2 text-sm text-quanta-iron">
+                  No selected items
+                </i>
               )}
               onRemove={(keys) => {
                 // Remove keys from Select state.

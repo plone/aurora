@@ -14,7 +14,8 @@ export interface PopoverProps extends Omit<AriaPopoverProps, 'children'> {
 
 const styles = tv({
   base: `
-    rounded-xl border border-black/10 bg-white bg-clip-padding text-slate-700 shadow-2xl
+    rounded-xl border border-quanta-space/10 bg-quanta-air bg-clip-padding text-quanta-iron
+    shadow-2xl
     dark:border-white/[15%] dark:bg-zinc-900/70 dark:text-zinc-300 dark:backdrop-blur-2xl
     dark:backdrop-saturate-200
     forced-colors:bg-[Canvas]
@@ -62,7 +63,7 @@ export function Popover({
             height={12}
             viewBox="0 0 12 12"
             className={`
-              block fill-white stroke-black/10 stroke-1
+              block fill-quanta-air stroke-quanta-space/10 stroke-1
               group-placement-left:-rotate-90
               group-placement-right:rotate-90
               group-placement-bottom:rotate-180

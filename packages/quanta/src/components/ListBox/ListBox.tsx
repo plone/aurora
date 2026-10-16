@@ -42,12 +42,12 @@ export const itemStyles = tv({
   variants: {
     isSelected: {
       false: `
-        text-slate-700 -outline-offset-2
-        hover:bg-slate-200
+        text-quanta-iron -outline-offset-2
+        hover:bg-quanta-smoke
         dark:text-zinc-300 dark:hover:bg-zinc-700
       `,
       true: `
-        bg-blue-600 text-white -outline-offset-4 outline-white
+        bg-quanta-sapphire text-quanta-air -outline-offset-4 outline-quanta-air
         dark:outline-white
         forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]
         forced-colors:outline-[HighlightText]
@@ -57,7 +57,7 @@ export const itemStyles = tv({
     },
     isDisabled: {
       true: `
-        text-slate-300
+        text-quanta-silver
         dark:text-zinc-600
         forced-colors:text-[GrayText]
       `,
@@ -76,7 +76,7 @@ export function ListBoxItem(props: ListBoxItemProps) {
           {children}
           <div
             className={`
-              absolute right-4 bottom-0 left-4 hidden h-px bg-white/20
+              absolute right-4 bottom-0 left-4 hidden h-px bg-quanta-air/20
               forced-colors:bg-[HighlightText]
               [.group[data-selected]:has(+[data-selected])_&]:block
             `}
@@ -95,18 +95,18 @@ export const dropdownItemStyles = tv({
   variants: {
     isDisabled: {
       false: `
-        text-gray-900
+        text-quanta-space
         dark:text-zinc-100
       `,
       true: `
-        text-gray-300
+        text-quanta-silver
         dark:text-zinc-600
         forced-colors:text-[GrayText]
       `,
     },
     isFocused: {
       true: `
-        bg-blue-600 text-white
+        bg-quanta-sapphire text-quanta-air
         forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]
       `,
     },
@@ -116,7 +116,7 @@ export const dropdownItemStyles = tv({
       isFocused: false,
       isOpen: true,
       className: `
-        bg-gray-100
+        bg-quanta-snow
         dark:bg-zinc-700/60
       `,
     },
@@ -167,9 +167,9 @@ export function DropdownSection<T>(props: DropdownSectionProps<T>) {
     >
       <Header
         className={`
-          sticky -top-[5px] z-10 -mx-1 -mt-px truncate border-y border-y-gray-200 bg-gray-100/60
-          px-4 py-1 text-sm font-semibold text-gray-500 backdrop-blur-md
-          supports-[-moz-appearance:none]:bg-gray-100
+          sticky -top-[5px] z-10 -mx-1 -mt-px truncate border-y border-y-quanta-smoke
+          bg-quanta-snow/60 px-4 py-1 text-sm font-semibold text-quanta-pigeon backdrop-blur-md
+          supports-[-moz-appearance:none]:bg-quanta-snow
           dark:border-y-zinc-700 dark:bg-zinc-700/60 dark:text-zinc-300
           [&+*]:mt-1
         `}

@@ -204,8 +204,8 @@ export function MultiSelect({
         <div
           className={`
             relative flex min-h-10 w-full flex-wrap items-center gap-1 rounded-md border
-            border-gray-300 bg-white px-3 py-1.5 shadow-sm
-            focus-within:border-gray-500 focus-within:ring-2 focus-within:ring-gray-400
+            border-quanta-silver bg-quanta-air px-3 py-1.5 shadow-sm
+            focus-within:border-quanta-pigeon focus-within:ring-2 focus-within:ring-quanta-dolphin
           `}
         >
           <TagGroup
@@ -220,8 +220,8 @@ export function MultiSelect({
               {(item: Option) => (
                 <Tag
                   className={`
-                    inline-flex items-center gap-x-1.5 rounded-md bg-gray-200 px-2 py-0.5 text-sm
-                    text-gray-800
+                    inline-flex items-center gap-x-1.5 rounded-md bg-quanta-smoke px-2 py-0.5
+                    text-sm text-quanta-denim
                   `}
                   textValue={item.name}
                   id={item.id}
@@ -230,9 +230,9 @@ export function MultiSelect({
                   <Button
                     slot="remove"
                     className={`
-                      grid cursor-pointer place-content-center text-gray-500
-                      hover:bg-gray-600 hover:text-gray-300
-                      focus:bg-gray-600 focus:outline-none
+                      grid cursor-pointer place-content-center text-quanta-pigeon
+                      hover:bg-quanta-iron hover:text-quanta-silver
+                      focus:bg-quanta-iron focus:outline-none
                     `}
                     type="button"
                   >
@@ -264,15 +264,15 @@ export function MultiSelect({
               }}
               onKeyDownCapture={onKeyDownCapture}
               className={`
-                min-w-0 flex-1 bg-white px-2 py-1.5 text-sm text-gray-800 outline-0
-                disabled:text-gray-200
+                min-w-0 flex-1 bg-quanta-air px-2 py-1.5 text-sm text-quanta-denim outline-0
+                disabled:text-quanta-smoke
               `}
             />
 
             <Button
               className={`
-                absolute top-1/2 right-2 -translate-y-1/2 p-1 text-gray-400
-                hover:text-gray-600
+                absolute top-1/2 right-2 -translate-y-1/2 p-1 text-quanta-dolphin
+                hover:text-quanta-iron
                 focus:outline-none
               `}
               type="button"
@@ -289,7 +289,7 @@ export function MultiSelect({
             >
               <ListBox
                 selectionMode="multiple"
-                className="rounded-md border border-gray-200 bg-white p-1 shadow-lg"
+                className="rounded-md border border-quanta-smoke bg-quanta-air p-1 shadow-lg"
                 disallowEmptySelection={false}
                 renderEmptyState={
                   renderEmptyState
@@ -297,9 +297,9 @@ export function MultiSelect({
                     : () => (
                         <div
                           className={`
-                            block cursor-pointer rounded-md px-3 py-2 text-gray-700
-                            hover:bg-gray-100
-                            focus:bg-gray-100 focus:outline-none
+                            block cursor-pointer rounded-md px-3 py-2 text-quanta-iron
+                            hover:bg-quanta-snow
+                            focus:bg-quanta-snow focus:outline-none
                           `}
                           role="button"
                           onMouseDown={(e) => {
@@ -313,7 +313,7 @@ export function MultiSelect({
                           {fieldState.inputValue ? (
                             <>
                               {creatable ? 'Create:' : 'No results found for:'}{' '}
-                              <strong className="font-medium text-gray-900">
+                              <strong className="font-medium text-quanta-space">
                                 {fieldState.inputValue}
                               </strong>
                             </>
@@ -330,10 +330,10 @@ export function MultiSelect({
                     id={item.id}
                     textValue={item.name}
                     className={`
-                      cursor-pointer rounded-md px-3 py-2 text-gray-700
-                      hover:bg-gray-100
-                      focus:bg-gray-100 focus:outline-none
-                      data-[focused]:bg-gray-100
+                      cursor-pointer rounded-md px-3 py-2 text-quanta-iron
+                      hover:bg-quanta-snow
+                      focus:bg-quanta-snow focus:outline-none
+                      data-[focused]:bg-quanta-snow
                     `}
                   >
                     {item.name}

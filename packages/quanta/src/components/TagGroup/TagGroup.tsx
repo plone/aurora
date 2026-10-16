@@ -17,11 +17,12 @@ import { focusRing } from '../../utils';
 import { CloseIcon } from '@plone/icons';
 
 const colors = {
-  gray: 'bg-quanta-silver text-foreground border-gray-200 hover:border-gray-300  ',
-  green: 'bg-green-100 text-green-700 border-green-200 hover:border-green-300 ',
+  gray: 'bg-quanta-silver text-foreground border-quanta-smoke hover:border-quanta-silver  ',
+  green:
+    'bg-quanta-daiquiri text-quanta-emerald border-quanta-mint hover:border-quanta-celery ',
   yellow:
-    'bg-yellow-100 text-yellow-700 border-yellow-200 hover:border-yellow-300 ',
-  blue: 'bg-blue-100 text-blue-700 border-blue-200 hover:border-blue-300',
+    'bg-quanta-cream text-quanta-dijon border-quanta-banana hover:border-quanta-lemon ',
+  blue: 'bg-quanta-arctic text-quanta-royal border-quanta-sky hover:border-quanta-azure',
 };
 
 type Color = keyof typeof colors;
@@ -47,7 +48,7 @@ const tagStyles = tv({
       true: 'border-transparent',
     },
     isDisabled: {
-      true: 'bg-quanta-pigeon text-gray-300',
+      true: 'bg-quanta-pigeon text-quanta-silver',
     },
   },
   compoundVariants: (Object.keys(colors) as Color[]).map((color) => ({
@@ -99,7 +100,7 @@ export function TagGroup<T>({
       </ColorContext.Provider>
       {description && <Description>{description}</Description>}
       {errorMessage && (
-        <Text slot="errorMessage" className="text-sm text-red-600">
+        <Text slot="errorMessage" className="text-sm text-quanta-candy">
           {errorMessage}
         </Text>
       )}
