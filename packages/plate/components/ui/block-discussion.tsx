@@ -445,6 +445,16 @@ const BlockCommentContent = ({
       }
     }
 
+    if (!activeNode && activeSuggestion) {
+      const lineBreak = editor.api
+        .toDOMNode(editor)
+        ?.querySelector<HTMLElement>(
+          `span[contenteditable="false"][data-suggestion-id="${activeSuggestion.suggestionId}"]`,
+        );
+
+      if (lineBreak) return lineBreak;
+    }
+
     if (!activeNode) return null;
 
     return editor.api.toDOMNode(activeNode[0])!;
