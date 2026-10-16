@@ -6,5 +6,6 @@
 
 /* Components */
 @import './Popover.css';
+@import './Sheet.css';
 @import './Table.css';
 @import './Tooltip.css';

@@ -559,3 +559,15 @@ The `ToolbarProps` type in `@plone/quanta`.
 
 It was React Aria's `ToolbarProps`.
 Import it from `react-aria-components` instead.
+
+#### `Sheet` is added
+
+```{versionadded} 1.0.0-alpha.20
+`Sheet` in `@plone/quanta`.
+```
+
+`Sheet` is React Aria's sheet, with Quanta's styles.
+With `position="right"` or `position="left"`, it's a full-height side panel, such as a settings panel next to the editor.
+With `position="bottom"`, it's a sheet that slides up, as on phones.
+On touch devices, you can swipe it away.
+For the details, see {ref}`quanta-side-panel-label`.
