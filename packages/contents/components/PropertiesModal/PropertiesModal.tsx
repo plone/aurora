@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useFetcher, type SubmitTarget } from 'react-router';
-import { Button as RACButton, Heading, TextArea } from 'react-aria-components';
+import { Button as RACButton, TextArea } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
   Checkbox,
   DateTimePicker,
   Dialog,
+  Heading,
   Input,
   Modal,
 } from '@plone/quanta';
