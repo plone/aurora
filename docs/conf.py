@@ -11,7 +11,7 @@
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 sys.path.insert(0, os.path.abspath("."))
 
@@ -21,7 +21,7 @@ project = "Plone Aurora Documentation"
 copyright = "Plone Aurora Foundation"
 author = "Plone Community"
 trademark_name = "Plone"
-now = datetime.now(timezone.utc)
+now = datetime.now(UTC)
 year = str(now.year)
 
 # The version info for the project you're documenting, acts as replacement for
@@ -53,7 +53,7 @@ else:
 # They can be extensions coming with Sphinx (named "sphinx.ext.*")
 # or your custom ones.
 extensions = [
-    "latest_gh_version_substitution",
+    "collective.sphinxextexternalpackageversion",
     "myst_parser",
     "sphinx.ext.ifconfig",
     "sphinx.ext.intersphinx",
@@ -201,7 +201,7 @@ html_use_opensearch = "https://6.docs.plone.org"
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = "%(project)s v%(release)s" % {"project": project, "release": release}
+html_title = f"{project} v{release}"
 
 html_css_files = ["custom.css", ("print.css", {"media": "print"})]
 
@@ -210,7 +210,7 @@ html_use_index = True
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = "%(project)s v%(release)s" % {"project": project, "release": release}
+html_title = f"{project} v{release}"
 
 html_extra_path = [
     "robots.txt",
