@@ -120,18 +120,19 @@ Quanta keeps the RAC `*Field` parts as the reference for hand-written forms.
 
 ## Navigation and structure
 
-| Component | Starter | Status | Changes needed |
+| Component | Starter | Status | Notes |
 | --- | --- | --- | --- |
-| `Tabs`, `TabList`, `Tab`, `TabPanel` | `Tabs.tsx` | `API changes` | Composition API: remove the `tabs` array prop, add `TabPanels`. Update `cmsui` ContentForm. |
+| `Tabs`, `TabList`, `Tab`, `TabPanels`, `TabPanel` | `Tabs.tsx` | `aligned` | `TabPanels` is optional, and adds no styles. |
 | `Accordion`, `AccordionItem`, `AccordionItemTrigger`, `AccordionPanel` | `Disclosure.tsx`, `DisclosureGroup.tsx` | `Plone-specific` | Keeps its names. |
 | `Breadcrumbs`, `Breadcrumb` | `Breadcrumbs.tsx` | `Plone-specific` | Takes Plone items (`@id`, `title`) and a `root` item. |
-| `Button` | `Button.tsx` | `Plone-specific` | Keeps all of Quanta's variants. Gets ready for an optional pending spinner. See {ref}`quanta-button-label`. |
+| `Button` | `Button.tsx` | `Plone-specific` | Keeps all of Quanta's variants. Shows a spinner when `isPending`. See {ref}`quanta-button-label`. |
 | `Link` | `Link.tsx` | `Plone-specific` | Keeps the `asButton` prop. |
-| `Toolbar` | `Toolbar.tsx` | `API changes` | Provide `ToggleButtonGroupContext` with the toolbar's orientation, like the starter. |
-| `ToggleButton`, `ToggleButtonGroup` | `ToggleButton.tsx`, `ToggleButtonGroup.tsx` | `aligned` | Not on `main` yet (`feat/quanta-controls`). One file per component, like the starter. |
-| `ProgressBar` | `ProgressBar.tsx` | `aligned` | Not on `main` yet (`feat/quanta-controls`). `hideValue` is an extra. |
-| `Separator` | `Separator.tsx` | `aligned` | None. |
-| `DropZone` | `DropZone.tsx` | `API changes` | The starter exports the text part as `Text`. Quanta calls it `DropZoneText`. Used by `contents` (UploadModal). |
+| `Toolbar` | `Toolbar.tsx` | `aligned` | Toggle button groups inside it follow its orientation. |
+| `ToggleButton` | `ToggleButton.tsx` | `aligned` | |
+| `ToggleButtonGroup` | `ToggleButtonGroup.tsx` | `aligned` | Shown as one segmented control. |
+| `ProgressBar` | `ProgressBar.tsx` | `aligned` | `hideValue` is an extra. |
+| `Separator` | `Separator.tsx` | `aligned` | |
+| `DropZone`, `Text` | `DropZone.tsx` | `aligned` | |
 
 ## Extensions
 
@@ -171,9 +172,8 @@ Quanta keeps all of its variants, because they are its look.
 
 React Aria's `isPending` prop marks a button whose action is in progress, such as a {guilabel}`Save` button while the request runs.
 The button ignores presses, stays focusable, and tells screen readers that the action is in progress.
-Quanta's `Button` already forwards `isPending` to React Aria, but shows nothing.
-The starter shows a spinner over the label.
-Quanta's `Button` gets ready to show one, as an optional feature.
+Like the starter's, Quanta's `Button` then shows a spinner in place of its label.
+It only does when you pass `isPending`, so buttons look the same otherwise.
 
 (quanta-dates-label)=
 
