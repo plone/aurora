@@ -109,13 +109,13 @@ Quanta keeps the RAC `*Field` parts as the reference for hand-written forms.
 
 ## Overlays
 
-| Component | Starter | Status | Changes needed |
+| Component | Starter | Status | Notes |
 | --- | --- | --- | --- |
-| `Popover` | `Popover.tsx` | `aligned` | Remove the unused `SubmenuTrigger` offset logic. |
-| `Dialog` | `Dialog.tsx` | `API changes` | Export `Heading`, like the starter. |
+| `Popover` | `Popover.tsx` | `aligned` | |
+| `Dialog`, `Heading` | `Dialog.tsx` | `aligned` | |
 | `DialogTrigger` | none | extra | Re-exported from RAC. Used by `cmsui` (ImageWidget, ObjectBrowserTrigger). |
-| `Modal` | `Modal.tsx` | `aligned` | None. |
-| `Tooltip` | `Tooltip.tsx` | `aligned` | None. |
+| `Modal` | `Modal.tsx` | `aligned` | |
+| `Tooltip` | `Tooltip.tsx` | `aligned` | |
 | `Drawer` | `Sheet.tsx` | replaced | Not on `main` (`feat/quanta-controls`). Quanta adds the starter's `Sheet` instead. See {ref}`quanta-side-panel-label`. |
 
 ## Navigation and structure

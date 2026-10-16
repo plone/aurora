@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { useFetcher } from 'react-router';
-import { Heading } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
-import { Button, Dialog, Modal } from '@plone/quanta';
+import { Button, Dialog, Heading, Modal } from '@plone/quanta';
 import { BinIcon } from '@plone/icons';
 import CloseSVG from '@plone/icons/svg/close.svg?react';
 import BinSVG from '@plone/icons/svg/bin.svg?react';
