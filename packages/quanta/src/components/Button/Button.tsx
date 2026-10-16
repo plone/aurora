@@ -63,7 +63,7 @@ export const Button = forwardRef(function _Button(
                 className={`
                   size-4 animate-spin rounded-full border-2 border-current border-t-transparent
                   motion-reduce:animate-none
-                  ${'accent' in props && props.accent ? 'text-white' : 'text-quanta-iron'}
+                  ${'accent' in props && props.accent ? 'text-quanta-air' : 'text-quanta-iron'}
                 `}
               />
             </span>

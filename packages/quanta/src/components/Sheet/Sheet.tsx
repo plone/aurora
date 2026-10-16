@@ -12,7 +12,7 @@ import { composeTailwindRenderProps } from '../../utils';
 
 // Only the bottom-most sheet in a stack dims the page behind it.
 const backdropStyles = tv({
-  base: "data-[stack-index='0']:bg-black/30",
+  base: "data-[stack-index='0']:bg-quanta-space/30",
 });
 
 const sheetStyles = tv({

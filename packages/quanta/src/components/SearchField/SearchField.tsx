@@ -44,8 +44,8 @@ export function SearchField({
         <SearchIcon
           aria-hidden
           className={`
-            ml-2 text-gray-500
-            group-disabled:text-gray-200
+            ml-2 text-quanta-pigeon
+            group-disabled:text-quanta-smoke
             forced-colors:text-[ButtonText] forced-colors:group-disabled:text-[GrayText]
           `}
         />

@@ -52,24 +52,24 @@ const tabProps = tv({
   variants: {
     isSelected: {
       false: `
-        text-gray-600
-        hover:bg-gray-200 hover:text-gray-700
+        text-quanta-iron
+        hover:bg-quanta-smoke hover:text-quanta-iron
         dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-200
-        pressed:bg-gray-200 pressed:text-gray-700
+        pressed:bg-quanta-smoke pressed:text-quanta-iron
         dark:pressed:bg-zinc-800 dark:pressed:text-zinc-200
       `,
       true: `
-        bg-gray-800 text-white
+        bg-quanta-denim text-quanta-air
         dark:bg-zinc-200 dark:text-black
         forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]
       `,
     },
     isDisabled: {
       true: `
-        text-gray-200
+        text-quanta-smoke
         dark:text-zinc-600
         forced-colors:text-[GrayText]
-        selected:bg-gray-200 selected:text-gray-300
+        selected:bg-quanta-smoke selected:text-quanta-silver
         dark:selected:bg-zinc-600 dark:selected:text-zinc-500
         forced-colors:selected:bg-[GrayText] forced-colors:selected:text-[HighlightText]
       `,
@@ -91,7 +91,7 @@ export function Tab(props: TabProps) {
 const tabPanelStyles = tv({
   extend: focusRing,
   base: `
-    flex-1 p-4 text-base text-gray-900
+    flex-1 p-4 text-base text-quanta-space
     dark:text-zinc-100
   `,
 });
