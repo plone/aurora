@@ -1,0 +1,1 @@
+Wait for hydration in the sharing acceptance tests that toggle a checkbox, so they no longer fail against the dev frontend. @sneridagh

@@ -1,4 +1,4 @@
-import { expect, describe, it, vi, afterEach } from 'vitest';
+import { expect, describe, it, vi, afterEach, beforeEach } from 'vitest';
 import config from '@plone/registry';
 import { RouterContextProvider } from 'react-router';
 import { jwtDecode } from 'jwt-decode';
@@ -7,7 +7,9 @@ import PloneClient from '@plone/client';
 import {
   fetchPloneContent,
   getAPIResourceWithAuth,
+  getContentExpand,
   getPloneClientClass,
+  isResourcePattern,
   installServerMiddleware,
   linkMiddleware,
   ploneClearAuthCookieContext,
@@ -17,7 +19,9 @@ import {
   ploneContentContext,
   ploneSiteContext,
   ploneUserContext,
+  routeSkipsContent,
 } from './middleware.server';
+import { defaultApiExpanders } from './config/server.server';
 
 vi.mock('jwt-decode');
 vi.mock('@plone/react-router', async (importOriginal) => {
@@ -94,6 +98,41 @@ describe('middleware', () => {
           })
           .method(),
       ).toHaveProperty('initialize');
+    });
+
+    it('applies the configuration only once per process', async () => {
+      const request = new Request('http://example.com');
+      const runMiddleware = () =>
+        installServerMiddleware(
+          {
+            request,
+            context: new RouterContextProvider(),
+            params: {},
+            pattern: '/',
+            url: new URL(request.url),
+          },
+          vi.fn(),
+        );
+      const countSlotComponents = () =>
+        Object.values(config.slots).reduce(
+          (total, slot) =>
+            total +
+            Object.values(slot.data).reduce(
+              (sum, components) => sum + components.length,
+              0,
+            ),
+          0,
+        );
+
+      await runMiddleware();
+      const routes = config.routes?.length;
+      const slotComponents = countSlotComponents();
+
+      await runMiddleware();
+      await runMiddleware();
+
+      expect(config.routes?.length).toBe(routes);
+      expect(countSlotComponents()).toBe(slotComponents);
     });
   });
 
@@ -629,9 +668,136 @@ describe('middleware', () => {
     });
   });
 
+  describe('getContentExpand', () => {
+    beforeEach(() => {
+      config.settings.apiExpanders = [...defaultApiExpanders];
+    });
+
+    afterEach(() => {
+      config.settings.apiExpanders = [];
+    });
+
+    it('returns the core expansions', () => {
+      expect(getContentExpand('/', false)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'navigation',
+        'actions',
+      ]);
+      expect(getContentExpand('/', true)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'navigation',
+        'actions',
+        'types',
+      ]);
+    });
+
+    it('adds the expansions of add-ons, once each', () => {
+      config.settings.apiExpanders = [
+        ...config.settings.apiExpanders,
+        { match: '', expand: ['translations', 'navigation'] },
+        { match: '/', expand: ['translations', 'workflow'] },
+      ];
+
+      expect(getContentExpand('/news', false)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'navigation',
+        'actions',
+        'translations',
+        'workflow',
+      ]);
+    });
+
+    it('matches expanders by path prefix', () => {
+      config.settings.apiExpanders = [
+        { match: '/news', expand: ['news-extra'] },
+      ];
+
+      expect(getContentExpand('/news', false)).toContain('news-extra');
+      expect(getContentExpand('/news/item', false)).toContain('news-extra');
+      expect(getContentExpand('/newsletter', false)).not.toContain(
+        'news-extra',
+      );
+      expect(getContentExpand('/', false)).not.toContain('news-extra');
+    });
+
+    it('ignores Volto-shaped expanders', () => {
+      config.settings.apiExpanders = [
+        { match: '', GET_CONTENT: ['translations'] },
+      ];
+
+      expect(getContentExpand('/', false)).not.toContain('translations');
+    });
+
+    it('lets add-ons change the core expansions', () => {
+      config.settings.apiExpanders = [
+        { match: '', expand: ['navroot', 'breadcrumbs', 'actions'] },
+      ];
+
+      expect(getContentExpand('/', false)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'actions',
+      ]);
+    });
+
+    it('applies authenticated expanders to signed-in users only', () => {
+      config.settings.apiExpanders = [
+        { match: '', expand: ['my-profile'], authenticated: true },
+      ];
+
+      expect(getContentExpand('/', true)).toContain('my-profile');
+      expect(getContentExpand('/', false)).not.toContain('my-profile');
+    });
+  });
+
   describe('fetchPloneContent', () => {
+    beforeEach(() => {
+      config.settings.apiExpanders = [...defaultApiExpanders];
+    });
+
     afterEach(() => {
       delete config.utilities['ploneClient'];
+      config.settings.apiExpanders = [];
+    });
+
+    it('skips fetching for resource routes', async () => {
+      const getContentMock = vi.fn();
+      const getSiteMock = vi.fn();
+      const getUserMock = vi.fn();
+      config.settings.apiPath = 'http://example.com';
+      registerPloneClientFactory({
+        getContent: getContentMock,
+        getSite: getSiteMock,
+        getUser: getUserMock,
+      });
+      vi.mocked(getAuthFromRequest).mockResolvedValue('valid.jwt.token');
+      vi.mocked(jwtDecode).mockReturnValue({ sub: 'admin' });
+      const request = new Request(
+        'http://example.com/@objectBrowserWidget/missing',
+      );
+      const context = new RouterContextProvider();
+
+      await initializePloneClientContext(request, context);
+
+      const result = await fetchPloneContent(
+        {
+          request,
+          params: { '*': 'missing' },
+          context,
+          pattern: '@objectBrowserWidget/*',
+          url: new URL(request.url),
+        },
+        vi.fn(),
+      );
+
+      expect(result).toBeUndefined();
+      expect(getContentMock).not.toHaveBeenCalled();
+      expect(getSiteMock).not.toHaveBeenCalled();
+      expect(getUserMock).not.toHaveBeenCalled();
+      expect(() => context.get(ploneContentContext)).toThrow();
     });
 
     it('fetches content and site and sets them in context', async () => {
@@ -959,6 +1125,10 @@ describe('middleware', () => {
     });
 
     it('retries anonymously after a 401 and clears the auth cookie context', async () => {
+      config.settings.apiExpanders = [
+        ...config.settings.apiExpanders,
+        { match: '', expand: ['my-profile'], authenticated: true },
+      ];
       const authContent = vi
         .fn()
         .mockRejectedValueOnce({ data: undefined, status: 401 });
@@ -1014,6 +1184,17 @@ describe('middleware', () => {
         nextMock,
       );
 
+      expect(authContent).toHaveBeenCalledWith({
+        path: '/',
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'types',
+          'my-profile',
+        ],
+      });
       expect(anonymousContent).toHaveBeenCalledWith({
         path: '/',
         expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'],
@@ -1151,6 +1332,44 @@ describe('middleware', () => {
       const result = await linkMiddleware(makeArgs(context), vi.fn());
 
       expect(result).toBeUndefined();
+    });
+
+    it('does nothing for resource routes, without content', async () => {
+      const context = new RouterContextProvider();
+
+      const result = await linkMiddleware(
+        { ...makeArgs(context), pattern: '@reset-fetcher' },
+        vi.fn(),
+      );
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('isResourcePattern', () => {
+    it('matches a segment that starts with a single @', () => {
+      expect(isResourcePattern('@search/*')).toBe(true);
+      expect(isResourcePattern('@@contents/@delete/*')).toBe(true);
+      expect(isResourcePattern('@layers.css')).toBe(true);
+      expect(isResourcePattern('@@edit/*')).toBe(false);
+      expect(isResourcePattern('@@contents/*')).toBe(false);
+      expect(isResourcePattern('*')).toBe(false);
+    });
+  });
+
+  describe('routeSkipsContent', () => {
+    it('skips resource routes and the health check', () => {
+      expect(routeSkipsContent('@objectBrowserWidget/*')).toBe(true);
+      expect(routeSkipsContent('/@objectBrowserWidget/*')).toBe(true);
+      expect(routeSkipsContent('@@contents/@delete/*')).toBe(true);
+      expect(routeSkipsContent('@reset-fetcher')).toBe(true);
+      expect(routeSkipsContent('ok')).toBe(true);
+      expect(routeSkipsContent('/ok')).toBe(true);
+      expect(routeSkipsContent('@@edit/*')).toBe(false);
+      expect(routeSkipsContent('*')).toBe(false);
+      expect(routeSkipsContent('/')).toBe(false);
+      // A content item named `ok` is matched by the content route.
+      expect(routeSkipsContent('folder/ok')).toBe(false);
     });
   });
 });

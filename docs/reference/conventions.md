@@ -75,7 +75,7 @@ Check out the Storybook for this package at [@plone/components Storybook](https:
 
 ## `@plone/quanta` package
 
-This package contains the Quanta design system: React components styled with Tailwind CSS, the `SizeWidget`, `AlignWidget`, and `WidthWidget` form widgets, and the Quanta CSS, typography, and fonts.
+This package contains the Quanta design system: React components styled with Tailwind CSS, the `SizePicker`, `AlignPicker`, and `WidthPicker` pickers, and the Quanta CSS, typography, and fonts.
 
 The Quanta components are meant for themes that also use Tailwind CSS, like the default Plone Aurora theme (`@plone/agave`).
 They're also used in the CMSUI, which is based on Tailwind CSS.

@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useRef } from 'react';
-import { atom, type PrimitiveAtom } from 'jotai';
-import { useFieldFocusedAtom } from '@plone/helpers';
-import config from '@plone/registry';
+import { useCallback, useEffect, useRef } from 'react';
+import { atom, useAtomValue } from 'jotai';
+import { useOptionalFormContext } from '@plone/helpers';
 import {
   useEditorRef,
   useEditorSelector,
@@ -29,7 +28,8 @@ type MetadataTextBinding = {
   writeToEditor: (editor: TPlateEditor, value: string) => void;
 };
 
-const fallbackFormAtom = atom<Record<string, unknown>>({});
+// Read when the editor is not inside a form: the binding is then inactive.
+const noFieldAtom = atom<unknown>(undefined);
 
 export function getMetadataTextSyncAction({
   editorValue,
@@ -67,28 +67,22 @@ export function useMetadataTextBinding(binding: MetadataTextBinding) {
     writeToEditorRef.current = writeToEditor;
   });
 
-  const formAtom = useMemo(() => {
-    try {
-      return config
-        .getUtility({
-          name: 'formAtom',
-          type: 'atom',
-        })
-        ?.method?.() as PrimitiveAtom<Record<string, unknown>> | undefined;
-    } catch {
-      return undefined;
-    }
-  }, []);
-  const [fieldValue, setFieldValue] = useFieldFocusedAtom<
-    Record<string, any>,
-    any
-  >(formAtom ?? fallbackFormAtom, field as any);
+  // The form the editor is rendered in, for example the content form.
+  const form = useOptionalFormContext();
+  const fieldValue = useAtomValue(
+    form ? form.fieldAtom(field) : noFieldAtom,
+    form ? { store: form.store } : undefined,
+  );
+  const setFieldValue = useCallback(
+    (value: string) => form?.setFieldValue(field, value),
+    [form, field],
+  );
   const state = useEditorSelector(
     (currentEditor) => getStateRef.current(currentEditor as TPlateEditor),
     [],
   );
 
-  const hasFormAtom = !!formAtom;
+  const hasFormAtom = !!form;
   const normalizedFieldValue = typeof fieldValue === 'string' ? fieldValue : '';
 
   useEffect(() => {

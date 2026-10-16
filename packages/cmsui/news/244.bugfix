@@ -1,0 +1,1 @@
+Fixed control panels looping forever or showing stale values when opening a second panel, by giving each form its own store and remounting the add and edit forms per item. @sneridagh

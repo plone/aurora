@@ -90,7 +90,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.16.4",
-    "@react-types/shared": "^3.32.1",
+    "@react-types/shared": "catalog:",
     "@storybook/addon-docs": "^10.4.0",
     "@storybook/addon-links": "^10.4.0",
     "@storybook/react-vite": "^10.4.0",

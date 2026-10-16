@@ -134,7 +134,7 @@ It's even possible to use TailwindCSS for styling the components in this package
 
 ## Related packages
 
-- The Quanta design system components, the `SizeWidget`, `AlignWidget` and `WidthWidget` form widgets, and the Quanta CSS, typography and fonts live in the [`@plone/quanta`](../quanta/README.md) package.
+- The Quanta design system components, the `SizePicker`, `AlignPicker` and `WidthPicker` pickers, and the Quanta CSS, typography and fonts live in the [`@plone/quanta`](../quanta/README.md) package.
 - The icon set, the `Icon` component, the `*.svg?react` types and the `PloneSVGRVitePlugin` Vite plugin live in the [`@plone/icons`](../icons/README.md) package.
 
 ## Helper providers

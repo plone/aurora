@@ -4,7 +4,7 @@ This file applies only to `packages/quanta` and its subdirectories.
 
 ## What This Package Is
 
-- `@plone/quanta` is the Quanta design system for the Plone Aurora CMS UI: the Quanta React components, the `SizeWidget`, `AlignWidget` and `WidthWidget` form widgets, and the Quanta CSS, typography and fonts.
+- `@plone/quanta` is the Quanta design system for the Plone Aurora CMS UI: the Quanta React components (controls, such as the `SizePicker`, `AlignPicker` and `WidthPicker` pickers), and the Quanta CSS, typography and fonts. It does not know the widget contract: form widgets and their adapters live in `@plone/cmsui`.
 - Components are thin wrappers around `react-aria-components`, styled with Tailwind.
 - Keep components presentational and lightweight. Avoid adding app-specific behavior, data logic, or i18n machinery here.
 

@@ -27,7 +27,8 @@ test('As an editor, I can disable permission inheritance', async ({ page }) => {
     transition: 'publish',
   });
 
-  await page.goto('/@@sharing/mypage');
+  // Wait for hydration, otherwise React resets the checkbox and Save stays disabled
+  await page.goto('/@@sharing/mypage', { waitUntil: 'networkidle' });
 
   const inherit = page.getByRole('checkbox', {
     name: 'Inherit permissions from higher levels',
@@ -55,7 +56,8 @@ test('As an editor, I can grant a role to a group', async ({ page }) => {
     transition: 'publish',
   });
 
-  await page.goto('/@@sharing/mypage');
+  // Wait for hydration, otherwise React resets the checkbox and Save stays disabled
+  await page.goto('/@@sharing/mypage', { waitUntil: 'networkidle' });
   await expect(page.locator('h1', { hasText: 'My page' })).toBeVisible();
 
   await page.getByLabel('Search for users and groups').fill('Reviewers');
