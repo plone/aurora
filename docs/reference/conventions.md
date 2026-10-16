@@ -36,7 +36,7 @@ It helps you develop components by mocking their different states and interactin
 Plone Aurora follows a Storybook-first approach, so new components should be developed in Storybook first before adding them to the app.
 This mainly applies to design system components (`@plone/components`, `@plone/quanta`), but you can also use it for other structural components (`@plone/layout`).
 
-You can see the Storybook for this package at [Plone Aurora Storybook](https://plone-storybook.readthedocs.io/latest/?path=/docs/introduction--docs).
+You can see the Storybook for this package at [Plone Aurora Storybook](https://plone-layout.readthedocs.io/?path=/docs/image--docs).
 
 ## Routes naming
 
@@ -81,7 +81,7 @@ The Quanta components are meant for themes that also use Tailwind CSS, like the 
 They're also used in the CMSUI, which is based on Tailwind CSS.
 This package never depends on `@plone/components`; it only depends on `@plone/icons`.
 
-Check out the Storybook for this package at [@plone/quanta Storybook](https://plone-quanta.readthedocs.io/).
+Check out the Storybook for this package at [@plone/quanta Storybook](https://plone-quanta.readthedocs.io/latest/).
 
 ## `@plone/icons` package
 
@@ -95,7 +95,7 @@ This package holds the structural components of the Plone 7 frontend, such as `H
 These components handle the overall layout and structure of the app.
 When adding new structural components, add them as slots so they can be easily customized.
 
-You can see the Storybook for this package at [@plone/layout Storybook](https://plone-layout.readthedocs.io/en/latest/?path=/story/app--default).
+You can see the Storybook for this package at [@plone/layout Storybook](https://plone-layout.readthedocs.io/?path=/docs/image--docs).
 
 This package needs to support all kinds of theming systems, so avoid using CSS framework-specific classes (like Tailwind CSS or Bootstrap) in these components.
 That means all components here should be free of Tailwind or any other CSS framework.

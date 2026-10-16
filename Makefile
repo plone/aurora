@@ -93,37 +93,31 @@ docs-clean:  ## Clean docs build directory
 	cd $(DOCS_DIR) && rm -rf $(BUILDDIR)/
 	@echo "Cleaned docs build directory."
 
-.PHONY: docs-news
-docs-news:  ## Create or update the symlink from docs to volto package
-	if [ -f /tmp/foo.txt ]; then rm docs/news; fi
-	ln -snf ../packages/volto/news docs/news
-	@echo "Symlink to Plone Aurora news created or updated.";
-
 .PHONY: docs-html
-docs-html: bin/python docs-news  ## Build html
+docs-html: bin/python  ## Build html
 	cd $(DOCS_DIR) && $(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
 .PHONY: docs-livehtml
-docs-livehtml: bin/python docs-news  ## Rebuild Sphinx documentation on changes, with live-reload in the browser
+docs-livehtml: bin/python  ## Rebuild Sphinx documentation on changes, with live-reload in the browser
 	cd "$(DOCS_DIR)" && ${SPHINXAUTOBUILD} \
 		--ignore "*.swp" \
 		-b html . "$(BUILDDIR)/html" $(SPHINXOPTS)
 
 .PHONY: docs-linkcheck
-docs-linkcheck: bin/python docs-news  ## Run linkcheck
-	cd $(DOCS_DIR) && $(SPHINXBUILD) -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck
+docs-linkcheck: bin/python  ## Run linkcheck
+	cd $(DOCS_DIR) && $(SPHINXBUILD) -b linkcheck -W $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck
 	@echo
 	@echo "Link check complete; look for any errors in the above output " \
 		"or in $(BUILDDIR)/linkcheck/ ."
 
 .PHONY: docs-linkcheckbroken
-docs-linkcheckbroken: bin/python docs-news  ## Run linkcheck and show only broken links
+docs-linkcheckbroken: bin/python  ## Run linkcheck and show only broken links
 	cd $(DOCS_DIR) && $(SPHINXBUILD) -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck | GREP_COLORS='0;31' grep -wi "broken\|redirect" --color=always | GREP_COLORS='0;31' grep -vi "https://github.com/plone/aurora/issues/" --color=always && if test $$? -eq 0; then exit 1; fi || test $$? -ne 0
 
 .PHONY: docs-vale
-docs-vale: bin/python docs-news  ## Install (once) and run Vale style, grammar, and spell checks
+docs-vale: bin/python  ## Install (once) and run Vale style, grammar, and spell checks
 	bin/vale sync
 	bin/vale --no-wrap $(VALEOPTS) $(VALEFILES)
 	@echo
