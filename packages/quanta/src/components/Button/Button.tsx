@@ -50,6 +50,28 @@ export const Button = forwardRef(function _Button(
           });
         },
       )}
-    />
+    >
+      {composeRenderProps(props.children, (children, { isPending }) =>
+        isPending ? (
+          <>
+            {children}
+            <span
+              aria-hidden
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <span
+                className={`
+                  size-4 animate-spin rounded-full border-2 border-current border-t-transparent
+                  motion-reduce:animate-none
+                  ${'accent' in props && props.accent ? 'text-white' : 'text-quanta-iron'}
+                `}
+              />
+            </span>
+          </>
+        ) : (
+          children
+        ),
+      )}
+    </RACButton>
   );
 });
