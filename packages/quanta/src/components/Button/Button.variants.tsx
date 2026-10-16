@@ -40,7 +40,7 @@ export const button = tv({
         hover:bg-quanta-snow
         active:bg-quanta-silver
         has-[svg]:text-quanta-iron
-        pressed:bg-quanta-cobalt pressed:[&_svg]:text-white
+        pressed:bg-quanta-cobalt pressed:[&_svg]:text-quanta-air
       `,
     },
     isPending: {
@@ -105,7 +105,7 @@ export const button = tv({
         hover:bg-quanta-snow
         active:bg-quanta-silver
         has-[svg]:text-quanta-iron
-        pressed:bg-quanta-cobalt pressed:[&_svg]:text-white
+        pressed:bg-quanta-cobalt pressed:[&_svg]:text-quanta-air
       `,
     },
     {

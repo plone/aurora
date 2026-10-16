@@ -56,7 +56,7 @@ const boxStyles = tv({
 });
 
 const iconStyles =
-  'w-4 h-4 text-white group-disabled:text-quanta-iron forced-colors:text-[HighlightText]';
+  'w-4 h-4 text-quanta-air group-disabled:text-quanta-iron forced-colors:text-[HighlightText]';
 
 export interface CheckboxProps extends CheckboxFieldProps {
   children?: React.ReactNode;
