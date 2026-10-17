@@ -140,8 +140,10 @@ export function DropdownItem(props: ListBoxItemProps) {
         props.children,
         (children, { isSelected, selectionMode }) => (
           <>
-            {/* The selected item gets a sapphire check, before its label. */}
-            {selectionMode !== 'none' && (
+            {/* With multiple selection, a column of checks before the
+                labels. With single selection, a check after the selected
+                item's label. */}
+            {selectionMode === 'multiple' && (
               <span className="flex w-4 shrink-0 items-center text-quanta-sapphire">
                 {isSelected && <CheckboxIcon className="h-4 w-4" />}
               </span>
@@ -149,6 +151,11 @@ export function DropdownItem(props: ListBoxItemProps) {
             <span className="flex flex-1 items-center gap-2 truncate">
               {children}
             </span>
+            {selectionMode === 'single' && isSelected && (
+              <span className="flex w-4 shrink-0 items-center text-quanta-sapphire">
+                <CheckboxIcon className="h-4 w-4" />
+              </span>
+            )}
           </>
         ),
       )}
