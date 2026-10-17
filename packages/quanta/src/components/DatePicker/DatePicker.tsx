@@ -93,8 +93,8 @@ export function DatePicker<T extends DateValue>({
           )}
         </div>
 
-        {description && <Description>{description}</Description>}
         <FieldError>{errorMessage}</FieldError>
+        {description && <Description>{description}</Description>}
         <Popover>
           <Dialog>
             <Calendar />

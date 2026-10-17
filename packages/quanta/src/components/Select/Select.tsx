@@ -49,7 +49,7 @@ export interface SelectProps<
 const triggerStyles = tv({
   extend: focusRing,
   base: `
-    flex min-h-11 min-w-[180px] items-center gap-3 rounded-lg bg-quanta-snow px-3 py-2 text-left
+    flex min-h-12 min-w-[180px] items-center gap-3 rounded-md bg-quanta-snow px-3 py-2 text-left
     text-sm text-quanta-space transition
     hover:bg-quanta-smoke
     focus:bg-quanta-air
@@ -113,8 +113,8 @@ export function Select<
             </SelectValue>
             <SelectChevron isOpen={isOpen} />
           </Button>
-          {description && <Description>{description}</Description>}
           <FieldError>{errorMessage}</FieldError>
+          {description && <Description>{description}</Description>}
           <Popover className="min-w-(--trigger-width) p-1">
             {children ? (
               <SelectListBox items={items}>{children}</SelectListBox>
@@ -133,16 +133,17 @@ export function Select<
 }
 
 function SelectChevron({ isOpen }: { isOpen: boolean }) {
+  // Icons inherit their color, so the wrapper sets it.
   return (
-    <ChevrondownIcon
-      aria-hidden
-      size="base"
-      className={
-        isOpen
-          ? 'shrink-0 rotate-180 transition-transform'
-          : 'shrink-0 transition-transform'
-      }
-    />
+    <span className="flex shrink-0 text-quanta-iron">
+      <ChevrondownIcon
+        aria-hidden
+        size="xs"
+        className={
+          isOpen ? 'rotate-180 transition-transform' : 'transition-transform'
+        }
+      />
+    </span>
   );
 }
 
