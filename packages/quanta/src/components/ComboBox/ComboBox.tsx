@@ -128,7 +128,7 @@ export function ComboBox<T, M extends 'single' | 'multiple' = 'single'>({
           )}
           <FieldError>{errorMessage}</FieldError>
           {description && <Description>{description}</Description>}
-          <Popover className="min-w-(--trigger-width) p-1">
+          <Popover className="min-w-(--trigger-width)">
             <ComboBoxListBox items={items}>{children}</ComboBoxListBox>
           </Popover>
         </>
@@ -151,7 +151,7 @@ function ComboBoxListBox<T>(props: ListBoxProps<T>) {
       }
       className={composeTailwindRenderProps(
         props.className,
-        'max-h-72 min-w-(--trigger-width) p-1',
+        'max-h-72 min-w-(--trigger-width) py-1.5',
       )}
     />
   );

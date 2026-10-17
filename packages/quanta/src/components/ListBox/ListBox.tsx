@@ -89,13 +89,13 @@ export function ListBoxItem(props: ListBoxItemProps) {
 
 export const dropdownItemStyles = tv({
   base: `
-    group flex cursor-default items-center gap-4 rounded-lg py-2 pr-1 pl-3 text-sm outline-0
+    group flex cursor-default items-center gap-2 px-3 py-1.5 text-sm leading-6 outline-0
     forced-color-adjust-none select-none
   `,
   variants: {
     isDisabled: {
       false: `
-        text-quanta-space
+        text-quanta-denim
         dark:text-zinc-100
       `,
       true: `
@@ -106,9 +106,12 @@ export const dropdownItemStyles = tv({
     },
     isFocused: {
       true: `
-        bg-quanta-sapphire text-quanta-air
+        bg-quanta-snow
         forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]
       `,
+    },
+    isPressed: {
+      true: 'bg-quanta-smoke',
     },
   },
   compoundVariants: [
@@ -133,21 +136,29 @@ export function DropdownItem(props: ListBoxItemProps) {
       textValue={textValue}
       className={dropdownItemStyles}
     >
-      {composeRenderProps(props.children, (children, { isSelected }) => (
-        <>
-          <span
-            className={`
-              flex flex-1 items-center gap-2 truncate font-normal
-              group-selected:font-semibold
-            `}
-          >
-            {children}
-          </span>
-          <span className="flex w-5 items-center">
-            {isSelected && <CheckboxIcon className="h-4 w-4" />}
-          </span>
-        </>
-      ))}
+      {composeRenderProps(
+        props.children,
+        (children, { isSelected, selectionMode }) => (
+          <>
+            {/* With multiple selection, a column of checks before the
+                labels. With single selection, a check after the selected
+                item's label. */}
+            {selectionMode === 'multiple' && (
+              <span className="flex w-4 shrink-0 items-center text-quanta-sapphire">
+                {isSelected && <CheckboxIcon className="h-4 w-4" />}
+              </span>
+            )}
+            <span className="flex flex-1 items-center gap-2 truncate">
+              {children}
+            </span>
+            {selectionMode === 'single' && isSelected && (
+              <span className="flex w-4 shrink-0 items-center text-quanta-sapphire">
+                <CheckboxIcon className="h-4 w-4" />
+              </span>
+            )}
+          </>
+        ),
+      )}
     </AriaListBoxItem>
   );
 }
@@ -167,11 +178,9 @@ export function DropdownSection<T>(props: DropdownSectionProps<T>) {
     >
       <Header
         className={`
-          sticky -top-[5px] z-10 -mx-1 -mt-px truncate border-y border-y-quanta-smoke
-          bg-quanta-snow/60 px-4 py-1 text-sm font-semibold text-quanta-pigeon backdrop-blur-md
-          supports-[-moz-appearance:none]:bg-quanta-snow
-          dark:border-y-zinc-700 dark:bg-zinc-700/60 dark:text-zinc-300
-          [&+*]:mt-1
+          sticky -top-[5px] z-10 truncate bg-quanta-air px-3 pt-1.5 pb-0.5 text-xs leading-[18px]
+          text-quanta-pigeon
+          dark:bg-zinc-700/60 dark:text-zinc-300
         `}
       >
         {props.title}
