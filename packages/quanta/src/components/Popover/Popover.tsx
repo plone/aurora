@@ -14,8 +14,7 @@ export interface PopoverProps extends Omit<AriaPopoverProps, 'children'> {
 
 const styles = tv({
   base: `
-    rounded-xl border border-quanta-space/10 bg-quanta-air bg-clip-padding text-quanta-iron
-    shadow-2xl
+    rounded-md bg-quanta-air bg-clip-padding text-quanta-iron shadow-lg ring-1 ring-quanta-space/5
     dark:border-white/[15%] dark:bg-zinc-900/70 dark:text-zinc-300 dark:backdrop-blur-2xl
     dark:backdrop-saturate-200
     forced-colors:bg-[Canvas]

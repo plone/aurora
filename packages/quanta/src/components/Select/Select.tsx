@@ -115,7 +115,7 @@ export function Select<
           </Button>
           <FieldError>{errorMessage}</FieldError>
           {description && <Description>{description}</Description>}
-          <Popover className="min-w-(--trigger-width) p-1">
+          <Popover className="min-w-(--trigger-width)">
             {children ? (
               <SelectListBox items={items}>{children}</SelectListBox>
             ) : (
@@ -153,7 +153,7 @@ function SelectListBox<T>(props: ListBoxProps<T>) {
       {...props}
       className={composeTailwindRenderProps(
         props.className,
-        'max-h-72 min-w-(--trigger-width) p-1',
+        'max-h-72 min-w-(--trigger-width) py-1.5',
       )}
     />
   );
@@ -179,7 +179,7 @@ export function SelectSection<T>({
     >
       {title && (
         <Header
-          className={`px-3 py-1 text-xs font-semibold tracking-wide text-quanta-pigeon uppercase`}
+          className={`px-3 pt-1.5 pb-0.5 text-xs leading-[18px] text-quanta-pigeon`}
         >
           {title}
         </Header>

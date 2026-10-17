@@ -17,7 +17,7 @@ import { focusRing } from '../../utils';
 import { CloseIcon } from '@plone/icons';
 
 const colors = {
-  gray: 'bg-quanta-silver text-foreground border-quanta-smoke hover:border-quanta-silver  ',
+  gray: 'bg-quanta-air text-quanta-denim border-quanta-silver hover:border-quanta-dolphin',
   green:
     'bg-quanta-daiquiri text-quanta-emerald border-quanta-mint hover:border-quanta-celery ',
   yellow:
@@ -31,8 +31,8 @@ const ColorContext = createContext<Color>('gray');
 const tagStyles = tv({
   extend: focusRing,
   base: `
-    text-md flex max-w-fit cursor-default items-center gap-1 rounded-sm border px-3 py-0.5
-    transition
+    flex max-w-fit cursor-default items-center gap-1 rounded-full border px-2.5 py-0.5 text-sm
+    leading-6 transition
   `,
   variants: {
     color: {
@@ -42,7 +42,7 @@ const tagStyles = tv({
       blue: '',
     },
     allowsRemoving: {
-      true: 'pr-1',
+      true: 'pr-0.5',
     },
     isSelected: {
       true: 'border-transparent',
@@ -111,7 +111,10 @@ export function TagGroup<T>({
 const removeButtonStyles = tv({
   extend: focusRing,
   base: `
-    flex cursor-default items-center justify-center rounded-full p-0.5 transition-[background-color]
+    flex size-6 cursor-default items-center justify-center rounded-full text-quanta-iron
+    transition-[background-color]
+    hover:bg-quanta-snow
+    pressed:bg-quanta-smoke
   `,
 });
 
@@ -131,7 +134,7 @@ export function Tag({ children, color, ...props }: TagProps) {
           {children}
           {allowsRemoving && (
             <Button slot="remove" className={removeButtonStyles}>
-              <CloseIcon aria-hidden className="h-3 w-3" />
+              <CloseIcon aria-hidden className="size-4" />
             </Button>
           )}
         </>
