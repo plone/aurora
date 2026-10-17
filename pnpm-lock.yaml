@@ -1521,18 +1521,12 @@ importers:
       react:
         specifier: ^19.2.0
         version: 19.2.0
-      react-aria:
-        specifier: 'catalog:'
-        version: 3.53.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-aria-components:
         specifier: 'catalog:'
         version: 1.22.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-dom:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
-      react-stately:
-        specifier: 'catalog:'
-        version: 3.51.0(react@19.2.0)
       tailwind-merge:
         specifier: 'catalog:'
         version: 3.5.0
@@ -1603,6 +1597,9 @@ importers:
       lightningcss-cli:
         specifier: ^1.29.1
         version: 1.30.2
+      react-stately:
+        specifier: 'catalog:'
+        version: 3.51.0(react@19.2.0)
       release-it:
         specifier: 'catalog:'
         version: 19.0.5(@types/node@24.10.1)(magicast@0.3.5)(supports-color@8.1.1)
