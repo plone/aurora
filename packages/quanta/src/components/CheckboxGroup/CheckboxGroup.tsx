@@ -28,8 +28,8 @@ export function CheckboxGroup(props: CheckboxGroupProps) {
     >
       <Label>{props.label}</Label>
       {props.children}
-      {props.description && <Description>{props.description}</Description>}
       <FieldError>{props.errorMessage}</FieldError>
+      {props.description && <Description>{props.description}</Description>}
     </AriaCheckboxGroup>
   );
 }

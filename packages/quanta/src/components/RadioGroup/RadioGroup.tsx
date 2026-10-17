@@ -38,28 +38,31 @@ export function RadioGroup(props: RadioGroupProps) {
       >
         {props.children}
       </div>
-      {props.description && <Description>{props.description}</Description>}
       <FieldError>{props.errorMessage}</FieldError>
+      {props.description && <Description>{props.description}</Description>}
     </RACRadioGroup>
   );
 }
 
+// Selected, the radio is a sapphire ring around a white dot.
 const styles = tv({
   extend: focusRing,
   base: `
-    h-5 w-5 rounded-full border-2 bg-quanta-air transition-all
+    size-4.5 shrink-0 rounded-full border bg-quanta-air transition-all
     dark:bg-zinc-900
   `,
   variants: {
     isSelected: {
       false: `
         border-quanta-dolphin
-        group-pressed:border-quanta-pigeon
+        group-hover:border-quanta-sapphire
+        group-pressed:border-2 group-pressed:border-quanta-cobalt
         dark:border-zinc-400 dark:group-pressed:border-zinc-300
       `,
       true: `
-        border-[7px] border-quanta-iron
-        group-pressed:border-quanta-denim
+        border-[6px] border-quanta-sapphire
+        group-hover:border-quanta-royal
+        group-pressed:border-quanta-cobalt
         dark:border-slate-300 dark:group-pressed:border-slate-200
         forced-colors:border-[Highlight]!
       `,
@@ -67,6 +70,7 @@ const styles = tv({
     isInvalid: {
       true: `
         border-quanta-candy
+        group-hover:border-quanta-candy
         group-pressed:border-quanta-wine
         dark:border-red-600 dark:group-pressed:border-red-700
         forced-colors:border-[Mark]!
@@ -75,6 +79,7 @@ const styles = tv({
     isDisabled: {
       true: `
         border-quanta-smoke
+        group-hover:border-quanta-smoke
         dark:border-zinc-700
         forced-colors:border-[GrayText]!
       `,
@@ -93,7 +98,7 @@ export function Radio(props: RadioProps) {
         className={composeTailwindRenderProps(
           props.className,
           `
-            group flex items-center gap-2 text-sm text-quanta-denim transition
+            group flex items-center gap-3 text-sm leading-6 text-quanta-denim transition
             disabled:text-quanta-silver
             dark:text-zinc-200 dark:disabled:text-zinc-600
             forced-colors:disabled:text-[GrayText]
@@ -108,7 +113,7 @@ export function Radio(props: RadioProps) {
         ))}
       </RadioButton>
       {props.description && (
-        <Description className="ms-7">{props.description}</Description>
+        <Description className="ms-7.5">{props.description}</Description>
       )}
     </RadioField>
   );

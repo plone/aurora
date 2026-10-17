@@ -12,12 +12,12 @@ import { Description, FieldError } from '../Field/Field';
 import { focusRing } from '../../utils';
 
 const checkboxStyles = tv({
-  base: 'group flex items-center gap-2 text-sm transition',
+  base: 'group flex items-center gap-3 text-sm leading-6 transition',
   variants: {
     isDisabled: {
-      false: 'text-quanta-cobalt',
+      false: 'text-quanta-denim',
       true: `
-        text-quanta-iron
+        text-quanta-silver
         forced-colors:text-[GrayText]
       `,
     },
@@ -26,37 +26,58 @@ const checkboxStyles = tv({
 
 const boxStyles = tv({
   extend: focusRing,
-  base: 'flex h-5 w-5 flex-shrink-0 items-center justify-center rounded border-2 transition',
+  base: 'flex size-4.5 shrink-0 items-center justify-center rounded-[3px] border transition',
   variants: {
     isSelected: {
       false: `
-        border-quanta-pigeon bg-quanta-snow
-        group-pressed:border-quanta-silver
+        border-quanta-dolphin bg-quanta-air
+        group-hover:border-quanta-sapphire
+        group-pressed:border-2 group-pressed:border-quanta-cobalt
       `,
       true: `
         border-quanta-sapphire bg-quanta-sapphire
-        group-pressed:border-quanta-sapphire
+        group-hover:border-quanta-royal group-hover:bg-quanta-royal
+        group-pressed:border-quanta-cobalt group-pressed:bg-quanta-cobalt
         forced-colors:![--color:Highlight]
       `,
     },
     isInvalid: {
       true: `
-        group-pressed:border-quanta-ruby
-        border-quanta-ruby
+        border-quanta-candy
+        group-hover:border-quanta-candy
         forced-colors:![--color:Mark]
       `,
     },
     isDisabled: {
       true: `
-        border-quanta-silver bg-quanta-smoke
+        border-quanta-smoke
+        group-hover:border-quanta-smoke
         forced-colors:![--color:GrayText]
       `,
     },
   },
+  compoundVariants: [
+    {
+      isSelected: true,
+      isInvalid: true,
+      class: `
+        bg-quanta-candy
+        group-hover:bg-quanta-candy
+      `,
+    },
+    {
+      isSelected: true,
+      isDisabled: true,
+      class: `
+        bg-quanta-smoke
+        group-hover:bg-quanta-smoke
+      `,
+    },
+  ],
 });
 
 const iconStyles =
-  'w-4 h-4 text-quanta-air group-disabled:text-quanta-iron forced-colors:text-[HighlightText]';
+  'size-3.5 text-quanta-air forced-colors:text-[HighlightText]';
 
 export interface CheckboxProps extends CheckboxFieldProps {
   children?: React.ReactNode;
@@ -95,10 +116,10 @@ export function Checkbox(props: CheckboxProps) {
           ),
         )}
       </CheckboxButton>
+      <FieldError className="ms-7.5">{props.errorMessage}</FieldError>
       {props.description && (
-        <Description className="ms-7">{props.description}</Description>
+        <Description className="ms-7.5">{props.description}</Description>
       )}
-      <FieldError className="ms-7">{props.errorMessage}</FieldError>
     </CheckboxField>
   );
 }
