@@ -104,8 +104,7 @@ Quanta keeps the RAC `*Field` parts as the reference for hand-written forms.
 | `Table`, `TableHeader`, `Column`, `TableBody`, `Row`, `Cell` | `Table.tsx` | `Plone-specific` | Keeps the drag column header and width props. `TableFooter` can be added when needed. |
 | `TagGroup`, `Tag` | `TagGroup.tsx` | `aligned` | |
 | `Menu`, `MenuItem`, `MenuSection`, `MenuSeparator`, `MenuTrigger`, `SubmenuTrigger` | `Menu.tsx` | `aligned` | `MenuSection` takes `title` and `items`. `Menu`, `MenuItem`, `MenuSection` and `MenuSeparator` also merge a `className`. |
-| `MultiSelect` | none | `extension` | The starter's `TokenField` is a different component (free text with tokens). |
-| `TokenSelect` | none | internal | Not exported. Demo-grade (hard-coded label). Remove, or finish. |
+| `MultiSelect` | none | `extension` | Selects several items, shown as tags. Built on `ComboBox` and `TagGroup`. The starter's `TokenField` is a different component (free text with tokens). |
 
 ## Overlays
 
@@ -143,7 +142,7 @@ These components have no counterpart in the starter.
 | `SizePicker`, `AlignPicker`, `WidthPicker` | Block settings pickers, built on `RadioGroup` and `CustomRadio`. | `cmsui` (PickerWidgets) |
 | `DateTimePicker` | Date and time picker with a reset button, which fills in the current time on first pick. | `contents` (PropertiesModal), `cmsui` (DateTimeWidget) |
 | `TextAreaField` | Multiline text field. | `cmsui` (TextareaWidget) |
-| `MultiSelect` | Multiple selection from a list, with tags. | none |
+| `MultiSelect` | Selects several items from a list, shown as tags, optionally with new values typed by the editor. | `cmsui` (ArrayWidget) |
 | `Container` | Layout container with width variants. | `contents`, `cmsui` and `publicui` routes |
 | `Spinner` | Loading indicator. | none |
 | `CustomRadio` | Radio rendered as a toggle button. | the pickers |
