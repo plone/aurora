@@ -1,0 +1,1 @@
+Rebuilt `MultiSelect` as a controlled component on Quanta's `ComboBox` and `TagGroup`: it takes `value` and `onChange`, and `allowsCustomValue` replaces `creatable`. Removed the unexported `TokenSelect` demo. @sneridagh
