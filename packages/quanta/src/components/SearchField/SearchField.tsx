@@ -62,8 +62,8 @@ export function SearchField({
           <CloseIcon size="sm" aria-hidden />
         </Button>
       </FieldGroup>
-      {description && <Description>{description}</Description>}
       <FieldError>{errorMessage}</FieldError>
+      {description && <Description>{description}</Description>}
     </AriaSearchField>
   );
 }

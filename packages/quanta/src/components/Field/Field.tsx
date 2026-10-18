@@ -27,9 +27,9 @@ export function Label(props: LabelProps) {
           w-fit cursor-default text-xs font-medium text-quanta-pigeon
           group-data-disabled:text-quanta-silver
           group-data-invalid:text-quanta-candy
-          after:bg-quanta-candy
+          after:bg-quanta-rose
           group-data-required:after:mx-1 group-data-required:after:inline-block
-          group-data-required:after:h-2 group-data-required:after:w-2
+          group-data-required:after:h-1.5 group-data-required:after:w-1.5
           group-data-required:after:rounded-4xl
           not-group-data-invalid:not-group-data-readonly:has-[+input:focus]:text-quanta-sapphire
         `,
@@ -75,7 +75,7 @@ export const fieldBorderStyles = tv({
     isFocusWithin: {
       false: `forced-colors:border-[ButtonBorder]`,
       true: `
-        bg-quanta-air inset-ring-quanta-sapphire outline-2
+        bg-quanta-air inset-ring-quanta-cobalt outline-2
         group-data-readonly:inset-ring-0
         hover:bg-quanta-air
         forced-colors:border-[Highlight]
@@ -85,13 +85,13 @@ export const fieldBorderStyles = tv({
       true: `
         bg-quanta-ballet outline-2
         hover:bg-quanta-flamingo
-        focus:inset-ring-quanta-candy
+        focus:inset-ring-quanta-rose
         forced-colors:border-[Mark]
       `,
     },
     isDisabled: {
       true: `
-        bg-quanta-air text-quanta-silver
+        bg-quanta-air text-quanta-silver inset-ring-1 inset-ring-quanta-smoke
         hover:bg-quanta-air
         forced-colors:border-[GrayText]
       `,
@@ -102,7 +102,7 @@ export const fieldBorderStyles = tv({
 export const fieldGroupStyles = tv({
   extend: focusRing,
   base: `
-    group flex h-11 items-center overflow-hidden rounded-lg bg-quanta-snow text-quanta-space
+    group flex h-12 items-center overflow-hidden rounded-md bg-quanta-snow text-quanta-space
     hover:bg-quanta-smoke
     read-only:hover:bg-quanta-air
     focus:bg-quanta-air
@@ -141,7 +141,7 @@ export function FieldGroup(props: GroupProps) {
 
 export const inputStyles = tv({
   extend: focusRing,
-  base: 'rounded-md p-3',
+  base: 'rounded-md p-3 leading-6',
   variants: {
     isFocused: {
       ...fieldBorderStyles.variants.isFocusWithin,
@@ -172,9 +172,12 @@ export function Input(props: InputProps) {
           not-group-data-focus-within:outline-0
           group-data-focus-within:outline-0
           group-data-hovered:bg-quanta-smoke
-          read-only:border read-only:border-dashed read-only:bg-quanta-air
+          group-data-readonly:border group-data-readonly:border-dashed
+          group-data-readonly:border-quanta-silver group-data-readonly:bg-quanta-air
+          autofill:shadow-[inset_0_0_0_1000px_var(--quanta-arctic)]
           hover:bg-quanta-smoke
-          read-only:hover:bg-quanta-air
+          group-data-readonly:hover:bg-quanta-air
+          autofill:hover:shadow-[inset_0_0_0_1000px_var(--quanta-sky)]
           focus:bg-quanta-air
           active:bg-quanta-air
           disabled:cursor-not-allowed disabled:text-quanta-silver
@@ -196,9 +199,12 @@ export function TextArea(props: TextAreaProps) {
           not-group-data-focus-within:outline-0
           group-data-focus-within:outline-0
           group-data-hovered:bg-quanta-smoke
-          read-only:border read-only:border-dashed read-only:bg-quanta-air
+          group-data-readonly:border group-data-readonly:border-dashed
+          group-data-readonly:border-quanta-silver group-data-readonly:bg-quanta-air
+          autofill:shadow-[inset_0_0_0_1000px_var(--quanta-arctic)]
           hover:bg-quanta-smoke
-          read-only:hover:bg-quanta-air
+          group-data-readonly:hover:bg-quanta-air
+          autofill:hover:shadow-[inset_0_0_0_1000px_var(--quanta-sky)]
           focus:bg-quanta-air
           active:bg-quanta-air
           disabled:cursor-not-allowed disabled:text-quanta-silver

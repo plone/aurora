@@ -35,8 +35,8 @@ export function DateField<T extends DateValue>({
       <FieldGroup>
         <DateInput />
       </FieldGroup>
-      {description && <Description>{description}</Description>}
       <FieldError>{errorMessage}</FieldError>
+      {description && <Description>{description}</Description>}
     </AriaDateField>
   );
 }
