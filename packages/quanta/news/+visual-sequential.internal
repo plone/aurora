@@ -1,1 +1,1 @@
-Run the app and Quanta visual regression tests one after the other in CI, so the Quanta tests' load doesn't change the app screenshots. @sneridagh
+Run the app and Quanta visual regression tests one after the other in CI, so the Quanta tests' load doesn't change the app screenshots, and wait for images to be decoded before a screenshot. @sneridagh
