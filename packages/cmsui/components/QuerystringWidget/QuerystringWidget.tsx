@@ -9,7 +9,6 @@ import {
 } from '../Field/Field';
 
 import { focusRing } from '../utils';
-import { Switch } from '@plone/components';
 import {
   TextField,
   Select,
@@ -17,6 +16,7 @@ import {
   ComboBox,
   ComboBoxItem,
   Button,
+  Switch,
 } from '@plone/quanta';
 import {
   QuerystringProvider,
