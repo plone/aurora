@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useFetcher, type SubmitTarget } from 'react-router';
-import { Heading } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
-import { Button, Dialog, Modal } from '@plone/quanta';
+import { Button, Dialog, Heading, Modal } from '@plone/quanta';
 import { CloseIcon, TagIcon, ChevrondownIcon } from '@plone/icons';
 import { type ToastItem } from '@plone/layout/config/toast';
 import { useContentsContext } from '../../providers/contents';

@@ -4,8 +4,6 @@ import {
   type PopoverProps as AriaPopoverProps,
   composeRenderProps,
   OverlayArrow,
-  PopoverContext,
-  useSlottedContext,
 } from 'react-aria-components';
 import { tv } from 'tailwind-variants';
 
@@ -49,13 +47,9 @@ export function Popover({
   className,
   ...props
 }: PopoverProps) {
-  const popoverContext = useSlottedContext(PopoverContext)!;
-  const isSubmenu = popoverContext?.trigger === 'SubmenuTrigger';
-  let offset = showArrow ? 12 : 8;
-  offset = isSubmenu ? offset - 6 : offset;
   return (
     <AriaPopover
-      offset={offset}
+      offset={showArrow ? 12 : 8}
       {...props}
       className={composeRenderProps(className, (className, renderProps) =>
         styles({ ...renderProps, className }),

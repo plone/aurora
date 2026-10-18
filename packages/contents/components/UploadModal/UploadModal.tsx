@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useFetcher } from 'react-router';
-import { Heading, FileTrigger } from 'react-aria-components';
+import { FileTrigger } from 'react-aria-components';
 import { type FileDropItem, useDateFormatter } from 'react-aria';
 import { useTranslation, Trans } from 'react-i18next';
 import {
@@ -8,6 +8,7 @@ import {
   Dialog,
   DropZone,
   DropZoneText,
+  Heading,
   Input,
   Modal,
 } from '@plone/quanta';
