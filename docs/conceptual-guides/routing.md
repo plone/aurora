@@ -37,7 +37,7 @@ Plone Aurora supports four types of routes, aligned with [React Router 8’s dat
 :   The `prefix` route type is a set of route definitions that use a prefix for all its child routes.
 
 Combining these route types allows you to create complex routing structures in your application.
-See the [React Router documentation](https://reactrouter.com/en/main/start/overview) for more information on route types and how to use them.
+See the [React Router documentation](https://reactrouter.com/home) for more information on route types and how to use them.
 
 ## Route definition
 
