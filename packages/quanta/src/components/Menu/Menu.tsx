@@ -51,24 +51,24 @@ const menuItemStyles = tv({
   variants: {
     isDisabled: {
       false: `
-        text-neutral-900
+        text-quanta-space
         dark:text-neutral-100
       `,
       true: `
-        text-neutral-300
+        text-quanta-silver
         dark:text-neutral-600
         forced-colors:text-[GrayText]
       `,
     },
     isPressed: {
       true: `
-        bg-neutral-100
+        bg-quanta-snow
         dark:bg-neutral-800
       `,
     },
     isFocused: {
       true: `
-        bg-blue-600 text-white
+        bg-quanta-sapphire text-quanta-air
         forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]
       `,
     },
@@ -78,7 +78,7 @@ const menuItemStyles = tv({
       isFocused: false,
       isOpen: true,
       className: `
-        bg-neutral-100
+        bg-quanta-snow
         dark:bg-neutral-700/60
       `,
     },
@@ -127,7 +127,7 @@ export function MenuSeparator(props: SeparatorProps) {
       {...props}
       className={twMerge(
         `
-          mx-3 my-1 border-b border-neutral-300
+          mx-3 my-1 border-b border-quanta-silver
           dark:border-neutral-700
         `,
         props.className,
@@ -162,9 +162,9 @@ export function MenuSection<T>({
       {title && (
         <Header
           className={`
-            sticky -top-[5px] z-10 -mx-1 -mt-px truncate border-y border-y-neutral-200
-            bg-neutral-100/60 px-4 py-1 text-sm font-semibold text-neutral-500 backdrop-blur-md
-            supports-[-moz-appearance:none]:bg-neutral-100
+            sticky -top-[5px] z-10 -mx-1 -mt-px truncate border-y border-y-quanta-smoke
+            bg-quanta-snow/60 px-4 py-1 text-sm font-semibold text-quanta-pigeon backdrop-blur-md
+            supports-[-moz-appearance:none]:bg-quanta-snow
             dark:border-y-neutral-700 dark:bg-neutral-700/60 dark:text-neutral-300
             [&+*]:mt-1
           `}

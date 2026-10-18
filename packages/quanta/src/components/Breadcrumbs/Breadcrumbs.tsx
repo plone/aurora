@@ -42,7 +42,7 @@ export function Breadcrumb(
           <Link variant="secondary" {...otherProps} />
           {!isCurrent &&
             (separator ?? (
-              <ChevronrightIcon className="h-3 w-3 text-gray-600" />
+              <ChevronrightIcon className="h-3 w-3 text-quanta-iron" />
             ))}
         </>
       )}

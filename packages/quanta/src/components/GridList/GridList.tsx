@@ -39,7 +39,7 @@ const itemStyles = tv({
   `,
   variants: {
     isSelected: {
-      false: 'hover:bg-gray-100',
+      false: 'hover:bg-quanta-snow',
       true: 'z-20',
     },
     isDisabled: {
