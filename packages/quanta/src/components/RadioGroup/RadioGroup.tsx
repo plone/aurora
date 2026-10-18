@@ -1,10 +1,11 @@
 import React, { type ReactNode } from 'react';
 import {
   composeRenderProps,
-  Radio as RACRadio,
+  RadioButton,
+  RadioField,
+  type RadioFieldProps,
   RadioGroup as RACRadioGroup,
   type RadioGroupProps as RACRadioGroupProps,
-  type RadioProps,
   type ValidationResult,
 } from 'react-aria-components';
 import { tv } from 'tailwind-variants';
@@ -81,27 +82,35 @@ const styles = tv({
   },
 });
 
+export interface RadioProps extends RadioFieldProps {
+  description?: string;
+}
+
 export function Radio(props: RadioProps) {
   return (
-    <RACRadio
-      {...props}
-      className={composeTailwindRenderProps(
-        props.className,
-        `
-          group flex items-center gap-2 text-sm text-gray-800 transition
-          disabled:text-gray-300
-          dark:text-zinc-200 dark:disabled:text-zinc-600
-          forced-colors:disabled:text-[GrayText]
-        `,
+    <RadioField {...props} className="group flex flex-col gap-1">
+      <RadioButton
+        className={composeTailwindRenderProps(
+          props.className,
+          `
+            group flex items-center gap-2 text-sm text-gray-800 transition
+            disabled:text-gray-300
+            dark:text-zinc-200 dark:disabled:text-zinc-600
+            forced-colors:disabled:text-[GrayText]
+          `,
+        )}
+      >
+        {composeRenderProps(props.children, (children, renderProps) => (
+          <>
+            <div className={styles(renderProps)} />
+            {children}
+          </>
+        ))}
+      </RadioButton>
+      {props.description && (
+        <Description className="ms-7">{props.description}</Description>
       )}
-    >
-      {(renderProps) => (
-        <>
-          <div className={styles(renderProps)} />
-          {props.children}
-        </>
-      )}
-    </RACRadio>
+    </RadioField>
   );
 }
 
@@ -143,16 +152,20 @@ const customRadioButton = tv({
 });
 export function CustomRadio(props: RadioProps) {
   return (
-    <RACRadio
-      {...props}
-      className={composeRenderProps(props.className, (className, renderProps) =>
-        customRadioButton({
-          ...renderProps,
-          className,
-        }),
-      )}
-    >
-      {props.children}
-    </RACRadio>
+    <RadioField {...props} className="group flex flex-col gap-1">
+      <RadioButton
+        className={composeRenderProps(
+          props.className,
+          (className, renderProps) =>
+            customRadioButton({
+              ...renderProps,
+              className,
+            }),
+        )}
+      >
+        {props.children}
+      </RadioButton>
+      {props.description && <Description>{props.description}</Description>}
+    </RadioField>
   );
 }

@@ -398,3 +398,78 @@ If your add-on registered a widget for the `Image` factory, it still overrides `
 Plone Aurora now registers widgets for the fields with choices or a vocabulary, lists, numbers, files, email addresses, passwords, and URLs.
 These fields used to render as text inputs.
 See {ref}`core-widgets-label`.
+
+(upgrade-guide-quanta-starter-label)=
+
+### Quanta follows React Aria's Tailwind starter
+
+```{versionchanged} 1.0.0-alpha.20
+These steps apply when you upgrade an add-on from Plone Aurora 1.0.0-alpha.19 or earlier to 1.0.0-alpha.20 or later.
+```
+
+The components of `@plone/quanta` now have the same API as their counterparts in React Aria's Tailwind starter, so React Aria's documentation applies to them.
+Their look doesn't change.
+For each component, see {ref}`quanta-components-label`.
+
+#### `Checkbox`, `Radio`, and `Switch` use React Aria's field APIs
+
+```{versionchanged} 1.0.0-alpha.20
+`Checkbox`, `Radio`, and `CustomRadio` in `@plone/quanta` are built on React Aria's `CheckboxField` and `RadioField`.
+```
+
+```{versionadded} 1.0.0-alpha.20
+`Switch` in `@plone/quanta`, and the `description` and `errorMessage` props of `Checkbox`, and the `description` prop of `Radio`.
+```
+
+React Aria 1.18 deprecated its `Checkbox`, `Radio`, and `Switch` components in favor of `CheckboxField` and `CheckboxButton`, `RadioField` and `RadioButton`, and `SwitchField` and `SwitchButton`.
+Quanta's `Checkbox`, `Radio`, `CustomRadio`, and the new `Switch` are built on them.
+
+-   Their props are the props of the field: `CheckboxFieldProps`, `RadioFieldProps`, and `SwitchFieldProps`.
+-   `className` styles the clickable label, as before.
+    The label is now inside a wrapper `div`.
+-   `Checkbox` takes `description` and `errorMessage`, and `Radio` takes `description`.
+    You don't need a separate `Description` linked with `aria-describedby`.
+-   `CheckboxGroup` moved to its own module.
+    It's still exported from `@plone/quanta`.
+
+#### Date controls take date values
+
+```{versionchanged} 1.0.0-alpha.20
+`DatePicker` and `DateTimePicker` in `@plone/quanta` take and return React Aria's date values, instead of ISO strings.
+```
+
+`DatePicker` and `DateTimePicker` used to take and return ISO strings, and convert date-times between UTC and the browser's time zone.
+Now they work with React Aria's date values (`DateValue`), like React Aria's `DatePicker`.
+Converting Plone's ISO strings is the job of the widgets.
+`DateWidget` and `DateTimeWidget` in `@plone/cmsui` already do it, so the forms keep storing ISO strings.
+
+If you use the controls directly, convert the values with the helpers in `@plone/cmsui/helpers/dates`:
+
+```tsx
+import { DateTimePicker } from '@plone/quanta';
+import {
+  dateValueToIsoDateTime,
+  isoDateTimeToDateValue,
+} from '@plone/cmsui/helpers/dates';
+
+<DateTimePicker
+  value={isoDateTimeToDateValue(value)}
+  onChange={(newValue) => onChange(dateValueToIsoDateTime(newValue))}
+/>;
+```
+
+Use `isoDateToDateValue` and `dateValueToIsoDate` for dates without a time.
+
+`DatePicker` also takes `granularity`, and `Calendar` takes `visibleDuration` to show several months.
+
+#### Unused field parts are removed
+
+```{versionremoved} 1.0.0-alpha.20
+`Field` and `FieldWrapper`, and the `minValue` prop of `TextField`, in `@plone/quanta`.
+```
+
+`Field` and `FieldWrapper` had no counterpart in React Aria's starter, and nothing in Plone Aurora used them.
+Use React Aria's field components, such as `TextField`, with Quanta's `Label`, `Description`, and `FieldError`.
+
+`TextField`'s `minValue` prop had no effect.
+Remove it.

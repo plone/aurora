@@ -5,6 +5,7 @@ export default function (config) {
       ...config.optimizeDeps,
       include: [
         ...(config.optimizeDeps?.include ?? []),
+        '@plone/cmsui > @internationalized/date',
         '@plone/cmsui > @platejs/floating',
         '@plone/cmsui > @platejs/link',
         '@plone/cmsui > @platejs/link/react',

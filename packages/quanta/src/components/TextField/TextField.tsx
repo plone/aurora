@@ -18,7 +18,6 @@ export interface TextFieldProps extends AriaTextFieldProps {
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);
   placeholder?: string;
-  minValue?: number;
 }
 
 export function TextField({

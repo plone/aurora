@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import {
+  type DateValue,
+  getLocalTimeZone,
+  parseDate,
+} from '@internationalized/date';
 import { Form } from 'react-aria-components';
 import { Button } from '../Button/Button';
 import { DatePicker } from './DatePicker';
@@ -37,25 +42,31 @@ export const WithDefaultValue: Story = {
     name: 'date-default',
     label: 'Birth date',
     description: 'Date picker with default value',
-    defaultValue: '2025-05-17',
+    defaultValue: parseDate('2025-05-17'),
   },
 };
 
 // Controlled Example
 const ControlledExample = (args: any) => {
-  const [value, setValue] = useState<string | null>('2024-01-15');
+  const [value, setValue] = useState<DateValue | null>(parseDate('2024-01-15'));
 
   return (
     <div className="flex flex-col gap-4">
       <DatePicker {...args} value={value} onChange={setValue} />
       <div className="text-sm text-gray-600">
-        Current value: {value || 'null'}
+        Current value: {value?.toString() || 'null'}
       </div>
       <div className="flex gap-2">
-        <Button variant="neutral" onPress={() => setValue('2024-12-25')}>
+        <Button
+          variant="neutral"
+          onPress={() => setValue(parseDate('2024-12-25'))}
+        >
           Set to Christmas
         </Button>
-        <Button variant="neutral" onPress={() => setValue('2024-01-01')}>
+        <Button
+          variant="neutral"
+          onPress={() => setValue(parseDate('2024-01-01'))}
+        >
           Set to New Year
         </Button>
         <Button variant="neutral" onPress={() => setValue(null)}>
@@ -91,7 +102,7 @@ export const Disabled: Story = {
   args: {
     name: 'disabled-date',
     label: 'Disabled picker',
-    defaultValue: '2024-05-17',
+    defaultValue: parseDate('2024-05-17'),
     isDisabled: true,
   },
 };
@@ -101,7 +112,7 @@ export const ReadOnly: Story = {
   args: {
     name: 'readonly-date',
     label: 'Read-only picker',
-    defaultValue: '2024-05-17',
+    defaultValue: parseDate('2024-05-17'),
     isReadOnly: true,
   },
 };
@@ -115,7 +126,7 @@ export const WithError: Story = {
     errorMessage: 'Please select a valid date',
     isInvalid: true,
     isRequired: true,
-    defaultValue: '2024-01-15',
+    defaultValue: parseDate('2024-01-15'),
   },
 };
 
@@ -125,17 +136,17 @@ export const NotResettable: Story = {
     name: 'not-resettable',
     label: 'Non-resettable',
     description: 'No clear button available',
-    defaultValue: '2024-05-17',
+    defaultValue: parseDate('2024-05-17'),
     resettable: false,
   },
 };
 
 // Custom Validation Example
 const CustomValidationExample = () => {
-  const [value, setValue] = useState<string | null>(null);
+  const [value, setValue] = useState<DateValue | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (newValue: string | null) => {
+  const handleChange = (newValue: DateValue | null) => {
     setValue(newValue);
 
     // Custom validation logic for date values
@@ -145,7 +156,7 @@ const CustomValidationExample = () => {
     }
 
     try {
-      const date = new Date(newValue);
+      const date = newValue.toDate(getLocalTimeZone());
       const dayOfWeek = date.getDay();
 
       // Don't allow weekends
@@ -179,7 +190,11 @@ const CustomValidationExample = () => {
         errorMessage={error || undefined}
         isInvalid={!!error}
       />
-      {value && <div className="text-sm text-gray-600">Selected: {value}</div>}
+      {value && (
+        <div className="text-sm text-gray-600">
+          Selected: {value.toString()}
+        </div>
+      )}
     </div>
   );
 };
@@ -214,8 +229,8 @@ export const FormIntegration: Story = {
 
 // Date Range Example (using two DatePickers)
 const DateRangeExample = () => {
-  const [startDate, setStartDate] = useState<string | null>(null);
-  const [endDate, setEndDate] = useState<string | null>(null);
+  const [startDate, setStartDate] = useState<DateValue | null>(null);
+  const [endDate, setEndDate] = useState<DateValue | null>(null);
 
   return (
     <div className="flex flex-col gap-4">
@@ -242,15 +257,16 @@ const DateRangeExample = () => {
       </div>
       {startDate && endDate && (
         <div className="rounded bg-gray-50 p-3 text-sm text-gray-600">
-          <strong>Selected range:</strong> {startDate} to {endDate}
+          <strong>Selected range:</strong> {startDate.toString()} to{' '}
+          {endDate.toString()}
         </div>
       )}
       <div className="flex gap-2">
         <Button
           variant="neutral"
           onPress={() => {
-            setStartDate('2024-06-01');
-            setEndDate('2024-06-30');
+            setStartDate(parseDate('2024-06-01'));
+            setEndDate(parseDate('2024-06-30'));
           }}
         >
           Set June 2024
