@@ -56,8 +56,20 @@ jobs:
           log-output: stderr,stdout
           log-output-if: failure
 
-      - name: Run visual regression tests
-        run: pnpm visual-test --reporter=list,html
+      # The app tests run first, on their own: when the Quanta tests run at the
+      # same time, they take every CPU, and Chrome renders the app's images
+      # slightly differently under that load. The Quanta tests run even if
+      # the app tests failed.
+      - name: Run the app visual regression tests
+        env:
+          PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report/app
+        run: pnpm visual-test --project=chromium --output=playwright/results-visual/app --reporter=list,html
+
+      - name: Run the Quanta visual regression tests
+        if: ${{ !cancelled() }}
+        env:
+          PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report/quanta
+        run: pnpm visual-test --project=quanta --output=playwright/results-visual/quanta --reporter=list,html
 
       - uses: actions/upload-artifact@v7
         if: failure()

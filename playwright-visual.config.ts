@@ -15,7 +15,9 @@ export default defineConfig({
   testIgnore: ['**/.codex/**', '**/node_modules/**'],
   outputDir: 'playwright/results-visual',
   // The total worker limit. The app suites limit themselves to one worker, see
-  // `projects`.
+  // `projects`. CI runs the two projects one after the other: the parallel
+  // Quanta tests load the machine enough to change how Chrome renders the
+  // app's images.
   workers: isCI ? '100%' : '50%',
   forbidOnly: isCI,
   retries: isCI ? 1 : 0,

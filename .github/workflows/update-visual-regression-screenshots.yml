@@ -80,15 +80,20 @@ jobs:
           log-output: stderr,stdout
           log-output-if: failure
 
+      # The app and Quanta projects run one after the other, as in the
+      # "Visual Regression Tests" workflow, so the baselines are made under the
+      # same conditions. A grep can match no test in one of them.
       - name: Update visual regression screenshots
         env:
           GREP: ${{ inputs.grep }}
         run: |
-          if [ -n "$GREP" ]; then
-            pnpm visual-test --update-snapshots=all --grep "$GREP"
-          else
-            pnpm visual-test --update-snapshots=all
-          fi
+          for project in chromium quanta; do
+            if [ -n "$GREP" ]; then
+              pnpm visual-test --project="$project" --update-snapshots=all --pass-with-no-tests --grep "$GREP"
+            else
+              pnpm visual-test --project="$project" --update-snapshots=all
+            fi
+          done
 
       - name: Check for changes
         id: changes
