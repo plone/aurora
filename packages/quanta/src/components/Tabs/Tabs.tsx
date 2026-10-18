@@ -4,21 +4,18 @@ import {
   Tabs as RACTabs,
   Tab as RACTab,
   TabPanel as RACTabPanel,
+  TabPanels as RACTabPanels,
   TabList as RACTabList,
-  type TabProps as RACTabProps,
-  type TabListProps as RACTabListProps,
-  type TabsProps as RACTabsProps,
-  type TabPanelProps as RACTabPanelProps,
+  type TabProps,
+  type TabListProps,
+  type TabsProps,
+  type TabPanelProps,
+  type TabPanelsProps,
 } from 'react-aria-components';
 import { tv } from 'tailwind-variants';
 import { focusRing } from '../../utils';
 
-export interface TabsProps extends RACTabsProps {
-  tabs: Array<{ id: string; title: string; content: React.ReactNode }>;
-  orientation?: 'vertical' | 'horizontal';
-}
-
-const tabs = tv({
+const tabsStyles = tv({
   base: '',
   variants: {
     orientation: {
@@ -38,7 +35,7 @@ const tabListStyles = tv({
   },
 });
 
-export function TabList<T extends object>(props: RACTabListProps<T>) {
+export function TabList<T>(props: TabListProps<T>) {
   return (
     <RACTabList
       {...props}
@@ -80,7 +77,7 @@ const tabProps = tv({
   },
 });
 
-export function Tab(props: RACTabProps) {
+export function Tab(props: TabProps) {
   return (
     <RACTab
       {...props}
@@ -99,7 +96,7 @@ const tabPanelStyles = tv({
   `,
 });
 
-export function TabPanel(props: RACTabPanelProps) {
+export function TabPanel(props: TabPanelProps) {
   return (
     <RACTabPanel
       {...props}
@@ -114,37 +111,13 @@ export function Tabs(props: TabsProps) {
   return (
     <RACTabs
       {...props}
-      orientation={props.orientation || 'horizontal'}
       className={composeRenderProps(props.className, (className, renderProps) =>
-        tabs({
-          ...renderProps,
-          orientation: props.orientation,
-          className,
-        }),
+        tabsStyles({ ...renderProps, className }),
       )}
-    >
-      <TabList
-        className={composeRenderProps(
-          props.className,
-          (className, renderProps) =>
-            tabListStyles({
-              ...renderProps,
-              orientation: props.orientation || 'horizontal',
-              className,
-            }),
-        )}
-      >
-        {props.tabs.map((tab) => (
-          <Tab key={tab.id} id={tab.id}>
-            {tab.title}
-          </Tab>
-        ))}
-      </TabList>
-      {props.tabs.map((tab) => (
-        <TabPanel key={tab.id} id={tab.id} className={'p-3'}>
-          {tab.content}
-        </TabPanel>
-      ))}
-    </RACTabs>
+    />
   );
+}
+
+export function TabPanels<T>(props: TabPanelsProps<T>) {
+  return <RACTabPanels {...props} />;
 }
