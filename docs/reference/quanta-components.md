@@ -116,7 +116,7 @@ Quanta keeps the RAC `*Field` parts as the reference for hand-written forms.
 | `DialogTrigger` | none | extra | Re-exported from RAC. Used by `cmsui` (ImageWidget, ObjectBrowserTrigger). |
 | `Modal` | `Modal.tsx` | `aligned` | |
 | `Tooltip` | `Tooltip.tsx` | `aligned` | |
-| `Drawer` | `Sheet.tsx` | replaced | Not on `main` (`feat/quanta-controls`). Quanta adds the starter's `Sheet` instead. See {ref}`quanta-side-panel-label`. |
+| `Sheet` | `Sheet.tsx` | `aligned` | A full-height side panel on the left or right, flush with the edge. See {ref}`quanta-side-panel-label`. |
 
 ## Navigation and structure
 
@@ -192,6 +192,7 @@ The conversion helpers live in `@plone/cmsui`, next to the date widgets, and `@p
 
 Quanta's side panel is the starter's `Sheet`, built on React Aria's `Sheet` API, with Quanta's styles.
 It replaces the `Drawer` from `feat/quanta-controls`, which was never released.
+Use `DialogTrigger` to open it, and React Aria's `position` prop to choose the edge.
 
 On desktop, a `Sheet` with `position="right"` works like a drawer: it slides in from the edge, dims the page, keeps the focus inside, and closes on an outside click or {kbd}`Esc`.
 On touch devices it can also be swiped away, and it supports snap points and stacked sheets.
