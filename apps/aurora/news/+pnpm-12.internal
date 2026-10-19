@@ -1,0 +1,1 @@
+Upgraded pnpm to 12, and enabled `autoDedupe` and `minimumReleaseAgeExcludePrune`. @sneridagh
