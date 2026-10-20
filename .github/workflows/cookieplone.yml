@@ -20,6 +20,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # The aurora_addon template in plone/cookieplone-templates accepts
+        # Node.js up to 24 in its sanity check. Move to 26.x once it accepts 26.
         node-version: [24.x]
     steps:
       - uses: actions/checkout@v7

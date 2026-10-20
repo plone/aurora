@@ -70,7 +70,7 @@ To set up a Plone Aurora core development environment, your system must satisfy 
 ```
 
 -   {term}`nvm`
--   {term}`Node.js` LTS 22.x
+-   {term}`Node.js` LTS 24.x or 26.x
 -   {term}`pnpm`
 -   {term}`GNU make`
 -   {term}`Docker`

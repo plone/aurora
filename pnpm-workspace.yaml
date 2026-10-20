@@ -14,8 +14,8 @@ publicHoistPattern:
   - '*playwright*'
 
 overrides:
-  react: ^19.2.0
-  react-dom: ^19.2.0
+  react: ^19.2.7
+  react-dom: ^19.2.7
   jotai: ^2.12.5
 
 allowBuilds:
@@ -25,6 +25,13 @@ allowBuilds:
   lightningcss-cli: true
   msgpackr-extract: true
   unrs-resolver: true
+
+minimumReleaseAgeExclude:
+  - '@react-router/dev@8.5.0'
+  - '@react-router/express@8.5.0'
+  - '@react-router/node@8.5.0'
+  - '@react-router/serve@8.5.0'
+  - react-router@8.5.0
 
 # The default pnpm catalog is loaded from `catalog.json` using `.pnpmfile.cjs`.
 # If you want to customize the versions of the catalog, do it in there.
