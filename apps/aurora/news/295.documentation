@@ -1,1 +1,1 @@
-Fix broken link, exclude news files from docs and update `news` directory link to Aurora instead of Volto news. @silviubogan
+Fix broken link, exclude news files from docs, update `news` directory link to Aurora instead of Volto news and treat docs warnings as errors for CI. @silviubogan
