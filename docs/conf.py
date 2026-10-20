@@ -309,12 +309,6 @@ latex_logo = "_static/logo_2x.png"
 # source_replacements = {
 # }
 
-# -- sphinx-reredirects configuration ----------------------------------
-# https://documatt.com/sphinx-reredirects/usage.html
-redirects = {
-    "reference/storybook": "https://plone-storybook.readthedocs.io/",
-}
-
 
 def setup(app):
     # app.add_config_value("source_replacements", {}, True)

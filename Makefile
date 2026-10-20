@@ -101,7 +101,7 @@ docs-news:  ## Create or update the symlink from docs to Plone Aurora app news f
 
 .PHONY: docs-html
 docs-html: bin/python docs-news  ## Build html
-	cd $(DOCS_DIR) && $(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+	cd $(DOCS_DIR) && $(SPHINXBUILD) -W -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
