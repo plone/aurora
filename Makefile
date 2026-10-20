@@ -94,9 +94,9 @@ docs-clean:  ## Clean docs build directory
 	@echo "Cleaned docs build directory."
 
 .PHONY: docs-news
-docs-news:  ## Create or update the symlink from docs to volto package
+docs-news:  ## Create or update the symlink from docs to Plone Aurora app news for /docs/release-notes/index.md
 	if [ -f /tmp/foo.txt ]; then rm docs/news; fi
-	ln -snf ../packages/volto/news docs/news
+	ln -snf ../apps/aurora/news docs/news
 	@echo "Symlink to Plone Aurora news created or updated.";
 
 .PHONY: docs-html
