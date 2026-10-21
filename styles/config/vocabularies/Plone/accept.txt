@@ -1,4 +1,5 @@
 (?i)-plone
+(?i)-plone-
 (?i)plone-
 -{0,1}volto-{0,1}
 `plone.restapi`
