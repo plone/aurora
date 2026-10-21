@@ -10,6 +10,7 @@
 [Cc]lassnames?
 CMSUI
 CommonJS
+Cookieplone
 JavaScript
 npm
 nvm
