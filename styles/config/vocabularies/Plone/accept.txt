@@ -1,14 +1,16 @@
 (?i)-plone
+(?i)-volto
 (?i)-plone-
+(?i)-volto-
 (?i)plone-
--{0,1}volto-{0,1}
-`plone.restapi`
-`plone.volto`
+(?i)volto-
 [Aa]sync
 [Bb]ackend
 [Bb]lockquotes?
 [Cc]allout('s|s)?
 [Cc]lassnames?
+`plone.restapi`
+`plone.volto`
 CMSUI
 CommonJS
 Cookieplone
@@ -18,14 +20,14 @@ nvm
 Pastanaga
 Plate
 Plone
-pluggab(le|ility)
+[pP]luggab(le|ility)
 programatically
 Public UI
 Quanta
 Razzle
 RichText
 [Rr]ulesets?
-Sass
+SASS
 SVGs?
 transpile[dr]{0,1}
 unregister
