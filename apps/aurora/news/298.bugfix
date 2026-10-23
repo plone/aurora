@@ -1,1 +1,1 @@
-Added new `Breadcrumbs` prop: `withNavigationLandmark`. Made `lint-staged` work with spaces in paths. Started using a Playwright version that works better with Ubuntu 26.04 x64 WSL. @silviubogan
+Added new `Breadcrumbs` prop: `withNavigationLandmark`. Made `lint-staged` work with spaces in paths. @silviubogan
