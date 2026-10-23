@@ -7,8 +7,8 @@ const removeIgnoredFiles = async (files) => {
   );
   const filteredFiles = files.filter((_, i) => !ignoredFiles[i]);
 
-  // escape spaces for CLI
-  const finalFiles = filteredFiles.map(f => f.replace(' ', '\\ '));
+  // escape parameters for CLI
+  const finalFiles = filteredFiles.map(f => `"${f}"`);
 
   return finalFiles.join(' ');
 };
