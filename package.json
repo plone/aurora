@@ -47,7 +47,8 @@
     "lint-staged": "^15.2.2",
     "tailwindcss": "catalog:",
     "tsconfig": "workspace:*",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "playwright": "^1.64.1"
   },
   "packageManager": "pnpm@11.20.0"
 }
