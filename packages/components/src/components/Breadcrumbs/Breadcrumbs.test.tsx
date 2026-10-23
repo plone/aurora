@@ -36,9 +36,11 @@ it('Breadcrumbs with navigation landmark test', async () => {
   const results = await axe(container);
 
   expect(results).toHaveNoViolations();
-  expect(container.firstChild.nodeName).toEqual('NAV');
-  expect(container.firstChild.getAttribute('role')).toEqual('navigation');
-  expect(container.firstChild.getAttribute('aria-label')).toEqual(
-    'Breadcrumbs',
-  );
+
+  expect(container.firstChild).not.toBeNull();
+
+  const root = container.firstChild as HTMLElement;
+  expect(root.nodeName).toEqual('NAV');
+  expect(root.getAttribute('role')).toEqual('navigation');
+  expect(root.getAttribute('aria-label')).toEqual('Breadcrumbs');
 });
