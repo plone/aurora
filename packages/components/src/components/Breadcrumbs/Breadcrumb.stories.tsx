@@ -1,5 +1,5 @@
 import React from 'react';
-import { Breadcrumbs, Breadcrumb, BreadcrumbsSlot } from './Breadcrumbs';
+import { Breadcrumbs, Breadcrumb } from './Breadcrumbs';
 import {
   ChevronrightIcon,
   FolderIcon,
@@ -113,10 +113,19 @@ export const NoRoot: Story = {
   },
 };
 
-export const SlotWithRootWithIcons: Story = {
-  render: (args) => <BreadcrumbsSlot {...args} />,
+export const NavigationLandmarkWithRootAndIcons: Story = {
+  render: (args) => (
+    <Breadcrumbs {...args}>
+      {(item) => (
+        <Breadcrumb id={item['@id']} href={item['@id']}>
+          {item.title}
+        </Breadcrumb>
+      )}
+    </Breadcrumbs>
+  ),
   args: {
     root: { '@id': '/', title: 'Home', icon: <HomeIcon size="sm" /> },
+    withNavigationLandmark: true,
     items: [
       { '@id': '/folder', title: 'Folder', icon: <FolderIcon size="sm" /> },
       { '@id': '/folder/page', title: 'Page', icon: <PageIcon size="sm" /> },

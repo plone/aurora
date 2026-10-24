@@ -6,7 +6,11 @@ const removeIgnoredFiles = async (files) => {
     files.map((file) => eslint.isPathIgnored(file)),
   );
   const filteredFiles = files.filter((_, i) => !ignoredFiles[i]);
-  return filteredFiles.join(' ');
+
+  // escape parameters for CLI
+  const finalFiles = filteredFiles.map(f => `"${f}"`);
+
+  return finalFiles.join(' ');
 };
 module.exports = {
   'packages/!(volto)/**/*.{js,jsx,ts,tsx}': async (files) => {
