@@ -25,6 +25,7 @@ it('Breadcrumbs with navigation landmark test', async () => {
   const { container } = render(
     <Breadcrumbs
       withNavigationLandmark
+      navAriaLabel="my breadcrumbs"
       items={[
         { '@id': '/', title: 'Home' },
         { '@id': '/folder', title: 'Folder' },
@@ -42,5 +43,5 @@ it('Breadcrumbs with navigation landmark test', async () => {
   const root = container.firstChild as HTMLElement;
   expect(root.nodeName).toEqual('NAV');
   expect(root.getAttribute('role')).toEqual('navigation');
-  expect(root.getAttribute('aria-label')).toEqual('Breadcrumbs');
+  expect(root.getAttribute('aria-label')).toEqual('my breadcrumbs');
 });

@@ -42,14 +42,29 @@ interface BreadcrumbsProps<
    * If we should include a root item in the breadcrumbs, we provide a Breadcrumb object.
    */
   root?: Breadcrumb;
+
+  /**
+   * Shall we surround the RAC Breadcrumbs component with a navigation landmark?
+   */
   withNavigationLandmark?: boolean;
+
+  /**
+   * ARIA label of the navigation landmark.
+   * Default: "Breadcrumbs"
+   */
+  navAriaLabel?: string;
 }
 
 /**
  * Breadcrumbs display a hierarchy of links to the current page or resource in an application.
  */
 export function Breadcrumbs<T extends Breadcrumb>(props: BreadcrumbsProps<T>) {
-  const { root, items, withNavigationLandmark } = props;
+  const {
+    root,
+    items,
+    withNavigationLandmark,
+    navAriaLabel = 'Breadcrumbs',
+  } = props;
   let itemsWithRoot: typeof items;
   if (root && items) {
     const rootItem = {
@@ -63,7 +78,7 @@ export function Breadcrumbs<T extends Breadcrumb>(props: BreadcrumbsProps<T>) {
   const r = <RACBreadcrumbs {...props} items={itemsWithRoot || items} />;
   if (withNavigationLandmark) {
     return (
-      <nav aria-label="Breadcrumbs" role="navigation">
+      <nav aria-label={navAriaLabel} role="navigation">
         {r}
       </nav>
     );
