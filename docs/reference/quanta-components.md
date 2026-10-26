@@ -71,35 +71,26 @@ RAC 1.18 deprecated `Checkbox`, `Radio` and `Switch` in favor of `CheckboxField`
 The starter's `Checkbox`, `Radio` and `Switch` are built on the new APIs, and add `description` and `errorMessage` conveniences.
 Quanta keeps the RAC `*Field` parts as the reference for hand-written forms.
 
-| Component | Starter | Status | Changes needed |
+| Component | Starter | Status | Notes |
 | --- | --- | --- | --- |
-| `Label`, `Description`, `FieldError`, `FieldGroup`, `Input`, `fieldBorderStyles`, `fieldGroupStyles` | `Field.tsx` | `aligned` | None. |
+| `Label`, `Description`, `FieldError`, `FieldGroup`, `Input`, `fieldBorderStyles`, `fieldGroupStyles` | `Field.tsx` | `aligned` | |
 | `inputStyles`, `TextArea` | none | extra | Used by `TextField` and `TextAreaField`. |
-| `Field`, `FieldWrapper` | none | extra | Not used in the monorepo. Remove, or document. |
-| `TextField` | `TextField.tsx` | `API changes` | Remove the `minValue` prop. |
+| `TextField` | `TextField.tsx` | `aligned` | |
 | `TextAreaField` | none | `extension` | The starter covers multiline text with `TextField`. |
-| `Checkbox` | `Checkbox.tsx` | `API changes` | Build on `CheckboxField` + `CheckboxButton`. Add `description` and `errorMessage`. `className` goes to the button. |
-| `CheckboxGroup` | `CheckboxGroup.tsx` | `aligned` | Move to its own folder. |
-| `RadioGroup` | `RadioGroup.tsx` | `aligned` | None. |
-| `Radio` | `RadioGroup.tsx` | `API changes` | Build on `RadioField` + `RadioButton`. Add `description`. Export `RadioProps`. |
-| `CustomRadio` | none | `extension` | Same migration as `Radio`. Used by the pickers. |
-| `Switch` | `Switch.tsx` | `API changes` | Not on `main` yet (`feat/quanta-controls`). Already on `SwitchField` + `SwitchButton`. `children` required, `description` a string, `className` goes to the button. |
-| `NumberField` | `NumberField.tsx` | `aligned` | None. |
-| `SearchField` | `SearchField.tsx` | `aligned` | None. The starter's clear button is a `FieldButton`. Quanta keeps its own `Button`. |
-| `Form` | `Form.tsx` | `aligned` | None. |
-| `DateField` | `DateField.tsx` | `aligned` | None. |
-| `DateInput` | `DateField.tsx` | `aligned` | None. The starter keeps it in `DateField.tsx`. |
-| `TimeField` | `TimeField.tsx` | `aligned` | Compose `className` on the root, like the starter. |
-| `Calendar` | `Calendar.tsx` | `API changes` | Accept `visibleDuration`. `CalendarHeader` isn't used outside Quanta: make it private, or document it. |
-| `DatePicker` | `DatePicker.tsx` | `API changes` | Generic `DateValue` API instead of ISO strings, and accept `granularity`. The widgets convert the ISO strings, see {ref}`quanta-dates-label`. |
-| `DateTimePicker` | none | `extension` | Takes `DateValue` instead of ISO strings. Keeps the reset button and the current time on first pick. |
-
-Consumers to update:
-
--   `Checkbox`: `contents` (WorkflowModal, PropertiesModal), `cmsui` (SharingForm, BooleanWidget, ByDayField).
--   `Radio`: `cmsui` (RadioOptionsField).
--   `TextField`: `cmsui` widgets, recurrence fields and the login route.
--   `DatePicker` and `DateTimePicker`: `cmsui` (DateWidget, DateTimeWidget, recurrence UntilEndField), `contents` (PropertiesModal).
+| `Checkbox` | `Checkbox.tsx` | `aligned` | Built on `CheckboxField` + `CheckboxButton`. `className` styles the label. |
+| `CheckboxGroup` | `CheckboxGroup.tsx` | `aligned` | |
+| `RadioGroup`, `Radio` | `RadioGroup.tsx` | `aligned` | `Radio` is built on `RadioField` + `RadioButton`. |
+| `CustomRadio` | none | `extension` | A radio rendered as a toggle button, built on `RadioField` + `RadioButton`. Used by the pickers. |
+| `Switch` | `Switch.tsx` | `aligned` | Built on `SwitchField` + `SwitchButton`. |
+| `NumberField` | `NumberField.tsx` | `aligned` | |
+| `SearchField` | `SearchField.tsx` | `aligned` | The starter's clear button is a `FieldButton`. Quanta uses its own `Button`. |
+| `Form` | `Form.tsx` | `aligned` | |
+| `DateField` | `DateField.tsx` | `aligned` | |
+| `DateInput` | `DateField.tsx` | `aligned` | The starter keeps it in `DateField.tsx`. |
+| `TimeField` | `TimeField.tsx` | `aligned` | |
+| `Calendar`, `CalendarGridHeader` | `Calendar.tsx` | `aligned` | |
+| `DatePicker` | `DatePicker.tsx` | `aligned` | Takes date values, see {ref}`quanta-dates-label`. `resettable` (default `true`) is an extra: it shows a button that clears the value. |
+| `DateTimePicker` | none | `extension` | A `DatePicker` with minute granularity, which fills in the current time when you first pick a day. |
 
 ## Collections
 
