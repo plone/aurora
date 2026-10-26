@@ -46,6 +46,7 @@ export * from './components/DateInput/DateInput';
 export * from './components/RadioGroup/RadioGroup';
 export * from './components/MultiSelect/MultiSelect';
 export * from './components/Separator/Separator';
+export * from './components/Sheet/Sheet';
 export * from './components/Spinner/Spinner';
 export * from './components/Switch/Switch';
 export * from './components/Tabs/Tabs';
