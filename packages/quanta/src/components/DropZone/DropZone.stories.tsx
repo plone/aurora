@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DropZone, DropZoneText } from './DropZone';
+import { DropZone, Text } from './DropZone';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
@@ -23,7 +23,7 @@ type Story = StoryObj<typeof meta>;
  *
  * ```ts
  * import { useState } from 'react';
- * import { DropZone, DropZoneText } from '@plone/quanta';
+ * import { DropZone, Text } from '@plone/quanta';
  *
  * const [content, setContent] = useState<string | React.ReactElement | null>(
  *   null,
@@ -61,9 +61,9 @@ type Story = StoryObj<typeof meta>;
  *     }
  *   }}
  * >
- *   <DropZoneText slot="label">
+ *   <Text slot="label">
  *     {content || 'Drop or paste text or images here'}
- *   </DropZoneText>
+ *   </Text>
  * </DropZone>
  * ```
  */
@@ -108,9 +108,9 @@ export const Default: Story = {
         }}
         {...args}
       >
-        <DropZoneText slot="label">
+        <Text slot="label">
           {content || 'Drop or paste text or images here'}
-        </DropZoneText>
+        </Text>
       </DropZone>
     );
   },

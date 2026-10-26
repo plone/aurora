@@ -504,3 +504,58 @@ Like in React Aria's starter, the sections of `Select`, `ComboBox`, and `Menu` r
 If you composed your own select with `SelectListBox`, use `ListBox`, which `@plone/quanta` now exports.
 
 The collection components no longer require their item type to be an object, like React Aria's.
+
+#### `Tabs` uses composition
+
+```{versionchanged} 1.0.0-alpha.20
+`Tabs` in `@plone/quanta` takes its tabs and panels as children, instead of a `tabs` prop.
+```
+
+```{versionadded} 1.0.0-alpha.20
+`TabPanels`, `ToggleButton`, `ToggleButtonGroup`, and `ProgressBar` in `@plone/quanta`, and the pending spinner of `Button`.
+```
+
+Like React Aria's `Tabs`, Quanta's `Tabs` takes a `TabList` with a `Tab` for each tab, and a `TabPanel` for each panel.
+
+```diff
+- <Tabs
+-   tabs={[
+-     { id: 'blocks', title: 'Blocks', content: <BlocksEditor /> },
+-     { id: 'content', title: 'Content', content: <ContentFields /> },
+-   ]}
+- />
++ <Tabs>
++   <TabList>
++     <Tab id="blocks">Blocks</Tab>
++     <Tab id="content">Content</Tab>
++   </TabList>
++   <TabPanel id="blocks">
++     <BlocksEditor />
++   </TabPanel>
++   <TabPanel id="content">
++     <ContentFields />
++   </TabPanel>
++ </Tabs>
+```
+
+`orientation` is React Aria's prop, and still works.
+
+#### `DropZoneText` is renamed `Text`
+
+```{versionchanged} 1.0.0-alpha.20
+`DropZoneText` in `@plone/quanta` is renamed `Text`, like in React Aria's starter.
+```
+
+```diff
+- import { DropZone, DropZoneText } from '@plone/quanta';
++ import { DropZone, Text } from '@plone/quanta';
+```
+
+#### `ToolbarProps` is removed
+
+```{versionremoved} 1.0.0-alpha.20
+The `ToolbarProps` type in `@plone/quanta`.
+```
+
+It was React Aria's `ToolbarProps`.
+Import it from `react-aria-components` instead.

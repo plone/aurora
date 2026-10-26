@@ -1,6 +1,6 @@
 import React from 'react';
-import { expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { expect, it, vi } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { axe, toHaveNoViolations } from 'jest-axe';
 import { Button } from './Button';
 
@@ -45,4 +45,19 @@ it('Button asLink a11y test', async () => {
   const results = await axe(container);
 
   expect(results).toHaveNoViolations();
+});
+
+it('Button shows a spinner and ignores presses while pending', () => {
+  const onPress = vi.fn();
+  render(
+    <Button isPending onPress={onPress}>
+      Save
+    </Button>,
+  );
+
+  const button = screen.getByRole('button', { name: /Save/ });
+  expect(button).toHaveTextContent('Save');
+  expect(button.querySelector('.animate-spin')).toBeInTheDocument();
+  fireEvent.click(button);
+  expect(onPress).not.toHaveBeenCalled();
 });

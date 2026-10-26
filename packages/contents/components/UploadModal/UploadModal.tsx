@@ -7,10 +7,10 @@ import {
   Button,
   Dialog,
   DropZone,
-  DropZoneText,
   Heading,
   Input,
   Modal,
+  Text,
 } from '@plone/quanta';
 import { BinIcon, CloseIcon, PageIcon, UploadIcon } from '@plone/icons';
 import { type ToastItem } from '@plone/layout/config/toast';
@@ -240,7 +240,7 @@ export default function UploadModal() {
                 ? t('contents.modal_upload.upload_more_files')
                 : t('contents.modal_upload.upload_files')}
             </p>
-            <DropZoneText slot="label">
+            <Text slot="label">
               <Trans i18nKey="contents.modal_upload.dropzone_label">
                 Drag and drop or
                 <FileTrigger
@@ -264,7 +264,7 @@ export default function UploadModal() {
                   </Button>
                 </FileTrigger>
               </Trans>
-            </DropZoneText>
+            </Text>
           </DropZone>
 
           <div className="mt-8 flex justify-center gap-3">
