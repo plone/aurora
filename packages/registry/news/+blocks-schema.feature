@@ -1,1 +1,1 @@
-Added `createBlocksDocsLoader`, which collects the `*.block.md` block docs of the add-ons, and the server-only `@plone/registry/blocks-docs` module that the Vite plugin generates from them. @sneridagh
+Added `createBlocksDocsLoader`, which collects the `*.block.md` docs of the add-ons' blocks and page elements, and the server-only `@plone/registry/blocks-docs` module that the Vite plugin generates from them. @sneridagh

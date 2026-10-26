@@ -40,6 +40,16 @@ describe('findBlocksDocs', () => {
   test('finds *.block.md files with a block, outside node_modules', () => {
     expect(findBlocksDocs([core])).toEqual([
       {
+        element: 'h2',
+        title: 'Heading',
+        path: path.join(core, 'Heading', 'heading.block.md'),
+      },
+      {
+        element: 'h3',
+        title: 'Heading',
+        path: path.join(core, 'Heading', 'heading.block.md'),
+      },
+      {
         block: 'listing',
         path: path.join(core, 'Listing', 'docs.block.md'),
       },
@@ -59,7 +69,12 @@ describe('findBlocksDocs', () => {
     expect(sources.find((source) => source.block === 'teaser').path).toBe(
       path.join(addon, 'Teaser', 'teaser.block.md'),
     );
-    expect(sources).toHaveLength(3);
+    expect(sources.find((source) => source.element === 'h3')).toEqual({
+      element: 'h3',
+      title: 'Subheading',
+      path: path.join(addon, 'h3.block.md'),
+    });
+    expect(sources).toHaveLength(5);
     expect(warn).toHaveBeenCalledWith(
       expect.stringContaining('no-frontmatter.block.md'),
     );
@@ -82,6 +97,21 @@ describe('getBlocksDocsLoaderCode', () => {
     expect(code).toContain('{ block: "teaser", markdown: docs0 },');
     expect(code).toContain(
       '{ block: "listing", variation: "gallery", markdown: docs1 },',
+    );
+  });
+
+  test('imports a file that documents several elements once', () => {
+    const code = getBlocksDocsLoaderCode([
+      { element: 'h2', title: 'Heading', path: '/a/heading.block.md' },
+      { element: 'h3', title: 'Heading', path: '/a/heading.block.md' },
+    ]);
+
+    expect(code.match(/^import /gm)).toHaveLength(1);
+    expect(code).toContain(
+      '{ element: "h2", title: "Heading", markdown: docs0 },',
+    );
+    expect(code).toContain(
+      '{ element: "h3", title: "Heading", markdown: docs0 },',
     );
   });
 

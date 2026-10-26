@@ -5,14 +5,25 @@ import type { BlockConfigBase, BlocksFormData, JSONSchema } from '@plone/types';
  * A `*.block.md` file, as collected by `@plone/registry` at build time.
  */
 export type BlockDocsFile = {
-  block: string;
+  block?: string;
   variation?: string;
+  /** A native element of the page document, like a Plate `callout`. */
+  element?: string;
+  title?: string;
   markdown: string;
 };
+
+/**
+ * What a page is made of: `block`, a Plone block from `blocksConfig`, stored
+ * as a `ploneBlock` node, or `element`, a native Plate element of the
+ * document, stored as a node of its `type`.
+ */
+export type NodeKind = 'block' | 'element';
 
 export type BlockSummary = {
   id: string;
   title: string;
+  kind: NodeKind;
   description?: string;
   restricted?: boolean | 'context';
 };
@@ -29,11 +40,19 @@ export type VariationDetail = {
 export type BlockDetail = {
   id: string;
   title: string;
+  kind: 'block';
   docs: string;
   schema: JSONSchema | null;
   error?: string;
   variations?: VariationDetail[];
   restricted?: boolean | 'context';
+};
+
+export type ElementDetail = {
+  id: string;
+  title: string;
+  kind: 'element';
+  docs: string;
 };
 
 /**
@@ -227,6 +246,7 @@ export function buildSummaryItem(
   const item: BlockSummary = {
     id: blockConfig.id,
     title: blockConfig.title,
+    kind: 'block',
   };
   const description = getSummary(resolveDocs(docsFiles, blockConfig));
   if (description) {
@@ -243,6 +263,7 @@ export function buildFullDetail(
     {
       id: blockConfig.id,
       title: blockConfig.title,
+      kind: 'block' as const,
       docs: resolveDocs(docsFiles, blockConfig),
     },
     blockConfig,
@@ -264,6 +285,38 @@ export function buildFullDetail(
   }
 
   return result;
+}
+
+/**
+ * The documented elements of the page document, in the order of their docs
+ * files. Their placeholders are filled from their `plateBlocksConfig` entry.
+ */
+export function getElements(
+  docsFiles: BlockDocsFile[],
+  plateBlocksConfig: Record<string, object> = {},
+): ElementDetail[] {
+  return docsFiles
+    .filter((file): file is BlockDocsFile & { element: string } =>
+      Boolean(file.element),
+    )
+    .map(({ element, title, markdown }) => ({
+      id: element,
+      title: title || element,
+      kind: 'element' as const,
+      docs: fillPlaceholders(
+        markdown.replace(FRONTMATTER, ''),
+        { id: element, ...plateBlocksConfig[element] },
+        element,
+      ).trim(),
+    }));
+}
+
+export function elementSummary({
+  docs,
+  ...element
+}: ElementDetail): BlockSummary {
+  const description = getSummary(docs);
+  return description ? { ...element, description } : element;
 }
 
 /**
@@ -299,13 +352,21 @@ const MARKDOWN_SCHEMA_ERROR = `_${SCHEMA_ERROR}_`;
  * variations, and its schema. A variation's schema is only listed when it
  * differs from the block's schema.
  */
-export function blockToMarkdown(detail: BlockSummary | BlockDetail): string {
-  const { docs, schema, error, variations } = detail as Partial<BlockDetail>;
-  const parts = [`## ${detail.title} (\`${detail.id}\`)`];
+export function blockToMarkdown(
+  detail: BlockSummary | BlockDetail | ElementDetail,
+): string {
+  const { docs, schema, error, variations, restricted } =
+    detail as Partial<BlockDetail>;
+  const parts = [
+    `## ${detail.title} (\`${detail.id}\`)`,
+    detail.kind === 'element'
+      ? `_An element of the document: a node with \`"type": "${detail.id}"\`._`
+      : `_A Plone block: a \`ploneBlock\` node with \`"@type": "${detail.id}"\`._`,
+  ];
 
-  if (detail.restricted === true) {
+  if (restricted === true) {
     parts.push('_Not offered in the block chooser._');
-  } else if (detail.restricted === 'context') {
+  } else if (restricted === 'context') {
     parts.push(
       '_Whether it is offered in the block chooser depends on the content. Ask `/<path>/@blocks-schema` for a given content item._',
     );
@@ -352,13 +413,13 @@ export function blockToMarkdown(detail: BlockSummary | BlockDetail): string {
  * (when documented), and a section per block.
  */
 export function blocksToMarkdown(
-  details: Array<BlockSummary | BlockDetail>,
+  details: Array<BlockSummary | BlockDetail | ElementDetail>,
   documentDocs = '',
 ): string {
   return (
     [
       '# Blocks',
-      'The blocks available on this site, with their documentation and the schema of their settings.',
+      'The elements and blocks available on this site to build a page, with their documentation and the schema of their settings.',
       ...(documentDocs ? ['## Document format', documentDocs] : []),
       ...details.map(blockToMarkdown),
     ].join('\n\n') + '\n'

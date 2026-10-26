@@ -79,6 +79,31 @@ variation: summary
 Shows the title, description and image of each item.
 ```
 
+## Document an element
+
+The native elements of the page document, such as paragraphs, headings, or tables, are not blocks of `blocksConfig`, but the endpoint lists them too, so that a client knows every node it can use to build a page.
+Document an element with `element` in the frontmatter, set to the node `type`, and a `title`.
+One file can document several elements that work the same way, separated by commas.
+
+````markdown
+---
+element: h2, h3, h4, h5, h6
+title: Heading
+---
+
+A section heading, from `h2` to `h6`.
+
+### Example
+
+```json
+{ "type": "h2", "children": [{ "text": "Our results" }] }
+```
+````
+
+The first example is the element's node, with its `type`.
+The elements of `@plone/plate` are documented in {file}`packages/plate/docs/`, and a test loads each example into the editor to check that it keeps it as it is.
+Placeholders are filled from the element's entry in `config.blocks.plateBlocksConfig`.
+
 ## Placeholders
 
 `{{key}}` in the documentation is replaced with the value of that key in the block configuration.
@@ -111,7 +136,7 @@ If it throws or doesn't return a string, the endpoint uses the file's documentat
 ## The document format
 
 A page stores its content as one Plate document, in the `__somersault__` block.
-Its format is documented in {file}`packages/plate/document.block.md`, a file whose frontmatter names `__somersault__`.
+Its format is documented in {file}`packages/plate/docs/document.block.md`, a file whose frontmatter names `__somersault__`.
 The endpoint returns it as the `document` of the list of blocks, not as a block.
 
 ```{note}

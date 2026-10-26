@@ -9,9 +9,10 @@ myst:
 
 # The `@blocks-schema` endpoint
 
-The `@blocks-schema` endpoint describes the blocks registered on a site.
+The `@blocks-schema` endpoint describes what a page of the site can be built with: the native elements of the page document, such as paragraphs, headings, or tables, and the blocks registered on the site.
 For each block, it returns its documentation, the schema of its data, and its variations.
-It also returns the format of the page document that holds the blocks.
+For each element, it returns its documentation, with the shape of its node.
+It also returns the format of the page document that holds them.
 To learn how to write the documentation that it returns, see {doc}`../how-to-guides/document-blocks`.
 
 The endpoint has the same URLs and responses as the one of the Volto server, so clients such as the Plone MCP server work with both.
@@ -48,8 +49,16 @@ GET /@blocks-schema HTTP/1.1
 Authorization: Bearer <token>
 ```
 
-This returns the ID, title, and summary of every registered block, and the documentation of the page document format in `document`.
-The summary is the first paragraph of the block's documentation.
+This returns the ID, title, kind, and summary of every documented element and every registered block, and the documentation of the page document format in `document`.
+The summary is the first paragraph of the documentation.
+
+`kind` tells how the item is stored in the page document:
+
+`element`
+:   A native element of the document, stored as a node whose `type` is the item's ID, for example `{ "type": "h2", "children": [...] }`.
+
+`block`
+:   A Plone block, stored as a `ploneBlock` node whose `@type` is the item's ID, with the block's data next to it.
 
 ```json
 {
@@ -57,22 +66,30 @@ The summary is the first paragraph of the block's documentation.
   "document": "A page stores all its content in one block, `__somersault__`...",
   "items": [
     {
+      "id": "p",
+      "title": "Paragraph",
+      "kind": "element",
+      "description": "A paragraph of text, the most common node of a page..."
+    },
+    {
       "id": "teaser",
       "title": "Teaser",
+      "kind": "block",
       "description": "Shows a card that links to one content item, with its title, description and image..."
     },
     {
       "id": "listing",
       "title": "Listing",
+      "kind": "block",
       "description": "Shows a list of content items that match a catalog query...",
       "restricted": "context"
     }
   ],
-  "items_total": 2
+  "items_total": 3
 }
 ```
 
-`restricted` tells whether editors can add the block.
+`restricted` tells whether editors can add a block.
 It is `true` when the block is never offered, and `"context"` when that depends on the content.
 See [Blocks for a content item](#blocks-for-a-content-item).
 
@@ -110,20 +127,24 @@ When a block has no `blockSchema`, `schema` is `null`.
 When the schema of a block or of a variation can't be resolved, its `schema` is `null` and it has an `error`.
 The rest of the response is not affected.
 
-An unknown block ID returns `404 Not Found`.
+An element returns its `id`, `title`, `kind`, and `docs`, without a schema.
+When a block and an element have the same ID, the block is returned.
+
+An unknown ID returns `404 Not Found`.
 
 ## Markdown
 
 The endpoint also returns Markdown, either with `?format=md` or with an `Accept` header that asks for `text/markdown` and not for `application/json`.
 JSON is the default.
 
-The list returns a single document with the document format and a section for every block.
-Each section contains the block's documentation, its variations, and its schema in a `json` code block.
+The list returns a single document with the document format and a section for every element and block.
+Each section says how the item is stored, and contains its documentation and, for a block, its variations and its schema in a `json` code block.
 A variation's schema is only included when it differs from the block's.
 
 ## Blocks for a content item
 
 Add the path of a content item in front of the endpoint to get only the blocks offered when editing that item.
+Elements are always offered, so they are all listed.
 
 ```http
 GET /news/@blocks-schema HTTP/1.1

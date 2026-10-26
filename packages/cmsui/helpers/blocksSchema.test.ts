@@ -6,8 +6,10 @@ import {
   blockToMarkdown,
   buildFullDetail,
   buildSummaryItem,
+  elementSummary,
   fillPlaceholders,
   getDocumentDocs,
+  getElements,
   getSummary,
   resolveDocs,
   restrictedFlag,
@@ -155,11 +157,13 @@ describe('docs', () => {
     expect(buildSummaryItem(files, listing)).toEqual({
       id: 'listing',
       title: 'Listing',
+      kind: 'block',
       description: 'Lists items. Matching a query.',
     });
     expect(buildSummaryItem([], listing)).toEqual({
       id: 'listing',
       title: 'Listing',
+      kind: 'block',
     });
   });
 
@@ -211,6 +215,7 @@ describe('buildFullDetail', () => {
     expect(detail).toEqual({
       id: 'video',
       title: 'Video',
+      kind: 'block',
       docs: '',
       schema: null,
     });
@@ -228,6 +233,67 @@ describe('buildFullDetail', () => {
     expect(detail.schema).toBeNull();
     expect(detail.error).toBe(
       'The schema for this block could not be resolved.',
+    );
+  });
+});
+
+describe('elements', () => {
+  const files = [
+    {
+      element: 'h2',
+      title: 'Heading',
+      markdown:
+        '---\nelement: h2, h3\ntitle: Heading\n---\n\nA heading.\n\nWidths: {{widths}}.',
+    },
+    {
+      element: 'h3',
+      title: 'Heading',
+      markdown:
+        '---\nelement: h2, h3\ntitle: Heading\n---\n\nA heading.\n\nWidths: {{widths}}.',
+    },
+    { element: 'callout', markdown: 'A box.' },
+    docs('teaser', 'Links.'),
+  ];
+
+  it('lists the documented elements, with their placeholders filled', () => {
+    expect(getElements(files, { h2: { widths: ['narrow'] } })).toEqual([
+      {
+        id: 'h2',
+        title: 'Heading',
+        kind: 'element',
+        docs: 'A heading.\n\nWidths: `narrow`.',
+      },
+      expect.objectContaining({ id: 'h3', title: 'Heading' }),
+      { id: 'callout', title: 'callout', kind: 'element', docs: 'A box.' },
+    ]);
+  });
+
+  it('summarizes an element without its docs', () => {
+    expect(
+      elementSummary({
+        id: 'callout',
+        title: 'Callout',
+        kind: 'element',
+        docs: 'A box.\n\nMore.',
+      }),
+    ).toEqual({
+      id: 'callout',
+      title: 'Callout',
+      kind: 'element',
+      description: 'A box.',
+    });
+  });
+
+  it('has a Markdown section that names its node type', () => {
+    expect(
+      blockToMarkdown({
+        id: 'callout',
+        title: 'Callout',
+        kind: 'element',
+        docs: 'A box.',
+      }),
+    ).toBe(
+      '## Callout (`callout`)\n\n_An element of the document: a node with `"type": "callout"`._\n\nA box.',
     );
   });
 });
@@ -279,6 +345,7 @@ describe('Markdown', () => {
     const markdown = blockToMarkdown({
       id: 'listing',
       title: 'Listing',
+      kind: 'block',
       docs: 'Lists items.',
       schema: { title: 'Listing' } as any,
       restricted: 'context',
@@ -299,7 +366,9 @@ describe('Markdown', () => {
       ],
     });
 
-    expect(markdown).toContain('## Listing (`listing`)');
+    expect(markdown).toContain(
+      '## Listing (`listing`)\n\n_A Plone block: a `ploneBlock` node with `"@type": "listing"`._',
+    );
     expect(markdown).toContain('depends on the content');
     expect(markdown).toContain(
       '- `default`: Default (default)\n- `summary`: Summary\n\n  Shows a summary.\n  With images.',
@@ -314,6 +383,7 @@ describe('Markdown', () => {
     const markdown = blockToMarkdown({
       id: 'broken',
       title: 'Broken',
+      kind: 'block',
       docs: '',
       schema: null,
       error: 'x',
@@ -327,11 +397,19 @@ describe('Markdown', () => {
 
   it('puts the document format before the blocks', () => {
     const markdown = blocksToMarkdown(
-      [{ id: 'video', title: 'Video', docs: 'Embeds a video.', schema: null }],
+      [
+        {
+          id: 'video',
+          title: 'Video',
+          kind: 'block',
+          docs: 'Embeds a video.',
+          schema: null,
+        },
+      ],
       'The page document.',
     );
     expect(markdown).toMatch(
-      /^# Blocks\n\n.+\n\n## Document format\n\nThe page document\.\n\n## Video \(`video`\)\n\nEmbeds a video\.\n$/,
+      /^# Blocks\n\n.+\n\n## Document format\n\nThe page document\.\n\n## Video \(`video`\)\n\n_A Plone block: .+_\n\nEmbeds a video\.\n$/,
     );
     expect(blocksToMarkdown([])).not.toContain('Document format');
   });

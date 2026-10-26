@@ -4,8 +4,11 @@
  * client would ship the docs to it.
  */
 declare const blocksDocs: Array<{
-  block: string;
+  /** The documented block, or `element` for an element of the document. */
+  block?: string;
   variation?: string;
+  element?: string;
+  title?: string;
   markdown: string;
 }>;
 

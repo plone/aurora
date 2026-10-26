@@ -49,7 +49,16 @@ const docs = [
     block: '__somersault__',
     markdown: '---\nblock: __somersault__\n---\n\nOne document.',
   },
+  {
+    element: 'callout',
+    title: 'Callout',
+    markdown:
+      '---\nelement: callout\ntitle: Callout\n---\n\nA box.\n\n### Example',
+  },
 ];
+
+const blockIds = (body: { items: Array<{ id: string; kind: string }> }) =>
+  body.items.filter((item) => item.kind === 'block').map((item) => item.id);
 
 beforeEach(() => {
   clearValidatedTokens();
@@ -195,11 +204,27 @@ describe('the list of blocks', () => {
       '@id': '/@blocks-schema',
       document: 'One document.',
       items: [
-        { id: 'teaser', title: 'Teaser', description: 'Links to one item.' },
-        { id: 'hidden', title: 'Hidden', restricted: true },
-        { id: 'events', title: 'Events', restricted: 'context' },
+        {
+          id: 'callout',
+          title: 'Callout',
+          kind: 'element',
+          description: 'A box.',
+        },
+        {
+          id: 'teaser',
+          title: 'Teaser',
+          kind: 'block',
+          description: 'Links to one item.',
+        },
+        { id: 'hidden', title: 'Hidden', kind: 'block', restricted: true },
+        {
+          id: 'events',
+          title: 'Events',
+          kind: 'block',
+          restricted: 'context',
+        },
       ],
-      items_total: 3,
+      items_total: 4,
     });
   });
 
@@ -210,8 +235,15 @@ describe('the list of blocks', () => {
     });
     const { items } = await response.json();
     expect(items[0]).toEqual({
+      id: 'callout',
+      title: 'Callout',
+      kind: 'element',
+      docs: 'A box.\n\n### Example',
+    });
+    expect(items[1]).toEqual({
       id: 'teaser',
       title: 'Teaser',
+      kind: 'block',
       docs: 'Links to one item.\n\n### Fields',
       schema: expect.objectContaining({ title: 'Teaser' }),
     });
@@ -232,6 +264,9 @@ describe('the list of blocks', () => {
     expect(markdown).toMatch(/^# Blocks\n/);
     expect(markdown).toContain('## Document format\n\nOne document.');
     expect(markdown).toContain('## Teaser (`teaser`)');
+    expect(markdown).toContain(
+      '## Callout (`callout`)\n\n_An element of the document: a node with `"type": "callout"`._',
+    );
     expect(markdown).toContain('### Schema');
   });
 });
@@ -247,10 +282,26 @@ describe('one block', () => {
       '@id': '/@blocks-schema/teaser',
       id: 'teaser',
       title: 'Teaser',
+      kind: 'block',
       docs: 'Links to one item.\n\n### Fields',
       schema: expect.objectContaining({
         properties: { href: { title: 'Target' } },
       }),
+    });
+  });
+
+  it('describes an element', async () => {
+    const response = await blocksSchemaResponse({
+      request: request('/@blocks-schema/callout'),
+      blockId: 'callout',
+      docsFiles: docs,
+    });
+    expect(await response.json()).toEqual({
+      '@id': '/@blocks-schema/callout',
+      id: 'callout',
+      title: 'Callout',
+      kind: 'element',
+      docs: 'A box.\n\n### Example',
     });
   });
 
@@ -285,8 +336,14 @@ describe('for a content item', () => {
     expect(response.headers.get('Cache-Control')).toBe(
       'private, max-age=0, must-revalidate',
     );
-    expect(body.items.map((item: any) => item.id)).toEqual(['teaser']);
-    expect(body.items[0]).not.toHaveProperty('restricted');
+    expect(blockIds(body)).toEqual(['teaser']);
+    // Elements are always offered.
+    expect(body.items).toEqual(
+      expect.arrayContaining([expect.objectContaining({ id: 'p' })]),
+    );
+    expect(
+      body.items.find((item: any) => item.id === 'teaser'),
+    ).not.toHaveProperty('restricted');
   });
 
   it('evaluates restricted with the content, its navroot and the user', async () => {
@@ -299,10 +356,7 @@ describe('for a content item', () => {
     });
     const body = await response.json();
 
-    expect(body.items.map((item: any) => item.id)).toEqual([
-      'teaser',
-      'events',
-    ]);
+    expect(blockIds(body)).toEqual(['teaser', 'events']);
     expect(restricted).toHaveBeenCalledWith(
       expect.objectContaining({
         properties: expect.objectContaining({ '@id': '/events' }),
@@ -350,7 +404,7 @@ describe('for a content item', () => {
       path: '/events',
     });
     const body = await response.json();
-    expect(body.items.map((item: any) => item.id)).toEqual(['teaser']);
+    expect(blockIds(body)).toEqual(['teaser']);
   });
 });
 
@@ -366,5 +420,18 @@ describe('the route', () => {
     expect(teaserDocs).toBeDefined();
     expect(body.id).toBe('teaser');
     expect(body.docs).toMatch(/^Shows a card that links to one content item/);
+  });
+
+  it('describes the elements, with the docs collected at build time', async () => {
+    const response = await loader({
+      request: request('/@blocks-schema/h3'),
+      params: { blockId: 'h3' },
+    } as any);
+    expect(await response.json()).toMatchObject({
+      id: 'h3',
+      title: 'Heading',
+      kind: 'element',
+      docs: expect.stringMatching(/^A section heading/),
+    });
   });
 });

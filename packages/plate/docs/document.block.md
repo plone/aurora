@@ -2,7 +2,7 @@
 block: __somersault__
 ---
 
-A page stores all its content in one block, `__somersault__`, whose `value` is a Plate document: a list of nodes. The blocks described below are nodes of this document too.
+A page stores all its content in one block, `__somersault__`, whose `value` is a Plate document: a list of nodes, from top to bottom. The elements and blocks described below are the nodes you can use.
 
 Write the document in the `blocks` field of the content, under the `__somersault__` key. `blocks_layout` is not used, and other entries in `blocks` are ignored once the document exists.
 
@@ -24,12 +24,12 @@ Write the document in the `blocks` field of the content, under the `__somersault
 
 Every node has `children`. An element's children are other elements or text nodes, `{ "text": "..." }`, and an element without text still needs one empty text node, `[{ "text": "" }]`.
 
-- `title`: the page title, as the first node. It's kept in sync with the `title` field of the content.
-- `p`: a paragraph.
-- `h2` to `h6`: headings.
-- `blockquote`, `code_block`, `hr`, `callout`, `toggle`, `table`, `toc`: quotes, code, separators, callouts, collapsible sections, tables, and a table of contents.
-- `column_group` with `column` children: columns.
-- A list item is a paragraph with `listStyleType` (`disc` or `decimal`) and `indent` (the nesting level, from `1`).
+There are two kinds of nodes:
+
+- Elements, such as paragraphs, headings or tables, are nodes whose `type` is the element's ID.
+- Blocks, such as images or teasers, are nodes of type `ploneBlock`, whose `@type` is the block's ID.
+
+The editor adds `blockWidth` to the nodes, so you can leave it out.
 
 ### Inline content
 
@@ -38,7 +38,7 @@ Every node has `children`. An element's children are other elements or text node
 
 ### Blocks
 
-A block is a node of type `ploneBlock`. Its `@type` is the block ID, its data is in the node itself, next to `@type`, and its `children` is `[{ "text": "" }]`:
+The data of a block is in its node, next to `@type`, and its `children` is `[{ "text": "" }]`:
 
 ```json
 {

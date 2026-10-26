@@ -1,1 +1,1 @@
-Added the `@blocks-schema` endpoint, which describes the blocks of the site with their docs, variations and schemas, as JSON or Markdown, for authenticated users and agents. @sneridagh
+Added the `@blocks-schema` endpoint, which describes the elements and blocks to build a page with, with their docs, variations and schemas, as JSON or Markdown, for authenticated users and agents. @sneridagh

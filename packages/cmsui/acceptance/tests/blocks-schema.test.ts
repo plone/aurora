@@ -25,8 +25,11 @@ test('The @blocks-schema endpoint lists the blocks with their docs', async ({
       expect.objectContaining({
         id: 'teaser',
         title: 'Teaser',
+        kind: 'block',
         description: expect.stringContaining('links to one content item'),
       }),
+      expect.objectContaining({ id: 'p', kind: 'element' }),
+      expect.objectContaining({ id: 'h2', kind: 'element' }),
     ]),
   );
 });
@@ -44,6 +47,10 @@ test('The @blocks-schema endpoint describes one block', async ({ page }) => {
   );
   // The alt text description is a React element, so it's left out.
   expect(body.schema.properties.alt).toEqual({ title: 'Alt text' });
+
+  const table = await (await page.request.get('/@blocks-schema/table')).json();
+  expect(table).toMatchObject({ id: 'table', kind: 'element' });
+  expect(table.docs).toContain('"type": "tr"');
 
   const missing = await page.request.get('/@blocks-schema/nope');
   expect(missing.status()).toBe(404);

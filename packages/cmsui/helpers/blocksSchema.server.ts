@@ -12,7 +12,9 @@ import {
   buildFullDetail,
   buildSummaryItem,
   DOCUMENT_DOCS_ID,
+  elementSummary,
   getDocumentDocs,
+  getElements,
   restrictedFlag,
   wantsMarkdown,
   type BlockDocsFile,
@@ -173,7 +175,8 @@ const BACKEND_ERRORS: Record<number, string> = {
 
 /**
  * Answers a `@blocks-schema` request. `/@blocks-schema` describes every
- * registered block, and `/@blocks-schema/<blockId>` one of them. With a
+ * documented element of the page document and every registered block, and
+ * `/@blocks-schema/<blockId>` one of them. With a
  * content `path` (`/<path>/@blocks-schema`), the list only has the blocks the
  * block chooser offers when editing that content.
  */
@@ -192,6 +195,11 @@ export async function blocksSchemaResponse({
     string,
     BlockConfigBase
   >;
+  // The native elements of the page document, like paragraphs or tables.
+  const elements = getElements(
+    docsFiles,
+    (config.blocks?.plateBlocksConfig ?? {}) as Record<string, object>,
+  );
   const markdown = wantsMarkdown(request);
   const url = new URL(request.url);
   const id = `${url.pathname}${url.search}`;
@@ -241,6 +249,16 @@ export async function blocksSchemaResponse({
 
   if (blockId) {
     const blockConfig = blocksConfig[blockId];
+    // A Plone block wins over an element with the same ID.
+    const element = !blockConfig
+      ? elements.find((item) => item.id === blockId)
+      : undefined;
+    if (element) {
+      if (markdown) {
+        return markdownResponse(`${blockToMarkdown(element)}\n`, { headers });
+      }
+      return Response.json({ '@id': id, ...element }, { headers });
+    }
     if (!blockConfig || blockId === DOCUMENT_DOCS_ID) {
       return errorResponse(
         404,
@@ -258,12 +276,17 @@ export async function blocksSchemaResponse({
   }
 
   const full = markdown || url.searchParams.get('full') === '1';
-  const items = Object.entries(blocksConfig)
+  const blocks = Object.entries(blocksConfig)
     // Entries that aren't blocks, like the page document, are left out.
     .filter(([key, blockConfig]) => key !== DOCUMENT_DOCS_ID && blockConfig?.id)
     .map(([, blockConfig]) => blockConfig)
     .filter((blockConfig) => !context || !isRestrictedIn(blockConfig, context))
     .map((blockConfig) => describe(blockConfig, full));
+  // Elements are always offered, so they are listed in a context too.
+  const items = [
+    ...(full ? elements : elements.map(elementSummary)),
+    ...blocks,
+  ];
   const documentDocs = getDocumentDocs(docsFiles);
 
   if (markdown) {

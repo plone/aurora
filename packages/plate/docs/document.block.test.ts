@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { PLONE_BLOCK_TYPE } from '@plone/helpers';
-import { SOMERSAULT_KEY } from './constants';
-import { TITLE_BLOCK_TYPE } from './components/editor/plugins/title-renderer';
+import { SOMERSAULT_KEY } from '../constants';
+import { TITLE_BLOCK_TYPE } from '../components/editor/plugins/title-renderer';
 import markdown from './document.block.md?raw';
 
 describe('document format docs', () => {
