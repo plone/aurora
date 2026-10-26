@@ -27,7 +27,6 @@ export const middleware = [
   otherResources,
   getAPIResourceWithAuth,
   contentResourceMiddleware,
-  contentResourceMiddleware,
   fetchPloneContent,
   linkMiddleware,
 ];
