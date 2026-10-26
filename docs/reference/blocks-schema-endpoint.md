@@ -91,7 +91,7 @@ The summary is the first paragraph of the documentation.
 
 `restricted` tells whether editors can add a block.
 It is `true` when the block is never offered, and `"context"` when that depends on the content.
-See [Blocks for a content item](#blocks-for-a-content-item).
+See {ref}`blocks-schema-context`.
 
 Add `?full=1` to get the full details of every block, as described in the next section.
 
@@ -140,6 +140,8 @@ JSON is the default.
 The list returns a single document with the document format and a section for every element and block.
 Each section says how the item is stored, and contains its documentation and, for a block, its variations and its schema in a `json` code block.
 A variation's schema is only included when it differs from the block's.
+
+(blocks-schema-context)=
 
 ## Blocks for a content item
 
