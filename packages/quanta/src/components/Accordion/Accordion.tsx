@@ -53,7 +53,7 @@ const AccordionItem = ({ className, ref, ...props }: AccordionItemProps) => {
       className={composeTailwindRenderProps(
         className,
         `
-          peer group/disclosure w-full min-w-60 border-b border-border
+          peer group/disclosure w-full min-w-60 border-b border-quanta-silver
           disabled:opacity-60
         `,
       )}
@@ -79,15 +79,15 @@ const AccordionItemTrigger = ({
         className={composeTailwindRenderProps(
           className,
           `
-            group/trigger flex w-full items-center justify-between gap-x-2 py-3 text-left
-            font-medium
-            open:text-fg
-            focus:text-fg focus:outline-hidden
-            **:data-[slot=icon]:text-muted-fg **:data-[slot=icon]:-mx-0.5
-            **:data-[slot=icon]:shrink-0
+            group/trigger flex w-full items-center justify-between gap-x-2 py-4.5 text-left
+            text-base leading-6 text-quanta-denim
+            hover:text-quanta-sapphire
+            focus:outline-hidden
+            focus-visible:rounded-md focus-visible:outline-3 focus-visible:outline-quanta-cobalt
             disabled:cursor-default disabled:opacity-50
-            **:data-[slot=disclosure-chevron]:size-5
-            sm:text-sm
+            aria-expanded:text-quanta-sapphire
+            **:data-[slot=disclosure-chevron]:size-5 **:data-[slot=icon]:-mx-0.5
+            **:data-[slot=icon]:shrink-0 **:data-[slot=icon]:text-quanta-iron
             forced-colors:disabled:text-[GrayText]
             **:[span]:flex **:[span]:items-center **:[span]:gap-x-1
             **:[span]:*:data-[slot=icon]:mr-1
@@ -123,7 +123,7 @@ const AccordionPanel = ({ className, ref, ...props }: AccordionPanelProps) => {
       className={composeTailwindRenderProps(
         className,
         `
-          text-muted-fg overflow-hidden text-sm transition-all
+          overflow-hidden text-sm text-quanta-iron transition-all
           **:data-[slot=disclosure-group]:border-t
           **:data-[slot=disclosure-group]:**:[.internal-chevron]:hidden
           has-data-[slot=disclosure-group]:**:[button]:px-4
