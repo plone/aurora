@@ -26,7 +26,7 @@ import { ChevrondownIcon } from '@plone/icons';
 const triggerStyles = tv({
   extend: focusRing,
   base: `
-    flex min-h-11 min-w-45 items-center gap-2 rounded-lg bg-quanta-snow py-1 pr-2 pl-3 text-sm
+    flex min-h-12 min-w-45 items-center gap-2 rounded-md bg-quanta-snow py-1 pr-3 pl-3 text-sm
     text-quanta-space transition
     focus-within:bg-quanta-air
     hover:bg-quanta-smoke
@@ -107,11 +107,11 @@ export function ComboBox<T, M extends 'single' | 'multiple' = 'single'>({
             />
             <Button
               aria-label="Show suggestions"
-              className="flex shrink-0 items-center rounded outline-0"
+              className="flex shrink-0 items-center rounded text-quanta-iron outline-0"
             >
               <ChevrondownIcon
                 aria-hidden
-                size="base"
+                size="xs"
                 className={
                   isOpen
                     ? 'rotate-180 transition-transform'
@@ -126,8 +126,8 @@ export function ComboBox<T, M extends 'single' | 'multiple' = 'single'>({
               className="text-xs text-quanta-pigeon"
             />
           )}
-          {description && <Description>{description}</Description>}
           <FieldError>{errorMessage}</FieldError>
+          {description && <Description>{description}</Description>}
           <Popover className="min-w-(--trigger-width) p-1">
             <ComboBoxListBox items={items}>{children}</ComboBoxListBox>
           </Popover>

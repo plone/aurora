@@ -19,7 +19,7 @@ export interface SwitchProps extends Omit<SwitchFieldProps, 'children'> {
 }
 
 const switchStyles = tv({
-  base: 'group flex items-center gap-2 text-sm text-quanta-space transition',
+  base: 'group flex items-center gap-3 text-sm leading-6 text-quanta-denim transition',
   variants: {
     isDisabled: {
       true: `
@@ -30,47 +30,68 @@ const switchStyles = tv({
   },
 });
 
+// A thin track (the `before` pseudo-element) under a larger knob.
 const trackStyles = tv({
-  extend: focusRing,
   base: `
-    flex h-5 w-9 shrink-0 cursor-default items-center rounded-full border border-transparent px-0.5
-    transition duration-200 ease-in-out
+    relative h-4.5 w-7.5 shrink-0 cursor-default
+    before:absolute before:inset-x-0 before:top-[3px] before:h-3 before:rounded-full
+    before:transition before:duration-200 before:ease-in-out
   `,
   variants: {
     isSelected: {
-      false: `
-        bg-quanta-silver
-        group-pressed:bg-quanta-dolphin
-      `,
+      false: 'before:bg-quanta-silver',
       true: `
-        bg-quanta-sapphire
-        group-pressed:bg-quanta-royal
-        forced-colors:bg-[Highlight]!
+        before:bg-quanta-azure
+        group-hover:before:bg-quanta-sapphire
+        group-pressed:before:bg-quanta-sapphire
+        forced-colors:before:bg-[Highlight]!
       `,
     },
     isDisabled: {
       true: `
-        bg-quanta-smoke
-        forced-colors:border-[GrayText] forced-colors:group-selected:bg-[GrayText]!
+        before:bg-quanta-smoke
+        group-hover:before:bg-quanta-smoke
+        forced-colors:before:bg-[GrayText]!
       `,
     },
   },
 });
 
+// Off, a white knob with a border. On, a sapphire ring around a white dot.
 const handleStyles = tv({
+  extend: focusRing,
   base: `
-    h-3.5 w-3.5 transform rounded-full bg-quanta-air shadow-xs outline -outline-offset-1
-    outline-transparent transition duration-200 ease-in-out
+    absolute top-0 left-0 size-4.5 rounded-full border bg-quanta-air transition-all duration-200
+    ease-in-out
   `,
   variants: {
     isSelected: {
-      false: 'translate-x-0',
-      true: 'translate-x-4',
+      false: `
+        translate-x-0 border-quanta-dolphin
+        group-hover:border-quanta-sapphire
+        group-pressed:border-2 group-pressed:border-quanta-cobalt
+      `,
+      true: `
+        translate-x-3 border-[6px] border-quanta-sapphire
+        group-hover:border-quanta-royal
+        group-pressed:border-quanta-cobalt
+      `,
     },
     isDisabled: {
-      true: 'forced-colors:outline-[GrayText]',
+      true: `
+        border-quanta-smoke
+        group-hover:border-quanta-smoke
+        forced-colors:border-[GrayText]
+      `,
     },
   },
+  compoundVariants: [
+    {
+      isSelected: false,
+      isDisabled: true,
+      class: 'bg-quanta-smoke',
+    },
+  ],
 });
 
 /**
@@ -101,8 +122,8 @@ export function Switch({
           </>
         )}
       </SwitchButton>
-      {description && <Description>{description}</Description>}
       <FieldError>{errorMessage}</FieldError>
+      {description && <Description>{description}</Description>}
     </SwitchField>
   );
 }
