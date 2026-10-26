@@ -7,6 +7,7 @@ import { createAddonsServerLoader } from '@plone/registry/create-addons-loader-s
 import { createThemeAddonsLoader } from '@plone/registry/create-theme-loader';
 import { createAddonsStyleLoader } from '@plone/registry/create-addons-styles-loader';
 import { createAddonsLocalesLoader } from '@plone/registry/create-addons-locales-loader';
+import { createBlocksDocsLoader } from '@plone/registry/create-blocks-docs-loader';
 import { pathToFileURL } from 'node:url';
 
 const titleCase = (w) => w.slice(0, 1).toUpperCase() + w.slice(1, w.length);
@@ -153,6 +154,13 @@ export const PloneRegistryVitePlugin = () => {
   createViteLoader(getAddonViteExtenders(registry));
   createAddonsStyleLoader(registry);
   createAddonsLocalesLoader(registry);
+  // The *.block.md files of the add-ons, in load order, so that an add-on
+  // loaded later replaces the docs of an earlier one. Only server code
+  // imports this module, for the @blocks-schema endpoint.
+  const blocksDocsLoaderPath = createBlocksDocsLoader(
+    registry.getAddons().map((addon) => addon.basePath ?? addon.modulePath),
+    { tempInProject: true },
+  );
 
   const [addonsThemeLoaderVariablesPath, addonsThemeLoaderMainPath] =
     createThemeAddonsLoader(registry.getCustomThemeAddons());
@@ -206,6 +214,10 @@ export const PloneRegistryVitePlugin = () => {
             {
               find: '@plone/registry/addons-loader',
               replacement: addonsLoaderPath,
+            },
+            {
+              find: '@plone/registry/blocks-docs',
+              replacement: blocksDocsLoaderPath,
             },
           ],
         },

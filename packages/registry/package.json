@@ -37,7 +37,8 @@
     "dist",
     "bin",
     "README.md",
-    "vite-plugin.*"
+    "vite-plugin.*",
+    "blocks-docs.d.ts"
   ],
   "bin": {
     "init-loaders": "./bin/init-loaders.js"
@@ -52,6 +53,10 @@
     "./create-addons-loader": {
       "import": "./dist/addon-registry/create-addons-loader.js",
       "default": "./dist/addon-registry/create-addons-loader.cjs"
+    },
+    "./create-blocks-docs-loader": {
+      "import": "./dist/addon-registry/create-blocks-docs-loader.js",
+      "default": "./dist/addon-registry/create-blocks-docs-loader.cjs"
     },
     "./create-addons-loader-server": {
       "import": "./dist/addon-registry/create-addons-loader-server.js",
@@ -75,6 +80,9 @@
     },
     "./addons-loader": {
       "types": "./vite-plugin.d.ts"
+    },
+    "./blocks-docs": {
+      "types": "./blocks-docs.d.ts"
     },
     ".": {
       "import": "./dist/index.js",

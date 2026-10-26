@@ -29,6 +29,7 @@ customize-login-screen
 shadow-a-component
 fetch-additional-data-root-loader
 add-content-expanders
+document-blocks
 add-client-endpoints
 add-tailwind
 style-blocks-in-a-theme
