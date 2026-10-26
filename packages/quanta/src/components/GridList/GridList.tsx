@@ -2,8 +2,10 @@
 import React from 'react';
 import {
   GridList as AriaGridList,
+  GridListHeader as AriaGridListHeader,
   GridListItem as AriaGridListItem,
   Button,
+  composeRenderProps,
   type GridListItemProps,
   type GridListProps,
 } from 'react-aria-components';
@@ -12,10 +14,7 @@ import { Checkbox } from '../Checkbox/Checkbox';
 import { composeTailwindRenderProps, focusRing } from '../../utils';
 import { twMerge } from 'tailwind-merge';
 
-export function GridList<T extends object>({
-  children,
-  ...props
-}: GridListProps<T>) {
+export function GridList<T>({ children, ...props }: GridListProps<T>) {
   return (
     <AriaGridList
       {...props}
@@ -40,7 +39,7 @@ const itemStyles = tv({
   `,
   variants: {
     isSelected: {
-      false: 'hover:bg-gray-100',
+      false: 'hover:bg-quanta-snow',
       true: 'z-20',
     },
     isDisabled: {
@@ -70,16 +69,36 @@ export function GridListItem({
         )
       }
     >
-      {({ selectionMode, selectionBehavior, allowsDragging }) => (
-        <>
-          {/* Add elements for drag and drop and selection. */}
-          {allowsDragging && <Button slot="drag">≡</Button>}
-          {selectionMode === 'multiple' && selectionBehavior === 'toggle' && (
-            <Checkbox slot="selection" />
-          )}
-          {children}
-        </>
+      {composeRenderProps(
+        children,
+        (children, { selectionMode, selectionBehavior, allowsDragging }) => (
+          <>
+            {/* Add elements for drag and drop and selection. */}
+            {allowsDragging && <Button slot="drag">≡</Button>}
+            {selectionMode !== 'none' && selectionBehavior === 'toggle' && (
+              <Checkbox slot="selection" />
+            )}
+            {children}
+          </>
+        ),
       )}
     </AriaGridListItem>
+  );
+}
+
+export function GridListHeader({
+  children,
+  ...props
+}: React.HTMLAttributes<HTMLElement>) {
+  return (
+    <AriaGridListHeader
+      {...props}
+      className={twMerge(
+        'px-3 py-1 text-xs font-semibold tracking-wide text-quanta-pigeon uppercase',
+        props.className,
+      )}
+    >
+      {children}
+    </AriaGridListHeader>
   );
 }

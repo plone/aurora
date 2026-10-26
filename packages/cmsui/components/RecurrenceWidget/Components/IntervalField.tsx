@@ -20,7 +20,6 @@ const IntervalField = ({ labelAfter, label, onChange }: IntervalFieldProps) => {
             const inputValue = Number(e);
             onChange(inputValue);
           }}
-          minValue={1}
           defaultValue="1"
         >
           <Input />

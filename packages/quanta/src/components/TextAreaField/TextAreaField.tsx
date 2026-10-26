@@ -36,8 +36,8 @@ export function TextAreaField({
     >
       {label && <Label>{label}</Label>}
       <TextArea className={inputStyles} />
-      {description && <Description>{description}</Description>}
       <FieldError>{errorMessage}</FieldError>
+      {description && <Description>{description}</Description>}
     </AriaTextField>
   );
 }

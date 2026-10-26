@@ -1,5 +1,9 @@
 import React from 'react';
-import { Checkbox, CheckboxGroup, type CheckboxGroupProps } from './Checkbox';
+import { Checkbox } from './Checkbox';
+import {
+  CheckboxGroup,
+  type CheckboxGroupProps,
+} from '../CheckboxGroup/CheckboxGroup';
 
 export default {
   title: 'Quanta/Checkbox',
