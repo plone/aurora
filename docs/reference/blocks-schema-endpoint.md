@@ -140,6 +140,7 @@ GET /news/@blocks-schema/listing HTTP/1.1
 ```
 
 React Router can't match a route below a content path, so these URLs are answered by the `contentResource` utility named `@blocks-schema`, which the root middleware calls before it fetches the content.
+See {ref}`content-resources`.
 
 ## Caching
 
