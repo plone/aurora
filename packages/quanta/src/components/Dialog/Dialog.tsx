@@ -17,4 +17,4 @@ export function Dialog(props: DialogProps) {
   );
 }
 
-export { DialogTrigger } from 'react-aria-components';
+export { DialogTrigger, Heading } from 'react-aria-components';
