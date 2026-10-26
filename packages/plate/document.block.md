@@ -4,7 +4,7 @@ block: __somersault__
 
 A page stores all its content in one block, `__somersault__`, whose `value` is a Plate document: a list of nodes. The blocks described below are nodes of this document too.
 
-Write the document in the `blocks` field of the content, with `blocks_layout` listing only that block:
+Write the document in the `blocks` field of the content, under the `__somersault__` key. `blocks_layout` is not used, and other entries in `blocks` are ignored once the document exists.
 
 ```json
 {
@@ -16,8 +16,7 @@ Write the document in the `blocks` field of the content, with `blocks_layout` li
         { "type": "p", "children": [{ "text": "Our year in numbers." }] }
       ]
     }
-  },
-  "blocks_layout": { "items": ["__somersault__"] }
+  }
 }
 ```
 

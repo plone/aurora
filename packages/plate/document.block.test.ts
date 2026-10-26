@@ -18,7 +18,7 @@ describe('document format docs', () => {
 
     const [document, block] = examples;
     expect(document.blocks[SOMERSAULT_KEY]['@type']).toBe(SOMERSAULT_KEY);
-    expect(document.blocks_layout.items).toEqual([SOMERSAULT_KEY]);
+    expect(Object.keys(document)).toEqual(['blocks']);
     expect(document.blocks[SOMERSAULT_KEY].value[0].type).toBe(
       TITLE_BLOCK_TYPE,
     );
