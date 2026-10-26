@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Collection,
   Header,
   Menu as AriaMenu,
   MenuItem as AriaMenuItem,
@@ -10,7 +11,7 @@ import {
   composeRenderProps,
   type MenuItemProps,
   type MenuProps,
-  type MenuSectionProps,
+  type MenuSectionProps as AriaMenuSectionProps,
   type MenuTriggerProps as AriaMenuTriggerProps,
   type SeparatorProps,
   type SubmenuTriggerProps,
@@ -22,7 +23,7 @@ import { Popover, type PopoverProps } from '../Popover/Popover';
 import { composeTailwindRenderProps, focusRing } from '../../utils';
 import { getMenuTriggerChildren } from './menuTriggerChildren';
 
-export function Menu<T extends object>(props: MenuProps<T>) {
+export function Menu<T>(props: MenuProps<T>) {
   return (
     <AriaMenu
       {...props}
@@ -135,7 +136,17 @@ export function MenuSeparator(props: SeparatorProps) {
   );
 }
 
-export function MenuSection<T extends object>(props: MenuSectionProps<T>) {
+export interface MenuSectionProps<T> extends AriaMenuSectionProps<T> {
+  title?: string;
+  items?: any;
+}
+
+export function MenuSection<T>({
+  title,
+  items,
+  children,
+  ...props
+}: MenuSectionProps<T>) {
   return (
     <AriaMenuSection
       {...props}
@@ -148,26 +159,21 @@ export function MenuSection<T extends object>(props: MenuSectionProps<T>) {
         props.className,
       )}
     >
-      {props.children}
-    </AriaMenuSection>
-  );
-}
-
-export function MenuSectionHeader(props: React.ComponentProps<typeof Header>) {
-  return (
-    <Header
-      {...props}
-      className={twMerge(
-        `
-          sticky -top-[5px] z-10 -mx-1 -mt-px truncate border-y border-y-neutral-200
-          bg-neutral-100/60 px-4 py-1 text-sm font-semibold text-neutral-500 backdrop-blur-md
-          supports-[-moz-appearance:none]:bg-neutral-100
-          dark:border-y-neutral-700 dark:bg-neutral-700/60 dark:text-neutral-300
-          [&+*]:mt-1
-        `,
-        props.className,
+      {title && (
+        <Header
+          className={`
+            sticky -top-[5px] z-10 -mx-1 -mt-px truncate border-y border-y-neutral-200
+            bg-neutral-100/60 px-4 py-1 text-sm font-semibold text-neutral-500 backdrop-blur-md
+            supports-[-moz-appearance:none]:bg-neutral-100
+            dark:border-y-neutral-700 dark:bg-neutral-700/60 dark:text-neutral-300
+            [&+*]:mt-1
+          `}
+        >
+          {title}
+        </Header>
       )}
-    />
+      <Collection items={items}>{children}</Collection>
+    </AriaMenuSection>
   );
 }
 

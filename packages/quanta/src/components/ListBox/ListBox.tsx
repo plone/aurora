@@ -7,7 +7,7 @@ import {
   Header,
   type ListBoxItemProps,
   ListBoxSection,
-  type SectionProps,
+  type ListBoxSectionProps,
   composeRenderProps,
 } from 'react-aria-components';
 import { tv } from 'tailwind-variants';
@@ -19,10 +19,7 @@ interface ListBoxProps<T> extends Omit<
   'layout' | 'orientation'
 > {}
 
-export function ListBox<T extends object>({
-  children,
-  ...props
-}: ListBoxProps<T>) {
+export function ListBox<T>({ children, ...props }: ListBoxProps<T>) {
   return (
     <AriaListBox
       {...props}
@@ -155,14 +152,12 @@ export function DropdownItem(props: ListBoxItemProps) {
   );
 }
 
-export interface DropdownSectionProps<T> extends SectionProps<T> {
+export interface DropdownSectionProps<T> extends ListBoxSectionProps<T> {
   title?: string;
   items?: any;
 }
 
-export function DropdownSection<T extends object>(
-  props: DropdownSectionProps<T>,
-) {
+export function DropdownSection<T>(props: DropdownSectionProps<T>) {
   return (
     <ListBoxSection
       className={`

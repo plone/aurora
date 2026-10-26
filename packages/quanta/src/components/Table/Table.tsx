@@ -119,12 +119,12 @@ export function Column(props: ColumnProps) {
   );
 }
 
-interface TableHeaderProps<T extends object> extends AriaTableHeaderProps<T> {
+interface TableHeaderProps<T> extends AriaTableHeaderProps<T> {
   dragColumnHeader?: React.ReactNode;
   dragColumnWidth?: number;
 }
 
-export function TableHeader<T extends object>(props: TableHeaderProps<T>) {
+export function TableHeader<T>(props: TableHeaderProps<T>) {
   const { dragColumnHeader, dragColumnWidth, ...ariaProps } = props;
   const { selectionBehavior, selectionMode, allowsDragging } =
     useTableOptions();
@@ -164,7 +164,7 @@ export function TableHeader<T extends object>(props: TableHeaderProps<T>) {
   );
 }
 
-export function TableBody<T extends object>(props: TableBodyProps<T>) {
+export function TableBody<T>(props: TableBodyProps<T>) {
   return (
     <AriaTableBody
       {...props}
@@ -188,12 +188,7 @@ const rowStyles = tv({
   `,
 });
 
-export function Row<T extends object>({
-  id,
-  columns,
-  children,
-  ...otherProps
-}: RowProps<T>) {
+export function Row<T>({ id, columns, children, ...otherProps }: RowProps<T>) {
   const { selectionBehavior, allowsDragging } = useTableOptions();
 
   return (
