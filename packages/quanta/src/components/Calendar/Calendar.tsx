@@ -27,22 +27,22 @@ const cellStyles = tv({
   variants: {
     isSelected: {
       false: `
-        text-zinc-900
-        hover:bg-gray-100
+        text-quanta-space
+        hover:bg-quanta-snow
         dark:text-zinc-200 dark:hover:bg-zinc-700
-        pressed:bg-gray-200
+        pressed:bg-quanta-smoke
         dark:pressed:bg-zinc-600
       `,
       true: `
-        bg-blue-600 text-white
-        invalid:bg-red-600
+        bg-quanta-sapphire text-quanta-air
+        invalid:bg-quanta-candy
         forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]
         forced-colors:invalid:bg-[Mark]
       `,
     },
     isDisabled: {
       true: `
-        text-gray-300
+        text-quanta-silver
         dark:text-zinc-600
         forced-colors:text-[GrayText]
       `,
@@ -85,7 +85,7 @@ export function Calendar<T extends DateValue>({
         </div>
       ))}
       {errorMessage && (
-        <Text slot="errorMessage" className="text-sm text-red-600">
+        <Text slot="errorMessage" className="text-sm text-quanta-candy">
           {errorMessage}
         </Text>
       )}
@@ -118,7 +118,7 @@ function CalendarHeader({
       <CalendarHeading
         offset={{ months: offset }}
         className={`
-          mx-2 flex-1 text-center text-xl font-semibold text-zinc-900
+          mx-2 flex-1 text-center text-xl font-semibold text-quanta-space
           dark:text-zinc-200
         `}
       />
@@ -139,7 +139,7 @@ export function CalendarGridHeader() {
   return (
     <AriaCalendarGridHeader>
       {(day) => (
-        <CalendarHeaderCell className="text-xs font-semibold text-gray-500">
+        <CalendarHeaderCell className="text-xs font-semibold text-quanta-pigeon">
           {day}
         </CalendarHeaderCell>
       )}
