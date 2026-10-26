@@ -571,3 +571,27 @@ With `position="right"` or `position="left"`, it's a full-height side panel, suc
 With `position="bottom"`, it's a sheet that slides up, as on phones.
 On touch devices, you can swipe it away.
 For the details, see {ref}`quanta-side-panel-label`.
+
+#### `MultiSelect` is a controlled component
+
+```{versionchanged} 1.0.0-alpha.20
+`MultiSelect` in `@plone/quanta` takes its selected items as `value` and reports them with `onChange`.
+```
+
+```{versionremoved} 1.0.0-alpha.20
+The `selectedItems`, `creatable`, `onItemInserted`, `onItemCleared` and `renderEmptyState` props of `MultiSelect`, and the `Option` type, in `@plone/quanta`.
+```
+
+`MultiSelect` is now built on Quanta's `ComboBox` and `TagGroup`, and `ArrayWidget` in `@plone/cmsui` uses it.
+It's a controlled component, like the other Quanta fields:
+
+```diff
+- const selectedItems = useListData({ initialItems: [] });
+- <MultiSelect items={items} selectedItems={selectedItems} creatable />
++ const [value, setValue] = useState<MultiSelectItem[]>([]);
++ <MultiSelect items={items} value={value} onChange={setValue} allowsCustomValue />
+```
+
+Its items are `MultiSelectItem` objects, with an `id` and a `name`.
+`allowsCustomValue`, React Aria's name for it, replaces `creatable`, and defaults to `false`.
+To search the items on a server, pass `inputValue` and `onInputChange`.
