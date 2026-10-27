@@ -4,6 +4,8 @@ export * from './components/Accordion/Accordion';
 export * from './components/Calendar/Calendar';
 export * from './components/Checkbox/Checkbox';
 export * from './components/CheckboxGroup/CheckboxGroup';
+export * from './components/ColorSwatch/ColorSwatch';
+export * from './components/ColorSwatchPicker/ColorSwatchPicker';
 export * from './components/Container/Container';
 export * from './components/ComboBox/ComboBox';
 export * from './components/Dialog/Dialog';
@@ -20,6 +22,7 @@ export * from './components/Select/Select';
 export * from './components/TextAreaField/TextAreaField';
 export * from './components/TextField/TextField';
 export * from './components/NumberField/NumberField';
+export * from './components/Pagination/Pagination';
 export {
   SizePicker,
   type SizePickerProps,

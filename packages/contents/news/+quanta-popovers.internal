@@ -1,0 +1,1 @@
+The contents view's popovers use Quanta's `Popover`, `Dialog` and `Checkbox`, and the item actions use React Aria Components' `Button`, instead of the ones from `@plone/components`. @pnicolli

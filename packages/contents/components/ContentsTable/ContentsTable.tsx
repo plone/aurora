@@ -8,10 +8,9 @@ import {
 } from 'react-aria-components';
 import { useFetcher, useLoaderData, useNavigate } from 'react-router';
 import { useDebounceCallback, useMediaQuery } from 'usehooks-ts';
-import { Pagination } from '@plone/components';
-
 import {
   Button,
+  Pagination,
   Container,
   Breadcrumbs,
   Breadcrumb,
@@ -625,6 +624,7 @@ export function ContentsTable({
                   totalPages={Math.ceil(search.items_total / b_size)}
                   currentPage={currentPage}
                   onPageChange={(page) => onPageChange(page)}
+                  className="mt-8 justify-end"
                 />
               </>
             ) : (

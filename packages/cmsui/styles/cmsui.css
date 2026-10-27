@@ -6,6 +6,7 @@
  */
 @import 'tailwindcss';
 @import '@plone/components/src/styles/basic/theme.css' layer(theme);
+@import '@plone/quanta/src/styles/colors.css' layer(theme);
 /* Its own `plone-icons` layer nests in `components`, below the utilities. */
 @import '@plone/icons/icons.css' layer(components);
 
