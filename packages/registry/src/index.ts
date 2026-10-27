@@ -225,7 +225,7 @@ class Config {
   registerComponent(options: {
     name: string;
     dependencies?: string[] | string;
-    component: React.ComponentType;
+    component: React.ComponentType<any>;
   }) {
     const { name, component, dependencies = '' } = options;
     let depsString: string = '';

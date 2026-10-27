@@ -59,7 +59,7 @@ export type ReactRouterRouteEntry =
 
 export type ComponentsConfig = Record<
   string,
-  { component: React.ComponentType }
+  { component: React.ComponentType<any> }
 >;
 
 export interface ExperimentalConfig {
