@@ -126,6 +126,7 @@ export const NavigationLandmarkWithRootAndIcons: Story = {
   args: {
     root: { '@id': '/', title: 'Home', icon: <HomeIcon size="sm" /> },
     withNavigationLandmark: true,
+    navigationLandmarkProps: { style: { fontWeight: 'bold' } },
     items: [
       { '@id': '/folder', title: 'Folder', icon: <FolderIcon size="sm" /> },
       { '@id': '/folder/page', title: 'Page', icon: <PageIcon size="sm" /> },

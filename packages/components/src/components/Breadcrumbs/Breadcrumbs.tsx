@@ -49,22 +49,18 @@ interface BreadcrumbsProps<
   withNavigationLandmark?: boolean;
 
   /**
-   * ARIA label of the navigation landmark.
-   * Default: "Breadcrumbs"
+   * Props for the navigation landmark.
+   * Default: <nav role="navigation">...</nav>
    */
-  navAriaLabel?: string;
+  navigationLandmarkProps?: Record<string, any>;
 }
 
 /**
  * Breadcrumbs display a hierarchy of links to the current page or resource in an application.
  */
 export function Breadcrumbs<T extends Breadcrumb>(props: BreadcrumbsProps<T>) {
-  const {
-    root,
-    items,
-    withNavigationLandmark,
-    navAriaLabel = 'Breadcrumbs',
-  } = props;
+  const { root, items, withNavigationLandmark, navigationLandmarkProps } =
+    props;
   let itemsWithRoot: typeof items;
   if (root && items) {
     const rootItem = {
@@ -78,7 +74,7 @@ export function Breadcrumbs<T extends Breadcrumb>(props: BreadcrumbsProps<T>) {
   const r = <RACBreadcrumbs {...props} items={itemsWithRoot || items} />;
   if (withNavigationLandmark) {
     return (
-      <nav aria-label={navAriaLabel} role="navigation">
+      <nav role="navigation" {...navigationLandmarkProps}>
         {r}
       </nav>
     );

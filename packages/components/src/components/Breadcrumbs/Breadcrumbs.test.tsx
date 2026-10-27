@@ -25,7 +25,7 @@ it('Breadcrumbs with navigation landmark test', async () => {
   const { container } = render(
     <Breadcrumbs
       withNavigationLandmark
-      navAriaLabel="my breadcrumbs"
+      navigationLandmarkProps={{ 'aria-label': 'my breadcrumbs' }}
       items={[
         { '@id': '/', title: 'Home' },
         { '@id': '/folder', title: 'Folder' },

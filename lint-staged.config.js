@@ -1,5 +1,9 @@
 const { ESLint } = require('eslint');
 
+function shellQuote(arg) {
+  return "'" + String(arg).replace(/'/g, "'\\''") + "'";
+}
+
 const removeIgnoredFiles = async (files) => {
   const eslint = new ESLint();
   const ignoredFiles = await Promise.all(
@@ -8,7 +12,7 @@ const removeIgnoredFiles = async (files) => {
   const filteredFiles = files.filter((_, i) => !ignoredFiles[i]);
 
   // escape parameters for CLI
-  const finalFiles = filteredFiles.map(f => `"${f}"`);
+  const finalFiles = filteredFiles.map(shellQuote);
 
   return finalFiles.join(' ');
 };
