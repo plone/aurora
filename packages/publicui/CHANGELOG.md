@@ -8,6 +8,51 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.8 (2026-10-03)
+
+### Internal
+
+- Added visual regression tests for the site frame and the toolbar add menu. @sneridagh [#199](https://github.com/plone/volto/issues/199)
+- Import icons from `@plone/icons`. Import Quanta components from `@plone/quanta`. @pnicolli 
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
+## 1.0.0-alpha.7 (2026-09-29)
+
+### Feature
+
+- Added a sharing link to the toolbar. @jmevissen [#29](https://github.com/plone/volto/issues/29)
+
+## 1.0.0-alpha.6 (2026-09-21)
+
+### Internal
+
+- Updated package repository metadata and towncrier issue links from `plone/volto` to `plone/aurora`. @sneridagh 
+
+## 1.0.0-alpha.5 (2026-09-05)
+
+### Internal
+
+- Adapted routes to React Router v8's renamed loader/action context fields and `meta()` match shape. @sneridagh 
+- Declared the catalog-managed i18next version as a peer dependency to keep react-i18next instances unified. @sneridagh 
+
+## 1.0.0-alpha.4 (2026-07-02)
+
+### Feature
+
+- Added content types menu to the toolbar.
+  Added `ContentFolderishCondition` helper for slots.
+  Added German translations. @arybakov05 [#6653](https://github.com/plone/volto/issues/6653)
+- Added a toolbar button that opens the contents view for the current public page. @pnicolli @giuliaghisini 
+
+### Bugfix
+
+- Fix toolbar edit button pointing to stale URL on client-side navigation. @iFlameing 
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+- Updated Public UI route imports and typecheck setup to use the `@plone/aurora` app alias. @sneridagh 
+
 ## 1.0.0-alpha.3 (2026-05-07)
 
 ### Internal

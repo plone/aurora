@@ -1,7 +1,6 @@
 import type { BlockViewProps } from '@plone/types';
 import clsx from 'clsx';
 import { VideoBlockBody, type VideoData } from './VideoBlockBody';
-import './VideoBlockView.css';
 
 type VideoBlockViewProps = {
   data: BlockViewProps['data'];
@@ -16,16 +15,10 @@ const VideoBlockView = (props: VideoBlockViewProps) => {
 
   return (
     <div
-      className={clsx(
-        'video align block',
-        {
-          center: !Boolean(data.align),
-        },
-        data.align,
-        className,
-      )}
+      className={clsx('block-video__wrapper', className)}
+      data-align={data.align || 'center'}
     >
-      <figure className="video-block">
+      <figure className="block-video__figure">
         <VideoBlockBody data={data as VideoData} isEditMode={isEditMode} />
       </figure>
     </div>

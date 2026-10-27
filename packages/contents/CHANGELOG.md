@@ -7,3 +7,35 @@
 -->
 
 <!-- towncrier release notes start -->
+
+## 1.0.0-alpha.3 (2026-10-03)
+
+### Internal
+
+- Added a visual regression test for the contents listing. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+- Import icons from `@plone/icons`. Import Quanta components from `@plone/quanta`. @pnicolli 
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
+## 1.0.0-alpha.2 (2026-09-29)
+
+### Feature
+
+- Implemented the Rename, Change state (workflow), Tags, and Properties bulk actions in the folder contents view, replacing the previous placeholder buttons. @nils-pzr 
+
+## 1.0.0-alpha.1 (2026-09-21)
+
+### Internal
+
+- Updated repository metadata and internal planning docs to reference `plone/aurora` instead of `plone/volto`/`Seven`. @sneridagh 
+
+## 1.0.0-alpha.0 (2026-09-05)
+
+### Feature
+
+- Added the `@plone/contents` package with Seven folder contents views, actions, upload, ordering, filtering, and pagination. @pnicolli @giuliaghisini 
+
+### Internal
+
+- Adapted routes to React Router v8's renamed loader/action context fields and `meta()` match shape. @sneridagh 
+- Declared the catalog-managed i18next version as a peer dependency to keep react-i18next instances unified. @sneridagh 
+- Updated contents route imports and TypeScript app type resolution to use the `@plone/aurora` app alias. @sneridagh

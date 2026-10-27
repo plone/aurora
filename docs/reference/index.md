@@ -20,4 +20,6 @@ utilities
 slate-to-plate-converters
 plate-playwright
 metadata-text-binding
+widgets
+quanta-components
 ```

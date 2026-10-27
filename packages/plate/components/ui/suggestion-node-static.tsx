@@ -1,37 +1,11 @@
-import type { SlateLeafProps, TSuggestionText } from 'platejs';
+import type { TSuggestionText } from 'platejs';
+import type { SlateLeafProps } from 'platejs/static';
 
-import { SlateLeaf } from 'platejs';
+import { SlateLeaf } from 'platejs/static';
 
-import { cn } from '../../lib/utils';
-import { BaseSuggestionPlugin } from '../editor/plugins/suggestion-kit';
-
+// Suggestions are an editorial tool: the rendered content shows suggested
+// text as plain text, without insert or delete markup. The editor shows the
+// suggestion (`suggestion-node.tsx`).
 export function SuggestionLeafStatic(props: SlateLeafProps<TSuggestionText>) {
-  const { editor, leaf } = props;
-
-  const dataList = editor
-    .getApi(BaseSuggestionPlugin)
-    .suggestion.dataList(leaf);
-  const hasRemove = dataList.some((data: any) => data.type === 'remove');
-  const diffOperation = { type: hasRemove ? 'delete' : 'insert' } as const;
-
-  const Component = ({ delete: 'del', insert: 'ins', update: 'span' } as const)[
-    diffOperation.type
-  ];
-
-  return (
-    <SlateLeaf
-      {...props}
-      as={Component}
-      className={cn(
-        `
-          border-b-2 border-b-brand/[.24] bg-brand/[.08] text-brand/80 no-underline
-          transition-colors duration-200
-        `,
-        hasRemove &&
-          'border-b-gray-300 bg-gray-300/25 text-gray-400 line-through',
-      )}
-    >
-      {props.children}
-    </SlateLeaf>
-  );
+  return <SlateLeaf {...props}>{props.children}</SlateLeaf>;
 }

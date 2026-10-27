@@ -32,6 +32,7 @@ export function CommentLeaf(props: PlateLeafProps<TCommentText>) {
       )}
       attributes={{
         ...props.attributes,
+        'data-comment-id': currentId ?? undefined,
         onClick: () => setOption('activeId', currentId ?? null),
         onMouseEnter: () => setOption('hoverId', currentId ?? null),
         onMouseLeave: () => setOption('hoverId', null),

@@ -9,16 +9,18 @@ import {
 } from 'react-aria-components';
 import { Menu, MenuItem, MenuTrigger } from '../Menu/Menu';
 
-import { BoldIcon } from '../icons/BoldIcon';
-import { ItalicIcon } from '../icons/ItalicIcon';
-import { LinkIcon } from '../icons/LinkIcon';
+import {
+  BoldIcon,
+  ItalicIcon,
+  LinkIcon,
+  SettingsIcon,
+  RowbeforeIcon,
+  RowafterIcon,
+  MoreoptionsIcon,
+  BinIcon,
+} from '@plone/icons';
 
 import type { Meta } from '@storybook/react-vite';
-import { SettingsIcon } from '../icons/SettingsIcon';
-import { RowbeforeIcon } from '../icons/RowbeforeIcon';
-import { RowafterIcon } from '../icons/RowafterIcon';
-import { MoreoptionsIcon } from '../icons/MoreoptionsIcon';
-import { BinIcon } from '../icons/BinIcon';
 
 const meta: Meta<typeof BlockToolbar> = {
   title: 'Basic/BlockToolbar',

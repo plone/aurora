@@ -1,0 +1,1 @@
+Fixed the public UI content being wrapped in `.content-area` twice. The route wrapper is now `.main-slot`, and the search and sitemap routes have their own `.content-area`. @sneridagh

@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import * as Icons from '../components/icons';
+import * as Icons from '@plone/icons';
 
 const IconsList: React.FC = () => {
   const icons = [

@@ -60,57 +60,69 @@ export const RelatedItemPayloadSchema = z
     title: true,
   });
 
-export const createContentDataSchema = z.object({
-  '@id': z.string().optional(),
-  '@static_behaviors': z.unknown().optional(),
-  '@type': z.string(),
-  allow_discussion: z.boolean().optional(),
-  blocks: z.unknown().optional(),
-  blocks_layout: z.object({ items: z.array(z.string()) }).optional(),
-  contributors: z.array(z.string()).optional(),
-  creators: z.array(z.string()).optional(),
-  description: z.string().optional(),
-  effective: z.string().nullable().optional(),
-  exclude_from_nav: z.boolean().optional(),
-  expires: z.string().nullable().optional(),
-  file: z
-    .object({
-      'content-type': z.string(),
-      data: z.string(),
-      encoding: z.string(),
-      filename: z.string(),
-    })
-    .optional(),
-  id: z.string().optional(),
-  image: z
-    .object({
-      'content-type': z.string(),
-      data: z.string(),
-      encoding: z.string(),
-      filename: z.string(),
-    })
-    .optional(),
-  language: z.string().optional(),
-  preview_caption: z.string().optional(),
-  preview_image: z
-    .object({
-      'content-type': z.string(),
-      data: z.string(),
-      encoding: z.string(),
-      filename: z.string(),
-    })
-    .optional(),
-  relatedItems: z.array(RelatedItemPayloadSchema).optional(),
-  rights: z.string().nullable().optional(),
-  title: z.string(),
-  versioning_enabled: z.boolean().optional(),
-});
+export const createContentDataSchema = z
+  .object({
+    '@id': z.string().optional(),
+    '@static_behaviors': z.unknown().optional(),
+    '@type': z.string(),
+    // A boolean, or the token of its choices: `True` or `False`.
+    allow_discussion: z.union([z.boolean(), z.string()]).nullable().optional(),
+    blocks: z.unknown().optional(),
+    blocks_layout: z.object({ items: z.array(z.string()) }).optional(),
+    changeNote: z.string().optional(),
+    contributors: z.array(z.string()).optional(),
+    creators: z.array(z.string()).optional(),
+    description: z.string().optional(),
+    effective: z.string().nullable().optional(),
+    exclude_from_nav: z.boolean().optional(),
+    expires: z.string().nullable().optional(),
+    file: z
+      .object({
+        'content-type': z.string(),
+        data: z.string(),
+        encoding: z.string(),
+        filename: z.string(),
+      })
+      .passthrough()
+      .nullable()
+      .optional(),
+    id: z.string().optional(),
+    image: z
+      .object({
+        'content-type': z.string(),
+        data: z.string(),
+        encoding: z.string(),
+        filename: z.string(),
+      })
+      .passthrough()
+      .nullable()
+      .optional(),
+    language: z.string().optional(),
+    preview_caption: z.string().optional(),
+    preview_image: z
+      .object({
+        'content-type': z.string(),
+        data: z.string(),
+        encoding: z.string(),
+        filename: z.string(),
+      })
+      .passthrough()
+      .nullable()
+      .optional(),
+    relatedItems: z.array(RelatedItemPayloadSchema).optional(),
+    rights: z.string().nullable().optional(),
+    title: z.string(),
+    versioning_enabled: z.boolean().optional(),
+  })
+  .passthrough();
 
 export const updateContentDataSchema = z
   .object({
-    allow_discussion: z.boolean().optional(),
+    // A boolean, or the token of its choices: `True` or `False`.
+    allow_discussion: z.union([z.boolean(), z.string()]).nullable().optional(),
     blocks: z.unknown().optional(),
     blocks_layout: z.object({ items: z.array(z.string()) }).optional(),
+    changeNote: z.string().optional(),
     contributors: z.array(z.string()).optional(),
     creators: z.array(z.string()).optional(),
     description: z.string().optional(),
@@ -126,22 +138,26 @@ export const updateContentDataSchema = z
       })
       .optional(),
     preview_caption: z.string().nullable().optional(),
+    // A new file, or the stored one as the API sent it.
     preview_image: z
       .object({
         'content-type': z.string(),
-        data: z.string(),
-        encoding: z.string(),
+        data: z.string().optional(),
+        encoding: z.string().optional(),
         filename: z.string(),
       })
+      .passthrough()
       .nullable()
       .optional(),
     relatedItems: z.array(RelatedItemPayloadSchema).optional(),
     rights: z.string().nullable().optional(),
+    subjects: z.array(z.string()).optional(),
     table_of_contents: z.boolean().nullable().optional(),
     title: z.string().optional(),
     versioning_enabled: z.boolean().optional(),
   })
-  .partial();
+  .partial()
+  .passthrough();
 
 export const copyMoveContentDataSchema = z.object({
   path: z.string(),

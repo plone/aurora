@@ -23,8 +23,8 @@ const TeaserBlockView = (props: TeaserViewProps) => {
     (href as any)?.Description ||
     '';
   const teaserBody = (
-    <div className="teaser-item">
-      <div className="teaser-image-wrapper">
+    <div className="block-teaser__item">
+      <div className="block-teaser__image">
         <Image
           item={image || href}
           alt={title}
@@ -35,9 +35,9 @@ const TeaserBlockView = (props: TeaserViewProps) => {
           responsive={true}
         />
       </div>
-      <div className="teaser-content">
-        <h2>{title}</h2>
-        <p>{description}</p>
+      <div className="block-teaser__content">
+        <h2 className="block-teaser__title">{title}</h2>
+        <p className="block-teaser__description">{description}</p>
       </div>
     </div>
   );

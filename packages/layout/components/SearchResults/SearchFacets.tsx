@@ -1,7 +1,7 @@
 import { useState, useId } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
-import { ChevrondownIcon } from '@plone/components/Icons';
+import ChevrondownIcon from '@plone/icons/svg/chevron-down.svg?react';
 import clsx from 'clsx';
 import type { Brain } from '@plone/types';
 import styles from './SearchResults.module.css';

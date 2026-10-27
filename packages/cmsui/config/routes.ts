@@ -51,6 +51,17 @@ export default function install(config: ConfigType) {
       },
       {
         type: 'prefix',
+        path: '@@sharing',
+        children: [
+          {
+            type: 'route',
+            path: '*',
+            file: '@plone/cmsui/routes/sharing.tsx',
+          },
+        ],
+      },
+      {
+        type: 'prefix',
         path: 'controlpanel',
         children: [
           {
@@ -122,6 +133,28 @@ export default function install(config: ConfigType) {
         type: 'route',
         path: '*',
         file: '@plone/cmsui/routes/queryStringOptions.tsx',
+      },
+    ],
+  });
+  config.registerRoute({
+    type: 'prefix',
+    path: '@vocabulary',
+    children: [
+      {
+        type: 'route',
+        path: '*',
+        file: '@plone/cmsui/routes/vocabulary.tsx',
+      },
+    ],
+  });
+  config.registerRoute({
+    type: 'prefix',
+    path: '@querystringSearch',
+    children: [
+      {
+        type: 'route',
+        path: '*',
+        file: '@plone/cmsui/routes/querystringSearch.tsx',
       },
     ],
   });

@@ -1,1 +1,0 @@
-Added querystringWidget for seven @nileshgulia1

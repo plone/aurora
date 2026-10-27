@@ -1,0 +1,1 @@
+Fixed the file and image fields, such as the image of an Image or the lead image of a News Item: they now upload the file with `FileWidget`, instead of storing an image URL that the content API cannot save. @sneridagh

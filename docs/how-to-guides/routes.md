@@ -18,6 +18,17 @@ To promote clarity and modularity, **place all route components for your add-on 
 
 The `file` property in each route must be a **fully qualified module path**—for example, `@my-addon/routes/MyView.tsx`—so that the application can resolve and load the component correctly at runtime.
 
+Name the route paths after their kind, following the Plone conventions.
+
+-   Views, the routes that render a page, use a `@@` prefix, like `@@edit`, `@@add`, or `@@contents`.
+-   Resources, the routes that only return data or handle an action for the UI, use a single `@` prefix, like the Plone REST API endpoints.
+    Examples are `@search`, `@objectBrowserWidget`, or the `@delete` action of the Contents view.
+    Resources that belong to one view can be nested in its path, like `/@@contents/@delete`, so they don't collide with the resources of other add-ons.
+
+The root middleware doesn't load the Plone content, site, and user for resource routes, the routes whose path has a segment that starts with a single `@`, since they don't render a page.
+Their loaders and actions must not read `ploneContentContext`, `ploneSiteContext`, or `ploneUserContext`, because these are not set.
+Use the Plone client from `ploneClientContext` to request what they need.
+
 ## Route definition
 
 This section describes the parts that comprise and define a route.

@@ -4,10 +4,10 @@ import {
   Button,
   GridList,
   GridListItem,
-} from '@plone/components/quanta';
+} from '@plone/quanta';
 import { useEffect, useState, useRef } from 'react';
 import { isSelectable, getItemLabel } from './utils';
-import { ArrowleftIcon, ListIcon } from '@plone/components/Icons';
+import { ArrowleftIcon, ListIcon } from '@plone/icons';
 import type { PressEvent } from 'react-aria-components';
 import { useObjectBrowserNavigation } from './ObjectBrowserNavigationContext';
 import { useTranslation } from 'react-i18next';
@@ -155,7 +155,7 @@ export function ObjectBrowserWidgetBody() {
             viewMode
               ? `
                 group data-[layout="grid"] grid h-fit grid-cols-2 gap-4 border-0 py-4
-                [&_label[slot="selection"]]:hidden
+                [&_[slot="selection"]]:hidden
                 [&>div]:rounded-lg [&>div]:p-0 [&>div]:transition-all [&>div]:duration-200
               `
               : `

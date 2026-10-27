@@ -33,11 +33,62 @@ function getAuthorizedResourceHeaders(
   return headers;
 }
 
+/**
+ * Returns the `PloneClient` class registered as the `ploneClient` utility,
+ * extended with the methods of every registered `clientEndpoints` utility.
+ */
+export function getPloneClientClass() {
+  const PloneClient = config
+    .getUtility({
+      name: 'ploneClient',
+      type: 'client',
+    })
+    .method();
+
+  const endpoints = config
+    .getUtilities({ type: 'clientEndpoints' })
+    .map((utility) => utility.method());
+
+  return endpoints.length > 0
+    ? PloneClient.extend(Object.assign({}, ...endpoints))
+    : PloneClient;
+}
+
+/**
+ * Whether a route pattern names a resource: one of its segments starts with
+ * a single `@`, like `@search/*` or `@@contents/@delete/*`. Views use `@@`.
+ */
+export function isResourcePattern(pattern: string) {
+  return pattern.split('/').some((segment) => /^@(?!@)/.test(segment));
+}
+
+// The health check keeps its conventional path, `/ok`, instead of `@ok`.
+const HEALTH_CHECK_PATTERN = 'ok';
+
+/**
+ * Whether the route matched by a request doesn't need the Plone content,
+ * site and user: resource routes (see `isResourcePattern`) and the health
+ * check don't, any other route does.
+ */
+export function routeSkipsContent(pattern: string) {
+  return (
+    pattern.replace(/^\/+/, '') === HEALTH_CHECK_PATTERN ||
+    isResourcePattern(pattern)
+  );
+}
+
+// Module-level, so the configuration is applied once per process. During
+// development, editing the configuration re-evaluates this module through
+// HMR, which resets the flag and applies the new configuration.
+let serverConfigInstalled = false;
+
 export const installServerMiddleware: Route.MiddlewareFunction = async (
   { request, context },
   next,
 ) => {
+  if (serverConfigInstalled) return;
   installServer();
+  serverConfigInstalled = true;
 };
 
 export const PloneClientMiddleware: Route.MiddlewareFunction = async (
@@ -46,12 +97,7 @@ export const PloneClientMiddleware: Route.MiddlewareFunction = async (
 ) => {
   const token = await getAuthFromRequest(request);
 
-  const PloneClient = config
-    .getUtility({
-      name: 'ploneClient',
-      type: 'client',
-    })
-    .method();
+  const PloneClient = getPloneClientClass();
 
   const cli = PloneClient.initialize({
     apiPath: config.settings.apiPath,
@@ -133,11 +179,40 @@ export const getAPIResourceWithAuth: Route.MiddlewareFunction = async (
   }
 };
 
+function matchesExpanderPath(path: string, match: string) {
+  const prefix = match.replace(/\/+$/, '');
+  return prefix === '' || path === prefix || path.startsWith(`${prefix}/`);
+}
+
+/**
+ * Returns the components to expand in the content request of `path`, as
+ * declared in `config.settings.apiExpanders` (see `defaultApiExpanders` in
+ * `config/server.server.ts` for the core ones). Expanders flagged
+ * `authenticated` apply only to signed-in users, so that anonymous requests,
+ * and their cache keys, stay unchanged.
+ */
+export function getContentExpand(path: string, authenticated: boolean) {
+  const expand: string[] = [];
+
+  for (const expander of config.settings.apiExpanders ?? []) {
+    // Volto-shaped expanders (`GET_CONTENT`) do not apply to Plone Aurora.
+    if (!('expand' in expander)) continue;
+    if (expander.authenticated && !authenticated) continue;
+    if (!matchesExpanderPath(path, expander.match)) continue;
+    for (const name of expander.expand) {
+      if (!expand.includes(name)) expand.push(name);
+    }
+  }
+
+  return expand;
+}
+
 export const fetchPloneContent: Route.MiddlewareFunction = async (
-  { request, params, context },
+  { request, params, context, pattern },
   next,
 ) => {
-  const expand = ['navroot', 'breadcrumbs', 'navigation', 'actions'];
+  if (routeSkipsContent(pattern)) return;
+
   const token = await getAuthFromRequest(request);
 
   let cli = context.get(ploneClientContext);
@@ -156,7 +231,7 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
     } catch {}
   }
 
-  if (userId) expand.push('types');
+  const expand = getContentExpand(path, !!userId);
 
   const setPloneContext = (
     content: Awaited<ReturnType<PloneClient['getContent']>>,
@@ -185,12 +260,7 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
       });
     }
     if (token && error?.status === 401) {
-      const PloneClient = config
-        .getUtility({
-          name: 'ploneClient',
-          type: 'client',
-        })
-        .method();
+      const PloneClient = getPloneClientClass();
       cli = PloneClient.initialize({
         apiPath: config.settings.apiPath,
       });
@@ -200,7 +270,7 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
         const [content, site] = await Promise.all([
           cli.getContent({
             path,
-            expand: expand.filter((item) => item !== 'types'),
+            expand: getContentExpand(path, false),
           }),
           cli.getSite(),
         ]);
@@ -225,9 +295,11 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
 };
 
 export const linkMiddleware: Route.MiddlewareFunction = async (
-  { context },
+  { context, pattern },
   next,
 ) => {
+  if (routeSkipsContent(pattern)) return;
+
   const content = context.get(ploneContentContext);
 
   if (

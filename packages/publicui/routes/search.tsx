@@ -10,7 +10,7 @@ import {
 } from 'react-router';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { flattenToAppURL } from '@plone/helpers';
-import { Container } from '@plone/components/quanta';
+import { Container } from '@plone/quanta';
 import { SearchResults } from '@plone/layout/components/SearchResults/SearchResults';
 import { SearchPagination } from '@plone/layout/components/SearchResults/SearchPagination';
 import {
@@ -126,23 +126,25 @@ export default function SearchRoute() {
     navigation.location?.pathname === location.pathname;
 
   return (
-    <Container width="default" className="route-search">
-      <h1 className="documentFirstHeading">
-        {params
-          ? `${t('publicui.search.title')} "${params}"`
-          : t('publicui.search.results')}
-      </h1>
-      {/* Search input lives in the site header (issue #59). */}
-      <SearchFacets facets={facets} />
-      {search.length > 0 ? (
-        <>
-          <SearchSort />
-          <SearchResults items={search} total={total} loading={isLoading} />
-          <SearchPagination total={total} bStart={bStart} bSize={bSize} />
-        </>
-      ) : params ? (
-        <p className="noResults">{t('publicui.search.noResults')}</p>
-      ) : null}
-    </Container>
+    <div className="content-area">
+      <Container width="default" className="route-search">
+        <h1 className="documentFirstHeading">
+          {params
+            ? `${t('publicui.search.title')} "${params}"`
+            : t('publicui.search.results')}
+        </h1>
+        {/* Search input lives in the site header (issue #59). */}
+        <SearchFacets facets={facets} />
+        {search.length > 0 ? (
+          <>
+            <SearchSort />
+            <SearchResults items={search} total={total} loading={isLoading} />
+            <SearchPagination total={total} bStart={bStart} bSize={bSize} />
+          </>
+        ) : params ? (
+          <p className="noResults">{t('publicui.search.noResults')}</p>
+        ) : null}
+      </Container>
+    </div>
   );
 }

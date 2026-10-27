@@ -62,7 +62,7 @@ useMetadataTextBinding({
 
 Binding shape:
 
-- `field`: metadata field name in `formAtom`
+- `field`: the metadata field's name in the form the editor is rendered in (`useOptionalFormContext` from `@plone/helpers`); outside a form, the binding does nothing
 - `getState(editor)`: returns:
   - `value`: current plain-text value represented by the block, or `null` if the block is absent
   - `isActive`: whether the user is currently editing that block

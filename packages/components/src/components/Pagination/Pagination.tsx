@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { VisuallyHidden } from 'react-aria';
-import { ArrowleftIcon, ArrowrightIcon } from '../icons';
+import { ArrowleftIcon, ArrowrightIcon } from '@plone/icons';
 import { Button } from '../Button/Button';
 
 export type PaginationProps = {

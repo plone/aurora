@@ -2,8 +2,8 @@ import { reactRouter } from '@react-router/dev/vite';
 import path from 'node:path';
 import { defineConfig, PluginOption } from 'vite';
 import { PloneRegistryVitePlugin } from '@plone/registry/vite-plugin';
-import { PloneSVGRVitePlugin } from '@plone/components/vite-plugin-svgr';
-import applyAddonViteConfiguration from './.plone/vite.loader';
+import { PloneSVGRVitePlugin } from '@plone/icons/vite-plugin-svgr';
+import applyAddonViteConfiguration from './.plone/vite.loader.js';
 import babel from 'vite-plugin-babel';
 import tailwindcss from '@tailwindcss/vite';
 import { visualizer } from 'rollup-plugin-visualizer';
@@ -12,7 +12,7 @@ import devtoolsJson from 'vite-plugin-devtools-json';
 export default defineConfig(({ command, mode, isSsrBuild }) => {
   const analyze = process.env.ANALYZE === 'true';
   const target = isSsrBuild ? 'server' : 'client';
-  const statsDir = path.resolve(__dirname, 'build', 'stats');
+  const statsDir = path.resolve(import.meta.dirname, 'build', 'stats');
 
   const baseConfig = {
     plugins: [
@@ -46,6 +46,56 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
           ]
         : []),
     ] as PluginOption[],
+    optimizeDeps: {
+      // Server-only deps that Vite would otherwise still pick up for the
+      // client bundle — keep in sync with ssr.optimizeDeps.include below
+      exclude: [
+        'i18next-fs-backend',
+        'i18next-fs-backend/cjs',
+        'remix-i18next',
+      ],
+      include: [
+        // App-level deps (in apps/aurora/package.json)
+        'i18next',
+        'i18next-browser-languagedetector',
+        'i18next-http-backend',
+        'react-i18next',
+        // Injected by babel-plugin-react-compiler, not in any package.json
+        'react/compiler-runtime',
+        // @plone/components, @plone/icons, @plone/quanta and @plone/helpers are
+        // not registered add-ons, so their deps can't be declared in
+        // vite.extend.js — list them here
+        '@plone/components > clsx',
+        '@plone/components > react-aria',
+        '@plone/components > react-aria-components',
+        '@plone/components > react-aria-components/DropZone',
+        '@plone/icons > @react-aria/utils',
+        '@plone/icons > @react-spectrum/utils',
+        '@plone/icons > clsx',
+        '@plone/icons > tailwind-variants',
+        '@plone/quanta > @internationalized/date',
+        '@plone/quanta > clsx',
+        '@plone/quanta > react-aria-components',
+        '@plone/quanta > react-aria-components/DropZone',
+        '@plone/quanta > react-aria-components/Form',
+        '@plone/quanta > react-aria-components/Group',
+        '@plone/quanta > react-aria-components/Modal',
+        '@plone/quanta > react-aria-components/Table',
+        '@plone/quanta > react-aria-components/Tooltip',
+        '@plone/quanta > react-aria-components/composeRenderProps',
+        '@plone/quanta > tailwind-merge',
+        '@plone/quanta > tailwind-variants',
+        '@plone/helpers > jotai',
+        '@plone/helpers > jotai/utils',
+        '@plone/helpers > jotai/vanilla',
+        '@plone/helpers > jotai-optics',
+      ],
+    },
+    ssr: {
+      optimizeDeps: {
+        include: ['i18next-fs-backend/cjs', 'isbot', 'remix-i18next'],
+      },
+    },
     resolve: {
       tsconfigPaths: true,
     },

@@ -8,28 +8,28 @@ import {
   ListBoxItem,
   ListBoxSection,
   Popover,
-  PopoverContext,
   Select as RACSelect,
   SelectValue,
   Text,
-  useContextProps,
   type ListBoxItemProps,
   type ListBoxProps,
+  type PopoverProps,
   type SectionProps,
   type SelectProps as RACSelectProps,
   type ValidationResult,
 } from 'react-aria-components';
 
-import { ChevrondownIcon } from '../icons/ChevrondownIcon';
-import { ChevronupIcon } from '../icons/ChevronupIcon';
+import { ChevrondownIcon, ChevronupIcon } from '@plone/icons';
 
 export interface SelectItemObject {
   label: string;
   value: string;
 }
 
-interface SelectBaseProps<T extends object, M extends 'single' | 'multiple'>
-  extends Omit<RACSelectProps<T, M>, 'children'> {
+interface SelectBaseProps<
+  T extends object,
+  M extends 'single' | 'multiple',
+> extends Omit<RACSelectProps<T, M>, 'children'> {
   label?: string;
   labelClassnames?: string;
   description?: string;
@@ -43,6 +43,14 @@ export interface SelectProps<
   M extends 'single' | 'multiple' = 'single',
 > extends SelectBaseProps<T, M> {}
 
+export type SelectPopoverContextValue = Pick<
+  PopoverProps,
+  'className' | 'style'
+>;
+
+export const SelectPopoverContext =
+  React.createContext<SelectPopoverContextValue | null>(null);
+
 export function Select<
   T extends object = SelectItemObject,
   M extends 'single' | 'multiple' = 'single',
@@ -54,7 +62,7 @@ export function Select<
   items,
   ...props
 }: SelectProps<T, M>) {
-  const [popoverProps] = useContextProps({}, null, PopoverContext);
+  const popoverProps = React.useContext(SelectPopoverContext) ?? undefined;
 
   return (
     <RACSelect {...props}>
@@ -69,7 +77,7 @@ export function Select<
           </Button>
           {description && <Text slot="description">{description}</Text>}
           <FieldError>{errorMessage}</FieldError>
-          <Popover offset={0} {...popoverProps}>
+          <Popover {...popoverProps} offset={0}>
             <SelectListBox items={items}>
               {children
                 ? children

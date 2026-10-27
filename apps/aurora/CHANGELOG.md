@@ -1,4 +1,4 @@
-# Seven Release Notes
+# @plone/aurora Release Notes
 
 <!-- Do *NOT* add new change log entries to this file.
      Instead create a file in the news directory.
@@ -8,14 +8,171 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.19 (2026-10-06)
+
+### Documentation
+
+- Documented the content styles loader, its authoring rules, and how to override block styles from an add-on. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+- Documented the block content classname contract for themers. @sneridagh [#200](https://github.com/plone/aurora/issues/200)
+- Added the block content CSS changes of plone/aurora#199 and plone/aurora#200 to the upgrade guide. @sneridagh 
+- Added the how-to guide "Style blocks in a theme", with every block's parts and tokens, and fixed the content styles examples in the add-on styles loader and block anatomy docs. @sneridagh 
+
+## 1.0.0-alpha.18 (2026-10-06)
+
+### Internal
+
+- Update to latest @plone/plate @sneridagh [#update](https://github.com/plone/aurora/issues/update)
+
+## 1.0.0-alpha.17 (2026-10-06)
+
+### Internal
+
+- Upgrade to use latest @plone/plate. @sneridagh 
+
+## 1.0.0-alpha.16 (2026-10-03)
+
+### Bugfix
+
+- Fixed the server not loading the translations, which made it render raw message keys and React replace the whole server-rendered page on hydration. @sneridagh 
+
+### Internal
+
+- Added nightly Playwright visual regression tests for native blocks and editor overlays, with baselines stored in the `plone/aurora-visual-regression` repository and a protected workflow to update the screenshots. @sneridagh 
+- Cached the Playwright browsers in CI, and stopped installing their system dependencies with apt, which was sometimes very slow. @sneridagh 
+- Import icons from `@plone/icons`. Depend on `@plone/quanta` and pre-bundle its dependencies. @pnicolli 
+- Sped up CI: superseded runs on branches and pull requests are cancelled, the format and style checks skip building the packages, and the `@plone/client` unit tests no longer install Playwright. @sneridagh 
+- Split the Playwright acceptance tests in CI across 3 shards, and merge their reports into a single HTML report. @sneridagh 
+- The `release` scripts of all the packages now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set. @sneridagh 
+- The release configuration of all the packages now runs `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+- Updated `actions/checkout` to v7 and `JarvusInnovations/background-action` to v2 in the visual regression workflows. @sneridagh 
+
+### Documentation
+
+- Added the "How to make a Plone Aurora release" documentation page, with the release requirements and the `prereleaser` workflow. @sneridagh 
+- Documented how to upgrade existing add-ons for the split of `@plone/components` into `@plone/quanta` and `@plone/icons`. @sneridagh 
+- Documented the visual regression tests: how to run them, review a failure and update the baseline screenshots, and how maintainers set up the GitHub infrastructure. @sneridagh 
+
+## 1.0.0-alpha.15 (2026-10-01)
+
+### Internal
+
+- Update to the latest @plone/plate and @plone/cmsui @sneridagh 
+
+## 1.0.0-alpha.14 (2026-09-30)
+
+### Internal
+
+- Use latest @plone/plate @sneridagh 
+
+## 1.0.0-alpha.13 (2026-09-30)
+
+### Internal
+
+- Use new @plone/plate release. @sneridagh 
+
+## 1.0.0-alpha.12 (2026-09-29)
+
+### Internal
+
+- Use updated @plone/plate. @sneridagh 
+
+## 1.0.0-alpha.11 (2026-09-29)
+
+### Feature
+
+- Registered a somersault migration that converts legacy flat blockquotes from volto-slate content into blockquote containers. @sneridagh 
+
+### Internal
+
+- Updated the pull request template to refer to Aurora instead of Volto. @stevepiercy 
+
+### Documentation
+
+- Added testing documentation. @pnicolli 
+
+## 1.0.0-alpha.10 (2026-09-21)
+
+### Internal
+
+- Replaced `__dirname` with `import.meta.dirname` and added the `.js` extension to the `./.plone/vite.loader` import in `vite.config.ts` to silence the Vite native config loader deprecation warnings. @sneridagh 
+- Replaced remaining `Seven`/`volto` references with `Plone Aurora`/`aurora` across repository docs, Makefile, and CI configuration. @sneridagh 
+- Update to support Plone 6.2.2. @sneridagh 
+
+### Documentation
+
+- Expanded the "Create a package" and "Create a project" get-started guides to explain what a frontend add-on and a full project are, when to choose one over the other, and why an add-on's backend can only run a vanilla Plone Docker image. Also added the missing `create-project` link under "Integrators" in the docs index. @sneridagh 
+
+## 1.0.0-alpha.9 (2026-09-16)
+
+### Documentation
+
+- Update the root-loader how-to and the Prisma tutorial so `rootLoaderData` utilities return the `{ status, data }` envelope that the root loader unwraps and merges. @sneridagh [#169](https://github.com/plone/volto/issues/169)
+
+## 1.0.0-alpha.8 (2026-09-14)
+
+### Breaking
+
+- The fixed wiring up the `rootLoaderData` utility envelope in the root loader provokes a breaking change for all `rootLoaderData` utilities so they must return a `{ status, data }` envelope (matching the PloneClient response shape), but the root loader spread the whole envelope onto the root loader data instead of merging each utility's `data`. It now merges `data`, so utilities that namespace their payload (for example `{ status, data: { likes: {...} } }`) are exposed correctly. @sneridagh
+
+### Bugfix
+
+- Wire up the `rootLoaderData` utility envelope in the root loader. Utilities return a `{ status, data }` envelope (matching the PloneClient response shape), but the root loader spread the whole envelope onto the root loader data instead of merging each utility's `data`. It now merges `data`, so utilities that namespace their payload (for example `{ status, data: { likes: {...} } }`) are exposed correctly. Acting on `status` is left for a follow-up. @sneridagh
+
+## 1.0.0-alpha.7 (2026-09-05)
+
+### Internal
+
+- Re-release for adjust tag in repo and in npm automatically during the alpha phase. @sneridagh
+
+## 1.0.0-alpha.6 (2026-09-05)
+
+### Internal
+
+- Re-release for update the README in npm. @sneridagh
+
+## 1.0.0-alpha.5 (2026-09-05)
+
+### Breaking
+
+- Refactored the `Content` type to properly match the basic Plone types and allow TypeScript to narrow this type automatically. @pnicolli
+- Renamed the Seven app package and import alias to `@plone/aurora`. @sneridagh
+
+### Feature
+
+- Added `isAuthenticated` boolean to root loader data. @arybakov05 [#6710](https://github.com/plone/volto/issues/6710)
+- Added a middleware to handle Link Content Type View redirecting users that don't have Edit permissions. @pnicolli
+- Added recurrence widget. @sabrina-bongiovanni
+- Handled redirect responses from the backend when fetching content objects. @pnicolli
+- Registered Aurora native blocks are now migrated into the Somersault field as `type: 'ploneBlock'` nodes with migrated `blockWidth` defaults so they can be rendered by the new editor pipeline later. @sneridagh
+- Registered the new `@plone/contents` add-on in the Seven app. @pnicolli @giuliaghisini @sneridagh
+
+### Bugfix
+
+- Fixed the dev server due to stale react-i18next imports. @sneridagh
+- Gracefully clear stale `auth_seven` cookies and retry public page and asset requests anonymously instead of surfacing a `401` error boundary. @sneridagh
+
+### Internal
+
+- Add the missing `@babel/core` dev dependency and ignore the local `var/` runtime directory for app development. @sneridagh
+- Added `optimizeDeps.include` entries for non-addon workspace packages and app-level deps to reduce lazy dependency discovery reloads on dev server startup. @arybakov05
+- Excluded `i18next-fs-backend` and `remix-i18next/server` from the client `optimizeDeps` bundle — they were still being picked up by Vite's client-side dependency scanner despite only being declared in `ssr.optimizeDeps.include`. @sneridagh
+- Unify Makefile files across the packages. @ionlizarazu
+- Update the Babel Vite plugin configuration for Vite 8 dependency optimization and apply the React Compiler transform to TypeScript modules outside dependencies. @sneridagh
+- Updated development, CI, and documentation tooling to use pnpm 11.20.0 reproducibly through Corepack. @sneridagh
+- Upgraded React Router to v8 and migrated `remix-i18next` to its v8 middleware-based API (`createI18nextMiddleware`), replacing the removed `RemixI18Next` class and its subpath exports. @sneridagh
+
+### Documentation
+
+- Search and replace seven->aurora. @sneridagh
+
 ## 1.0.0-alpha.4 (2026-05-13)
 
 ## 1.0.0-alpha.3 (2026-05-07)
 
 ### Internal
 
-- Added AGENTS.md file. @pnicolli 
-- Aligned the Seven app TypeScript configuration and root loader typing with the monorepo-wide typecheck cleanup. 
+- Added AGENTS.md file. @pnicolli
+- Aligned the Seven app TypeScript configuration and root loader typing with the monorepo-wide typecheck cleanup.
 
 ## 1.0.0-alpha.2 (2026-04-16)
 
@@ -33,22 +190,22 @@
 - Added runtime migration for default blockWidths. @sneridagh [#8071](https://github.com/plone/volto/issues/8071)
 - Update to Vite 8 and RR7 7.14.0. @sneridagh [#8106](https://github.com/plone/volto/issues/8106)
 - Moved the initialize client to the middleware from the config. @sneridagh [#8108](https://github.com/plone/volto/issues/8108)
-- Added user data in the context for authenticated users @pnicolli 
-- Apply add-on-provided Vite extension loaders in the Seven app configuration so installed add-ons can extend the app build setup. @sneridagh 
-- Moved basic data fetching to a middleware to allow all loaders and actions to use it @pnicolli 
+- Added user data in the context for authenticated users @pnicolli
+- Apply add-on-provided Vite extension loaders in the Seven app configuration so installed add-ons can extend the app build setup. @sneridagh
+- Moved basic data fetching to a middleware to allow all loaders and actions to use it @pnicolli
 
 ### Bugfix
 
 - Added safeguard when checking for a contents blocks data @arybakov05 [#8001](https://github.com/plone/volto/issues/8001)
 - Fixed SOMERSAULT_KEY constant, it is centralized now. @sneridagh [#8078](https://github.com/plone/volto/issues/8078)
-- Added auth token to the requests in the root loader @pnicolli 
+- Added auth token to the requests in the root loader @pnicolli
 
 ### Internal
 
 - Upgraded to use RR 7.12.0. @sneridagh [#7787](https://github.com/plone/volto/issues/7787)
-- Adapt Seven middleware to the updated `@plone/client` user lookup argument names. @sneridagh 
-- Updated app test and eslint config. @pnicolli 
-- Use Plone 6.2.0rc1 for development. @davisagli 
+- Adapt Seven middleware to the updated `@plone/client` user lookup argument names. @sneridagh
+- Updated app test and eslint config. @pnicolli
+- Use Plone 6.2.0rc1 for development. @davisagli
 
 ## 1.0.0-alpha.1 (2025-12-23)
 
@@ -64,8 +221,8 @@
 
 - Fixed locales load on production builds. @sneridagh [#7461](https://github.com/plone/volto/issues/7461)
 - Fixed problem on how `routes.ts` loaded the add-ons config for routes, in case that there's more than one add-on in the setup. @sneridagh [#7580](https://github.com/plone/volto/issues/7580)
-- Fixed root loader type. @pnicolli 
-- Fixed styles when the main theme is tailwind-based. @pnicolli 
+- Fixed root loader type. @pnicolli
+- Fixed styles when the main theme is tailwind-based. @pnicolli
 
 ### Internal
 
@@ -73,11 +230,11 @@
 - Fixed unused vars linting rule. Fixed all code that violated this rule. @sneridagh [#7395](https://github.com/plone/volto/issues/7395)
 - Fixed make install in case that `.vscode/extensions.json` is not created yet. @sneridagh [#7495](https://github.com/plone/volto/issues/7495)
 - Include other *.md files in the repo root for link checking, fix redirecting links, and remove non-responsive server. @stevepiercy [#7712](https://github.com/plone/volto/issues/7712)
-- Adjusted `pnpmfile.cjs` to be more resilient. @sneridagh 
-- Change the way ESlint detects add-ons for applying the JSX runtime rules. @sneridagh 
-- Fixed cookieplone test now that the Seven template has been merged there. @pnicolli 
-- Updated versions of libraries. @sneridagh 
-- Use a single folder for autogenerated files. @pnicolli 
+- Adjusted `pnpmfile.cjs` to be more resilient. @sneridagh
+- Change the way ESlint detects add-ons for applying the JSX runtime rules. @sneridagh
+- Fixed cookieplone test now that the Seven template has been merged there. @pnicolli
+- Updated versions of libraries. @sneridagh
+- Use a single folder for autogenerated files. @pnicolli
 
 ### Documentation
 
@@ -89,9 +246,9 @@
 - Added documentation on how to fetch additional data in the root loader. @sneridagh [#7455](https://github.com/plone/volto/issues/7455)
 - Added `@plone/components` Quanta icon system documentation. @sneridagh [#7492](https://github.com/plone/volto/issues/7492)
 - Document Cypress and Plate integration. @sneridagh [#7650](https://github.com/plone/volto/issues/7650)
-- Added documentation of how to add Tailwind CSS support to your add-on. @sneridagh 
-- Added monorepo anatomy documentation. @sneridagh 
-- Fixed imports in Icon system how-to guide. @sneridagh 
+- Added documentation of how to add Tailwind CSS support to your add-on. @sneridagh
+- Added monorepo anatomy documentation. @sneridagh
+- Fixed imports in Icon system how-to guide. @sneridagh
 
 ## 1.0.0-alpha.0 (2025-09-29)
 

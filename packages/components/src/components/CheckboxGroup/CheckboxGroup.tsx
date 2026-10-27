@@ -7,8 +7,10 @@ import {
   type ValidationResult,
 } from 'react-aria-components';
 
-export interface CheckboxGroupProps
-  extends Omit<RACCheckboxGroupProps, 'children'> {
+export interface CheckboxGroupProps extends Omit<
+  RACCheckboxGroupProps,
+  'children'
+> {
   children?: React.ReactNode;
   label?: string;
   description?: string;

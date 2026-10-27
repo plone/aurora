@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from '@plone/components';
-import { PageIcon } from '@plone/components/Icons';
+import PageIcon from '@plone/icons/svg/page.svg?react';
 import { getContentIcon } from '@plone/helpers';
 import type { Brain } from '@plone/types';
 import styles from './SearchResults.module.css';

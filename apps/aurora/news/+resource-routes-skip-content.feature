@@ -1,0 +1,1 @@
+The root middleware no longer loads the Plone content, site and user for resource routes, whose path has a segment that starts with a single `@` (`@search`, `@@contents/@delete`), nor for the `/ok` health check, which saves three backend requests per call. The `reset-fetcher` route is renamed to `@reset-fetcher`. @sneridagh

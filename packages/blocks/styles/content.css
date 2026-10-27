@@ -1,0 +1,120 @@
+/*
+ * Block content styles of @plone/blocks. They're loaded in both the Public UI
+ * and the CMSUI, inside the `plone-content` cascade layer. Follow the authoring
+ * rules in the "Content styles" section of the add-on styles loader docs: no
+ * `@layer`, selectors inside `:where()`, and no reliance on a particular reset.
+ */
+
+/* Image block */
+
+:where(.block-image__frame) {
+  width: min(100%, var(--block-size, 100%));
+  /*
+   * Alignment is float-based so that the content of following blocks wraps
+   * around left/right aligned images. `center` resets the float and uses auto
+   * inline margins to center the image instead. `--block-margin` also carries
+   * the gap that separates the wrapping text from the image.
+   */
+  margin: var(--block-margin, 0 auto);
+  float: var(--block-float, none);
+}
+
+:where(.block-image__frame img) {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/*
+ * When the image links somewhere, the anchor wraps the image inside the figure.
+ * Make it a block so the image keeps filling the figure width.
+ */
+:where(.block-image__link) {
+  display: block;
+}
+
+/*
+ * When the image is floated its block wrapper collapses to zero height, so the
+ * following block paints over the image and would steal the clicks needed to
+ * select the block in the editor. Raising the floated image above the next
+ * block keeps it clickable. Only needed for the floated (left/right) states.
+ */
+:where(
+  [data-style-align='left'] .block-image__frame,
+  [data-style-align='right'] .block-image__frame
+) {
+  position: relative;
+  z-index: 2;
+  /*
+   * Cap the width while floated so even the large size floats with room for the
+   * surrounding content to wrap. Small/medium stay narrower than this cap, so
+   * only large is affected; tune with `--block-float-max-size`.
+   */
+  max-width: var(--block-float-max-size, 66%);
+}
+
+/*
+ * Once floated, the inter-block spacing below the collapsed wrapper is
+ * pointless, so it's dropped. The editor's selection outline, which would
+ * render as a stray full-width line, is dropped in the block adapter.
+ */
+:where(
+  .block-image[data-style-align='left'],
+  .block-image[data-style-align='right']
+) {
+  --block-bottom-spacing: 0;
+}
+
+/*
+ * Lists in blocks that follow a floated image wrap around it. Their markers use
+ * `list-style-position: outside`, which paints the marker to the left of the
+ * (float-shifted) first line — so the number/bullet lands on top of the image,
+ * ignoring the float gap. A marker gutter (`padding-inline-start`) cannot fix
+ * this: the one-item `<ol>` box still spans the full column, so the marker keeps
+ * tracking the shifted line. Switching these lists to inside markers moves the
+ * marker into the line box, so it respects the gap exactly like wrapping text.
+ */
+:where(
+  .block-image[data-style-align='left'] ~ .block :is(ol, ul),
+  .block-image[data-style-align='right'] ~ .block :is(ol, ul)
+) {
+  list-style-position: inside;
+}
+
+/*
+ * Video block. The video, or the player's iframe for YouTube, Vimeo and
+ * PeerTube, fills the block's width. The block's alignment is in the
+ * wrapper's `data-align`.
+ */
+
+:where(.block-video__wrapper, .block-video__figure, .block-video__inner) {
+  width: 100%;
+}
+
+:where(.block-video__figure) {
+  margin: 0;
+}
+
+:where(.block-video__figure video, .block-video__figure iframe) {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+:where(.block-video__figure iframe) {
+  border: 0;
+  aspect-ratio: 16 / 9;
+}
+
+/* Maps block. The embedded map fills the block's width. */
+
+:where(.block-maps__frame) {
+  width: 100%;
+}
+
+:where(.block-maps__iframe) {
+  display: block;
+  width: 100%;
+  border: 0;
+  aspect-ratio: 16 / 9;
+}

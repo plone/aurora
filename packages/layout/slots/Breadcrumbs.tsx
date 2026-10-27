@@ -3,7 +3,7 @@ import {
   Breadcrumbs as PCBreadcrumbs,
   Breadcrumb as PCBreadcrumb,
 } from '@plone/components';
-import { HomeIcon } from '@plone/components/Icons';
+import { HomeIcon } from '@plone/icons';
 import SectionWrapper from '../components/SectionWrapper/SectionWrapper';
 
 const Breadcrumbs = (props: SlotComponentProps) => {

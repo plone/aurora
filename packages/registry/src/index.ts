@@ -13,6 +13,7 @@ import type {
   UtilitiesConfig,
   ViewsConfig,
   WidgetsConfig,
+  RegisteredWidgetProps,
   ReactRouterRouteEntry,
   WidgetKey,
   UtilityTypeMap,
@@ -37,6 +38,20 @@ type GetComponentResult = {
   component: React.ComponentType<any> | undefined;
 };
 
+/**
+ * Builds the part of a utility key that encodes its dependencies:
+ * `|<key:value pairs sorted by key, joined by '+'>|`, or an empty string when
+ * there are none. The trailing separator keeps the dependencies apart from the
+ * utility name, so a dependency set only ever matches itself.
+ */
+function utilityDepsPrefix(dependencies: Record<string, string>): string {
+  const depsString = Object.keys(dependencies)
+    .sort()
+    .map((key) => `${key}:${dependencies[key]}`)
+    .join('+');
+  return depsString ? `|${depsString}|` : '';
+}
+
 type UtilityMethodFor<Type extends string> = Type extends keyof UtilityTypeMap
   ? UtilityTypeMap[Type]
   : (...args: any[]) => any;
@@ -52,6 +67,19 @@ type MappableWidgetKeys = {
     ? K
     : never;
 }[keyof WidgetsConfig];
+
+// The widget slots that hold one widget, instead of a map of widgets. The
+// default widget has its own method, `registerDefaultWidget`.
+type SingleWidgetKeys = 'choices';
+
+// A component, as opposed to a map of components. Components can have keys
+// of their own, such as `displayName`, so counting keys doesn't tell them
+// apart.
+const isComponent = (definition: unknown) =>
+  typeof definition === 'function' ||
+  (typeof definition === 'object' &&
+    definition !== null &&
+    '$$typeof' in definition);
 
 class Config {
   public _data: ConfigData | Record<string, never>;
@@ -472,16 +500,10 @@ class Config {
     method: UtilityMethodFor<Type>;
   }) {
     const { name, type, method, dependencies = {} } = options;
-    let depsString: string = '';
     if (!method) {
       throw new Error('No method provided');
-    } else {
-      depsString = Object.keys(dependencies)
-        .sort()
-        .map((key) => `${key}:${dependencies[key]}`)
-        .join('+');
     }
-    const utilityName = `${depsString ? `|${depsString}` : ''}${name}`;
+    const utilityName = `${utilityDepsPrefix(dependencies)}${name}`;
 
     let utilityType = this._data.utilities[type] as Utility<Type> | undefined;
     if (!utilityType) {
@@ -500,15 +522,9 @@ class Config {
 
     if (!name || !type) return {};
 
-    let depsString: string = '';
-    depsString = Object.keys(dependencies)
-      .map((key) => `${key}:${dependencies[key]}`)
-      .join('+');
-
-    const utilityName = `${depsString ? `|${depsString}` : ''}${name}`;
+    const utilityName = `${utilityDepsPrefix(dependencies)}${name}`;
     const utilitiesForType = this._data.utilities[type] as
-      | Utility<Type>
-      | undefined;
+      Utility<Type> | undefined;
 
     return utilitiesForType?.[utilityName] || {};
   }
@@ -521,19 +537,15 @@ class Config {
 
     if (!type) return [];
 
-    let depsString: string = '';
-    depsString = Object.keys(dependencies)
-      .map((key) => `${key}:${dependencies[key]}`)
-      .join('+');
-
     const utilitiesForType = this._data.utilities[type] as
-      | Utility<Type>
-      | undefined;
+      Utility<Type> | undefined;
     if (!utilitiesForType) return [];
 
-    const utilityName = `${depsString ? `|${depsString}` : ''}`;
+    // Without dependencies, every utility of the type matches. With them, the
+    // prefix ends in the separator, so only that exact dependency set matches.
+    const depsPrefix = utilityDepsPrefix(dependencies);
     const utilitiesKeys = Object.keys(utilitiesForType).filter((key) =>
-      key.startsWith(utilityName),
+      key.startsWith(depsPrefix),
     );
     const utilities = utilitiesKeys.map((key) => utilitiesForType[key]);
 
@@ -542,7 +554,13 @@ class Config {
 
   registerRoute(options: ReactRouterRouteEntry) {
     const route = this._data.routes || [];
-    route.push(options);
+    // Routes are plain serializable data, so a route that is structurally
+    // identical to one already registered is a repeated registration (e.g.
+    // an add-on configuration applied again) and is skipped.
+    const serialized = JSON.stringify(options);
+    if (!route.some((entry) => JSON.stringify(entry) === serialized)) {
+      route.push(options);
+    }
     this._data.routes = route;
   }
 
@@ -551,15 +569,14 @@ class Config {
    *
    * @template K - A key from the WidgetsConfig interface.
    * @param options - An object containing the widget key and its corresponding implementation.
-   * @param options.key - The name of the widget configuration key (e.g., 'default', 'factory').
-   * @param options.definition - The actual widget configuration, which must match the expected structure of WidgetsConfig[K].
+   * @param options.key - The name of the widget configuration key (e.g., 'widget', 'factory', 'choices').
+   * @param options.definition - The actual widget configuration, which must match the expected structure of WidgetsConfig[K]:
+   * a map of widgets, or one widget for the `choices` slot.
    *
    */
-  registerWidget<K extends MappableWidgetKeys>(options: {
+  registerWidget<K extends MappableWidgetKeys | SingleWidgetKeys>(options: {
     key: K;
-    definition: WidgetsConfig[K] extends Record<string, any>
-      ? WidgetsConfig[K]
-      : never;
+    definition: WidgetsConfig[K];
   }) {
     // Aliasing helper types to make TS understand that, in this case, it'll recieve an object
     // with keys that are valid for WidgetsConfig[K].
@@ -576,8 +593,7 @@ class Config {
       throw new Error('Use registerDefaultWidget to set the default widget');
     }
 
-    const definitionIsObject = Object.keys(definition).length;
-    if (!definitionIsObject) {
+    if (isComponent(definition)) {
       this._data.widgets[key] = definition;
     } else {
       for (const widgetKey of Object.keys(definition) as DefinitionKey[]) {
@@ -596,17 +612,30 @@ class Config {
    * @param component - The default widget component to register.
    *
    */
-  registerDefaultWidget(component: React.ComponentType<any>) {
+  registerDefaultWidget(component: React.ComponentType<RegisteredWidgetProps>) {
     this._data.widgets.default = component;
   }
 
   /**
    * Gets a widget configuration from the registry.
    *
-   * @param key - A key from the WidgetsConfig interface.
+   * @param key - The key the widget is registered under (e.g. a field id, a
+   * widget name, a vocabulary or a factory).
+   * @param category - Look the key up only in this category (e.g. `'widget'`
+   * or `'factory'`). Without it, the first category that has the key wins,
+   * which lets a field named like a widget match that widget.
    */
-  getWidget(key: string): React.ComponentType<any> | undefined {
+  getWidget(
+    key: string,
+    category?: MappableWidgetKeys,
+  ): React.ComponentType<any> | undefined {
     const widgets = this.widgets;
+
+    if (category) {
+      const group = widgets?.[category] as
+        Record<string, React.ComponentType<any>> | undefined;
+      return group && Object.hasOwn(group, key) ? group[key] : undefined;
+    }
 
     for (const category of Object.keys(widgets) as WidgetKey[]) {
       const group = widgets[category];

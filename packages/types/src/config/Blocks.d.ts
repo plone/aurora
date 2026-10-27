@@ -11,6 +11,8 @@ export interface BlocksConfig {
   requiredBlocks: string[];
   initialBlocks: Record<string, string[]> | Record<string, object[]>;
   initialBlocksFocus: Record<string, string>;
+  alignments?: StyleDefinition[];
+  sizes?: StyleDefinition[];
   themes: StyleDefinition[];
   widths: StyleDefinition[];
 }
@@ -146,10 +148,11 @@ export interface BlockConfigBase {
   // TODO: Improve extensions shape
   extensions?: Record<string, BlockExtension>;
   blocksConfig?: Partial<BlocksConfigData>;
-  blockWidth?: BlockWidthConfig;
+  defaultBlockWidth?: string;
 }
 
 export interface PlateBlockConfigBase {
+  category?: string;
   blockWidth?: BlockWidthConfig;
 }
 

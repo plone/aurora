@@ -6,7 +6,7 @@ import { Heading } from 'react-aria-components';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { InfoIcon } from '../icons/InfoIcon';
+import { InfoIcon } from '@plone/icons';
 
 const meta = {
   title: 'Basic/Popover',

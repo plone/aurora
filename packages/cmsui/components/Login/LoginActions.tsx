@@ -1,5 +1,5 @@
-import { Link, Button } from '@plone/components/quanta';
-import ArrowRightSVG from '@plone/components/icons/arrow-right.svg?react';
+import { Link, Button } from '@plone/quanta';
+import ArrowRightSVG from '@plone/icons/svg/arrow-right.svg?react';
 import { useTranslation } from 'react-i18next';
 
 const LoginActions = () => {

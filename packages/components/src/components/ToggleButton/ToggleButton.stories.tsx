@@ -1,6 +1,6 @@
 import React from 'react';
 import { ToggleButton } from './ToggleButton';
-import { BoldIcon } from '../icons';
+import { BoldIcon } from '@plone/icons';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 

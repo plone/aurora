@@ -19,6 +19,13 @@ describe('config/server', () => {
         supportedLanguages: ['en'],
         defaultLanguage: 'en',
         apiPath: 'http://localhost:8080/Plone',
+        apiExpanders: [
+          {
+            match: '',
+            expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'],
+          },
+          { match: '', expand: ['types'], authenticated: true },
+        ],
       }),
     );
     expect(

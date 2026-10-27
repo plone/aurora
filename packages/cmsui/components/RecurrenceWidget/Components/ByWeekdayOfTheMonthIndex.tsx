@@ -1,11 +1,10 @@
-import { Select } from '@plone/components/quanta';
-import type { Updater } from '@tanstack/react-form';
+import { Select } from '@plone/quanta';
 
 import { getOrdinalNumbersOptions, ORDINAL_NUMBERS } from '../utils';
 import { useTranslation } from 'react-i18next';
 
 interface ByWeekdayOfTheMonthIndexProps {
-  onChange: (updater: Updater<number>) => void;
+  onChange: (value: number) => void;
   defaultValue: keyof typeof ORDINAL_NUMBERS;
 }
 

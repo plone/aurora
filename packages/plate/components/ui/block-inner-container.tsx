@@ -1,6 +1,6 @@
 import type { CSSProperties, PropsWithChildren } from 'react';
 
-import { cn } from '../../lib/utils';
+import clsx from 'clsx';
 
 type BlockInnerContainerProps = PropsWithChildren<{
   className?: string;
@@ -13,7 +13,7 @@ export function BlockInnerContainer({
   style,
 }: BlockInnerContainerProps) {
   return (
-    <div className={cn('block-inner-container', className)} style={style}>
+    <div className={clsx('block-inner-container', className)} style={style}>
       {children}
     </div>
   );

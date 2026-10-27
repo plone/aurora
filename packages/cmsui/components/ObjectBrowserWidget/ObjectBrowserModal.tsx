@@ -1,7 +1,7 @@
 import { Dialog, Heading } from 'react-aria-components';
 import { Modal } from '@plone/components';
-import { Button, Input } from '@plone/components/quanta';
-import { SearchIcon, CloseIcon } from '@plone/components/Icons';
+import { Button, Input } from '@plone/quanta';
+import { SearchIcon, CloseIcon } from '@plone/icons';
 import { ObjectBrowserWidgetBody } from './ObjectBrowserWidgetBody';
 import { useObjectBrowserContext } from './ObjectBrowserContext';
 import { useTranslation } from 'react-i18next';

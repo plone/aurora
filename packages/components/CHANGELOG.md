@@ -1,4 +1,4 @@
-# @plone/client Release Notes
+# @plone/components Release Notes
 
 <!-- You should *NOT* be adding new change log entries to this file.
      You should create a file in the news directory instead.
@@ -7,6 +7,64 @@
 -->
 
 <!-- towncrier release notes start -->
+
+## 5.0.0-alpha.5 (2026-10-03)
+
+### Breaking
+
+- Moved the icon set, the `Icon` component, the `*.svg?react` types and `PloneSVGRVitePlugin` to the new `@plone/icons` package. Removed the `Icon` root export and the `./Icons`, `./icons`, `./icons/*` and `./vite-plugin-svgr` exports. Removed the CSS-based `QuantaTextField`, `QuantaSelect` and `QuantaTextAreaField` root exports and their `styles/quanta/{Select,TextField}.css` overrides. Use the Tailwind Quanta `TextField` and `Select`, and the new Tailwind Quanta `TextAreaField`. Moved the Quanta components, the `SizeWidget`, `AlignWidget` and `WidthWidget` widgets, and the Quanta styles and fonts to the new `@plone/quanta` package. Removed the `./quanta` and `./dist/fonts/*` exports and the widget root exports. Removed the now-unused `@internationalized/date`, `@react-aria/utils`, `react-stately`, `tailwind-merge`, `tailwind-variants`, `tailwindcss`, `tailwindcss-animate`, `@plone/types` and `@react-types/shared` dependencies, and dropped Tailwind from the package's Vite and Storybook setup. @pnicolli 
+
+### Internal
+
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
+### Documentation
+
+- Updated `docs/` to describe the new three-package layout: added a `@plone/components` 5.0.0 upgrade-guide section for the Quanta/icons breaking changes, and updated `docs/reference/conventions.md`, `docs/conceptual-guides/modular-arch-packages.md` and `docs/development/vite-optimize-deps.md` accordingly. @pnicolli 
+
+## 5.0.0-alpha.4 (2026-09-29)
+
+### Bugfix
+
+- Exported the Quanta `SearchField` from the `@plone/components/quanta` entry point. @jmevissen [#29](https://github.com/plone/aurora/issues/29)
+
+## 5.0.0-alpha.3 (2026-09-21)
+
+### Documentation
+
+- Replaced remaining `Seven` naming with `Plone Aurora` in the Quanta usage documentation. @sneridagh 
+
+## 5.0.0-alpha.2 (2026-09-05)
+
+### Internal
+
+- Reformatted component source for compatibility with Prettier 3.8. @sneridagh 
+- Updated Read the Docs configuration to compare against `main` branch. @stevepiercy 
+
+## 5.0.0-alpha.1 (2026-07-02)
+
+### Feature
+
+- Add `isNonModal` prop to to `MenuTrigger` and pass it to the `Popover`.
+  Moved `react-aria-components`, `react-aria`, and `react-stately` from `dependencies` to `peerDependencies` to prevent duplicate module instances that break React context across shadow DOM boundaries. @arybakov05 [#6653](https://github.com/plone/volto/issues/6653)
+- Added link and button cross variants. @pnicolli [#7379](https://github.com/plone/volto/issues/7379)
+- add quanta variant for comboBox @nileshgulia1 [#8007](https://github.com/plone/volto/issues/8007)
+- Add DialogTrigger component. @jnptk 
+- Add `renderEmptyState` to `Table` component. It provides content to display when there are no rows in the table. @jnptk 
+- Added DropZone, Pagination, Quanta Table, and Quanta Tooltip components for contents views. @pnicolli @giuliaghisini 
+- Added Modal and Dialog quanta components. @pnicolli 
+- Added RadioGroup quanta component, added props to form components, fixed select items. @sabrina-bongiovanni 
+
+### Bugfix
+
+- Added missing `forwardRef` to the Quanta button component.
+  Renamed `quanta-lemmon` color to `quanta-lemon`. @arybakov05 [#6656](https://github.com/plone/volto/issues/6656)
+- Fixed popover placement in modals for @plone/components Select @sneridagh @jnptk [#8359](https://github.com/plone/volto/issues/8359)
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+- Update to storybook 10. @sneridagh 
 
 ## 5.0.0-alpha.0 (2026-05-07)
 
