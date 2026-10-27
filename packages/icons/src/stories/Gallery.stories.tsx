@@ -32,12 +32,12 @@ const IconGallery = ({ size = 'lg' }: { size?: 'base' | 'lg' | 'xl' }) => {
           boxSizing: 'border-box',
         }}
       />
-      <p style={{ margin: '8px 0', fontSize: '13px' }}>
-        {filtered.length} of {iconEntries.length} icons
+      <p role="status" style={{ margin: '8px 0', fontSize: '13px' }}>
+        {filtered.length === 0
+          ? `No icons match “${search.trim()}”.`
+          : `${filtered.length} of ${iconEntries.length} icons`}
       </p>
-      {filtered.length === 0 ? (
-        <p style={{ fontSize: '13px' }}>No icons match “{search.trim()}”.</p>
-      ) : (
+      {filtered.length > 0 && (
         <div
           style={{
             display: 'grid',
