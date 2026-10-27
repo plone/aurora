@@ -57,8 +57,8 @@ Otherwise, we'd have to patch the resolution process for every build or bundler 
 
 ## `@plone/components` package
 
-This package contains the basic, white-label set of reusable UI components for Plone 7, such as buttons, links, menus, and tables.
-It only contains the components that Plone Aurora and Volto use, and new ones are added when something needs them.
+This package contains the basic, white-label set of reusable UI components for Plone Aurora, such as buttons, links, menus, and tables.
+It only contains the components that Plone Aurora uses, and new ones are added when something needs them.
 
 When adding new components, make sure they are generic and reusable across the app.
 This package should not contain any Plone-specific logic or data handling.

@@ -91,7 +91,7 @@ If your Tailwind entry file scans `@plone/components` for Quanta classes, update
 ### Unused components removed
 
 `@plone/components` no longer mirrors the whole React Aria Components set.
-It only keeps the components that Plone Aurora and Volto use:
+It only keeps the components that Plone Aurora uses:
 
 -   `Breadcrumbs`, `Breadcrumb`
 -   `Button`

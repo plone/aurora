@@ -76,7 +76,7 @@ It's even possible to use TailwindCSS for styling the components in this package
 
 ## Components list
 
-The package only contains the components that Plone Aurora and Volto use.
+The package only contains the components that Plone Aurora uses.
 New components are added when something needs them.
 
 - Breadcrumbs, Breadcrumb
