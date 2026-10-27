@@ -1,4 +1,4 @@
-import addonEditorModules from '@plone/registry/addons/config/plate-editor';
+import addonEditorModules from '@plone/registry/plate-editor';
 import type { PlateConfig } from '../../types';
 import { composeEditorExtensions } from '../../extensions';
 import { createBlockEditorKit } from '../../components/editor/block-editor-kit';

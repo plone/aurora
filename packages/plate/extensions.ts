@@ -8,8 +8,8 @@ import type { SlashMenuConfig } from './components/editor/plugins/slash-menu';
  * `config/plate-editor.ts` and a `config/plate-renderer.ts` module, whose
  * default export is a `PlateEditorExtension` and a `PlateRendererExtension`.
  * The somersault presets collect them, in add-on order, through
- * `@plone/registry/addons/config/plate-editor` and
- * `@plone/registry/addons/config/plate-renderer`, so their code is only
+ * `@plone/registry/plate-editor` and `@plone/registry/plate-renderer`, so
+ * their code is only
  * loaded with the editor and the renderer, never with the registry.
  */
 

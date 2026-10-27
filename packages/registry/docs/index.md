@@ -43,5 +43,4 @@ conceptual-guides/component-registry
 conceptual-guides/utility-registry
 conceptual-guides/add-on-loader
 conceptual-guides/add-on-styles-loader
-conceptual-guides/add-on-modules-loader
 ```

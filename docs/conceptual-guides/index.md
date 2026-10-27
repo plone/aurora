@@ -19,7 +19,6 @@ modular-arch-packages
 add-on-registry
 add-on-loader
 add-on-styles-loader
-add-on-modules-loader
 configuration-registry
 form-fields-controls-and-widgets
 add-on-driven-configuration

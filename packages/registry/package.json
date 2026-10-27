@@ -38,7 +38,7 @@
     "bin",
     "README.md",
     "vite-plugin.*",
-    "addon-modules.*"
+    "plate-plugins.*"
   ],
   "bin": {
     "init-loaders": "./bin/init-loaders.js"
@@ -70,9 +70,9 @@
       "import": "./dist/addon-registry/create-addons-locales-loader.js",
       "default": "./dist/addon-registry/create-addons-locales-loader.cjs"
     },
-    "./create-addon-modules-loader": {
-      "import": "./dist/addon-registry/create-addon-modules-loader.js",
-      "default": "./dist/addon-registry/create-addon-modules-loader.cjs"
+    "./create-plate-plugins-loader": {
+      "import": "./dist/addon-registry/create-plate-plugins-loader.js",
+      "default": "./dist/addon-registry/create-plate-plugins-loader.cjs"
     },
     "./vite-plugin": {
       "import": "./vite-plugin.js",
@@ -81,9 +81,13 @@
     "./addons-loader": {
       "types": "./vite-plugin.d.ts"
     },
-    "./addons/*": {
-      "types": "./addon-modules.d.ts",
-      "default": "./addon-modules.js"
+    "./plate-editor": {
+      "types": "./plate-plugins.d.ts",
+      "default": "./plate-plugins.js"
+    },
+    "./plate-renderer": {
+      "types": "./plate-plugins.d.ts",
+      "default": "./plate-plugins.js"
     },
     ".": {
       "import": "./dist/index.js",

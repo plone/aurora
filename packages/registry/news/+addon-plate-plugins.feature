@@ -1,1 +1,1 @@
-Added the `@plone/registry/addons/<path>` loader, which collects the `<path>` module of every add-on, in add-on order, so add-ons can contribute code to an extension point without putting it in the registry. @sneridagh
+Added the `@plone/registry/plate-editor` and `@plone/registry/plate-renderer` loaders, which collect the `config/plate-editor` and `config/plate-renderer` modules of the add-ons, in add-on order, for the page editor and renderer. @sneridagh

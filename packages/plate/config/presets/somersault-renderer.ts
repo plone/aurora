@@ -1,4 +1,4 @@
-import addonRendererModules from '@plone/registry/addons/config/plate-renderer';
+import addonRendererModules from '@plone/registry/plate-renderer';
 import type { PlateConfig } from '../../types';
 import { composeRendererExtensions } from '../../extensions';
 import { BlockBaseEditorKit } from '../../components/editor/block-editor-base-kit';

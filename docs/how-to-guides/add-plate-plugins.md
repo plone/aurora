@@ -16,7 +16,7 @@ As an example, it adds an `alert` element, a highlighted message.
 
 ## Where each part goes
 
-An add-on contributes code to the editor and the renderer through two modules at its root, which the {doc}`add-on modules loader </conceptual-guides/add-on-modules-loader>` collects at build time.
+An add-on contributes code to the editor and the renderer through two modules at its root, which the `@plone/registry` Vite plugin collects at build time.
 
 {file}`config/plate-editor.ts`
 :   The editor plugins, and the add-on's slash menu items and floating toolbar buttons.
@@ -180,9 +180,20 @@ Style it in the add-on's {file}`styles/content.css`, as {doc}`/conceptual-guides
 }
 ```
 
-## Order and development server
+## How the modules are loaded
 
-The page editor and the renderer apply the add-on modules in add-on order, the same order in which the add-ons' configurations are applied.
+The `@plone/registry` Vite plugin generates two loaders in the {file}`.plone` directory of the app, {file}`registry.plate.editor.js` and {file}`registry.plate.renderer.js`.
+Each one imports the {file}`config/plate-editor` or {file}`config/plate-renderer` module, with a {file}`.ts`, {file}`.tsx`, {file}`.js`, or {file}`.jsx` extension, of every add-on that has one.
+The page editor and the renderer import them as `@plone/registry/plate-editor` and `@plone/registry/plate-renderer`, and apply the modules in add-on order, the same order in which the add-ons' configurations are applied.
 
-Changes to these modules reload like any other module.
+Only the editor and the renderer import these loaders, so the code of your modules is only loaded with them.
+Outside of an app that uses the Vite plugin, such as in the unit tests or the Storybook of a package, both resolve to an empty list.
+
+```{important}
+These files are generated and maintained by `@plone/registry`.
+You should not modify them.
+They're overwritten in the next bundler run.
+```
+
+Changes to your modules reload like any other module.
 After you add a new {file}`config/plate-editor.ts` or {file}`config/plate-renderer.ts` file to an add-on, restart the development server.
