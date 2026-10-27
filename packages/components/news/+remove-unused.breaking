@@ -1,0 +1,1 @@
+Removed the components that Plone Aurora and Volto don't use, and their CSS. The package keeps `Breadcrumbs`, `Button`, `Checkbox`, `Container`, `Link`, `Menu`, `Pagination`, `RadioGroup`, `Spinner`, `Table` and `Toast`. See the upgrade guide. @pnicolli

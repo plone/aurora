@@ -7,7 +7,7 @@ import {
   Header,
   type ListBoxItemProps,
   ListBoxSection,
-  type SectionProps,
+  type ListBoxSectionProps,
   composeRenderProps,
 } from 'react-aria-components';
 import { tv } from 'tailwind-variants';
@@ -19,10 +19,7 @@ interface ListBoxProps<T> extends Omit<
   'layout' | 'orientation'
 > {}
 
-export function ListBox<T extends object>({
-  children,
-  ...props
-}: ListBoxProps<T>) {
+export function ListBox<T>({ children, ...props }: ListBoxProps<T>) {
   return (
     <AriaListBox
       {...props}
@@ -45,12 +42,12 @@ export const itemStyles = tv({
   variants: {
     isSelected: {
       false: `
-        text-slate-700 -outline-offset-2
-        hover:bg-slate-200
+        text-quanta-iron -outline-offset-2
+        hover:bg-quanta-smoke
         dark:text-zinc-300 dark:hover:bg-zinc-700
       `,
       true: `
-        bg-blue-600 text-white -outline-offset-4 outline-white
+        bg-quanta-sapphire text-quanta-air -outline-offset-4 outline-quanta-air
         dark:outline-white
         forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]
         forced-colors:outline-[HighlightText]
@@ -60,7 +57,7 @@ export const itemStyles = tv({
     },
     isDisabled: {
       true: `
-        text-slate-300
+        text-quanta-silver
         dark:text-zinc-600
         forced-colors:text-[GrayText]
       `,
@@ -79,7 +76,7 @@ export function ListBoxItem(props: ListBoxItemProps) {
           {children}
           <div
             className={`
-              absolute right-4 bottom-0 left-4 hidden h-px bg-white/20
+              absolute right-4 bottom-0 left-4 hidden h-px bg-quanta-air/20
               forced-colors:bg-[HighlightText]
               [.group[data-selected]:has(+[data-selected])_&]:block
             `}
@@ -92,26 +89,29 @@ export function ListBoxItem(props: ListBoxItemProps) {
 
 export const dropdownItemStyles = tv({
   base: `
-    group flex cursor-default items-center gap-4 rounded-lg py-2 pr-1 pl-3 text-sm outline-0
+    group flex cursor-default items-center gap-2 px-3 py-1.5 text-sm leading-6 outline-0
     forced-color-adjust-none select-none
   `,
   variants: {
     isDisabled: {
       false: `
-        text-gray-900
+        text-quanta-denim
         dark:text-zinc-100
       `,
       true: `
-        text-gray-300
+        text-quanta-silver
         dark:text-zinc-600
         forced-colors:text-[GrayText]
       `,
     },
     isFocused: {
       true: `
-        bg-blue-600 text-white
+        bg-quanta-snow
         forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]
       `,
+    },
+    isPressed: {
+      true: 'bg-quanta-smoke',
     },
   },
   compoundVariants: [
@@ -119,7 +119,7 @@ export const dropdownItemStyles = tv({
       isFocused: false,
       isOpen: true,
       className: `
-        bg-gray-100
+        bg-quanta-snow
         dark:bg-zinc-700/60
       `,
     },
@@ -136,33 +136,39 @@ export function DropdownItem(props: ListBoxItemProps) {
       textValue={textValue}
       className={dropdownItemStyles}
     >
-      {composeRenderProps(props.children, (children, { isSelected }) => (
-        <>
-          <span
-            className={`
-              flex flex-1 items-center gap-2 truncate font-normal
-              group-selected:font-semibold
-            `}
-          >
-            {children}
-          </span>
-          <span className="flex w-5 items-center">
-            {isSelected && <CheckboxIcon className="h-4 w-4" />}
-          </span>
-        </>
-      ))}
+      {composeRenderProps(
+        props.children,
+        (children, { isSelected, selectionMode }) => (
+          <>
+            {/* With multiple selection, a column of checks before the
+                labels. With single selection, a check after the selected
+                item's label. */}
+            {selectionMode === 'multiple' && (
+              <span className="flex w-4 shrink-0 items-center text-quanta-sapphire">
+                {isSelected && <CheckboxIcon className="h-4 w-4" />}
+              </span>
+            )}
+            <span className="flex flex-1 items-center gap-2 truncate">
+              {children}
+            </span>
+            {selectionMode === 'single' && isSelected && (
+              <span className="flex w-4 shrink-0 items-center text-quanta-sapphire">
+                <CheckboxIcon className="h-4 w-4" />
+              </span>
+            )}
+          </>
+        ),
+      )}
     </AriaListBoxItem>
   );
 }
 
-export interface DropdownSectionProps<T> extends SectionProps<T> {
+export interface DropdownSectionProps<T> extends ListBoxSectionProps<T> {
   title?: string;
   items?: any;
 }
 
-export function DropdownSection<T extends object>(
-  props: DropdownSectionProps<T>,
-) {
+export function DropdownSection<T>(props: DropdownSectionProps<T>) {
   return (
     <ListBoxSection
       className={`
@@ -172,11 +178,9 @@ export function DropdownSection<T extends object>(
     >
       <Header
         className={`
-          sticky -top-[5px] z-10 -mx-1 -mt-px truncate border-y border-y-gray-200 bg-gray-100/60
-          px-4 py-1 text-sm font-semibold text-gray-500 backdrop-blur-md
-          supports-[-moz-appearance:none]:bg-gray-100
-          dark:border-y-zinc-700 dark:bg-zinc-700/60 dark:text-zinc-300
-          [&+*]:mt-1
+          sticky -top-[5px] z-10 truncate bg-quanta-air px-3 pt-1.5 pb-0.5 text-xs leading-[18px]
+          text-quanta-pigeon
+          dark:bg-zinc-700/60 dark:text-zinc-300
         `}
       >
         {props.title}

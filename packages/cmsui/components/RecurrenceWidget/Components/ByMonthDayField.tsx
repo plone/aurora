@@ -22,7 +22,6 @@ const ByMonthDayField = ({ onChange, defaultValue }: ByMonthDayFieldProps) => {
           validate={(value) =>
             Number(value) > 31 ? t('cmsui.recurrence.monthdayError') : null
           }
-          minValue={1}
           defaultValue={defaultValue?.toString()}
         >
           <Input />

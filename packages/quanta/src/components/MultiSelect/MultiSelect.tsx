@@ -1,350 +1,161 @@
-import React, { useRef, useState, useEffect, useCallback, useId } from 'react';
-import {
-  Button,
-  ComboBox,
-  Input,
-  ListBox,
-  Popover,
-  type Key,
-  ListBoxItem,
-  TagGroup,
-  TagList,
-  Tag,
-} from 'react-aria-components';
-import { Description, Label } from '../Field/Field';
-import { useListData } from 'react-stately';
-import type { ListData } from 'react-stately';
-import { useFilter } from 'react-aria';
-import { twMerge } from 'tailwind-merge';
+import React, { useMemo, useState } from 'react';
+import type { Key, ValidationResult } from 'react-aria-components';
+import { ComboBox, ComboBoxItem } from '../ComboBox/ComboBox';
+import { Tag, TagGroup } from '../TagGroup/TagGroup';
 
-import { CloseIcon as Close, ChevrondownIcon } from '@plone/icons';
-
-export type Option = {
-  id: Key;
+export interface MultiSelectItem {
+  id: string;
   name: string;
-};
-
-export interface MultiSelectProps<T extends object> {
-  items: Array<T>;
-  selectedItems: ListData<T>;
-  className?: string;
-  placeholder?: string;
-  label?: string;
-  description?: string;
-  creatable?: boolean;
-  onItemInserted?: (key: Key) => void;
-  onItemCleared?: (key: Key) => void;
-  renderEmptyState?: (inputValue: string) => React.ReactNode;
 }
 
-export function MultiSelect({
-  label,
-  placeholder = 'Select items...',
+export interface MultiSelectProps<T extends MultiSelectItem = MultiSelectItem> {
+  /** The selected items, in order. */
+  value: T[];
+  /** Called with the new list of selected items. */
+  onChange: (value: T[]) => void;
+  /** The items to choose from. The selected ones aren't suggested again. */
+  items: Iterable<T>;
+  /**
+   * Whether the editor can add a value that isn't one of the `items`, by
+   * typing it and pressing Enter, or leaving the field.
+   *
+   * @default false
+   */
+  allowsCustomValue?: boolean;
+  /** The text in the input, to search the items elsewhere, such as a server. */
+  inputValue?: string;
+  onInputChange?: (value: string) => void;
+  label?: string;
+  description?: string;
+  errorMessage?: string | ((validation: ValidationResult) => string);
+  placeholder?: string;
+  name?: string;
+  className?: string;
+  isRequired?: boolean;
+  isDisabled?: boolean;
+  isReadOnly?: boolean;
+  isInvalid?: boolean;
+  validationBehavior?: 'native' | 'aria';
+  onBlur?: () => void;
+}
+
+/**
+ * Selects several items, shown as tags under the field. The editor types to
+ * find an item, and removes one from its tag. Built on Quanta's `ComboBox`
+ * and `TagGroup`.
+ */
+export function MultiSelect<T extends MultiSelectItem = MultiSelectItem>({
+  value,
+  onChange,
   items,
-  className = '',
+  allowsCustomValue = false,
+  inputValue,
+  onInputChange,
+  label,
   description,
-  onItemCleared,
-  onItemInserted,
-  renderEmptyState,
-  selectedItems,
-  creatable = true,
-  ...props
-}: MultiSelectProps<Option>) {
-  const triggerRef = useRef<HTMLDivElement | null>(null);
-  const tagGroupIdentifier = useId();
-  const selectedKeys = selectedItems?.items.map((i: Option) => i.id);
-  const [width, setWidth] = useState(0);
-  const { contains } = useFilter({ sensitivity: 'base' });
-
-  const filter = useCallback(
-    (item: Option, filterText: string) => {
-      return !selectedKeys.includes(item.id) && contains(item.name, filterText);
-    },
-    [contains, selectedKeys],
-  );
-
-  const accessibleList = useListData({
-    initialItems: items,
-    filter,
-  });
-
-  const [fieldState, setFieldState] = useState<{
-    selectedKey: Key | null;
-    inputValue: string;
-  }>({
-    selectedKey: null,
-    inputValue: '',
-  });
-
-  const onRemove = useCallback(
-    (keys: Set<Key>) => {
-      const key = keys.values().next().value;
-      if (key) {
-        selectedItems.remove(key);
-        setFieldState({
-          inputValue: '',
-          selectedKey: null,
-        });
-        onItemCleared?.(key);
-      }
-    },
-    [selectedItems, onItemCleared],
-  );
-
-  const onSelectionChange = (id: Key | null) => {
-    if (!id) {
-      return;
-    }
-
-    const item = accessibleList.getItem(id);
-
-    if (!item) {
-      return;
-    }
-
-    if (!selectedKeys.includes(id)) {
-      selectedItems.append(item);
-      setFieldState({
-        inputValue: '',
-        selectedKey: id,
-      });
-      onItemInserted?.(id);
-    }
-
-    accessibleList.setFilterText('');
-  };
-  const onInputChange = (value: string) => {
-    setFieldState((prev) => ({
-      inputValue: value,
-      selectedKey: value === '' ? null : prev.selectedKey,
-    }));
-
-    accessibleList.setFilterText(value);
+  errorMessage,
+  placeholder,
+  name,
+  className,
+  isRequired,
+  isDisabled,
+  isReadOnly,
+  isInvalid,
+  validationBehavior,
+  onBlur,
+}: MultiSelectProps<T>) {
+  const [uncontrolledInput, setUncontrolledInput] = useState('');
+  const input = inputValue ?? uncontrolledInput;
+  const setInput = (next: string) => {
+    setUncontrolledInput(next);
+    onInputChange?.(next);
   };
 
-  useEffect(() => {
-    const trigger = triggerRef.current;
-    if (!trigger) return;
+  const selectedIds = useMemo(() => value.map((item) => item.id), [value]);
+  const suggestions = useMemo(
+    () => [...items].filter((item) => !selectedIds.includes(item.id)),
+    [items, selectedIds],
+  );
 
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setWidth(entry.target.clientWidth);
-      }
-    });
+  const add = (item: T) => {
+    setInput('');
+    if (selectedIds.includes(item.id)) return;
+    onChange([...value, item]);
+  };
 
-    observer.observe(trigger);
-    return () => {
-      observer.unobserve(trigger);
-    };
-  }, []);
-
-  const onCreateTag = useCallback(() => {
-    const inputValue = fieldState.inputValue.trim();
-    const id = inputValue.toLocaleLowerCase();
-
-    let item = accessibleList.getItem(id);
-
-    if (!item) {
-      item = {
-        id: id,
-        name: inputValue,
-      };
-
-      setFieldState((prev) => ({
-        ...prev,
-        inputValue: '',
-        selectedKey: id,
-      }));
-
-      accessibleList.append(item);
-      selectedItems.append(item);
-    }
-  }, [fieldState.inputValue, accessibleList, selectedItems, setFieldState]);
-
-  const popLast = useCallback(() => {
-    if (selectedItems.items.length === 0) {
+  // A typed value is the matching item, or a new one.
+  const addText = (text: string) => {
+    const typed = text.trim();
+    if (!typed) {
+      setInput('');
       return;
     }
+    const match = [...items].find(
+      (item) => item.id === typed || item.name === typed,
+    );
+    add(match ?? ({ id: typed, name: typed } as T));
+  };
 
-    const endKey = selectedItems.items[selectedItems.items.length - 1];
+  const remove = (keys: Set<Key>) => {
+    onChange(value.filter((item) => !keys.has(item.id)));
+  };
 
-    if (endKey) {
-      selectedItems.remove(endKey.id);
-      onItemCleared?.(endKey.id);
-    }
-
-    setFieldState({
-      inputValue: '',
-      selectedKey: null,
-    });
-  }, [selectedItems, onItemCleared]);
-
-  const onKeyDownCapture = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Backspace' && fieldState.inputValue === '') {
-        popLast();
-      }
-
-      if (
-        e.key === 'Enter' &&
-        fieldState.inputValue &&
-        creatable &&
-        accessibleList.items.length === 0
-      ) {
-        onCreateTag();
-      }
-    },
-    [popLast, fieldState.inputValue, onCreateTag, creatable, accessibleList],
-  );
+  const editable = !isDisabled && !isReadOnly;
 
   return (
-    <div className={twMerge('w-full', className)}>
-      {label && <Label>{label}</Label>}
-      <div ref={triggerRef} className="relative">
-        <div
-          className={`
-            relative flex min-h-10 w-full flex-wrap items-center gap-1 rounded-md border
-            border-gray-300 bg-white px-3 py-1.5 shadow-sm
-            focus-within:border-gray-500 focus-within:ring-2 focus-within:ring-gray-400
-          `}
+    <div className={className}>
+      <ComboBox<T>
+        label={label}
+        description={description}
+        errorMessage={errorMessage}
+        placeholder={placeholder}
+        name={name}
+        items={suggestions}
+        inputValue={input}
+        onInputChange={setInput}
+        // The combo box adds items: it never keeps a selection.
+        selectedKey={null}
+        onSelectionChange={(key) => {
+          const item = suggestions.find((suggestion) => suggestion.id === key);
+          if (item) add(item);
+        }}
+        allowsCustomValue={allowsCustomValue}
+        // No suggestions, no popover: it would hide the tags.
+        allowsEmptyCollection={false}
+        onKeyDown={(event) => {
+          // Enter adds the typed value, unless an option is focused: then
+          // the combo box selects that option.
+          if (
+            event.key === 'Enter' &&
+            allowsCustomValue &&
+            !(event.target as HTMLElement).getAttribute('aria-activedescendant')
+          ) {
+            event.preventDefault();
+            addText(input);
+          }
+        }}
+        onBlur={() => {
+          if (allowsCustomValue && input.trim()) addText(input);
+          onBlur?.();
+        }}
+        isRequired={isRequired}
+        isDisabled={isDisabled}
+        isReadOnly={isReadOnly}
+        isInvalid={isInvalid}
+        validationBehavior={validationBehavior}
+      >
+        {(item) => <ComboBoxItem id={item.id}>{item.name}</ComboBoxItem>}
+      </ComboBox>
+      {value.length > 0 && (
+        <TagGroup<T>
+          aria-label={label ?? name}
+          items={value}
+          onRemove={editable ? remove : undefined}
+          className="mt-2"
         >
-          <TagGroup
-            id={tagGroupIdentifier}
-            aria-label="Selected items"
-            onRemove={onRemove}
-          >
-            <TagList
-              items={selectedItems.items}
-              className="flex flex-wrap items-center gap-1"
-            >
-              {(item: Option) => (
-                <Tag
-                  className={`
-                    inline-flex items-center gap-x-1.5 rounded-md bg-gray-200 px-2 py-0.5 text-sm
-                    text-gray-800
-                  `}
-                  textValue={item.name}
-                  id={item.id}
-                >
-                  {item.name}
-                  <Button
-                    slot="remove"
-                    className={`
-                      grid cursor-pointer place-content-center text-gray-500
-                      hover:bg-gray-600 hover:text-gray-300
-                      focus:bg-gray-600 focus:outline-none
-                    `}
-                    type="button"
-                  >
-                    <Close size="xs" />
-                  </Button>
-                </Tag>
-              )}
-            </TagList>
-          </TagGroup>
-          <ComboBox
-            {...props}
-            allowsEmptyCollection
-            aria-label="Available items"
-            items={accessibleList.items}
-            selectedKey={fieldState.selectedKey}
-            inputValue={fieldState.inputValue}
-            onSelectionChange={onSelectionChange}
-            onInputChange={onInputChange}
-            className="relative flex flex-1"
-          >
-            <Input
-              placeholder={placeholder}
-              onBlur={() => {
-                setFieldState({
-                  inputValue: '',
-                  selectedKey: null,
-                });
-                accessibleList.setFilterText('');
-              }}
-              onKeyDownCapture={onKeyDownCapture}
-              className={`
-                min-w-0 flex-1 bg-white px-2 py-1.5 text-sm text-gray-800 outline-0
-                disabled:text-gray-200
-              `}
-            />
-
-            <Button
-              className={`
-                absolute top-1/2 right-2 -translate-y-1/2 p-1 text-gray-400
-                hover:text-gray-600
-                focus:outline-none
-              `}
-              type="button"
-            >
-              <ChevrondownIcon />
-            </Button>
-
-            <Popover
-              isNonModal
-              trigger="ComboBox"
-              triggerRef={triggerRef}
-              style={{ width: `${width}px` }}
-              className="max-w-none overflow-hidden"
-            >
-              <ListBox
-                selectionMode="multiple"
-                className="rounded-md border border-gray-200 bg-white p-1 shadow-lg"
-                disallowEmptySelection={false}
-                renderEmptyState={
-                  renderEmptyState
-                    ? () => renderEmptyState(fieldState.inputValue)
-                    : () => (
-                        <div
-                          className={`
-                            block cursor-pointer rounded-md px-3 py-2 text-gray-700
-                            hover:bg-gray-100
-                            focus:bg-gray-100 focus:outline-none
-                          `}
-                          role="button"
-                          onMouseDown={(e) => {
-                            e.stopPropagation();
-                            if (fieldState.inputValue && creatable) {
-                              onCreateTag();
-                            }
-                          }}
-                          tabIndex={0}
-                        >
-                          {fieldState.inputValue ? (
-                            <>
-                              {creatable ? 'Create:' : 'No results found for:'}{' '}
-                              <strong className="font-medium text-gray-900">
-                                {fieldState.inputValue}
-                              </strong>
-                            </>
-                          ) : (
-                            'No options'
-                          )}
-                        </div>
-                      )
-                }
-              >
-                {(item: Option) => (
-                  <ListBoxItem
-                    key={item.id}
-                    id={item.id}
-                    textValue={item.name}
-                    className={`
-                      cursor-pointer rounded-md px-3 py-2 text-gray-700
-                      hover:bg-gray-100
-                      focus:bg-gray-100 focus:outline-none
-                      data-[focused]:bg-gray-100
-                    `}
-                  >
-                    {item.name}
-                  </ListBoxItem>
-                )}
-              </ListBox>
-            </Popover>
-          </ComboBox>
-        </div>
-      </div>
-      {description && <Description>{description}</Description>}
+          {(item) => <Tag id={item.id}>{item.name}</Tag>}
+        </TagGroup>
+      )}
     </div>
   );
 }

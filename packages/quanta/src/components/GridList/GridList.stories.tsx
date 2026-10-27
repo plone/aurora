@@ -1,6 +1,10 @@
 import React from 'react';
-import { useDragAndDrop, useListData } from 'react-aria-components';
-import { GridList, GridListItem } from './GridList';
+import {
+  GridListSection,
+  useDragAndDrop,
+  useListData,
+} from 'react-aria-components';
+import { GridList, GridListHeader, GridListItem } from './GridList';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
@@ -78,4 +82,21 @@ function Reorderable() {
 /** Drag the handle, or focus a row and use the keyboard to move it. */
 export const DragAndDrop: Story = {
   render: () => <Reorderable />,
+};
+
+export const WithSections: Story = {
+  render: () => (
+    <GridList aria-label="Fields">
+      <GridListSection id="default">
+        <GridListHeader>Default</GridListHeader>
+        <GridListItem id="title">Title</GridListItem>
+        <GridListItem id="description">Summary</GridListItem>
+      </GridListSection>
+      <GridListSection id="dates">
+        <GridListHeader>Dates</GridListHeader>
+        <GridListItem id="start">Event starts</GridListItem>
+        <GridListItem id="end">Event ends</GridListItem>
+      </GridListSection>
+    </GridList>
+  ),
 };

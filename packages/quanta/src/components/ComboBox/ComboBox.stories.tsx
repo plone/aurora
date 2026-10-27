@@ -1,5 +1,10 @@
 import React from 'react';
-import { ComboBox, ComboBoxItem, type ComboBoxProps } from './ComboBox';
+import {
+  ComboBox,
+  ComboBoxItem,
+  ComboBoxSection,
+  type ComboBoxProps,
+} from './ComboBox';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { fn } from 'storybook/test';
 
@@ -57,4 +62,36 @@ export const Invalid: Story = {
 
 export const Disabled: Story = {
   args: { isDisabled: true },
+};
+
+export const Sections: Story = {
+  args: {
+    items: undefined,
+    children: (
+      <>
+        <ComboBoxSection id="content" title="Content">
+          <ComboBoxItem id="Document">Page</ComboBoxItem>
+          <ComboBoxItem id="News Item">News Item</ComboBoxItem>
+        </ComboBoxSection>
+        <ComboBoxSection id="media" title="Media">
+          <ComboBoxItem id="Image">Image</ComboBoxItem>
+          <ComboBoxItem id="File">File</ComboBoxItem>
+        </ComboBoxSection>
+      </>
+    ),
+  },
+};
+
+export const MultipleSelection: Story = {
+  render: (args) => (
+    <ComboBox<TypeItem, 'multiple'>
+      label={args.label}
+      placeholder={args.placeholder}
+      items={types}
+      selectionMode="multiple"
+      defaultValue={['Document', 'Event']}
+    >
+      {(type) => <ComboBoxItem>{type.name}</ComboBoxItem>}
+    </ComboBox>
+  ),
 };

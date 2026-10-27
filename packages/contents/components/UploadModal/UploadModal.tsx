@@ -1,15 +1,16 @@
 import { useEffect } from 'react';
 import { useFetcher } from 'react-router';
-import { Heading, FileTrigger } from 'react-aria-components';
+import { FileTrigger } from 'react-aria-components';
 import { type FileDropItem, useDateFormatter } from 'react-aria';
 import { useTranslation, Trans } from 'react-i18next';
 import {
   Button,
   Dialog,
   DropZone,
-  DropZoneText,
+  Heading,
   Input,
   Modal,
+  Text,
 } from '@plone/quanta';
 import { BinIcon, CloseIcon, PageIcon, UploadIcon } from '@plone/icons';
 import { type ToastItem } from '@plone/layout/config/toast';
@@ -239,7 +240,7 @@ export default function UploadModal() {
                 ? t('contents.modal_upload.upload_more_files')
                 : t('contents.modal_upload.upload_files')}
             </p>
-            <DropZoneText slot="label">
+            <Text slot="label">
               <Trans i18nKey="contents.modal_upload.dropzone_label">
                 Drag and drop or
                 <FileTrigger
@@ -263,7 +264,7 @@ export default function UploadModal() {
                   </Button>
                 </FileTrigger>
               </Trans>
-            </DropZoneText>
+            </Text>
           </DropZone>
 
           <div className="mt-8 flex justify-center gap-3">
