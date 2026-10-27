@@ -17,3 +17,12 @@ export const updateTypeFieldDataSchema = z.object({
   properties: z.any().optional(),
   fieldsets: z.array(z.any()).optional(),
 });
+
+export const updateTypeSchemaDataSchema = z
+  .object({
+    fieldsets: z.array(z.any()),
+    properties: z.record(z.string(), z.any()),
+    required: z.array(z.string()).optional(),
+    layouts: z.array(z.string()).optional(),
+  })
+  .passthrough();

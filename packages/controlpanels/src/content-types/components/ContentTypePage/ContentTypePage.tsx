@@ -20,6 +20,7 @@ import type { Message } from '../../../provider/messages';
 import { useContentTypesDriver } from '../../driver';
 import {
   TAB_FIELDS,
+  changedSchema,
   changedSettings,
   toEditableSettings,
   type EditableSettings,
@@ -31,11 +32,14 @@ import {
   type ContentTypeTab,
 } from '../../paths';
 import type {
+  BehaviorInfo,
   ContentTypeSettings,
   ContentTypeSummary,
+  TypeSchema,
   WorkflowInfo,
 } from '../../types';
 import { useDriverData } from '../../useDriverData';
+import { FieldsTab } from '../FieldsTab/FieldsTab';
 import { SettingsTab } from '../SettingsTab/SettingsTab';
 
 export interface ContentTypePageProps {
@@ -191,8 +195,11 @@ function LeaveDialog({
 
 interface TypeData {
   type: ContentTypeSettings;
+  /** Missing for types that aren't Dexterity types. */
+  schema?: TypeSchema;
   types: ContentTypeSummary[];
   workflows: WorkflowInfo[];
+  behaviors: BehaviorInfo[];
 }
 
 function TypeEditor({
@@ -204,14 +211,17 @@ function TypeEditor({
   data: TypeData;
   tab: ContentTypeTab;
   basePath: string;
-  onSaved: (type: ContentTypeSettings) => void;
+  onSaved: (saved: Pick<TypeData, 'type' | 'schema'>) => void;
 }) {
   const t = useTranslate();
   const notify = useNotify();
   const driver = useContentTypesDriver();
   const { capabilities } = driver;
   const { type, types } = data;
-  const saved = useMemo(() => toEditableSettings(type), [type]);
+  const saved = useMemo(
+    () => toEditableSettings(type, data.schema),
+    [type, data.schema],
+  );
   const form = useFormStore<EditableSettings>({
     key: type.id,
     initialValues: saved,
@@ -224,14 +234,22 @@ function TypeEditor({
   );
 
   const onSave = async () => {
-    const changes = changedSettings(saved, form.getValues());
-    if (!Object.keys(changes).length) return;
+    const edited = form.getValues();
+    const changes = changedSettings(saved, edited);
+    const schema = changedSchema(saved, edited);
+    if (!Object.keys(changes).length && !schema) return;
     setIsSaving(true);
     try {
-      await driver.updateType(type.id, changes);
-      const fresh = await driver.getType(type.id);
-      form.reset(toEditableSettings(fresh));
-      onSaved(fresh);
+      if (Object.keys(changes).length) {
+        await driver.updateType(type.id, changes);
+      }
+      if (schema) await driver.saveSchema(type.id, schema);
+      const [fresh, freshSchema] = await Promise.all([
+        driver.getType(type.id),
+        data.schema ? driver.getSchema(type.id) : undefined,
+      ]);
+      form.reset(toEditableSettings(fresh, freshSchema));
+      onSaved({ type: fresh, schema: freshSchema });
       notify({
         title: t(messages.updated, { title: fresh.title }),
         variant: 'success',
@@ -306,15 +324,26 @@ function TypeEditor({
           <TabPanel id="settings" className="pt-6">
             <SettingsTab type={type} types={types} />
           </TabPanel>
-          {TABS.filter(([id]) => id !== 'settings').map(([id]) => (
-            <TabPanel key={id} id={id} className="pt-6">
+          <TabPanel id="fields" className="pt-6">
+            {data.schema ? (
+              <FieldsTab behaviors={data.behaviors} />
+            ) : (
               <p className="text-sm text-quanta-pigeon">
-                {type.kind === 'other'
-                  ? t(messages.notADexterityType, { title: type.title })
-                  : t(messages.comingLater)}
+                {t(messages.notADexterityType, { title: type.title })}
               </p>
-            </TabPanel>
-          ))}
+            )}
+          </TabPanel>
+          {TABS.filter(([id]) => id !== 'settings' && id !== 'fields').map(
+            ([id]) => (
+              <TabPanel key={id} id={id} className="pt-6">
+                <p className="text-sm text-quanta-pigeon">
+                  {type.kind === 'other'
+                    ? t(messages.notADexterityType, { title: type.title })
+                    : t(messages.comingLater)}
+                </p>
+              </TabPanel>
+            ),
+          )}
         </Tabs>
 
         <SaveBar form={form} isSaving={isSaving} onSave={onSave} />
@@ -343,14 +372,18 @@ export function ContentTypePage({
   const { capabilities } = driver;
 
   const load = useCallback(async (): Promise<TypeData> => {
-    const [type, types, workflows] = await Promise.all([
+    const [type, types, workflows, behaviors] = await Promise.all([
       driver.getType(id),
       driver.listTypes(),
       capabilities.workflows && driver.listWorkflows
         ? driver.listWorkflows()
         : Promise.resolve([]),
+      // Only names the behaviors of locked fields, so it may fail.
+      driver.listBehaviors().catch(() => []),
     ]);
-    return { type, types, workflows };
+    const schema =
+      type.kind === 'other' ? undefined : await driver.getSchema(id);
+    return { type, schema, types, workflows, behaviors };
   }, [driver, capabilities, id]);
   const { data, error, isLoading, reload, setData } = useDriverData(load);
 
@@ -373,7 +406,9 @@ export function ContentTypePage({
       data={data}
       tab={tab}
       basePath={basePath}
-      onSaved={(type) => setData((current) => current && { ...current, type })}
+      onSaved={(saved) =>
+        setData((current) => current && { ...current, ...saved })
+      }
     />
   );
 }

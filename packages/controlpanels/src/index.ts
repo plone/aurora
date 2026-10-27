@@ -61,7 +61,17 @@ export { ContentTypePage } from './content-types/components/ContentTypePage/Cont
 export type { ContentTypePageProps } from './content-types/components/ContentTypePage/ContentTypePage';
 export { SettingsTab } from './content-types/components/SettingsTab/SettingsTab';
 export type { SettingsTabProps } from './content-types/components/SettingsTab/SettingsTab';
+export { FieldsTab } from './content-types/components/FieldsTab/FieldsTab';
+export type { FieldsTabProps } from './content-types/components/FieldsTab/FieldsTab';
+export { FieldEditor } from './content-types/components/FieldsTab/FieldEditor';
+export type { FieldEditorProps } from './content-types/components/FieldsTab/FieldEditor';
+export { AddFieldDialog } from './content-types/components/FieldsTab/AddFieldDialog';
+export type { AddFieldDialogProps } from './content-types/components/FieldsTab/AddFieldDialog';
+export { AddFieldsetDialog } from './content-types/components/FieldsTab/AddFieldsetDialog';
+export type { AddFieldsetDialogProps } from './content-types/components/FieldsTab/AddFieldsetDialog';
+export * from './content-types/schemaEditing';
 export {
+  changedSchema,
   changedSettings,
   toEditableSettings,
 } from './content-types/editableSettings';

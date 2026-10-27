@@ -38,6 +38,37 @@ export const Comment: Story = {
   args: { id: 'Discussion Item', tab: 'fields' },
 };
 
+/**
+ * Every field the edit form shows. Fields from behaviors are locked. Click
+ * "Registration required" to edit it in a side sheet, or drag it by its
+ * handle. Fieldsets can be reordered too.
+ */
+export const Fields: Story = {
+  args: { tab: 'fields' },
+};
+
+/**
+ * What plone.restapi supports today: fields can be added, edited, moved and
+ * deleted, but fieldsets keep their order, and locked fields show the
+ * behavior's name instead of its title.
+ */
+export const FieldsBasicBackend: Story = {
+  args: { tab: 'fields' },
+  parameters: {
+    driver: {
+      basicBackend: true,
+      override: {
+        listBehaviors: () => Promise.reject(new Error('Not supported')),
+      },
+    },
+  },
+};
+
+/** A type with no fields yet. */
+export const FieldsOfANewType: Story = {
+  args: { id: 'Link', tab: 'fields' },
+};
+
 /** A tab that comes in a later phase. */
 export const OtherTab: Story = {
   args: { tab: 'behaviors' },
