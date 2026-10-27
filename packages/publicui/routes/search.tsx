@@ -31,16 +31,21 @@ const FACET_SAMPLE_SIZE = 1000;
 
 export async function loader({
   request,
-  params,
   context,
 }: LoaderFunctionArgs<RouterContextProvider>) {
   const cli = context.get(ploneClientContext);
 
   const url = new URL(request.url);
   const query = (url.searchParams.get('SearchableText') || '').trim();
-  const bStart = Math.max(0, Number(url.searchParams.get('b_start')) || 0);
+  const requestedStart = Math.max(
+    0,
+    Number(url.searchParams.get('b_start')) || 0,
+  );
+  // Snap to a page boundary so pagination never yields overlapping pages.
+  const bStart = Math.floor(requestedStart / PAGE_SIZE) * PAGE_SIZE;
   const subjects = url.searchParams.getAll('Subject');
-  const root = params.root ? `/${params.root}` : null;
+  const path = url.searchParams.get('path')?.replace(/\/+$/, '');
+  const root = path?.startsWith('/') ? path : null;
 
   // An empty term with use_site_search_settings returns a bare list, not a
   // batch, so skip the query entirely.
@@ -71,6 +76,7 @@ export async function loader({
           ...(subjects.length > 0 ? { Subject: subjects } : {}),
           b_start: bStart,
           b_size: PAGE_SIZE,
+          metadata_fields: 'is_folderish',
           ...sortToQuery(url.searchParams.get('sort')),
         },
       }),

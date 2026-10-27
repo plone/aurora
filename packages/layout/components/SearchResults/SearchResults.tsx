@@ -47,7 +47,8 @@ export function SearchResults({
       </p>
       <div className={styles.list}>
         {items.map((item) => {
-          const Icon = getContentIcon(item['@type']) ?? PageIcon;
+          const Icon =
+            getContentIcon(item['@type'], item.is_folderish) ?? PageIcon;
           const date = formatDate(item.effective, i18n.language);
           return (
             <article className={styles.item} key={item['@id']}>

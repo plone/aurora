@@ -1,10 +1,10 @@
 ---
 myst:
   html_meta:
-    "description": "How the public search route in Plone Aurora works"
-    "property=og:description": "How the public search route in Plone Aurora works"
-    "property=og:title": "Search"
-    "keywords": "Plone Aurora, frontend, Plone, search, pagination, sorting, facets, tags, accessibility, @search"
+    'description': 'How the public search route in Plone Aurora works'
+    'property=og:description': 'How the public search route in Plone Aurora works'
+    'property=og:title': 'Search'
+    'keywords': 'Plone Aurora, frontend, Plone, search, pagination, sorting, facets, tags, accessibility, @search'
 ---
 
 # Search
@@ -16,8 +16,9 @@ Plone Aurora ships a public search route at {file}`packages/publicui/routes/sear
 The search input itself lives in the site header.
 This route reads the search term from the `SearchableText` query parameter.
 
-The route answers at `/search` for the whole site, and at `/<root>/search` for a top-level folder, such as a language root folder.
-On a multilingual site, `/de/search` scopes the results to the `/de` language tree.
+The route answers at `/search`.
+An optional `path` query parameter scopes the results to a subtree.
+On a multilingual site, the header search widget sends the current language root, so a search from a page under `/de` requests `/search?path=/de` and only returns matches from the `/de` language tree.
 
 The route queries the backend in its `loader` and renders on the server.
 It returns search results with sorting, filtering, and pagination.
@@ -29,8 +30,9 @@ The components live in `@plone/layout`, so both the CMS UI and the Public UI can
 
 ## The query
 
-The `loader` reads the search term from the `SearchableText` query parameter, the requested page from `b_start`, the selected tags from repeated `Subject` parameters, and the sort order from `sort`.
-On the scoped route, it adds a `path` query for the root segment, so the backend only returns matches from that subtree.
+The `loader` reads the search term from the `SearchableText` query parameter, the requested page from `b_start`, the selected tags from repeated `Subject` parameters, the sort order from `sort`, and the scope from `path`.
+It rounds `b_start` down to a multiple of the page size, so pages never overlap.
+When `path` is set, it adds a `path` query, so the backend only returns matches from that subtree.
 It then runs two queries against the `@search` endpoint through `@plone/client` in parallel.
 
 ```{code-block} ts
@@ -52,6 +54,7 @@ try {
         ...(subjects.length > 0 ? { Subject: subjects } : {}),
         b_start: bStart,
         b_size: PAGE_SIZE,
+        metadata_fields: 'is_folderish',
         ...sortToQuery(url.searchParams.get('sort')),
       },
     }),
@@ -72,7 +75,7 @@ try {
 
 The first query fetches the visible page of results.
 The loader appends a trailing `*` to the term so partial words match.
-`b_size` limits the request to one page, `b_start` selects the offset of the current page, and the backend returns the matching slice in `items` and the full match count in `items_total`.
+`b_size` limits the request to one page, `b_start` selects the offset of the current page, `metadata_fields` adds the `is_folderish` flag that picks the fallback icon for content types without a registered icon, and the backend returns the matching slice in `items` and the full match count in `items_total`.
 That count is everything the pagination needs.
 
 The second query feeds {ref}`the tag facets <search-facet-sampling>`.
@@ -172,11 +175,11 @@ The loader caps the facet sample at `FACET_SAMPLE_SIZE` matches per request, so 
 
 The search markup carries the structure that assistive technology needs.
 
--   `SearchResults` renders the results in a named `region` landmark, a `<section>` with an `aria-label`.
-    Individual results are `<article>` elements, which aren't landmarks.
--   The result count is a `<p>` with `role="status"`, a polite live region, so screen readers announce the new count.
--   The result title links, the tag chips, the {guilabel}`Filter by tag` toggle, the sort selector, and the pagination links all show a visible `:focus-visible` outline for keyboard navigation.
--   The pagination is a `nav` landmark with labeled previous and next controls, and the current page carries `aria-current="page"`.
+- `SearchResults` renders the results in a named `region` landmark, a `<section>` with an `aria-label`.
+  Individual results are `<article>` elements, which aren't landmarks.
+- The result count is a `<p>` with `role="status"`, a polite live region, so screen readers announce the new count.
+- The result title links, the tag chips, the {guilabel}`Filter by tag` toggle, the sort selector, and the pagination links all show a visible `:focus-visible` outline for keyboard navigation.
+- The pagination is a `nav` landmark with labeled previous and next controls, and the current page carries `aria-current="page"`.
 
 While the loader re-runs for a new query, sort order, page, or filter, the route detects the navigation with `useNavigation` and passes `loading` to `SearchResults`.
 `SearchResults` then sets `aria-busy` on the region, swaps the count for a {guilabel}`Searching…` status, and dims the list.

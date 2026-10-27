@@ -84,7 +84,7 @@ describe('Search loader', () => {
     });
   });
 
-  it('scopes the query to the root segment on the scoped route', async () => {
+  it('scopes the query to the path parameter', async () => {
     const cli = {
       search: vi
         .fn()
@@ -93,13 +93,42 @@ describe('Search loader', () => {
     };
 
     await loader(
-      makeArgs('http://example.com/en/search?SearchableText=foo', cli, {
-        root: 'en',
-      }),
+      makeArgs('http://example.com/search?SearchableText=foo&path=/en/', cli),
     );
 
     expect(cli.search.mock.calls[0][0].query.path).toEqual({ query: '/en' });
     expect(cli.search.mock.calls[1][0].query.path).toEqual({ query: '/en' });
+  });
+
+  it('requests is_folderish for the result icons', async () => {
+    const cli = {
+      search: vi
+        .fn()
+        .mockResolvedValueOnce({ data: { items: [], items_total: 0 } })
+        .mockResolvedValueOnce({ data: { items: [] } }),
+    };
+
+    await loader(makeArgs('http://example.com/search?SearchableText=foo', cli));
+
+    expect(cli.search.mock.calls[0][0].query.metadata_fields).toBe(
+      'is_folderish',
+    );
+  });
+
+  it('snaps b_start down to a page boundary', async () => {
+    const cli = {
+      search: vi
+        .fn()
+        .mockResolvedValueOnce({ data: { items: [], items_total: 100 } })
+        .mockResolvedValueOnce({ data: { items: [] } }),
+    };
+
+    const result = await loader(
+      makeArgs('http://example.com/search?SearchableText=foo&b_start=30', cli),
+    );
+
+    expect(cli.search.mock.calls[0][0].query.b_start).toBe(25);
+    expect(result).toMatchObject({ bStart: 25 });
   });
 
   it('does not scope the global route', async () => {

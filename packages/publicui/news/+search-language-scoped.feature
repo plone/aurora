@@ -1,1 +1,1 @@
-The search route also answers under a top-level folder, such as a language root: `/de/search` scopes the results to that subtree. @nils-pzr
+The search route accepts a `path` query parameter to scope the results to a subtree, and the header search widget scopes searches to the current language root on multilingual sites. @nils-pzr

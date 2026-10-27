@@ -36,7 +36,15 @@ export function SearchFacets({ facets }: SearchFacetsProps) {
   const listId = useId();
   const [open, setOpen] = useState(selected.size > 0);
 
-  if (facets.length === 0) {
+  // Keep active tags that aren't in the facet sample, so they can be cleared.
+  const shown = [
+    ...facets,
+    ...[...selected]
+      .filter((subject) => !facets.some((facet) => facet.subject === subject))
+      .map((subject) => ({ subject, count: 0 })),
+  ];
+
+  if (shown.length === 0) {
     return null;
   }
 
@@ -85,7 +93,7 @@ export function SearchFacets({ facets }: SearchFacetsProps) {
             role="group"
             aria-label={t('layout.search.filterByTag')}
           >
-            {facets.map(({ subject, count }) => (
+            {shown.map(({ subject, count }) => (
               <label key={subject} className={styles.facet}>
                 <input
                   type="checkbox"

@@ -59,6 +59,32 @@ describe('SearchFacets', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
+  it('keeps an active tag that is missing from the facets, so it can be cleared', () => {
+    render(
+      <MemoryRouter
+        initialEntries={['/search?SearchableText=foo&Subject=gone']}
+      >
+        <Routes>
+          <Route
+            path="/search"
+            element={
+              <>
+                <SearchFacets facets={[]} />
+                <LocationProbe />
+              </>
+            }
+          />
+        </Routes>
+      </MemoryRouter>,
+    );
+    const checkbox = screen.getByRole('checkbox', { name: /gone/ });
+    expect(checkbox).toBeChecked();
+    fireEvent.click(checkbox);
+    expect(screen.getByTestId('location-search').textContent).not.toContain(
+      'Subject',
+    );
+  });
+
   it('is collapsed by default and toggles open/closed with the button', () => {
     renderFacets();
     const button = screen.getByRole('button');

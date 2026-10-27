@@ -1,6 +1,8 @@
 import { Form, Input, Label, TextField } from 'react-aria-components';
 import type { SlotComponentProps } from '../../SlotRenderer';
 import { useTranslation } from 'react-i18next';
+import { useRouteLoaderData } from 'react-router';
+import type { RootLoader } from '@plone/aurora/app/root';
 import { Button } from '@plone/components';
 import Search from '@plone/icons/svg/search.svg?react';
 import styles from './SearchWidget.module.css';
@@ -10,8 +12,14 @@ const SearchWidget = (props: SlotComponentProps) => {
   const { location } = props;
 
   const { t } = useTranslation();
-  const pathname = location.pathname;
-  const hasPath = pathname?.length > 0 && pathname !== '/';
+  const site = useRouteLoaderData<RootLoader>('root')?.site;
+  const languages: string[] = site?.features?.multilingual
+    ? site['plone.available_languages'] || []
+    : [];
+  const firstSegment = location.pathname?.split('/')[1];
+  const languageRoot = languages.includes(firstSegment)
+    ? `/${firstSegment}`
+    : null;
 
   return (
     <Form
@@ -27,7 +35,9 @@ const SearchWidget = (props: SlotComponentProps) => {
           name="SearchableText"
           placeholder={t('layout.slots.headertools.searchWidget.searchSite')}
         />
-        {hasPath && <input type="hidden" name="path" value={pathname} />}
+        {languageRoot && (
+          <input type="hidden" name="path" value={languageRoot} />
+        )}
       </TextField>
       <Button type="submit">
         <Search />
