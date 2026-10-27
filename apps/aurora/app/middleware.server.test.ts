@@ -5,6 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import { getAuthFromRequest } from '@plone/react-router';
 import PloneClient from '@plone/client';
 import {
+  anonymousLanguageRootRedirect,
   fetchPloneContent,
   getAPIResourceWithAuth,
   getContentExpand,
@@ -1488,6 +1489,132 @@ describe('middleware', () => {
       expect(result).toBeInstanceOf(Response);
       expect((result as Response).headers.get('Location')).toBe('/en');
       expect(context.get(ploneClearAuthCookieContext)).toBe(true);
+    });
+
+    const anonymous401Setup = () => {
+      const getContentMock = vi
+        .fn()
+        .mockRejectedValue({ data: undefined, status: 401 });
+      const getSiteMock = vi.fn().mockResolvedValue({ data: {} });
+      config.settings.apiPath = 'http://example.com';
+      registerPloneClientFactory({
+        getContent: getContentMock,
+        getSite: getSiteMock,
+      });
+    };
+
+    const runFetchFor = async (starParam: string) => {
+      const request = new Request(`http://example.com/${starParam}`);
+      const context = new RouterContextProvider();
+      await initializePloneClientContext(request, context);
+      return fetchPloneContent(
+        {
+          request,
+          params: { '*': starParam },
+          context,
+          pattern: `/${starParam}`,
+          url: new URL(request.url),
+        },
+        vi.fn(),
+      );
+    };
+
+    it('redirects an anonymous 401 to the language root', async () => {
+      anonymous401Setup();
+      const result = await runFetchFor('en/press');
+      expect(result).toBeInstanceOf(Response);
+      expect((result as Response).status).toBe(302);
+      expect((result as Response).headers.get('Location')).toBe('/en');
+    });
+
+    it('redirects an anonymous 401 under a hyphenated language token', async () => {
+      anonymous401Setup();
+      const result = await runFetchFor('pt-br/musica');
+      expect((result as Response).headers.get('Location')).toBe('/pt-br');
+    });
+
+    it('redirects an anonymous 401 on a non-language path to the site root', async () => {
+      anonymous401Setup();
+      const result = await runFetchFor('private-thing');
+      expect((result as Response).headers.get('Location')).toBe('/');
+    });
+
+    it('redirects an anonymous 401 on a language root itself to the login page with return_url', async () => {
+      anonymous401Setup();
+      const result = await runFetchFor('en');
+      expect((result as Response).status).toBe(302);
+      expect((result as Response).headers.get('Location')).toBe(
+        '/login?return_url=/en',
+      );
+    });
+
+    it('redirects an anonymous 401 on a hyphenated language root to the login page with return_url', async () => {
+      anonymous401Setup();
+      const result = await runFetchFor('pt-br');
+      expect((result as Response).headers.get('Location')).toBe(
+        '/login?return_url=/pt-br',
+      );
+    });
+
+    it('redirects an anonymous 401 on the site root to the login page without return_url', async () => {
+      anonymous401Setup();
+      const result = await runFetchFor('');
+      expect((result as Response).headers.get('Location')).toBe('/login');
+    });
+
+    it('never targets the site root or the path itself from a 401 on a root (loop-free behind an edge that redirects / to a language root)', () => {
+      for (const root of ['/en', '/pt-br', '/zh-cn', '/']) {
+        const target = anonymousLanguageRootRedirect(root);
+        expect(target, `target for ${root}`).not.toBe('/');
+        expect(target, `target for ${root}`).not.toBe(root);
+        expect(target, `target for ${root}`).toMatch(
+          /^\/login(\?return_url=\/[a-z-]+)?$/,
+        );
+      }
+    });
+
+    it('keeps throwing 401 for a token-bearing request whose anonymous retry also 401s', async () => {
+      vi.mocked(getAuthFromRequest).mockResolvedValue('valid.jwt.token');
+      vi.mocked(jwtDecode).mockReturnValue({ sub: 'salomon' } as any);
+      const getContentMock = vi
+        .fn()
+        .mockRejectedValue({ data: undefined, status: 401 });
+      const getSiteMock = vi.fn().mockResolvedValue({ data: {} });
+      config.settings.apiPath = 'http://example.com';
+      registerPloneClientFactory({
+        getContent: getContentMock,
+        getSite: getSiteMock,
+        getUser: vi.fn().mockResolvedValue(null),
+      });
+      await expect(() => runFetchFor('en/press')).rejects.toMatchObject({
+        init: { status: 401 },
+      });
+    });
+
+    it('does not redirect /login to itself when the site root is private', async () => {
+      anonymous401Setup();
+      const request = new Request('http://example.com/login');
+      const context = new RouterContextProvider();
+      await initializePloneClientContext(request, context);
+      await expect(() =>
+        fetchPloneContent(
+          {
+            request,
+            params: {},
+            context,
+            pattern: '/login',
+            url: new URL(request.url),
+          },
+          vi.fn(),
+        ),
+      ).rejects.toMatchObject({ init: { status: 401 } });
+    });
+
+    it('takes the same language tokens as the multilingual root redirect', () => {
+      expect(anonymousLanguageRootRedirect('/zh-hant/news')).toBe('/zh-hant');
+      expect(anonymousLanguageRootRedirect('/zh-hant')).toBe(
+        '/login?return_url=/zh-hant',
+      );
     });
   });
 

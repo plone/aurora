@@ -18,6 +18,9 @@ export const ploneUserContext = createContext<
 >(null);
 export const ploneClearAuthCookieContext = createContext<boolean>(false);
 
+/** A language code as Plone names its language root folders: `en`, `pt-br`. */
+const LANGUAGE_TOKEN = /^[a-z]{2,3}(-[a-z]{2,4})?$/;
+
 /**
  * Where the site root sends a visitor on a multilingual site: the default
  * language root — what Plone's language-switcher view on the site root and
@@ -32,10 +35,39 @@ export function multilingualRootRedirect(
 ): string | undefined {
   if (pathname !== '/' || !site?.features?.multilingual) return undefined;
   const language = site['plone.default_language'];
-  return typeof language === 'string' &&
-    /^[a-z]{2,3}(-[a-z]{2,4})?$/.test(language)
+  return typeof language === 'string' && LANGUAGE_TOKEN.test(language)
     ? `/${language}`
     : undefined;
+}
+
+/**
+ * Where an anonymous visitor lands instead of a bare 401: the path's
+ * language root when its first segment is a language token (the same
+ * path-derivation rule the LanguageSwitcher uses), the site root
+ * otherwise. When the 401'd path IS that root — a private language root,
+ * or the site root — the visitor goes to the login page instead, with the
+ * path as `return_url` the way the header's login link builds it (and
+ * without one for the site root, as that link does). A root may never be
+ * sent to the site root: behind a redirect from `/` to the default
+ * language root, `/en → / → /en` would loop forever.
+ *
+ * `pathname` is the page being requested. When the target is that page —
+ * `/login` itself on a site whose root is private, as the root middleware
+ * runs for `/login` with an empty splat — there is no redirect.
+ */
+export function anonymousLanguageRootRedirect(
+  path: string,
+  pathname: string = path,
+): string | undefined {
+  const segment = path.split('/')[1] || '';
+  const root = LANGUAGE_TOKEN.test(segment) ? `/${segment}` : '/';
+  const target =
+    root !== path
+      ? root
+      : path === '/'
+        ? '/login'
+        : `/login?return_url=${path}`;
+  return target.split('?')[0] === pathname ? undefined : target;
 }
 
 function getAuthorizedResourceHeaders(
@@ -322,6 +354,15 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
         });
       }
     }
+
+    // An anonymous visitor on private content gets the language root,
+    // not a dead-end 401 page; token-bearing requests fall through so
+    // signed-in editors still see the honest permission error.
+    const anonymousRedirect =
+      !token && error?.status === 401
+        ? anonymousLanguageRootRedirect(path, pathname)
+        : undefined;
+    if (anonymousRedirect) return redirect(anonymousRedirect);
 
     throw data('Content Not Found', {
       status: typeof error.status === 'number' ? error.status : 500,
