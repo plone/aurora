@@ -145,13 +145,18 @@ function SaveBar({
 function LeaveDialog({
   form,
   title,
+  typePath,
 }: {
   form: FormApi<EditableSettings>;
   title: string;
+  /** The type's pages: moving between its tabs keeps the changes. */
+  typePath: string;
 }) {
   const t = useTranslate();
   const isDirty = useDirtyTabs(form).length > 0;
-  const blocker = useNavigationBlocker(isDirty);
+  const blocker = useNavigationBlocker(isDirty, (nextPath) =>
+    nextPath.startsWith(`${typePath}/`),
+  );
   return (
     <Modal
       isOpen={blocker.isBlocked}
@@ -313,7 +318,11 @@ function TypeEditor({
         </Tabs>
 
         <SaveBar form={form} isSaving={isSaving} onSave={onSave} />
-        <LeaveDialog form={form} title={type.title} />
+        <LeaveDialog
+          form={form}
+          title={type.title}
+          typePath={`${basePath}/${encodeURIComponent(type.id)}`}
+        />
       </div>
     </FormProvider>
   );

@@ -130,9 +130,11 @@ describe('ContentTypePage', () => {
   it('asks before leaving with unsaved changes', async () => {
     const proceed = vi.fn();
     const cancel = vi.fn();
-    // Like the app's router, it blocks while there are changes.
-    const useBlocker: UseBlocker = (when) => ({
-      isBlocked: when,
+    // Like the app's router after following a link elsewhere: it blocks if
+    // the page says to.
+    const nextPath = '/controlpanel';
+    const useBlocker: UseBlocker = (shouldBlock) => ({
+      isBlocked: shouldBlock(nextPath),
       proceed,
       cancel,
     });
@@ -149,6 +151,18 @@ describe('ContentTypePage', () => {
       within(dialog).getByRole('button', { name: 'Discard changes' }),
     );
     expect(proceed).toHaveBeenCalled();
+  });
+
+  it("keeps the changes while moving between the type's tabs", async () => {
+    const useBlocker: UseBlocker = (shouldBlock) => ({
+      isBlocked: shouldBlock('/controlpanel/content-types/Event/fields'),
+      proceed: vi.fn(),
+      cancel: vi.fn(),
+    });
+    renderPage({ useBlocker });
+    await screen.findByRole('heading', { level: 1, name: 'Event' });
+    fireEvent.change(description(), { target: { value: 'Happenings' } });
+    expect(screen.queryByRole('alertdialog')).toBeNull();
   });
 
   it('chooses which types can be added inside', async () => {
