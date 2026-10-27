@@ -21,6 +21,10 @@ const config: StorybookConfig = {
       title: '@plone/quanta',
       url: 'https://plone-quanta.readthedocs.io/',
     },
+    icons: {
+      title: '@plone/icons',
+      url: 'https://plone-icons.readthedocs.io/',
+    },
     layout: {
       title: '@plone/layout',
       url: 'https://plone-layout.readthedocs.io/',
