@@ -167,6 +167,19 @@ function errorResponse(
     : Response.json({ error: { type, message } }, { status, headers });
 }
 
+// The URL of the endpoint as the client called it, without the block ID or
+// the query string, so that each item can link to its own URL. It keeps the
+// content path, so an item's link keeps its context.
+function getEndpointURL(request: Request): string {
+  const url = new URL(request.url);
+  const proto = request.headers.get('x-forwarded-proto')?.split(',')[0].trim();
+  const protocol = proto ? `${proto}:` : url.protocol;
+  const [pathname] = url.pathname.match(/^.*?\/@blocks-schema(?=\/|$)/) || [
+    url.pathname,
+  ];
+  return `${protocol}//${url.host}${pathname}`;
+}
+
 const BACKEND_ERRORS: Record<number, string> = {
   401: 'Unauthorized',
   403: 'Forbidden',
@@ -201,8 +214,9 @@ export async function blocksSchemaResponse({
     (config.blocks?.plateBlocksConfig ?? {}) as Record<string, object>,
   );
   const markdown = wantsMarkdown(request);
-  const url = new URL(request.url);
-  const id = `${url.pathname}${url.search}`;
+  const endpointURL = getEndpointURL(request);
+  // Links use the registry key, which is what the detail route looks up.
+  const itemURL = (key: string) => `${endpointURL}/${encodeURIComponent(key)}`;
 
   let auth: Auth;
   try {
@@ -231,10 +245,14 @@ export async function blocksSchemaResponse({
     }
   }
 
-  const describe = (blockConfig: BlockConfigBase, full: boolean) => {
+  const describe = (
+    key: string,
+    blockConfig: BlockConfigBase,
+    full: boolean,
+  ) => {
     const item = full
-      ? buildFullDetail(docsFiles, blockConfig)
-      : buildSummaryItem(docsFiles, blockConfig);
+      ? buildFullDetail(docsFiles, blockConfig, itemURL(key))
+      : buildSummaryItem(docsFiles, blockConfig, itemURL(key));
     const restricted = context
       ? isRestrictedIn(blockConfig, context)
       : restrictedFlag(blockConfig);
@@ -257,7 +275,10 @@ export async function blocksSchemaResponse({
       if (markdown) {
         return markdownResponse(`${blockToMarkdown(element)}\n`, { headers });
       }
-      return Response.json({ '@id': id, ...element }, { headers });
+      return Response.json(
+        { '@id': itemURL(blockId), ...element },
+        { headers },
+      );
     }
     if (!blockConfig || blockId === DOCUMENT_DOCS_ID) {
       return errorResponse(
@@ -268,23 +289,23 @@ export async function blocksSchemaResponse({
         { 'Cache-Control': 'no-store' },
       );
     }
-    const detail = describe(blockConfig, true);
+    const detail = describe(blockId, blockConfig, true);
     if (markdown) {
       return markdownResponse(`${blockToMarkdown(detail)}\n`, { headers });
     }
-    return Response.json({ '@id': id, ...detail }, { headers });
+    return Response.json(detail, { headers });
   }
 
-  const full = markdown || url.searchParams.get('full') === '1';
   const blocks = Object.entries(blocksConfig)
     // Entries that aren't blocks, like the page document, are left out.
     .filter(([key, blockConfig]) => key !== DOCUMENT_DOCS_ID && blockConfig?.id)
-    .map(([, blockConfig]) => blockConfig)
-    .filter((blockConfig) => !context || !isRestrictedIn(blockConfig, context))
-    .map((blockConfig) => describe(blockConfig, full));
+    .filter(
+      ([, blockConfig]) => !context || !isRestrictedIn(blockConfig, context),
+    )
+    .map(([key, blockConfig]) => describe(key, blockConfig, false));
   // Elements are always offered, so they are listed in a context too.
   const items = [
-    ...(full ? elements : elements.map(elementSummary)),
+    ...elements.map((element) => elementSummary(element, itemURL(element.id))),
     ...blocks,
   ];
   const documentDocs = getDocumentDocs(docsFiles);
@@ -296,7 +317,7 @@ export async function blocksSchemaResponse({
   }
   return Response.json(
     {
-      '@id': id,
+      '@id': endpointURL,
       ...(documentDocs ? { document: documentDocs } : {}),
       items,
       items_total: items.length,

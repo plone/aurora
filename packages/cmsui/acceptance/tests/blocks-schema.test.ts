@@ -23,6 +23,9 @@ test('The @blocks-schema endpoint lists the blocks with their docs', async ({
   expect(body.items).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
+        '@id': expect.stringMatching(
+          /^https?:\/\/[^/]+\/@blocks-schema\/teaser$/,
+        ),
         id: 'teaser',
         title: 'Teaser',
         kind: 'block',
@@ -32,6 +35,14 @@ test('The @blocks-schema endpoint lists the blocks with their docs', async ({
       expect.objectContaining({ id: 'h2', kind: 'element' }),
     ]),
   );
+
+  // Each item links to its details.
+  const teaser = body.items.find(
+    (item: { id: string }) => item.id === 'teaser',
+  );
+  const detail = await (await page.request.get(teaser['@id'])).json();
+  expect(detail).toMatchObject({ '@id': teaser['@id'], id: 'teaser' });
+  expect(detail.docs).toContain('### Example');
 });
 
 test('The @blocks-schema endpoint describes one block', async ({ page }) => {
@@ -59,13 +70,22 @@ test('The @blocks-schema endpoint describes one block', async ({ page }) => {
 test('The @blocks-schema endpoint answers in Markdown', async ({ page }) => {
   await login(page);
 
-  const response = await page.request.get('/@blocks-schema?format=md');
+  const response = await page.request.get('/@blocks-schema', {
+    headers: { Accept: 'text/markdown' },
+  });
 
   expect(response.headers()['content-type']).toContain('text/markdown');
   const markdown = await response.text();
   expect(markdown).toMatch(/^# Blocks\n/);
   expect(markdown).toContain('## Document format');
-  expect(markdown).toContain('## Teaser (`teaser`)');
+  expect(markdown).toMatch(
+    /- \[Teaser\]\(https?:\/\/[^/]+\/@blocks-schema\/teaser\) \(`teaser`\): /,
+  );
+
+  const teaser = await page.request.get('/@blocks-schema/teaser', {
+    headers: { Accept: 'text/markdown' },
+  });
+  expect(await teaser.text()).toContain('## Teaser (`teaser`)');
 });
 
 test('The @blocks-schema endpoint accepts a Bearer token', async ({ page }) => {
@@ -95,6 +115,7 @@ test('The @blocks-schema endpoint lists the blocks offered for a content item', 
     'private, max-age=0, must-revalidate',
   );
   const body = await response.json();
+  expect(body['@id']).toMatch(/\/blocks-schema-page\/@blocks-schema$/);
   expect(body.items.map((item: { id: string }) => item.id)).toContain('teaser');
 
   const block = await page.request.get(

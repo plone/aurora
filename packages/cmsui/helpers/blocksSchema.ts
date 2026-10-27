@@ -21,6 +21,8 @@ export type BlockDocsFile = {
 export type NodeKind = 'block' | 'element';
 
 export type BlockSummary = {
+  /** The URL of the item's details. */
+  '@id': string;
   id: string;
   title: string;
   kind: NodeKind;
@@ -38,6 +40,7 @@ export type VariationDetail = {
 };
 
 export type BlockDetail = {
+  '@id': string;
   id: string;
   title: string;
   kind: 'block';
@@ -49,6 +52,7 @@ export type BlockDetail = {
 };
 
 export type ElementDetail = {
+  '@id'?: string;
   id: string;
   title: string;
   kind: 'element';
@@ -242,8 +246,10 @@ export function getSummary(markdown: string): string {
 export function buildSummaryItem(
   docsFiles: BlockDocsFile[],
   blockConfig: BlockConfigBase,
+  url: string,
 ): BlockSummary {
   const item: BlockSummary = {
+    '@id': url,
     id: blockConfig.id,
     title: blockConfig.title,
     kind: 'block',
@@ -258,9 +264,11 @@ export function buildSummaryItem(
 export function buildFullDetail(
   docsFiles: BlockDocsFile[],
   blockConfig: BlockConfigBase,
+  url: string,
 ): BlockDetail {
   const result: BlockDetail = withSchema(
     {
+      '@id': url,
       id: blockConfig.id,
       title: blockConfig.title,
       kind: 'block' as const,
@@ -311,12 +319,13 @@ export function getElements(
     }));
 }
 
-export function elementSummary({
-  docs,
-  ...element
-}: ElementDetail): BlockSummary {
+export function elementSummary(
+  { docs, ...element }: ElementDetail,
+  url: string,
+): BlockSummary {
+  const item = { '@id': url, ...element };
   const description = getSummary(docs);
-  return description ? { ...element, description } : element;
+  return description ? { ...item, description } : item;
 }
 
 /**
@@ -331,11 +340,10 @@ export function restrictedFlag(
 }
 
 /**
- * Markdown is returned for `?format=md`, or when the client asks for
- * `text/markdown` and not for JSON. JSON stays the default.
+ * Markdown is returned when the client asks for `text/markdown` and not for
+ * JSON. JSON stays the default.
  */
 export function wantsMarkdown(request: Request): boolean {
-  if (new URL(request.url).searchParams.get('format') === 'md') return true;
   const accept = request.headers.get('Accept') || '';
   return (
     accept.includes('text/markdown') && !accept.includes('application/json')
@@ -408,20 +416,39 @@ export function blockToMarkdown(
   return parts.join('\n\n');
 }
 
+function summaryLine(item: BlockSummary): string {
+  let line = `- [${item.title}](${item['@id']}) (\`${item.id}\`)`;
+  if (item.description) line += `: ${item.description}`;
+  if (item.restricted === true) {
+    line += ' _Not offered in the block chooser._';
+  } else if (item.restricted === 'context') {
+    line += ' _Offered depending on the content._';
+  }
+  return line;
+}
+
 /**
- * One Markdown document: an introduction, the format of the page document
- * (when documented), and a section per block.
+ * The list as one Markdown document: an introduction, the format of the page
+ * document (when documented), and a line per element and per block that
+ * links to its documentation.
  */
 export function blocksToMarkdown(
-  details: Array<BlockSummary | BlockDetail | ElementDetail>,
+  items: BlockSummary[],
   documentDocs = '',
 ): string {
+  const elements = items.filter((item) => item.kind === 'element');
+  const blocks = items.filter((item) => item.kind === 'block');
   return (
     [
       '# Blocks',
-      'The elements and blocks available on this site to build a page, with their documentation and the schema of their settings.',
+      "The elements and blocks available on this site to build a page. Follow an item's link for its documentation and, for a block, the schema of its settings.",
       ...(documentDocs ? ['## Document format', documentDocs] : []),
-      ...details.map(blockToMarkdown),
+      ...(elements.length
+        ? ['## Elements', elements.map(summaryLine).join('\n')]
+        : []),
+      ...(blocks.length
+        ? ['## Blocks', blocks.map(summaryLine).join('\n')]
+        : []),
     ].join('\n\n') + '\n'
   );
 }

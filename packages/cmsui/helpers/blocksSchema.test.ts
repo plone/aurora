@@ -154,13 +154,17 @@ describe('docs', () => {
     expect(getSummary('Lists items.\nMatching a query.\n\nMore.')).toBe(
       'Lists items. Matching a query.',
     );
-    expect(buildSummaryItem(files, listing)).toEqual({
-      id: 'listing',
-      title: 'Listing',
-      kind: 'block',
-      description: 'Lists items. Matching a query.',
-    });
-    expect(buildSummaryItem([], listing)).toEqual({
+    expect(buildSummaryItem(files, listing, '/@blocks-schema/listing')).toEqual(
+      {
+        '@id': '/@blocks-schema/listing',
+        id: 'listing',
+        title: 'Listing',
+        kind: 'block',
+        description: 'Lists items. Matching a query.',
+      },
+    );
+    expect(buildSummaryItem([], listing, '/@blocks-schema/listing')).toEqual({
+      '@id': '/@blocks-schema/listing',
       id: 'listing',
       title: 'Listing',
       kind: 'block',
@@ -178,6 +182,7 @@ describe('buildFullDetail', () => {
     const detail = buildFullDetail(
       [docs('listing', 'Lists.'), docs('listing', 'Summary.', 'summary')],
       listing,
+      '/@blocks-schema/listing',
     );
 
     expect(detail).toMatchObject({ id: 'listing', docs: 'Lists.' });
@@ -208,11 +213,13 @@ describe('buildFullDetail', () => {
   });
 
   it('returns a null schema for a block without one', () => {
-    const detail = buildFullDetail([], {
-      id: 'video',
-      title: 'Video',
-    } as BlockConfigBase);
+    const detail = buildFullDetail(
+      [],
+      { id: 'video', title: 'Video' } as BlockConfigBase,
+      '/@blocks-schema/video',
+    );
     expect(detail).toEqual({
+      '@id': '/@blocks-schema/video',
       id: 'video',
       title: 'Video',
       kind: 'block',
@@ -223,13 +230,17 @@ describe('buildFullDetail', () => {
 
   it("doesn't fail when a schema can't be resolved", () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
-    const detail = buildFullDetail([], {
-      id: 'broken',
-      title: 'Broken',
-      blockSchema: () => {
-        throw new Error('needs the editor');
-      },
-    } as unknown as BlockConfigBase);
+    const detail = buildFullDetail(
+      [],
+      {
+        id: 'broken',
+        title: 'Broken',
+        blockSchema: () => {
+          throw new Error('needs the editor');
+        },
+      } as unknown as BlockConfigBase,
+      '/@blocks-schema/broken',
+    );
     expect(detail.schema).toBeNull();
     expect(detail.error).toBe(
       'The schema for this block could not be resolved.',
@@ -270,13 +281,17 @@ describe('elements', () => {
 
   it('summarizes an element without its docs', () => {
     expect(
-      elementSummary({
-        id: 'callout',
-        title: 'Callout',
-        kind: 'element',
-        docs: 'A box.\n\nMore.',
-      }),
+      elementSummary(
+        {
+          id: 'callout',
+          title: 'Callout',
+          kind: 'element',
+          docs: 'A box.\n\nMore.',
+        },
+        '/@blocks-schema/callout',
+      ),
     ).toEqual({
+      '@id': '/@blocks-schema/callout',
       id: 'callout',
       title: 'Callout',
       kind: 'element',
@@ -314,10 +329,7 @@ describe('wantsMarkdown', () => {
   const request = (url: string, accept?: string) =>
     new Request(url, accept ? { headers: { Accept: accept } } : {});
 
-  it('is true for format=md or a Markdown Accept header', () => {
-    expect(
-      wantsMarkdown(request('http://localhost/@blocks-schema?format=md')),
-    ).toBe(true);
+  it('is true for a Markdown Accept header', () => {
     expect(
       wantsMarkdown(
         request('http://localhost/@blocks-schema', 'text/markdown'),
@@ -329,6 +341,9 @@ describe('wantsMarkdown', () => {
     expect(wantsMarkdown(request('http://localhost/@blocks-schema'))).toBe(
       false,
     );
+    expect(
+      wantsMarkdown(request('http://localhost/@blocks-schema?format=md')),
+    ).toBe(false);
     expect(
       wantsMarkdown(
         request(
@@ -343,6 +358,7 @@ describe('wantsMarkdown', () => {
 describe('Markdown', () => {
   it('has a section per block, with variations and schemas', () => {
     const markdown = blockToMarkdown({
+      '@id': '/@blocks-schema/listing',
       id: 'listing',
       title: 'Listing',
       kind: 'block',
@@ -381,6 +397,7 @@ describe('Markdown', () => {
 
   it('notes restricted blocks and schema errors', () => {
     const markdown = blockToMarkdown({
+      '@id': '/@blocks-schema/broken',
       id: 'broken',
       title: 'Broken',
       kind: 'block',
@@ -395,21 +412,35 @@ describe('Markdown', () => {
     );
   });
 
-  it('puts the document format before the blocks', () => {
+  it('lists the elements and blocks with their links', () => {
     const markdown = blocksToMarkdown(
       [
         {
+          '@id': 'http://localhost/@blocks-schema/p',
+          id: 'p',
+          title: 'Paragraph',
+          kind: 'element',
+          description: 'Text.',
+        },
+        {
+          '@id': 'http://localhost/@blocks-schema/video',
           id: 'video',
           title: 'Video',
           kind: 'block',
-          docs: 'Embeds a video.',
-          schema: null,
+          description: 'Embeds a video.',
+        },
+        {
+          '@id': 'http://localhost/@blocks-schema/maps',
+          id: 'maps',
+          title: 'Maps',
+          kind: 'block',
+          restricted: 'context',
         },
       ],
       'The page document.',
     );
     expect(markdown).toMatch(
-      /^# Blocks\n\n.+\n\n## Document format\n\nThe page document\.\n\n## Video \(`video`\)\n\n_A Plone block: .+_\n\nEmbeds a video\.\n$/,
+      /^# Blocks\n\n.+\n\n## Document format\n\nThe page document\.\n\n## Elements\n\n- \[Paragraph\]\(http:\/\/localhost\/@blocks-schema\/p\) \(`p`\): Text\.\n\n## Blocks\n\n- \[Video\]\(http:\/\/localhost\/@blocks-schema\/video\) \(`video`\): Embeds a video\.\n- \[Maps\]\(http:\/\/localhost\/@blocks-schema\/maps\) \(`maps`\) _Offered depending on the content\._\n$/,
     );
     expect(blocksToMarkdown([])).not.toContain('Document format');
   });

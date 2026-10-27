@@ -49,8 +49,11 @@ GET /@blocks-schema HTTP/1.1
 Authorization: Bearer <token>
 ```
 
-This returns the ID, title, kind, and summary of every documented element and every registered block, and the documentation of the page document format in `document`.
+This returns the URL, ID, title, kind, and summary of every documented element and every registered block, and the documentation of the page document format in `document`.
 The summary is the first paragraph of the documentation.
+Each item's `@id` is the absolute URL of its details, so a client follows it to get the item's documentation and schema.
+The URL uses the block's key in `blocksConfig`, which is what the endpoint looks up.
+The protocol comes from the `X-Forwarded-Proto` header, when a proxy sets it, and the host from the request.
 
 `kind` tells how the item is stored in the page document:
 
@@ -62,22 +65,25 @@ The summary is the first paragraph of the documentation.
 
 ```json
 {
-  "@id": "/@blocks-schema",
+  "@id": "http://localhost:3000/@blocks-schema",
   "document": "A page stores all its content in one block, `__somersault__`...",
   "items": [
     {
+      "@id": "http://localhost:3000/@blocks-schema/p",
       "id": "p",
       "title": "Paragraph",
       "kind": "element",
       "description": "A paragraph of text, the most common node of a page..."
     },
     {
+      "@id": "http://localhost:3000/@blocks-schema/teaser",
       "id": "teaser",
       "title": "Teaser",
       "kind": "block",
       "description": "Shows a card that links to one content item, with its title, description and image..."
     },
     {
+      "@id": "http://localhost:3000/@blocks-schema/listing",
       "id": "listing",
       "title": "Listing",
       "kind": "block",
@@ -93,7 +99,7 @@ The summary is the first paragraph of the documentation.
 It is `true` when the block is never offered, and `"context"` when that depends on the content.
 See {ref}`blocks-schema-context`.
 
-Add `?full=1` to get the full details of every block, as described in the next section.
+`document` has no `@id`, because no URL returns it on its own.
 
 ## Get one block
 
@@ -106,7 +112,7 @@ This returns the block's documentation, schema, and variations.
 
 ```json
 {
-  "@id": "/@blocks-schema/teaser",
+  "@id": "http://localhost:3000/@blocks-schema/teaser",
   "id": "teaser",
   "title": "Teaser",
   "docs": "Shows a card that links to one content item...",
@@ -121,24 +127,33 @@ This returns the block's documentation, schema, and variations.
 
 `schema` is resolved with the selected variation's `schemaEnhancer`, or the default variation's, and then the block's own `schemaEnhancer`.
 Each variation is returned as `{ id, title, isDefault, schema, docs? }`, with the schema resolved for that variation.
+Variations have no `@id`.
 The schemas only contain values that can be represented in JSON, so widget components, React elements, and functions are left out.
 
 When a block has no `blockSchema`, `schema` is `null`.
 When the schema of a block or of a variation can't be resolved, its `schema` is `null` and it has an `error`.
 The rest of the response is not affected.
 
-An element returns its `id`, `title`, `kind`, and `docs`, without a schema.
+An element returns its `@id`, `id`, `title`, `kind`, and `docs`, without a schema.
 When a block and an element have the same ID, the block is returned.
 
 An unknown ID returns `404 Not Found`.
 
 ## Markdown
 
-The endpoint also returns Markdown, either with `?format=md` or with an `Accept` header that asks for `text/markdown` and not for `application/json`.
+The endpoint also returns Markdown when the `Accept` header asks for `text/markdown` and not for `application/json`.
 JSON is the default.
+The query string doesn't change the format.
 
-The list returns a single document with the document format and a section for every element and block.
-Each section says how the item is stored, and contains its documentation and, for a block, its variations and its schema in a `json` code block.
+The list returns the document format, then one line per element and per block, with a link to its details, its ID, and its summary.
+A line notes when a block is not offered in the block chooser, or when that depends on the content.
+
+```markdown
+- [Teaser](http://localhost:3000/@blocks-schema/teaser) (`teaser`): Shows a card that links to one content item...
+- [Listing](http://localhost:3000/@blocks-schema/listing) (`listing`): Shows a list of content items... _Offered depending on the content._
+```
+
+One element or block returns a section that says how the item is stored, and contains its documentation and, for a block, its variations and its schema in a `json` code block.
 A variation's schema is only included when it differs from the block's.
 
 (blocks-schema-context)=
@@ -156,6 +171,7 @@ The endpoint gets the content item with the `navroot` expander, using the token 
 If `restricted` throws an error, the block is treated as restricted.
 If the Plone REST API returns `401 Unauthorized`, `403 Forbidden`, or `404 Not Found` for the content item, the endpoint returns the same status.
 
+The links keep the content path, for example `http://localhost:3000/news/@blocks-schema/teaser`.
 With a path, the endpoint returns one block with a `restricted` value of `true` or `false` for that content item.
 
 ```http

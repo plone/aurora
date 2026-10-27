@@ -116,7 +116,10 @@ describe('authentication', () => {
 
   it('answers in Markdown when asked to', async () => {
     const response = await blocksSchemaResponse({
-      request: request('/@blocks-schema?format=md', { auth: null }),
+      request: request('/@blocks-schema', {
+        auth: null,
+        headers: { Accept: 'text/markdown' },
+      }),
       docsFiles: docs,
     });
     expect(response.status).toBe(401);
@@ -201,23 +204,32 @@ describe('the list of blocks', () => {
       'Accept, Accept-Language, Authorization, Cookie',
     );
     expect(await response.json()).toEqual({
-      '@id': '/@blocks-schema',
+      '@id': 'http://localhost/@blocks-schema',
       document: 'One document.',
       items: [
         {
+          '@id': 'http://localhost/@blocks-schema/callout',
           id: 'callout',
           title: 'Callout',
           kind: 'element',
           description: 'A box.',
         },
         {
+          '@id': 'http://localhost/@blocks-schema/teaser',
           id: 'teaser',
           title: 'Teaser',
           kind: 'block',
           description: 'Links to one item.',
         },
-        { id: 'hidden', title: 'Hidden', kind: 'block', restricted: true },
         {
+          '@id': 'http://localhost/@blocks-schema/hidden',
+          id: 'hidden',
+          title: 'Hidden',
+          kind: 'block',
+          restricted: true,
+        },
+        {
+          '@id': 'http://localhost/@blocks-schema/events',
           id: 'events',
           title: 'Events',
           kind: 'block',
@@ -228,25 +240,47 @@ describe('the list of blocks', () => {
     });
   });
 
-  it('has the full details with full=1', async () => {
+  it('ignores the query string', async () => {
     const response = await blocksSchemaResponse({
-      request: request('/@blocks-schema?full=1'),
+      request: request('/@blocks-schema?format=md&full=1'),
+      docsFiles: docs,
+    });
+    expect(response.headers.get('Content-Type')).toContain('application/json');
+    const body = await response.json();
+    expect(body['@id']).toBe('http://localhost/@blocks-schema');
+    expect(body.items[1]).not.toHaveProperty('docs');
+  });
+
+  it('links each item with the public protocol and host', async () => {
+    const response = await blocksSchemaResponse({
+      request: new Request('http://example.com:3000/@blocks-schema/', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'X-Forwarded-Proto': 'https, http',
+        },
+      }),
+      docsFiles: docs,
+    });
+    const body = await response.json();
+    expect(body['@id']).toBe('https://example.com:3000/@blocks-schema');
+    expect(body.items[1]['@id']).toBe(
+      'https://example.com:3000/@blocks-schema/teaser',
+    );
+  });
+
+  it('links a block by its blocksConfig key', async () => {
+    (config.blocks.blocksConfig as any)['my block'] = {
+      id: 'myBlock',
+      title: 'My block',
+    };
+    const response = await blocksSchemaResponse({
+      request: request('/@blocks-schema'),
       docsFiles: docs,
     });
     const { items } = await response.json();
-    expect(items[0]).toEqual({
-      id: 'callout',
-      title: 'Callout',
-      kind: 'element',
-      docs: 'A box.\n\n### Example',
-    });
-    expect(items[1]).toEqual({
-      id: 'teaser',
-      title: 'Teaser',
-      kind: 'block',
-      docs: 'Links to one item.\n\n### Fields',
-      schema: expect.objectContaining({ title: 'Teaser' }),
-    });
+    expect(items.find((item: any) => item.id === 'myBlock')['@id']).toBe(
+      'http://localhost/@blocks-schema/my%20block',
+    );
   });
 
   it('is one Markdown document', async () => {
@@ -263,11 +297,15 @@ describe('the list of blocks', () => {
     );
     expect(markdown).toMatch(/^# Blocks\n/);
     expect(markdown).toContain('## Document format\n\nOne document.');
-    expect(markdown).toContain('## Teaser (`teaser`)');
     expect(markdown).toContain(
-      '## Callout (`callout`)\n\n_An element of the document: a node with `"type": "callout"`._',
+      '## Elements\n\n- [Callout](http://localhost/@blocks-schema/callout) (`callout`): A box.',
     );
-    expect(markdown).toContain('### Schema');
+    expect(markdown).toContain(
+      '## Blocks\n\n- [Teaser](http://localhost/@blocks-schema/teaser) (`teaser`): Links to one item.\n' +
+        '- [Hidden](http://localhost/@blocks-schema/hidden) (`hidden`) _Not offered in the block chooser._\n' +
+        '- [Events](http://localhost/@blocks-schema/events) (`events`) _Offered depending on the content._',
+    );
+    expect(markdown).not.toContain('### Schema');
   });
 });
 
@@ -279,7 +317,7 @@ describe('one block', () => {
       docsFiles: docs,
     });
     expect(await response.json()).toEqual({
-      '@id': '/@blocks-schema/teaser',
+      '@id': 'http://localhost/@blocks-schema/teaser',
       id: 'teaser',
       title: 'Teaser',
       kind: 'block',
@@ -297,7 +335,7 @@ describe('one block', () => {
       docsFiles: docs,
     });
     expect(await response.json()).toEqual({
-      '@id': '/@blocks-schema/callout',
+      '@id': 'http://localhost/@blocks-schema/callout',
       id: 'callout',
       title: 'Callout',
       kind: 'element',
@@ -344,6 +382,27 @@ describe('for a content item', () => {
     expect(
       body.items.find((item: any) => item.id === 'teaser'),
     ).not.toHaveProperty('restricted');
+  });
+
+  it('keeps the content path in the links', async () => {
+    const response = await blocksSchemaContentResource({
+      request: request('/news/@blocks-schema'),
+      path: '/news',
+    });
+    const body = await response.json();
+    expect(body['@id']).toBe('http://localhost/news/@blocks-schema');
+    expect(body.items.find((item: any) => item.id === 'teaser')['@id']).toBe(
+      'http://localhost/news/@blocks-schema/teaser',
+    );
+
+    const detail = await blocksSchemaContentResource({
+      request: request('/news/@blocks-schema/teaser'),
+      path: '/news',
+      subpath: 'teaser',
+    });
+    expect((await detail.json())['@id']).toBe(
+      'http://localhost/news/@blocks-schema/teaser',
+    );
   });
 
   it('evaluates restricted with the content, its navroot and the user', async () => {
