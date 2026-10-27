@@ -68,7 +68,6 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
         '@plone/components > clsx',
         '@plone/components > react-aria',
         '@plone/components > react-aria-components',
-        '@plone/components > react-aria-components/DropZone',
         '@plone/icons > @react-aria/utils',
         '@plone/icons > @react-spectrum/utils',
         '@plone/icons > clsx',

@@ -1,0 +1,1 @@
+The simple theme no longer imports the CSS of the components removed from `@plone/components`. @pnicolli
