@@ -79,6 +79,8 @@ Quanta keeps the RAC `*Field` parts as the reference for hand-written forms.
 | `TextAreaField` | none | `extension` | The starter covers multiline text with `TextField`. |
 | `Checkbox` | `Checkbox.tsx` | `aligned` | Built on `CheckboxField` + `CheckboxButton`. `className` styles the label. |
 | `CheckboxGroup` | `CheckboxGroup.tsx` | `aligned` | |
+| `ColorSwatch` | `ColorSwatch.tsx` | `aligned` | |
+| `ColorSwatchPicker`, `ColorSwatchPickerItem` | `ColorSwatchPicker.tsx` | `aligned` | |
 | `RadioGroup`, `Radio` | `RadioGroup.tsx` | `aligned` | `Radio` is built on `RadioField` + `RadioButton`. |
 | `CustomRadio` | none | `extension` | A radio rendered as a toggle button, built on `RadioField` + `RadioButton`. Used by the pickers. |
 | `Switch` | `Switch.tsx` | `aligned` | Built on `SwitchField` + `SwitchButton`. |
@@ -145,6 +147,7 @@ These components have no counterpart in the starter.
 | `MultiSelect` | Selects several items from a list, shown as tags, optionally with new values typed by the editor. | `cmsui` (ArrayWidget) |
 | `Container` | Layout container with width variants. | `contents`, `cmsui` and `publicui` routes |
 | `Spinner` | Loading indicator. | none |
+| `Pagination` | Page navigation for a batched listing, with previous and next buttons. Pages start from 0. | `contents` (ContentsTable) |
 | `CustomRadio` | Radio rendered as a toggle button. | the pickers |
 
 The deprecated `SizeWidget`, `AlignWidget` and `WidthWidget` aliases of the pickers aren't used, and can be removed.
@@ -157,7 +160,7 @@ Quanta adds these when something needs them:
 -   Collections: `Tree`, `NavigationTree`, `CommandPalette`, `TokenField`
 -   Dates: `RangeCalendar`, `DateRangePicker`
 -   Controls: `Meter`, `Slider`, `FieldButton`
--   Color: `ColorArea`, `ColorField`, `ColorPicker`, `ColorSlider`, `ColorSwatch`, `ColorSwatchPicker`, `ColorThumb`, `ColorWheel`
+-   Color: `ColorArea`, `ColorField`, `ColorPicker`, `ColorSlider`, `ColorThumb`, `ColorWheel`
 
 ## Decisions
 
