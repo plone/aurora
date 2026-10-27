@@ -1,7 +1,15 @@
-import type { LinksFunction, LoaderFunctionArgs } from 'react-router';
-import { useParams } from 'react-router';
-import { useTranslation } from 'react-i18next';
+import {
+  redirect,
+  useParams,
+  type LinksFunction,
+  type LoaderFunctionArgs,
+} from 'react-router';
 import { requireAuthCookie } from '@plone/react-router';
+import {
+  ContentTypePage,
+  contentTypeHref,
+  type ContentTypeTab,
+} from '@plone/controlpanels';
 import { Plug } from '@plone/layout/components/Pluggable';
 import { Container, Link } from '@plone/quanta';
 import toastStylesheet from '@plone/components/src/styles/basic/Toast.css?url';
@@ -9,23 +17,33 @@ import Back from '@plone/icons/svg/arrow-left.svg?react';
 import ContentTypesProviders from '../components/ContentTypes/ContentTypesProviders';
 import { CONTENT_TYPES_PATH } from '../helpers/contentTypesPath';
 
+const TABS: ContentTypeTab[] = [
+  'settings',
+  'workflow',
+  'fields',
+  'behaviors',
+  'layout',
+];
+
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: toastStylesheet },
 ];
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ params, request }: LoaderFunctionArgs) {
   await requireAuthCookie(request);
+  const { type = '', tab } = params;
+  if (!tab || !TABS.includes(tab as ContentTypeTab)) {
+    throw redirect(contentTypeHref(CONTENT_TYPES_PATH, type));
+  }
   return null;
 }
 
 /**
- * A content type's page, `/@@controlpanel/content-types/{type}/{tab}`. Its
- * tabs come in the next phases of #269; for now it names the type and links
- * back to the list.
+ * A content type's page, `/@@controlpanel/content-types/{type}/{tab}`. The
+ * screens come from `@plone/controlpanels`, which also runs in Volto.
  */
 export default function ContentType() {
-  const { t } = useTranslation();
-  const { type = '' } = useParams();
+  const { type = '', tab } = useParams();
   return (
     <main>
       <Plug pluggable="toolbar-top" id="button-back">
@@ -34,16 +52,12 @@ export default function ContentType() {
         </Link>
       </Plug>
       <Container width="default" className="route-controlpanel py-6">
-        {/* The providers also show notifications from the list, e.g. after
-            creating a type, which navigates here. */}
         <ContentTypesProviders>
-          <h1 className="text-2xl font-semibold">{type}</h1>
-          <p className="mt-2 text-sm text-quanta-pigeon">
-            {t('cmsui.contentTypes.comingSoon', {
-              defaultValue:
-                "This type's settings, fields and behaviors come here.",
-            })}
-          </p>
+          <ContentTypePage
+            basePath={CONTENT_TYPES_PATH}
+            id={type}
+            tab={tab as ContentTypeTab}
+          />
         </ContentTypesProviders>
       </Container>
     </main>

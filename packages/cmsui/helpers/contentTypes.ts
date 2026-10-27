@@ -1,4 +1,9 @@
-import type { ContentTypeSummary } from '@plone/controlpanels';
+import type {
+  AllowedContents,
+  ContentTypeChanges,
+  ContentTypeSettings,
+  ContentTypeSummary,
+} from '@plone/controlpanels';
 
 // The content types control panel works with its own model
 // (`@plone/controlpanels`). Until plone.restapi has `@content-types`
@@ -48,4 +53,78 @@ export function errorMessage(error: unknown, fallback: string): string {
     failure?.message ||
     fallback
   );
+}
+
+/** `GET @controlpanels/dexterity-types/{type}`: the overview form of a type. */
+export interface DexterityTypeResponse {
+  '@id': string;
+  title: string;
+  data: {
+    title?: string;
+    description?: string;
+    allowed_content_types?: string[];
+    /**
+     * The stored value (`true`/`false`), although the schema describes the
+     * form's `all`/`none`/`some` choice.
+     */
+    filter_content_types?: boolean | 'all' | 'none' | 'some';
+    [behavior: string]: unknown;
+  };
+  schema: {
+    properties: Record<string, unknown>;
+    fieldsets: Array<{ id: string; fields: string[] }>;
+  };
+}
+
+/** Turns a type's overview form into the control panel's settings. */
+export function toContentTypeSettings(
+  id: string,
+  response: DexterityTypeResponse,
+): ContentTypeSettings {
+  const { data, schema } = response;
+  // The form only has the contents fields for folderish types.
+  const folderish = 'filter_content_types' in schema.properties;
+  const behaviorFields =
+    schema.fieldsets.find((fieldset) => fieldset.id === 'behaviors')?.fields ??
+    [];
+  const allowed = data.allowed_content_types ?? [];
+  const filter = data.filter_content_types;
+  const allowedContents: AllowedContents =
+    filter === 'all' || filter === false || filter === undefined
+      ? { mode: 'all' }
+      : filter === 'none' || allowed.length === 0
+        ? { mode: 'none' }
+        : { mode: 'selected', types: allowed };
+  return {
+    id,
+    title: data.title ?? response.title,
+    description: data.description ?? '',
+    kind: id === SITE_TYPE ? 'site' : 'dexterity',
+    folderish,
+    ...(folderish && { allowedContents }),
+    // A map of behavior names, unordered: plone.restapi#2061 makes it a list.
+    behaviors: behaviorFields.filter((name) => data[name] === true),
+  };
+}
+
+/** Turns changed settings into a patch of the type's overview form. */
+export function toDexterityTypePatch(
+  changes: ContentTypeChanges,
+): Record<string, unknown> {
+  const patch: Record<string, unknown> = {};
+  if (changes.title !== undefined) patch.title = changes.title;
+  if (changes.description !== undefined) {
+    patch.description = changes.description;
+  }
+  if (changes.allowedContents) {
+    const { allowedContents } = changes;
+    if (allowedContents.mode === 'selected') {
+      patch.filter_content_types = 'some';
+      patch.allowed_content_types = allowedContents.types;
+    } else {
+      patch.filter_content_types = allowedContents.mode;
+      if (allowedContents.mode === 'none') patch.allowed_content_types = [];
+    }
+  }
+  return patch;
 }

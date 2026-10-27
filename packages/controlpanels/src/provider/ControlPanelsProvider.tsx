@@ -23,10 +23,13 @@ export interface NavigationBlocker {
 }
 
 /**
- * A hook that holds back in-app navigation while `when` is true, e.g. React
- * Router's `useBlocker`. Every app passes its own.
+ * A hook that holds back in-app navigation to the paths `shouldBlock` returns
+ * true for, e.g. built on React Router's `useBlocker`. Every app passes its
+ * own.
  */
-export type UseBlocker = (when: boolean) => NavigationBlocker;
+export type UseBlocker = (
+  shouldBlock: (nextPath: string) => boolean,
+) => NavigationBlocker;
 
 export interface ControlPanelsProviderProps {
   children?: ReactNode;
@@ -127,10 +130,15 @@ export function useNavigate(): (path: string) => void {
 /**
  * Holds back navigation while `when` is true: in-app navigation through the
  * app's `useBlocker`, and reloading or closing the page through the browser.
+ * In-app navigation to a path `allows` accepts goes on, e.g. to another tab
+ * of the same item.
  */
-export function useNavigationBlocker(when: boolean): NavigationBlocker {
+export function useNavigationBlocker(
+  when: boolean,
+  allows: (nextPath: string) => boolean = () => false,
+): NavigationBlocker {
   const useBlocker = useContext(ControlPanelsContext).useBlocker;
-  const blocker = useBlocker(when);
+  const blocker = useBlocker((nextPath) => when && !allows(nextPath));
   useEffect(() => {
     if (!when) return;
     const onBeforeUnload = (event: BeforeUnloadEvent) => {
