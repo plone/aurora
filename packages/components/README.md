@@ -51,7 +51,7 @@ import '@plone/components/dist/basic.css';
 or selectively:
 
 ```js
-import '@plone/components/src/styles/basic/TextField.css';
+import '@plone/components/src/styles/basic/Button.css';
 ```
 
 ## Theming
@@ -76,61 +76,20 @@ It's even possible to use TailwindCSS for styling the components in this package
 
 ## Components list
 
-### Basic
+The package only contains the components that Plone Aurora and Volto use.
+New components are added when something needs them.
 
-- BlockToolbar
+- Breadcrumbs, Breadcrumb
 - Button
 - Checkbox
 - Container
-- Dialog
-- GridList
 - Link
-- ListBox
-- Menu
-- Modal
-- Popover
-- Slider
-- Table
-- Tabs
-- TagGroup
-- ToggleButton
-- Toolbar
-- Tooltip
-
-### Forms
-
-- CheckboxField
-- Form
-- Meter
-- NumberField
-- SearchField
-- Select
-- TextAreaField
-- TextField
-- TimeField
-
-### Widgets
-
-- Calendar
-- CheckboxField
-- CheckboxGroup
-- ComboBox
-- DateField
-- DatePicker
-- DateRangePicker
-- ProgressBar
-- RadioGroup
-- RangeCalendar
-- Switch
-
-### Viewlets
-
-- Breadcrumbs
-
-### Views
-
-- DefaultBlockView
-- RenderBlocks
+- Menu, MenuItem, MenuSection, MenuSectionHeader, MenuSeparator, MenuTrigger, SubmenuTrigger
+- Pagination
+- RadioGroup, Radio
+- Spinner
+- Table, TableHeader, Row, Column
+- Toast
 
 ## Related packages
 

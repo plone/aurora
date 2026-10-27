@@ -88,6 +88,41 @@ If your Tailwind entry file scans `@plone/components` for Quanta classes, update
 + @source '../node_modules/@plone/quanta/dist';
 ```
 
+### Unused components removed
+
+`@plone/components` no longer mirrors the whole React Aria Components set.
+It only keeps the components that Plone Aurora and Volto use:
+
+-   `Breadcrumbs`, `Breadcrumb`
+-   `Button`
+-   `Checkbox`
+-   `Container`
+-   `Link`
+-   `Menu`, `MenuItem`, `MenuSection`, `MenuSectionHeader`, `MenuSeparator`, `MenuTrigger`, `SubmenuTrigger`
+-   `Pagination`
+-   `RadioGroup`, `Radio`
+-   `Spinner`
+-   `Table`, `TableHeader`, `Row`, `Column`
+-   `Toast`
+
+The other components, and their basic CSS files, were removed:
+`BlockToolbar`, `Calendar`, `CheckboxField`, `CheckboxGroup`, `ColorArea`, `ColorField`, `ColorPicker`, `ColorSlider`, `ColorSwatch`, `ColorSwatchPicker`, `ColorWheel`, `ComboBox`, `ComboBoxItem`, `DateField`, `DatePicker`, `DateRangePicker`, `Dialog`, `DialogTrigger`, `Disclosure`, `DisclosureGroup`, `DropZone`, `DropZoneText`, `Form`, `GridList`, `GridListItem`, `ListBox`, `ListBoxItem`, `Meter`, `Modal`, `NumberField`, `Popover`, `PopoverProps`, `ProgressBar`, `RangeCalendar`, `SearchField`, `Select`, `SelectItem`, `SelectListBox`, `SelectSection`, `SelectSectionHeader`, `Slider`, `Switch`, `Tabs`, `TagGroup`, `Tag`, `TextAreaField`, `TextField`, `TimeField`, `ToggleButton`, `Toolbar`, `Tooltip`, `Tree`, `TreeItem`, and `TreeItemContent`.
+
+In the CMS UI, use the matching Quanta component from `@plone/quanta`.
+Elsewhere, use the component from `react-aria-components`, and style it yourself.
+
+```diff
+- import { Dialog, Modal, Popover } from '@plone/components';
++ import { Dialog, Modal, Popover } from '@plone/quanta';
+```
+
+If you import a removed component's CSS file, such as `@plone/components/src/styles/basic/TextField.css`, remove the import.
+`@plone/components/dist/basic.css` now only contains the styles of the remaining components.
+
+The `Icon` stories and the icon gallery moved to the `@plone/icons` Storybook, at https://plone-icons.readthedocs.io/.
+
+This keeps the package small, so that every component in it is used and maintained.
+
 ## 4.0.0
 
 ### Refactored `Icon` component
