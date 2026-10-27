@@ -654,6 +654,9 @@ importers:
       '@plone/components':
         specifier: workspace:*
         version: link:../components
+      '@plone/controlpanels':
+        specifier: workspace:*
+        version: link:../controlpanels
       '@plone/helpers':
         specifier: workspace:*
         version: link:../helpers
