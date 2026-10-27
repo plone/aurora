@@ -1,0 +1,1 @@
+The object browser's modal uses React Aria Components' `Modal` directly, instead of the one from `@plone/components`. @pnicolli

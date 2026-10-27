@@ -1,11 +1,13 @@
 import type { FormWidgetProps } from '@plone/types';
 import { DatePicker } from '@plone/quanta';
+import { dateValueToIsoDate, isoDateToDateValue } from '../../helpers/dates';
 
 export type DateWidgetProps = FormWidgetProps<string | null>;
 
 /**
  * Adapts the widget contract to the Quanta `DatePicker` control. The value
- * is an ISO date (`YYYY-MM-DD`), as the content API stores it.
+ * is an ISO date (`YYYY-MM-DD`), as the content API stores it, and the
+ * control works with a date value.
  */
 export function DateWidget({
   name,
@@ -24,8 +26,8 @@ export function DateWidget({
   return (
     <DatePicker
       name={name}
-      value={value ?? null}
-      onChange={onChange}
+      value={isoDateToDateValue(value)}
+      onChange={(newValue) => onChange(dateValueToIsoDate(newValue))}
       onBlur={onBlur}
       label={label}
       description={description}

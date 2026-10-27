@@ -64,8 +64,8 @@ export function NumberField({
           </>
         )}
       </FieldGroup>
-      {description && <Description>{description}</Description>}
       <FieldError>{errorMessage}</FieldError>
+      {description && <Description>{description}</Description>}
     </AriaNumberField>
   );
 }

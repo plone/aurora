@@ -45,6 +45,8 @@ This file applies only to `packages/quanta` and its subdirectories.
 - `src/styles/` holds the CSS assets (colors, theme, typography, fonts and the few component styles that aren't Tailwind utilities), bundled from `src/styles/main.css` into `dist/quanta.css`.
 - When adding a CSS file, wire it into `src/styles/main.css`.
 - Icon base styles come from `@plone/icons/icons.css`; don't redefine `.q.icon` in Quanta.
+- Use Quanta's palette (`quanta-*`, defined in `src/styles/colors.css`) for every color, not Tailwind's generic colors (`gray-*`, `zinc-*`, `neutral-*`, `blue-*`, `white`, `black`, …). The grays map by lightness: 50–100 `snow`, 200 `smoke`, 300 `silver`, 400 `dolphin`, 500 `pigeon`, 600–700 `iron`, 800 `denim`, 900 `space`. `dark:` variants are left as they are, since Plone Aurora doesn't use dark mode yet.
+- Shadows, spacing and type sizes use Tailwind's defaults for now.
 
 ## Stories
 

@@ -1,11 +1,16 @@
 import type { FormWidgetProps } from '@plone/types';
 import { DateTimePicker } from '@plone/quanta';
+import {
+  dateValueToIsoDateTime,
+  isoDateTimeToDateValue,
+} from '../../helpers/dates';
 
 export type DateTimeWidgetProps = FormWidgetProps<string | null>;
 
 /**
  * Adapts the widget contract to the Quanta `DateTimePicker` control. The
- * value is an ISO 8601 string, as the content API stores it.
+ * value is an ISO 8601 date-time in UTC, as the content API stores it. The
+ * control works with a date value in the browser's time zone.
  */
 export function DateTimeWidget({
   name,
@@ -24,8 +29,8 @@ export function DateTimeWidget({
   return (
     <DateTimePicker
       name={name}
-      value={value ?? null}
-      onChange={onChange}
+      value={isoDateTimeToDateValue(value)}
+      onChange={(newValue) => onChange(dateValueToIsoDateTime(newValue))}
       onBlur={onBlur}
       label={label}
       description={description}

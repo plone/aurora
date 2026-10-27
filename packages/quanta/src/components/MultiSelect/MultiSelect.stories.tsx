@@ -1,90 +1,76 @@
-import React from 'react';
-import { MultiSelect, type Option, type MultiSelectProps } from './MultiSelect';
-import { useListData } from 'react-stately';
-import { type Key } from 'react-aria-components';
+import React, { useState } from 'react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { MultiSelect, type MultiSelectItem } from './MultiSelect';
 
-const items: Option[] = [
+const fruits: MultiSelectItem[] = [
   { id: 'apple', name: 'Apple' },
   { id: 'banana', name: 'Banana' },
-  { id: 'orange', name: 'Orange' },
-  { id: 'strawberry', name: 'Strawberry' },
-  { id: 'blueberry', name: 'Blueberry' },
-  { id: 'raspberry', name: 'Raspberry' },
-  { id: 'blackberry', name: 'Blackberry' },
-  { id: 'grape', name: 'Grape' },
-  { id: 'watermelon', name: 'Watermelon' },
-  { id: 'pineapple', name: 'Pineapple' },
+  { id: 'cherry', name: 'Cherry' },
+  { id: 'kiwi', name: 'Kiwi' },
   { id: 'mango', name: 'Mango' },
-  { id: 'peach', name: 'Peach' },
+  { id: 'orange', name: 'Orange' },
 ];
 
-export default {
+const meta = {
   title: 'Quanta/MultiSelect',
   component: MultiSelect,
   parameters: {
     layout: 'centered',
   },
+  decorators: [
+    (Story) => (
+      <div className="w-80">
+        <Story />
+      </div>
+    ),
+  ],
   tags: ['autodocs'],
-  argTypes: {
-    items: {
-      control: false,
-      description:
-        'The list of available options to display in the dropdown. Each item should have an `id` and a `name`.',
-    },
-    selectedItems: {
-      control: 'false',
-      description:
-        'A list manager initialized using `useListData({ initialItems })`. Used to control selected items statefully.',
-    },
-    label: { control: 'text', description: 'The label of the tag field' },
-    placeholder: {
-      control: 'text',
-      description: 'Placeholder text displayed when no items are selected.',
-    },
-    description: {
-      control: 'text',
-      description: 'Additional helper text displayed below the field.',
-    },
-    onItemInserted: {
-      action: 'item-inserted',
-      description:
-        'Callback fired when an item is selected. Receives the item `id` as a `Key`.',
-    },
-    onItemCleared: {
-      action: 'item-cleared',
-      description:
-        'Callback fired when an item is removed. Receives the item `id` as a `Key`.',
-    },
-    creatable: {
-      control: 'boolean',
-      description: 'Whether the user can create new options not in the list.',
-    },
+  args: {
+    label: 'Fruits',
+    placeholder: 'Type to add a fruit',
+    items: fruits,
+    value: [],
+    onChange: () => {},
+  },
+} satisfies Meta<typeof MultiSelect>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+function Controlled(args: React.ComponentProps<typeof MultiSelect>) {
+  const [value, setValue] = useState(args.value);
+  return <MultiSelect {...args} value={value} onChange={setValue} />;
+}
+
+export const Default: Story = {
+  render: (args) => <Controlled {...args} />,
+  args: {
+    value: [fruits[0], fruits[4]],
   },
 };
 
-export const Default = (args: MultiSelectProps<Option>) => {
-  const selectedItems = useListData({
-    initialItems: [items[0], items[2]],
-  });
-
-  return (
-    <div className="w-full max-w-[400px]">
-      <MultiSelect {...args} selectedItems={selectedItems} />
-    </div>
-  );
+export const Creatable: Story = {
+  render: (args) => <Controlled {...args} />,
+  args: {
+    description: 'Type a fruit that is not in the list, and press Enter.',
+    allowsCustomValue: true,
+    value: [fruits[1], { id: 'papaya', name: 'papaya' }],
+  },
 };
 
-Default.args = {
-  label: 'Fruits',
-  items: items,
-  onItemInserted: (id: Key) => console.log('Item inserted:', id),
-  onItemCleared: (id: Key) => console.log('Item removed:', id),
-} as Partial<MultiSelectProps<Option>>;
+export const Disabled: Story = {
+  render: (args) => <Controlled {...args} />,
+  args: {
+    value: [fruits[0], fruits[2]],
+    isDisabled: true,
+  },
+};
 
-export const NonCreatable = Default.bind({});
-
-NonCreatable.args = {
-  ...Default.args,
-  creatable: false,
-  label: 'Non-Creatable Fruits',
+export const Invalid: Story = {
+  render: (args) => <Controlled {...args} />,
+  args: {
+    isRequired: true,
+    isInvalid: true,
+    errorMessage: 'Pick at least one fruit.',
+  },
 };

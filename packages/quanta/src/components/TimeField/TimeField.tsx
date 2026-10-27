@@ -26,8 +26,8 @@ export function TimeField<T extends TimeValue>({
     <AriaTimeField {...props}>
       <Label>{label}</Label>
       <DateInput className="w-fit px-2" />
-      {description && <Description>{description}</Description>}
       <FieldError>{errorMessage}</FieldError>
+      {description && <Description>{description}</Description>}
     </AriaTimeField>
   );
 }

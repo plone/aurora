@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Collection,
   Header,
   Menu as AriaMenu,
   MenuItem as AriaMenuItem,
@@ -10,7 +11,7 @@ import {
   composeRenderProps,
   type MenuItemProps,
   type MenuProps,
-  type MenuSectionProps,
+  type MenuSectionProps as AriaMenuSectionProps,
   type MenuTriggerProps as AriaMenuTriggerProps,
   type SeparatorProps,
   type SubmenuTriggerProps,
@@ -22,15 +23,15 @@ import { Popover, type PopoverProps } from '../Popover/Popover';
 import { composeTailwindRenderProps, focusRing } from '../../utils';
 import { getMenuTriggerChildren } from './menuTriggerChildren';
 
-export function Menu<T extends object>(props: MenuProps<T>) {
+export function Menu<T>(props: MenuProps<T>) {
   return (
     <AriaMenu
       {...props}
       className={composeTailwindRenderProps(
         props.className,
         `
-          max-h-[inherit] overflow-auto p-1 font-sans
-          [clip-path:inset(0_0_0_0_round_.75rem)]
+          max-h-[inherit] overflow-auto px-4.5 py-1.5 font-sans outline-hidden
+          [clip-path:inset(0_0_0_0_round_.375rem)]
           empty:pb-2 empty:text-center
         `,
       )}
@@ -41,34 +42,35 @@ export function Menu<T extends object>(props: MenuProps<T>) {
 const menuItemStyles = tv({
   extend: focusRing,
   base: `
-    group relative flex cursor-default items-center gap-4 rounded-lg py-2 pr-3 pl-3 text-sm
-    no-underline forced-color-adjust-none select-none
+    group relative flex cursor-default items-center gap-3 border-b border-quanta-smoke px-3 py-3
+    text-sm leading-6 no-underline forced-color-adjust-none select-none
     [-webkit-tap-highlight-color:transparent]
+    last:border-b-0
     selected:pr-1
     [&[href]]:cursor-pointer
   `,
   variants: {
     isDisabled: {
       false: `
-        text-neutral-900
+        text-quanta-sapphire
         dark:text-neutral-100
       `,
       true: `
-        text-neutral-300
+        text-quanta-silver
         dark:text-neutral-600
         forced-colors:text-[GrayText]
       `,
     },
-    isPressed: {
-      true: `
-        bg-neutral-100
-        dark:bg-neutral-800
-      `,
-    },
     isFocused: {
       true: `
-        bg-blue-600 text-white
+        bg-quanta-snow
         forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]
+      `,
+    },
+    isPressed: {
+      true: `
+        bg-quanta-smoke
+        dark:bg-neutral-800
       `,
     },
   },
@@ -77,7 +79,7 @@ const menuItemStyles = tv({
       isFocused: false,
       isOpen: true,
       className: `
-        bg-neutral-100
+        bg-quanta-snow
         dark:bg-neutral-700/60
       `,
     },
@@ -110,7 +112,7 @@ export function MenuItem(props: MenuItemProps) {
             {hasSubmenu && (
               <ChevronrightIcon
                 aria-hidden
-                className="absolute right-2 h-4 w-4"
+                className="ml-auto h-4 w-4 shrink-0"
               />
             )}
           </>
@@ -126,7 +128,7 @@ export function MenuSeparator(props: SeparatorProps) {
       {...props}
       className={twMerge(
         `
-          mx-3 my-1 border-b border-neutral-300
+          my-1.5 border-b border-quanta-smoke
           dark:border-neutral-700
         `,
         props.className,
@@ -135,7 +137,17 @@ export function MenuSeparator(props: SeparatorProps) {
   );
 }
 
-export function MenuSection<T extends object>(props: MenuSectionProps<T>) {
+export interface MenuSectionProps<T> extends AriaMenuSectionProps<T> {
+  title?: string;
+  items?: any;
+}
+
+export function MenuSection<T>({
+  title,
+  items,
+  children,
+  ...props
+}: MenuSectionProps<T>) {
   return (
     <AriaMenuSection
       {...props}
@@ -148,26 +160,19 @@ export function MenuSection<T extends object>(props: MenuSectionProps<T>) {
         props.className,
       )}
     >
-      {props.children}
-    </AriaMenuSection>
-  );
-}
-
-export function MenuSectionHeader(props: React.ComponentProps<typeof Header>) {
-  return (
-    <Header
-      {...props}
-      className={twMerge(
-        `
-          sticky -top-[5px] z-10 -mx-1 -mt-px truncate border-y border-y-neutral-200
-          bg-neutral-100/60 px-4 py-1 text-sm font-semibold text-neutral-500 backdrop-blur-md
-          supports-[-moz-appearance:none]:bg-neutral-100
-          dark:border-y-neutral-700 dark:bg-neutral-700/60 dark:text-neutral-300
-          [&+*]:mt-1
-        `,
-        props.className,
+      {title && (
+        <Header
+          className={`
+            sticky -top-[5px] z-10 truncate bg-quanta-air px-3 pt-1.5 pb-0.5 text-xs leading-[18px]
+            text-quanta-pigeon
+            dark:bg-neutral-700/60 dark:text-neutral-300
+          `}
+        >
+          {title}
+        </Header>
       )}
-    />
+      <Collection items={items}>{children}</Collection>
+    </AriaMenuSection>
   );
 }
 

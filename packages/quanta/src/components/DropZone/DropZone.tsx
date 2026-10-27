@@ -3,7 +3,7 @@ import { composeRenderProps } from 'react-aria-components/composeRenderProps';
 import {
   type DropZoneProps,
   DropZone as RACDropZone,
-  Text as DropZoneText,
+  Text,
 } from 'react-aria-components/DropZone';
 import { tv } from 'tailwind-variants';
 
@@ -43,4 +43,4 @@ export function DropZone(props: DropZoneProps) {
   );
 }
 
-export { DropZoneText };
+export { Text };
