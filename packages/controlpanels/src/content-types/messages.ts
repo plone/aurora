@@ -463,4 +463,103 @@ export const messages = defineMessages({
     defaultMessage:
       'Addability, search, default page, comments and versioning settings need a newer version of the content API.',
   },
+  addField: {
+    id: 'controlpanels.contentTypes.addField',
+    defaultMessage: 'Add field',
+  },
+  addFieldset: {
+    id: 'controlpanels.contentTypes.addFieldset',
+    defaultMessage: 'Add fieldset',
+  },
+  fieldsets: {
+    id: 'controlpanels.contentTypes.fieldsets',
+    defaultMessage: 'Fieldsets',
+  },
+  fieldsIn: {
+    id: 'controlpanels.contentTypes.fieldsIn',
+    defaultMessage: 'Fields in {fieldset}',
+  },
+  custom: { id: 'controlpanels.contentTypes.custom', defaultMessage: 'Custom' },
+  required: {
+    id: 'controlpanels.contentTypes.required',
+    defaultMessage: 'Required',
+  },
+  lockedFieldsHelp: {
+    id: 'controlpanels.contentTypes.lockedFieldsHelp',
+    defaultMessage:
+      'Locked fields come from behaviors. Their order is set on the behavior, and they disappear when the behavior is turned off on the Behaviors tab.',
+  },
+  reorderHelp: {
+    id: 'controlpanels.contentTypes.reorderHelp',
+    defaultMessage:
+      "Drag custom fields to reorder them. With the keyboard, focus a field's drag handle, press Enter, move with the arrow keys and press Enter again.",
+  },
+  noFields: {
+    id: 'controlpanels.contentTypes.noFields',
+    defaultMessage: 'This fieldset has no fields yet.',
+  },
+  deleteFieldset: {
+    id: 'controlpanels.contentTypes.deleteFieldset',
+    defaultMessage: 'Delete fieldset',
+  },
+  editField: {
+    id: 'controlpanels.contentTypes.editField',
+    defaultMessage: 'Edit field',
+  },
+  fieldLabel: {
+    id: 'controlpanels.contentTypes.fieldLabel',
+    defaultMessage: 'Label',
+  },
+  fieldHelp: {
+    id: 'controlpanels.contentTypes.fieldHelp',
+    defaultMessage: 'Help text',
+  },
+  fieldType: {
+    id: 'controlpanels.contentTypes.fieldType',
+    defaultMessage: 'Type',
+  },
+  fieldset: {
+    id: 'controlpanels.contentTypes.fieldset',
+    defaultMessage: 'Fieldset',
+  },
+  fieldShortNameHelp: {
+    id: 'controlpanels.contentTypes.fieldShortNameHelp',
+    defaultMessage:
+      "Used in code and the content API, and can't be changed later.",
+  },
+  deleteField: {
+    id: 'controlpanels.contentTypes.deleteField',
+    defaultMessage: 'Delete field',
+  },
+  done: { id: 'controlpanels.contentTypes.done', defaultMessage: 'Done' },
+  add: { id: 'controlpanels.contentTypes.add', defaultMessage: 'Add' },
+  addFieldTitle: {
+    id: 'controlpanels.contentTypes.addFieldTitle',
+    defaultMessage: 'Add a field',
+  },
+  addFieldDescription: {
+    id: 'controlpanels.contentTypes.addFieldDescription',
+    defaultMessage:
+      'The field is added to the edit form when you save the type.',
+  },
+  addFieldsetTitle: {
+    id: 'controlpanels.contentTypes.addFieldsetTitle',
+    defaultMessage: 'Add a fieldset',
+  },
+  addFieldsetDescription: {
+    id: 'controlpanels.contentTypes.addFieldsetDescription',
+    defaultMessage: 'A fieldset groups fields in a tab of the edit form.',
+  },
+  nameTaken: {
+    id: 'controlpanels.contentTypes.nameTaken',
+    defaultMessage: 'A field or fieldset with this short name already exists.',
+  },
+  fieldTypesError: {
+    id: 'controlpanels.contentTypes.fieldTypesError',
+    defaultMessage: "The field types couldn't be loaded.",
+  },
+  schemaLoadError: {
+    id: 'controlpanels.contentTypes.schemaLoadError',
+    defaultMessage: "The fields couldn't be loaded.",
+  },
 });

@@ -112,6 +112,7 @@ export { getType } from './types/get';
 export { getTypeField } from './types/get_type_field';
 export { createTypeField } from './types/create_type_field';
 export { updateTypeField } from './types/update_type_field';
+export { updateTypeSchema } from './types/update_schema';
 
 export { getUpgrade } from './upgrade/get';
 export { runUpgrade } from './upgrade/run';
