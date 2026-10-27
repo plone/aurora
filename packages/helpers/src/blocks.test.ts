@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { BlockConfigBase, JSONSchema } from '@plone/types';
-import { applySchemaEnhancer } from './blocks';
+import { applySchemaEnhancer, isBlockRestricted } from './blocks';
 
 const schema = (): JSONSchema =>
   ({
@@ -17,6 +17,29 @@ const addField =
     (schema as any).properties[name] = { title: name };
     return schema;
   };
+
+describe('isBlockRestricted', () => {
+  it('reads a boolean', () => {
+    expect(isBlockRestricted({ restricted: true })).toBe(true);
+    expect(isBlockRestricted({ restricted: false })).toBe(false);
+    expect(isBlockRestricted({} as any)).toBe(false);
+  });
+
+  it('calls a function with the context and the block', () => {
+    const restricted = vi.fn(({ contentType }) => contentType === 'Event');
+    const block = { id: 'teaser', restricted };
+    const context = {
+      properties: { '@id': '/page' } as any,
+      navRoot: { '@id': '/' } as any,
+      contentType: 'Event',
+      user: { id: 'admin' } as any,
+    };
+
+    expect(isBlockRestricted(block, context)).toBe(true);
+    expect(restricted).toHaveBeenCalledWith({ ...context, block });
+    expect(isBlockRestricted(block, { contentType: 'Document' })).toBe(false);
+  });
+});
 
 describe('applySchemaEnhancer', () => {
   it('returns the schema when the block has no enhancers', () => {

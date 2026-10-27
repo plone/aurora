@@ -1,5 +1,6 @@
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
+import { createContent } from '../../../tooling/playwright/content';
 
 test('The @blocks-schema endpoint needs authentication', async ({ page }) => {
   const response = await page.request.get('/@blocks-schema');
@@ -96,4 +97,32 @@ test('The @blocks-schema endpoint accepts a Bearer token', async ({ page }) => {
   });
 
   expect(response.status()).toBe(200);
+});
+
+test('The @blocks-schema endpoint lists the blocks offered for a content item', async ({
+  page,
+}) => {
+  await login(page);
+  await createContent(page, {
+    contentType: 'Document',
+    contentId: 'blocks-schema-page',
+    contentTitle: 'Blocks schema page',
+  });
+
+  const response = await page.request.get('/blocks-schema-page/@blocks-schema');
+  expect(response.status()).toBe(200);
+  expect(response.headers()['cache-control']).toBe(
+    'private, max-age=0, must-revalidate',
+  );
+  const body = await response.json();
+  expect(body['@id']).toMatch(/\/blocks-schema-page\/@blocks-schema$/);
+  expect(body.items.map((item: { id: string }) => item.id)).toContain('teaser');
+
+  const block = await page.request.get(
+    '/blocks-schema-page/@blocks-schema/teaser',
+  );
+  expect((await block.json()).id).toBe('teaser');
+
+  const missing = await page.request.get('/does-not-exist/@blocks-schema');
+  expect(missing.status()).toBe(404);
 });

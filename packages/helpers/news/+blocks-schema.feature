@@ -1,1 +1,1 @@
-Added the `applySchemaEnhancer` block helper. @sneridagh
+Added the `isBlockRestricted` and `applySchemaEnhancer` block helpers. @sneridagh
