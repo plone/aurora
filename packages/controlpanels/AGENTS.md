@@ -24,7 +24,7 @@ This file applies only to `packages/controlpanels` and its subdirectories.
 
 ## Dependency Rules
 
-- Allowed runtime dependencies: `react`, `react-aria-components`, `@plone/quanta`, `@plone/helpers`, `@plone/registry`, `jotai`.
+- Allowed runtime dependencies: `react`, `react-aria-components`, `@plone/quanta`, `@plone/icons` (Quanta depends on it already), `@plone/helpers`, `@plone/registry`, `jotai`.
 - Never import `react-router`, an i18n library (`react-i18next`, `react-intl`), `@plone/client`, `@plone/cmsui`, `@plone/components` or any other framework package.
 - `src/dependencies.test.ts` fails when `package.json` or a source file breaks these rules. Update its allow list only with a reason that holds for Volto too.
 - Peer dependencies stay at `react` `^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0`.
