@@ -27,7 +27,7 @@ Quanta
 Razzle
 RichText
 [Rr]ulesets?
-SASS
+Sass
 SVGs?
 transpile[dr]{0,1}
 unregister
