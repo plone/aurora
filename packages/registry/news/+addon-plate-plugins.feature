@@ -1,0 +1,1 @@
+Added the `@plone/registry/addons/<path>` loader, which collects the `<path>` module of every add-on, in add-on order, so add-ons can contribute code to an extension point without putting it in the registry. @sneridagh

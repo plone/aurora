@@ -7,6 +7,10 @@ import { createAddonsServerLoader } from '@plone/registry/create-addons-loader-s
 import { createThemeAddonsLoader } from '@plone/registry/create-theme-loader';
 import { createAddonsStyleLoader } from '@plone/registry/create-addons-styles-loader';
 import { createAddonsLocalesLoader } from '@plone/registry/create-addons-locales-loader';
+import {
+  ADDON_MODULES_PREFIX,
+  createAddonModulesLoader,
+} from '@plone/registry/create-addon-modules-loader';
 import { pathToFileURL } from 'node:url';
 
 const titleCase = (w) => w.slice(0, 1).toUpperCase() + w.slice(1, w.length);
@@ -171,6 +175,15 @@ export const PloneRegistryVitePlugin = () => {
     {
       name: 'plone-registry',
       enforce: 'pre',
+      // `@plone/registry/addons/<path>` resolves to a generated module that
+      // collects the `<path>` module of every add-on, in add-on order.
+      resolveId(id) {
+        if (!id.startsWith(ADDON_MODULES_PREFIX)) return null;
+        return createAddonModulesLoader(
+          registry,
+          id.slice(ADDON_MODULES_PREFIX.length),
+        );
+      },
       config: () => ({
         ssr: {
           external: ['bcrypt', 'node-gyp-build'],

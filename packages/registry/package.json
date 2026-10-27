@@ -37,7 +37,8 @@
     "dist",
     "bin",
     "README.md",
-    "vite-plugin.*"
+    "vite-plugin.*",
+    "addon-modules.*"
   ],
   "bin": {
     "init-loaders": "./bin/init-loaders.js"
@@ -69,12 +70,20 @@
       "import": "./dist/addon-registry/create-addons-locales-loader.js",
       "default": "./dist/addon-registry/create-addons-locales-loader.cjs"
     },
+    "./create-addon-modules-loader": {
+      "import": "./dist/addon-registry/create-addon-modules-loader.js",
+      "default": "./dist/addon-registry/create-addon-modules-loader.cjs"
+    },
     "./vite-plugin": {
       "import": "./vite-plugin.js",
       "types": "./vite-plugin.d.ts"
     },
     "./addons-loader": {
       "types": "./vite-plugin.d.ts"
+    },
+    "./addons/*": {
+      "types": "./addon-modules.d.ts",
+      "default": "./addon-modules.js"
     },
     ".": {
       "import": "./dist/index.js",
