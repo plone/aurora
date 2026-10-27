@@ -1085,7 +1085,7 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.2.2)
       tailwindcss-react-aria-components:
-        specifier: ^2.0.0
+        specifier: 'catalog:'
         version: 2.2.0(tailwindcss@4.2.2)
       tsconfig:
         specifier: workspace:*
