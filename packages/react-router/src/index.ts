@@ -137,19 +137,27 @@ export async function requireAuthCookie(request: Request) {
 
 /**
  * Where a login sends the visitor afterwards: the request's `return_url`
- * query parameter when it names a path on this site — it starts with `/`,
- * not with `//` or `/\` (both of which a browser reads as another host), and
- * carries no line break — otherwise `fallback`, the site root. This is the
- * receiving half of the convention the header's login link
+ * query parameter when it names a path on this site, otherwise `fallback`,
+ * the site root. A value with control characters is refused outright (a
+ * browser strips tabs and line breaks, so `/\t/host` reads as `//host`), and
+ * the rest is resolved with the URL parser, the way a browser reads a
+ * `Location` header, so `//host` and `/\host` cannot point at another host. This
+ * is the receiving half of the convention the header's login link
  * (`AnonymousTools`) sends; Plone Classic's `came_from` and Volto's
  * `return_url` behave the same way, and neither leaves the site.
  */
 export function getReturnUrl(request: Request, fallback = '/'): string {
-  const returnUrl = new URL(request.url).searchParams.get('return_url');
-  if (returnUrl && /^\/(?![/\\])[^\r\n]*$/.test(returnUrl)) {
-    return returnUrl;
+  const { origin, searchParams } = new URL(request.url);
+  const returnUrl = searchParams.get('return_url');
+  // eslint-disable-next-line no-control-regex
+  if (!returnUrl?.startsWith('/') || /[\x00-\x1f\x7f]/.test(returnUrl)) {
+    return fallback;
   }
-  return fallback;
+  const target = new URL(returnUrl, origin);
+  if (target.origin !== origin) {
+    return fallback;
+  }
+  return `${target.pathname}${target.search}${target.hash}`;
 }
 
 export async function redirectIfLoggedInLoader({

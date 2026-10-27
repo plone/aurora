@@ -185,6 +185,24 @@ describe('getReturnUrl', () => {
       at('http://example.com/login?return_url=/en%0D%0ASet-Cookie:x=y'),
     ).toBe('/');
   });
+
+  it('refuses a return_url a browser would read as another host once it strips a tab', () => {
+    expect(at('http://example.com/login?return_url=/%09/evil.example')).toBe(
+      '/',
+    );
+  });
+
+  it('refuses a backslash path a browser would read as another host once it strips a tab', () => {
+    expect(at('http://example.com/login?return_url=/%09%5Cevil.example')).toBe(
+      '/',
+    );
+  });
+
+  it('refuses a return_url the URL parser resolves to another host', () => {
+    expect(at('http://example.com/login?return_url=/%5C/evil.example')).toBe(
+      '/',
+    );
+  });
 });
 
 describe('redirectIfLoggedInLoader', () => {
