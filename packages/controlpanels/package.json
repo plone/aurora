@@ -74,7 +74,7 @@
     "storybook": "^10.4.0",
     "tailwindcss": "catalog:",
     "tailwindcss-animate": "^1.0.7",
-    "tailwindcss-react-aria-components": "^2.0.0",
+    "tailwindcss-react-aria-components": "catalog:",
     "tsconfig": "workspace:*",
     "typescript": "catalog:",
     "vite": "catalog:",
