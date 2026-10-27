@@ -1,13 +1,16 @@
 export {
   ControlPanelsProvider,
   useNavigate,
+  useNavigationBlocker,
   useNotify,
   useTranslate,
 } from './provider/ControlPanelsProvider';
 export type {
   ControlPanelsProviderProps,
+  NavigationBlocker,
   Notification,
   Notify,
+  UseBlocker,
 } from './provider/ControlPanelsProvider';
 export {
   defaultTranslate,
@@ -54,3 +57,12 @@ export { AddContentTypeDialog } from './content-types/components/AddContentTypeD
 export type { AddContentTypeDialogProps } from './content-types/components/AddContentTypeDialog/AddContentTypeDialog';
 export { DeleteContentTypesDialog } from './content-types/components/DeleteContentTypesDialog/DeleteContentTypesDialog';
 export type { DeleteContentTypesDialogProps } from './content-types/components/DeleteContentTypesDialog/DeleteContentTypesDialog';
+export { ContentTypePage } from './content-types/components/ContentTypePage/ContentTypePage';
+export type { ContentTypePageProps } from './content-types/components/ContentTypePage/ContentTypePage';
+export { SettingsTab } from './content-types/components/SettingsTab/SettingsTab';
+export type { SettingsTabProps } from './content-types/components/SettingsTab/SettingsTab';
+export {
+  changedSettings,
+  toEditableSettings,
+} from './content-types/editableSettings';
+export type { EditableSettings } from './content-types/editableSettings';
