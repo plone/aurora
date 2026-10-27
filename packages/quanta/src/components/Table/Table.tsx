@@ -37,7 +37,7 @@ export function Table(props: TableProps) {
       className={twMerge(
         `
           relative box-border max-h-80 w-full scroll-pt-[2.281rem] overflow-auto rounded-lg border
-          border-neutral-300 bg-white font-sans
+          border-quanta-silver bg-quanta-air font-sans
           dark:border-neutral-700 dark:bg-neutral-900
         `,
         props.className,
@@ -62,8 +62,8 @@ const columnStyles = tv({
 const resizerStyles = tv({
   extend: focusRing,
   base: `
-    box-content h-5 w-px translate-x-2 cursor-col-resize rounded-xs bg-neutral-400 bg-clip-content
-    px-2 py-1 -outline-offset-2
+    box-content h-5 w-px translate-x-2 cursor-col-resize rounded-xs bg-quanta-dolphin
+    bg-clip-content px-2 py-1 -outline-offset-2
     dark:bg-neutral-500
     forced-colors:bg-[ButtonBorder]
     resizing:w-0.5 resizing:bg-quanta-sapphire resizing:pl-1.75
@@ -78,7 +78,7 @@ export function Column(props: ColumnProps) {
       className={composeTailwindRenderProps(
         props.className,
         `
-          box-border h-1 cursor-default text-start text-sm font-semibold text-neutral-700
+          box-border h-1 cursor-default text-start text-sm font-semibold text-quanta-iron
           focus-within:z-20
           dark:text-neutral-300
           [&:hover]:z-20
@@ -102,7 +102,7 @@ export function Column(props: ColumnProps) {
                     <ArrowupIcon
                       aria-hidden
                       className={`
-                        h-4 w-4 text-neutral-500
+                        h-4 w-4 text-quanta-pigeon
                         dark:text-neutral-400
                         forced-colors:text-[ButtonText]
                       `}
@@ -119,12 +119,12 @@ export function Column(props: ColumnProps) {
   );
 }
 
-interface TableHeaderProps<T extends object> extends AriaTableHeaderProps<T> {
+interface TableHeaderProps<T> extends AriaTableHeaderProps<T> {
   dragColumnHeader?: React.ReactNode;
   dragColumnWidth?: number;
 }
 
-export function TableHeader<T extends object>(props: TableHeaderProps<T>) {
+export function TableHeader<T>(props: TableHeaderProps<T>) {
   const { dragColumnHeader, dragColumnWidth, ...ariaProps } = props;
   const { selectionBehavior, selectionMode, allowsDragging } =
     useTableOptions();
@@ -135,11 +135,11 @@ export function TableHeader<T extends object>(props: TableHeaderProps<T>) {
       className={composeTailwindRenderProps(
         ariaProps.className,
         `
-          sticky top-0 z-10 rounded-t-lg border-b border-b-neutral-200 bg-neutral-100/60
+          sticky top-0 z-10 rounded-t-lg border-b border-b-quanta-smoke bg-quanta-snow/60
           backdrop-blur-md
-          supports-[-moz-appearance:none]:bg-neutral-100
+          supports-[-moz-appearance:none]:bg-quanta-snow
           dark:border-b-neutral-700 dark:bg-neutral-700/60
-          dark:supports-[-moz-appearance:none]:bg-neutral-700
+          dark:supports-[-moz-appearance:none]:bg-quanta-iron
           forced-colors:bg-[Canvas]
         `,
       )}
@@ -164,7 +164,7 @@ export function TableHeader<T extends object>(props: TableHeaderProps<T>) {
   );
 }
 
-export function TableBody<T extends object>(props: TableBodyProps<T>) {
+export function TableBody<T>(props: TableBodyProps<T>) {
   return (
     <AriaTableBody
       {...props}
@@ -176,24 +176,19 @@ export function TableBody<T extends object>(props: TableBodyProps<T>) {
 const rowStyles = tv({
   extend: focusRing,
   base: `
-    group/row relative cursor-default text-sm text-neutral-900 -outline-offset-2 select-none
+    group/row relative cursor-default text-sm text-quanta-space -outline-offset-2 select-none
     last:rounded-b-lg
-    hover:bg-neutral-100
-    disabled:text-neutral-300
+    hover:bg-quanta-snow
+    disabled:text-quanta-silver
     dark:text-quanta-air dark:hover:bg-neutral-800 dark:disabled:text-neutral-600
-    pressed:bg-neutral-100
+    pressed:bg-quanta-snow
     dark:pressed:bg-neutral-800
     selected:bg-quanta-sapphire selected:text-quanta-air selected:hover:bg-quanta-royal
     dark:selected:bg-quanta-sapphire dark:selected:hover:bg-quanta-royal
   `,
 });
 
-export function Row<T extends object>({
-  id,
-  columns,
-  children,
-  ...otherProps
-}: RowProps<T>) {
+export function Row<T>({ id, columns, children, ...otherProps }: RowProps<T>) {
   const { selectionBehavior, allowsDragging } = useTableOptions();
 
   return (
@@ -226,7 +221,7 @@ export function Row<T extends object>({
 const cellStyles = tv({
   extend: focusRing,
   base: `
-    box-border truncate border-b border-b-neutral-200 p-2 -outline-offset-2
+    box-border truncate border-b border-b-quanta-smoke p-2 -outline-offset-2
     [--selected-border:var(--color-blue-200)]
     [-webkit-tap-highlight-color:transparent]
     group-last/row:border-b-0
@@ -246,7 +241,7 @@ const expandButton = tv({
   variants: {
     isDisabled: {
       true: `
-        text-neutral-300
+        text-quanta-silver
         dark:text-neutral-600
         forced-colors:text-[GrayText]
       `,
@@ -256,7 +251,7 @@ const expandButton = tv({
 
 const chevron = tv({
   base: `
-    h-4.5 w-4.5 text-neutral-500 transition-transform duration-200 ease-in-out
+    h-4.5 w-4.5 text-quanta-pigeon transition-transform duration-200 ease-in-out
     dark:text-neutral-400
   `,
   variants: {
@@ -265,7 +260,7 @@ const chevron = tv({
     },
     isDisabled: {
       true: `
-        text-neutral-300
+        text-quanta-silver
         dark:text-neutral-600
         forced-colors:text-[GrayText]
       `,

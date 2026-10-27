@@ -17,11 +17,12 @@ import { focusRing } from '../../utils';
 import { CloseIcon } from '@plone/icons';
 
 const colors = {
-  gray: 'bg-quanta-silver text-foreground border-gray-200 hover:border-gray-300  ',
-  green: 'bg-green-100 text-green-700 border-green-200 hover:border-green-300 ',
+  gray: 'bg-quanta-air text-quanta-denim border-quanta-silver hover:border-quanta-dolphin',
+  green:
+    'bg-quanta-daiquiri text-quanta-emerald border-quanta-mint hover:border-quanta-celery ',
   yellow:
-    'bg-yellow-100 text-yellow-700 border-yellow-200 hover:border-yellow-300 ',
-  blue: 'bg-blue-100 text-blue-700 border-blue-200 hover:border-blue-300',
+    'bg-quanta-cream text-quanta-dijon border-quanta-banana hover:border-quanta-lemon ',
+  blue: 'bg-quanta-arctic text-quanta-royal border-quanta-sky hover:border-quanta-azure',
 };
 
 type Color = keyof typeof colors;
@@ -30,8 +31,8 @@ const ColorContext = createContext<Color>('gray');
 const tagStyles = tv({
   extend: focusRing,
   base: `
-    text-md flex max-w-fit cursor-default items-center gap-1 rounded-sm border px-3 py-0.5
-    transition
+    flex max-w-fit cursor-default items-center gap-1 rounded-full border px-2.5 py-0.5 text-sm
+    leading-6 transition
   `,
   variants: {
     color: {
@@ -41,13 +42,13 @@ const tagStyles = tv({
       blue: '',
     },
     allowsRemoving: {
-      true: 'pr-1',
+      true: 'pr-0.5',
     },
     isSelected: {
       true: 'border-transparent',
     },
     isDisabled: {
-      true: 'bg-quanta-pigeon text-gray-300',
+      true: 'bg-quanta-pigeon text-quanta-silver',
     },
   },
   compoundVariants: (Object.keys(colors) as Color[]).map((color) => ({
@@ -72,7 +73,7 @@ export interface TagProps extends AriaTagProps {
   color?: Color;
 }
 
-export function TagGroup<T extends object>({
+export function TagGroup<T>({
   label,
   description,
   errorMessage,
@@ -99,7 +100,7 @@ export function TagGroup<T extends object>({
       </ColorContext.Provider>
       {description && <Description>{description}</Description>}
       {errorMessage && (
-        <Text slot="errorMessage" className="text-sm text-red-600">
+        <Text slot="errorMessage" className="text-sm text-quanta-candy">
           {errorMessage}
         </Text>
       )}
@@ -110,7 +111,10 @@ export function TagGroup<T extends object>({
 const removeButtonStyles = tv({
   extend: focusRing,
   base: `
-    flex cursor-default items-center justify-center rounded-full p-0.5 transition-[background-color]
+    flex size-6 cursor-default items-center justify-center rounded-full text-quanta-iron
+    transition-[background-color]
+    hover:bg-quanta-snow
+    pressed:bg-quanta-smoke
   `,
 });
 
@@ -125,16 +129,16 @@ export function Tag({ children, color, ...props }: TagProps) {
         tagStyles({ ...renderProps, className, color: color || groupColor }),
       )}
     >
-      {({ allowsRemoving }) => (
+      {composeRenderProps(children, (children, { allowsRemoving }) => (
         <>
           {children}
           {allowsRemoving && (
             <Button slot="remove" className={removeButtonStyles}>
-              <CloseIcon aria-hidden className="h-3 w-3" />
+              <CloseIcon aria-hidden className="size-4" />
             </Button>
           )}
         </>
-      )}
+      ))}
     </AriaTag>
   );
 }

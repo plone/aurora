@@ -1,0 +1,1 @@
+Removed the `@plone/components > react-aria-components/DropZone` Vite pre-bundling entry, since `@plone/components` no longer has a `DropZone`. @pnicolli

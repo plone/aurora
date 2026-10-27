@@ -7,7 +7,7 @@ import { tv } from 'tailwind-variants';
 
 const styles = tv({
   base: `
-    bg-gray-300
+    bg-quanta-silver
     dark:bg-zinc-600
     forced-colors:bg-[ButtonBorder]
   `,

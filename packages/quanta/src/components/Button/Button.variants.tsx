@@ -40,7 +40,15 @@ export const button = tv({
         hover:bg-quanta-snow
         active:bg-quanta-silver
         has-[svg]:text-quanta-iron
-        pressed:bg-quanta-cobalt pressed:[&_svg]:text-white
+        pressed:bg-quanta-cobalt pressed:[&_svg]:text-quanta-air
+      `,
+    },
+    isPending: {
+      // The label stays, to keep the button's size, but is hidden behind the
+      // pending spinner.
+      true: `
+        relative text-transparent!
+        [&_svg]:invisible
       `,
     },
     accent: {
@@ -97,7 +105,7 @@ export const button = tv({
         hover:bg-quanta-snow
         active:bg-quanta-silver
         has-[svg]:text-quanta-iron
-        pressed:bg-quanta-cobalt pressed:[&_svg]:text-white
+        pressed:bg-quanta-cobalt pressed:[&_svg]:text-quanta-air
       `,
     },
     {

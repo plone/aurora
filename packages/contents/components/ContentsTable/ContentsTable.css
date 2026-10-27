@@ -6,9 +6,4 @@
       font-size: var(--plone-table-row-font-size);
     }
   }
-
-  nav.pagination {
-    margin-top: 2rem;
-    float: right;
-  }
 }

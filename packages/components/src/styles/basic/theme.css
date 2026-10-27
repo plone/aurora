@@ -1,5 +1,3 @@
-@import './quanta-colors.css';
-
 /* color themes for dark and light modes, generated with Leonardo.
  * Light: https://leonardocolor.io/theme.html?name=Light&config=%7B%22baseScale%22%3A%22Gray%22%2C%22colorScales%22%3A%5B%7B%22name%22%3A%22Gray%22%2C%22colorKeys%22%3A%5B%22%23000000%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.12%22%2C%221.45%22%2C%222.05%22%2C%223.02%22%2C%224.54%22%2C%227%22%2C%2210.86%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Purple%22%2C%22colorKeys%22%3A%5B%22%235e30eb%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.12%22%2C%221.45%22%2C%222.05%22%2C%223.02%22%2C%224.54%22%2C%227%22%2C%2210.86%22%5D%2C%22smooth%22%3Afalse%7D%2C%7B%22name%22%3A%22Red%22%2C%22colorKeys%22%3A%5B%22%23e32400%22%5D%2C%22colorspace%22%3A%22RGB%22%2C%22ratios%22%3A%5B%22-1.12%22%2C%221.45%22%2C%222.05%22%2C%223.02%22%2C%224.54%22%2C%227%22%2C%2210.86%22%5D%2C%22smooth%22%3Afalse%7D%5D%2C%22lightness%22%3A98%2C%22contrast%22%3A1%2C%22saturation%22%3A100%2C%22formula%22%3A%22wcag2%22%7D */
 :root {
@@ -51,9 +49,9 @@
   --text-color-disabled: var(--basic-500); /* --gray-200 */
   --text-color-placeholder: var(--gray-400);
   /* Link */
-  --link-color: var(--quanta-sapphire);
-  --link-color-secondary: var(--quanta-royal);
-  --link-color-pressed: var(--quanta-cobalt);
+  --link-color: #0b78d0;
+  --link-color-secondary: #085696;
+  --link-color-pressed: #2597f4;
   /* Border */
   --border-color: var(--basic-400); /* --gray-300 */
   --border-color-hover: var(--basic-500); /* --gray-400 */
@@ -72,9 +70,7 @@
    * to ensure contrast with the foreground color */
   --highlight-background: var(--basic-600); /* #6f46ed purple-300 */
   --highlight-background-pressed: var(--basic-800); /* #522acd purple-200 */
-  --highlight-background-invalid: var(
-    --quanta-candy
-  ); /* red-300 from dark theme */
+  --highlight-background-invalid: #d0220b; /* red-300 from dark theme */
   --highlight-background-hover: var(--basic-400); /* #6f46ed purple-300 */
   --highlight-foreground: var(--basic-50); /* white */
   --highlight-foreground-pressed: var(--basic-200); /* #ddd */

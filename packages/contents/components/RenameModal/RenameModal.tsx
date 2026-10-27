@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useFetcher, type SubmitTarget } from 'react-router';
-import { Button, Heading } from 'react-aria-components';
+import { Button } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import { getContentIcon } from '@plone/helpers';
 import {
   Button as QuantaButton,
   Dialog,
+  Heading,
   Input,
   Modal,
   Separator,

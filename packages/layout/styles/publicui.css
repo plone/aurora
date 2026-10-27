@@ -1,3 +1,5 @@
+/* The Quanta palette, used by the toolbar. */
+@import '@plone/quanta/src/styles/colors.css';
 @import '@plone/components/src/styles/basic/icons.css';
 @import '@plone/components/src/styles/basic/Link.css';
 @import '@plone/components/src/styles/basic/Breadcrumbs.css';
