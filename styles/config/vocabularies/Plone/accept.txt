@@ -1,9 +1,5 @@
-(?i)-plone
-(?i)-volto
-(?i)-plone-
-(?i)-volto-
-(?i)plone-
-(?i)volto-
+(-[pP]lone-?)|([pP]lone-)
+(-[vV]olto-?)|([vV]olto-)
 [Aa]sync
 [Bb]ackend
 [Bb]lockquotes?

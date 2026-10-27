@@ -1,1 +1,1 @@
-Close #232 by improving Plone's Vale vocabulary. @silviubogan
+Solved false Vale problems, created new regex-es (replacing too simple terms) and terms in Plone vocab, replaced "SASS" with "Sass" in narrative docs. @silviubogan
