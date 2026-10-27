@@ -376,7 +376,7 @@ export function blockToMarkdown(
     parts.push('_Not offered in the block chooser._');
   } else if (restricted === 'context') {
     parts.push(
-      '_Whether it is offered in the block chooser depends on the content. Ask `/<path>/@blocks-schema` for a given content item._',
+      '_Whether it is offered in the block chooser depends on the content._',
     );
   }
 

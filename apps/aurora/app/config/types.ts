@@ -24,11 +24,6 @@ declare module '@plone/types' {
     rootLoaderData: (
       args: LoaderUtilityArgs,
     ) => Promise<{ status: number; data: unknown }>;
-    // A `contentResource` utility answers `/<path>/<name>[/<subpath>]`, a
-    // resource below a content path, like plone.restapi endpoints. Its name
-    // is the `@`-prefixed segment, for example `@blocks-schema`. Resources
-    // without a content path are regular resource routes.
-    contentResource: (args: ContentResourceArgs) => Promise<Response>;
     somersaultBlockMigration: (
       args: SomersaultBlockMigrationArgs,
     ) => SomersaultMigrationArgs['value'];
@@ -45,14 +40,6 @@ export interface LoaderUtilityArgs {
   path: string;
   params: Params;
   locale: string;
-}
-
-export interface ContentResourceArgs {
-  request: Request;
-  /** The content path, for example `/news`. */
-  path: string;
-  /** What follows the resource name, if anything, without leading slash. */
-  subpath?: string;
 }
 
 export interface SomersaultMigrationArgs {

@@ -188,8 +188,6 @@ export default function install(config: ConfigType) {
       },
     ],
   });
-  // `/<path>/@blocks-schema[/<blockId>]` is a `contentResource` utility,
-  // registered in `config/server.ts`.
 
   return config;
 }

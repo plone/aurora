@@ -3,15 +3,13 @@ import config from '@plone/registry';
 import { cookie } from '@plone/react-router';
 import blocksDocs from '@plone/registry/blocks-docs';
 import {
-  blocksSchemaContentResource,
   blocksSchemaResponse,
   clearValidatedTokens,
 } from './blocksSchema.server';
 import { loader } from '../routes/blocksSchema';
 
 const getUser = vi.fn();
-const getContent = vi.fn();
-const initialize = vi.fn(() => ({ getUser, getContent }));
+const initialize = vi.fn(() => ({ getUser }));
 
 vi.mock('@plone/aurora/app/middleware.server', () => ({
   getPloneClientClass: () => ({ initialize }),
@@ -57,21 +55,9 @@ const docs = [
   },
 ];
 
-const blockIds = (body: { items: Array<{ id: string; kind: string }> }) =>
-  body.items.filter((item) => item.kind === 'block').map((item) => item.id);
-
 beforeEach(() => {
   clearValidatedTokens();
   getUser.mockResolvedValue({ data: { id: 'editor' } });
-  getContent.mockResolvedValue({
-    data: {
-      '@id': 'http://localhost:8080/Plone/events',
-      '@type': 'Folder',
-      '@components': {
-        navroot: { navroot: { '@id': 'http://localhost:8080/Plone' } },
-      },
-    },
-  });
   config.settings.apiPath = 'http://localhost:8080/Plone';
   config.blocks.blocksConfig = {
     teaser: {
@@ -353,117 +339,6 @@ describe('one block', () => {
       expect(response.status).toBe(404);
       expect(response.headers.get('Cache-Control')).toBe('no-store');
     }
-  });
-});
-
-describe('for a content item', () => {
-  it('only lists the blocks offered there', async () => {
-    getContent.mockResolvedValue({
-      data: { '@id': 'http://localhost:8080/Plone/news', '@type': 'Document' },
-    });
-    const response = await blocksSchemaContentResource({
-      request: request('/news/@blocks-schema'),
-      path: '/news',
-    });
-    const body = await response.json();
-
-    expect(getContent).toHaveBeenCalledWith({
-      path: '/news',
-      expand: ['navroot'],
-    });
-    expect(response.headers.get('Cache-Control')).toBe(
-      'private, max-age=0, must-revalidate',
-    );
-    expect(blockIds(body)).toEqual(['teaser']);
-    // Elements are always offered.
-    expect(body.items).toEqual(
-      expect.arrayContaining([expect.objectContaining({ id: 'p' })]),
-    );
-    expect(
-      body.items.find((item: any) => item.id === 'teaser'),
-    ).not.toHaveProperty('restricted');
-  });
-
-  it('keeps the content path in the links', async () => {
-    const response = await blocksSchemaContentResource({
-      request: request('/news/@blocks-schema'),
-      path: '/news',
-    });
-    const body = await response.json();
-    expect(body['@id']).toBe('http://localhost/news/@blocks-schema');
-    expect(body.items.find((item: any) => item.id === 'teaser')['@id']).toBe(
-      'http://localhost/news/@blocks-schema/teaser',
-    );
-
-    const detail = await blocksSchemaContentResource({
-      request: request('/news/@blocks-schema/teaser'),
-      path: '/news',
-      subpath: 'teaser',
-    });
-    expect((await detail.json())['@id']).toBe(
-      'http://localhost/news/@blocks-schema/teaser',
-    );
-  });
-
-  it('evaluates restricted with the content, its navroot and the user', async () => {
-    const restricted = vi.fn(() => false);
-    (config.blocks.blocksConfig as any).events.restricted = restricted;
-
-    const response = await blocksSchemaContentResource({
-      request: request('/events/@blocks-schema'),
-      path: '/events',
-    });
-    const body = await response.json();
-
-    expect(blockIds(body)).toEqual(['teaser', 'events']);
-    expect(restricted).toHaveBeenCalledWith(
-      expect.objectContaining({
-        properties: expect.objectContaining({ '@id': '/events' }),
-        navRoot: { '@id': '/' },
-        contentType: 'Folder',
-        user: { id: 'editor' },
-      }),
-    );
-  });
-
-  it('flags one block as restricted or not', async () => {
-    const response = await blocksSchemaContentResource({
-      request: request('/events/@blocks-schema/hidden'),
-      path: '/events',
-      subpath: 'hidden',
-    });
-    expect(await response.json()).toMatchObject({
-      id: 'hidden',
-      restricted: true,
-    });
-  });
-
-  it('passes the backend errors for the content on', async () => {
-    getContent.mockRejectedValue({ status: 404 });
-    const response = await blocksSchemaContentResource({
-      request: request('/missing/@blocks-schema'),
-      path: '/missing',
-    });
-    expect(response.status).toBe(404);
-    expect(await response.json()).toEqual({
-      error: {
-        type: 'Not Found',
-        message: "Could not get the content at '/missing'.",
-      },
-    });
-  });
-
-  it('treats a failing restricted function as restricted', async () => {
-    vi.spyOn(console, 'error').mockImplementation(() => {});
-    (config.blocks.blocksConfig as any).events.restricted = () => {
-      throw new Error('boom');
-    };
-    const response = await blocksSchemaContentResource({
-      request: request('/events/@blocks-schema'),
-      path: '/events',
-    });
-    const body = await response.json();
-    expect(blockIds(body)).toEqual(['teaser']);
   });
 });
 

@@ -15,7 +15,9 @@ For each element, it returns its documentation, with the shape of its node.
 It also returns the format of the page document that holds them.
 To learn how to write the documentation that it returns, see {doc}`../how-to-guides/document-blocks`.
 
-The endpoint has the same URLs and responses as the one of the Volto server, so clients such as the Plone MCP server work with both.
+The endpoint has the same responses as the one of the Volto server, so clients such as the Plone MCP server work with both.
+It only exists at the root of the site, though.
+Unlike Volto, Plone Aurora doesn't answer it below a content path, such as `/news/@blocks-schema`.
 
 ```{note}
 `@blocks-schema` is served by Plone Aurora, not by the Plone REST API.
@@ -96,8 +98,7 @@ The protocol comes from the `X-Forwarded-Proto` header, when a proxy sets it, an
 ```
 
 `restricted` tells whether editors can add a block.
-It is `true` when the block is never offered, and `"context"` when that depends on the content.
-See {ref}`blocks-schema-context`.
+It is `true` when the block is never offered, and `"context"` when that depends on the content, because its `restricted` setting is a function.
 
 `document` has no `@id`, because no URL returns it on its own.
 
@@ -156,34 +157,8 @@ A line notes when a block is not offered in the block chooser, or when that depe
 One element or block returns a section that says how the item is stored, and contains its documentation and, for a block, its variations and its schema in a `json` code block.
 A variation's schema is only included when it differs from the block's.
 
-(blocks-schema-context)=
-
-## Blocks for a content item
-
-Add the path of a content item in front of the endpoint to get only the blocks offered when editing that item.
-Elements are always offered, so they are all listed.
-
-```http
-GET /news/@blocks-schema HTTP/1.1
-```
-
-The endpoint gets the content item with the `navroot` expander, using the token of the request, and evaluates each block's `restricted` setting with its `properties`, `navRoot`, `contentType`, and the `user`.
-If `restricted` throws an error, the block is treated as restricted.
-If the Plone REST API returns `401 Unauthorized`, `403 Forbidden`, or `404 Not Found` for the content item, the endpoint returns the same status.
-
-The links keep the content path, for example `http://localhost:3000/news/@blocks-schema/teaser`.
-With a path, the endpoint returns one block with a `restricted` value of `true` or `false` for that content item.
-
-```http
-GET /news/@blocks-schema/listing HTTP/1.1
-```
-
-React Router can't match a route below a content path, so these URLs are answered by the `contentResource` utility named `@blocks-schema`, which the root middleware calls before it fetches the content.
-See {ref}`content-resources`.
-
 ## Caching
 
 All responses are private, because they need authentication.
-Responses without a path can be reused by the client for five minutes.
-Responses for a content item are not reused.
+The client can reuse them for five minutes.
 Responses vary on the `Accept`, `Accept-Language`, `Authorization`, and `Cookie` headers.

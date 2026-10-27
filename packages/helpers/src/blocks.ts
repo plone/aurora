@@ -4,7 +4,6 @@ import type {
   Content,
   JSONSchema,
   SchemaEnhancerArgs,
-  User,
 } from '@plone/types';
 
 export function hasBlocksData(content: Content) {
@@ -13,35 +12,6 @@ export function hasBlocksData(content: Content) {
       (key) => key !== 'volto.blocks' && key.endsWith('blocks'),
     ) !== undefined
   );
-}
-
-type RestrictedContext = {
-  properties?: Content;
-  navRoot?: Content;
-  contentType?: string;
-  user?: User | null;
-};
-
-/**
- * Whether a block is restricted, that is, not offered in the block chooser.
- * `restricted` can be a boolean or a function that decides from the context:
- * the content being edited, its navigation root, its type, and the user.
- */
-export function isBlockRestricted(
-  block: Pick<BlockConfigBase, 'restricted'> & Partial<BlockConfigBase>,
-  { properties, navRoot, contentType, user }: RestrictedContext = {},
-): boolean {
-  return typeof block.restricted === 'function'
-    ? Boolean(
-        block.restricted({
-          properties: properties as Content,
-          block: block as BlockConfigBase,
-          navRoot: navRoot as Content,
-          contentType: contentType as string,
-          user: user as User,
-        }),
-      )
-    : Boolean(block.restricted);
 }
 
 // Schemas may hold functions (validators, side effects) and components, so
