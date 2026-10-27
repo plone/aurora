@@ -123,6 +123,20 @@ The `Icon` stories and the icon gallery moved to the `@plone/icons` Storybook, a
 
 This keeps the package small, so that every component in it is used and maintained.
 
+### Basic CSS no longer defines the Quanta palette
+
+`@plone/components`' basic theme had a copy of the Quanta palette, the `--quanta-*` CSS custom properties.
+It's removed, and the basic theme uses its own values.
+If your CSS uses `var(--quanta-*)` colors, and you only load `@plone/components`' basic CSS, import the palette from `@plone/quanta`:
+
+```diff
++ @import '@plone/quanta/src/styles/colors.css';
+```
+
+`@plone/quanta/dist/quanta.css` also includes it.
+
+This leaves `@plone/quanta` as the only source of the Quanta palette.
+
 ## 4.0.0
 
 ### Refactored `Icon` component
