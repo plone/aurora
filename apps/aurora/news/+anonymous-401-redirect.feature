@@ -1,0 +1,1 @@
+An anonymous visitor on private content is redirected instead of shown a bare 401 page: to the page's language root, or to the login page (with `return_url`) when the private page is a language root or the site root. Signed-in users still see the permission error. @mpalomaki
