@@ -1,1 +1,1 @@
-An anonymous visitor on private content is redirected instead of shown a bare 401 page: to the page's language root, or to the login page (with `return_url`) when the private page is a language root or the site root. Signed-in users still see the permission error. @mpalomaki
+A visitor who is not signed in and opens private content is sent to the login page with the page as `return_url`, as in Volto, instead of a bare 401 page. An expired sign-in does the same and clears the cookie. Signed-in users without permission still see the 401 page. @mpalomaki

@@ -18,9 +18,6 @@ export const ploneUserContext = createContext<
 >(null);
 export const ploneClearAuthCookieContext = createContext<boolean>(false);
 
-/** A language code as Plone names its language root folders: `en`, `pt-br`. */
-const LANGUAGE_TOKEN = /^[a-z]{2,3}(-[a-z]{2,4})?$/;
-
 /**
  * Where the site root sends a visitor on a multilingual site: the default
  * language root — what Plone's language-switcher view on the site root and
@@ -35,39 +32,25 @@ export function multilingualRootRedirect(
 ): string | undefined {
   if (pathname !== '/' || !site?.features?.multilingual) return undefined;
   const language = site['plone.default_language'];
-  return typeof language === 'string' && LANGUAGE_TOKEN.test(language)
+  return typeof language === 'string' &&
+    /^[a-z]{2,3}(-[a-z]{2,4})?$/.test(language)
     ? `/${language}`
     : undefined;
 }
 
 /**
- * Where an anonymous visitor lands instead of a bare 401: the path's
- * language root when its first segment is a language token (the same
- * path-derivation rule the LanguageSwitcher uses), the site root
- * otherwise. When the 401'd path IS that root — a private language root,
- * or the site root — the visitor goes to the login page instead, with the
- * path as `return_url` the way the header's login link builds it (and
- * without one for the site root, as that link does). A root may never be
- * sent to the site root: behind a redirect from `/` to the default
- * language root, `/en → / → /en` would loop forever.
- *
- * `pathname` is the page being requested. When the target is that page —
- * `/login` itself on a site whose root is private, as the root middleware
- * runs for `/login` with an empty splat — there is no redirect.
+ * Where a 401 sends a visitor who is not signed in: the login page, with the
+ * requested path as `return_url`, as Volto's Unauthorized view does. No
+ * redirect when the request is for the login page itself — the root
+ * middleware runs for `/login` with an empty splat, and on a site whose root
+ * is private that would loop.
  */
-export function anonymousLanguageRootRedirect(
+export function unauthorizedLoginRedirect(
   path: string,
   pathname: string = path,
 ): string | undefined {
-  const segment = path.split('/')[1] || '';
-  const root = LANGUAGE_TOKEN.test(segment) ? `/${segment}` : '/';
-  const target =
-    root !== path
-      ? root
-      : path === '/'
-        ? '/login'
-        : `/login?return_url=${path}`;
-  return target.split('?')[0] === pathname ? undefined : target;
+  if (pathname === '/login') return undefined;
+  return `/login?return_url=${encodeURIComponent(path)}`;
 }
 
 function getAuthorizedResourceHeaders(
@@ -318,6 +301,7 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
   const pathname = (url ?? new URL(request.url)).pathname;
 
   let userId = '';
+  let tokenExpired = false;
   if (token) {
     try {
       const decodedToken = jwtDecode<{
@@ -326,6 +310,9 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
         fullname: string | null;
       }>(token);
       userId = decodedToken.sub || '';
+      tokenExpired =
+        typeof decodedToken.exp === 'number' &&
+        decodedToken.exp * 1000 < Date.now();
     } catch {}
   }
 
@@ -389,6 +376,14 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
         if (rootRedirect) return clearAuthOnResponse(redirect(rootRedirect));
         return;
       } catch (anonymousError: any) {
+        // An expired token is no sign-in at all (Volto's cookie expires with
+        // the token): the visitor logs in again and comes back here. A live
+        // token without permission keeps the 401 page.
+        const loginRedirect =
+          tokenExpired && anonymousError?.status === 401
+            ? unauthorizedLoginRedirect(path, pathname)
+            : undefined;
+        if (loginRedirect) return clearAuthOnResponse(redirect(loginRedirect));
         throw data('Content Not Found', {
           status:
             typeof anonymousError.status === 'number'
@@ -398,14 +393,11 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
       }
     }
 
-    // An anonymous visitor on private content gets the language root,
-    // not a dead-end 401 page; token-bearing requests fall through so
-    // signed-in editors still see the honest permission error.
-    const anonymousRedirect =
+    const loginRedirect =
       !token && error?.status === 401
-        ? anonymousLanguageRootRedirect(path, pathname)
+        ? unauthorizedLoginRedirect(path, pathname)
         : undefined;
-    if (anonymousRedirect) return redirect(anonymousRedirect);
+    if (loginRedirect) return redirect(loginRedirect);
 
     throw data('Content Not Found', {
       status: typeof error.status === 'number' ? error.status : 500,

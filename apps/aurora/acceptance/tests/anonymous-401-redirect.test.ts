@@ -8,7 +8,7 @@ import {
 } from '../../../../packages/tooling/playwright/multilingual';
 
 test.describe('Anonymous 401 redirect', () => {
-  test('a private page sends an anonymous visitor to its language root', async ({
+  test('a private page sends an anonymous visitor to the login page', async ({
     page,
     request,
   }) => {
@@ -21,7 +21,8 @@ test.describe('Anonymous 401 redirect', () => {
     });
 
     await page.goto('/en/internal');
-    await expect(page).toHaveURL(/\/en$/);
+    await expect(page).toHaveURL(/\/login\?return_url=%2Fen%2Finternal$/);
+    await expect(page.getByLabel('username')).toBeVisible();
   });
 
   test('a private language root sends an anonymous visitor to the login page', async ({
@@ -31,7 +32,7 @@ test.describe('Anonymous 401 redirect', () => {
     await setWorkflowSeven(request, { path: 'en', review_state: 'retract' });
 
     await page.goto('/en');
-    await expect(page).toHaveURL(/\/login\?return_url=\/en$/);
+    await expect(page).toHaveURL(/\/login\?return_url=%2Fen$/);
     await expect(page.getByLabel('username')).toBeVisible();
   });
 
@@ -45,7 +46,7 @@ test.describe('Anonymous 401 redirect', () => {
     // never back to /.
     const response = await page.goto('/');
     expect(response?.ok()).toBe(true);
-    await expect(page).toHaveURL(/\/login\?return_url=\/en$/);
+    await expect(page).toHaveURL(/\/login\?return_url=%2Fen$/);
   });
 
   test('a signed-in editor is not redirected from a page they can see', async ({
