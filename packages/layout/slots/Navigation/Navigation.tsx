@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import { Button } from 'react-aria-components';
@@ -25,6 +25,8 @@ const Navigation = (props: SlotComponentProps) => {
   // client render alike: the toggle hydrates closed deterministically.
   const [openedOn, setOpenedOn] = useState<string | null>(null);
   const open = openedOn === pathname;
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLUListElement>(null);
 
   // Escape dismisses the open panel wherever focus is, the way an overlay
   // does; the listener exists only while it is open.
@@ -34,6 +36,11 @@ const Navigation = (props: SlotComponentProps) => {
     }
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
+        // Focus inside the panel would be lost when it hides: hand it back
+        // to the toggle.
+        if (panelRef.current?.contains(document.activeElement)) {
+          toggleRef.current?.focus();
+        }
         setOpenedOn(null);
       }
     };
@@ -48,6 +55,7 @@ const Navigation = (props: SlotComponentProps) => {
       className={clsx(styles.navigation, 'navigation')}
     >
       <Button
+        ref={toggleRef}
         className={clsx(styles.toggle, 'navigation-toggle')}
         aria-label={t('layout.slots.navigation.menu', { defaultValue: 'Menu' })}
         aria-expanded={open}
@@ -56,7 +64,7 @@ const Navigation = (props: SlotComponentProps) => {
       >
         <MenuIcon />
       </Button>
-      <ul id="navigation-list" data-open={open || undefined}>
+      <ul ref={panelRef} id="navigation-list" data-open={open || undefined}>
         {navItems.map((item: NavItem) => (
           <li key={item['@id']}>
             <Link href={item['@id']}>{item.title}</Link>

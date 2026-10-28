@@ -73,6 +73,15 @@ describe('Navigation menu toggle (DR-2026-349)', () => {
     expect(toggle()).toHaveAttribute('aria-expanded', 'false');
   });
 
+  test('Escape from a focused item hands the focus back to the toggle', () => {
+    renderAt();
+    fireEvent.click(toggle());
+    const press = screen.getByRole('link', { name: 'Press' });
+    press.focus();
+    fireEvent.keyDown(press, { key: 'Escape' });
+    expect(toggle()).toHaveFocus();
+  });
+
   test('closes when the route changes', async () => {
     const router = createMemoryRouter(
       [
