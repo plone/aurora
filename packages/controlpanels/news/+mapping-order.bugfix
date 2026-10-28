@@ -1,0 +1,1 @@
+Show the rows of the workflow change dialog's mapping step in the order of the current workflow's states, whatever order the driver sends them in. @sneridagh
