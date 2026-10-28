@@ -199,6 +199,49 @@ export const getAPIResourceWithAuth: Route.MiddlewareFunction = async (
   }
 };
 
+/**
+ * Splits a request path into a content path and a `contentResource` utility
+ * below it: `/news/@blocks-schema/teaser` gives `/news`, `@blocks-schema`
+ * and `teaser`. The first `@`-prefixed segment after the content path that
+ * names a registered utility wins. Returns undefined when none matches.
+ */
+export function matchContentResource(path: string) {
+  const segments = path.split('/').filter(Boolean);
+
+  for (let index = 1; index < segments.length; index++) {
+    const name = segments[index];
+    if (!/^@(?!@)/.test(name)) continue;
+    const utility = config.getUtility({ name, type: 'contentResource' });
+    if (!utility.method) continue;
+
+    return {
+      method: utility.method,
+      path: `/${segments.slice(0, index).join('/')}`,
+      subpath: segments.slice(index + 1).join('/') || undefined,
+    };
+  }
+}
+
+/**
+ * Answers the requests for a resource below a content path, like
+ * `/news/@blocks-schema`, with the `contentResource` utility named after the
+ * resource. React Router can't match a route below a splat, so they are
+ * handled here, before the content of the path is fetched.
+ */
+export const contentResourceMiddleware: Route.MiddlewareFunction = async ({
+  request,
+  params,
+}) => {
+  const match = matchContentResource(`/${params['*'] || ''}`);
+  if (!match) return;
+
+  return match.method({
+    request,
+    path: match.path,
+    subpath: match.subpath,
+  });
+};
+
 function matchesExpanderPath(path: string, match: string) {
   const prefix = match.replace(/\/+$/, '');
   return prefix === '' || path === prefix || path.startsWith(`${prefix}/`);
