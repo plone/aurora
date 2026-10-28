@@ -48,17 +48,17 @@ const LanguageSwitcher = (props: LanguageSelectorProps) => {
   return isMultilingual ? (
     <div className={clsx(styles['language-switcher'])}>
       {availableLanguages.map((lang: string) => {
+        const isCurrent = normalizeLang(lang) === currentLang;
         return (
           <Link
+            aria-current={isCurrent ? 'true' : undefined}
             aria-label={t(
               'layout.slots.headertools.languageSwitcher.switchTo',
               {
                 lang: langmap[lang]?.nativeName.toLowerCase(),
               },
             )}
-            className={clsx({
-              [styles.selected]: normalizeLang(lang) === currentLang,
-            })}
+            className={clsx({ [styles.selected]: isCurrent })}
             href={`/${lang}`}
             onClick={props.onClickAction}
             key={`language-switcher-${lang}`}

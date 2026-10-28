@@ -57,4 +57,10 @@ describe('LanguageSwitcher', () => {
     renderAt('/login');
     expect(screen.getByText('English')).toHaveClass('selected');
   });
+
+  test('marks only the active language as the current one for assistive technology', () => {
+    renderAt('/sv/some-page');
+    expect(screen.getByText('Svenska')).toHaveAttribute('aria-current', 'true');
+    expect(screen.getByText('English')).not.toHaveAttribute('aria-current');
+  });
 });
