@@ -1,7 +1,7 @@
 # `@plone/quanta`
 
 [![NPM](https://img.shields.io/npm/v/@plone/quanta.svg)](https://www.npmjs.com/package/@plone/quanta)
-[![Build Status](https://app.readthedocs.org/projects/plone-quanta/badge/?version=latest)](https://plone-quanta.readthedocs.io/latest/)
+[![Build Status](https://app.readthedocs.org/projects/plone-quanta/badge/?version=latest)](https://plone-quanta.readthedocs.io/)
 
 The Quanta design system components for Plone Aurora.
 

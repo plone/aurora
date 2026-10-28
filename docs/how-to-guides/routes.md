@@ -154,6 +154,59 @@ config.registerRoute({
 });
 ```
 
+(content-resources)=
+
+## Answer a resource below a content path
+
+Some resources take the path of a content item in front of them, like the Plone REST API endpoints do, for example `/news/@blocks-schema`.
+React Router only allows a wildcard (`*`) at the end of a route path, so you can't register such a route.
+Instead, register a `contentResource` utility named after the resource.
+
+The root middleware checks every request for a path segment that starts with a single `@` and names a registered `contentResource` utility.
+The segment must come after at least one segment of content path.
+The first segment that matches is the resource.
+The middleware calls its utility with the following arguments, and answers the request with the `Response` that the utility returns, before it fetches the content.
+
+`request`
+:   The request.
+
+`path`
+:   The content path in front of the resource, for example `/news`.
+
+`subpath`
+:   What follows the resource, without its leading slash, for example `teaser` for `/news/@blocks-schema/teaser`.
+    It is `undefined` when nothing follows the resource.
+
+Requests that don't match continue as usual.
+
+Register the utility in your add-on's server configuration, {file}`config/server.ts`, so that its code isn't included in the browser bundle.
+
+```{code-block} ts
+:caption: packages/\<add-on-name>/config/server.ts
+import type { ConfigType } from '@plone/registry';
+
+export default function install(config: ConfigType) {
+  config.registerUtility({
+    type: 'contentResource',
+    name: '@related-items',
+    method: async ({ request, path, subpath }) => {
+      // Fetch what the resource needs for the content at `path`.
+      return Response.json({ path, subpath });
+    },
+  });
+
+  return config;
+}
+```
+
+The middleware only handles the resource below a content path.
+For the resource without a content path, like `/@related-items`, register a regular resource route that calls the same code.
+The `@blocks-schema` endpoint of `@plone/cmsui` follows this pattern.
+It registers routes for `/@blocks-schema` and `/@blocks-schema/:blockId` in {file}`config/routes.ts`, and a `contentResource` utility for `/<path>/@blocks-schema` in {file}`config/server.ts`.
+
+The utility runs before the content is fetched, so the content, site, and user contexts are not set.
+The utility must authenticate the request and request what it needs itself.
+
 ## Define a Plone Aurora core add-on route
 
 The following example comes from the `@plone/cmsui` add-on.

@@ -169,6 +169,27 @@ export default function install(config: ConfigType) {
       },
     ],
   });
+  // The blocks of the site, with their docs and schemas, for agents.
+  config.registerRoute({
+    type: 'prefix',
+    path: '@blocks-schema',
+    children: [
+      {
+        type: 'index',
+        file: '@plone/cmsui/routes/blocksSchema.tsx',
+        options: {
+          id: 'index-blocks-schema',
+        },
+      },
+      {
+        type: 'route',
+        path: ':blockId',
+        file: '@plone/cmsui/routes/blocksSchema.tsx',
+      },
+    ],
+  });
+  // `/<path>/@blocks-schema[/<blockId>]` is a `contentResource` utility,
+  // registered in `config/server.ts`.
 
   return config;
 }
