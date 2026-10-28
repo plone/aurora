@@ -7,6 +7,7 @@ import { createAddonsServerLoader } from '@plone/registry/create-addons-loader-s
 import { createThemeAddonsLoader } from '@plone/registry/create-theme-loader';
 import { createAddonsStyleLoader } from '@plone/registry/create-addons-styles-loader';
 import { createAddonsLocalesLoader } from '@plone/registry/create-addons-locales-loader';
+import { createPlatePluginsLoaders } from '@plone/registry/create-plate-plugins-loader';
 import { pathToFileURL } from 'node:url';
 
 const titleCase = (w) => w.slice(0, 1).toUpperCase() + w.slice(1, w.length);
@@ -153,6 +154,10 @@ export const PloneRegistryVitePlugin = () => {
   createViteLoader(getAddonViteExtenders(registry));
   createAddonsStyleLoader(registry);
   createAddonsLocalesLoader(registry);
+  // The `config/plate-editor` and `config/plate-renderer` modules of the
+  // add-ons, in add-on order. Only the page editor and renderer presets
+  // import these loaders.
+  const platePluginsLoaders = createPlatePluginsLoaders(registry);
 
   const [addonsThemeLoaderVariablesPath, addonsThemeLoaderMainPath] =
     createThemeAddonsLoader(registry.getCustomThemeAddons());
@@ -206,6 +211,14 @@ export const PloneRegistryVitePlugin = () => {
             {
               find: '@plone/registry/addons-loader',
               replacement: addonsLoaderPath,
+            },
+            {
+              find: '@plone/registry/plate-editor',
+              replacement: platePluginsLoaders.editor,
+            },
+            {
+              find: '@plone/registry/plate-renderer',
+              replacement: platePluginsLoaders.renderer,
             },
           ],
         },
