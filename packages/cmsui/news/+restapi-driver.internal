@@ -1,0 +1,1 @@
+The content types control panel's resource routes call `@plone/controlpanels`' plone.restapi driver on the server, instead of translating plone.restapi's payloads themselves. @sneridagh

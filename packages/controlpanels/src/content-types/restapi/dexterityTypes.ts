@@ -1,19 +1,19 @@
-import {
-  isCustomField,
-  type AllowedContents,
-  type BehaviorInfo,
-  type ContentTypeChanges,
-  type ContentTypeSettings,
-  type ContentTypeSummary,
-  type FieldType,
-  type TypeSchema,
-} from '@plone/controlpanels';
+import { isCustomField } from '../schemaEditing';
+import type {
+  AllowedContents,
+  BehaviorInfo,
+  ContentTypeChanges,
+  ContentTypeSettings,
+  ContentTypeSummary,
+  FieldType,
+  TypeSchema,
+} from '../types';
 
-// The content types control panel works with its own model
-// (`@plone/controlpanels`). On a backend without `@content-types`
-// (plone/plone.restapi#2061), the Aurora driver reads and writes types through
-// `@controlpanels/dexterity-types`, and these helpers translate its payloads.
-// `contentTypesApi.ts` translates the payloads of `@content-types`.
+// The payloads of `@controlpanels/dexterity-types` and `@types`, which every
+// plone.restapi has, translated to and from the control panel's model.
+// `createRestApiDriver` uses them on backends without `@content-types`
+// (plone/plone.restapi#2061). `contentTypesService.ts` translates the
+// payloads of `@content-types`.
 
 /** An item of the `@controlpanels/dexterity-types` listing. */
 export interface DexterityTypesItem {
@@ -46,18 +46,18 @@ export function toContentTypeSummary(
   };
 }
 
-/** The message of a content API error, for the UI. */
+/**
+ * The message of a plone.restapi error, for the UI: from the body, as
+ * `@plone/client` (`data`) or superagent (`response.body`) give it.
+ */
 export function errorMessage(error: unknown, fallback: string): string {
   const failure = error as {
     data?: { message?: string; error?: { message?: string } };
+    response?: { body?: { message?: string; error?: { message?: string } } };
     message?: string;
   };
-  return (
-    failure?.data?.message ||
-    failure?.data?.error?.message ||
-    failure?.message ||
-    fallback
-  );
+  const body = failure?.data ?? failure?.response?.body;
+  return body?.message || body?.error?.message || failure?.message || fallback;
 }
 
 /** `GET @controlpanels/dexterity-types/{type}`: the overview form of a type. */
