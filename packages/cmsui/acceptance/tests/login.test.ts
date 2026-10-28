@@ -33,12 +33,15 @@ test.describe('Login Route Tests', () => {
     await expect(page.getByLabel('username')).toBeVisible({ timeout: 10_000 });
     await page.getByLabel('username').fill(user);
     await page.getByLabel('password').fill('wrong-password');
+    const formBox = await page.locator('form').boundingBox();
     await page.getByRole('button', { name: /sign in/i }).click();
 
     await expect(page.getByRole('alert')).toHaveText(
       'Wrong login and/or password.',
     );
     expect(await cookieExists(page)).toBe(false);
+    // Showing the error must not move the form.
+    expect(await page.locator('form').boundingBox()).toEqual(formBox);
 
     await page.getByLabel('password').fill(password);
     await page.getByRole('button', { name: /sign in/i }).click();
