@@ -25,6 +25,28 @@ test.describe('Login Route Tests', () => {
     await expect.poll(() => cookieExists(page)).toBe(true);
   });
 
+  test('As registered user I can login after a failed attempt', async ({
+    page,
+  }) => {
+    const [user, password] = ploneAuth;
+
+    await expect(page.getByLabel('username')).toBeVisible({ timeout: 10_000 });
+    await page.getByLabel('username').fill(user);
+    await page.getByLabel('password').fill('wrong-password');
+    await page.getByRole('button', { name: /sign in/i }).click();
+
+    await expect(page.getByLabel('password')).toHaveAttribute(
+      'aria-invalid',
+      'true',
+    );
+    expect(await cookieExists(page)).toBe(false);
+
+    await page.getByLabel('password').fill(password);
+    await page.getByRole('button', { name: /sign in/i }).click();
+
+    await expect.poll(() => cookieExists(page)).toBe(true);
+  });
+
   test('As a registered user I can logout', async ({ page }) => {
     const [user, password] = ploneAuth;
 

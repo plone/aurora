@@ -9,6 +9,7 @@ import {
   useLocation,
   type MetaFunction,
 } from 'react-router';
+import { useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 import {
   ploneClientContext,
@@ -97,6 +98,13 @@ export default function Login() {
     LoginErrorResponse | undefined;
   const location = useLocation();
   const { t } = useTranslation();
+  // An invalid field blocks native form submission, so the server error is
+  // dropped as soon as the user edits the password, letting them retry.
+  const [dismissedResult, setDismissedResult] = useState<LoginErrorResponse>();
+  const loginError =
+    actionResult?.status === 401 && actionResult !== dismissedResult
+      ? actionResult.data.error.message
+      : undefined;
 
   return (
     <main
@@ -151,12 +159,9 @@ export default function Login() {
                     type="password"
                     autoComplete="current-password"
                     isRequired
-                    isInvalid={actionResult?.status === 401 ? true : undefined}
-                    errorMessage={
-                      actionResult?.status === 401
-                        ? actionResult?.data?.error.message
-                        : undefined
-                    }
+                    isInvalid={loginError ? true : undefined}
+                    errorMessage={loginError}
+                    onChange={() => setDismissedResult(actionResult)}
                   />
                   <span className="text-sm text-quanta-iron">
                     <Trans
