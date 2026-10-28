@@ -119,3 +119,59 @@ return <Component {...props} />;
 
 This will explicitly use the `Teaser` component if one is registered with the matching content type as a dependency.
 Otherwise, the `config.getComponent(...).component` call returns `undefined` and the manual fallback returns the `Teaser` component that was registered without dependencies.
+
+## Typed components
+
+You can declare the props of the components you register, so `config.getComponent` returns them typed, and the type check fails when an override doesn't take their props.
+See {ref}`type-registered-components-label`.
+
+(aurora-registered-components-label)=
+
+## Components registered by Plone Aurora
+
+```{versionadded} 1.0.0-alpha.20
+The `@plone/components` components in the component registry.
+```
+
+`@plone/layout` registers the components of `@plone/components` that Plone Aurora renders.
+Plone Aurora's packages retrieve them from the component registry, instead of importing them from `@plone/components`, so you can override them from your add-on.
+
+| Name          | Component from `@plone/components` |
+| ------------- | ---------------------------------- |
+| `Breadcrumb`  | `Breadcrumb`                       |
+| `Breadcrumbs` | `Breadcrumbs`                      |
+| `Button`      | `Button`                           |
+| `Container`   | `Container`                        |
+| `Link`        | `Link`                             |
+| `MenuItem`    | `MenuItem`                         |
+| `MenuTrigger` | `MenuTrigger`                      |
+
+For example, to render your own links everywhere Plone Aurora renders a `Link`, register your component under the `Link` name.
+
+```tsx
+import type { ComponentProps } from 'react';
+import type { ConfigType } from '@plone/registry';
+import { Link } from '@plone/components';
+
+const MyLink = (props: ComponentProps<typeof Link>) => (
+  <Link {...props} className="my-link" />
+);
+
+export default function install(config: ConfigType) {
+  config.registerComponent({ name: 'Link', component: MyLink });
+
+  return config;
+}
+```
+
+`@plone/layout` declares the props of these components, so your component must take the props of the one it overrides.
+See {ref}`type-registered-components-label`.
+
+If your add-on's tests render Plone Aurora components that use them, install them in your test setup.
+
+```ts
+import config from '@plone/registry';
+import installComponents from '@plone/layout/config/components';
+
+installComponents(config);
+```
