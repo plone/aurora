@@ -6,6 +6,7 @@ import {
 } from 'react-router';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { requireAuthCookie } from '@plone/react-router';
+import type PloneClient from '@plone/client';
 import type {
   ContentTypeChanges,
   NewContentType,
@@ -22,6 +23,20 @@ import {
   toFieldTypes,
   toTypeSchemaPut,
 } from '../../helpers/contentTypes';
+import {
+  toContentTypePatch,
+  toSettings,
+  toSummary,
+  toWorkflowInfo,
+  type ContentTypeResponse,
+  type ContentTypesBackend,
+  type WorkflowResponse,
+} from '../../helpers/contentTypesApi';
+import {
+  backendGet,
+  backendSend,
+  contentTypesBackend,
+} from '../../helpers/contentTypesBackend';
 
 const json = (body: unknown, status = 200) =>
   data(body, { status, headers: { 'Content-Type': 'application/json' } });
@@ -42,12 +57,16 @@ const parse = (splat: string | undefined) => {
  * The content types control panel's data, for the Aurora driver.
  *
  * `GET /@content-types` lists the types, `GET /@content-types/{type}` returns
- * one type's settings and `GET /@content-types/{type}/schema` its schema.
- * `GET /@content-types/@field-types` lists the kinds of fields (type names
- * can't start with `@`). Until plone.restapi has `@content-types`
- * (plone/plone.restapi#2061), this reads and writes
- * `@controlpanels/dexterity-types` and `@types`, and translates their
- * payloads.
+ * one type's settings and `GET /@content-types/{type}/schema` its schema
+ * (with `?behaviors=`, the schema it would have with them).
+ * `GET /@content-types/@field-types`, `@behaviors` and `@workflows` list the
+ * kinds of fields, the behaviors and the workflows (type names can't start
+ * with `@`).
+ *
+ * On a backend with `@content-types` (plone/plone.restapi#2061), these call
+ * it and `@behaviors` and `@workflows`. Otherwise they read and write
+ * `@controlpanels/dexterity-types` and `@types`. Either way, they translate
+ * the payloads to the control panel's model.
  */
 export async function loader({
   params,
@@ -57,6 +76,11 @@ export async function loader({
   await requireAuthCookie(request);
   const cli = context.get(ploneClientContext);
   const { type, part } = parse(params['*']);
+  const backend = await contentTypesBackend(cli);
+
+  if (backend.contentTypes && type !== '@field-types') {
+    return loadFromContentTypes(cli, backend, type, part, request);
+  }
 
   if (type === '@field-types') {
     try {
@@ -140,6 +164,13 @@ export async function action({
   const cli = context.get(ploneClientContext);
   const { type, part } = parse(params['*']);
 
+  if (
+    request.method !== 'PUT' &&
+    (await contentTypesBackend(cli)).contentTypes
+  ) {
+    return actOnContentTypes(cli, type, part, request);
+  }
+
   if (request.method === 'PUT' && type && part === 'schema') {
     const schema = (await request.json()) as TypeSchema;
     try {
@@ -209,6 +240,163 @@ export async function action({
   if (request.method === 'DELETE' && type) {
     try {
       await cli.deleteControlpanel({ path: `dexterity-types/${type}` });
+      return json({ id: type });
+    } catch (error) {
+      return failure(error, "The type couldn't be deleted");
+    }
+  }
+
+  return json({ message: 'Method not allowed' }, 405);
+}
+
+const typePath = (type: string) =>
+  `/@content-types/${encodeURIComponent(type)}`;
+
+/**
+ * `GET` on a backend with `@content-types`, `@behaviors` and `@workflows`
+ * (plone/plone.restapi#2061). `GET /@content-types/@workflows` returns every
+ * workflow in full, and the site default.
+ */
+async function loadFromContentTypes(
+  cli: PloneClient,
+  backend: ContentTypesBackend,
+  type: string,
+  part: string,
+  request: Request,
+) {
+  if (type === '@workflows') {
+    try {
+      const listing = await backendGet<{
+        default: string | null;
+        items: Array<{ id: string }>;
+      }>(cli, '/@workflows');
+      const workflows = await Promise.all(
+        listing.items.map(({ id }) =>
+          backendGet<WorkflowResponse>(
+            cli,
+            `/@workflows/${encodeURIComponent(id)}`,
+          ),
+        ),
+      );
+      return json({
+        default: listing.default,
+        workflows: workflows.map(toWorkflowInfo),
+      });
+    } catch (error) {
+      return failure(error, "The workflows couldn't be loaded");
+    }
+  }
+
+  if (type === '@behaviors') {
+    try {
+      if (!backend.behaviors) return json([]);
+      const { items } = await backendGet<{ items: unknown[] }>(
+        cli,
+        '/@behaviors',
+      );
+      return json(items);
+    } catch (error) {
+      return failure(error, "The behaviors couldn't be loaded");
+    }
+  }
+
+  if (type && part === 'schema') {
+    // `?behaviors=` asks for the schema the type would have with them.
+    const behaviors = new URL(request.url).searchParams.get('behaviors');
+    try {
+      const schema = await backendGet<TypeSchema>(
+        cli,
+        `/@types/${encodeURIComponent(type)}`,
+        behaviors === null ? undefined : { behaviors },
+      );
+      return json(schema);
+    } catch (error) {
+      return failure(error, "The fields couldn't be loaded");
+    }
+  }
+
+  if (type) {
+    try {
+      return json(
+        toSettings(await backendGet<ContentTypeResponse>(cli, typePath(type))),
+      );
+    } catch (error) {
+      return failure(error, "The type couldn't be loaded");
+    }
+  }
+
+  try {
+    const { items } = await backendGet<{ items: ContentTypeResponse[] }>(
+      cli,
+      '/@content-types',
+    );
+    return json({ items: items.map(toSummary) });
+  } catch (error) {
+    return failure(error, "The content types couldn't be loaded");
+  }
+}
+
+/**
+ * `POST`, `PATCH` and `DELETE` on a backend with `@content-types`.
+ * `POST /@content-types/{type}/workflow` passes its body on, for a dry run
+ * or a change.
+ */
+async function actOnContentTypes(
+  cli: PloneClient,
+  type: string,
+  part: string,
+  request: Request,
+) {
+  if (request.method === 'POST' && type && part === 'workflow') {
+    const body = await request.json();
+    try {
+      return json(
+        await backendSend(cli, 'post', `${typePath(type)}/workflow`, body),
+      );
+    } catch (error) {
+      return failure(error, "The workflow couldn't be changed");
+    }
+  }
+
+  if (request.method === 'POST' && !type) {
+    const body = (await request.json()) as NewContentType;
+    if (!body?.title) return json({ message: 'A title is required' }, 400);
+    try {
+      const created = await backendSend<ContentTypeResponse>(
+        cli,
+        'post',
+        '/@content-types',
+        {
+          title: body.title,
+          id: body.id,
+          description: body.description,
+          copy_from: body.copyFrom,
+        },
+      );
+      return json(toSummary(created), 201);
+    } catch (error) {
+      return failure(error, "The type couldn't be created");
+    }
+  }
+
+  if (request.method === 'PATCH' && type) {
+    const patch = toContentTypePatch(
+      (await request.json()) as ContentTypeChanges,
+    );
+    if (!Object.keys(patch).length) {
+      return json({ message: 'Nothing to change that can be saved' }, 400);
+    }
+    try {
+      await backendSend(cli, 'patch', typePath(type), patch);
+      return json({ id: type });
+    } catch (error) {
+      return failure(error, "The type couldn't be saved");
+    }
+  }
+
+  if (request.method === 'DELETE' && type) {
+    try {
+      await backendSend(cli, 'delete', typePath(type));
       return json({ id: type });
     } catch (error) {
       return failure(error, "The type couldn't be deleted");

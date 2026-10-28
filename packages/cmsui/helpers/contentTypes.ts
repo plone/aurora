@@ -10,9 +10,10 @@ import {
 } from '@plone/controlpanels';
 
 // The content types control panel works with its own model
-// (`@plone/controlpanels`). Until plone.restapi has `@content-types`
+// (`@plone/controlpanels`). On a backend without `@content-types`
 // (plone/plone.restapi#2061), the Aurora driver reads and writes types through
 // `@controlpanels/dexterity-types`, and these helpers translate its payloads.
+// `contentTypesApi.ts` translates the payloads of `@content-types`.
 
 /** An item of the `@controlpanels/dexterity-types` listing. */
 export interface DexterityTypesItem {
