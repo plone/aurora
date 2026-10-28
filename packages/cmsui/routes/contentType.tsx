@@ -1,9 +1,12 @@
 import {
   redirect,
+  useLoaderData,
   useParams,
   type LinksFunction,
   type LoaderFunctionArgs,
+  type RouterContextProvider,
 } from 'react-router';
+import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { requireAuthCookie } from '@plone/react-router';
 import {
   CONTENT_TYPES_BASE_PATH,
@@ -16,6 +19,8 @@ import { Container, Link } from '@plone/quanta';
 import toastStylesheet from '@plone/components/src/styles/basic/Toast.css?url';
 import Back from '@plone/icons/svg/arrow-left.svg?react';
 import ContentTypesProviders from '../components/ContentTypes/ContentTypesProviders';
+import { toCapabilities } from '../helpers/contentTypesApi';
+import { contentTypesBackend } from '../helpers/contentTypesBackend';
 
 const TABS: ContentTypeTab[] = [
   'settings',
@@ -29,13 +34,18 @@ export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: toastStylesheet },
 ];
 
-export async function loader({ params, request }: LoaderFunctionArgs) {
+export async function loader({
+  params,
+  request,
+  context,
+}: LoaderFunctionArgs<RouterContextProvider>) {
   await requireAuthCookie(request);
   const { type = '', tab } = params;
   if (!tab || !TABS.includes(tab as ContentTypeTab)) {
     throw redirect(contentTypeHref(CONTENT_TYPES_BASE_PATH, type));
   }
-  return null;
+  const backend = await contentTypesBackend(context.get(ploneClientContext));
+  return { capabilities: toCapabilities(backend) };
 }
 
 /**
@@ -44,6 +54,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
  */
 export default function ContentType() {
   const { type = '', tab } = useParams();
+  const { capabilities } = useLoaderData<typeof loader>();
   return (
     <main>
       <Plug pluggable="toolbar-top" id="button-back">
@@ -52,7 +63,7 @@ export default function ContentType() {
         </Link>
       </Plug>
       <Container width="default" className="route-controlpanel py-6">
-        <ContentTypesProviders>
+        <ContentTypesProviders capabilities={capabilities}>
           <ContentTypePage id={type} tab={tab as ContentTypeTab} />
         </ContentTypesProviders>
       </Container>

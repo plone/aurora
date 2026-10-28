@@ -42,8 +42,9 @@ export function chosenWorkflow(
 }
 
 /**
- * The rows of the mapping step: every state of the current workflow, with
- * its items and the state they move to, from `stateMap` or the suggestion.
+ * The rows of the mapping step: every state of the current workflow, in its
+ * order, with its items and the state they move to, from `stateMap` or the
+ * suggestion.
  */
 export function mappingRows(
   group: WorkflowChangeGroup,
@@ -54,7 +55,15 @@ export function mappingRows(
 ): MappingRow[] {
   const source = workflows.find((entry) => entry.id === group.workflow);
   const target = workflows.find((entry) => entry.id === workflow);
-  return group.states.map(({ state: id, count, suggested }) => {
+  // In the current workflow's order, whatever order the driver sends.
+  const position = (id: string) => {
+    const index = source?.states.findIndex((state) => state.id === id) ?? -1;
+    return index === -1 ? Infinity : index;
+  };
+  const states = [...group.states].sort(
+    (a, b) => position(a.state) - position(b.state),
+  );
+  return states.map(({ state: id, count, suggested }) => {
     const state = source?.states.find((entry) => entry.id === id);
     const chosen = stateMap[id] ?? suggested;
     const next = target?.states.find((entry) => entry.id === chosen);

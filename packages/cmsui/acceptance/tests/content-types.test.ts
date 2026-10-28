@@ -5,6 +5,19 @@ type Page = Parameters<typeof test>[0]['page'];
 
 const LIST = '/controlpanel/content-types';
 
+/**
+ * Whether the backend has `@content-types`, `@behaviors` and `@workflows`
+ * (plone/plone.restapi#2061). Only then do the list rows say which workflow
+ * a type uses. Needs a logged-in page.
+ */
+async function hasContentTypes(page: Page) {
+  const response = await page.request.get('/@content-types');
+  const { items } = (await response.json()) as {
+    items: Array<{ workflow?: unknown }>;
+  };
+  return items.some((item) => item.workflow);
+}
+
 test('As an anonymous visitor, I cannot open the content types control panel', async ({
   page,
 }) => {
@@ -27,12 +40,19 @@ test.describe('The content types control panel', () => {
     const event = page.getByRole('row', { name: /^Event/ });
     await expect(event).toBeVisible();
     await expect(page.getByRole('row', { name: /^Page/ })).toBeVisible();
-    // Without the capabilities plone.restapi doesn't have yet, there's no
-    // workflow column and no Addable switch.
-    await expect(
-      page.getByRole('columnheader', { name: 'Workflow' }),
-    ).toHaveCount(0);
-    await expect(page.getByRole('switch')).toHaveCount(0);
+    if (await hasContentTypes(page)) {
+      await expect(
+        page.getByRole('columnheader', { name: 'Workflow' }),
+      ).toBeVisible();
+      await expect(event).toContainText('Simple Publication Workflow');
+    } else {
+      // Without the capabilities released plone.restapi doesn't have yet,
+      // there's no workflow column and no Addable switch.
+      await expect(
+        page.getByRole('columnheader', { name: 'Workflow' }),
+      ).toHaveCount(0);
+      await expect(page.getByRole('switch')).toHaveCount(0);
+    }
   });
 
   test('opens a type from its row', async ({ page }) => {
@@ -98,7 +118,15 @@ test.describe('The content types control panel', () => {
   test("doesn't delete a type that has items", async ({ page }) => {
     await page.goto(LIST, { waitUntil: 'networkidle' });
 
-    // The acceptance site has two collections.
+    // The acceptance site has two collections, plone.restapi's test site
+    // none.
+    const { items } = (await (
+      await page.request.get('/@content-types')
+    ).json()) as { items: Array<{ id: string; count: number }> };
+    test.skip(
+      !items.find((item) => item.id === 'Collection')?.count,
+      'No collections on this site',
+    );
     await page.getByRole('button', { name: 'Actions for Collection' }).click();
     await page.getByRole('menuitem', { name: 'Delete…' }).click();
     const dialog = page.getByRole('alertdialog', {
@@ -152,6 +180,8 @@ test.describe("A content type's page", () => {
     await allowed.getByText('Only selected types').click();
     await page.getByRole('combobox', { name: 'Allowed types' }).fill('Imag');
     await page.getByRole('option', { name: 'Image' }).click();
+    // The list stays open to pick more, so close it.
+    await page.keyboard.press('Escape');
     await page.getByRole('button', { name: 'Save' }).click();
     await expect(page.getByText('Page saved')).toBeVisible();
 
@@ -194,6 +224,8 @@ test.describe("A content type's page", () => {
     page,
   }) => {
     await page.goto(`${LIST}/Link/settings`, { waitUntil: 'networkidle' });
+    // `@content-types` doesn't say which types are folderish yet.
+    test.skip(await hasContentTypes(page), 'The backend has @content-types');
 
     await expect(
       page.getByRole('heading', { level: 1, name: 'Link' }),
@@ -413,9 +445,18 @@ test.describe("A content type's behaviors", () => {
       .fill('related');
     await dialog.getByText('Related items', { exact: true }).click();
     await dialog.getByRole('button', { name: 'Add 2' }).click();
-    await expect(
-      page.getByRole('complementary', { name: 'Edit form preview' }),
-    ).toContainText('Fields from Lead Image, Related items show after saving.');
+    const preview = page.getByRole('complementary', {
+      name: 'Edit form preview',
+    });
+    if (await hasContentTypes(page)) {
+      // The backend previews the form with them.
+      await expect(preview).toContainText('Lead Image Caption');
+      await expect(preview).toContainText('Related Items');
+    } else {
+      await expect(preview).toContainText(
+        'Fields from Lead Image, Related items show after saving.',
+      );
+    }
     await save(page);
 
     await expect(
@@ -432,5 +473,124 @@ test.describe("A content type's behaviors", () => {
     await expect(
       formBehaviors(page).getByRole('row', { name: /Related items/ }),
     ).toHaveCount(0);
+  });
+});
+
+// What needs `@content-types`, `@behaviors` and `@workflows`
+// (plone/plone.restapi#2061). Released plone.restapi doesn't have them yet.
+test.describe('A content type, on a backend with @content-types', () => {
+  test.beforeEach(async ({ page }) => {
+    await login(page);
+    test.skip(!(await hasContentTypes(page)), 'Needs plone/plone.restapi#2061');
+  });
+
+  async function openNewType(page: Page, tab: string) {
+    const id = `trip_${Date.now()}`;
+    const response = await page.request.post('/@content-types', {
+      data: { title: 'Trip', id },
+    });
+    expect(response.ok()).toBe(true);
+    await page.goto(`${LIST}/${id}/${tab}`, { waitUntil: 'networkidle' });
+  }
+
+  async function save(page: Page, tab: string) {
+    const bar = page.getByRole('region', { name: 'Unsaved changes' });
+    await expect(bar).toContainText(`Unsaved changes in ${tab}`);
+    await bar.getByRole('button', { name: 'Save' }).click();
+    await expect(page.getByText('Trip saved')).toBeVisible();
+    await expect(bar).toHaveCount(0);
+  }
+
+  test('saves the visibility and versioning settings', async ({ page }) => {
+    await openNewType(page, 'settings');
+
+    await page.getByText('Show in search results', { exact: true }).click();
+    await page
+      .getByRole('radiogroup', { name: 'Versioning' })
+      .getByText('Automatic', { exact: true })
+      .click();
+    await save(page, 'Settings');
+
+    await page.reload({ waitUntil: 'networkidle' });
+    await expect(
+      page.getByRole('switch', { name: 'Show in search results' }),
+    ).not.toBeChecked();
+    await expect(page.getByRole('radio', { name: /^Automatic/ })).toBeChecked();
+  });
+
+  test('copies a type', async ({ page }) => {
+    await page.goto(LIST, { waitUntil: 'networkidle' });
+
+    await page.getByRole('button', { name: 'Add content type' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Add content type' });
+    const id = `event_copy_${Date.now()}`;
+    await dialog
+      .getByRole('textbox', { name: 'Name', exact: true })
+      .fill('Event copy');
+    await dialog.getByRole('textbox', { name: 'Short name' }).fill(id);
+    await dialog.getByText('A copy of an existing type').click();
+    await dialog.getByRole('button', { name: /Type to copy/ }).click();
+    await page.getByRole('option', { name: 'Event', exact: true }).click();
+    await dialog.getByRole('button', { name: 'Create and add fields' }).click();
+
+    await expect(page).toHaveURL(new RegExp(`/${id}/fields$`));
+    await page.goto(`${LIST}/${id}/behaviors`, { waitUntil: 'networkidle' });
+    await expect(
+      page
+        .getByRole('grid', { name: 'Add fields to the form' })
+        .getByRole('row', { name: /Event Basic/ }),
+    ).toBeVisible();
+  });
+
+  test('saves the order of the behaviors', async ({ page }) => {
+    await openNewType(page, 'behaviors');
+    const list = page.getByRole('grid', { name: 'Add fields to the form' });
+
+    await page.getByRole('button', { name: 'Add behaviors' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Add behaviors to Trip' });
+    await dialog
+      .getByRole('searchbox', { name: 'Search behaviors' })
+      .fill('lead');
+    await dialog.getByText('Lead Image', { exact: true }).click();
+    await dialog.getByRole('button', { name: 'Add 1' }).click();
+    // Alt + ↑ moves it above Dublin Core.
+    await list.getByRole('row', { name: /Lead Image/ }).focus();
+    await page.keyboard.press('Alt+ArrowUp');
+    await expect(list.getByRole('row').first()).toContainText('Lead Image');
+    await save(page, 'Behaviors');
+
+    await page.reload({ waitUntil: 'networkidle' });
+    await expect(list.getByRole('row').first()).toContainText('Lead Image');
+  });
+
+  test('changes the workflow', async ({ page }) => {
+    await openNewType(page, 'workflow');
+
+    await expect(
+      page.getByRole('heading', { name: 'Simple Publication Workflow' }),
+    ).toBeVisible();
+    await expect(page.getByText('Follows the site default')).toBeVisible();
+    await page.getByRole('button', { name: 'Change workflow…' }).click();
+    const dialog = page.getByRole('dialog', {
+      name: 'Change workflow for Trip',
+    });
+    await dialog
+      .getByText('Intranet/Extranet Workflow', { exact: true })
+      .click();
+    await dialog.getByRole('button', { name: 'Next: map states' }).click();
+    await expect(
+      dialog.getByRole('list', { name: 'Map states' }).getByRole('listitem'),
+    ).toHaveCount(3);
+    await dialog.getByRole('button', { name: 'Next: review' }).click();
+    await expect(dialog).toContainText(
+      'Trip will use Intranet/Extranet Workflow instead of Simple Publication Workflow.',
+    );
+    await dialog.getByRole('button', { name: 'Change workflow' }).click();
+
+    await expect(dialog).toHaveCount(0);
+    await expect(
+      page.getByRole('heading', { name: 'Intranet/Extranet Workflow' }),
+    ).toBeVisible();
+    await expect(page.getByText('Set for this type')).toBeVisible();
   });
 });
