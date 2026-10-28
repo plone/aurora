@@ -5,6 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import { getAuthFromRequest } from '@plone/react-router';
 import PloneClient from '@plone/client';
 import {
+  contentResourceMiddleware,
   fetchPloneContent,
   getAPIResourceWithAuth,
   getContentExpand,
@@ -12,6 +13,7 @@ import {
   isResourcePattern,
   installServerMiddleware,
   linkMiddleware,
+  matchContentResource,
   ploneClearAuthCookieContext,
   PloneClientMiddleware,
   otherResources,
@@ -1411,6 +1413,79 @@ describe('middleware', () => {
       expect(routeSkipsContent('/')).toBe(false);
       // A content item named `ok` is matched by the content route.
       expect(routeSkipsContent('folder/ok')).toBe(false);
+    });
+  });
+
+  describe('contentResourceMiddleware', () => {
+    const resource = vi.fn(async () => new Response('resource'));
+
+    beforeEach(() => {
+      config.registerUtility({
+        type: 'contentResource',
+        name: '@blocks-schema',
+        method: resource,
+      });
+    });
+
+    afterEach(() => {
+      resource.mockClear();
+      delete (config as any)._data.utilities.contentResource;
+    });
+
+    it('splits the content path from the resource', () => {
+      expect(matchContentResource('/news/2026/@blocks-schema')).toEqual({
+        method: resource,
+        path: '/news/2026',
+        subpath: undefined,
+      });
+      expect(matchContentResource('/news/@blocks-schema/teaser')).toEqual({
+        method: resource,
+        path: '/news',
+        subpath: 'teaser',
+      });
+    });
+
+    it('only matches registered resources below a content path', () => {
+      // Without a content path, it's a resource route.
+      expect(matchContentResource('/@blocks-schema')).toBeUndefined();
+      expect(matchContentResource('/@blocks-schema/teaser')).toBeUndefined();
+      expect(matchContentResource('/news/@other')).toBeUndefined();
+      expect(matchContentResource('/news/@@blocks-schema')).toBeUndefined();
+      expect(matchContentResource('/news/blocks-schema')).toBeUndefined();
+    });
+
+    it('answers with the resource', async () => {
+      const request = new Request(
+        'http://localhost/news/@blocks-schema/teaser',
+      );
+      const response = await contentResourceMiddleware(
+        {
+          request,
+          params: { '*': 'news/@blocks-schema/teaser' },
+          context: new RouterContextProvider(),
+        } as any,
+        vi.fn(),
+      );
+
+      expect(await (response as Response).text()).toBe('resource');
+      expect(resource).toHaveBeenCalledWith({
+        request,
+        path: '/news',
+        subpath: 'teaser',
+      });
+    });
+
+    it('lets other requests through', async () => {
+      const response = await contentResourceMiddleware(
+        {
+          request: new Request('http://localhost/news'),
+          params: { '*': 'news' },
+          context: new RouterContextProvider(),
+        } as any,
+        vi.fn(),
+      );
+      expect(response).toBeUndefined();
+      expect(resource).not.toHaveBeenCalled();
     });
   });
 });
