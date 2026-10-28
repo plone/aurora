@@ -24,6 +24,7 @@ describe('config/server', () => {
             match: '',
             expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'],
           },
+          { match: '', expand: ['translations'] },
           { match: '', expand: ['types'], authenticated: true },
         ],
       }),

@@ -18,6 +18,9 @@ import installMigrations from './server/migrations.server';
  */
 export const defaultApiExpanders: ContentExpander[] = [
   { match: '', expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'] },
+  // The page's translations, for the LanguageSwitcher to link to them. A
+  // site without plone.app.multilingual ignores it.
+  { match: '', expand: ['translations'] },
   { match: '', expand: ['types'], authenticated: true },
 ];
 

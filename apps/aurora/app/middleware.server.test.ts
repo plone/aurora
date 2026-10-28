@@ -683,12 +683,14 @@ describe('middleware', () => {
         'breadcrumbs',
         'navigation',
         'actions',
+        'translations',
       ]);
       expect(getContentExpand('/', true)).toEqual([
         'navroot',
         'breadcrumbs',
         'navigation',
         'actions',
+        'translations',
         'types',
       ]);
     });
@@ -831,7 +833,13 @@ describe('middleware', () => {
 
       expect(getContentMock).toHaveBeenCalledWith({
         path: '/',
-        expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'],
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'translations',
+        ],
       });
       expect(getSiteMock).toHaveBeenCalled();
       expect(context.get(ploneContentContext)).toEqual({
@@ -869,7 +877,13 @@ describe('middleware', () => {
 
       expect(getContentMock).toHaveBeenCalledWith({
         path: '/test-content',
-        expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'],
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'translations',
+        ],
       });
     });
 
@@ -1006,7 +1020,14 @@ describe('middleware', () => {
       expect(context.get(ploneUserContext)).toEqual(mockUser.data);
       expect(getContentMock).toHaveBeenCalledWith({
         path: '/',
-        expand: ['navroot', 'breadcrumbs', 'navigation', 'actions', 'types'],
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'translations',
+          'types',
+        ],
       });
     });
 
@@ -1045,7 +1066,14 @@ describe('middleware', () => {
 
       expect(getContentMock).toHaveBeenCalledWith({
         path: '/',
-        expand: ['navroot', 'breadcrumbs', 'navigation', 'actions', 'types'],
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'translations',
+          'types',
+        ],
       });
       expect(getSiteMock).toHaveBeenCalled();
       expect(getUserMock).toHaveBeenCalledWith({ id: 'testuser' });
@@ -1085,7 +1113,13 @@ describe('middleware', () => {
       expect(context.get(ploneUserContext)).toBeNull();
       expect(getContentMock).toHaveBeenCalledWith({
         path: '/',
-        expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'],
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'translations',
+        ],
       });
     });
 
@@ -1191,13 +1225,20 @@ describe('middleware', () => {
           'breadcrumbs',
           'navigation',
           'actions',
+          'translations',
           'types',
           'my-profile',
         ],
       });
       expect(anonymousContent).toHaveBeenCalledWith({
         path: '/',
-        expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'],
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'translations',
+        ],
       });
       expect(context.get(ploneContentContext)).toEqual({
         '@id': '/',
