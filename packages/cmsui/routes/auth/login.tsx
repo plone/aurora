@@ -9,8 +9,8 @@ import {
   useLocation,
   type MetaFunction,
 } from 'react-router';
-import { useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import { FormValidationContext } from 'react-aria-components';
 import {
   ploneClientContext,
   ploneContentContext,
@@ -98,13 +98,6 @@ export default function Login() {
     LoginErrorResponse | undefined;
   const location = useLocation();
   const { t } = useTranslation();
-  // An invalid field blocks native form submission, so the server error is
-  // dropped as soon as the user edits the password, letting them retry.
-  const [dismissedResult, setDismissedResult] = useState<LoginErrorResponse>();
-  const loginError =
-    actionResult?.status === 401 && actionResult !== dismissedResult
-      ? actionResult.data.error.message
-      : undefined;
 
   return (
     <main
@@ -153,16 +146,24 @@ export default function Login() {
                   isRequired
                 />
                 <div>
-                  <TextField
-                    label={t('cmsui.auth.password')}
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    isRequired
-                    isInvalid={loginError ? true : undefined}
-                    errorMessage={loginError}
-                    onChange={() => setDismissedResult(actionResult)}
-                  />
+                  {/* Unlike `isInvalid`, server errors passed as validation
+                      errors are cleared once the user edits the field, so
+                      they never block resubmitting the form. */}
+                  <FormValidationContext.Provider
+                    value={
+                      actionResult?.status === 401
+                        ? { password: actionResult.data.error.message }
+                        : {}
+                    }
+                  >
+                    <TextField
+                      label={t('cmsui.auth.password')}
+                      name="password"
+                      type="password"
+                      autoComplete="current-password"
+                      isRequired
+                    />
+                  </FormValidationContext.Provider>
                   <span className="text-sm text-quanta-iron">
                     <Trans
                       i18nKey="cmsui.auth.forgotPassword"
