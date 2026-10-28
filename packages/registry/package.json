@@ -38,7 +38,7 @@
     "bin",
     "README.md",
     "vite-plugin.*",
-    "plate-plugins.*"
+    "virtual"
   ],
   "bin": {
     "init-loaders": "./bin/init-loaders.js"
@@ -82,12 +82,12 @@
       "types": "./vite-plugin.d.ts"
     },
     "./plate-editor": {
-      "types": "./plate-plugins.d.ts",
-      "default": "./plate-plugins.js"
+      "types": "./virtual/plate-plugins.d.ts",
+      "default": "./virtual/plate-plugins.js"
     },
     "./plate-renderer": {
-      "types": "./plate-plugins.d.ts",
-      "default": "./plate-plugins.js"
+      "types": "./virtual/plate-plugins.d.ts",
+      "default": "./virtual/plate-plugins.js"
     },
     ".": {
       "import": "./dist/index.js",
