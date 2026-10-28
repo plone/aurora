@@ -50,7 +50,7 @@ interface BreadcrumbsProps<
 
   /**
    * Props for the navigation landmark.
-   * Default: <nav role="navigation">...</nav>
+   * Extends: <nav role="navigation">...</nav>
    */
   navigationLandmarkProps?: Record<string, any>;
 }
@@ -59,8 +59,12 @@ interface BreadcrumbsProps<
  * Breadcrumbs display a hierarchy of links to the current page or resource in an application.
  */
 export function Breadcrumbs<T extends Breadcrumb>(props: BreadcrumbsProps<T>) {
-  const { root, items, withNavigationLandmark, navigationLandmarkProps } =
-    props;
+  const {
+    root,
+    items,
+    withNavigationLandmark,
+    navigationLandmarkProps = {},
+  } = props;
   let itemsWithRoot: typeof items;
   if (root && items) {
     const rootItem = {

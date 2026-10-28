@@ -126,6 +126,26 @@ export const NavigationLandmarkWithRootAndIcons: Story = {
   args: {
     root: { '@id': '/', title: 'Home', icon: <HomeIcon size="sm" /> },
     withNavigationLandmark: true,
+    items: [
+      { '@id': '/folder', title: 'Folder', icon: <FolderIcon size="sm" /> },
+      { '@id': '/folder/page', title: 'Page', icon: <PageIcon size="sm" /> },
+    ],
+  },
+};
+
+export const NavigationLandmarkWithRootIconsAndCustomProps: Story = {
+  render: (args) => (
+    <Breadcrumbs {...args}>
+      {(item) => (
+        <Breadcrumb id={item['@id']} href={item['@id']}>
+          {item.title}
+        </Breadcrumb>
+      )}
+    </Breadcrumbs>
+  ),
+  args: {
+    root: { '@id': '/', title: 'Home', icon: <HomeIcon size="sm" /> },
+    withNavigationLandmark: true,
     navigationLandmarkProps: { style: { fontWeight: 'bold' } },
     items: [
       { '@id': '/folder', title: 'Folder', icon: <FolderIcon size="sm" /> },
