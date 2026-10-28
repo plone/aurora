@@ -208,7 +208,7 @@ export function createMockDriver(
       for (const id of request.types ?? []) {
         data.assignments.types[id] = {
           workflow: request.workflow,
-          followsDefault: false,
+          followsDefault: !!request.followDefault,
         };
       }
     }

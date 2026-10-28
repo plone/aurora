@@ -198,6 +198,11 @@ export interface WorkflowChangeRequest {
   /** The new workflow, or `null` for no workflow. */
   workflow: string | null;
   /**
+   * Make the types follow the site default again. `workflow` is then the
+   * site default.
+   */
+  followDefault?: boolean;
+  /**
    * The new state for each old state, per current workflow:
    * `{ [currentWorkflow]: { [oldState]: newState } }`. Types without a
    * workflow use `''` as the workflow and as their only state. States left
