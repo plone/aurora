@@ -15,7 +15,7 @@ Icons come from the [`@plone/icons`](../icons/README.md) package.
 
 You can find the self-documented Storybook in:
 
-https://plone-quanta.readthedocs.io/latest/
+https://plone-quanta.readthedocs.io/
 
 ## Installation
 
