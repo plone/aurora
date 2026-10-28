@@ -54,6 +54,10 @@
       "import": "./dist/addon-registry/create-addons-loader.js",
       "default": "./dist/addon-registry/create-addons-loader.cjs"
     },
+    "./create-blocks-docs-loader": {
+      "import": "./dist/addon-registry/create-blocks-docs-loader.js",
+      "default": "./dist/addon-registry/create-blocks-docs-loader.cjs"
+    },
     "./create-addons-loader-server": {
       "import": "./dist/addon-registry/create-addons-loader-server.js",
       "default": "./dist/addon-registry/create-addons-loader-server.cjs"
@@ -80,6 +84,10 @@
     },
     "./addons-loader": {
       "types": "./vite-plugin.d.ts"
+    },
+    "./blocks-docs": {
+      "types": "./virtual/blocks-docs.d.ts",
+      "default": "./virtual/blocks-docs.js"
     },
     "./plate-editor": {
       "types": "./virtual/plate-plugins.d.ts",

@@ -13,3 +13,4 @@ Each file must:
 | Import                                                           | File               |
 | ---------------------------------------------------------------- | ------------------ |
 | `@plone/registry/plate-editor`, `@plone/registry/plate-renderer` | `plate-plugins.js` |
+| `@plone/registry/blocks-docs`                                    | `blocks-docs.js`   |

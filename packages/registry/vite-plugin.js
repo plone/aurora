@@ -7,6 +7,7 @@ import { createAddonsServerLoader } from '@plone/registry/create-addons-loader-s
 import { createThemeAddonsLoader } from '@plone/registry/create-theme-loader';
 import { createAddonsStyleLoader } from '@plone/registry/create-addons-styles-loader';
 import { createAddonsLocalesLoader } from '@plone/registry/create-addons-locales-loader';
+import { createBlocksDocsLoader } from '@plone/registry/create-blocks-docs-loader';
 import { createPlatePluginsLoaders } from '@plone/registry/create-plate-plugins-loader';
 import { pathToFileURL } from 'node:url';
 
@@ -154,6 +155,14 @@ export const PloneRegistryVitePlugin = () => {
   createViteLoader(getAddonViteExtenders(registry));
   createAddonsStyleLoader(registry);
   createAddonsLocalesLoader(registry);
+  // The *.block.md files of the add-ons, in load order, so that an add-on
+  // loaded later replaces the docs of an earlier one. Only server code
+  // imports this module, for the @blocks-schema endpoint.
+  const blocksDocsLoaderPath = createBlocksDocsLoader(
+    registry.getAddons().map((addon) => addon.basePath ?? addon.modulePath),
+    { tempInProject: true },
+  );
+
   // The `config/plate-editor` and `config/plate-renderer` modules of the
   // add-ons, in add-on order. Only the page editor and renderer presets
   // import these loaders.
@@ -211,6 +220,10 @@ export const PloneRegistryVitePlugin = () => {
             {
               find: '@plone/registry/addons-loader',
               replacement: addonsLoaderPath,
+            },
+            {
+              find: '@plone/registry/blocks-docs',
+              replacement: blocksDocsLoaderPath,
             },
             {
               find: '@plone/registry/plate-editor',
