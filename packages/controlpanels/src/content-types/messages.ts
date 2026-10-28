@@ -1004,4 +1004,57 @@ export const messages = defineMessages({
     id: 'controlpanels.contentTypes.changeWorkflowConfirm',
     defaultMessage: 'Change workflow',
   },
+  siteDefaultWorkflow: {
+    id: 'controlpanels.contentTypes.siteDefaultWorkflow',
+    defaultMessage: 'The site default workflow',
+  },
+  typesCount: {
+    id: 'controlpanels.contentTypes.typesCount',
+    defaultMessage: '{count} types',
+  },
+  siteDefaultChanged: {
+    id: 'controlpanels.contentTypes.siteDefaultChanged',
+    defaultMessage: 'The site default workflow is now {workflow}.',
+  },
+  changeDefaultWorkflowTitle: {
+    id: 'controlpanels.contentTypes.changeDefaultWorkflowTitle',
+    defaultMessage: 'Change the site default workflow',
+  },
+  changeDefaultWorkflowSubtitle: {
+    id: 'controlpanels.contentTypes.changeDefaultWorkflowSubtitle',
+    defaultMessage: 'Currently {workflow} · followed by {types}',
+  },
+  noTypes: {
+    id: 'controlpanels.contentTypes.noTypes',
+    defaultMessage: 'no types',
+  },
+  mapGroup: {
+    id: 'controlpanels.contentTypes.mapGroup',
+    defaultMessage: 'Types using {workflow}',
+  },
+  mapGroupTitle: {
+    id: 'controlpanels.contentTypes.mapGroupTitle',
+    defaultMessage: '{workflow}: {types}',
+  },
+  reviewSiteDefault: {
+    id: 'controlpanels.contentTypes.reviewSiteDefault',
+    defaultMessage:
+      'The site default becomes {workflow} instead of {current}. The types that follow it change too: {types}. Types with a workflow of their own keep it.',
+  },
+  reviewIntroMany: {
+    id: 'controlpanels.contentTypes.reviewIntroMany',
+    defaultMessage: 'These types will use {workflow}: {types}.',
+  },
+  changeWorkflowBulk: {
+    id: 'controlpanels.contentTypes.changeWorkflowBulk',
+    defaultMessage: 'Change workflow…',
+  },
+  changeDefault: {
+    id: 'controlpanels.contentTypes.changeDefault',
+    defaultMessage: 'Change',
+  },
+  workflowChangedMany: {
+    id: 'controlpanels.contentTypes.workflowChangedMany',
+    defaultMessage: '{title} now use {workflow}.',
+  },
 });
