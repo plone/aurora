@@ -94,3 +94,7 @@ export {
   StateBadge,
   VISIBILITY_LABELS,
 } from './content-types/components/WorkflowTab/StateBadge';
+export {
+  CONTROLPANELS_SCOPE,
+  ControlPanelsScope,
+} from './provider/ControlPanelsScope';
