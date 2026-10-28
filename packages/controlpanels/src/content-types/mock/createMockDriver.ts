@@ -157,10 +157,18 @@ export function createMockDriver(
       groups.set(current, [...(groups.get(current) ?? []), id]);
     }
     return [...groups].map(([workflow, types]) => {
-      const source = findWorkflow(workflow);
-      const suggestions =
-        source && target ? suggestStateMapping(source, target) : {};
-      const states = source?.states.map((state) => state.id) ?? [''];
+      // Items without a workflow count as the least visible, as in
+      // plone.restapi.
+      const source = findWorkflow(workflow) ?? {
+        id: '',
+        title: '',
+        initialState: '',
+        scope: 'content' as const,
+        transitions: [],
+        states: [{ id: '', title: '', visibility: 'unknown' as const }],
+      };
+      const suggestions = target ? suggestStateMapping(source, target) : {};
+      const states = source.states.map((state) => state.id);
       return {
         workflow,
         types,

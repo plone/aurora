@@ -596,4 +596,79 @@ test.describe('A content type, on a backend with @content-types', () => {
     ).toBeVisible();
     await expect(page.getByText('Set for this type')).toBeVisible();
   });
+
+  test('changes the workflow of several types at once', async ({ page }) => {
+    const stamp = Date.now();
+    for (const title of ['Trip A', 'Trip B']) {
+      const response = await page.request.post('/@content-types', {
+        data: {
+          title,
+          id: `${title.replace(' ', '_').toLowerCase()}_${stamp}`,
+        },
+      });
+      expect(response.ok()).toBe(true);
+    }
+    await page.goto(LIST, { waitUntil: 'networkidle' });
+
+    for (const title of ['Trip A', 'Trip B']) {
+      await page
+        .getByRole('row', { name: new RegExp(`^${title}`) })
+        .getByRole('checkbox')
+        .check({ force: true });
+    }
+    await page.getByRole('button', { name: 'Change workflow…' }).click();
+    const dialog = page.getByRole('dialog', {
+      name: 'Change workflow for 2 types',
+    });
+    await dialog
+      .getByText('Intranet/Extranet Workflow', { exact: true })
+      .click();
+    await dialog.getByRole('button', { name: 'Next: map states' }).click();
+    await expect(
+      dialog.getByRole('list', { name: 'Map states' }),
+    ).toBeVisible();
+    await dialog.getByRole('button', { name: 'Next: review' }).click();
+    await expect(dialog).toContainText(
+      'These types will use Intranet/Extranet Workflow: Trip A, Trip B.',
+    );
+    await dialog
+      .getByRole('button', { name: 'Change workflow', exact: true })
+      .click();
+
+    await expect(dialog).toHaveCount(0);
+    for (const title of ['Trip A', 'Trip B']) {
+      await expect(
+        page.getByRole('row', { name: new RegExp(`^${title}`) }),
+      ).toContainText('Intranet/Extranet Workflow');
+    }
+  });
+
+  test('changes the site default workflow', async ({ page }) => {
+    await page.goto(LIST, { waitUntil: 'networkidle' });
+
+    await page
+      .getByRole('button', { name: 'Change the site default workflow' })
+      .click();
+    const dialog = page.getByRole('dialog', {
+      name: 'Change the site default workflow',
+    });
+    await dialog.getByText('Single State Workflow', { exact: true }).click();
+    await dialog.getByRole('button', { name: 'Next: map states' }).click();
+    await expect(
+      dialog.getByRole('list', { name: 'Map states' }),
+    ).toBeVisible();
+    await dialog.getByRole('button', { name: 'Next: review' }).click();
+    await expect(dialog).toContainText(
+      'The site default becomes Single State Workflow instead of Simple Publication Workflow.',
+    );
+    await dialog.getByRole('button', { name: /^Change workflow/ }).click();
+
+    await expect(dialog).toHaveCount(0);
+    await expect(
+      page.getByRole('region', { name: 'Site defaults' }),
+    ).toContainText('Single State Workflow');
+    await expect(page.getByRole('row', { name: /^Event/ })).toContainText(
+      'Single State Workflow',
+    );
+  });
 });

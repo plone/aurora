@@ -151,8 +151,15 @@ export function WorkflowTab({
         <ChangeWorkflowDialog
           isOpen={isChanging}
           onOpenChange={setIsChanging}
-          type={type}
-          count={count}
+          types={[
+            {
+              id: type.id,
+              title: type.title,
+              kind: type.kind,
+              count,
+              workflow: type.workflow,
+            },
+          ]}
           workflows={workflows}
           defaultWorkflow={defaultWorkflow}
           onChanged={onChanged}

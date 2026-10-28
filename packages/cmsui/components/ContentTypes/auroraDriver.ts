@@ -74,6 +74,20 @@ export function createAuroraDriver(
       `${typePath(type)}/workflow`,
       json(toWorkflowChangeBody(change, null, true)),
     );
+  // The site default, and with it the types that follow it.
+  const changeDefault = (
+    change: WorkflowChangeRequest,
+    current: string | null,
+    dryRun: boolean,
+  ) =>
+    request<WorkflowDryRunResponse & { types: string[]; changed: number }>(
+      `${API}/@workflows`,
+      json({
+        default: change.workflow,
+        state_map: change.stateMap?.[current ?? ''] ?? {},
+        dry_run: dryRun,
+      }),
+    );
 
   const driver: ContentTypesDriver = {
     capabilities,
@@ -143,6 +157,18 @@ export function createAuroraDriver(
     },
 
     previewWorkflowChange: async (change) => {
+      if (change.siteDefault) {
+        const response = await changeDefault(change, null, true);
+        return {
+          workflow: response.workflow,
+          groups: toWorkflowChangeGroups(
+            response.types.length
+              ? [{ type: response.types[0], response }]
+              : [],
+          ).map((group) => ({ ...group, types: response.types })),
+          unaffected: response.unaffected,
+        };
+      }
       const types = change.types ?? [];
       const runs = await Promise.all(
         types.map(async (type) => ({
@@ -162,8 +188,12 @@ export function createAuroraDriver(
 
     changeWorkflow: async (change) => {
       let changed = 0;
+      if (change.siteDefault) {
+        const { current } = await changeDefault(change, null, true);
+        changed = (await changeDefault(change, current, false)).changed ?? 0;
+      }
       // One type at a time, as the backend changes them.
-      for (const type of change.types ?? []) {
+      for (const type of change.siteDefault ? [] : (change.types ?? [])) {
         const { current } = await dryRun(type, change);
         const result = await request<{ changed: number }>(
           `${typePath(type)}/workflow`,

@@ -175,4 +175,111 @@ describe('ContentTypesList', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
     expect(await loaded()).toBeInTheDocument();
   });
+
+  describe('changing workflows', () => {
+    const driver = () => createMockDriver({ jobSteps: 1 });
+
+    it('changes the workflow of the selected types', async () => {
+      const { notify } = renderList(driver());
+      await loaded();
+      fireEvent.click(
+        within(row('Page')).getByRole('checkbox', { name: /Select/ }),
+      );
+      fireEvent.click(
+        within(row('News Item')).getByRole('checkbox', { name: /Select/ }),
+      );
+      fireEvent.click(screen.getByRole('button', { name: 'Change workflow…' }));
+
+      const dialog = within(
+        await screen.findByRole('dialog', {
+          name: 'Change workflow for 2 types',
+        }),
+      );
+      fireEvent.click(
+        dialog.getByRole('radio', { name: /Intranet\/Extranet Workflow/ }),
+      );
+      await act(async () => {
+        fireEvent.click(
+          dialog.getByRole('button', { name: 'Next: map states' }),
+        );
+      });
+      expect(
+        await dialog.findByRole('list', { name: 'Map states' }),
+      ).toBeInTheDocument();
+      fireEvent.click(dialog.getByRole('button', { name: 'Next: review' }));
+      expect(
+        dialog.getByText(
+          'These types will use Intranet/Extranet Workflow: Page, News Item.',
+        ),
+      ).toBeVisible();
+      await act(async () => {
+        fireEvent.click(
+          dialog.getByRole('button', { name: 'Change workflow for 3 items' }),
+        );
+      });
+
+      await waitFor(() =>
+        expect(notify).toHaveBeenCalledWith(
+          expect.objectContaining({
+            title: '2 types now use Intranet/Extranet Workflow.',
+          }),
+        ),
+      );
+      await waitFor(() =>
+        expect(row('News Item')).toHaveTextContent(
+          'Intranet/Extranet Workflow',
+        ),
+      );
+      expect(row('Event')).toHaveTextContent('Simple Publication Workflow');
+    });
+
+    it('changes the site default, and the types that follow it', async () => {
+      renderList(driver());
+      await loaded();
+      fireEvent.click(
+        screen.getByRole('button', {
+          name: 'Change the site default workflow',
+        }),
+      );
+      const dialog = within(
+        await screen.findByRole('dialog', {
+          name: 'Change the site default workflow',
+        }),
+      );
+      expect(
+        dialog.queryByRole('radio', { name: /Follow the site default/ }),
+      ).toBeNull();
+      expect(
+        dialog.getByRole('radio', { name: /^Simple Publication Workflow/ }),
+      ).toBeDisabled();
+      fireEvent.click(
+        dialog.getByRole('radio', { name: /^Single State Workflow/ }),
+      );
+      await act(async () => {
+        fireEvent.click(
+          dialog.getByRole('button', { name: 'Next: map states' }),
+        );
+      });
+      await dialog.findByRole('list', { name: 'Map states' });
+      fireEvent.click(dialog.getByRole('button', { name: 'Next: review' }));
+      expect(
+        dialog.getByText(/^The site default becomes Single State Workflow/),
+      ).toHaveTextContent('Collection, Page, Link, News Item, Event');
+      await act(async () => {
+        fireEvent.click(
+          dialog.getByRole('button', { name: /^Change workflow for/ }),
+        );
+      });
+
+      await waitFor(() =>
+        expect(
+          screen.getByRole('region', { name: 'Site defaults' }),
+        ).toHaveTextContent('Single State Workflow'),
+      );
+      // A type with a workflow of its own keeps it.
+      expect(row('Comment')).toHaveTextContent(
+        'Single State Workflow for comments',
+      );
+    });
+  });
 });
