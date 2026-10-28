@@ -130,21 +130,21 @@ See {ref}`type-registered-components-label`.
 ## Components registered by Plone Aurora
 
 ```{versionadded} 1.0.0-alpha.20
-The `@plone/components` components in the component registry.
+The {program}`@plone/components` components in the component registry.
 ```
 
-`@plone/layout` registers the components of `@plone/components` that Plone Aurora renders.
-Plone Aurora's packages retrieve them from the component registry, instead of importing them from `@plone/components`, so you can override them from your add-on.
+{program}`@plone/layout` registers the components of {program}`@plone/components` that Plone Aurora renders.
+Plone Aurora's packages retrieve them from the component registry, instead of importing them from {program}`@plone/components`, so you can override them from your add-on.
 
-| Name          | Component from `@plone/components` |
-| ------------- | ---------------------------------- |
-| `Breadcrumb`  | `Breadcrumb`                       |
-| `Breadcrumbs` | `Breadcrumbs`                      |
-| `Button`      | `Button`                           |
-| `Container`   | `Container`                        |
-| `Link`        | `Link`                             |
-| `MenuItem`    | `MenuItem`                         |
-| `MenuTrigger` | `MenuTrigger`                      |
+| Name          | Component from {program}`@plone/components` |
+| ------------- | ------------------------------------------- |
+| `Breadcrumb`  | `Breadcrumb`                                |
+| `Breadcrumbs` | `Breadcrumbs`                               |
+| `Button`      | `Button`                                    |
+| `Container`   | `Container`                                 |
+| `Link`        | `Link`                                      |
+| `MenuItem`    | `MenuItem`                                  |
+| `MenuTrigger` | `MenuTrigger`                               |
 
 For example, to render your own links everywhere Plone Aurora renders a `Link`, register your component under the `Link` name.
 
@@ -164,7 +164,7 @@ export default function install(config: ConfigType) {
 }
 ```
 
-`@plone/layout` declares the props of these components, so your component must take the props of the one it overrides.
+{program}`@plone/layout` declares the props of these components, so your component must take the props of the one it overrides.
 See {ref}`type-registered-components-label`.
 
 If your add-on's tests render Plone Aurora components that use them, install them in your test setup.

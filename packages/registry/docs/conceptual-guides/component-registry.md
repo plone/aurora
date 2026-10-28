@@ -21,6 +21,6 @@ Thus you can adapt the call, given an array of such dependencies.
 
 ## Typed components
 
-You can declare the props of the components you register in the `ComponentsPropsMap` interface of `@plone/types`.
+You can declare the props of the components you register in the `ComponentsPropsMap` interface of {program}`@plone/types`.
 Then `config.getComponent` returns them typed, and the type check fails when an override doesn't take their props.
 See {ref}`type-registered-components-label`.

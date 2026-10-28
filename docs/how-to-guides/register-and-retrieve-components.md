@@ -115,7 +115,7 @@ config.registerComponent({
 ## Type registered components
 
 By default, the component registry accepts any component under any name, and `config.getComponent` returns it as `ComponentType<any>`.
-To type a component, declare its props under its name in the `ComponentsPropsMap` interface of `@plone/types`.
+To type a component, declare its props under its name in the `ComponentsPropsMap` interface of {program}`@plone/types`.
 Then the registry types it by its name:
 
 -   `config.getComponent` returns the component typed with the declared props.
@@ -123,13 +123,13 @@ Then the registry types it by its name:
     This way, the type check fails when an add-on overrides the component with one that doesn't take its props.
 
 ```{versionadded} 1.0.0-alpha.20
-`ComponentsPropsMap`, `ComponentSignature`, and `RegisteredComponent` in `@plone/types`.
+`ComponentsPropsMap`, `ComponentSignature`, and `RegisteredComponent` in {program}`@plone/types`.
 ```
 
 
 ### Declare the props of a component
 
-Declare the props with a module augmentation of `@plone/types`, next to where you register the component.
+Declare the props with a module augmentation of {program}`@plone/types`, next to where you register the component.
 
 ```ts
 import type { ComponentProps } from 'react';

@@ -399,14 +399,14 @@ Plone Aurora now registers widgets for the fields with choices or a vocabulary, 
 These fields used to render as text inputs.
 See {ref}`core-widgets-label`.
 
-### Components from `@plone/components` are in the component registry
+### Components from {program}`@plone/components` are in the component registry
 
 ```{versionchanged} 1.0.0-alpha.20
 These steps apply when you upgrade an add-on from Plone Aurora 1.0.0-alpha.19 or earlier to 1.0.0-alpha.20 or later.
 ```
 
-`@plone/layout` registers the components of `@plone/components` that Plone Aurora renders, `Breadcrumb`, `Breadcrumbs`, `Button`, `Container`, `Link`, `MenuItem`, and `MenuTrigger`, in the component registry.
-Plone Aurora's packages retrieve them with `config.getComponent`, instead of importing them from `@plone/components`.
+{program}`@plone/layout` registers the components of {program}`@plone/components` that Plone Aurora renders, `Breadcrumb`, `Breadcrumbs`, `Button`, `Container`, `Link`, `MenuItem`, and `MenuTrigger`, in the component registry.
+Plone Aurora's packages retrieve them with `config.getComponent`, instead of importing them from {program}`@plone/components`.
 To customize them, register your component under the same name, instead of shadowing them.
 See {ref}`aurora-registered-components-label`.
 
@@ -418,10 +418,10 @@ The component registry types the components it accepts and returns with the prop
 ```
 
 ```{versionadded} 1.0.0-alpha.20
-`ComponentsPropsMap`, `ComponentSignature`, and `RegisteredComponent` in `@plone/types`.
+`ComponentsPropsMap`, `ComponentSignature`, and `RegisteredComponent` in {program}`@plone/types`.
 ```
 
-`@plone/layout` declares the props of the components it registers in `ComponentsPropsMap`.
+{program}`@plone/layout` declares the props of the components it registers in `ComponentsPropsMap`.
 If your add-on registers a component under one of these names, and your component requires props that the original doesn't get, the type check now fails.
 Type your component with the props of the original, for example `ComponentProps<typeof Link>`.
 
@@ -430,8 +430,8 @@ To type your own components, see {ref}`type-registered-components-label`.
 
 #### Install the components in your tests
 
-Plone Aurora's components retrieve the `@plone/components` components from the registry when they render.
-If your add-on's tests render them without installing `@plone/layout`, install the components in your test setup.
+Plone Aurora's components retrieve the {program}`@plone/components` components from the registry when they render.
+If your add-on's tests render them without installing {program}`@plone/layout`, install the components in your test setup.
 
 ```ts
 import config from '@plone/registry';
@@ -440,10 +440,10 @@ import installComponents from '@plone/layout/config/components';
 installComponents(config);
 ```
 
-#### `@plone/plate` doesn't depend on `@plone/components`
+#### {program}`@plone/plate` doesn't depend on {program}`@plone/components`
 
-`@plone/plate` renders its links with the `Link` component from the registry, and no longer lists `@plone/components` as a peer dependency.
-If your add-on renders `@plone/plate`'s editor or renderer without installing `@plone/layout`, register a `Link` component.
+{program}`@plone/plate` renders its links with the `Link` component from the registry, and no longer lists {program}`@plone/components` as a peer dependency.
+If your add-on renders {program}`@plone/plate`'s editor or renderer without installing {program}`@plone/layout`, register a `Link` component.
 
 ```ts
 import config from '@plone/registry';
