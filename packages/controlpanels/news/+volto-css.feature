@@ -1,0 +1,1 @@
+Ship `dist/controlpanels.css` for apps without Tailwind, such as Volto: the classes of the screens and of the Quanta components they render, with Tailwind's reset, scoped to `.plone-controlpanels` and without cascade layers. `ControlPanelsScope` sets the scope, and renders popovers, dialogs and sheets inside it. `pnpm build:css` builds it, and releases build it too. @sneridagh

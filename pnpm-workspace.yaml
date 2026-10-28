@@ -25,6 +25,7 @@ autoDedupe: true
 minimumReleaseAgeExcludePrune: true
 
 allowBuilds:
+  '@parcel/watcher': false
   '@swc/core': true
   '@tailwindcss/oxide': true
   esbuild: true
