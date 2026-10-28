@@ -38,7 +38,6 @@
     "bin",
     "README.md",
     "vite-plugin.*",
-    "blocks-docs.d.ts",
     "virtual"
   ],
   "bin": {
@@ -87,7 +86,8 @@
       "types": "./vite-plugin.d.ts"
     },
     "./blocks-docs": {
-      "types": "./blocks-docs.d.ts"
+      "types": "./virtual/blocks-docs.d.ts",
+      "default": "./virtual/blocks-docs.js"
     },
     "./plate-editor": {
       "types": "./virtual/plate-plugins.d.ts",
