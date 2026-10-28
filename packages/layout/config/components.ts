@@ -1,4 +1,7 @@
+import type { ComponentProps, ElementType, ReactNode } from 'react';
 import type { ConfigType } from '@plone/registry';
+import type { MenuItemProps } from 'react-aria-components';
+import type { ComponentSignature } from '@plone/types';
 import {
   Breadcrumb,
   Breadcrumbs,
@@ -7,7 +10,29 @@ import {
   Link,
   MenuItem,
   MenuTrigger,
+  type BreadcrumbsProps,
+  type ContainerProps,
 } from '@plone/components';
+
+// Generic components are declared by signature, so `getComponent` keeps their
+// type parameters.
+declare module '@plone/types' {
+  export interface ComponentsPropsMap {
+    Breadcrumb: ComponentProps<typeof Breadcrumb>;
+    Breadcrumbs: ComponentSignature<
+      <T extends Breadcrumb>(props: BreadcrumbsProps<T>) => ReactNode
+    >;
+    Button: ComponentProps<typeof Button>;
+    Container: ComponentSignature<
+      <T extends ElementType = 'div'>(props: ContainerProps<T>) => ReactNode
+    >;
+    Link: ComponentProps<typeof Link>;
+    MenuItem: ComponentSignature<
+      <T extends object>(props: MenuItemProps<T>) => ReactNode
+    >;
+    MenuTrigger: ComponentProps<typeof MenuTrigger>;
+  }
+}
 
 export default function install(config: ConfigType) {
   config.registerComponent({ name: 'Breadcrumb', component: Breadcrumb });

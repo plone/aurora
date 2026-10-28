@@ -13,6 +13,7 @@ import type {
   UtilitiesConfig,
   ViewsConfig,
   WidgetsConfig,
+  RegisteredComponent,
   RegisteredWidgetProps,
   ReactRouterRouteEntry,
   WidgetKey,
@@ -34,8 +35,8 @@ export type ConfigData = {
   experimental?: ExperimentalConfig;
 };
 
-type GetComponentResult = {
-  component: React.ComponentType<any> | undefined;
+type GetComponentResult<Name extends string = string> = {
+  component: RegisteredComponent<Name> | undefined;
 };
 
 /**
@@ -201,9 +202,9 @@ class Config {
     this._data.utilities = utilities;
   }
 
-  getComponent(
-    options: { name: string; dependencies?: string[] | string } | string,
-  ): GetComponentResult {
+  getComponent<Name extends string>(
+    options: { name: Name; dependencies?: string[] | string } | Name,
+  ): GetComponentResult<Name> {
     if (typeof options === 'object') {
       const { name, dependencies = '' } = options;
       let depsString: string = '';
@@ -214,18 +215,20 @@ class Config {
       }
       const componentName = `${name}${depsString ? `|${depsString}` : ''}`;
 
-      return this._data.components[componentName] || {};
+      return (this._data.components[componentName] ||
+        {}) as GetComponentResult<Name>;
     } else {
       // Shortcut notation, accepting a lonely string as argument
       const componentName = options;
-      return this._data.components[componentName] || {};
+      return (this._data.components[componentName] ||
+        {}) as GetComponentResult<Name>;
     }
   }
 
-  registerComponent(options: {
-    name: string;
+  registerComponent<Name extends string>(options: {
+    name: Name;
     dependencies?: string[] | string;
-    component: React.ComponentType<any>;
+    component: RegisteredComponent<Name>;
   }) {
     const { name, component, dependencies = '' } = options;
     let depsString: string = '';
@@ -239,7 +242,11 @@ class Config {
       }
       const componentName = `${name}${depsString ? `|${depsString}` : ''}`;
 
-      this._data.components[componentName] = { component };
+      // The store is keyed by runtime names: `ComponentsPropsMap` only types
+      // the API around it.
+      this._data.components[componentName] = {
+        component: component as React.ComponentType<any>,
+      };
       // Try to set a displayName (useful for React dev tools) for the registered component
       // Only if it's a function and it's not set previously
       try {
