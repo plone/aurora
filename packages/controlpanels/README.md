@@ -90,6 +90,25 @@ export default function install(config: ConfigType) {
 
 Components get a state's color with `useStateColor()`, and code outside React with `stateColor(state, stateColors)`.
 
+## Styles in apps without Tailwind
+
+Aurora's Tailwind setup scans this package's source, so it needs nothing else.
+Apps without Tailwind, such as Volto, load the compiled stylesheet and wrap the screens in `ControlPanelsScope`:
+
+```jsx
+import '@plone/controlpanels/dist/controlpanels.css';
+import { ControlPanelsScope } from '@plone/controlpanels';
+
+<ControlPanelsScope>{/* the providers and a screen */}</ControlPanelsScope>;
+```
+
+The stylesheet has the classes of this package and of the Quanta components it renders, with Tailwind's reset.
+Every rule is scoped to `.plone-controlpanels`, without adding to its specificity, so it styles nothing else on the page.
+It has no cascade layers, so the app's own CSS can't win over it.
+`ControlPanelsScope` also renders popovers, dialogs and sheets inside the scope.
+
+`pnpm build:css` builds it, and releases build it too.
+
 ## Development
 
 ```sh

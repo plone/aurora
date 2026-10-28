@@ -32,9 +32,16 @@
   },
   "type": "module",
   "main": "src/index.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    "./dist/*.css": "./dist/*.css",
+    "./src/*": "./src/*",
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "test": "vitest",
     "check:ts": "tsc --project tsconfig.json",
+    "build:css": "node build-css.mjs",
     "storybook": "storybook dev -p 6007",
     "build-storybook": "storybook build",
     "dry-release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --dry-run",
@@ -59,12 +66,14 @@
     "@plone/icons": "workspace:*",
     "@plone/quanta": "workspace:*",
     "jotai": "^2.12.3",
+    "react-aria": "catalog:",
     "react-aria-components": "catalog:"
   },
   "devDependencies": {
     "@plone/theming": "workspace:*",
     "@storybook/addon-docs": "^10.4.0",
     "@storybook/react-vite": "^10.4.0",
+    "@tailwindcss/cli": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
@@ -73,6 +82,7 @@
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
     "jsdom": "^28.1.0",
+    "postcss": "^8.5.9",
     "release-it": "catalog:",
     "storybook": "^10.4.0",
     "tailwindcss": "catalog:",
