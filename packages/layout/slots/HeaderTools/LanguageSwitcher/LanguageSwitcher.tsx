@@ -1,7 +1,8 @@
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { langmap } from '@plone/helpers';
-import { Menu, MenuItem, MenuTrigger } from '@plone/components';
+import { Link, Menu, MenuItem, MenuTrigger } from '@plone/components';
+import { ChevrondownIcon } from '@plone/icons';
 import { Button } from 'react-aria-components';
 import type { RootLoader } from '@plone/aurora/app/root';
 
@@ -15,6 +16,12 @@ export const normalizeLang = (language: string): string => {
   }
   return language;
 };
+
+/**
+ * Up to this many languages, the switcher is a row of links; above it, a
+ * dropdown menu, as a longer row does not fit the header.
+ */
+export const LANGUAGE_SWITCHER_MENU_THRESHOLD = 3;
 
 type LanguageSelectorProps = {
   onClickAction?: () => void;
@@ -35,7 +42,7 @@ const LanguageSwitcher = (props: LanguageSelectorProps) => {
   const isMultilingual = site.features?.multilingual;
   const availableLanguages = site['plone.available_languages'] || [];
   // The active language, not the site default. The content language is
-  // given by the URL — the menu's own items target /<lang> roots — so
+  // given by the URL — the switcher's own links target /<lang> roots — so
   // derive it from the first path segment when that matches an available
   // language. The i18n locale is deliberately NOT used: it is the
   // interface-strings locale (Accept-Language/cookie detection, synced
@@ -46,53 +53,71 @@ const LanguageSwitcher = (props: LanguageSelectorProps) => {
     ? pathSegment
     : normalizeLang(site['plone.default_language'] || 'en');
 
-  return isMultilingual ? (
+  if (!isMultilingual) {
+    return null;
+  }
+
+  const languages = availableLanguages.map((lang: string) => ({
+    lang,
+    name: langmap[lang]?.nativeName,
+    label: t('layout.slots.headertools.languageSwitcher.switchTo', {
+      lang: langmap[lang]?.nativeName.toLowerCase(),
+    }),
+    isCurrent: normalizeLang(lang) === currentLang,
+  }));
+
+  if (languages.length <= LANGUAGE_SWITCHER_MENU_THRESHOLD) {
+    return (
+      <div className={clsx(styles['language-switcher'])}>
+        {languages.map(({ lang, name, label, isCurrent }) => (
+          <Link
+            aria-current={isCurrent ? 'true' : undefined}
+            aria-label={label}
+            className={clsx({ [styles.selected]: isCurrent })}
+            href={`/${lang}`}
+            onClick={props.onClickAction}
+            key={`language-switcher-${lang}`}
+          >
+            {name}
+          </Link>
+        ))}
+      </div>
+    );
+  }
+
+  return (
     <div className={clsx(styles['language-switcher'])}>
       <MenuTrigger placement="bottom end">
         <Button className={clsx(styles['language-switcher-trigger'])}>
           {langmap[currentLang]?.nativeName}
-          <svg
+          <ChevrondownIcon
             aria-hidden="true"
             className={styles.chevron}
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
-          >
-            <path
-              d="M2 4l4 4 4-4"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+            size="sm"
+          />
         </Button>
-        <Menu
-          className={clsx(styles['language-switcher-menu'])}
-          onAction={() => props.onClickAction?.()}
-        >
-          {availableLanguages.map((lang: string) => (
+        {/* The trigger names the current language. No selection mode on
+            the menu: in it, react-aria selects a link item instead of
+            following it. */}
+        <Menu className={clsx(styles['language-switcher-menu'])}>
+          {languages.map(({ lang, name, label, isCurrent }) => (
             <MenuItem
-              aria-label={t(
-                'layout.slots.headertools.languageSwitcher.switchTo',
-                {
-                  lang: langmap[lang]?.nativeName.toLowerCase(),
-                },
-              )}
+              id={lang}
+              aria-label={label}
+              onAction={props.onClickAction}
               className={clsx(styles['language-switcher-item'], {
-                [styles.selected]: normalizeLang(lang) === currentLang,
+                [styles.selected]: isCurrent,
               })}
               href={`/${lang}`}
               key={`language-switcher-${lang}`}
             >
-              {langmap[lang]?.nativeName}
+              {name}
             </MenuItem>
           ))}
         </Menu>
       </MenuTrigger>
     </div>
-  ) : null;
+  );
 };
 
 export default LanguageSwitcher;

@@ -2,6 +2,17 @@
   .language-switcher {
     display: flex;
     margin-right: 20px;
+
+    /* The row of links, up to three languages. */
+    .selected {
+      font-weight: bold;
+    }
+    a:not(:last-child):after {
+      margin-right: 5px;
+      margin-left: 5px;
+      content: '|';
+      font-weight: normal;
+    }
   }
 
   .language-switcher-trigger {
@@ -22,7 +33,11 @@
     color: var(--accent-color);
   }
 
-  .chevron {
+  /* Sized here, not by the icon's size utility, which a public theme
+     without Tailwind or the basic theme does not define. */
+  .language-switcher-trigger .chevron {
+    width: 1rem;
+    height: 1rem;
     flex-shrink: 0;
     transition: transform 0.15s ease;
   }
