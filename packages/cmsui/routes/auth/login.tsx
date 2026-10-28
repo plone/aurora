@@ -10,7 +10,6 @@ import {
   type MetaFunction,
 } from 'react-router';
 import { jwtDecode } from 'jwt-decode';
-import { FormValidationContext } from 'react-aria-components';
 import {
   ploneClientContext,
   ploneContentContext,
@@ -140,30 +139,26 @@ export default function Login() {
           <div className="mx-auto mt-11 w-full max-w-[360px]">
             <div className="bg-quanta-air">
               <Form className="space-y-6" method="post">
+                {/* The error is plain markup from the action data, not field
+                    validity, which would block submitting the form again. */}
+                {actionResult?.data?.error && (
+                  <p role="alert" className="text-sm text-quanta-candy">
+                    {actionResult.data.error.message}
+                  </p>
+                )}
                 <TextField
                   label={t('cmsui.auth.username')}
                   name="username"
                   isRequired
                 />
                 <div>
-                  {/* Unlike `isInvalid`, server errors passed as validation
-                      errors are cleared once the user edits the field, so
-                      they never block resubmitting the form. */}
-                  <FormValidationContext.Provider
-                    value={
-                      actionResult?.status === 401
-                        ? { password: actionResult.data.error.message }
-                        : {}
-                    }
-                  >
-                    <TextField
-                      label={t('cmsui.auth.password')}
-                      name="password"
-                      type="password"
-                      autoComplete="current-password"
-                      isRequired
-                    />
-                  </FormValidationContext.Provider>
+                  <TextField
+                    label={t('cmsui.auth.password')}
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    isRequired
+                  />
                   <span className="text-sm text-quanta-iron">
                     <Trans
                       i18nKey="cmsui.auth.forgotPassword"
