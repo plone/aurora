@@ -41,6 +41,7 @@ import type {
 import { useDriverData } from '../../useDriverData';
 import { AddContentTypeDialog } from '../AddContentTypeDialog/AddContentTypeDialog';
 import { DeleteContentTypesDialog } from '../DeleteContentTypesDialog/DeleteContentTypesDialog';
+import { ChangeWorkflowDialog } from '../WorkflowTab/ChangeWorkflowDialog';
 
 export interface ContentTypesListProps {
   /** Where the control panel lives. Type pages are below it. */
@@ -66,6 +67,8 @@ const TABS: Array<[ContentTypeTab, Message]> = [
 interface ListData {
   types: ContentTypeSummary[];
   workflows: WorkflowInfo[];
+  /** The site default workflow, when the driver knows it. */
+  defaultWorkflow?: string | null;
   siteDefaults?: SiteDefaults;
 }
 
@@ -85,16 +88,24 @@ export function ContentTypesList({
   const { capabilities } = driver;
 
   const load = useCallback(async (): Promise<ListData> => {
-    const [types, workflows, siteDefaults] = await Promise.all([
+    const [types, workflows, assignments, siteDefaults] = await Promise.all([
       driver.listTypes(),
       capabilities.workflows && driver.listWorkflows
         ? driver.listWorkflows()
         : Promise.resolve([]),
+      capabilities.workflows && driver.getWorkflowAssignments
+        ? driver.getWorkflowAssignments()
+        : Promise.resolve(undefined),
       capabilities.siteDefaults && driver.getSiteDefaults
         ? driver.getSiteDefaults()
         : Promise.resolve(undefined),
     ]);
-    return { types, workflows, siteDefaults };
+    return {
+      types,
+      workflows,
+      defaultWorkflow: siteDefaults?.workflow ?? assignments?.default,
+      siteDefaults,
+    };
   }, [driver, capabilities]);
   const { data, error, isLoading, reload, setData } = useDriverData(load);
 
@@ -103,6 +114,9 @@ export function ContentTypesList({
   const [selected, setSelected] = useState<Selection>(new Set());
   const [adding, setAdding] = useState<{ copyFrom?: string } | null>(null);
   const [deleting, setDeleting] = useState<ContentTypeSummary[]>([]);
+  const [changingWorkflow, setChangingWorkflow] = useState<
+    { types: ContentTypeSummary[] } | { siteDefault: true } | null
+  >(null);
 
   const types = data?.types ?? [];
   const workflowTitle = useMemo(() => {
@@ -173,7 +187,7 @@ export function ContentTypesList({
         </Button>
       </div>
 
-      {data?.siteDefaults && (
+      {(data?.siteDefaults || data?.defaultWorkflow !== undefined) && (
         <section
           aria-label={t(messages.siteDefaults)}
           className={`
@@ -182,23 +196,36 @@ export function ContentTypesList({
           `}
         >
           <span className="text-quanta-pigeon">{t(messages.siteDefaults)}</span>
-          <span>
-            {t(messages.defaultWorkflow, {
-              workflow: workflowTitle(data.siteDefaults.workflow),
-            })}
-          </span>
-          <span>
-            {t(messages.newTypesStart, {
-              addable: t(
-                data.siteDefaults.globalAllow
-                  ? messages.globallyAddable
-                  : messages.notGloballyAddable,
-              ),
-              versioning: t(
-                VERSIONING[data.siteDefaults.versioning],
-              ).toLowerCase(),
-            })}
-          </span>
+          {data.defaultWorkflow !== undefined && (
+            <span className="flex items-center gap-2">
+              {t(messages.defaultWorkflow, {
+                workflow: workflowTitle(data.defaultWorkflow),
+              })}
+              {capabilities.workflowChange && (
+                <Button
+                  size="S"
+                  aria-label={t(messages.changeDefaultWorkflowTitle)}
+                  onPress={() => setChangingWorkflow({ siteDefault: true })}
+                >
+                  {t(messages.changeDefault)}
+                </Button>
+              )}
+            </span>
+          )}
+          {data.siteDefaults && (
+            <span>
+              {t(messages.newTypesStart, {
+                addable: t(
+                  data.siteDefaults.globalAllow
+                    ? messages.globallyAddable
+                    : messages.notGloballyAddable,
+                ),
+                versioning: t(
+                  VERSIONING[data.siteDefaults.versioning],
+                ).toLowerCase(),
+              })}
+            </span>
+          )}
         </section>
       )}
 
@@ -239,6 +266,14 @@ export function ContentTypesList({
           `}
         >
           <span>{t(messages.selected, { count: selectedTypes.length })}</span>
+          {capabilities.workflowChange && (
+            <Button
+              size="S"
+              onPress={() => setChangingWorkflow({ types: selectedTypes })}
+            >
+              {t(messages.changeWorkflowBulk)}
+            </Button>
+          )}
           <Button size="S" onPress={() => setDeleting(selectedTypes)}>
             {t(messages.delete)}
           </Button>
@@ -413,6 +448,21 @@ export function ContentTypesList({
           navigate(contentTypeHref(basePath, type.id, 'fields'));
         }}
       />
+      {capabilities.workflowChange && (
+        <ChangeWorkflowDialog
+          isOpen={changingWorkflow !== null}
+          onOpenChange={(isOpen) => !isOpen && setChangingWorkflow(null)}
+          types={
+            changingWorkflow && 'types' in changingWorkflow
+              ? changingWorkflow.types
+              : types
+          }
+          siteDefault={!!changingWorkflow && 'siteDefault' in changingWorkflow}
+          workflows={data?.workflows ?? []}
+          defaultWorkflow={data?.defaultWorkflow ?? null}
+          onChanged={() => void reload()}
+        />
+      )}
       <DeleteContentTypesDialog
         types={deleting}
         onClose={() => setDeleting([])}
