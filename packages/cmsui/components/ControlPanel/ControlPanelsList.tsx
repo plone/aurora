@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { Link } from '@plone/components';
 import config from '@plone/registry';
 
 interface ControlPanel {
@@ -15,6 +14,7 @@ export const ControlPanelsList = ({
   controlpanels: ControlPanel[];
 }) => {
   const { t } = useTranslation();
+  const Link = config.getComponent('Link').component!;
   const addonsControlPanels: ControlPanel[] =
     config.settings.controlpanels || [];
 

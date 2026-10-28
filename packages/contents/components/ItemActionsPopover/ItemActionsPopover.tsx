@@ -1,5 +1,5 @@
 import { Button } from 'react-aria-components';
-import { Link } from '@plone/components';
+import config from '@plone/registry';
 import { Dialog, Popover, type PopoverProps } from '@plone/quanta';
 import EditIcon from '@plone/icons/svg/edit.svg?react';
 import EyeIcon from '@plone/icons/svg/eye.svg?react';
@@ -33,6 +33,7 @@ export function ItemActionsPopover({
   ...popoverProps
 }: Props) {
   const { t } = useTranslation();
+  const Link = config.getComponent('Link').component!;
 
   return (
     <Popover
