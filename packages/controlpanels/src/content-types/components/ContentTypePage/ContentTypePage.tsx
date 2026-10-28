@@ -39,6 +39,7 @@ import type {
   WorkflowInfo,
 } from '../../types';
 import { useDriverData } from '../../useDriverData';
+import { BehaviorsTab } from '../BehaviorsTab/BehaviorsTab';
 import { FieldsTab } from '../FieldsTab/FieldsTab';
 import { SettingsTab } from '../SettingsTab/SettingsTab';
 
@@ -333,17 +334,33 @@ function TypeEditor({
               </p>
             )}
           </TabPanel>
-          {TABS.filter(([id]) => id !== 'settings' && id !== 'fields').map(
-            ([id]) => (
-              <TabPanel key={id} id={id} className="pt-6">
-                <p className="text-sm text-quanta-pigeon">
-                  {type.kind === 'other'
-                    ? t(messages.notADexterityType, { title: type.title })
-                    : t(messages.comingLater)}
-                </p>
-              </TabPanel>
-            ),
-          )}
+          <TabPanel id="behaviors" className="pt-6">
+            {type.kind === 'other' ? (
+              <p className="text-sm text-quanta-pigeon">
+                {t(messages.notADexterityType, { title: type.title })}
+              </p>
+            ) : (
+              <BehaviorsTab
+                typeId={type.id}
+                title={type.title}
+                behaviors={data.behaviors}
+                schema={data.schema}
+                saved={type.behaviors}
+              />
+            )}
+          </TabPanel>
+          {TABS.filter(
+            ([id]) =>
+              id !== 'settings' && id !== 'fields' && id !== 'behaviors',
+          ).map(([id]) => (
+            <TabPanel key={id} id={id} className="pt-6">
+              <p className="text-sm text-quanta-pigeon">
+                {type.kind === 'other'
+                  ? t(messages.notADexterityType, { title: type.title })
+                  : t(messages.comingLater)}
+              </p>
+            </TabPanel>
+          ))}
         </Tabs>
 
         <SaveBar form={form} isSaving={isSaving} onSave={onSave} />

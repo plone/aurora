@@ -7,7 +7,8 @@ import type {
   WorkflowChangeJob,
   WorkflowChangeRequest,
 } from '../types';
-import { isCustomField } from '../schemaEditing';
+import { estimateFormPreview } from '../behaviorEditing';
+import { DEFAULT_BEHAVIOR_METADATA } from '../behaviorMetadata';
 import { toShortName } from '../shortName';
 import { suggestStateMapping } from '../workflow/suggestStateMapping';
 import { mockData } from './fixtures';
@@ -23,11 +24,6 @@ export interface MockDriverOptions {
   /** How many `getWorkflowChangeJob` calls a workflow change takes to finish. */
   jobSteps?: number;
 }
-
-/** Some fields come from behaviors registered under their interface name. */
-const BEHAVIOR_ALIASES: Record<string, string> = {
-  'plone.app.discussion.behavior.IAllowDiscussion': 'plone.allowdiscussion',
-};
 
 const clone = <T>(value: T): T => structuredClone(value);
 
@@ -86,6 +82,33 @@ export function createMockDriver(
     );
 
   const findType = (id: string) => data.types.find((type) => type.id === id);
+
+  // Every field the fixtures describe, to fill in the fields of a behavior
+  // a type didn't have.
+  const knownFields = Object.assign(
+    {},
+    ...Object.values(data.schemas).map((schema) => schema.properties),
+  ) as TypeSchema['properties'];
+
+  /**
+   * A stand-in for the backend's dry run: the type's schema with these
+   * behaviors, from what each behavior adds. It doesn't follow ordering hints.
+   */
+  const schemaWith = (id: string, behaviors: string[]): TypeSchema => {
+    const type = findType(id)!;
+    const { schema } = estimateFormPreview(behaviors, {
+      behaviors: data.behaviors,
+      schema: data.schemas[id] ?? emptySchema(type.title),
+      saved: type.behaviors,
+      metadata: DEFAULT_BEHAVIOR_METADATA,
+    });
+    for (const [name, field] of Object.entries(schema.properties)) {
+      if (knownFields[name] && field.title === name) {
+        schema.properties[name] = { ...knownFields[name] };
+      }
+    }
+    return schema;
+  };
   const findWorkflow = (id: string | null) =>
     data.workflows.find((workflow) => workflow.id === id);
   const assignment = (id: string) =>
@@ -235,6 +258,9 @@ export function createMockDriver(
     updateType: (id, changes) => {
       const type = findType(id);
       if (!type) return fail(`No type "${id}"`);
+      if (changes.behaviors && data.schemas[id]) {
+        data.schemas[id] = schemaWith(id, changes.behaviors);
+      }
       Object.assign(type, changes);
       return wait(undefined);
     },
@@ -277,22 +303,7 @@ export function createMockDriver(
     previewSchema: (id, behaviors) => {
       const type = findType(id);
       if (!type) return fail(`No type "${id}"`);
-      // A rough stand-in for the backend's dry run: keep the fields of the
-      // enabled behaviors and the custom ones, in the stored order.
-      const schema = clone(data.schemas[id] ?? emptySchema(type.title));
-      const enabled = new Set(behaviors);
-      const keep = (field: string) => {
-        const raw = schema.properties[field]?.behavior;
-        if (!raw || isCustomField(schema.properties[field])) return true;
-        return enabled.has(BEHAVIOR_ALIASES[raw] ?? raw);
-      };
-      schema.fieldsets = schema.fieldsets
-        .map((fieldset) => ({
-          ...fieldset,
-          fields: fieldset.fields.filter(keep),
-        }))
-        .filter((fieldset) => fieldset.fields.length > 0);
-      return wait(schema);
+      return wait(schemaWith(id, behaviors));
     },
 
     listFieldTypes: () => wait(data.fieldTypes),

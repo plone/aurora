@@ -1,5 +1,10 @@
-import { createContext, useCallback, useContext } from 'react';
+import { createContext, useCallback, useContext, useMemo } from 'react';
 import type { ReactNode } from 'react';
+import {
+  DEFAULT_BEHAVIOR_METADATA,
+  mergeBehaviorMetadata,
+  type BehaviorMetadataMap,
+} from './behaviorMetadata';
 import type {
   BehaviorInfo,
   ContentTypeChanges,
@@ -126,12 +131,23 @@ const StateColorsContext = createContext<
   Readonly<Record<string, StateColor>> | undefined
 >(undefined);
 
+const BehaviorMetadataContext = createContext<BehaviorMetadataMap>(
+  DEFAULT_BEHAVIOR_METADATA,
+);
+
 export function ContentTypesDriverProvider({
   driver,
+  behaviorMetadata,
   stateColors,
   children,
 }: {
   driver: ContentTypesDriver;
+  /**
+   * What the Behaviors tab knows about behaviors beyond what the backend
+   * says, merged over the defaults for the core behaviors. Frameworks pass
+   * what add-ons register, e.g. Aurora's `config.settings.behaviorMetadata`.
+   */
+  behaviorMetadata?: BehaviorMetadataMap;
   /**
    * The colors of workflow states, by state id, over every other source (see
    * `stateColor`). Frameworks pass what the site configures, e.g. Aurora's
@@ -140,13 +156,24 @@ export function ContentTypesDriverProvider({
   stateColors?: Readonly<Record<string, StateColor>>;
   children?: ReactNode;
 }) {
+  const metadata = useMemo(
+    () => mergeBehaviorMetadata(DEFAULT_BEHAVIOR_METADATA, behaviorMetadata),
+    [behaviorMetadata],
+  );
   return (
     <ContentTypesDriverContext.Provider value={driver}>
-      <StateColorsContext.Provider value={stateColors}>
-        {children}
-      </StateColorsContext.Provider>
+      <BehaviorMetadataContext.Provider value={metadata}>
+        <StateColorsContext.Provider value={stateColors}>
+          {children}
+        </StateColorsContext.Provider>
+      </BehaviorMetadataContext.Provider>
     </ContentTypesDriverContext.Provider>
   );
+}
+
+/** The behavior metadata of the closest `ContentTypesDriverProvider`. */
+export function useBehaviorMetadata(): BehaviorMetadataMap {
+  return useContext(BehaviorMetadataContext);
 }
 
 /**

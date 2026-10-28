@@ -16,6 +16,7 @@ import {
   type DexterityTypesItem,
   errorMessage,
   toContentTypeSettings,
+  toBehaviors,
   toContentTypeSummary,
   toDexterityTypePatch,
   toFieldTypes,
@@ -67,6 +68,23 @@ export async function loader({
       return json(toFieldTypes(vocabulary.items ?? []));
     } catch (error) {
       return failure(error, "The field types couldn't be loaded");
+    }
+  }
+
+  if (type === '@behaviors') {
+    try {
+      // Every type's overview form lists every behavior of the site.
+      const { data: listing } = await cli.getControlpanel({
+        id: 'dexterity-types',
+      });
+      const [first] = (listing.items ?? []) as unknown as DexterityTypesItem[];
+      if (!first) return json([]);
+      const { data: response } = await cli.getControlpanel({
+        id: `dexterity-types/${first.id}`,
+      });
+      return json(toBehaviors(response as unknown as DexterityTypeResponse));
+    } catch (error) {
+      return failure(error, "The behaviors couldn't be loaded");
     }
   }
 
@@ -164,11 +182,20 @@ export async function action({
 
   if (request.method === 'PATCH' && type) {
     const changes = (await request.json()) as ContentTypeChanges;
-    const patch = toDexterityTypePatch(changes);
-    if (!Object.keys(patch).length) {
-      return json({ message: 'Nothing to change that can be saved' }, 400);
-    }
     try {
+      let behaviors: string[] = [];
+      if (changes.behaviors) {
+        const { data: current } = await cli.getControlpanel({
+          id: `dexterity-types/${type}`,
+        });
+        behaviors = toBehaviors(
+          current as unknown as DexterityTypeResponse,
+        ).map((behavior) => behavior.name);
+      }
+      const patch = toDexterityTypePatch(changes, behaviors);
+      if (!Object.keys(patch).length) {
+        return json({ message: 'Nothing to change that can be saved' }, 400);
+      }
       await cli.updateControlpanel({
         path: `dexterity-types/${type}`,
         data: patch,
