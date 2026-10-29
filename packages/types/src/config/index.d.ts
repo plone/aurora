@@ -90,6 +90,7 @@ export {
   WidgetsConfig,
 };
 export * from './Blocks';
+export * from './Components';
 export * from './Settings';
 export * from './Slots';
 export * from './Utilities';

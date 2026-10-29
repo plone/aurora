@@ -1,7 +1,14 @@
-export { Breadcrumb, Breadcrumbs } from './components/Breadcrumbs/Breadcrumbs';
+export {
+  Breadcrumb,
+  Breadcrumbs,
+  type BreadcrumbsProps,
+} from './components/Breadcrumbs/Breadcrumbs';
 export { Button } from './components/Button/Button';
 export { Checkbox } from './components/Checkbox/Checkbox';
-export { Container } from './components/Container/Container';
+export {
+  Container,
+  type ContainerProps,
+} from './components/Container/Container';
 export { Link } from './components/Link/Link';
 export {
   Menu,
