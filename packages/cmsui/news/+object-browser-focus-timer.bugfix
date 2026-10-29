@@ -1,0 +1,1 @@
+Clear the object browser's pending focus timer when its listing unmounts or changes, so it no longer runs after the list is gone. @sneridagh

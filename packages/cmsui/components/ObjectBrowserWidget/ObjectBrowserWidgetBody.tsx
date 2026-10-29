@@ -44,12 +44,16 @@ export function ObjectBrowserWidgetBody() {
   const gridListRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (currentPath && !loading && items?.length && gridListRef.current) {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         const gridList = gridListRef.current?.querySelector('[role="row"]');
         if (gridList instanceof HTMLElement) {
           gridList.focus();
         }
       }, 400);
+      // A pending focus must not outlive the list: after an unmount (or a
+      // newer listing) it would focus a stale row, or run after the DOM is
+      // gone.
+      return () => clearTimeout(timer);
     }
   }, [currentPath, loading, items]);
 
