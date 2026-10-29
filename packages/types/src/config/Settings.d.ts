@@ -86,6 +86,8 @@ export interface SettingsConfig {
   openExternalLinkInNewTab: boolean;
   notSupportedBrowsers: string[];
   defaultPageSize: number;
+  /** Items per page in the Contents view (`@plone/contents`). Default: 10. */
+  contentsPageSize?: number;
   supportedLanguages: string[]; // TODO: Improve list of possible values
   navDepth: number;
   expressMiddleware: unknown;
