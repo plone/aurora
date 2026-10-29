@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.3 (2026-10-29)
+
+### Feature
+
+- Add a mixer icon as an SVG and React component. @sneridagh 
+
 ## 1.0.0-alpha.2 (2026-10-29)
 
 ### Feature
