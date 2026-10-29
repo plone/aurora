@@ -34,6 +34,7 @@ export function PersonalTools({ user, actions }: PersonalToolsProps) {
 
   return (
     <ToolbarMenu
+      mobileSheet
       icon={<UserIcon />}
       triggerLabel={t('layout.personalTools.label', {
         defaultValue: 'Personal tools',

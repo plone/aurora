@@ -34,6 +34,7 @@ import React, {
 import { type ComponentProps } from 'react';
 import { Button, DialogContext } from 'react-aria-components';
 import { Sheet } from '@plone/quanta';
+import sheetStyles from './ToolbarSheet.css?inline';
 import { createPortal } from 'react-dom';
 import { UNSAFE_PortalProvider } from 'react-aria';
 import { ArrowleftIcon } from '@plone/icons';
@@ -198,6 +199,7 @@ export function ToolbarMenu({
         </button>
         {createPortal(
           <UNSAFE_PortalProvider getContainer={() => document.body}>
+            <style>{sheetStyles}</style>
             {styles && <style>{styles}</style>}
             <DialogContext.Provider value={{ 'aria-label': triggerLabel }}>
               <Sheet
@@ -207,7 +209,16 @@ export function ToolbarMenu({
                 position="bottom"
                 overscrollPadding={false}
               >
-                <div className="toolbar-mobile-sheet-content">
+                <div
+                  className="toolbar-mobile-sheet-content"
+                  onClickCapture={(event) => {
+                    if (
+                      (event.target as Element).closest('a[role="menuitem"]')
+                    ) {
+                      onOpenChange(false);
+                    }
+                  }}
+                >
                   {children}
                   <button
                     type="button"

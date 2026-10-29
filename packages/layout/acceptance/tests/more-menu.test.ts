@@ -168,6 +168,9 @@ test('mobile toolbar keeps the other menus and CMS page accessible', async ({
   await page.goto('/news', { waitUntil: 'networkidle' });
   const toolbar = page.getByRole('navigation', { name: 'Toolbar' });
   await toolbar.getByRole('button', { name: 'Personal tools' }).click();
+  await expect(page.locator('.toolbar-mobile-sheet')).not.toHaveAttribute(
+    'data-entering',
+  );
   const personalMenu = page.getByRole('menu', { name: /personal tools/i });
   await expect(personalMenu).toBeVisible();
   const personalBounds = await personalMenu.boundingBox();

@@ -63,7 +63,26 @@ test('personal tools edit the profile, save preferences and log out', async ({
         ),
       )
       .toBe(true);
+    await page.keyboard.press('Escape');
+    await page.setViewportSize({ width: 375, height: 812 });
+    await toolbar.getByRole('button', { name: 'Personal tools' }).click();
+    await expect(page.locator('.toolbar-mobile-sheet')).not.toHaveAttribute(
+      'data-entering',
+    );
+    const mobileSheet = page.getByRole('dialog', { name: 'Personal tools' });
+    await expect(mobileSheet.locator('.personal-tools-portrait')).toBeVisible();
+    await expect
+      .poll(() =>
+        mobileSheet
+          .locator('.personal-tools-portrait')
+          .evaluate(
+            (image: HTMLImageElement) =>
+              image.complete && image.naturalWidth > 0,
+          ),
+      )
+      .toBe(true);
     await page.getByRole('menuitem', { name: 'Preferences' }).click();
+    await expect(mobileSheet).not.toBeVisible();
     await expect(
       page.getByRole('heading', { name: 'Personal preferences' }),
     ).toBeVisible();
@@ -77,6 +96,9 @@ test('personal tools edit the profile, save preferences and log out', async ({
     await page.reload();
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
     await toolbar.getByRole('button', { name: 'Personal tools' }).click();
+    await expect(page.locator('.toolbar-mobile-sheet')).not.toHaveAttribute(
+      'data-entering',
+    );
     await page.getByRole('menuitem', { name: 'Log out' }).click();
     await expect(page.getByRole('navigation', { name: 'Toolbar' })).toHaveCount(
       0,
@@ -112,4 +134,47 @@ test('personal tools are hidden while editing but available in control panels', 
   await expect(personalTools).toBeVisible();
   await page.goto('/controlpanel/site', { waitUntil: 'networkidle' });
   await expect(personalTools).toBeVisible();
+});
+
+test('personal tools use a dismissible mobile sheet and a desktop popover', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await login(page);
+  await page.goto('/controlpanel', { waitUntil: 'networkidle' });
+  const button = page
+    .getByRole('navigation', { name: 'Toolbar' })
+    .getByRole('button', { name: 'Personal tools' });
+  await button.click();
+  const sheet = page.getByRole('dialog', { name: 'Personal tools' });
+  await expect(sheet).toBeVisible();
+  await expect(page.locator('.toolbar-mobile-sheet')).not.toHaveAttribute(
+    'data-entering',
+  );
+  await expect(
+    sheet.getByRole('menuitem', { name: 'Profile' }),
+  ).toHaveAttribute('href', '/personal-information');
+  await expect(
+    sheet.getByRole('menuitem', { name: 'Preferences' }),
+  ).toBeVisible();
+  await expect(
+    sheet.getByRole('menuitem', { name: 'Site setup' }),
+  ).toBeVisible();
+  await expect(sheet.getByRole('menuitem', { name: 'Log out' })).toBeVisible();
+  await sheet.getByRole('button', { name: 'Close Personal tools' }).click();
+  await expect(sheet).not.toBeVisible();
+  await expect(button).toBeFocused();
+  await button.click();
+  await expect(sheet).toBeVisible();
+  await expect(page.locator('.toolbar-mobile-sheet')).not.toHaveAttribute(
+    'data-entering',
+  );
+  await page.keyboard.press('Escape');
+  await expect(sheet).not.toBeVisible();
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await button.click();
+  await expect(
+    page.getByRole('menu', { name: 'Personal tools' }),
+  ).toBeVisible();
+  await expect(page.locator('.toolbar-mobile-sheet')).toHaveCount(0);
 });
