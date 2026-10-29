@@ -3,7 +3,10 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import config from '@plone/registry';
-import LanguageSwitcher, { normalizeLang } from './LanguageSwitcher';
+import LanguageSwitcher, {
+  getTranslationPaths,
+  normalizeLang,
+} from './LanguageSwitcher';
 
 vi.mock('./LanguageSwitcher.module.css', () => ({
   default: {
@@ -18,10 +21,28 @@ vi.mock('./LanguageSwitcher.module.css', () => ({
 
 const MANY_LANGUAGES = ['en', 'sv', 'ja', 'ko', 'es', 'pt', 'pt-br', 'sk'];
 let availableLanguages = MANY_LANGUAGES;
+let content: Record<string, unknown> | undefined;
 
 beforeEach(() => {
   availableLanguages = MANY_LANGUAGES;
+  content = undefined;
 });
+
+// The `translations` expansion of /sv/some-page: its counterparts in
+// English and Brazilian Portuguese.
+const SOME_PAGE_TRANSLATIONS = {
+  '@id': '/sv/some-page',
+  '@components': {
+    translations: {
+      '@id': '/sv/some-page/@translations',
+      items: [
+        { '@id': '/en/a-page', language: 'en' },
+        { '@id': '/pt-br/uma-pagina', language: 'pt-br' },
+      ],
+      root: {},
+    },
+  },
+};
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -32,6 +53,7 @@ vi.mock('react-i18next', () => ({
 vi.mock('react-router', async (importOriginal) => ({
   ...(await importOriginal<typeof import('react-router')>()),
   useRouteLoaderData: () => ({
+    content,
     site: {
       features: { multilingual: true },
       'plone.available_languages': availableLanguages,
@@ -195,5 +217,73 @@ describe('LanguageSwitcher threshold', () => {
     } finally {
       delete config.settings.languageSwitcherMenuThreshold;
     }
+  });
+});
+
+describe('getTranslationPaths', () => {
+  test('maps each translation to its path, by the language of its root', () => {
+    expect(
+      getTranslationPaths(
+        SOME_PAGE_TRANSLATIONS['@components'].translations as any,
+      ),
+    ).toEqual({ en: '/en/a-page', 'pt-BR': '/pt-br/uma-pagina' });
+  });
+
+  test('is empty without translations', () => {
+    expect(getTranslationPaths(undefined)).toEqual({});
+  });
+
+  test('includes the current page, which the expansion leaves out', () => {
+    expect(
+      getTranslationPaths(
+        SOME_PAGE_TRANSLATIONS['@components'].translations as any,
+        '/sv/some-page',
+      ),
+    ).toEqual({
+      en: '/en/a-page',
+      'pt-BR': '/pt-br/uma-pagina',
+      sv: '/sv/some-page',
+    });
+  });
+
+  test('ignores a current page outside any language root', () => {
+    expect(getTranslationPaths(undefined, '/')).toEqual({ '': '/' });
+  });
+});
+
+describe('LanguageSwitcher links to the page translations', () => {
+  test('menu items link to the translation, or to the language root without one', () => {
+    content = SOME_PAGE_TRANSLATIONS;
+    renderAt('/sv/some-page');
+    fireEvent.click(trigger());
+    const hrefs = Object.fromEntries(
+      screen
+        .getAllByRole('menuitem')
+        .map((i) => [i.textContent, i.getAttribute('href')]),
+    );
+    expect(hrefs).toMatchObject({
+      English: '/en/a-page',
+      'Português (Brasil)': '/pt-br/uma-pagina',
+      Svenska: '/sv/some-page',
+      日本語: '/ja',
+    });
+  });
+
+  test('row links link to the translation, or to the language root without one', () => {
+    availableLanguages = ['en', 'sv', 'pt-br'];
+    content = {
+      '@id': '/sv/some-page',
+      '@components': {
+        translations: {
+          '@id': '/sv/some-page/@translations',
+          items: [{ '@id': '/en/a-page', language: 'en' }],
+          root: {},
+        },
+      },
+    };
+    renderAt('/sv/some-page');
+    expect(
+      screen.getAllByRole('link').map((l) => l.getAttribute('href')),
+    ).toEqual(['/en/a-page', '/sv/some-page', '/pt-br']);
   });
 });

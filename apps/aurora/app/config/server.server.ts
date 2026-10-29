@@ -17,7 +17,12 @@ import installMigrations from './server/migrations.server';
  * can add to, change, or remove them through `config.settings.apiExpanders`.
  */
 export const defaultApiExpanders: ContentExpander[] = [
-  { match: '', expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'] },
+  // `translations` gives the LanguageSwitcher the page's translations to
+  // link to; a site without plone.app.multilingual ignores it.
+  {
+    match: '',
+    expand: ['navroot', 'breadcrumbs', 'navigation', 'actions', 'translations'],
+  },
   { match: '', expand: ['types'], authenticated: true },
 ];
 
