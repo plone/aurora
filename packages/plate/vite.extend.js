@@ -77,6 +77,7 @@ export default function (config) {
         '@plone/plate > platejs',
         '@plone/plate > platejs/react',
         '@plone/plate > platejs/static',
+        '@plone/plate > react-aria-components',
         '@plone/plate > react-dnd',
         '@plone/plate > react-dnd-html5-backend',
         '@plone/plate > react-lite-youtube-embed',
