@@ -8,6 +8,16 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.8 (2026-10-29)
+
+### Bugfix
+
+- Added `getReturnUrl(request, fallback)`: the request's `return_url` when it names a path on this site, the fallback otherwise. `redirectIfLoggedInLoader` sends an already-logged-in visitor there instead of always to the site root. @mpalomaki 
+
+### Internal
+
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+
 ## 2.0.0-alpha.7 (2026-10-03)
 
 ### Internal

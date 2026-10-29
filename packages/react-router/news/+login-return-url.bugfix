@@ -1,1 +1,0 @@
-Added `getReturnUrl(request, fallback)`: the request's `return_url` when it names a path on this site, the fallback otherwise. `redirectIfLoggedInLoader` sends an already-logged-in visitor there instead of always to the site root. @mpalomaki

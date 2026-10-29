@@ -8,6 +8,59 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.20 (2026-10-29)
+
+### Feature
+
+- A visitor who is not signed in and opens private content is sent to the login page with the page as `return_url`, as in Volto, instead of a bare 401 page. An expired sign-in does the same and clears the cookie. Signed-in users without permission still see the 401 page. @mpalomaki 
+- Added `config.settings.apiExpanders`, so add-ons can add expandable components to the main content request, optionally for signed-in users only. @sneridagh 
+- Added the `clientEndpoints` utility type, so add-ons can add custom endpoint methods to the request Plone client. @sneridagh 
+- Added the `contentResource` utility type and its middleware, which answers resources below a content path, like `/<path>/@blocks-schema`. @sneridagh 
+- On a multilingual site a request for the site root is redirected to the default language root — a full load and a client-side navigation alike — as Plone's language switcher view and Volto's `MultilingualRedirector` do. The root stays reachable through its contents view. @mpalomaki 
+- The build directory can be set from the environment (`REACT_ROUTER_BUILD_DIR`), so a deployment can build aside into a versioned directory and swap a symlink rather than overwrite the directory the running server serves — `react-router build` removes its build directory first. The default `build` is unchanged. @mpalomaki 
+- The content request expands the page's `translations` by default, for the LanguageSwitcher. A site without `plone.app.multilingual` ignores it. @sneridagh 
+- The root middleware no longer loads the Plone content, site and user for resource routes, whose path has a segment that starts with a single `@` (`@search`, `@@contents/@delete`), nor for the `/ok` health check, which saves three backend requests per call. The `reset-fetcher` route is renamed to `@reset-fetcher`. @sneridagh 
+
+### Bugfix
+
+- Apply the server configuration once per process instead of on every request, which made `config.routes` and the slot components grow without bound. @sneridagh 
+- Serve user portraits to browser image requests and persist the preferred interface language. @sneridagh 
+
+### Internal
+
+- Pre-bundled `jotai/vanilla` for `@plone/helpers`, which its form layer imports. @sneridagh 
+- Removed the `@plone/components > react-aria-components/DropZone` Vite pre-bundling entry, since `@plone/components` no longer has a `DropZone`. @pnicolli 
+- Updated React Aria Components to 1.22, and moved all React Aria packages and `tailwindcss-react-aria-components` into the pnpm catalog. @sneridagh 
+- Upgraded pnpm to 12, and enabled `autoDedupe` and `minimumReleaseAgeExcludePrune`. @sneridagh 
+- Upgraded to Node.js 26 in CI, and to React Router 8.5.0 and React 19.3. @sneridagh 
+
+### Documentation
+
+- Added the "Form fields, controls, widgets, and adapters" conceptual guide, with a diagram, worked examples and a glossary. @sneridagh [#97](https://github.com/plone/aurora/issues/97)
+- Solved a few Vale issues, by replacing failing regular expressions with functional ones, and corrected spelling of "Sass" in narrative docs. @silviubogan [#297](https://github.com/plone/aurora/issues/297)
+- Added Node.js 26 to the supported Node.js versions. @sneridagh 
+- Added a "Forms and widgets" section to the upgrade guide: the widget contract, the new form engine, validators, and the renamed Quanta pickers. @sneridagh 
+- Added the "Add custom endpoints to the Plone client" how-to guide. @sneridagh 
+- Added the "Add expanders to the content request" how-to guide. @sneridagh 
+- Added the "Core widgets" reference: what each widget is registered for, the value it reads and writes, and its widget options, such as the image widget's `extraFields`. @sneridagh 
+- Added the "Validate form fields" how-to: default validators, registering validators by format, type, widget, behavior or block, overriding them, writing them, translating their messages, and invariants. Updated the block schema side effects how-to to the current block settings form. @sneridagh 
+- Added the Quanta components reference, with how each component relates to React Aria's Tailwind starter. @sneridagh 
+- Added the upgrade guide entry for the Quanta `Sheet`. @sneridagh 
+- Added the upgrade guide entry for the Quanta palette removed from `@plone/components`' basic CSS. @pnicolli 
+- Added the upgrade guide entry for the components removed from `@plone/components`, and linked the `@plone/icons` Storybook. @pnicolli 
+- Added the upgrade guide for Quanta's `MultiSelect`. @sneridagh 
+- Added the upgrade guide for the Quanta collections. @sneridagh 
+- Added the upgrade guide for the Quanta fields, which follow React Aria's Tailwind starter. @sneridagh 
+- Added the upgrade guide for the Quanta navigation components. @sneridagh 
+- Documented form validation and how to register validators. @sneridagh 
+- Documented how to add Plate plugins from an add-on. @sneridagh 
+- Documented how to write block docs, the `@blocks-schema` endpoint, and how to answer a resource below a content path with a `contentResource` utility. @sneridagh 
+- Documented how widgets read the form and where it is, and the widget context upgrade step. @sneridagh 
+- Documented testing widgets against the contract, and the compile-time check of registered widgets. @sneridagh 
+- Documented the new core widgets, the choices widget in the widget lookup order, and the file and image fields in the upgrade guide. @sneridagh 
+- Documented the route naming convention, `@@` for views and a single `@` for resource routes, and that the root middleware does not load the content for resource routes. @sneridagh 
+- Updated the metadata text binding reference for the form context. @sneridagh 
+
 ## 1.0.0-alpha.19 (2026-10-06)
 
 ### Documentation

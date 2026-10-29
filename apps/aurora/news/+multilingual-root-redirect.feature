@@ -1,1 +1,0 @@
-On a multilingual site a request for the site root is redirected to the default language root — a full load and a client-side navigation alike — as Plone's language switcher view and Volto's `MultilingualRedirector` do. The root stays reachable through its contents view. @mpalomaki

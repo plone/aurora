@@ -1,1 +1,0 @@
-Fixed the block editor re-rendering on every keystroke, and made the link toolbar and the recurrence widget subscribe only to the form fields they read. @sneridagh

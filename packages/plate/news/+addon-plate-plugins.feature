@@ -1,1 +1,0 @@
-Added `config/plate-editor` and `config/plate-renderer` add-on modules, which add Plate plugins, slash menu items and floating toolbar buttons to the page editor and renderer without shadowing the presets. @sneridagh
