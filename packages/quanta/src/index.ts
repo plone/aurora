@@ -15,6 +15,7 @@ export * from './components/Link/Link';
 export * from './components/ListBox/ListBox';
 export * from './components/Menu/Menu';
 export * from './components/Modal/Modal';
+export * from './components/ModalSheet/ModalSheet';
 export * from './components/Popover/Popover';
 export * from './components/ProgressBar/ProgressBar';
 export * from './components/SearchField/SearchField';

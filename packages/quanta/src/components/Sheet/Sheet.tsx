@@ -100,6 +100,7 @@ export function Sheet({ children, overscrollPadding, ...props }: SheetProps) {
         stackAnimation="sheet-scale-back"
         className={({ position }) => sheetStyles({ position })}
       >
+        {/* A centered sheet reads as a modal, so it shows no handle. */}
         {!props.preventDismissal && (
           <div
             aria-hidden="true"
@@ -107,6 +108,7 @@ export function Sheet({ children, overscrollPadding, ...props }: SheetProps) {
             className={`
               pointer-events-none absolute z-10 rounded-md bg-quanta-silver transition-opacity
               group-data-[has-descendants]/sheet-panel:opacity-0
+              group-data-[position=center]/sheet-panel:hidden
               group-data-[swipe-direction=bottom]/sheet-panel:top-3
               group-data-[swipe-direction=bottom]/sheet-panel:left-1/2
               group-data-[swipe-direction=bottom]/sheet-panel:h-1.5
