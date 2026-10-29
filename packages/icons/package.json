@@ -73,6 +73,8 @@
     "release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it",
     "release-major-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it major --preRelease=alpha",
     "release-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --preRelease=alpha",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
     "lint:fix": "pnpm eslint:fix"
   },
   "publishConfig": {
@@ -95,6 +97,9 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.16.4",
     "@react-types/shared": "catalog:",
+    "@storybook/addon-docs": "^10.4.0",
+    "@storybook/addon-links": "^10.4.0",
+    "@storybook/react-vite": "^10.4.0",
     "@testing-library/jest-dom": "catalog:",
     "@testing-library/react": "catalog:",
     "@types/jest-axe": "^3.5.7",
@@ -105,6 +110,7 @@
     "jest-axe": "^8.0.0",
     "jsdom": "^28.1.0",
     "release-it": "catalog:",
+    "storybook": "^10.4.0",
     "tsup": "catalog:",
     "tsconfig": "workspace:*",
     "typescript": "catalog:",

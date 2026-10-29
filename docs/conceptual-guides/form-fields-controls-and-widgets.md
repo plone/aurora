@@ -144,12 +144,16 @@ The following table shows how each prop is mapped.
 
 Some adapters must also convert values.
 A React Aria date field works with `DateValue` objects, while the content API stores a date as an ISO string such as `"2026-10-09"`.
-A date widget converts the string to a `DateValue` for the control, and converts the control's `DateValue` back to a string for `onChange`:
+A date widget converts the string to a `DateValue` for the control, and converts the control's `DateValue` back to a string for `onChange`.
+`@plone/cmsui` provides helpers for both directions:
 
 ```ts
-import { parseDate } from '@internationalized/date';
 import type { FormWidgetProps } from '@plone/types';
-import { DateField } from '@plone/components';
+import { DatePicker } from '@plone/quanta';
+import {
+  dateValueToIsoDate,
+  isoDateToDateValue,
+} from '@plone/cmsui/helpers/dates';
 
 // The value can be cleared, so the widget emits `null` too.
 type DateWidgetProps = FormWidgetProps<string | null>;
@@ -158,11 +162,11 @@ type DateWidgetProps = FormWidgetProps<string | null>;
 ```tsx
 function DateWidget({ value, onChange, label, required }: DateWidgetProps) {
   return (
-    <DateField
+    <DatePicker
       label={label}
       isRequired={required}
-      value={value ? parseDate(value) : null}
-      onChange={(date) => onChange(date ? date.toString() : null)}
+      value={isoDateToDateValue(value)}
+      onChange={(newValue) => onChange(dateValueToIsoDate(newValue))}
     />
   );
 }
@@ -170,6 +174,7 @@ function DateWidget({ value, onChange, label, required }: DateWidgetProps) {
 
 The form never sees a `DateValue`.
 It passes a string in and receives a string back, the same as for any other field.
+For date-times, time zones, and the other date helpers, see {ref}`work-with-dates-in-widgets-label`.
 
 ## The widget contract
 

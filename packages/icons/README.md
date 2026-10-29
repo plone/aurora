@@ -1,5 +1,8 @@
 # `@plone/icons`
 
+[![NPM](https://img.shields.io/npm/v/@plone/icons.svg)](https://www.npmjs.com/package/@plone/icons)
+[![Build Status](https://app.readthedocs.org/projects/plone-icons/badge/?version=latest)](https://plone-icons.readthedocs.io/latest/)
+
 The Quanta icon set for Plone Aurora.
 
 This package provides:
@@ -11,6 +14,12 @@ This package provides:
 - `PloneSVGRVitePlugin`, a Vite plugin that turns an SVG file into a React component wrapped in `Icon`
 
 It has no dependency on any other Plone package, so you can use it anywhere you need the icons.
+
+## Storybook
+
+You can browse every icon, and try the `Icon` component, in the Storybook:
+
+https://plone-icons.readthedocs.io/latest/
 
 ## Installation
 

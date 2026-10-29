@@ -1,21 +1,24 @@
 import React from 'react';
 import {
   Button,
+  Collection,
   Header,
   ListBoxSection,
   Select as RACSelect,
   SelectValue,
   type ListBoxItemProps,
   type ListBoxProps,
-  type SectionProps,
   type SelectProps as RACSelectProps,
   type ValidationResult,
 } from 'react-aria-components';
-import { twMerge } from 'tailwind-merge';
 import { tv } from 'tailwind-variants';
 
 import { Description, FieldError, Label } from '../Field/Field';
-import { DropdownItem, ListBox } from '../ListBox/ListBox';
+import {
+  DropdownItem,
+  type DropdownSectionProps,
+  ListBox,
+} from '../ListBox/ListBox';
 import { Popover } from '../Popover/Popover';
 import { composeTailwindRenderProps, focusRing } from '../../utils';
 import { ChevrondownIcon } from '@plone/icons';
@@ -25,27 +28,28 @@ export interface SelectItemObject {
   value: string;
 }
 
-interface SelectBaseProps<
-  T extends object,
-  M extends 'single' | 'multiple',
+export interface SelectProps<
+  T = SelectItemObject,
+  M extends 'single' | 'multiple' = 'single',
 > extends Omit<RACSelectProps<T, M>, 'children'> {
   label?: string;
+  /** Classes for the label. A Quanta extra. */
   labelClassnames?: string;
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);
   items?: Iterable<T>;
+  /**
+   * The items, or a function that renders each item of `items`. A Quanta
+   * extra: without it, the items are `SelectItemObject`s, rendered by their
+   * `label`.
+   */
   children?: React.ReactNode | ((item: T) => React.ReactNode);
 }
-
-export interface SelectProps<
-  T extends object = SelectItemObject,
-  M extends 'single' | 'multiple' = 'single',
-> extends SelectBaseProps<T, M> {}
 
 const triggerStyles = tv({
   extend: focusRing,
   base: `
-    flex min-h-11 min-w-[180px] items-center gap-3 rounded-lg bg-quanta-snow px-3 py-2 text-left
+    flex min-h-12 min-w-[180px] items-center gap-3 rounded-md bg-quanta-snow px-3 py-2 text-left
     text-sm text-quanta-space transition
     hover:bg-quanta-smoke
     focus:bg-quanta-air
@@ -74,7 +78,7 @@ function DefaultSelectItem(item: SelectItemObject) {
 }
 
 export function Select<
-  T extends object = SelectItemObject,
+  T = SelectItemObject,
   M extends 'single' | 'multiple' = 'single',
 >({
   label,
@@ -102,12 +106,16 @@ export function Select<
                 min-w-0 flex-1 truncate
                 data-[placeholder]:text-quanta-pigeon
               `}
-            />
+            >
+              {({ selectedText, defaultChildren }) =>
+                selectedText || defaultChildren
+              }
+            </SelectValue>
             <SelectChevron isOpen={isOpen} />
           </Button>
-          {description && <Description>{description}</Description>}
           <FieldError>{errorMessage}</FieldError>
-          <Popover className="min-w-(--trigger-width) p-1">
+          {description && <Description>{description}</Description>}
+          <Popover className="min-w-(--trigger-width)">
             {children ? (
               <SelectListBox items={items}>{children}</SelectListBox>
             ) : (
@@ -125,26 +133,27 @@ export function Select<
 }
 
 function SelectChevron({ isOpen }: { isOpen: boolean }) {
+  // Icons inherit their color, so the wrapper sets it.
   return (
-    <ChevrondownIcon
-      aria-hidden
-      size="base"
-      className={
-        isOpen
-          ? 'shrink-0 rotate-180 transition-transform'
-          : 'shrink-0 transition-transform'
-      }
-    />
+    <span className="flex shrink-0 text-quanta-iron">
+      <ChevrondownIcon
+        aria-hidden
+        size="xs"
+        className={
+          isOpen ? 'rotate-180 transition-transform' : 'transition-transform'
+        }
+      />
+    </span>
   );
 }
 
-export function SelectListBox<T extends object>(props: ListBoxProps<T>) {
+function SelectListBox<T>(props: ListBoxProps<T>) {
   return (
     <ListBox
       {...props}
       className={composeTailwindRenderProps(
         props.className,
-        'max-h-72 min-w-(--trigger-width) p-1',
+        'max-h-72 min-w-(--trigger-width) py-1.5',
       )}
     />
   );
@@ -154,31 +163,28 @@ export function SelectItem(props: ListBoxItemProps) {
   return <DropdownItem {...props} />;
 }
 
-export function SelectSection<T extends object>(props: SectionProps<T>) {
+export function SelectSection<T>({
+  title,
+  items,
+  children,
+  ...props
+}: DropdownSectionProps<T>) {
   return (
     <ListBoxSection
       {...props}
-      className={twMerge(
-        `
-          after:block after:h-1 after:content-['']
-          first:after:h-0
-        `,
-        props.className,
+      className={`
+        after:block after:h-1 after:content-['']
+        first:after:h-0
+      `}
+    >
+      {title && (
+        <Header
+          className={`px-3 pt-1.5 pb-0.5 text-xs leading-[18px] text-quanta-pigeon`}
+        >
+          {title}
+        </Header>
       )}
-    />
-  );
-}
-
-export function SelectSectionHeader(
-  props: React.ComponentProps<typeof Header>,
-) {
-  return (
-    <Header
-      {...props}
-      className={twMerge(
-        'px-3 py-1 text-xs font-semibold tracking-wide text-quanta-pigeon uppercase',
-        props.className,
-      )}
-    />
+      <Collection items={items}>{children}</Collection>
+    </ListBoxSection>
   );
 }

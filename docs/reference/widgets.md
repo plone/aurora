@@ -135,6 +135,8 @@ Without a stored value, it shows the schema's `default`.
 
 `DateWidget` reads and writes a date without a time, in the `YYYY-MM-DD` form that the content API stores.
 `DateTimeWidget` reads an ISO 8601 date and time, shows it in the editor's time zone, and writes it in UTC.
+Both convert between these strings and the date values of the Quanta date controls with the date helpers of `@plone/cmsui`.
+To write your own date widget, see {ref}`work-with-dates-in-widgets-label`.
 
 ## Pickers: `AlignWidget`, `SizeWidget`, and `WidthWidget`
 

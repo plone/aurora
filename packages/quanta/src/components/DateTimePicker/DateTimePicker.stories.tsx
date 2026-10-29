@@ -1,12 +1,27 @@
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Form } from 'react-aria-components';
-import { now, getLocalTimeZone } from '@internationalized/date';
+import {
+  type DateValue,
+  getLocalTimeZone,
+  now,
+  parseAbsoluteToLocal,
+  parseDate,
+  ZonedDateTime,
+} from '@internationalized/date';
 import { Button } from '../Button/Button';
 import { DateTimePicker } from './DateTimePicker';
 
-function getCurrentUtcString(): string {
-  return now(getLocalTimeZone()).toAbsoluteString();
+function getNow() {
+  return now(getLocalTimeZone());
+}
+
+// Shows a value the way Plone stores it: an ISO date, or a date-time in UTC.
+function toPloneString(value: DateValue | null) {
+  if (!value) return 'null';
+  return value instanceof ZonedDateTime
+    ? value.toAbsoluteString()
+    : value.toString();
 }
 
 // DateTimePicker Stories
@@ -54,7 +69,7 @@ export const DateOnlyWithDefaultValue: Story = {
     label: 'Date only',
     description: 'Date picker without time selection',
     granularity: 'day',
-    defaultValue: '2025-05-17',
+    defaultValue: parseDate('2025-05-17'),
   },
 };
 
@@ -64,22 +79,24 @@ export const WithDefaultValue: Story = {
     name: 'datetime-default',
     label: 'With default value',
     description: 'Uncontrolled component with default UTC value',
-    defaultValue: '2025-05-17T22:23:00+00:00', // UTC time
+    defaultValue: parseAbsoluteToLocal('2025-05-17T22:23:00+00:00'), // UTC time
     granularity: 'minute',
   },
 };
 
 // UTC/Local Timezone Demo
 const TimezoneExample = (args: any) => {
-  const [value, setValue] = useState<string | null>('2024-01-15T15:00:00'); // 3 PM UTC
+  const [value, setValue] = useState<DateValue | null>(
+    parseAbsoluteToLocal('2024-01-15T15:00:00Z'),
+  ); // 3 PM UTC
 
   return (
     <div className="flex max-w-2xl flex-col gap-4">
       <DateTimePicker {...args} value={value} onChange={setValue} />
       <div className="space-y-2 text-sm">
         <div className="rounded bg-blue-50 p-3">
-          <strong>UTC Value (what the component receives/returns):</strong>
-          <div className="font-mono">{value || 'null'}</div>
+          <strong>UTC value (what Plone stores):</strong>
+          <div className="font-mono">{toPloneString(value)}</div>
         </div>
         <div className="rounded bg-green-50 p-3">
           <strong>Your Local Timezone:</strong>
@@ -87,22 +104,26 @@ const TimezoneExample = (args: any) => {
         </div>
         <div className="text-gray-600">
           <p>
-            <strong>How it works:</strong> The component receives UTC time but
-            displays it converted to your local timezone. When you change the
-            time, it converts back to UTC for the onChange callback.
+            <strong>How it works:</strong> The component works with a date value
+            in your local time zone. Plone&apos;s widgets convert it from and to
+            UTC.
           </p>
         </div>
       </div>
       <div className="flex gap-2">
         <Button
           variant="neutral"
-          onPress={() => setValue('2024-01-15T12:00:00+00:00')} // Noon UTC
+          onPress={() =>
+            setValue(parseAbsoluteToLocal('2024-01-15T12:00:00+00:00'))
+          } // Noon UTC
         >
           Set to Noon UTC
         </Button>
         <Button
           variant="neutral"
-          onPress={() => setValue('2024-01-15T00:00:00+00:00')} // Midnight UTC
+          onPress={() =>
+            setValue(parseAbsoluteToLocal('2024-01-15T00:00:00+00:00'))
+          } // Midnight UTC
         >
           Set to Midnight UTC
         </Button>
@@ -126,21 +147,18 @@ export const TimezoneConversion: Story = {
 
 // Controlled vs Uncontrolled
 const ControlledExample = (args: any) => {
-  const [value, setValue] = useState<string | null>(
-    '2024-01-15T10:00:00+00:00',
+  const [value, setValue] = useState<DateValue | null>(
+    parseAbsoluteToLocal('2024-01-15T10:00:00+00:00'),
   );
 
   return (
     <div className="flex flex-col gap-4">
       <DateTimePicker {...args} value={value} onChange={setValue} />
       <div className="text-sm text-gray-600">
-        Current UTC value: {value || 'null'}
+        Current UTC value: {toPloneString(value)}
       </div>
       <div className="flex gap-2">
-        <Button
-          variant="neutral"
-          onPress={() => setValue(getCurrentUtcString())}
-        >
+        <Button variant="neutral" onPress={() => setValue(getNow())}>
           Set to now
         </Button>
         <Button variant="neutral" onPress={() => setValue(null)}>
@@ -209,7 +227,7 @@ export const Disabled: Story = {
   args: {
     name: 'disabled-datetime',
     label: 'Disabled picker',
-    defaultValue: getCurrentUtcString(),
+    defaultValue: getNow(),
     isDisabled: true,
     granularity: 'minute',
   },
@@ -220,7 +238,7 @@ export const ReadOnly: Story = {
   args: {
     name: 'readonly-datetime',
     label: 'Read-only picker',
-    defaultValue: getCurrentUtcString(),
+    defaultValue: getNow(),
     isReadOnly: true,
     granularity: 'minute',
   },
@@ -235,7 +253,7 @@ export const WithError: Story = {
     errorMessage: 'Please select a valid date and time',
     isInvalid: true,
     isRequired: true,
-    defaultValue: '2024-01-15T10:30:00',
+    defaultValue: parseAbsoluteToLocal('2024-01-15T10:30:00Z'),
     granularity: 'minute',
   },
 };
@@ -246,35 +264,30 @@ export const NotResettable: Story = {
     name: 'not-resettable',
     label: 'Non-resettable',
     description: 'No clear button available',
-    defaultValue: getCurrentUtcString(),
+    defaultValue: getNow(),
     resettable: false,
     granularity: 'minute',
   },
 };
 
 const CustomValidationExample = () => {
-  const [value, setValue] = useState<string | null>(null);
+  const [value, setValue] = useState<DateValue | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (newValue: string | null) => {
+  const handleChange = (newValue: DateValue | null) => {
     setValue(newValue);
 
-    // Custom validation logic for string values
+    // Custom validation logic for date values
     if (!newValue) {
       setError('Date is required');
       return;
     }
 
-    try {
-      const date = new Date(newValue);
-      if (date.getDate() === 13) {
-        setError('Friday the 13th is not allowed!');
-        return;
-      }
-      setError(null);
-    } catch {
-      setError('Invalid date format');
+    if (newValue.day === 13) {
+      setError('Friday the 13th is not allowed!');
+      return;
     }
+    setError(null);
   };
 
   return (
@@ -289,7 +302,11 @@ const CustomValidationExample = () => {
         isInvalid={!!error}
         granularity="day"
       />
-      {value && <div className="text-sm text-gray-600">Selected: {value}</div>}
+      {value && (
+        <div className="text-sm text-gray-600">
+          Selected: {toPloneString(value)}
+        </div>
+      )}
     </div>
   );
 };
@@ -300,7 +317,7 @@ export const CustomValidation: Story = {
 
 // Auto Current Time Feature
 const AutoCurrentTimeExample = () => {
-  const [value, setValue] = useState<string | null>(null);
+  const [value, setValue] = useState<DateValue | null>(null);
 
   return (
     <div className="flex max-w-2xl flex-col gap-6 p-4">
@@ -318,7 +335,7 @@ const AutoCurrentTimeExample = () => {
         />
         {value && (
           <div className="mt-2 text-sm text-gray-600">
-            Current UTC value: {value}
+            Current UTC value: {toPloneString(value)}
           </div>
         )}
       </div>
@@ -329,7 +346,9 @@ const AutoCurrentTimeExample = () => {
         </Button>
         <Button
           variant="neutral"
-          onPress={() => setValue('2024-12-25T00:00:00+00:00')}
+          onPress={() =>
+            setValue(parseAbsoluteToLocal('2024-12-25T00:00:00+00:00'))
+          }
         >
           Set Date Only (UTC)
         </Button>

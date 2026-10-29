@@ -9,7 +9,7 @@ import { composeTailwindRenderProps } from '../../utils';
 
 const segmentStyles = tv({
   base: `
-    inline rounded-xs p-1 text-gray-800 caret-transparent outline-0 forced-color-adjust-none
+    inline rounded-xs p-1 text-quanta-denim caret-transparent outline-0 forced-color-adjust-none
     dark:text-zinc-200
     forced-colors:text-[ButtonText]
     type-literal:px-0
@@ -17,20 +17,20 @@ const segmentStyles = tv({
   variants: {
     isPlaceholder: {
       true: `
-        text-gray-600 italic
+        text-quanta-iron italic
         dark:text-zinc-400
       `,
     },
     isDisabled: {
       true: `
-        text-gray-200
+        text-quanta-smoke
         dark:text-zinc-600
         forced-colors:text-[GrayText]
       `,
     },
     isFocused: {
       true: `
-        bg-blue-600 text-white
+        bg-quanta-sapphire text-quanta-air
         dark:text-white
         forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]
       `,

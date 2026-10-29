@@ -1,5 +1,5 @@
 import type { SlotComponentProps } from '../SlotRenderer';
-import { Link } from '@plone/components';
+import config from '@plone/registry';
 import styles from './Navigation.module.css';
 import clsx from 'clsx';
 
@@ -10,6 +10,7 @@ type NavItem = {
 
 const Navigation = (props: SlotComponentProps) => {
   const { content } = props;
+  const Link = config.getComponent('Link').component!;
   const navItems = content?.['@components']?.navigation?.items || [];
 
   return (

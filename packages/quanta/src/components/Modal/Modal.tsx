@@ -8,8 +8,7 @@ import { tv } from 'tailwind-variants';
 
 const overlayStyles = tv({
   base: `
-    absolute top-0 left-0 isolate z-20 h-(--page-height) w-full bg-black/50 text-center
-    backdrop-blur-lg
+    absolute top-0 left-0 isolate z-20 h-(--page-height) w-full bg-quanta-dolphin/72 text-center
   `,
   variants: {
     isEntering: {
@@ -23,8 +22,8 @@ const overlayStyles = tv({
 
 const modalStyles = tv({
   base: `
-    max-h-[calc(var(--visual-viewport-height)*.9)] w-full max-w-[90vw] rounded-md border
-    border-black/10 bg-white bg-clip-padding text-left align-middle text-neutral-700 shadow-2xl
+    max-h-[calc(var(--visual-viewport-height)*.9)] w-full max-w-[90vw] rounded-md bg-quanta-air
+    bg-clip-padding text-left align-middle text-quanta-space shadow-xl
     dark:border-white/10 dark:bg-neutral-800/70 dark:text-neutral-300 dark:backdrop-blur-2xl
     dark:backdrop-saturate-200
     forced-colors:bg-[Canvas]

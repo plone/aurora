@@ -3,6 +3,7 @@ import {
   Button,
   ComboBox as RACComboBox,
   type ComboBoxProps as RACComboBoxProps,
+  ComboBoxValue,
   Group,
   Input,
   type ListBoxItemProps,
@@ -12,7 +13,12 @@ import {
 import { tv } from 'tailwind-variants';
 
 import { Description, FieldError, Label } from '../Field/Field';
-import { DropdownItem, ListBox } from '../ListBox/ListBox';
+import {
+  DropdownItem,
+  type DropdownSectionProps,
+  ListBox,
+} from '../ListBox/ListBox';
+import { SelectSection } from '../Select/Select';
 import { Popover } from '../Popover/Popover';
 import { composeTailwindRenderProps, focusRing } from '../../utils';
 import { ChevrondownIcon } from '@plone/icons';
@@ -20,7 +26,7 @@ import { ChevrondownIcon } from '@plone/icons';
 const triggerStyles = tv({
   extend: focusRing,
   base: `
-    flex min-h-11 min-w-45 items-center gap-2 rounded-lg bg-quanta-snow py-1 pr-2 pl-3 text-sm
+    flex min-h-12 min-w-45 items-center gap-2 rounded-md bg-quanta-snow py-1 pr-3 pl-3 text-sm
     text-quanta-space transition
     focus-within:bg-quanta-air
     hover:bg-quanta-smoke
@@ -48,10 +54,10 @@ const triggerStyles = tv({
   },
 });
 
-export interface ComboBoxProps<T extends object> extends Omit<
-  RACComboBoxProps<T>,
-  'children'
-> {
+export interface ComboBoxProps<
+  T,
+  M extends 'single' | 'multiple' = 'single',
+> extends Omit<RACComboBoxProps<T, M>, 'children'> {
   label?: string;
   description?: string | null;
   errorMessage?: string | ((validation: ValidationResult) => string);
@@ -61,11 +67,11 @@ export interface ComboBoxProps<T extends object> extends Omit<
 }
 
 /**
- * Quanta-styled, searchable single-select. Built on react-aria's `ComboBox`,
- * so typing in the input filters the options (default "contains" filter when
+ * Quanta-styled, searchable select. Built on react-aria's `ComboBox`, so
+ * typing in the input filters the options (default "contains" filter when
  * options are passed as a static collection). Visually matches `Select`.
  */
-export function ComboBox<T extends object>({
+export function ComboBox<T, M extends 'single' | 'multiple' = 'single'>({
   label,
   description,
   errorMessage,
@@ -73,7 +79,7 @@ export function ComboBox<T extends object>({
   items,
   children,
   ...props
-}: ComboBoxProps<T>) {
+}: ComboBoxProps<T, M>) {
   return (
     <RACComboBox
       menuTrigger="focus"
@@ -101,11 +107,11 @@ export function ComboBox<T extends object>({
             />
             <Button
               aria-label="Show suggestions"
-              className="flex shrink-0 items-center rounded outline-0"
+              className="flex shrink-0 items-center rounded text-quanta-iron outline-0"
             >
               <ChevrondownIcon
                 aria-hidden
-                size="base"
+                size="xs"
                 className={
                   isOpen
                     ? 'rotate-180 transition-transform'
@@ -114,9 +120,15 @@ export function ComboBox<T extends object>({
               />
             </Button>
           </Group>
-          {description && <Description>{description}</Description>}
+          {props.selectionMode === 'multiple' && (
+            <ComboBoxValue
+              placeholder="No items selected"
+              className="text-xs text-quanta-pigeon"
+            />
+          )}
           <FieldError>{errorMessage}</FieldError>
-          <Popover className="min-w-(--trigger-width) p-1">
+          {description && <Description>{description}</Description>}
+          <Popover className="min-w-(--trigger-width)">
             <ComboBoxListBox items={items}>{children}</ComboBoxListBox>
           </Popover>
         </>
@@ -125,7 +137,7 @@ export function ComboBox<T extends object>({
   );
 }
 
-export function ComboBoxListBox<T extends object>(props: ListBoxProps<T>) {
+function ComboBoxListBox<T>(props: ListBoxProps<T>) {
   return (
     <ListBox
       {...props}
@@ -139,7 +151,7 @@ export function ComboBoxListBox<T extends object>(props: ListBoxProps<T>) {
       }
       className={composeTailwindRenderProps(
         props.className,
-        'max-h-72 min-w-(--trigger-width) p-1',
+        'max-h-72 min-w-(--trigger-width) py-1.5',
       )}
     />
   );
@@ -147,4 +159,8 @@ export function ComboBoxListBox<T extends object>(props: ListBoxProps<T>) {
 
 export function ComboBoxItem(props: ListBoxItemProps) {
   return <DropdownItem {...props} />;
+}
+
+export function ComboBoxSection<T>(props: DropdownSectionProps<T>) {
+  return <SelectSection {...props} />;
 }

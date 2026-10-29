@@ -258,6 +258,22 @@ test.describe('Quanta states', () => {
     await expect(page).toHaveScreenshot('quanta-modal--default--open.png');
   });
 
+  test('Sheet open', async ({ page }) => {
+    for (const id of [
+      'quanta-sheet--default',
+      'quanta-sheet--left',
+      'quanta-sheet--bottom',
+    ]) {
+      await openStory(page, id);
+      await page.getByRole('button').first().click();
+      await expect(page.getByRole('dialog')).toBeVisible();
+      // Wait for the sheet to finish sliding in.
+      await page.waitForTimeout(500);
+      await page.mouse.move(0, 0);
+      await expect(page).toHaveScreenshot(`${id}--open.png`);
+    }
+  });
+
   test('Tooltip open', async ({ page }) => {
     await openStory(page, 'quanta-tooltip--default');
     await page.keyboard.press('Tab');

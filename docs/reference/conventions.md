@@ -57,7 +57,8 @@ Otherwise, we'd have to patch the resolution process for every build or bundler 
 
 ## `@plone/components` package
 
-This package contains the basic, white-label set of reusable UI components for Plone 7, such as buttons, forms, modals, and more.
+This package contains the basic, white-label set of reusable UI components for Plone Aurora, such as buttons, links, menus, and tables.
+It only contains the components that Plone Aurora uses, and new ones are added when something needs them.
 
 When adding new components, make sure they are generic and reusable across the app.
 This package should not contain any Plone-specific logic or data handling.
@@ -87,6 +88,8 @@ Check out the Storybook for this package at [@plone/quanta Storybook](https://pl
 
 This package owns the Quanta icon set: the raw SVGs, a React component per icon, the `Icon` wrapper component, the `*.svg?react` type declarations, and the SVGR Vite plugin used to transform SVGs into React components at build time.
 It has no dependency on any other Plone package.
+
+Check out the Storybook for this package at [@plone/icons Storybook](https://plone-icons.readthedocs.io/).
 
 ## `@plone/layout` package
 

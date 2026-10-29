@@ -86,6 +86,8 @@ export interface SettingsConfig {
   openExternalLinkInNewTab: boolean;
   notSupportedBrowsers: string[];
   defaultPageSize: number;
+  /** Items per page in the Contents view (`@plone/contents`). Default: 10. */
+  contentsPageSize?: number;
   supportedLanguages: string[]; // TODO: Improve list of possible values
   navDepth: number;
   expressMiddleware: unknown;
@@ -141,4 +143,6 @@ export interface SettingsConfig {
   hideBreadcrumbs: string[]; // Content types for which to hide breadcrumbs
   plate: PlateSettings | Record<string, never>;
   mostUsedTypes: string[];
+  /** Above this many languages the LanguageSwitcher is a dropdown menu. */
+  languageSwitcherMenuThreshold?: number;
 }

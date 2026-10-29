@@ -44,8 +44,8 @@ export function SearchField({
         <SearchIcon
           aria-hidden
           className={`
-            ml-2 text-gray-500
-            group-disabled:text-gray-200
+            ml-2 text-quanta-pigeon
+            group-disabled:text-quanta-smoke
             forced-colors:text-[ButtonText] forced-colors:group-disabled:text-[GrayText]
           `}
         />
@@ -62,8 +62,8 @@ export function SearchField({
           <CloseIcon size="sm" aria-hidden />
         </Button>
       </FieldGroup>
-      {description && <Description>{description}</Description>}
       <FieldError>{errorMessage}</FieldError>
+      {description && <Description>{description}</Description>}
     </AriaSearchField>
   );
 }
