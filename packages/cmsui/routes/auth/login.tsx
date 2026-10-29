@@ -139,7 +139,16 @@ export default function Login() {
               {t('cmsui.auth.signInTo', { site: siteTitle || 'Aurora' })}
             </h2>
           </div>
-          <div className="mx-auto mt-11 w-full max-w-[360px]">
+          <div className="relative mx-auto mt-11 w-full max-w-[360px]">
+            {/* The error is plain markup from the action data, not field
+                validity, which would block submitting the form again. It sits
+                in the gap above the form, so showing it moves nothing. */}
+            <p
+              role="alert"
+              className="absolute bottom-full mb-3 text-sm text-quanta-candy"
+            >
+              {actionResult?.data?.error?.message}
+            </p>
             <div className="bg-quanta-air">
               <Form className="space-y-6" method="post">
                 <TextField
@@ -154,12 +163,6 @@ export default function Login() {
                     type="password"
                     autoComplete="current-password"
                     isRequired
-                    isInvalid={actionResult?.status === 401 ? true : undefined}
-                    errorMessage={
-                      actionResult?.status === 401
-                        ? actionResult?.data?.error.message
-                        : undefined
-                    }
                   />
                   <span className="text-sm text-quanta-iron">
                     <Trans
