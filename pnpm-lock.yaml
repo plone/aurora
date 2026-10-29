@@ -1706,6 +1706,9 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.2.2)
+      usehooks-ts:
+        specifier: ^3.1.1
+        version: 3.1.1(react@19.3.1)
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: ^0.16.4

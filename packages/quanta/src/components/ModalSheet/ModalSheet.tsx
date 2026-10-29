@@ -1,32 +1,12 @@
-import React, {
-  useCallback,
-  useContext,
-  useState,
-  useSyncExternalStore,
-} from 'react';
+import React, { useContext, useState } from 'react';
 import { OverlayTriggerStateContext } from 'react-aria-components';
+import { useMediaQuery } from 'usehooks-ts';
 import { Sheet, type SheetProps } from '../Sheet/Sheet';
 
-// Tailwind's `md` breakpoint: below it, the modal becomes a bottom sheet.
+// Tailwind's `md` breakpoint: below it, the modal becomes a bottom sheet. On
+// the server, `useMediaQuery` assumes a wide screen. The modal only renders
+// when open, which happens on the client.
 const NARROW_QUERY = '(width < 48rem)';
-
-function useMediaQuery(query: string) {
-  const subscribe = useCallback(
-    (onChange: () => void) => {
-      const mql = window.matchMedia(query);
-      mql.addEventListener('change', onChange);
-      return () => mql.removeEventListener('change', onChange);
-    },
-    [query],
-  );
-  return useSyncExternalStore(
-    subscribe,
-    () => window.matchMedia(query).matches,
-    // On the server, assume a wide screen. The modal only renders when open,
-    // which happens on the client.
-    () => false,
-  );
-}
 
 export interface ModalSheetProps extends Omit<SheetProps, 'position'> {
   /**
