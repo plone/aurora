@@ -8,6 +8,26 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.9 (2026-10-29)
+
+### Breaking
+
+- Renamed the `layers.css` route to `@layers.css`, following the resource route naming convention: the root middleware no longer loads the content for it, which saves three backend requests on every page load. Update any stylesheet link to `/layers.css`. @sneridagh 
+
+### Feature
+
+- Add the More menu to the content toolbar. @sneridagh 
+- Show personal tools in the authenticated toolbar. @sneridagh 
+- The `@plone/components` components are rendered from the component registry with `config.getComponent`, so add-ons can override them. @pnicolli 
+
+### Bugfix
+
+- Fixed the public UI content being wrapped in `.content-area` twice. The route wrapper is now `.main-slot`, and the search and sitemap routes have their own `.content-area`. @sneridagh [#230](https://github.com/plone/volto/issues/230)
+
+### Internal
+
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+
 ## 1.0.0-alpha.8 (2026-10-03)
 
 ### Internal

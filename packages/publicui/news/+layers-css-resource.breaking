@@ -1,1 +1,0 @@
-Renamed the `layers.css` route to `@layers.css`, following the resource route naming convention: the root middleware no longer loads the content for it, which saves three backend requests on every page load. Update any stylesheet link to `/layers.css`. @sneridagh
