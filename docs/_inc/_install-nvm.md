@@ -6,7 +6,7 @@ See the [`nvm` install and update script documentation](https://github.com/nvm-s
 For the `fish` shell, see [`nvm.fish`](https://github.com/jorgebucaran/nvm.fish).
 ```
 
-1.  Create your shell profile, if it does not exist.
+1.  Create your shell profile, if it doesn't exist.
 
     ```shell
     touch ~/.bash_profile

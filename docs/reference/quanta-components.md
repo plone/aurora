@@ -47,7 +47,7 @@ When Quanta updates RAC, compare the starter between the old and the new tag, an
     Some components have a Plone-specific API.
     They only change when the RAC API forces it.
 -   **Extras.**
-    A Quanta-only export or prop that the monorepo uses is kept, and documented as an extra.
+    A Quanta-only export or prop that the monorepository uses is kept, and documented as an extra.
     An unused one is removed.
 
 ## Status values
