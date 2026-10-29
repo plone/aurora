@@ -42,7 +42,7 @@ customizations/
 Use absolute imports in your shadowed modules to avoid resolution issues.
 ```
 
-## Clarification: only registered add-ons can be shadowed
+## Clarification: Only registered add-ons can be shadowed
 
 Shadowing only works with **registered add-ons** that are explicitly declared as such in {file}`registry.config.ts`.
 If you attempt to shadow a module from a package that is not registered as an add-on, the override will **not be resolved**, and your changes will be silently ignored.

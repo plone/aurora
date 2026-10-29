@@ -4,10 +4,12 @@
 APIs
 architected
 [Aa]sync
+augmentable
 [Bb]ackend
 backport(ed)?
 [Bb]lockquotes?
-boolean
+[bB]oolean
+breakpoints?
 Browserslist
 bundler
 [Cc]allout('s|s)?
@@ -16,7 +18,9 @@ CMFPlone
 CMSUI
 CommonJS
 Cookieplone
+Enum
 focusable
+Frontmatter
 iCalendar
 JavaScript
 keyframes?
@@ -29,13 +33,14 @@ nvm
 Pastanaga
 Plate
 Plone
-[pP]luggab(le|ility)
+[pP]luggab(les?|ility)
 preloading
 Prisma
 programatically
 Public UI
 Quanta
 Razzle
+reactively
 rethrown
 RichText
 [Rr]ulesets?
@@ -44,11 +49,13 @@ scaffold(ed)?
 schema's
 security@plone.org
 [sS]trikethrough
+subpaths?
 SVGs?
 toctree
 transpile[dr]{0,1}
-unregister
-[vV]alidators
+unregister(ing)?
+[vV]alidators?
+viewports?
 Vite
 Volto
 Vue
