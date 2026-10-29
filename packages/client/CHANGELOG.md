@@ -8,6 +8,16 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.10 (2026-10-29)
+
+### Feature
+
+- Support filtering relations by target and managing content rules on a specific content item. @sneridagh 
+
+### Bugfix
+
+- Allow clearing a user's home page URL when updating their profile. @sneridagh 
+
 ## 2.0.0-alpha.9 (2026-10-29)
 
 ### Feature
