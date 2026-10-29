@@ -148,6 +148,9 @@ test('personal tools use a dismissible mobile sheet and a desktop popover', asyn
   await button.click();
   const sheet = page.getByRole('dialog', { name: 'Personal tools' });
   await expect(sheet).toBeVisible();
+  await expect(
+    page.locator('.toolbar-mobile-sheet [data-sheet-handle]'),
+  ).toBeVisible();
   await expect(page.locator('.toolbar-mobile-sheet')).not.toHaveAttribute(
     'data-entering',
   );

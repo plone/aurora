@@ -136,6 +136,10 @@ test('mobile toolbar opens a dismissible More sheet with workflow actions', asyn
   await expect(sheet.getByRole('menu', { name: 'More' })).toBeVisible();
   const state = sheet.getByRole('menuitem', { name: /State/i });
   await expect(sheet).not.toHaveAttribute('data-entering');
+  const handle = sheet.locator('[data-sheet-handle]');
+  await expect(handle).toBeVisible();
+  await expect(handle).toHaveCSS('width', '80px');
+  await expect(handle).toHaveCSS('height', '6px');
   await expect(state).toBeEnabled();
   await state.click({ timeout: 5000 });
   await expect(page.locator('.more-menu-dropdown')).toBeVisible();
@@ -212,4 +216,38 @@ test('desktop State dropdown uses its compact styling', async ({ page }) => {
     '6px 12px',
   );
   await expect(dropdown.getByRole('menuitem').first()).toBeFocused();
+});
+
+test('swiping the mobile sheet handle dismisses More', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await login(page);
+  await page.goto('/news', { waitUntil: 'networkidle' });
+  await page
+    .getByRole('navigation', { name: 'Toolbar' })
+    .getByRole('button', { name: 'More' })
+    .click();
+  const sheet = page.locator('.toolbar-mobile-sheet');
+  await expect(sheet).not.toHaveAttribute('data-entering');
+  const box = await sheet.locator('[data-sheet-handle]').boundingBox();
+  expect(box).not.toBeNull();
+  const x = box!.x + box!.width / 2;
+  const y = box!.y + box!.height / 2;
+  const client = await page.context().newCDPSession(page);
+  await client.send('Emulation.setTouchEmulationEnabled', { enabled: true });
+  await client.send('Input.dispatchTouchEvent', {
+    type: 'touchStart',
+    touchPoints: [{ x, y }],
+  });
+  for (let offset = 30; offset <= 240; offset += 30) {
+    await client.send('Input.dispatchTouchEvent', {
+      type: 'touchMove',
+      touchPoints: [{ x, y: y + offset }],
+    });
+  }
+  await client.send('Input.dispatchTouchEvent', {
+    type: 'touchEnd',
+    touchPoints: [],
+  });
+  await expect(sheet).not.toBeVisible();
+  await client.detach();
 });
