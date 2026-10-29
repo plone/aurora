@@ -180,15 +180,24 @@ export const getAPIResourceWithAuth: Route.MiddlewareFunction = async (
   ) {
     const token = await getAuthFromRequest(request);
     const url = `${config.settings.apiPath}${path}`;
+    const resourceHeaders = (authToken?: string) => {
+      const headers = new Headers(
+        getAuthorizedResourceHeaders(request, authToken),
+      );
+      // The REST API's portrait endpoint is selected through JSON content
+      // negotiation, even though its response is an image.
+      if (/\/@portrait\//.test(path)) headers.set('Accept', 'application/json');
+      return headers;
+    };
     const response = await fetch(url, {
       method: 'GET',
-      headers: getAuthorizedResourceHeaders(request, token),
+      headers: resourceHeaders(token),
     });
 
     if (token && response.status === 401) {
       const anonymousResponse = await fetch(url, {
         method: 'GET',
-        headers: getAuthorizedResourceHeaders(request),
+        headers: resourceHeaders(),
       });
 
       if (anonymousResponse.ok) {

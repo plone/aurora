@@ -143,4 +143,6 @@ export interface SettingsConfig {
   hideBreadcrumbs: string[]; // Content types for which to hide breadcrumbs
   plate: PlateSettings | Record<string, never>;
   mostUsedTypes: string[];
+  /** Above this many languages the LanguageSwitcher is a dropdown menu. */
+  languageSwitcherMenuThreshold?: number;
 }

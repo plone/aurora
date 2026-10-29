@@ -3,7 +3,9 @@ import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
 
 const addTrigger = (page: Parameters<typeof login>[0]) =>
-  page.getByRole('navigation', { name: 'Toolbar' }).getByRole('button');
+  page
+    .getByRole('navigation', { name: 'Toolbar' })
+    .getByRole('button', { name: 'Add content' });
 
 test.describe('ContentTypesMenu', () => {
   test('is not visible to anonymous users', async ({ page }) => {

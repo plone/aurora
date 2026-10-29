@@ -8,6 +8,19 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.10 (2026-10-29)
+
+### Feature
+
+- Added a form layer: `createFormStore`, and the `useFormStore`, `FormProvider`, `useFormContext`, `useSchemaField`, `useFieldValue`, `useSetFieldValue` and `useFormState` React bindings. Each form keeps its values and field state in a Jotai store of its own, and each field subscribes only to its own path. Also added the `Path` and `PathValue` types and the `getByPath` and `setByPath` utilities. @sneridagh 
+- Added the `isBlockRestricted` and `applySchemaEnhancer` block helpers. @sneridagh 
+- Form store validators can return several messages, `FieldErrors` lists the messages of each field, and the new `setServerErrors()` shows errors set from outside, for example by the server. @sneridagh 
+
+### Internal
+
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+- Typed the focused atom helpers with `Path` and `PathValue` instead of TanStack Form types, and removed the `@tanstack/react-form` dev dependency. @sneridagh 
+
 ## 2.0.0-alpha.9 (2026-10-03)
 
 ### Internal

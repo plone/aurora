@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { initReactI18next } from 'react-i18next';
 import { createI18nextMiddleware } from 'remix-i18next';
 import i18n from './i18n'; // your i18n configuration file
+import { localeCookie } from '@plone/react-router';
 
 // The add-on locales are generated into `public/locales`, which the build copies
 // to `build/client/locales`. Resolve them relative to this module, not the
@@ -22,6 +23,7 @@ export const [i18nextMiddleware, getLocale, getInstance] =
     detection: {
       supportedLanguages: i18n.supportedLngs,
       fallbackLanguage: i18n.fallbackLng as string,
+      cookie: localeCookie,
     },
     // This is the configuration for i18next used
     // when translating messages server-side only

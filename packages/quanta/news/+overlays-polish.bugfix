@@ -1,1 +1,0 @@
-Fixed the `Accordion` colors, which referred to colors that Quanta doesn't define, the menu's focus outline, the submenu chevron overlapping long labels, and the tag text size. @sneridagh

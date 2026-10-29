@@ -6,6 +6,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useMatch,
   useNavigate,
   type LinksFunction,
   type LoaderFunctionArgs,
@@ -16,12 +17,16 @@ import { RouterProvider as RACRouterProvider } from 'react-aria-components';
 import { clsx } from 'clsx';
 import { getLocale } from '@plone/aurora/app/i18next.server';
 import type { RootLoader } from '@plone/aurora/app/root';
-import { PluggablesProvider } from '@plone/layout/components/Pluggable';
+import { Plug, PluggablesProvider } from '@plone/layout/components/Pluggable';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
 import { shouldShowToolbar } from '@plone/layout/helpers';
 
 import stylesheet from '@plone/aurora/.plone/cmsui.css?url';
-import { ploneContentContext } from '@plone/aurora/app/middleware.server';
+import {
+  ploneContentContext,
+  ploneUserContext,
+} from '@plone/aurora/app/middleware.server';
+import { PersonalTools } from '@plone/layout/components/Toolbar/PersonalTools/PersonalTools';
 
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
   matches,
@@ -69,13 +74,27 @@ export async function loader({
 }: LoaderFunctionArgs<RouterContextProvider>) {
   const content = context.get(ploneContentContext);
   const locale = getLocale(context);
-  return { locale, content };
+  const user = context.get(ploneUserContext);
+  return {
+    locale,
+    content,
+    user: user && {
+      id: user.id,
+      username: user.username,
+      fullname: user.fullname,
+      email: user.email,
+      portrait: (user.portrait as string | null)
+        ? `/@portrait/${encodeURIComponent(user.id)}`
+        : null,
+    },
+  };
 }
 
 export default function Index() {
-  const { locale, content } = useLoaderData<typeof loader>();
+  const { locale, content, user } = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
   const navigate = useNavigate();
+  const isEditing = useMatch('/@@edit/*') !== null;
 
   const contentLanguage = (content?.language as { token?: string } | undefined)
     ?.token;
@@ -95,10 +114,24 @@ export default function Index() {
         <link rel="stylesheet" href="/@layers.css" precedence="first" />
         <RACRouterProvider navigate={navigate}>
           <PluggablesProvider>
+            {showToolbar && !isEditing && (
+              <Plug
+                pluggable="toolbar-bottom"
+                id="personal-tools"
+                // @ts-expect-error Plug's JavaScript declaration infers never[]
+                dependencies={[user, content?.['@components']?.actions]}
+              >
+                <PersonalTools
+                  user={user}
+                  actions={content?.['@components']?.actions}
+                />
+              </Plug>
+            )}
             {showToolbar && <Toolbar />}
             <div
               className={clsx({
-                'ml-(--plone-toolbar-width)': showToolbar,
+                'ml-(--plone-toolbar-width) max-md:ml-0 max-md:pb-[calc(64px+env(safe-area-inset-bottom,0px))]':
+                  showToolbar,
               })}
             >
               <Outlet />

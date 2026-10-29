@@ -1,0 +1,1 @@
+Cleared the `ObjectBrowserWidgetBody` focus timeout when the component unmounts. @sneridagh

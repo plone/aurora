@@ -1,1 +1,0 @@
-Added `PloneClient.extend()` to add custom endpoint methods to the client, the augmentable `PloneClientExtensions` interface to type them, and exported `apiRequest`, `getBackendURL`, and their types. `PloneClient.initialize()` now returns an instance of the class it is called on. @sneridagh

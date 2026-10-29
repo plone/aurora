@@ -198,6 +198,7 @@ Use `DialogTrigger` to open it, and React Aria's `position` prop to choose the e
 
 On desktop, a `Sheet` with `position="right"` works like a drawer: it slides in from the edge, dims the page, keeps the focus inside, and closes on an outside click or {kbd}`Esc`.
 On touch devices it can also be swiped away, and it supports snap points and stacked sheets.
+A handle indicates the swipe direction and is hidden when `preventDismissal` is set or a nested sheet is open.
 `position` also accepts `start` and `end`, which follow the text direction.
 
 The starter styles the side positions as a rounded, inset card 300 pixels wide.
