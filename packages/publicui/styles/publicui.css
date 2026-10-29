@@ -8,6 +8,13 @@
     margin-inline-start: var(--plone-toolbar-width);
   }
 
+  @media (max-width: 767px) {
+    .with-toolbar #main {
+      margin-inline-start: 0;
+      padding-block-end: calc(64px + env(safe-area-inset-bottom, 0px));
+    }
+  }
+
   .route-search .documentFirstHeading {
     color: var(--color-quanta-peacock);
   }

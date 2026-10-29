@@ -8,6 +8,27 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.15 (2026-10-29)
+
+### Feature
+
+- Add a toolbar More menu with workflow, appearance, content management actions and backend-configurable links. @sneridagh 
+- Add a toolbar personal tools menu with profile, preferences, site setup, logout and configurable actions. @sneridagh 
+- Declared the props of the components registered from `@plone/components` in `ComponentsPropsMap`, so `getComponent` returns them typed, and the type checker rejects overrides that do not take their props. @pnicolli 
+- Registered the `@plone/components` components used by Plone Aurora in the registry, so they can be retrieved and overridden with `config.getComponent`. @pnicolli 
+- The LanguageSwitcher links each language to the current page in that language, and to the language root only when the page has no translation in it. Reported by @mpalomaki. @sneridagh 
+- The `@plone/components` components are rendered from the component registry with `config.getComponent`, so add-ons can override them. @pnicolli 
+- With more than three languages, the LanguageSwitcher is a dropdown menu, as a longer row of links does not fit the header. Up to three, it stays a row of links. Sites change the threshold with `config.settings.languageSwitcherMenuThreshold`. `Menu` is now registered in the component registry. @mpalomaki 
+
+### Bugfix
+
+- The LanguageSwitcher highlights the language of the page being read, taken from the first segment of the URL, instead of always the site's default language, and marks it with `aria-current`. @mpalomaki 
+
+### Internal
+
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+- The public UI styles import the Quanta palette from `@plone/quanta`, instead of getting it from `@plone/components`' basic theme. @pnicolli 
+
 ## 1.0.0-alpha.14 (2026-10-06)
 
 ### Feature

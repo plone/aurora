@@ -2,7 +2,9 @@ import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
 
 const addTrigger = (page: Parameters<typeof login>[0]) =>
-  page.getByRole('navigation', { name: 'Toolbar' }).getByRole('button');
+  page
+    .getByRole('navigation', { name: 'Toolbar' })
+    .getByRole('button', { name: 'Add content' });
 
 test.describe('ToolbarMenu', () => {
   test.beforeEach(async ({ page }) => {

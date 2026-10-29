@@ -1,1 +1,0 @@
-Updated the navigation components to React Aria's Tailwind starter API: `Tabs` takes its tabs and panels as children instead of a `tabs` prop, and `DropZoneText` is renamed `Text`. Removed the `ToolbarProps` type. @sneridagh

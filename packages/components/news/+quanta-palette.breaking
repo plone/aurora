@@ -1,1 +1,0 @@
-The basic theme no longer includes a copy of the Quanta palette (the `--quanta-*` CSS custom properties). Import `@plone/quanta/src/styles/colors.css` if you need it. See the upgrade guide. @pnicolli

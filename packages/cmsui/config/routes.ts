@@ -6,6 +6,16 @@ export default function install(config: ConfigType) {
     file: '@plone/cmsui/routes/layout.tsx',
     children: [
       {
+        type: 'route',
+        path: '@@personal-information',
+        file: '@plone/cmsui/routes/personal-information.tsx',
+      },
+      {
+        type: 'route',
+        path: '@@personal-preferences',
+        file: '@plone/cmsui/routes/personal-preferences.tsx',
+      },
+      {
         type: 'prefix',
         path: 'login',
         children: [
@@ -57,6 +67,49 @@ export default function install(config: ConfigType) {
             type: 'route',
             path: '*',
             file: '@plone/cmsui/routes/sharing.tsx',
+          },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@history',
+        children: [
+          { type: 'route', path: '*', file: '@plone/cmsui/routes/history.tsx' },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@aliases',
+        children: [
+          { type: 'route', path: '*', file: '@plone/cmsui/routes/aliases.tsx' },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@links-to-item',
+        children: [
+          {
+            type: 'route',
+            path: '*',
+            file: '@plone/cmsui/routes/links-to-item.tsx',
+          },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@rules',
+        children: [
+          { type: 'route', path: '*', file: '@plone/cmsui/routes/rules.tsx' },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@manage-translations',
+        children: [
+          {
+            type: 'route',
+            path: '*',
+            file: '@plone/cmsui/routes/manage-translations.tsx',
           },
         ],
       },
@@ -135,6 +188,11 @@ export default function install(config: ConfigType) {
         file: '@plone/cmsui/routes/queryStringOptions.tsx',
       },
     ],
+  });
+  config.registerRoute({
+    type: 'route',
+    path: '@more-menu',
+    file: '@plone/cmsui/routes/api/more-menu.tsx',
   });
   config.registerRoute({
     type: 'prefix',

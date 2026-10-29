@@ -1,1 +1,0 @@
-Added the `@plone/registry/plate-editor` and `@plone/registry/plate-renderer` loaders, which collect the `config/plate-editor` and `config/plate-renderer` modules of the add-ons, in add-on order, for the page editor and renderer. @sneridagh

@@ -28,5 +28,9 @@ export default function install(config: ConfigType) {
 
   config.settings.mostUsedTypes = ['Document', 'Folder', 'File'];
 
+  // Up to this many languages, the LanguageSwitcher is a row of links; above
+  // it, a dropdown menu, as a longer row does not fit the header.
+  config.settings.languageSwitcherMenuThreshold = 3;
+
   return config;
 }
