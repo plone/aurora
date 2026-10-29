@@ -1,0 +1,1 @@
+Added new `Breadcrumbs` optional props: `withNavigationLandmark` and `navigationLandmarkProps`. Made `lint-staged` work with spaces in paths. @silviubogan
