@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { langmap } from '@plone/helpers';
-import { Link } from '@plone/components';
+import config from '@plone/registry';
 import type { RootLoader } from '@plone/aurora/app/root';
 
 import styles from './LanguageSwitcher.module.css';
@@ -21,6 +21,7 @@ type LanguageSelectorProps = {
 
 const LanguageSwitcher = (props: LanguageSelectorProps) => {
   const { t } = useTranslation();
+  const Link = config.getComponent('Link').component!;
   const rootData = useRouteLoaderData<RootLoader>('root');
   if (!rootData) {
     return null;

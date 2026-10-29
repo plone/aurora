@@ -18,6 +18,26 @@ export const ploneUserContext = createContext<
 >(null);
 export const ploneClearAuthCookieContext = createContext<boolean>(false);
 
+/**
+ * Where the site root sends a visitor on a multilingual site: the default
+ * language root — what Plone's language-switcher view on the site root and
+ * Volto's MultilingualRedirector do. The root is managed through its
+ * contents view, never visited. The target is the site's default language,
+ * not the negotiated interface locale (the locale says nothing about the
+ * content tree), and only a language token is accepted as a target.
+ */
+export function multilingualRootRedirect(
+  pathname: string,
+  site: Awaited<ReturnType<PloneClient['getSite']>>['data'] | undefined,
+): string | undefined {
+  if (pathname !== '/' || !site?.features?.multilingual) return undefined;
+  const language = site['plone.default_language'];
+  return typeof language === 'string' &&
+    /^[a-z]{2,3}(-[a-z]{2,4})?$/.test(language)
+    ? `/${language}`
+    : undefined;
+}
+
 function getAuthorizedResourceHeaders(
   request: Request,
   token?: string,
@@ -179,6 +199,49 @@ export const getAPIResourceWithAuth: Route.MiddlewareFunction = async (
   }
 };
 
+/**
+ * Splits a request path into a content path and a `contentResource` utility
+ * below it: `/news/@blocks-schema/teaser` gives `/news`, `@blocks-schema`
+ * and `teaser`. The first `@`-prefixed segment after the content path that
+ * names a registered utility wins. Returns undefined when none matches.
+ */
+export function matchContentResource(path: string) {
+  const segments = path.split('/').filter(Boolean);
+
+  for (let index = 1; index < segments.length; index++) {
+    const name = segments[index];
+    if (!/^@(?!@)/.test(name)) continue;
+    const utility = config.getUtility({ name, type: 'contentResource' });
+    if (!utility.method) continue;
+
+    return {
+      method: utility.method,
+      path: `/${segments.slice(0, index).join('/')}`,
+      subpath: segments.slice(index + 1).join('/') || undefined,
+    };
+  }
+}
+
+/**
+ * Answers the requests for a resource below a content path, like
+ * `/news/@blocks-schema`, with the `contentResource` utility named after the
+ * resource. React Router can't match a route below a splat, so they are
+ * handled here, before the content of the path is fetched.
+ */
+export const contentResourceMiddleware: Route.MiddlewareFunction = async ({
+  request,
+  params,
+}) => {
+  const match = matchContentResource(`/${params['*'] || ''}`);
+  if (!match) return;
+
+  return match.method({
+    request,
+    path: match.path,
+    subpath: match.subpath,
+  });
+};
+
 function matchesExpanderPath(path: string, match: string) {
   const prefix = match.replace(/\/+$/, '');
   return prefix === '' || path === prefix || path.startsWith(`${prefix}/`);
@@ -208,7 +271,7 @@ export function getContentExpand(path: string, authenticated: boolean) {
 }
 
 export const fetchPloneContent: Route.MiddlewareFunction = async (
-  { request, params, context, pattern },
+  { request, params, context, pattern, url },
   next,
 ) => {
   if (routeSkipsContent(pattern)) return;
@@ -218,6 +281,9 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
   let cli = context.get(ploneClientContext);
 
   const path = `/${params['*'] || ''}`;
+  // The request's path as the router matched it (a `.data` suffix already
+  // stripped) — not the splat, which is empty for /login as well as for /.
+  const pathname = (url ?? new URL(request.url)).pathname;
 
   let userId = '';
   if (token) {
@@ -253,6 +319,12 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
     ]);
 
     setPloneContext(content, site, user?.data ?? null);
+
+    // On a multilingual site the root is managed, not visited: a request
+    // for / — a full load or a client-side navigation — goes to the default
+    // language root.
+    const rootRedirect = multilingualRootRedirect(pathname, site.data);
+    if (rootRedirect) return redirect(rootRedirect);
   } catch (error: any) {
     if (error.status >= 300 && error.status < 400 && error.location) {
       return redirect(error.location, {
@@ -277,6 +349,12 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
 
         setPloneContext(content, site, null);
         context.set(ploneClearAuthCookieContext, true);
+
+        // The same root rule after an expired cookie's anonymous retry; the
+        // redirect leaves before the root loader, so it clears the cookie
+        // itself.
+        const rootRedirect = multilingualRootRedirect(pathname, site.data);
+        if (rootRedirect) return clearAuthOnResponse(redirect(rootRedirect));
         return;
       } catch (anonymousError: any) {
         throw data('Content Not Found', {
