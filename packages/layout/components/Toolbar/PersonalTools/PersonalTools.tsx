@@ -80,7 +80,7 @@ export function PersonalTools({ user, actions }: PersonalToolsProps) {
           ) : (
             <>
               <MenuItem
-                href="/personal-information"
+                href="/@@personal-information"
                 textValue={t('layout.personalTools.profile', {
                   defaultValue: 'Profile',
                 })}
@@ -93,7 +93,7 @@ export function PersonalTools({ user, actions }: PersonalToolsProps) {
                 </Text>
               </MenuItem>
               <MenuItem
-                href="/personal-preferences"
+                href="/@@personal-preferences"
                 textValue={t('layout.personalTools.preferences', {
                   defaultValue: 'Preferences',
                 })}

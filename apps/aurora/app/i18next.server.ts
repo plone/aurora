@@ -3,15 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { initReactI18next } from 'react-i18next';
 import { createI18nextMiddleware } from 'remix-i18next';
 import i18n from './i18n'; // your i18n configuration file
-import { createCookie } from 'react-router';
-
-export const localeCookie = createCookie('aurora_language', {
-  path: '/',
-  sameSite: 'lax',
-  httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
-  maxAge: 60 * 60 * 24 * 365,
-});
+import { localeCookie } from '@plone/react-router';
 
 // The add-on locales are generated into `public/locales`, which the build copies
 // to `build/client/locales`. Resolve them relative to this module, not the

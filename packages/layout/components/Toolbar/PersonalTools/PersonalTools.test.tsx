@@ -31,8 +31,11 @@ describe('PersonalTools', () => {
     ).not.toBeInTheDocument();
     expect(screen.getByRole('menuitem', { name: 'Profile' })).toHaveAttribute(
       'href',
-      '/personal-information',
+      '/@@personal-information',
     );
+    expect(
+      screen.getByRole('menuitem', { name: 'Preferences' }),
+    ).toHaveAttribute('href', '/@@personal-preferences');
   });
 
   it('uses personal tools actions in place of the default links', async () => {

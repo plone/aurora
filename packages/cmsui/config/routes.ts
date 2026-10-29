@@ -7,12 +7,12 @@ export default function install(config: ConfigType) {
     children: [
       {
         type: 'route',
-        path: 'personal-information',
+        path: '@@personal-information',
         file: '@plone/cmsui/routes/personal-information.tsx',
       },
       {
         type: 'route',
-        path: 'personal-preferences',
+        path: '@@personal-preferences',
         file: '@plone/cmsui/routes/personal-preferences.tsx',
       },
       {

@@ -37,6 +37,7 @@ test('personal tools edit the profile, save preferences and log out', async ({
       page.getByRole('menuitem', { name: 'Site setup' }),
     ).toBeVisible();
     await page.getByRole('menuitem', { name: 'Profile' }).click();
+    await expect(page).toHaveURL(/\/@@personal-information$/);
     await expect(
       page.getByRole('heading', { name: 'Personal information' }),
     ).toBeVisible();
@@ -87,7 +88,7 @@ test('personal tools edit the profile, save preferences and log out', async ({
       page.getByRole('heading', { name: 'Personal preferences' }),
     ).toBeVisible();
     await page.getByRole('button', { name: 'Save' }).click();
-    await expect(page).toHaveURL(/saved=1/);
+    await expect(page).toHaveURL(/\/@@personal-preferences\?saved=1/);
     expect(
       (await page.context().cookies()).some(
         (cookie) => cookie.name === 'aurora_language',
@@ -111,7 +112,7 @@ test('personal tools edit the profile, save preferences and log out', async ({
 test('anonymous visitors cannot open personal information', async ({
   page,
 }) => {
-  await page.goto('/personal-information');
+  await page.goto('/@@personal-information');
   await expect(page).toHaveURL(/\/login/);
 });
 
@@ -156,10 +157,10 @@ test('personal tools use a dismissible mobile sheet and a desktop popover', asyn
   );
   await expect(
     sheet.getByRole('menuitem', { name: 'Profile' }),
-  ).toHaveAttribute('href', '/personal-information');
+  ).toHaveAttribute('href', '/@@personal-information');
   await expect(
     sheet.getByRole('menuitem', { name: 'Preferences' }),
-  ).toBeVisible();
+  ).toHaveAttribute('href', '/@@personal-preferences');
   await expect(
     sheet.getByRole('menuitem', { name: 'Site setup' }),
   ).toBeVisible();

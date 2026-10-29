@@ -8,8 +8,8 @@ import {
   type LoaderFunctionArgs,
   RouterContextProvider,
 } from 'react-router';
-import { requireAuthCookie } from '@plone/react-router';
-import { getLocale, localeCookie } from '@plone/aurora/app/i18next.server';
+import { localeCookie, requireAuthCookie } from '@plone/react-router';
+import { getLocale } from '@plone/aurora/app/i18next.server';
 import config from '@plone/registry';
 import { Container, Link } from '@plone/quanta';
 import { useTranslation } from 'react-i18next';
@@ -36,7 +36,7 @@ export async function action({
   ) {
     return data({ error: 'Invalid language' }, { status: 400 });
   }
-  return redirect('/personal-preferences?saved=1', {
+  return redirect('/@@personal-preferences?saved=1', {
     headers: { 'Set-Cookie': await localeCookie.serialize(language) },
   });
 }
