@@ -22,7 +22,13 @@ describe('config/server', () => {
         apiExpanders: [
           {
             match: '',
-            expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'],
+            expand: [
+              'navroot',
+              'breadcrumbs',
+              'navigation',
+              'actions',
+              'translations',
+            ],
           },
           { match: '', expand: ['types'], authenticated: true },
         ],
