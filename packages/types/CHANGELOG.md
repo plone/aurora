@@ -8,6 +8,13 @@
 
 <!-- towncrier release notes start -->
 
+## 3.0.0-alpha.9 (2026-10-29)
+
+### Feature
+
+- Support more_menu entries in the actions response type. @sneridagh 
+- Support personal tools entries in the actions response type. @sneridagh 
+
 ## 3.0.0-alpha.8 (2026-10-29)
 
 ### Feature
