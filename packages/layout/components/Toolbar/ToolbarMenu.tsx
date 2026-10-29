@@ -40,12 +40,14 @@ export interface ToolbarMenuProps extends ComponentProps<
   RegisteredComponent<'MenuTrigger'>
 > {
   icon?: React.ReactNode;
+  triggerLabel?: string;
   /** CSS string (imported with `?inline`) to inject into the shadow root. */
   styles?: string;
 }
 
 export function ToolbarMenu({
   icon,
+  triggerLabel,
   styles,
   children,
   ...props
@@ -153,7 +155,9 @@ export function ToolbarMenu({
         isNonModal={true}
         {...props}
       >
-        <Button ref={triggerRefCallback}>{icon}</Button>
+        <Button ref={triggerRefCallback} aria-label={triggerLabel}>
+          {icon}
+        </Button>
         {children}
       </MenuTrigger>
     </>

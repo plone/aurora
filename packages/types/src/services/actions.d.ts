@@ -10,6 +10,7 @@ export interface ActionsResponse {
   object: Action[];
   object_buttons: Action[];
   portal_tabs: Action[];
+  personal_tools?: Action[];
   site_actions: Action[];
   user: Action[];
 }

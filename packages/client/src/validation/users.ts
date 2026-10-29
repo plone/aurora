@@ -27,7 +27,7 @@ export const updateUserDataSchema = z
     description: z.string().optional(),
     email: z.string().email().optional(),
     fullname: z.string().optional(),
-    home_page: z.string().url().optional(),
+    home_page: z.union([z.string().url(), z.literal('')]).optional(),
     location: z.string().optional(),
     username: z.string().optional(),
     portrait: portraitSchema.optional(),

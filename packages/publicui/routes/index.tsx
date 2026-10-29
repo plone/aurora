@@ -23,7 +23,11 @@ import {
   RouterProvider as RACRouterProvider,
 } from 'react-aria-components';
 import { getLocale } from '@plone/aurora/app/i18next.server';
-import { ploneContentContext } from '@plone/aurora/app/middleware.server';
+import {
+  ploneContentContext,
+  ploneUserContext,
+} from '@plone/aurora/app/middleware.server';
+import { PersonalTools } from '@plone/layout/components/Toolbar/PersonalTools/PersonalTools';
 import type { RootLoader } from '@plone/aurora/app/root';
 import { FolderIcon, ShareIcon } from '@plone/icons';
 import Pencil from '@plone/icons/svg/pencil.svg?react';
@@ -84,8 +88,18 @@ export async function loader({
 }: LoaderFunctionArgs<RouterContextProvider>) {
   const locale = getLocale(context);
   const content = context.get(ploneContentContext);
+  const user = context.get(ploneUserContext);
   return {
     content,
+    user: user && {
+      id: user.id,
+      username: user.username,
+      fullname: user.fullname,
+      email: user.email,
+      portrait: (user.portrait as string | null)
+        ? `/@portrait/${encodeURIComponent(user.id)}`
+        : null,
+    },
     cssLayers: config.settings.cssLayers,
     locale,
   };
@@ -93,7 +107,7 @@ export async function loader({
 
 export default function Index() {
   const location = useLocation();
-  const { content, locale } = useLoaderData<typeof loader>();
+  const { content, locale, user } = useLoaderData<typeof loader>();
   const { i18n } = useTranslation();
   const navigate = useNavigate();
   const matches = useMatches() as UIMatch<unknown, { bodyClass: string }>[];
@@ -128,6 +142,19 @@ export default function Index() {
         <link rel="stylesheet" href="/@layers.css" precedence="first" />
         <RACRouterProvider navigate={navigate}>
           <PluggablesProvider>
+            {showToolbar && (
+              <Plug
+                pluggable="toolbar-bottom"
+                id="personal-tools"
+                // @ts-expect-error Plug's JavaScript declaration infers never[]
+                dependencies={[user, content?.['@components']?.actions]}
+              >
+                <PersonalTools
+                  user={user}
+                  actions={content?.['@components']?.actions}
+                />
+              </Plug>
+            )}
             {hasContent && (
               <>
                 <Plug
