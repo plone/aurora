@@ -1,1 +1,0 @@
-The query string widget's "Reverse order" toggle uses Quanta's `Switch`, instead of the one from `@plone/components`. @sneridagh

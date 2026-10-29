@@ -1,1 +1,0 @@
-Fixed the recurrence modal crashing the edit form when the event ends on days 1 to 9 of a month, because the default "until" date was not a valid ISO date. @sneridagh

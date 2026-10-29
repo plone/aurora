@@ -1,1 +1,0 @@
-Moved the `SidebarPlugin` and `LinkKit` editor plugins to `config/plate-editor.ts`, so they reach the page editor through the add-on modules loader. @sneridagh
