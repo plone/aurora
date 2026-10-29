@@ -1,1 +1,0 @@
-The build directory can be set from the environment (`REACT_ROUTER_BUILD_DIR`), so a deployment can build aside into a versioned directory and swap a symlink rather than overwrite the directory the running server serves — `react-router build` removes its build directory first. The default `build` is unchanged. @mpalomaki
