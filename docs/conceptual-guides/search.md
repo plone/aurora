@@ -1,10 +1,10 @@
 ---
 myst:
   html_meta:
-    'description': 'How the public search route in Plone Aurora works'
-    'property=og:description': 'How the public search route in Plone Aurora works'
-    'property=og:title': 'Search'
-    'keywords': 'Plone Aurora, frontend, Plone, search, pagination, sorting, facets, tags, accessibility, @search'
+    "description": "How the public search route in Plone Aurora works"
+    "property=og:description": "How the public search route in Plone Aurora works"
+    "property=og:title": "Search"
+    "keywords": "Plone Aurora, frontend, Plone, search, pagination, sorting, accessibility, @search"
 ---
 
 # Search
@@ -13,7 +13,7 @@ This guide describes the public search route in Plone Aurora.
 To customize or extend the search, refer to {doc}`/how-to-guides/customize-the-search`.
 
 Plone Aurora ships a public search route at {file}`packages/publicui/routes/search.tsx`.
-The search input itself lives in the site header.
+The site header has a search field, and the search page repeats it above the results, so you can refine the term in place.
 This route reads the search term from the `SearchableText` query parameter.
 
 The route answers at `/search`.
@@ -21,51 +21,37 @@ An optional `path` query parameter scopes the results to a subtree.
 On a multilingual site, the header search widget sends the current language root, so a search from a page under `/de` requests `/search?path=/de` and only returns matches from the `/de` language tree.
 
 The route queries the backend in its `loader` and renders on the server.
-It returns search results with sorting, filtering, and pagination.
+It returns search results with sorting and pagination.
 The results are friendly to accessibility tools, keyboard navigation, search engine indexers, web crawlers, and AI agents.
 
 The route stays thin.
-It delegates rendering to reusable components in the {file}`@plone/layout/components/SearchResults/` directory, including `SearchResults`, `SearchSort`, `SearchFacets`, and `SearchPagination`.
+It delegates rendering to reusable components in the {file}`@plone/layout/components/SearchResults/` directory, including `SearchForm`, `SearchResults`, `SearchSort`, and `SearchPagination`.
 The components live in `@plone/layout`, so both the CMS UI and the Public UI can reuse and theme them.
 
 ## The query
 
-The `loader` reads the search term from the `SearchableText` query parameter, the requested page from `b_start`, the selected tags from repeated `Subject` parameters, the sort order from `sort`, and the scope from `path`.
+The `loader` reads the search term from the `SearchableText` query parameter, the requested page from `b_start`, the sort order from `sort`, and the scope from `path`.
 It rounds `b_start` down to a multiple of the page size, so pages never overlap.
 When `path` is set, it adds a `path` query, so the backend only returns matches from that subtree.
-It then runs two queries against the `@search` endpoint through `@plone/client` in parallel.
+It then queries the `@search` endpoint through {program}`@plone/client` for one page of results.
 
 ```{code-block} ts
 :caption: packages/publicui/routes/search.tsx
 
-const baseQuery = {
-  SearchableText: `${query}*`,
-  use_site_search_settings: 1,
-  ...(root ? { path: { query: root } } : {}),
-};
-
 let results;
-let facetSample;
 try {
-  [results, facetSample] = await Promise.all([
-    cli.search({
-      query: {
-        ...baseQuery,
-        ...(subjects.length > 0 ? { Subject: subjects } : {}),
-        b_start: bStart,
-        b_size: PAGE_SIZE,
-        metadata_fields: 'is_folderish',
-        ...sortToQuery(url.searchParams.get('sort')),
-      },
-    }),
-    cli.search({
-      query: {
-        ...baseQuery,
-        metadata_fields: 'Subject',
-        b_size: FACET_SAMPLE_SIZE,
-      },
-    }),
-  ]);
+  results = await cli.search({
+    query: {
+      // An empty SearchableText with use_site_search_settings returns a bare
+      // list instead of a batch, so omit it to search everything.
+      ...(query ? { SearchableText: `${query}*` } : {}),
+      use_site_search_settings: 1,
+      ...(root ? { path: { query: root } } : {}),
+      b_start: bStart,
+      b_size: PAGE_SIZE,
+      ...sortToQuery(url.searchParams.get('sort')),
+    },
+  });
 } catch (error: any) {
   throw data('Search failed', {
     status: typeof error.status === 'number' ? error.status : 500,
@@ -73,17 +59,15 @@ try {
 }
 ```
 
-The first query fetches the visible page of results.
 The loader appends a trailing `*` to the term so partial words match.
-`b_size` limits the request to one page, `b_start` selects the offset of the current page, `metadata_fields` adds the `is_folderish` flag that picks the fallback icon for content types without a registered icon, and the backend returns the matching slice in `items` and the full match count in `items_total`.
+`b_size` limits the request to one page, `b_start` selects the offset of the current page, and the backend returns the matching slice in `items` and the full match count in `items_total`.
 That count is everything the pagination needs.
 
-The second query feeds {ref}`the tag facets <search-facet-sampling>`.
 A backend failure becomes an error response that the route's error boundary renders.
 
 `use_site_search_settings: 1` makes the backend honor the site's search settings, such as content types excluded from search, matching Volto's behavior.
-This flag is also the reason the loader trims the term, returns early, and renders only the heading when there is no `SearchableText`.
 An empty term combined with `use_site_search_settings` makes the backend return a bare list instead of a batched result.
+So when the trimmed term is empty, the loader omits `SearchableText` from the query, and the search lists all content, still batched, sorted, and scoped.
 
 ## Result links stay in the app
 
@@ -98,7 +82,6 @@ return {
   params: query,
   bStart,
   bSize: PAGE_SIZE,
-  facets: aggregateFacets(facetSample.data.items ?? []),
 };
 ```
 
@@ -107,13 +90,21 @@ Flattening inside a component would set a correct `href` in the server-rendered 
 Flattening once in the `loader` means the serialized result data is already app-relative, so the markup and the client navigation use the same in-app address.
 The sitemap route follows the same approach.
 
-## Content-type icons
+## The page layout
 
-Each result shows an icon for its content type.
-`getContentIcon` from `@plone/helpers` resolves the icon from the result's `@type` by looking up the `config.settings.contentIcons` map, and `SearchResults` falls back to the page icon.
+The search page stacks its parts in a single column.
 
-`@plone/layout` registers the `contentIcons` map in {file}`packages/layout/config/settings.ts`, so both the CMS UI and the Public UI resolve the same icons.
-The `@plone/contents` package also registers the map, but that package only installs in the CMS UI.
+1.  The heading and the `SearchForm` field.
+    The form submits to the current route and carries the `path` scope and the `sort` order as hidden fields, so a new term keeps them, while it starts again from the first page.
+2.  A results bar, with the result count on the left and the `SearchSort` selector on the right.
+    When the results span several pages, the count also shows the range on the current page.
+    On narrow screens, the two stack.
+3.  The results, or an empty state when nothing matches.
+4.  The centered `SearchPagination` controls.
+
+Each result shows its content type label and its effective date, the linked title, and the description.
+The type label comes from `type_title`, which the site search settings include in the default metadata.
+`SearchResults` highlights the search terms in the title and the description with `<mark>`, matching them at the start of words, as the backend does with the trailing `*`.
 
 ## Sorting
 
@@ -142,47 +133,31 @@ export function sortToQuery(sort: string | null): {
 
 ## Pagination
 
-The `SearchPagination` component turns `total`, `bStart`, and `bSize` into numbered page links.
-It computes the current page and the total page count, shows the first and last page with an ellipsis around the current page, and renders previous and next controls.
-When the results fit on a single page, the component renders nothing.
+The `SearchPagination` component turns `total`, `bStart`, and `bSize` into the current page and the total page count.
+It renders the `Pagination` component from the registry, which `@plone/layout` registers from `@plone/components`, so an add-on can replace it with `config.registerComponent`.
+`Pagination` shows the first and last page, two pages on each side of the current one with an ellipsis for each gap, and previous and next controls.
+When the results fit on a single page, it renders nothing.
 
-Each page is a link that updates the `b_start` query parameter and keeps every other parameter in the address, such as `SearchableText`, `sort`, and `Subject`.
-The component reads the current parameters with `useSearchParams` and the current path with `useLocation`, so it carries any additional filters across pages.
+`SearchPagination` passes a `getPageHref` function, so `Pagination` renders real links instead of buttons.
+The links work without JavaScript, and crawlers and agents can follow them.
+Each page is a link that updates the `b_start` query parameter and keeps every other parameter in the address, such as `SearchableText`, `sort`, and `path`.
+The component reads the current parameters with `useSearchParams` and the current path with `useLocation`, so it carries any additional parameters across pages.
 
 When the address requests a `b_start` beyond the last page, the loader redirects to the last real page instead of rendering an empty result list.
-
-(search-facet-sampling)=
-
-## Tag facets
-
-The `SearchFacets` component renders a checkbox, styled as a pill, per `Subject` (tag) with a result count.
-The component stores selected tags as repeated `Subject` query parameters, and toggling one resets paging to the first page.
-Multiple selected tags match results that carry any of them, because `@plone/client` serializes the array as Plone's `Subject:list` query.
-
-The tag list stays collapsed by default behind a {guilabel}`Filter by tag` disclosure button.
-It opens automatically when the address already carries an active `Subject` filter, so a shared, pre-filtered link still shows its active tags.
-The component animates the expand and collapse with the `grid-template-rows` technique, from `0fr` to `1fr`, and honors `prefers-reduced-motion`.
-
-The available tags can't come from the `plone.app.vocabularies.Keywords` vocabulary, because that vocabulary requires authentication and the public search is anonymous.
-Instead, the `loader` runs the second, unfiltered `@search` query shown above, which requests `metadata_fields=Subject`, and the `aggregateFacets` helper counts the `Subject` values of those matches.
-The loader computes this facet sample without the active `Subject` filter, so every tag stays visible with its full count even after you select one.
-
-```{important}
-The loader caps the facet sample at `FACET_SAMPLE_SIZE` matches per request, so the tag counts reflect the first `FACET_SAMPLE_SIZE` matches rather than every match.
-```
 
 ## Accessibility and the loading state
 
 The search markup carries the structure that assistive technology needs.
 
+- `SearchForm` is a `search` landmark, and its field has a visually hidden label.
 - `SearchResults` renders the results in a named `region` landmark, a `<section>` with an `aria-label`.
   Individual results are `<article>` elements, which aren't landmarks.
 - The result count is a `<p>` with `role="status"`, a polite live region, so screen readers announce the new count.
-- The result title links, the tag chips, the {guilabel}`Filter by tag` toggle, the sort selector, and the pagination links all show a visible `:focus-visible` outline for keyboard navigation.
+- The result title links, the sort selector, and the pagination links all show a visible `:focus-visible` outline for keyboard navigation.
 - The pagination is a `nav` landmark with labeled previous and next controls, and the current page carries `aria-current="page"`.
 
-While the loader re-runs for a new query, sort order, page, or filter, the route detects the navigation with `useNavigation` and passes `loading` to `SearchResults`.
+While the loader re-runs for a new query, sort order, or page, the route detects the navigation with `useNavigation` and passes `loading` to `SearchResults`.
 `SearchResults` then sets `aria-busy` on the region, swaps the count for a {guilabel}`Searching…` status, and dims the list.
 
 The Public UI also sets `scrollbar-gutter: stable` on `html` in {file}`packages/publicui/styles/publicui.css`.
-This keeps the page width steady when expanding the tag filter or changing the result count shows or hides a scroll bar.
+This keeps the page width steady when a change in the number of results shows or hides a scroll bar.

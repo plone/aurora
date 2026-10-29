@@ -18,13 +18,9 @@
       }
     },
     "search": {
-      "resultCount_one": "{{count}} Ergebnis",
-      "resultCount_other": "{{count}} Ergebnisse",
       "pagination": "Seiten der Suchergebnisse",
-      "previous": "Vorherige Seite",
-      "next": "Nächste Seite",
-      "page": "Seite {{page}}",
-      "filterByTag": "Nach Schlagwort filtern",
+      "previous": "Zurück",
+      "next": "Weiter",
       "resultsLabel": "Suchergebnisse",
       "loading": "Suche läuft…",
       "sort": {
@@ -32,7 +28,20 @@
         "relevance": "Relevanz",
         "date": "Datum",
         "title": "Titel"
-      }
+      },
+      "resultCountFor_one": "{{count}} Ergebnis für „{{query}}“",
+      "resultCountFor_other": "{{count}} Ergebnisse für „{{query}}“",
+      "showing": "{{start}}-{{end}} werden angezeigt",
+      "noResultsFor": "Keine Ergebnisse für „{{query}}“",
+      "nothingFound": "Nichts gefunden",
+      "noResultsHint": "Versuchen Sie einen anderen Begriff oder prüfen Sie die Schreibweise.",
+      "inputLabel": "Suchbegriffe",
+      "placeholder": "Website durchsuchen…",
+      "submit": "Suchen",
+      "resultCount_one": "{{count}} Ergebnis",
+      "resultCount_other": "{{count}} Ergebnisse",
+      "noResults": "Keine Ergebnisse",
+      "pageLabel": "Seite"
     },
     "contenttypes": {
       "common": {

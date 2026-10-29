@@ -12,18 +12,24 @@ const renderPagination = (
     </MemoryRouter>,
   );
 
+const pageLink = (page: number) =>
+  screen.getByRole('link', { name: `layout.search.pageLabel ${page}` });
+
 describe('SearchPagination', () => {
   it('renders nothing when there is only one page', () => {
-    const { container } = renderPagination({ total: 10, bStart: 0, bSize: 25 });
-    expect(container).toBeEmptyDOMElement();
+    renderPagination({ total: 10, bStart: 0, bSize: 25 });
+    expect(screen.queryByRole('navigation')).toBeNull();
   });
 
-  it('renders a page link per page', () => {
+  it('renders a labeled navigation with a link per page', () => {
     renderPagination({ total: 60, bStart: 0, bSize: 25 });
     // 60 results / 25 => 3 pages
-    expect(screen.getByText('1')).toBeInTheDocument();
-    expect(screen.getByText('2')).toBeInTheDocument();
-    expect(screen.getByText('3')).toBeInTheDocument();
+    expect(
+      screen.getByRole('navigation', { name: 'layout.search.pagination' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('1')).toHaveAttribute('aria-current', 'page');
+    expect(pageLink(2)).toBeInTheDocument();
+    expect(pageLink(3)).toBeInTheDocument();
     expect(screen.queryByText('4')).not.toBeInTheDocument();
   });
 
@@ -39,27 +45,15 @@ describe('SearchPagination', () => {
     expect(current).toHaveAttribute('aria-current', 'page');
 
     // page 3 link keeps SearchableText and sets b_start, scoped to the route
-    const thirdPage = screen.getByText('3').closest('a');
-    expect(thirdPage).toHaveAttribute(
-      'href',
-      expect.stringContaining('/search?'),
-    );
-    expect(thirdPage).toHaveAttribute(
-      'href',
-      expect.stringContaining('SearchableText=foo'),
-    );
-    expect(thirdPage).toHaveAttribute(
-      'href',
-      expect.stringContaining('b_start=50'),
-    );
+    const href = pageLink(3).getAttribute('href') ?? '';
+    expect(href).toContain('/search?');
+    expect(href).toContain('SearchableText=foo');
+    expect(href).toContain('b_start=50');
 
     // first page link drops b_start
-    const firstPage = screen.getByText('1').closest('a');
-    expect(firstPage?.getAttribute('href')).not.toContain('b_start');
-    expect(firstPage).toHaveAttribute(
-      'href',
-      expect.stringContaining('SearchableText=foo'),
-    );
+    const firstHref = pageLink(1).getAttribute('href') ?? '';
+    expect(firstHref).not.toContain('b_start');
+    expect(firstHref).toContain('SearchableText=foo');
   });
 
   it('windows long page lists with ellipses around the current page', () => {
@@ -68,47 +62,42 @@ describe('SearchPagination', () => {
       '/search?SearchableText=foo&b_start=100',
     );
 
-    for (const page of ['1', '4', '5', '6', '10']) {
+    for (const page of ['1', '3', '4', '5', '6', '7', '10']) {
       expect(screen.getByText(page)).toBeInTheDocument();
     }
-    for (const page of ['2', '3', '7', '8', '9']) {
+    for (const page of ['2', '8', '9']) {
       expect(screen.queryByText(page)).not.toBeInTheDocument();
     }
     expect(screen.getAllByText('…')).toHaveLength(2);
   });
 
-  it('windows the edges without a leading or trailing ellipsis', () => {
+  it('windows the edges with a single ellipsis', () => {
     renderPagination({ total: 250, bStart: 0, bSize: 25 });
-    expect(screen.getByText('1')).toBeInTheDocument();
-    expect(screen.getByText('2')).toBeInTheDocument();
+    expect(screen.getByText('3')).toBeInTheDocument();
     expect(screen.getByText('10')).toBeInTheDocument();
-    expect(screen.queryByText('3')).not.toBeInTheDocument();
+    expect(screen.queryByText('4')).not.toBeInTheDocument();
     expect(screen.getAllByText('…')).toHaveLength(1);
   });
 
-  it('windows the last page without a trailing ellipsis', () => {
-    renderPagination(
-      { total: 250, bStart: 225, bSize: 25 },
-      '/search?SearchableText=foo&b_start=225',
-    );
-    expect(screen.getByText('1')).toBeInTheDocument();
-    expect(screen.getByText('9')).toBeInTheDocument();
-    expect(screen.getByText('10')).toBeInTheDocument();
-    expect(screen.queryByText('8')).not.toBeInTheDocument();
-    expect(screen.getAllByText('…')).toHaveLength(1);
-  });
-
-  it('disables previous on the first page and next on the last', () => {
+  it('links previous and next, except past the first and last page', () => {
     const { rerender } = renderPagination({ total: 60, bStart: 0, bSize: 25 });
-    expect(screen.getByText('‹').closest('a')).toBeNull();
-    expect(screen.getByText('›').closest('a')).not.toBeNull();
+    expect(
+      screen.queryByRole('link', { name: 'layout.search.previous' }),
+    ).toBeNull();
+    expect(
+      screen.getByRole('link', { name: 'layout.search.next' }),
+    ).toHaveAttribute('rel', 'next');
 
     rerender(
       <MemoryRouter initialEntries={['/search?SearchableText=foo&b_start=50']}>
         <SearchPagination total={60} bStart={50} bSize={25} />
       </MemoryRouter>,
     );
-    expect(screen.getByText('‹').closest('a')).not.toBeNull();
-    expect(screen.getByText('›').closest('a')).toBeNull();
+    expect(
+      screen.getByRole('link', { name: 'layout.search.previous' }),
+    ).toHaveAttribute('rel', 'prev');
+    expect(
+      screen.queryByRole('link', { name: 'layout.search.next' }),
+    ).toBeNull();
   });
 });

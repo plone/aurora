@@ -4,7 +4,7 @@ myst:
     "description": "How to customize the public search route in Plone Aurora"
     "property=og:description": "How to customize the public search route in Plone Aurora"
     "property=og:title": "Customize the search"
-    "keywords": "Plone Aurora, frontend, Plone, search, customize, sorting, icons, page size, query"
+    "keywords": "Plone Aurora, frontend, Plone, search, customize, sorting, page size, query"
 ---
 
 # Customize the search
@@ -41,23 +41,9 @@ case 'created':
   return { sort_on: 'created', sort_order: 'descending' };
 ```
 
-## Give a content type its own icon
-
-To give a content type its own icon in the results, add an entry for its `@type` to the `config.settings.contentIcons` map, for example, in your add-on's configuration.
-
-```{code-block} ts
-:caption: your add-on's configuration
-
-import talkSVG from './icons/talk.svg?react';
-
-config.settings.contentIcons = {
-  ...config.settings.contentIcons,
-  Talk: talkSVG,
-};
-```
-
 ## Extend the query
 
 Extend the search by adding fields to the `query` object that the route's `loader` passes to `cli.search` in {file}`packages/publicui/routes/search.tsx`.
 Read any extra query parameter you add to the address through `url.searchParams` in the `loader`.
-`SearchSort`, `SearchFacets`, and `SearchPagination` keep the other parameters when they navigate, so your parameter survives sorting, filtering, and paging.
+`SearchSort` and `SearchPagination` keep the other parameters when they navigate, so your parameter survives sorting and paging.
+A new search from `SearchForm` only carries `path` and `sort`, so add a hidden field to it if your parameter should survive a new search term.

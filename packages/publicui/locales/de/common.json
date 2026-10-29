@@ -5,7 +5,8 @@
       "title": "Suchergebnisse für",
       "results": "Suchergebnisse",
       "placeholder": "Seite durchsuchen...",
-      "noResults": "Keine Ergebnisse gefunden"
+      "noResults": "Keine Ergebnisse gefunden",
+      "heading": "Suche"
     },
     "toolbar": {
       "edit": "Bearbeiten",

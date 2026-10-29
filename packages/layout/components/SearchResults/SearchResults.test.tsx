@@ -16,11 +16,17 @@ const items = [
 
 const renderResults = (
   data: unknown[],
-  { total = data.length, loading = false } = {},
+  { total = data.length, loading = false, query = '', bStart = 0 } = {},
 ) =>
   render(
     <MemoryRouter>
-      <SearchResults items={data as never} total={total} loading={loading} />
+      <SearchResults
+        items={data as never}
+        total={total}
+        query={query}
+        bStart={bStart}
+        loading={loading}
+      />
     </MemoryRouter>,
   );
 
@@ -42,9 +48,59 @@ describe('SearchResults', () => {
     expect(screen.getByText('About A')).toBeInTheDocument();
   });
 
-  it('renders no result articles for an empty result set', () => {
-    const { container } = renderResults([], { total: 0 });
+  it('renders the empty state for an empty result set', () => {
+    const { container } = renderResults([], { total: 0, query: 'zzz' });
     expect(container.querySelectorAll('article')).toHaveLength(0);
+    expect(screen.getByText('layout.search.nothingFound')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'layout.search.noResultsFor',
+    );
+    expect(screen.queryByRole('combobox')).toBeNull();
+  });
+
+  it('counts without a term when the search is empty', () => {
+    renderResults(items);
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'layout.search.resultCount',
+    );
+    expect(screen.getByRole('status')).not.toHaveTextContent(
+      'layout.search.resultCountFor',
+    );
+  });
+
+  it('shows the sort control next to the count', () => {
+    renderResults(items);
+    expect(screen.getByRole('combobox')).toBeInTheDocument();
+  });
+
+  it('adds the shown range when the results span several pages', () => {
+    renderResults(items, { total: 60, bStart: 25 });
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'layout.search.showing',
+    );
+  });
+
+  it('omits the shown range when all results fit on one page', () => {
+    renderResults(items);
+    expect(screen.getByRole('status')).not.toHaveTextContent(
+      'layout.search.showing',
+    );
+  });
+
+  it('highlights the search terms in titles and descriptions', () => {
+    const { container } = renderResults(items, { query: 'article A*' });
+    const marks = [...container.querySelectorAll('mark')].map(
+      (mark) => mark.textContent,
+    );
+    expect(marks).toContain('Article');
+    expect(marks).toContain('A');
+    // the link name is unchanged by the highlighting
+    expect(screen.getByRole('link', { name: 'Article A' })).toBeInTheDocument();
+  });
+
+  it('shows the content type label', () => {
+    renderResults([{ ...items[0], type_title: 'News' }]);
+    expect(screen.getByText('News')).toBeInTheDocument();
   });
 
   it('renders an accessible results region and a status count', () => {
