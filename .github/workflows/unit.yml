@@ -2,7 +2,7 @@ name: Unit Tests
 on: [push, pull_request]
 
 env:
-  node-version: 24.x
+  node-version: 26.x
 
 # Cancel the runs of a branch or pull request that a newer push supersedes,
 # except on main, where every commit runs to completion.
@@ -28,7 +28,7 @@ jobs:
           - '@plone/quanta'
           - '@plone/react-router'
           - '@plone/registry'
-        node-version: [24.x]
+        node-version: [26.x]
     steps:
       - uses: actions/checkout@v7
       - name: Set up Node.js environment
@@ -46,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [24.x]
+        node-version: [26.x]
     steps:
       - uses: actions/checkout@v7
       - name: Set up Node.js environment
@@ -82,7 +82,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [24.x]
+        node-version: [26.x]
     steps:
       - uses: actions/checkout@v7
       - name: Set up Node.js environment
