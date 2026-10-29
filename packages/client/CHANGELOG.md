@@ -8,6 +8,24 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.9 (2026-10-29)
+
+### Feature
+
+- Added `PloneClient.extend()` to add custom endpoint methods to the client, the augmentable `PloneClientExtensions` interface to type them, and exported `apiRequest`, `getBackendURL`, and their types. `PloneClient.initialize()` now returns an instance of the class it is called on. @sneridagh 
+- Added the `b_size` argument to `getVocabulary`, to get a batch of a given size, or all the terms with `-1`. @sneridagh 
+
+### Bugfix
+
+- Accepted the choice tokens of `allow_discussion`, a stored `preview_image`, and `null` for the file fields, in the content data of `createContent` and `updateContent`. @sneridagh 
+- Fixed the `@plone/types` dependency specifier, which was `workspace: *` instead of `workspace:*`. @sneridagh 
+- Fixed the `PloneClient` constructor, which did not bind the endpoint methods to the instance, so detached methods like `const { getContent } = cli` lost `this`. @sneridagh 
+
+### Internal
+
+- Removed a nonexistent entry point from the `tsup` configuration. @sneridagh 
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+
 ## 2.0.0-alpha.8 (2026-10-03)
 
 ### Internal
