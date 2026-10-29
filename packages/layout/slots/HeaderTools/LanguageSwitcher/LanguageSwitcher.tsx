@@ -1,10 +1,8 @@
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { langmap } from '@plone/helpers';
-import { Menu } from '@plone/components';
 import { ChevrondownIcon } from '@plone/icons';
 import config from '@plone/registry';
-import { Button } from 'react-aria-components';
 import type { RootLoader } from '@plone/aurora/app/root';
 import type { GetTranslationResponse } from '@plone/types';
 
@@ -21,9 +19,10 @@ export const normalizeLang = (language: string): string => {
 
 /**
  * Up to this many languages, the switcher is a row of links; above it, a
- * dropdown menu, as a longer row does not fit the header.
+ * dropdown menu, as a longer row does not fit the header. Sites set their
+ * own in `config.settings.languageSwitcherMenuThreshold`.
  */
-export const LANGUAGE_SWITCHER_MENU_THRESHOLD = 3;
+export const DEFAULT_LANGUAGE_SWITCHER_MENU_THRESHOLD = 3;
 
 /**
  * The paths of the page and its translations, by normalized language, from
@@ -53,6 +52,8 @@ const LanguageSwitcher = (props: LanguageSelectorProps) => {
   const { t } = useTranslation();
   const { pathname } = useLocation();
   const Link = config.getComponent('Link').component!;
+  const Button = config.getComponent('Button').component!;
+  const Menu = config.getComponent('Menu').component!;
   const MenuItem = config.getComponent('MenuItem').component!;
   const MenuTrigger = config.getComponent('MenuTrigger').component!;
   const rootData = useRouteLoaderData<RootLoader>('root');
@@ -98,7 +99,10 @@ const LanguageSwitcher = (props: LanguageSelectorProps) => {
     isCurrent: normalizeLang(lang) === currentLang,
   }));
 
-  if (languages.length <= LANGUAGE_SWITCHER_MENU_THRESHOLD) {
+  const menuThreshold =
+    config.settings.languageSwitcherMenuThreshold ??
+    DEFAULT_LANGUAGE_SWITCHER_MENU_THRESHOLD;
+  if (languages.length <= menuThreshold) {
     return (
       <div className={clsx(styles['language-switcher'])}>
         {languages.map(({ lang, href, name, label, isCurrent }) => (

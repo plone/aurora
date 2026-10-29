@@ -2,6 +2,7 @@ import '@testing-library/jest-dom';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
+import config from '@plone/registry';
 import LanguageSwitcher, {
   getTranslationPaths,
   normalizeLang,
@@ -204,6 +205,18 @@ describe('LanguageSwitcher threshold', () => {
     renderAt('/sv/some-page');
     expect(trigger()).toHaveTextContent('Svenska');
     expect(screen.queryByRole('link')).not.toBeInTheDocument();
+  });
+
+  test('follows config.settings.languageSwitcherMenuThreshold', () => {
+    availableLanguages = ['en', 'sv', 'pt-br', 'sk'];
+    config.settings.languageSwitcherMenuThreshold = 4;
+    try {
+      renderAt('/sv/some-page');
+      expect(screen.queryByRole('button')).not.toBeInTheDocument();
+      expect(screen.getAllByRole('link')).toHaveLength(4);
+    } finally {
+      delete config.settings.languageSwitcherMenuThreshold;
+    }
   });
 });
 
