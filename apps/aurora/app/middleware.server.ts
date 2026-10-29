@@ -18,6 +18,26 @@ export const ploneUserContext = createContext<
 >(null);
 export const ploneClearAuthCookieContext = createContext<boolean>(false);
 
+/**
+ * Where the site root sends a visitor on a multilingual site: the default
+ * language root — what Plone's language-switcher view on the site root and
+ * Volto's MultilingualRedirector do. The root is managed through its
+ * contents view, never visited. The target is the site's default language,
+ * not the negotiated interface locale (the locale says nothing about the
+ * content tree), and only a language token is accepted as a target.
+ */
+export function multilingualRootRedirect(
+  pathname: string,
+  site: Awaited<ReturnType<PloneClient['getSite']>>['data'] | undefined,
+): string | undefined {
+  if (pathname !== '/' || !site?.features?.multilingual) return undefined;
+  const language = site['plone.default_language'];
+  return typeof language === 'string' &&
+    /^[a-z]{2,3}(-[a-z]{2,4})?$/.test(language)
+    ? `/${language}`
+    : undefined;
+}
+
 function getAuthorizedResourceHeaders(
   request: Request,
   token?: string,
@@ -251,7 +271,7 @@ export function getContentExpand(path: string, authenticated: boolean) {
 }
 
 export const fetchPloneContent: Route.MiddlewareFunction = async (
-  { request, params, context, pattern },
+  { request, params, context, pattern, url },
   next,
 ) => {
   if (routeSkipsContent(pattern)) return;
@@ -261,6 +281,9 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
   let cli = context.get(ploneClientContext);
 
   const path = `/${params['*'] || ''}`;
+  // The request's path as the router matched it (a `.data` suffix already
+  // stripped) — not the splat, which is empty for /login as well as for /.
+  const pathname = (url ?? new URL(request.url)).pathname;
 
   let userId = '';
   if (token) {
@@ -296,6 +319,12 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
     ]);
 
     setPloneContext(content, site, user?.data ?? null);
+
+    // On a multilingual site the root is managed, not visited: a request
+    // for / — a full load or a client-side navigation — goes to the default
+    // language root.
+    const rootRedirect = multilingualRootRedirect(pathname, site.data);
+    if (rootRedirect) return redirect(rootRedirect);
   } catch (error: any) {
     if (error.status >= 300 && error.status < 400 && error.location) {
       return redirect(error.location, {
@@ -320,6 +349,12 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
 
         setPloneContext(content, site, null);
         context.set(ploneClearAuthCookieContext, true);
+
+        // The same root rule after an expired cookie's anonymous retry; the
+        // redirect leaves before the root loader, so it clears the cookie
+        // itself.
+        const rootRedirect = multilingualRootRedirect(pathname, site.data);
+        if (rootRedirect) return clearAuthOnResponse(redirect(rootRedirect));
         return;
       } catch (anonymousError: any) {
         throw data('Content Not Found', {

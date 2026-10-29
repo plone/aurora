@@ -1343,9 +1343,6 @@ importers:
         specifier: ^4.1.12
         version: 4.1.12
     devDependencies:
-      '@plone/components':
-        specifier: workspace:*
-        version: link:../components
       '@plone/icons':
         specifier: workspace:*
         version: link:../icons

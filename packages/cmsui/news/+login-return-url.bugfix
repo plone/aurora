@@ -1,0 +1,1 @@
+The login action returns the editor to the page the login link was pressed on (the `return_url` the header's login link sends) instead of always to the site root. A `return_url` that is not a path on this site falls back to the site root. @mpalomaki
