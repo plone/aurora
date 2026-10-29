@@ -8,6 +8,21 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.19 (2026-10-29)
+
+### Feature
+
+- Added `*.block.md` docs for the image, video, teaser, listing and maps blocks. @sneridagh 
+- The `@plone/components` components are rendered from the component registry with `config.getComponent`, so add-ons can override them. @pnicolli 
+
+### Bugfix
+
+- The image block stores the field and scales of an image picked in its settings sidebar, as its own picker does. @sneridagh 
+
+### Internal
+
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+
 ## 1.0.0-alpha.18 (2026-10-06)
 
 ### Breaking
