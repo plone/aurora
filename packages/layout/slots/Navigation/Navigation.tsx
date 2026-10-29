@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 import { Button } from 'react-aria-components';
-import { Link } from '@plone/components';
 import { MenuIcon } from '@plone/icons';
 import type { SlotComponentProps } from '../SlotRenderer';
+import config from '@plone/registry';
 import styles from './Navigation.module.css';
 import clsx from 'clsx';
 
@@ -17,6 +17,7 @@ const Navigation = (props: SlotComponentProps) => {
   const { content } = props;
   const { t } = useTranslation();
   const { pathname } = useLocation();
+  const Link = config.getComponent('Link').component!;
   const navItems = content?.['@components']?.navigation?.items || [];
 
   // The collapsed-header menu (shown below 48rem by header.css) is open only
