@@ -18,6 +18,41 @@ export const ploneUserContext = createContext<
 >(null);
 export const ploneClearAuthCookieContext = createContext<boolean>(false);
 
+/**
+ * Where the site root sends a visitor on a multilingual site: the default
+ * language root — what Plone's language-switcher view on the site root and
+ * Volto's MultilingualRedirector do. The root is managed through its
+ * contents view, never visited. The target is the site's default language,
+ * not the negotiated interface locale (the locale says nothing about the
+ * content tree), and only a language token is accepted as a target.
+ */
+export function multilingualRootRedirect(
+  pathname: string,
+  site: Awaited<ReturnType<PloneClient['getSite']>>['data'] | undefined,
+): string | undefined {
+  if (pathname !== '/' || !site?.features?.multilingual) return undefined;
+  const language = site['plone.default_language'];
+  return typeof language === 'string' &&
+    /^[a-z]{2,3}(-[a-z]{2,4})?$/.test(language)
+    ? `/${language}`
+    : undefined;
+}
+
+/**
+ * Where a 401 sends a visitor who is not signed in: the login page, with the
+ * requested path as `return_url`, as Volto's Unauthorized view does. No
+ * redirect when the request is for the login page itself — the root
+ * middleware runs for `/login` with an empty splat, and on a site whose root
+ * is private that would loop.
+ */
+export function unauthorizedLoginRedirect(
+  path: string,
+  pathname: string = path,
+): string | undefined {
+  if (pathname === '/login') return undefined;
+  return `/login?return_url=${encodeURIComponent(path)}`;
+}
+
 function getAuthorizedResourceHeaders(
   request: Request,
   token?: string,
@@ -251,7 +286,7 @@ export function getContentExpand(path: string, authenticated: boolean) {
 }
 
 export const fetchPloneContent: Route.MiddlewareFunction = async (
-  { request, params, context, pattern },
+  { request, params, context, pattern, url },
   next,
 ) => {
   if (routeSkipsContent(pattern)) return;
@@ -261,8 +296,12 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
   let cli = context.get(ploneClientContext);
 
   const path = `/${params['*'] || ''}`;
+  // The request's path as the router matched it (a `.data` suffix already
+  // stripped) — not the splat, which is empty for /login as well as for /.
+  const pathname = (url ?? new URL(request.url)).pathname;
 
   let userId = '';
+  let tokenExpired = false;
   if (token) {
     try {
       const decodedToken = jwtDecode<{
@@ -271,6 +310,9 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
         fullname: string | null;
       }>(token);
       userId = decodedToken.sub || '';
+      tokenExpired =
+        typeof decodedToken.exp === 'number' &&
+        decodedToken.exp * 1000 < Date.now();
     } catch {}
   }
 
@@ -296,6 +338,12 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
     ]);
 
     setPloneContext(content, site, user?.data ?? null);
+
+    // On a multilingual site the root is managed, not visited: a request
+    // for / — a full load or a client-side navigation — goes to the default
+    // language root.
+    const rootRedirect = multilingualRootRedirect(pathname, site.data);
+    if (rootRedirect) return redirect(rootRedirect);
   } catch (error: any) {
     if (error.status >= 300 && error.status < 400 && error.location) {
       return redirect(error.location, {
@@ -320,8 +368,22 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
 
         setPloneContext(content, site, null);
         context.set(ploneClearAuthCookieContext, true);
+
+        // The same root rule after an expired cookie's anonymous retry; the
+        // redirect leaves before the root loader, so it clears the cookie
+        // itself.
+        const rootRedirect = multilingualRootRedirect(pathname, site.data);
+        if (rootRedirect) return clearAuthOnResponse(redirect(rootRedirect));
         return;
       } catch (anonymousError: any) {
+        // An expired token is no sign-in at all (Aurora's cookie expires with
+        // the token): the visitor logs in again and comes back here. A live
+        // token without permission keeps the 401 page.
+        const loginRedirect =
+          tokenExpired && anonymousError?.status === 401
+            ? unauthorizedLoginRedirect(path, pathname)
+            : undefined;
+        if (loginRedirect) return clearAuthOnResponse(redirect(loginRedirect));
         throw data('Content Not Found', {
           status:
             typeof anonymousError.status === 'number'
@@ -330,6 +392,12 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
         });
       }
     }
+
+    const loginRedirect =
+      !token && error?.status === 401
+        ? unauthorizedLoginRedirect(path, pathname)
+        : undefined;
+    if (loginRedirect) return redirect(loginRedirect);
 
     throw data('Content Not Found', {
       status: typeof error.status === 'number' ? error.status : 500,

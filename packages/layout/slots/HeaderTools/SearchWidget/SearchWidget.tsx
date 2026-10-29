@@ -1,7 +1,7 @@
 import { Form, Input, Label, TextField } from 'react-aria-components';
 import type { SlotComponentProps } from '../../SlotRenderer';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@plone/components';
+import config from '@plone/registry';
 import Search from '@plone/icons/svg/search.svg?react';
 import styles from './SearchWidget.module.css';
 import clsx from 'clsx';
@@ -10,6 +10,7 @@ const SearchWidget = (props: SlotComponentProps) => {
   const { location } = props;
 
   const { t } = useTranslation();
+  const Button = config.getComponent('Button').component!;
   const pathname = location.pathname;
   const hasPath = pathname?.length > 0 && pathname !== '/';
 

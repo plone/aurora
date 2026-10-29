@@ -1,0 +1,1 @@
+A visitor who is not signed in and opens private content is sent to the login page with the page as `return_url`, as in Volto, instead of a bare 401 page. An expired sign-in does the same and clears the cookie. Signed-in users without permission still see the 401 page. @mpalomaki
