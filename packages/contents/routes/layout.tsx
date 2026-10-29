@@ -110,7 +110,8 @@ export default function Index() {
             {showToolbar && <Toolbar />}
             <div
               className={clsx({
-                'ml-(--plone-toolbar-width)': showToolbar,
+                'ml-(--plone-toolbar-width) max-md:ml-0 max-md:pb-[calc(64px+env(safe-area-inset-bottom,0px))]':
+                  showToolbar,
               })}
             >
               <Outlet />

@@ -1,0 +1,135 @@
+#toolbar-portals .react-aria-Popover:has(.more-menu) {
+  width: 360px;
+  max-width: min(360px, calc(100vw - 80px));
+}
+
+#toolbar-portals .react-aria-Popover.more-menu-dropdown,
+.react-aria-Popover.more-menu-dropdown {
+  width: 180px;
+  max-width: min(180px, calc(100vw - 80px));
+  padding: 0.375rem 0;
+  border: 0;
+  background: var(--quanta-air);
+  box-shadow:
+    0 3px 6px rgb(2 19 34 / 12%),
+    0 2px 4px rgb(2 19 34 / 6%);
+
+  .react-aria-MenuItem {
+    display: flex;
+    min-height: 36px;
+    box-sizing: border-box;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    color: var(--quanta-denim);
+    cursor: pointer;
+    font-size: 0.875rem;
+    outline: none;
+  }
+
+  .react-aria-MenuItem[data-focused] {
+    background: var(--quanta-snow);
+  }
+}
+
+.more-menu {
+  padding: 1rem;
+  outline: none;
+
+  .react-aria-MenuItem[data-has-submenu]::after {
+    content: none;
+  }
+  .react-aria-MenuItem[data-has-submenu][aria-expanded='true']
+    > svg:last-child {
+    transform: rotate(180deg);
+  }
+
+  .react-aria-Header {
+    padding: 0.75rem;
+    color: var(--quanta-pigeon);
+    font-size: 0.75rem;
+    overflow-wrap: anywhere;
+  }
+
+  .react-aria-MenuItem {
+    display: flex;
+    min-height: 48px;
+    box-sizing: border-box;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    border-top: 1px solid var(--quanta-smoke);
+    color: var(--quanta-sapphire);
+    cursor: pointer;
+    gap: 0.75rem;
+    outline: none;
+  }
+
+  .react-aria-MenuItem[data-focused] {
+    background: var(--quanta-snow);
+  }
+  .react-aria-MenuItem[data-disabled] {
+    color: var(--quanta-pigeon);
+    cursor: default;
+  }
+  .more-menu-label {
+    width: 40%;
+    color: var(--quanta-denim);
+  }
+  .react-aria-Text {
+    flex: 1;
+  }
+  .more-menu-value {
+    flex: 1;
+  }
+  svg {
+    width: 24px;
+    height: 24px;
+    color: var(--quanta-pigeon);
+  }
+
+  svg.more-menu-state-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--quanta-sapphire);
+  }
+}
+
+/* Keep the sheet styling consistent when it is portalled outside the toolbar. */
+.toolbar-mobile-sheet {
+  z-index: 20;
+}
+.toolbar-mobile-sheet [data-sheet-scroll] div:has(> [data-sheet-content]) {
+  overflow: hidden;
+  width: 100%;
+  max-height: calc(100dvh - 32px);
+  box-sizing: border-box;
+  border-radius: 16px 16px 0 0;
+  background: var(--quanta-air, white);
+  box-shadow: 0 -4px 20px rgb(2 19 34 / 15%);
+}
+.toolbar-mobile-sheet [data-sheet-content] {
+  box-sizing: border-box;
+  outline: none;
+  overflow-y: auto;
+}
+.toolbar-mobile-sheet-content {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.toolbar-mobile-sheet-close {
+  display: flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  margin: 0 1rem 0.75rem;
+  background: var(--quanta-smoke, #eee);
+  color: var(--quanta-denim, #123);
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+
+.toolbar-mobile-sheet-close svg {
+  width: 24px;
+  height: 24px;
+}

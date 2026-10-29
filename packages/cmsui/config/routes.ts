@@ -72,6 +72,49 @@ export default function install(config: ConfigType) {
       },
       {
         type: 'prefix',
+        path: '@@history',
+        children: [
+          { type: 'route', path: '*', file: '@plone/cmsui/routes/history.tsx' },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@aliases',
+        children: [
+          { type: 'route', path: '*', file: '@plone/cmsui/routes/aliases.tsx' },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@links-to-item',
+        children: [
+          {
+            type: 'route',
+            path: '*',
+            file: '@plone/cmsui/routes/links-to-item.tsx',
+          },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@rules',
+        children: [
+          { type: 'route', path: '*', file: '@plone/cmsui/routes/rules.tsx' },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@manage-translations',
+        children: [
+          {
+            type: 'route',
+            path: '*',
+            file: '@plone/cmsui/routes/manage-translations.tsx',
+          },
+        ],
+      },
+      {
+        type: 'prefix',
         path: 'controlpanel',
         children: [
           {
@@ -145,6 +188,11 @@ export default function install(config: ConfigType) {
         file: '@plone/cmsui/routes/queryStringOptions.tsx',
       },
     ],
+  });
+  config.registerRoute({
+    type: 'route',
+    path: '@more-menu',
+    file: '@plone/cmsui/routes/api/more-menu.tsx',
   });
   config.registerRoute({
     type: 'prefix',

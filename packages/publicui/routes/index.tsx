@@ -8,6 +8,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useFetcher,
   useLocation,
   useMatches,
   useNavigate,
@@ -25,11 +26,14 @@ import {
 import { getLocale } from '@plone/aurora/app/i18next.server';
 import {
   ploneContentContext,
+  ploneClientContext,
+  ploneSiteContext,
   ploneUserContext,
 } from '@plone/aurora/app/middleware.server';
 import { PersonalTools } from '@plone/layout/components/Toolbar/PersonalTools/PersonalTools';
+import { MoreMenu } from '@plone/layout/components/Toolbar/MoreMenu/MoreMenu';
 import type { RootLoader } from '@plone/aurora/app/root';
-import { FolderIcon, ShareIcon } from '@plone/icons';
+import { FolderIcon } from '@plone/icons';
 import Pencil from '@plone/icons/svg/pencil.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
@@ -89,8 +93,29 @@ export async function loader({
   const locale = getLocale(context);
   const content = context.get(ploneContentContext);
   const user = context.get(ploneUserContext);
+  const multilingual = !!context.get(ploneSiteContext)?.features?.multilingual;
+  const canEdit = shouldShowToolbar(content);
+  const cli = context.get(ploneClientContext);
+  const [workflowResult, typeResult] =
+    canEdit && (content['@type'] as string) !== 'Plone Site'
+      ? await Promise.all([
+          cli.getWorkflow({ path: content['@id'] }).catch(() => null),
+          cli.getType({ type: content['@type'] }).catch(() => null),
+        ])
+      : [null, null];
+  const workflow = workflowResult?.data as unknown as
+    | {
+        state?: { id: string; title: string };
+        transitions?: { '@id': string; title: string }[];
+      }
+    | undefined;
+  const layouts = (typeResult?.data.layouts ?? []).filter(
+    (layout) => layout in config.views.layoutViews,
+  );
   return {
     content,
+    moreData: { workflow, layouts },
+    multilingual,
     user: user && {
       id: user.id,
       username: user.username,
@@ -107,7 +132,9 @@ export async function loader({
 
 export default function Index() {
   const location = useLocation();
-  const { content, locale, user } = useLoaderData<typeof loader>();
+  const { content, locale, user, moreData, multilingual } =
+    useLoaderData<typeof loader>();
+  const moreFetcher = useFetcher();
   const { i18n } = useTranslation();
   const navigate = useNavigate();
   const matches = useMatches() as UIMatch<unknown, { bodyClass: string }>[];
@@ -195,16 +222,30 @@ export default function Index() {
                 </Plug>
                 <Plug
                   pluggable="toolbar-top"
-                  id="button-sharing"
-                  // @ts-expect-error this is currently typed as never[]
-                  dependencies={[location.pathname]}
+                  id="button-more"
+                  dependencies={
+                    [
+                      content,
+                      moreData,
+                      multilingual,
+                      location.pathname,
+                    ] as never[]
+                  }
                 >
-                  <Link
-                    aria-label="Sharing"
-                    href={`/@@sharing${location.pathname.replace(/^\/$/, '')}`}
-                  >
-                    <ShareIcon />
-                  </Link>
+                  <MoreMenu
+                    content={content}
+                    path={location.pathname}
+                    actions={content?.['@components']?.actions}
+                    workflow={moreData.workflow}
+                    layouts={moreData.layouts}
+                    multilingual={multilingual}
+                    onChange={(operation, value) =>
+                      moreFetcher.submit(
+                        { path: location.pathname, operation, value },
+                        { method: 'post', action: '/@more-menu' },
+                      )
+                    }
+                  />
                 </Plug>
               </>
             )}
