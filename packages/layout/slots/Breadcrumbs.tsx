@@ -1,13 +1,12 @@
 import type { SlotComponentProps } from './SlotRenderer';
-import {
-  Breadcrumbs as PCBreadcrumbs,
-  Breadcrumb as PCBreadcrumb,
-} from '@plone/components';
+import config from '@plone/registry';
 import { HomeIcon } from '@plone/icons';
 import SectionWrapper from '../components/SectionWrapper/SectionWrapper';
 
 const Breadcrumbs = (props: SlotComponentProps) => {
   const { content } = props;
+  const PCBreadcrumbs = config.getComponent('Breadcrumbs').component!;
+  const PCBreadcrumb = config.getComponent('Breadcrumb').component!;
   const items = content?.['@components']?.breadcrumbs.items;
   const root = content?.['@components']?.breadcrumbs.root;
 

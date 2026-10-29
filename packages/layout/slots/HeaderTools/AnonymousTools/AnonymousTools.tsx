@@ -1,13 +1,13 @@
 import clsx from 'clsx';
 import type { SlotComponentProps } from '../../SlotRenderer';
 import { useTranslation } from 'react-i18next';
-import { Link } from '@plone/components';
 import config from '@plone/registry';
 import styles from './AnonymousTools.module.css';
 
 const AnonymousTools = (props: SlotComponentProps) => {
   const { content } = props;
   const { t } = useTranslation();
+  const Link = config.getComponent('Link').component!;
 
   const returnUrl = content['@id'];
   const hasReturnUrl = returnUrl !== '' && returnUrl !== '/';
