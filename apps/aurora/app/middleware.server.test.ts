@@ -18,6 +18,7 @@ import {
   ploneClearAuthCookieContext,
   PloneClientMiddleware,
   otherResources,
+  unauthorizedLoginRedirect,
   ploneClientContext,
   ploneContentContext,
   ploneSiteContext,
@@ -1490,6 +1491,108 @@ describe('middleware', () => {
       expect(result).toBeInstanceOf(Response);
       expect((result as Response).headers.get('Location')).toBe('/en');
       expect(context.get(ploneClearAuthCookieContext)).toBe(true);
+    });
+
+    const anonymous401Setup = () => {
+      const getContentMock = vi
+        .fn()
+        .mockRejectedValue({ data: undefined, status: 401 });
+      const getSiteMock = vi.fn().mockResolvedValue({ data: {} });
+      config.settings.apiPath = 'http://example.com';
+      registerPloneClientFactory({
+        getContent: getContentMock,
+        getSite: getSiteMock,
+      });
+    };
+
+    const runFetchFor = async (starParam: string) => {
+      const request = new Request(`http://example.com/${starParam}`);
+      const context = new RouterContextProvider();
+      await initializePloneClientContext(request, context);
+      return fetchPloneContent(
+        {
+          request,
+          params: { '*': starParam },
+          context,
+          pattern: `/${starParam}`,
+          url: new URL(request.url),
+        },
+        vi.fn(),
+      );
+    };
+
+    it('sends an anonymous 401 to the login page with the path as return_url', async () => {
+      anonymous401Setup();
+      const result = await runFetchFor('en/press');
+      expect(result).toBeInstanceOf(Response);
+      expect((result as Response).status).toBe(302);
+      expect((result as Response).headers.get('Location')).toBe(
+        '/login?return_url=%2Fen%2Fpress',
+      );
+    });
+
+    it('sends an anonymous 401 on the site root to the login page', async () => {
+      anonymous401Setup();
+      const result = await runFetchFor('');
+      expect((result as Response).headers.get('Location')).toBe(
+        '/login?return_url=%2F',
+      );
+    });
+
+    it('does not redirect /login to itself when the site root is private', async () => {
+      anonymous401Setup();
+      const request = new Request('http://example.com/login');
+      const context = new RouterContextProvider();
+      await initializePloneClientContext(request, context);
+      await expect(() =>
+        fetchPloneContent(
+          {
+            request,
+            params: {},
+            context,
+            pattern: '/login',
+            url: new URL(request.url),
+          },
+          vi.fn(),
+        ),
+      ).rejects.toMatchObject({ init: { status: 401 } });
+    });
+
+    const tokenBearing401Setup = (exp: number) => {
+      vi.mocked(getAuthFromRequest).mockResolvedValue('some.jwt.token');
+      vi.mocked(jwtDecode).mockReturnValue({ sub: 'salomon', exp } as any);
+      config.settings.apiPath = 'http://example.com';
+      registerPloneClientFactory({
+        getContent: vi.fn().mockRejectedValue({ data: undefined, status: 401 }),
+        getSite: vi.fn().mockResolvedValue({ data: {} }),
+        getUser: vi.fn().mockResolvedValue(null),
+      });
+    };
+
+    it('keeps the 401 page for a live token without permission', async () => {
+      tokenBearing401Setup(Date.now() / 1000 + 3600);
+      await expect(() => runFetchFor('en/press')).rejects.toMatchObject({
+        init: { status: 401 },
+      });
+    });
+
+    it('sends an expired token to the login page and clears the cookie', async () => {
+      tokenBearing401Setup(Date.now() / 1000 - 60);
+      const result = await runFetchFor('en/press');
+      expect(result).toBeInstanceOf(Response);
+      expect((result as Response).headers.get('Location')).toBe(
+        '/login?return_url=%2Fen%2Fpress',
+      );
+      expect((result as Response).headers.get('Set-Cookie')).toMatch(
+        /auth_seven=;/,
+      );
+    });
+
+    it('builds the login redirect like Volto', () => {
+      expect(unauthorizedLoginRedirect('/en/internal')).toBe(
+        '/login?return_url=%2Fen%2Finternal',
+      );
+      expect(unauthorizedLoginRedirect('/', '/login')).toBeUndefined();
     });
   });
 
