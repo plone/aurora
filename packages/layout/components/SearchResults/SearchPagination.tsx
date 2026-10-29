@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useSearchParams } from 'react-router';
-import { Link } from '@plone/components';
+import config from '@plone/registry';
 import styles from './SearchResults.module.css';
 
 export interface SearchPaginationProps {
@@ -42,6 +42,7 @@ export function SearchPagination({
   bStart,
   bSize,
 }: SearchPaginationProps) {
+  const Link = config.getComponent('Link').component!;
   const { t } = useTranslation();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();

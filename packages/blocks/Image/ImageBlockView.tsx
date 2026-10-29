@@ -1,6 +1,6 @@
 import type { BlockViewProps } from '@plone/types';
 import Image from '@plone/layout/components/Image/Image';
-import { Link } from '@plone/components';
+import config from '@plone/registry';
 import {
   getImageBlockHref,
   getImageBlockItem,
@@ -9,6 +9,7 @@ import {
 
 const ImageBlockView = (props: BlockViewProps) => {
   const { data } = props;
+  const Link = config.getComponent('Link').component!;
   if (!data.url) return null;
 
   const href = getImageBlockHref(data);

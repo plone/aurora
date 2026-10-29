@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Link } from '@plone/components';
+import config from '@plone/registry';
 import PageIcon from '@plone/icons/svg/page.svg?react';
 import { getContentIcon } from '@plone/helpers';
 import type { Brain } from '@plone/types';
@@ -33,6 +33,7 @@ export function SearchResults({
   loading = false,
 }: SearchResultsProps) {
   const { t, i18n } = useTranslation();
+  const Link = config.getComponent('Link').component!;
 
   return (
     <section
