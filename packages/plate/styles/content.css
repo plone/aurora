@@ -6,15 +6,12 @@
  */
 
 /*
- * The block's inner container. In Aurora, `@plone/layout`'s `content.css`
- * also lays it out (category widths, spacing between blocks) in both the
- * Public UI and the editor.
+ * The block's inner container. `@plone/layout`'s `content.css` lays it out:
+ * its width, and the gap after the block. Blocks don't set outer margins or
+ * padding; they set the gap's value with `--block-spacing-after` instead.
  */
 :where(.block-inner-container) {
   display: block;
-  width: 100%;
-  max-width: var(--block-width);
-  margin-inline: auto;
 }
 
 /*
@@ -23,18 +20,21 @@
  * loaded.
  */
 
-/* Paragraph */
-
-:where(.slate-p) {
-  padding: calc(var(--spacing, 0.25rem) * 1) 0;
-  margin: 0;
-}
+/*
+ * Spacing. A theme changes it with the `--block-title-spacing-after` and
+ * `--block-h1-spacing-before` to `--block-h6-spacing-before` tokens; `h5` and
+ * `h6` follow `h4`. The room before a heading is the gap after the block that
+ * precedes it.
+ */
 
 /* Title */
 
 :where(.slate-title) {
-  padding-bottom: calc(var(--spacing, 0.25rem) * 1);
-  margin: 1.6em 0 0;
+  --block-spacing-after: var(
+    --block-title-spacing-after,
+    calc(var(--spacing, 0.25rem) * 8)
+  );
+
   font-size: var(--text-4xl, 2.25rem);
   font-weight: var(--font-weight-bold, 700);
   line-height: var(--text-4xl--line-height, calc(2.5 / 2.25));
@@ -42,14 +42,53 @@
 
 /* Headings */
 
+:where(.block:has(+ .slate-h1)) {
+  --block-spacing-after: var(
+    --block-h1-spacing-before,
+    calc(var(--spacing, 0.25rem) * 12)
+  );
+}
+
+:where(.block:has(+ .slate-h2)) {
+  --block-spacing-after: var(
+    --block-h2-spacing-before,
+    calc(var(--spacing, 0.25rem) * 10)
+  );
+}
+
+:where(.block:has(+ .slate-h3)) {
+  --block-spacing-after: var(
+    --block-h3-spacing-before,
+    calc(var(--spacing, 0.25rem) * 8)
+  );
+}
+
+:where(.block:has(+ .slate-h4)) {
+  --block-spacing-after: var(
+    --block-h4-spacing-before,
+    calc(var(--spacing, 0.25rem) * 6)
+  );
+}
+
+:where(.block:has(+ .slate-h5)) {
+  --block-spacing-after: var(
+    --block-h5-spacing-before,
+    var(--block-h4-spacing-before, calc(var(--spacing, 0.25rem) * 6))
+  );
+}
+
+:where(.block:has(+ .slate-h6)) {
+  --block-spacing-after: var(
+    --block-h6-spacing-before,
+    var(--block-h4-spacing-before, calc(var(--spacing, 0.25rem) * 6))
+  );
+}
+
 :where(.slate-h1, .slate-h2, .slate-h3, .slate-h4, .slate-h5, .slate-h6) {
   position: relative;
-  margin-bottom: calc(var(--spacing, 0.25rem) * 1);
 }
 
 :where(.slate-h1) {
-  padding-bottom: calc(var(--spacing, 0.25rem) * 1);
-  margin-top: 1.6em;
   font-size: var(--text-4xl, 2.25rem);
   font-weight: var(--font-weight-bold, 700);
   line-height: var(--text-4xl--line-height, calc(2.5 / 2.25));
@@ -61,43 +100,32 @@
 }
 
 :where(.slate-h2) {
-  padding-bottom: 1px;
-  margin-top: 1.4em;
   font-size: var(--text-2xl, 1.5rem);
   line-height: var(--text-2xl--line-height, calc(2 / 1.5));
 }
 
 :where(.slate-h3) {
-  padding-bottom: 1px;
-  margin-top: 1em;
   font-size: var(--text-xl, 1.25rem);
   line-height: var(--text-xl--line-height, calc(1.75 / 1.25));
 }
 
 :where(.slate-h4, .slate-h5) {
-  margin-top: 0.75em;
   font-size: var(--text-lg, 1.125rem);
   line-height: var(--text-lg--line-height, calc(1.75 / 1.125));
 }
 
 :where(.slate-h6) {
-  margin-top: 0.75em;
   font-size: var(--text-base, 1rem);
   line-height: var(--text-base--line-height, 1.5);
 }
 
 /* Blockquote */
 
-:where(.slate-blockquote) {
-  margin: 0;
-}
-
 :where(.slate-blockquote > .block-inner-container) {
   padding-left: calc(var(--spacing, 0.25rem) * 6);
   border-left-width: 2px;
   border-left-style: solid;
   font-style: italic;
-  margin-block: calc(var(--spacing, 0.25rem) * 1);
 }
 
 /* Separator */
@@ -264,11 +292,6 @@
 
 /* Code block */
 
-:where(.slate-code_block) {
-  padding: calc(var(--spacing, 0.25rem) * 1) 0;
-  margin: 0;
-}
-
 :where(.block-code_block__frame) {
   position: relative;
   width: 100%;
@@ -318,8 +341,8 @@
  */
 
 :where(.slate-code_block .hljs-addition) {
-  background-color: var(--code-token-addition-background, #f0fff4);
-  color: var(--code-token-addition, #22863a);
+  background-color: var(--block-code-token-addition-background, #f0fff4);
+  color: var(--block-code-token-addition, #22863a);
 }
 
 :where(
@@ -337,24 +360,24 @@
       .hljs-variable
     )
 ) {
-  color: var(--code-token-attribute, #005cc5);
+  color: var(--block-code-token-attribute, #005cc5);
 }
 
 :where(.slate-code_block .hljs-symbol) {
-  color: var(--code-token-symbol, #e36209);
+  color: var(--block-code-token-symbol, #e36209);
 }
 
 :where(.slate-code_block .hljs-bullet) {
-  color: var(--code-token-bullet, #735c0f);
+  color: var(--block-code-token-bullet, #735c0f);
 }
 
 :where(.slate-code_block :is(.hljs-comment, .hljs-code, .hljs-formula)) {
-  color: var(--code-token-comment, #6a737d);
+  color: var(--block-code-token-comment, #6a737d);
 }
 
 :where(.slate-code_block .hljs-deletion) {
-  background-color: var(--code-token-deletion-background, #ffeef0);
-  color: var(--code-token-deletion, #b31d28);
+  background-color: var(--block-code-token-deletion-background, #ffeef0);
+  color: var(--block-code-token-deletion, #b31d28);
 }
 
 :where(.slate-code_block .hljs-emphasis) {
@@ -371,24 +394,24 @@
       .hljs-type
     )
 ) {
-  color: var(--code-token-keyword, #d73a49);
+  color: var(--block-code-token-keyword, #d73a49);
 }
 
 :where(
   .slate-code_block
     :is(.hljs-name, .hljs-quote, .hljs-selector-tag, .hljs-selector-pseudo)
 ) {
-  color: var(--code-token-name, #22863a);
+  color: var(--block-code-token-name, #22863a);
 }
 
 :where(
   .slate-code_block :is(.hljs-regexp, .hljs-string, .hljs-meta .hljs-string)
 ) {
-  color: var(--code-token-string, #032f62);
+  color: var(--block-code-token-string, #032f62);
 }
 
 :where(.slate-code_block .hljs-section) {
-  color: var(--code-token-section, #005cc5);
+  color: var(--block-code-token-section, #005cc5);
   font-weight: var(--font-weight-bold, 700);
 }
 
@@ -397,19 +420,15 @@
 }
 
 :where(.slate-code_block .hljs-title) {
-  color: var(--code-token-title, #6f42c1);
+  color: var(--block-code-token-title, #6f42c1);
 }
 
 /*
  * Table. The table scrolls horizontally inside the block. Cell borders are
  * drawn by each cell's `::before`, on the sides its `data-border-*` attributes
- * name; a cell's own background color is set inline as `--cellBackground`.
+ * name; a cell's own background color is set inline as
+ * `--block-table-cell-background`.
  */
-
-:where(.slate-table) {
-  padding: calc(var(--spacing, 0.25rem) * 5) 0;
-  margin: 0;
-}
 
 :where(.block-table__scroll) {
   overflow-x: auto;
@@ -445,7 +464,7 @@
   padding: 0;
   border-style: none;
   margin: 0;
-  background-color: var(--cellBackground, transparent);
+  background-color: var(--block-table-cell-background, transparent);
 }
 
 :where(.slate-th) {
@@ -502,7 +521,6 @@
   padding-left: calc(var(--spacing, 0.25rem) * 3);
   border-radius: var(--radius-sm, 0.25rem);
   background-color: var(--block-callout-background, var(--muted));
-  margin-block: calc(var(--spacing, 0.25rem) * 1);
 }
 
 :where(.block-callout__body) {
@@ -577,13 +595,9 @@
 
 /*
  * Columns. Each column's width is set inline on its wrapper, the
- * `block-column_group__column` part. In the editor, a toolbar anchor wraps
- * the inner container, so it's matched by the row it holds.
+ * `block-column_group__column` part. Columns are spaced apart by their
+ * inline padding.
  */
-
-:where(.block-inner-container:has(> .block-column_group__row)) {
-  margin-bottom: calc(var(--spacing, 0.25rem) * 2);
-}
 
 :where(.block-column_group__row) {
   display: flex;
@@ -598,15 +612,15 @@
 
 :where(.slate-column) {
   height: 100%;
-  padding: calc(var(--spacing, 0.25rem) * 2) calc(var(--spacing, 0.25rem) * 2) 0;
+  padding-inline: calc(var(--spacing, 0.25rem) * 2);
 }
 
 :where(.block-column_group__column:first-child > .slate-column) {
-  padding-left: 0;
+  padding-inline-start: 0;
 }
 
 :where(.block-column_group__column:last-child > .slate-column) {
-  padding-right: 0;
+  padding-inline-end: 0;
 }
 
 :where(.block-column__content) {
@@ -623,7 +637,6 @@
 
 :where(.slate-toc > .block-inner-container) {
   padding: 0;
-  margin-bottom: calc(var(--spacing, 0.25rem) * 1);
 }
 
 :where(.block-toc__item) {
@@ -680,7 +693,7 @@
 }
 
 :where(.block-toc__empty) {
-  color: var(--color-gray-500, oklch(55.1% 0.027 264.364));
+  color: var(--muted-foreground);
   font-size: var(--text-sm, 0.875rem);
   line-height: var(--text-sm--line-height, calc(1.25 / 0.875));
 }
@@ -691,7 +704,7 @@
   z-index: 1;
   background-color: color-mix(
     in oklab,
-    var(--color-quanta-sapphire, #0b78d0) 13%,
+    var(--block-toc-highlight-color, var(--brand, #0b78d0)) 13%,
     transparent
   );
   inset: 0;
@@ -712,12 +725,6 @@
   overflow-wrap: break-word;
   user-select: text;
   white-space: pre-wrap;
-}
-
-:where(
-  .slate-editor [data-slate-node='element']:not([data-slate-inline='true'])
-) {
-  margin-inline: auto;
 }
 
 :where(.slate-editor strong) {

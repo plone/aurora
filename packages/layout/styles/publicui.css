@@ -5,11 +5,6 @@
 @import '@plone/components/src/styles/basic/Breadcrumbs.css';
 @import '@plone/components/src/styles/basic/Container.css';
 
-@property --block-width {
-  initial-value: 100%;
-  syntax: '<length-percentage>';
-}
-
 @layer custom {
   @import './header.css';
   @import './content-area.css';

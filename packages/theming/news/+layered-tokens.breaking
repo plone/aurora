@@ -1,0 +1,1 @@
+The generic tokens are in the `theme` cascade layer, so a theme overrides them from any layer. Removed the `h2` and `.documentFirstHeading` typography and the unused chart colors. Added the `--brand` token, the site's brand color, which `--color-brand` now follows; `--accent` stays a subtle hover fill. @danalvrz

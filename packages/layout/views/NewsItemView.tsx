@@ -3,6 +3,7 @@ import type { RootLoader } from '@plone/aurora/app/root';
 import config from '@plone/registry';
 import { hasBlocksData } from '@plone/helpers';
 import { useRouteLoaderData } from 'react-router';
+import DocumentTitle from '../components/DocumentTitle/DocumentTitle';
 
 export default function DefaultView() {
   const rootData = useRouteLoaderData<RootLoader>('root');
@@ -20,7 +21,7 @@ export default function DefaultView() {
       {hasBlocks && <RenderBlocks content={content} />}
       {!hasBlocks && (
         <>
-          <h1 className="documentFirstHeading">{content.title}</h1>
+          <DocumentTitle>{content.title}</DocumentTitle>
           {Boolean(content.description) && (
             <p className="documentDescription">{content.description}</p>
           )}

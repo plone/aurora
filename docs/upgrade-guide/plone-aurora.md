@@ -115,7 +115,7 @@ Their styles moved from the `utilities` layer to `plone-content`, inside `:where
 
 - If your theme's CSS targets Tailwind classes inside block content, target the block's classnames instead, such as `.slate-p`, `.block-callout`, or `.block-code_block__pre`.
 - The `dark:` variants of the content are removed.
-  For a dark mode, set the content tokens, such as the `--code-token-*` syntax colors, in your theme.
+  For a dark mode, set the content tokens, such as the `--block-code-token-*` syntax colors, in your theme.
 - The table of contents' entries are plain `<button type="button">` elements with the `block-toc__item` class.
 - Comment and suggestion marks render as plain text in the Public UI.
 
@@ -127,7 +127,28 @@ The block spacing rules moved from {file}`@plone/layout/styles/content-area.css`
 
 The block widths by category, the spacing between blocks, and the nested block rules used to load only in the Public UI, in the `custom` layer.
 They now load in both user interfaces, in `plone-content`, so the editor spaces blocks like the Public UI.
-If your theme overrides them, move the overrides to your {file}`styles/content.css`, or set the `--block-bottom-spacing` and container width tokens.
+If your theme overrides them, move the overrides to your {file}`styles/content.css`, or set the `--block-spacing-after` and container width tokens.
+
+#### Blocks are flush, and `@plone/layout` spaces them
+
+```{versionchanged} 1.0.0-alpha.20
+The Plate.js blocks no longer set outer margins or padding. `@plone/layout` lays out the stack of blocks, and the block tokens are renamed.
+```
+
+Every block is full width and flush at the top.
+The gap after a block is its own bottom padding, set by `@plone/layout`'s {file}`content.css`, so a block's background, `--block-background`, includes it.
+The paragraph, heading, title, blockquote, code block, table, callout, column, and table of contents blocks no longer have their own margins or padding around them.
+The room before a heading is the gap after the block that precedes it.
+
+- If your theme set margins or padding on `.slate-p`, `.slate-h2`, or other blocks, set the spacing tokens on `.content-area` instead: `--block-spacing`, `--block-title-spacing-after`, and `--block-h1-spacing-before` to `--block-h6-spacing-before`.
+- `--block-bottom-spacing` is renamed `--block-spacing-after`. A block doesn't pass it on to the blocks nested in it.
+- The code block's syntax colors `--code-token-*` are renamed `--block-code-token-*`.
+- A table cell's own background color is set inline as `--block-table-cell-background` instead of `--cellBackground`.
+- The inner container stretches its content by default: `--justify-items` falls back to `stretch` instead of `start`.
+- The room on both sides of the page and around the content are `@plone/layout` tokens: `--gutter` and `--content-spacing`.
+- Views and routes without blocks render their page title with the title block's markup, `h1.documentFirstHeading.slate-title` with an inner container, so it's styled like the title of a page with blocks.
+- `@plone/theming` no longer styles `h2` and `.documentFirstHeading`, and its tokens are in the `theme` cascade layer, so a theme overrides them from any layer.
+  `--color-brand` follows the new `--brand` token, the site's brand color, and `--accent` stays a subtle hover fill.
 
 #### Plone blocks' classnames are renamed
 

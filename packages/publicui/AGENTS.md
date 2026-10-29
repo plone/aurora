@@ -21,6 +21,8 @@ This file applies only to `packages/publicui` and its subdirectories.
   - `index.tsx` — route index / layout wrapper
   - `layers.css.tsx` — CSS layer declarations injected via React
 - **Styles** (`styles/publicui.css`) — public-facing page styles.
+- **Page titles**: routes render their title with `@plone/layout`'s `DocumentTitle`, styled like the title block.
+- **Quanta**: the search and sitemap routes use `Container` and `Input` from `@plone/quanta`. They need the Quanta palette and `@source` entries in `@plone/theming`; keep them until those components are replaced.
 
 ## Editing Rules
 

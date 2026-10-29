@@ -51,6 +51,8 @@ Follow these rules in {file}`styles/content.css`, so the same file works under a
   Themes then change a value by setting the property.
 - Don't target `:root`, `html`, `body`, or bare element selectors such as `h1` or `figure img`.
   Declare content tokens on the `.content-area` element, which wraps the block content in both user interfaces.
+  A theme that shares its tokens with the header and footer can declare them on `.app-slot` too, the element that wraps the header, the content, and the footer in the Public UI.
+  `.app-slot` doesn't exist in the CMSUI, so these tokens never reach the editor's own interface.
 
 ### Override block styles from an add-on
 

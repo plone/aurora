@@ -1,237 +1,658 @@
 @import '@plone/theming/styles/tailwind.css';
 
-@theme {
-  --accent-color: #3b5759;
-  --secondary-color: #afcac8;
-  --text-base: 1.15rem;
-  --default-font-family: 'Funnel', sans-serif;
-  --heading-font-family: 'Funnel Display', serif;
-  --header-background: linear-gradient(
-    -3deg,
-    var(--background, #fff) 0%,
-    color-mix(in oklab, var(--secondary-color) 1%, var(--background, #fff)) 20%,
-    color-mix(in oklab, var(--secondary-color) 3%, var(--background, #fff)) 35%,
-    color-mix(in oklab, var(--secondary-color) 10%, var(--background, #fff)) 50%,
-    color-mix(in oklab, var(--secondary-color) 30%, var(--background, #fff)) 65%,
-    color-mix(in oklab, var(--secondary-color) 65%, var(--background, #fff)) 80%,
-    color-mix(in oklab, var(--secondary-color) 90%, var(--background, #fff)) 92%,
-    var(--secondary-color) 100%
-  );
-  --footer-background: radial-gradient(
-    ellipse 100% 100% at 50% 100%,
-    var(--secondary-color) 0%,
-    var(--secondary-color) 20%,
-    color-mix(in oklab, var(--secondary-color) 85%, var(--background, #fff)) 30%,
-    color-mix(in oklab, var(--secondary-color) 65%, var(--background, #fff)) 40%,
-    color-mix(in oklab, var(--secondary-color) 45%, var(--background, #fff)) 50%,
-    color-mix(in oklab, var(--secondary-color) 30%, var(--background, #fff)) 60%,
-    color-mix(in oklab, var(--secondary-color) 18%, var(--background, #fff)) 70%,
-    color-mix(in oklab, var(--secondary-color) 10%, var(--background, #fff)) 80%,
-    color-mix(in oklab, var(--secondary-color) 4%, var(--background, #fff)) 90%,
-    var(--background, #fff) 100%
-  );
-}
-/* Typography */
-@font-face {
-  font-family: 'Funnel Display';
-  src: url('./fonts/FunnelDisplay[wght].woff2') format('woff2-variations');
-}
-@font-face {
-  font-family: 'Funnel';
-  src: url('./fonts/FunnelSans[wght].woff2') format('woff2-variations');
-}
+/* ══════════════════════════════════════════════════════════════════════
+   AGAVE — default theme for the Plone Aurora Public UI
+   ──────────────────────────────────────────────────────────────────────
+   A page has three regions: HEADER (#header) · MAIN (.content-area) ·
+   FOOTER (#footer). Everything inside MAIN is a block.
+
+   This file styles the frame: the header, the footer and the core views
+   (event, search, sitemap), in the `custom` cascade layer. The tokens, the
+   skins and the block styles are in content.css, which the editor loads
+   too. Rules here only read tokens and never mention a skin or a mode.
+
+   SETTINGS on <html>
+     data-sticky="off"   header scrolls with the page
+   ══════════════════════════════════════════════════════════════════════ */
 
 @layer custom {
-  /* Layout */
-  .section,
-  .block {
-    & > [class*='-inner-container'] {
-      transition: padding 300ms ease-in-out;
-    }
-
-    &.layout {
-      @container (max-width: calc(1440px + 2rem)) {
-        & > [class*='-inner-container'] {
-          padding-inline: calc(var(--spacing) * 6) !important;
-        }
-      }
-    }
-
-    &.default {
-      @container (max-width: calc(940px + 2rem)) {
-        & > [class*='-inner-container'] {
-          padding-inline: calc(var(--spacing) * 6) !important;
-        }
-      }
-    }
-
-    &.narrow {
-      @container (max-width: calc(620px + 2rem)) {
-        & > [class*='-inner-container'] {
-          padding-inline: calc(var(--spacing) * 6) !important;
-        }
-      }
-    }
+  /* ┌──────────────────────────────────────────────────────────────────┐
+     │ E. CORE THEME — base, header, footer, text, core views            │
+     │    Reads layers A and B only.                                     │
+     └──────────────────────────────────────────────────────────────────┘ */
+  /* Internal constants, on :root for the scroll padding, where the tokens
+     (on .app-slot) don't reach: in rem, the --space unit. */
+  :root {
+    --header-h: 4.5rem;
+    --sticky-offset: calc(var(--header-h) + 4rem);
+  }
+  html {
+    scroll-padding-top: var(--sticky-offset);
+  }
+  /* The page: the tokens live on .app-slot (content.css). Its height lets
+     the header stay sticky past the first screen. */
+  :root .app-slot {
+    height: auto;
+    min-height: 100dvh;
+    background: var(--background-image), var(--background);
+    color: var(--foreground);
+    font-family: var(--font-body);
+    font-size: var(--font-size);
+    -webkit-font-smoothing: antialiased;
+    line-height: var(--line-height);
+    text-rendering: optimizeLegibility;
+  }
+  :is(#header, #footer, .content-area) :focus-visible {
+    outline: var(--ring-width) solid var(--ring);
+    outline-offset: var(--ring-width);
   }
 
-  /* Blocks */
-  .content-area {
-    @apply text-base leading-6 font-thin;
-    .block {
-      /* Title block */
-      &.block-title {
-        .block-inner-container {
-          h1.documentFirstHeading {
-            @apply text-5xl font-normal relative pb-4 pt-6;
-
-            font-family: var(--heading-font-family);
-
-            &::after {
-              @apply absolute bottom-0 left-0 w-20 h-[4px];
-
-              background: linear-gradient(
-                to right,
-                var(--accent-color) 0%,
-                var(--accent-color) 50%,
-                transparent 100%
-              );
-              content: '';
-            }
-          }
-        }
-      }
-      /* Listing block */
-      &.block-listing {
-        .block-listing__item {
-          @apply p-1;
-        }
-        .block-listing__item[data-variation='summary'] {
-          @apply flex;
-          .block-listing__image {
-            @apply mr-1;
-          }
-        }
-      }
-
-      h2 {
-        @apply text-3xl font-normal pb-4 pt-6;
-        font-family: var(--heading-font-family);
-      }
-      h3 {
-        @apply text-2xl font-normal py-4;
-        font-family: var(--heading-font-family);
-      }
-    }
-  }
-
-  /* Header */
+  /* ── HEADER (core region) ── */
   #header {
-    @apply pb-18 pt-8;
+    position: sticky;
+    z-index: 50;
+    top: 0;
+    border-bottom: var(--border-width) solid var(--border);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(1.5);
+    backdrop-filter: blur(var(--blur)) saturate(1.5);
+    background: var(--background);
+    color: var(--foreground);
 
-    background: var(--header-background, --background);
-    color: var(--header-foreground, --foreground);
+    .react-aria-Link {
+      font-size: inherit;
+      text-decoration: none;
+    }
+  }
+  #header .header-logo-nav-tools-wrapper > .section-inner-container {
+    min-height: var(--header-h);
+    column-gap: var(--space-l);
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  /* A centred navigation gives the logo and the tools equal columns, so it's
+     centred on the page, not between them. */
+  @container style(--nav-align: center) {
+    #header .header-logo-nav-tools-wrapper > .section-inner-container {
+      grid-template-columns: minmax(max-content, 1fr) auto minmax(
+          max-content,
+          1fr
+        );
+    }
+  }
+  :is(#header, #footer) .logo {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-self: start;
 
-    &:has(.breadcrumbs) {
-      @apply pb-6;
+    img {
+      display: block;
+      width: auto;
+      height: var(--space-xl);
+      max-height: none;
+    }
+  }
+  #header .header-logo-nav-tools-wrapper .navigation {
+    justify-content: var(--nav-align);
+    justify-self: stretch;
+
+    ul {
+      flex-wrap: wrap;
+      justify-content: var(--nav-align);
+      gap: var(--space-3xs);
     }
 
-    /* Header sections */
-    .section-header {
-      /* Breadcrumbs section */
-      &.breadcrumbs {
-        .section-inner-container {
-          @apply pb-6;
+    li a.react-aria-Link {
+      display: inline-flex;
+      align-items: center;
+      padding: var(--space-2xs) var(--space-xs);
+      border-radius: var(--radius-control);
+      margin: 0;
+      color: var(--muted-foreground);
+      font-size: var(--font-size-sm);
+      font-weight: 500;
+      line-height: var(--line-height);
+      transition:
+        color 0.15s var(--ease),
+        background 0.15s var(--ease);
 
-          box-shadow: 0 10px 24px -20px
-            color-mix(in oklab, var(--foreground) 30%, var(--background, #fff));
-
-          li:not(:last-child) {
-            &:after {
-              margin-left: 0.75em;
-              content: '⟩';
-              font-size: 0.75rem;
-            }
-          }
-          li {
-            @apply text-base leading-6;
-
-            .icon {
-              @apply self-center mr-1;
-            }
-
-            & > a {
-              &[data-hovered='true'],
-              &[data-focused='true'] {
-                color: var(--accent-color);
-              }
-            }
-          }
-        }
+      &[data-hovered],
+      &:hover {
+        background: var(--muted);
+        color: var(--foreground);
       }
-      /* Logo, Main Navigation & Tools section */
-      &.header-logo-nav-tools-wrapper {
-        .section-inner-container {
-          @apply px-0 pb-14 pt-6;
-        }
 
-        /* Main Navigation */
-        .navigation {
-          /* TODO: Review if this needs to be overridden from the default in layout in @plone/layout */
-          /* @apply items-end justify-center self-end justify-self-center; */
-
-          a.react-aria-Link {
-            @apply relative text-lg font-thin leading-6 pb-4 no-underline;
-
-            font-family: var(--heading-font-family);
-          }
-
-          a.react-aria-Link::after {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 4px;
-            background: linear-gradient(
-              to right,
-              var(--accent-color) 0%,
-              var(--accent-color) 50%,
-              transparent 100%
-            );
-            content: '';
-            transition: width 0.3s ease;
-          }
-
-          a.react-aria-Link[data-hovered='true']::after {
-            width: 100%;
-          }
-
-          a.react-aria-Link[data-focused='true']::after,
-          a.react-aria-Link[data-active='true']::after {
-            width: 100%;
-            transition: none;
-          }
-        }
-
-        /* Header tools */
-        .header-tools {
-          @apply self-baseline;
-          a.react-aria-Link {
-            @apply text-base leading-6;
-
-            &[data-hovered='true'],
-            &[data-focused='true'] {
-              color: var(--accent-color);
-            }
-          }
-        }
+      &[aria-current],
+      &[data-current] {
+        background: var(--muted);
+        color: var(--brand);
+        font-weight: 600;
       }
     }
   }
-  /* Footer */
-  #footer {
-    @apply py-12;
+  #header .header-tools {
+    gap: var(--space-xs);
+    justify-self: end;
 
-    background: var(--footer-background, --background);
-    color: var(--footer-foreground, --foreground);
+    a.react-aria-Link {
+      color: var(--muted-foreground);
+      font-size: var(--font-size-sm);
+
+      &[data-hovered] {
+        color: var(--foreground);
+      }
+    }
+  }
+  /* Search field */
+  #header .searchwidget {
+    display: flex;
+    height: var(--control-height);
+    align-items: center;
+    order: -1;
+    padding: 0 var(--space-s);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-control);
+    background: var(--muted);
+    color: var(--muted-foreground);
+    gap: var(--space-2xs);
+
+    &:hover {
+      border: var(--border-width) solid var(--border);
+    }
+
+    &:focus-within {
+      border-color: var(--ring);
+    }
+
+    input {
+      width: calc(var(--space) * 9);
+      max-width: none;
+      height: auto;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--foreground);
+      font: 400 var(--font-size-sm) var(--font-body);
+      outline: none;
+
+      &::placeholder {
+        color: var(--muted-foreground);
+      }
+
+      &:focus-visible {
+        outline: none;
+      }
+    }
+
+    button {
+      display: inline-flex;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+
+      svg {
+        width: var(--icon-size);
+        height: var(--icon-size);
+        opacity: 1;
+      }
+    }
+  }
+  /* Log in and log out: pills. Logging in is the primary action (the first
+     anonymous tool); logging out, a direct link of the tools, the secondary. */
+  #header .anonymoustools {
+    gap: var(--space-xs);
+  }
+  #header .anonymoustools > a.react-aria-Link:first-child,
+  #header .header-tools > a.react-aria-Link {
+    display: inline-flex;
+    height: var(--control-height);
+    box-sizing: border-box;
+    align-items: center;
+    padding: 0 var(--space-s);
+    border: var(--border-width) solid var(--primary);
+    border-radius: var(--radius-control);
+    background: var(--primary);
+    color: var(--primary-foreground);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    transition:
+      background 0.15s var(--ease),
+      color 0.15s var(--ease);
+    white-space: nowrap;
+  }
+  #header .header-tools > a.react-aria-Link {
+    border-color: var(--border);
+    background: var(--muted);
+    color: var(--foreground);
+
+    &[data-hovered] {
+      background: var(--background);
+      color: var(--foreground);
+    }
+  }
+  /* Breadcrumbs, hidden when they only lead home */
+  #header .breadcrumbs {
+    border-top: var(--border-width) solid var(--border);
+
+    &:not(:has(.react-aria-Breadcrumb + .react-aria-Breadcrumb)) {
+      display: none;
+    }
+
+    .react-aria-Breadcrumbs {
+      flex-wrap: wrap;
+      justify-content: var(--nav-align);
+      color: var(--muted-foreground);
+      font-size: var(--font-size-sm);
+      gap: var(--space-2xs);
+      justify-self: stretch;
+      padding-block: var(--space-xs);
+    }
+
+    .react-aria-Breadcrumb:not(:last-child)::after {
+      padding: 0 0 0 var(--space-2xs);
+      color: var(--muted-foreground);
+      content: '/' / '';
+    }
+
+    .react-aria-Link {
+      display: inline-flex;
+      align-items: center;
+      color: var(--brand);
+      font-weight: 500;
+      gap: var(--space-2xs);
+
+      &[data-hovered] {
+        text-decoration: underline;
+        text-underline-offset: var(--underline-offset);
+      }
+
+      &[data-current] {
+        color: var(--foreground);
+        font-weight: 600;
+        text-decoration: none;
+      }
+    }
+
+    /* The home icon sits on the text's centre line */
+    .react-aria-Breadcrumb {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    svg {
+      width: var(--icon-size);
+      height: var(--icon-size);
+      flex: none;
+      margin: 0 var(--space-2xs) 0 0;
+    }
+  }
+
+  /* ── FOOTER (core region) ── */
+  #footer {
+    padding-top: var(--space-4xl);
+    border-top: var(--border-width) solid var(--border);
+    background: var(--background);
+    color: var(--foreground);
+    font-size: var(--font-size-sm);
+
+    .react-aria-Link,
+    a {
+      color: var(--foreground);
+      font-size: inherit;
+      text-decoration: none;
+
+      &:hover,
+      &[data-hovered] {
+        text-decoration: underline;
+        text-underline-offset: var(--underline-offset);
+      }
+    }
+  }
+  #footer .main-footer {
+    padding-block: 0;
+    text-align: start;
+
+    > .section-inner-container {
+      align-items: center;
+      gap: 0 var(--space-2xl);
+      grid-template-areas:
+        'logo links'
+        'message powered';
+      grid-template-columns: minmax(0, 1fr) auto;
+      justify-items: stretch;
+
+      /* the rule above the bottom bar */
+      &::before {
+        align-self: start;
+        border-top: var(--border-width) solid var(--border);
+        margin-top: var(--space-3xl);
+        content: '';
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+    }
+
+    .logo {
+      margin: 0;
+      grid-area: logo;
+      justify-self: start;
+    }
+
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      padding: 0;
+      margin: 0;
+      gap: var(--space-2xs) var(--space-l);
+      grid-area: links;
+      line-height: var(--line-height);
+      list-style: none;
+    }
+
+    .footer-message,
+    .powered-by {
+      padding: var(--space-l) 0 var(--space-xl);
+      margin-top: var(--space-3xl);
+      color: var(--muted-foreground);
+      font-size: var(--font-size-xs);
+    }
+
+    .footer-message {
+      grid-area: message;
+    }
+
+    .powered-by {
+      grid-area: powered;
+      justify-self: end;
+    }
+  }
+
+  /* ── CORE VIEWS: event, search results, sitemap ── */
+  /* Event: the details panel sits beside the text */
+  .content-area .event-view {
+    width: 100%;
+    max-width: calc(var(--container-width) + 2 * var(--gutter));
+    align-items: start;
+    gap: var(--space-4xl);
+    grid-template-columns: minmax(0, 1fr) calc(var(--space) * 22);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+
+    /* the layout already has a gutter */
+    .slate-editor > * {
+      padding-inline: 0;
+    }
+  }
+  .content-area .event-details {
+    position: sticky;
+    top: var(--sticky-offset);
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-m) var(--space-l) var(--space-l);
+    border: var(--border-width) solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--muted);
+    box-shadow: var(--shadow);
+    gap: var(--space-s);
+
+    dl {
+      margin: 0;
+    }
+
+    dt {
+      padding: 0;
+      border-bottom: 0;
+      margin: 0 0 var(--space-3xs);
+      color: var(--muted-foreground);
+      font-family: var(--font-meta);
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      letter-spacing: var(--tracking-label);
+      text-transform: uppercase;
+    }
+
+    dd {
+      margin: 0 0 var(--space-s);
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height);
+
+      ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+    }
+
+    a {
+      color: var(--brand);
+      font-size: inherit;
+    }
+
+    .download-event {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-s) var(--space-l);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-control);
+      background: var(--background);
+      gap: var(--space-2xs);
+
+      svg {
+        width: var(--icon-size);
+        height: var(--icon-size);
+        color: var(--brand);
+      }
+
+      a {
+        margin: 0;
+        color: var(--foreground);
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+        line-height: 1;
+        text-decoration: none;
+      }
+    }
+  }
+
+  /* Search and sitemap pages */
+  .content-area .route-search {
+    input[type='search'] {
+      width: 100%;
+      height: var(--control-height-lg);
+      padding: 0 var(--space-m);
+      border: var(--border-width) solid var(--border);
+      border-radius: var(--radius-control);
+      background: var(--muted);
+      color: var(--foreground);
+      font: 400 var(--font-size) var(--font-body);
+
+      &:focus {
+        border-color: var(--ring);
+      }
+    }
+
+    .tileItem {
+      padding: var(--space-l) 0;
+      border-bottom: var(--border-width) solid var(--border);
+    }
+
+    .tileBody {
+      max-width: 68ch;
+      margin-top: var(--space-2xs);
+      color: var(--muted-foreground);
+      font-size: var(--font-size-sm);
+      line-height: var(--line-height);
+    }
+
+    .tileFooter {
+      margin-top: var(--space-xs);
+      color: var(--brand);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+    }
+
+    .noResults {
+      padding: var(--space-4xl) 0;
+      color: var(--muted-foreground);
+      text-align: center;
+    }
+  }
+  .content-area .route-sitemap #sitemap {
+    ul {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    a {
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+        text-underline-offset: var(--underline-offset);
+      }
+    }
+
+    /* sections */
+    > ul {
+      display: grid;
+      align-items: start;
+      gap: var(--space-2xs) var(--space-4xl);
+      grid-template-columns: 1fr 1fr;
+
+      > li {
+        padding: var(--space-l) 0;
+        border-top: var(--border-width) solid var(--border);
+
+        > a {
+          color: var(--foreground);
+          font-size: var(--font-size-lg);
+          font-weight: 700;
+        }
+      }
+    }
+
+    /* pages */
+    > ul > li > ul {
+      display: grid;
+      padding-left: var(--space-m);
+      margin-top: var(--space-s);
+      gap: var(--space-xs);
+
+      > li > a {
+        color: var(--brand);
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+      }
+    }
+
+    /* sub-pages */
+    > ul > li > ul ul {
+      display: grid;
+      padding-left: var(--space-m);
+      border-left: var(--border-width) solid var(--border);
+      margin: var(--space-xs) 0 var(--space-3xs);
+      gap: var(--space-2xs);
+
+      a {
+        color: var(--muted-foreground);
+        font-size: var(--font-size-sm);
+      }
+    }
+  }
+
+  /* ┌──────────────────────────────────────────────────────────────────┐
+     │ G. SITE SETTING — not theme tokens                                │
+     └──────────────────────────────────────────────────────────────────┘ */
+  :root[data-sticky='off'] {
+    --sticky-offset: 1.5rem;
+  }
+  :root[data-sticky='off'] #header {
+    position: relative;
+  }
+
+  /* ── Responsive: each region follows its own width (@plone/layout makes
+     #header, #footer and .content-area the header, footer and content
+     containers) ── */
+  @container content (max-width: 1000px) {
+    .content-area .event-view {
+      gap: var(--space-2xl);
+      grid-template-columns: 1fr;
+    }
+    .content-area .event-details {
+      position: static;
+    }
+  }
+  @container header (max-width: 860px) {
+    /* the navigation moves to its own row below the logo */
+    #header .header-logo-nav-tools-wrapper > .section-inner-container {
+      grid-template-columns: auto minmax(0, 1fr);
+      padding-block: var(--space-xs);
+      row-gap: var(--space-2xs);
+    }
+    #header .header-logo-nav-tools-wrapper .navigation {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      overflow-x: auto;
+
+      ul {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+      }
+    }
+    #header .header-logo-nav-tools-wrapper .header-tools {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    #header .searchwidget input {
+      width: calc(var(--space) * 6);
+    }
+  }
+  @container header (max-width: 640px) {
+    /* the search button alone leads to the search page */
+    #header .searchwidget input {
+      display: none;
+    }
+  }
+  @container footer (max-width: 640px) {
+    #footer .main-footer > .section-inner-container {
+      grid-template-areas:
+        'logo'
+        'links'
+        'message'
+        'powered';
+      grid-template-columns: 1fr;
+      row-gap: var(--space-m);
+
+      &::before {
+        display: none;
+      }
+    }
+    #footer .main-footer {
+      ul {
+        justify-content: flex-start;
+      }
+
+      .footer-message {
+        padding-bottom: 0;
+        border-top: var(--border-width) solid var(--border);
+        margin-top: var(--space-xs);
+      }
+
+      .powered-by {
+        padding-top: 0;
+        margin-top: 0;
+        justify-self: start;
+      }
+    }
+  }
+  @container content (max-width: 640px) {
+    .content-area .route-sitemap #sitemap > ul {
+      grid-template-columns: 1fr;
+    }
   }
 }

@@ -8,6 +8,7 @@ import {
 } from 'react-router';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { Container, Input } from '@plone/quanta';
+import DocumentTitle from '@plone/layout/components/DocumentTitle/DocumentTitle';
 
 export const handle = {
   bodyClass: 'search-route',
@@ -56,11 +57,11 @@ export default function SearchRoute() {
   return (
     <div className="content-area">
       <Container width="default" className="route-search">
-        <h1 className="documentFirstHeading">
+        <DocumentTitle>
           {params
             ? `${t('publicui.search.title')} "${params}"`
             : t('publicui.search.results')}
-        </h1>
+        </DocumentTitle>
         <Form>
           <Input
             type="search"

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import prettybytes from 'pretty-bytes';
 import config from '@plone/registry';
 import type { RootLoader } from '@plone/aurora/app/root';
+import DocumentTitle from '../components/DocumentTitle/DocumentTitle';
 
 export default function FileView() {
   const rootData = useRouteLoaderData<RootLoader>('root');
@@ -18,7 +19,7 @@ export default function FileView() {
 
   return (
     <Container width="default">
-      <h1 className="documentFirstHeading">{content.title}</h1>
+      <DocumentTitle>{content.title}</DocumentTitle>
       {content.description && (
         <p className="documentDescription">{content.description}</p>
       )}

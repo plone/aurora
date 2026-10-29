@@ -5,6 +5,7 @@ import { Link } from '@plone/quanta';
 import { useTranslation } from 'react-i18next';
 import { isInternalURL } from '@plone/helpers';
 import clsx from 'clsx';
+import DocumentTitle from '../components/DocumentTitle/DocumentTitle';
 
 export default function LinkView() {
   const rootData = useRouteLoaderData<RootLoader>('root');
@@ -20,7 +21,7 @@ export default function LinkView() {
 
   return (
     <Container width="default" className="link-view">
-      <h1 className="documentFirstHeading">{content.title}</h1>
+      <DocumentTitle>{content.title}</DocumentTitle>
       <p className="documentDescription">{content.description}</p>
       <p>
         {isInternal

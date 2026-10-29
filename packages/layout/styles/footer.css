@@ -3,6 +3,11 @@
   container-type: inline-size;
 }
 
+/* The room on both sides of the page, set by the theme with `--gutter` */
+#footer .section {
+  padding-inline: var(--gutter, calc(var(--spacing, 0.25rem) * 4));
+}
+
 .section-footer {
   &.main-footer {
     --justify-items: center;

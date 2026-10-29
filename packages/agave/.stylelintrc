@@ -24,7 +24,7 @@
           ],
           {
             "splitList": true,
-            "message": "content.css only targets the content root (.content-area) and block anatomy classnames, not :root, html, body or bare elements."
+            "message": "content.css only targets the content root (.content-area), the Public UI page root (.app-slot) and its regions, and block anatomy classnames, not :root, html, body or bare elements."
           }
         ]
       }

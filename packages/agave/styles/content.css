@@ -1,11 +1,773 @@
 /*
- * Agave's block content tokens and overrides. They're loaded in both the
+ * Agave's tokens, skins and block styles. The app loads this file in both the
  * Public UI and the CMSUI editor, inside the `plone-content` cascade layer, so
- * blocks look the same in both. Declare tokens on `.content-area`, and don't
- * wrap these rules in a `@layer`.
+ * the content looks the same in both. Don't wrap these rules in a `@layer`.
+ *
+ * The tokens are declared on `.app-slot`, which wraps the header, the content
+ * and the footer in the Public UI, and on `.content-area`, which wraps the
+ * content in both interfaces. `.app-slot` doesn't exist in the CMSUI, so the
+ * tokens never reach the editor's own interface.
+ *
+ * TOKEN LAYERS
+ *   A. CORE · REQUIRED   every skin sets these
+ *   B. CORE · DERIVED    computed from A; a skin may override. They use the
+ *                        @plone/theming names, so Tailwind utilities and
+ *                        components follow the skin:
+ *                          muted text ......... --muted-foreground
+ *                          lines .............. --border, --input
+ *                          subtle fills ....... --muted, --secondary, --accent
+ *                          solid buttons ...... --primary(-foreground)
+ *                          brand .............. --brand(-foreground)
+ *                          focus .............. --ring
+ *                          errors ............. --destructive
+ *   C. BLOCK TOKENS      owned by blocks; optional, every one falls back to
+ *                        core tokens
+ * SKINS (section D) only assign values. The rules below them only read tokens
+ * and never mention a skin or a mode.
+ *
+ * Re-scoping: the header, the footer and any coloured block re-set
+ * --background / --foreground locally; layer B is recomputed in those scopes,
+ * so muted text, lines and fills follow automatically.
+ *
+ * SETTINGS on <html>, set for now by the temporary preview toolbar
+ *   data-skin="default | nieve | mercado"  Default when absent
+ *   data-mode="light | dark"              or the `dark` class; the Public UI
+ *                                         follows the OS colour scheme when
+ *                                         absent; the editor stays light
+ *                                         in any mode
+ *
+ * `@plone/layout` lays the blocks out as a stack: each block full width and
+ * flush at the top, its content at most `--block-width` wide, then the gap
+ * after it. Agave only sets the values: 1.3em between blocks, and 1.5
+ * times a heading's own size above it. The per-block rules below only style
+ * what a block draws.
  */
 
+/* Typography: the bundled font, the fallback of every skin */
+@font-face {
+  font-display: swap;
+  font-family: 'Funnel Display';
+  font-weight: 300 800;
+  src: url('./fonts/FunnelDisplay[wght].woff2') format('woff2-variations');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Funnel';
+  font-weight: 300 800;
+  src: url('./fonts/FunnelSans[wght].woff2') format('woff2-variations');
+}
+@font-face {
+  font-display: swap;
+  font-family: 'Funnel';
+  font-style: italic;
+  font-weight: 300 800;
+  src: url('./fonts/FunnelSans-Italic[wght].woff2') format('woff2-variations');
+}
+
+/* ┌────────────────────────────────────────────────────────────────────┐
+   │ A. CORE · REQUIRED TOKENS — neutral defaults                        │
+   └────────────────────────────────────────────────────────────────────┘ */
+.app-slot,
 .content-area {
+  /* colour pairs · light-dark() picks the value for the colour mode */
+  --background: light-dark(
+    #ffffff,
+    #111416
+  ); /* page background — a plain colour */
+  --foreground: light-dark(#16191a, #eceeef); /* page text */
+  --brand: light-dark(#1f6763, #8fd0c6); /* brand: links, current item, focus */
+  --brand-foreground: light-dark(#ffffff, #111416); /* text on a brand fill */
+  --header-background: var(
+    --background
+  ); /* header band (translucent = glass) */
+  --header-foreground: var(--foreground); /* header text & icons */
+  --footer-background: transparent; /* footer band */
+  --footer-foreground: var(--foreground); /* footer text & icons */
+  --error: light-dark(#b42318, #f97066); /* form / validation messages */
+  --background-image: none; /* page atmosphere (gradients, patterns) */
+  --shadow: 0 18px 40px -24px rgb(0 0 0 / 30%); /* the one elevation */
+  /* set once per skin */
+  --blur: 0px; /* glass blur strength (0 = none) */
+  --border-width: 1px; /* every line & outline */
+  --font-body: 'Funnel', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-heading: var(--font-body);
+  --font-size: 17px; /* base size; headings derive from it */
+  --heading-weight: 700;
+  --radius: 8px; /* base corner rounding */
+  --container-width: 1200px; /* max page width */
+  --text-width: 720px; /* max width of running text */
+  --align: start; /* start | center — the title and description */
+  --nav-align: start; /* start | center — the navigation and breadcrumbs */
+  --full-width-gutter: keep; /* keep | none — full width blocks' gutter */
+}
+
+/* ┌────────────────────────────────────────────────────────────────────┐
+   │ B. CORE · DERIVED TOKENS                                            │
+   │    Colour-derived ones are re-declared in every re-scoped region.   │
+   └────────────────────────────────────────────────────────────────────┘ */
+.app-slot,
+.content-area {
+  --type-scale: 1.25; /* ratio between heading levels */
+  --heading-tracking: -0.02em;
+  --font-meta: var(--font-body); /* dates, small labels */
+  --label-transform: none;
+  --space: 1rem; /* all spacing derives from it */
+  /* spacing scale: use these steps, nothing in between */
+  --space-3xs: calc(var(--space) * 0.25); /*  4px */
+  --space-2xs: calc(var(--space) * 0.5); /*  8px */
+  --space-xs: calc(var(--space) * 0.75); /* 12px */
+  --space-s: var(--space); /* 16px */
+  --space-m: calc(var(--space) * 1.25); /* 20px */
+  --space-l: calc(var(--space) * 1.5); /* 24px */
+  --space-xl: calc(var(--space) * 2); /* 32px */
+  --space-2xl: calc(var(--space) * 2.5); /* 40px */
+  --space-3xl: calc(var(--space) * 3); /* 48px */
+  --space-4xl: calc(var(--space) * 4); /* 64px */
+  /* type scale: small text by fixed ratios; above the body, half steps of
+     --type-scale, so each heading level is the next one times √ratio */
+  --font-size-xs: calc(var(--font-size) * 0.75); /* labels, captions, dates */
+  --font-size-sm: calc(
+    var(--font-size) * 0.875
+  ); /* navigation, buttons, descriptions */
+  --font-size-md: calc(var(--font-size) * pow(var(--type-scale), 0.5)); /* h5 */
+  --font-size-lg: calc(var(--font-size) * var(--type-scale)); /* h4 */
+  --font-size-xl: calc(var(--font-size) * pow(var(--type-scale), 1.5)); /* h3 */
+  --font-size-2xl: calc(var(--font-size) * pow(var(--type-scale), 2)); /* h2 */
+  --font-size-3xl: calc(
+    var(--font-size) * pow(var(--type-scale), 3)
+  ); /* the page title, at its smallest */
+  --font-size-display: calc(
+    var(--font-size) * pow(var(--type-scale), 5)
+  ); /* the page title, at its largest */
+  --line-height: 1.6; /* body and small text */
+  --line-height-prose: 1.7; /* running text */
+  --line-height-snug: 1.35; /* titles, quotes */
+  --line-height-tight: 1.1; /* headings */
+  --tracking-tight: -0.015em; /* titles, quotes */
+  --tracking-label: 0.06em; /* uppercase labels */
+  /* sizes */
+  --control-height: calc(var(--space) * 2.5); /* fields and buttons */
+  --control-height-lg: calc(var(--space) * 3.5); /* the search page's field */
+  --icon-size: var(--space);
+  --ring-width: 2px; /* focus outline, current item rule */
+  --underline-thickness: 1.5px;
+  --underline-offset: 3px;
+  --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+  --page-background: var(
+    --background
+  ); /* stays the page's, in re-scoped regions */
+  --radius-lg: calc(var(--radius) * 1.6); /* cards, images, quotes */
+  --radius-control: calc(
+    var(--radius) * 100
+  ); /* pill when radius > 0, square when 0 */
+}
+.app-slot,
+.content-area,
+#header,
+#footer,
+.block-teaser__content,
+.slate-callout > .block-inner-container {
+  --muted-foreground: color-mix(
+    in oklab,
+    var(--foreground) 65%,
+    var(--background)
+  );
+  --border: color-mix(in oklab, var(--foreground) 12%, var(--background));
+  --input: var(--border);
+  --muted: color-mix(in oklab, var(--foreground) 4%, var(--background));
+  --secondary: var(--muted);
+  --secondary-foreground: var(--foreground);
+  --primary: var(--foreground);
+  --primary-foreground: var(--background);
+  --ring: var(--brand);
+  --accent: var(--muted);
+  --accent-foreground: var(--foreground);
+}
+/* the re-scoped regions of the page */
+#header {
+  --background: var(--header-background);
+  --foreground: var(--header-foreground);
+  /* the header band may be translucent; text on a solid fill stays opaque */
+  --primary-foreground: var(--page-background);
+}
+#footer {
+  --background: var(--footer-background);
+  --foreground: var(--footer-foreground);
+}
+
+/* @plone/layout tokens: the room on both sides of the page, and between
+   the content and the header and footer */
+.app-slot,
+.content-area {
+  --gutter: var(--space-xl);
+  --content-spacing: var(--space-4xl);
+}
+/* a narrow region keeps a narrower gutter */
+@container header (max-width: 640px) {
+  #header .section {
+    --gutter: var(--space-s);
+  }
+}
+@container footer (max-width: 640px) {
+  #footer .section {
+    --gutter: var(--space-s);
+  }
+}
+@container content (max-width: 640px) {
+  .content-area > * {
+    --gutter: var(--space-s);
+  }
+}
+/* @plone/layout drops the gutter of full width blocks; skins that keep it
+   (--full-width-gutter: keep) give them the gutter of their container */
+@container style(--full-width-gutter: keep) {
+  .content-area
+    .slate-editor
+    > :is(.slate-blockWidth-full, [data-style-block-width='full']) {
+    --gutter: inherit;
+  }
+}
+
+/* @plone/theming tokens that follow the core tokens */
+.app-slot,
+.content-area {
+  --card: var(--background);
+  --card-foreground: var(--foreground);
+  --popover: var(--background);
+  --popover-foreground: var(--foreground);
+  --destructive: var(--error);
+  --destructive-foreground: #ffffff;
+  --layout-container-width: var(--container-width);
+  --narrow-container-width: var(--text-width);
+}
+
+/* ┌────────────────────────────────────────────────────────────────────┐
+   │ C. BLOCK TOKENS — owned by blocks; optional for skins               │
+   │    Tokens that re-scope a block's colours are declared here; the    │
+   │    rest are read as var(--token, <core fallback>) in block rules.   │
+   └────────────────────────────────────────────────────────────────────┘ */
+.app-slot,
+.content-area {
+  /* The surfaces of coloured blocks, resolved here so a block can re-scope
+     --background to them */
+  --card-background: var(--muted); /* teasers */
+  --callout-background: var(--muted);
+  --callout-foreground: var(--foreground);
+}
+/* Read in block rules with core fallbacks (no declaration needed):
+     Teaser ............... --card-shadow           (none)
+                            --card-lift             (--space-3xs, on hover)
+                            --card-image-rule       (border-width + --border)
+     Callout .............. --callout-rule          (border-width + --border)
+     Quote ................ --quote-background      (--muted)
+                            --quote-image           (none)
+     Listing headline ..... --section-rule          (none)                  */
+
+/* Coloured blocks: muted text, lines and fills follow their surface */
+.block-teaser__content {
+  --background: var(--card-background);
+}
+.slate-callout > .block-inner-container {
+  --background: var(--callout-background);
+  --foreground: var(--callout-foreground);
+  --block-callout-background: var(--callout-background);
+}
+
+/* ┌────────────────────────────────────────────────────────────────────┐
+   │ COLOUR MODES — light-dark() follows color-scheme                    │
+   └────────────────────────────────────────────────────────────────────┘ */
+/* The Public UI only: .app-slot doesn't exist in the CMSUI, so the editor's
+   content keeps the editor's light scheme whatever mode is set. */
+.app-slot {
+  color-scheme: light dark;
+}
+[data-mode='light'] .app-slot {
+  color-scheme: light;
+}
+:is([data-mode='dark'], .dark) .app-slot {
+  color-scheme: dark;
+}
+
+/* ┌────────────────────────────────────────────────────────────────────┐
+   │ D. SKINS — values only                                              │
+   │    Fonts name the skin's typeface first; until it's installed, the  │
+   │    bundled Funnel stands in.                                        │
+   └────────────────────────────────────────────────────────────────────┘ */
+
+/* ─── DEFAULT · glassy, sage-mist blooms, left aligned ──────────── */
+:is(.app-slot, .content-area):not([data-skin] *),
+[data-skin='default'] :is(.app-slot, .content-area) {
+  --font-body:
+    'Figtree', 'Funnel', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-size: 17.5px;
+  --heading-weight: 700;
+  --radius: 14px;
+  --blur: 18px;
+  --border-width: 1px;
+  --container-width: 1200px;
+  --text-width: 720px;
+  --align: start;
+  --nav-align: center;
+  /* derived overrides */
+  --type-scale: 1.25;
+  --heading-tracking: -0.03em;
+  /* block tokens: glass cards and quote, a brand-tinted callout */
+  --card-background: light-dark(rgb(255 255 255 / 72%), rgb(22 34 36 / 60%));
+  --card-shadow: 0 1px 2px light-dark(rgb(15 26 28 / 4%), rgb(0 0 0 / 20%));
+  --card-lift: calc(var(--space-3xs) * 0.5);
+  --card-image-rule: none;
+  --callout-background: color-mix(
+    in oklab,
+    var(--brand) 11%,
+    var(--background)
+  );
+  --callout-foreground: color-mix(
+    in oklab,
+    var(--foreground) 78%,
+    var(--background)
+  );
+  --quote-background: light-dark(rgb(255 255 255 / 55%), rgb(12 22 24 / 50%));
+  --quote-image: radial-gradient(
+    110% 620px at 50% -240px,
+    light-dark(rgb(168 210 203 / 62%), rgb(33 88 80 / 62%)) 0%,
+    light-dark(rgb(168 210 203 / 32%), rgb(33 88 80 / 28%)) 42%,
+    transparent 78%
+  );
+  /* colours */
+  --background: light-dark(#ffffff, #0b1314);
+  --foreground: light-dark(#0f1a1c, #e8f0ef);
+  --brand: light-dark(#1f6763, #8fd0c6);
+  --brand-foreground: light-dark(#ffffff, #0b1314);
+  --header-background: light-dark(rgb(255 255 255 / 55%), rgb(12 22 24 / 50%));
+  --header-foreground: var(--foreground);
+  --footer-background: transparent;
+  --footer-foreground: var(--foreground);
+  --error: light-dark(#b42318, #f97066);
+  --background-image:
+    radial-gradient(
+      130% 1300px at 25% -560px,
+      light-dark(#a3d6ce, #1d5c54) 0%,
+      light-dark(rgb(163 214 206 / 62%), rgb(29 92 84 / 52%)) 40%,
+      light-dark(rgb(163 214 206 / 36%), rgb(29 92 84 / 30%)) 55%,
+      light-dark(rgb(163 214 206 / 14%), rgb(29 92 84 / 12%)) 70%,
+      transparent 86%
+    ),
+    radial-gradient(
+      100% 680px at 50% calc(100% + 200px),
+      light-dark(#a3d6ce, #1d5c54) 0%,
+      light-dark(rgb(163 214 206 / 50%), rgb(29 92 84 / 45%)) 45%,
+      transparent 80%
+    );
+  --shadow: 0 22px 44px -24px light-dark(rgb(30 60 62 / 38%), rgb(0 0 0 / 70%));
+}
+
+/* ─── NIEVE · monochrome, square, editorial ────────────────────────── */
+[data-skin='nieve'] :is(.app-slot, .content-area) {
+  --font-body:
+    'Geist', 'Funnel', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-size: 17px;
+  --heading-weight: 600;
+  --radius: 0px;
+  --blur: 16px;
+  --border-width: 1px;
+  --container-width: 1200px;
+  --text-width: 720px;
+  --align: start;
+  --nav-align: start;
+  --full-width-gutter: none;
+  --card-lift: calc(var(--space-3xs) * 0.25);
+  /* derived overrides */
+  --type-scale: 1.3;
+  --heading-tracking: -0.035em;
+  --font-meta: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --label-transform: uppercase;
+  /* block tokens */
+  --section-rule: var(--border-width) solid var(--foreground);
+  --callout-rule: var(--ring-width) solid var(--brand);
+  /* colours */
+  --background: light-dark(#f4f5f5, #0e1011);
+  --foreground: light-dark(#111416, #eceeef);
+  --brand: light-dark(#46605d, #a3bab7);
+  --brand-foreground: light-dark(#ffffff, #0e1011);
+  --header-background: light-dark(rgb(244 245 245 / 62%), rgb(14 16 17 / 62%));
+  --header-foreground: var(--foreground);
+  --footer-background: transparent;
+  --footer-foreground: var(--foreground);
+  --error: light-dark(#b42318, #f97066);
+  --background-image:
+    radial-gradient(
+      60% 700px at 100% 0%,
+      light-dark(#e0e5e7, #1c2123) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      50% 600px at 0% 25%,
+      light-dark(rgb(224 229 231 / 50%), rgb(28 33 35 / 60%)) 0%,
+      transparent 70%
+    );
+  --shadow: 0 18px 40px -26px light-dark(rgb(17 20 22 / 35%), rgb(0 0 0 / 80%));
+}
+
+/* ─── MERCADO · maximalist, solid colour, no transparency ──────────── */
+[data-skin='mercado'] :is(.app-slot, .content-area) {
+  --font-body:
+    'Bricolage Grotesque', 'Funnel', system-ui, -apple-system, 'Segoe UI',
+    sans-serif;
+  --font-size: 17.5px;
+  --heading-weight: 800;
+  --radius: 18px;
+  --blur: 0px;
+  --border-width: 3px;
+  --container-width: 1200px;
+  --text-width: 720px;
+  --align: center;
+  --nav-align: center;
+  /* derived overrides */
+  --type-scale: 1.34;
+  --heading-tracking: -0.03em;
+  --label-transform: uppercase;
+  /* block tokens */
+  --callout-background: #ffd23f;
+  --callout-foreground: #1a0f14;
+  --card-shadow: var(--shadow);
+  /* colours */
+  --background: light-dark(#ff5ca1, #1a0f14);
+  --foreground: light-dark(#1a0f14, #fff1e6);
+  --brand: light-dark(#1a0f14, #ffd23f);
+  --brand-foreground: light-dark(#ffd23f, #1a0f14);
+  --header-background: light-dark(#ffc2dc, #2a1420);
+  --header-foreground: var(--foreground);
+  --footer-background: #1b2fb3;
+  --footer-foreground: #ffffff;
+  --error: light-dark(#b42318, #f97066);
+  --background-image: radial-gradient(
+      circle,
+      light-dark(#ff7ab3, #33192a) 3px,
+      transparent 3.5px
+    )
+    0 0 / 26px 26px;
+  --shadow: 8px 8px 0 light-dark(#1a0f14, #ff5ca1);
+}
+/* derived overrides that must hold in every re-scoped region */
+[data-skin='mercado']
+  :is(
+    .app-slot,
+    .content-area,
+    #header,
+    #footer,
+    .block-teaser__content,
+    .slate-callout > .block-inner-container
+  ) {
+  --border: var(--foreground);
+  --input: var(--border);
+  --muted-foreground: color-mix(
+    in oklab,
+    var(--foreground) 85%,
+    var(--background)
+  );
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+}
+[data-skin='mercado']
+  :is(
+    .app-slot,
+    .content-area,
+    #header,
+    .block-teaser__content,
+    .slate-callout > .block-inner-container
+  ) {
+  --muted: light-dark(#fff6ec, #2a1420);
+  --secondary: var(--muted);
+}
+
+/* The content's text follows the skin in both interfaces */
+.content-area {
+  color: var(--foreground);
+  font-family: var(--font-body);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+}
+
+/* ── Headings: flush like any block; the stack spaces them ── */
+.content-area :is(h1, h2, h3, h4, h5, h6, .documentFirstHeading) {
+  color: inherit;
+  font-family: var(--font-heading);
+  font-weight: var(--heading-weight);
+  letter-spacing: var(--heading-tracking);
+  line-height: var(--line-height-tight);
+  margin-block: 0;
+}
+.content-area :is(h1, .documentFirstHeading) {
+  font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-display));
+  line-height: var(--line-height-tight);
+  text-align: var(--align);
+}
+/* Each level is one step of the ramp below the previous one; h6 is the body
+   size, set apart by the heading weight */
+.content-area h2 {
+  font-size: var(--font-size-2xl);
+}
+.content-area h3 {
+  font-size: var(--font-size-xl);
+}
+.content-area h4 {
+  font-size: var(--font-size-lg);
+}
+.content-area h5 {
+  font-size: var(--font-size-md);
+}
+.content-area h6 {
+  font-size: var(--font-size);
+}
+.content-area .block-listing__headline {
+  padding-bottom: var(--space-m);
+  border-bottom: var(--section-rule, 0 solid transparent);
+  margin: 0 0 var(--space-xl);
+  font-size: var(--font-size-2xl); /* an h2 */
+}
+.content-area :is(.block-listing__title, .tileHeadline) {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-snug);
+}
+.content-area .block-teaser__title {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--line-height-snug);
+}
+
+/* ── Text: links, list markers, the description ── */
+.content-area .documentDescription {
+  margin: var(--space-l) 0 0;
+  color: var(--muted-foreground);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height);
+  text-align: var(--align);
+}
+.content-area .slate-a {
+  color: var(--brand);
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: var(--underline-thickness);
+  text-underline-offset: var(--underline-offset);
+}
+.content-area .slate-callout .slate-a {
+  color: inherit;
+}
+.content-area .block-p__item::marker {
+  color: var(--brand);
+}
+.content-area .block-listing__title a:hover {
+  color: var(--brand);
+}
+
+/* ── Spacing and layout values ── */
+.content-area {
+  --block-spacing: calc(var(--font-size) * 1.3);
+  /* the room above a heading: 1.5 times its own size */
+  --block-h1-spacing-before: calc(var(--font-size-3xl) * 1.5);
+  --block-h2-spacing-before: calc(var(--font-size-2xl) * 1.5);
+  --block-h3-spacing-before: calc(var(--font-size-xl) * 1.5);
+  --block-h4-spacing-before: calc(var(--font-size-lg) * 1.5);
+  --block-h5-spacing-before: calc(var(--font-size-md) * 1.5);
+  --block-h6-spacing-before: calc(var(--font-size) * 1.5);
+  --block-title-spacing-after: 1em;
   /* Floated images keep room for the wrapping content (framework default). */
   --block-float-max-size: 66%;
+  --block-separator-color: var(--border);
+}
+
+/* ── Text ── */
+.content-area .slate-p {
+  line-height: var(--line-height-prose);
+}
+
+/* ── Quote: a box ── */
+.content-area .slate-blockquote > .block-inner-container {
+  padding: var(--space-xl) var(--space-xl);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--quote-image, none), var(--quote-background, var(--muted));
+  font-size: var(--font-size-lg);
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--line-height-snug);
+
+  .slate-p {
+    line-height: inherit;
+  }
+}
+
+/* ── Callout: a box in colour theme 1 ── */
+.content-area .slate-callout > .block-inner-container {
+  padding: var(--space-m) var(--space-l);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  border-left: var(--callout-rule, var(--border-width) solid var(--border));
+  color: var(--foreground);
+  font-size: var(--font-size-sm);
+}
+
+/* ── Table: centred when narrower than its block ── */
+.content-area .slate-table > .block-inner-container {
+  display: grid;
+  justify-items: center;
+}
+.content-area .block-table__table {
+  font-size: var(--font-size-sm);
+}
+.content-area .slate-th {
+  color: var(--muted-foreground);
+  font-family: var(--font-meta, inherit);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+.content-area .block-table__cell-content {
+  padding: var(--space-xs) var(--space-s);
+}
+
+/* ── Table of contents ── */
+.content-area .block-toc__item {
+  padding: var(--space-2xs) var(--space-xs);
+  border-radius: var(--radius);
+  border-left: var(--ring-width) solid transparent;
+  color: var(--muted-foreground);
+  font-size: var(--font-size-sm);
+  text-decoration: none;
+}
+.content-area .block-toc__item[data-depth='2'] {
+  padding-left: var(--space-l);
+}
+.content-area .block-toc__item[data-depth='3'] {
+  padding-left: var(--space-3xl);
+}
+@media (hover: hover) {
+  .content-area .block-toc__item:hover,
+  .content-area .block-toggle__icon:hover {
+    color: var(--foreground);
+  }
+}
+
+/* ── Image ── */
+.content-area .block-image__frame img {
+  border-radius: var(--radius-lg);
+}
+.content-area .block-image figcaption {
+  margin-top: var(--space-xs);
+  color: var(--muted-foreground);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height);
+}
+
+/* ── Teaser: a card ── */
+.content-area .block-teaser__item {
+  display: flex;
+  overflow: hidden;
+  height: 100%;
+  flex-direction: column;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card-background);
+  box-shadow: var(--card-shadow, none);
+  transition:
+    transform 0.2s var(--ease),
+    box-shadow 0.2s var(--ease),
+    border-color 0.2s var(--ease);
+}
+.content-area .block-teaser__image {
+  border-bottom: var(
+    --card-image-rule,
+    var(--border-width) solid var(--border)
+  );
+
+  &:empty {
+    display: none;
+  }
+}
+.content-area .block-teaser__image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+.content-area .block-teaser__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: var(--space-m) var(--space-l) var(--space-l);
+  color: var(--foreground);
+  gap: var(--space-xs);
+}
+.content-area .block-teaser__description:empty {
+  display: none;
+}
+.content-area .block-teaser__description {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height);
+}
+
+/* ── Listing: rows, like search results ── */
+.content-area .block-listing__item {
+  padding: var(--space-l) 0;
+  border-bottom: var(--border-width) solid var(--border);
+}
+.content-area .block-listing__item[data-variation='summary'] {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-m);
+}
+.content-area .block-listing__image {
+  width: calc(var(--space) * 10);
+  height: auto;
+  flex: none;
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius-lg);
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+.content-area .block-listing__body {
+  min-width: 0;
+}
+.content-area .block-listing__title a {
+  color: var(--foreground);
+  text-decoration: none;
+}
+.content-area .block-listing__description {
+  max-width: 68ch;
+  margin: var(--space-2xs) 0 0;
+  color: var(--muted-foreground);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height);
+}
+.content-area .block-listing__empty {
+  padding: var(--space-4xl) 0;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
+/* ── Teaser: the card lifts on hover ── */
+.content-area .block-teaser .react-aria-Link {
+  display: block;
+  height: 100%;
+  color: inherit;
+  font-size: inherit;
+  text-decoration: none;
+
+  &:hover .block-teaser__item {
+    border-color: color-mix(in oklab, var(--foreground) 22%, transparent);
+    box-shadow: var(--shadow);
+    transform: translateY(calc(var(--card-lift, var(--space-3xs)) * -1));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .content-area .block-teaser .react-aria-Link:hover .block-teaser__item {
+    transform: none;
+  }
 }
