@@ -42,3 +42,35 @@ it('Sheet opens as a dialog and closes', () => {
   fireEvent.click(screen.getByRole('button', { name: 'Done' }));
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });
+
+it('shows a decorative handle on dismissible sheets', () => {
+  render(
+    <DialogTrigger>
+      <Button>Open sheet</Button>
+      <Sheet position="bottom">
+        <Heading slot="title">Sheet</Heading>
+      </Sheet>
+    </DialogTrigger>,
+  );
+  fireEvent.click(screen.getByRole('button', { name: 'Open sheet' }));
+  const handle = document.querySelector('[data-sheet-handle]');
+  expect(handle).toHaveAttribute('aria-hidden', 'true');
+  expect(handle?.parentElement).toHaveAttribute(
+    'data-swipe-direction',
+    'bottom',
+  );
+});
+
+it('omits the handle when dismissal is prevented', () => {
+  render(
+    <DialogTrigger>
+      <Button>Open sheet</Button>
+      <Sheet position="bottom" preventDismissal>
+        <Heading slot="title">Sheet</Heading>
+      </Sheet>
+    </DialogTrigger>,
+  );
+  fireEvent.click(screen.getByRole('button', { name: 'Open sheet' }));
+  expect(screen.getByRole('dialog', { name: 'Sheet' })).toBeInTheDocument();
+  expect(document.querySelector('[data-sheet-handle]')).not.toBeInTheDocument();
+});

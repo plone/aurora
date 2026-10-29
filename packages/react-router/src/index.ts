@@ -87,6 +87,15 @@ export const cookie = createCookie('auth_seven', {
   sameSite: 'lax',
 });
 
+/** Language preference shared by i18n detection and the preferences form. */
+export const localeCookie = createCookie('aurora_language', {
+  path: '/',
+  sameSite: 'lax',
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  maxAge: 60 * 60 * 24 * 365,
+});
+
 export async function getAuthFromRequest(
   request: Request,
 ): Promise<string | undefined> {

@@ -7,21 +7,27 @@ import type { RequestResponse } from '../types';
 export const getRelationsSchema = z
   .object({
     source: z.string().optional(),
+    target: z.string().optional(),
     relation: z.string().optional(),
     onlyBroken: z.boolean().optional(),
   })
   .refine((data) => {
-    return data.source !== undefined || data.relation !== undefined;
+    return (
+      data.source !== undefined ||
+      data.target !== undefined ||
+      data.relation !== undefined
+    );
   });
 
 export type RelationsArgs = z.infer<typeof getRelationsSchema>;
 
 export async function getRelations(
   this: PloneClient,
-  { source, relation, onlyBroken }: RelationsArgs,
+  { source, target, relation, onlyBroken }: RelationsArgs,
 ): Promise<RequestResponse<GetRelationsResponse>> {
   const validatedArgs = getRelationsSchema.parse({
     source,
+    target,
     relation,
     onlyBroken,
   });
@@ -30,8 +36,9 @@ export async function getRelations(
     config: this.config,
     params: {
       ...(validatedArgs.source && { source: validatedArgs.source }),
+      ...(validatedArgs.target && { target: validatedArgs.target }),
       ...(validatedArgs.relation && { relation: validatedArgs.relation }),
-      ...(validatedArgs.onlyBroken && { relation: validatedArgs.onlyBroken }),
+      ...(validatedArgs.onlyBroken && { onlyBroken: validatedArgs.onlyBroken }),
     },
   };
 
