@@ -1,1 +1,0 @@
-Declared the props of the components registered from `@plone/components` in `ComponentsPropsMap`, so `getComponent` returns them typed, and the type checker rejects overrides that do not take their props. @pnicolli
