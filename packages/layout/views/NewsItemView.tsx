@@ -1,11 +1,12 @@
 import RenderBlocks from '../blocks/RenderBlocks';
 import type { RootLoader } from '@plone/aurora/app/root';
-import { Container } from '@plone/components';
+import config from '@plone/registry';
 import { hasBlocksData } from '@plone/helpers';
 import { useRouteLoaderData } from 'react-router';
 
 export default function DefaultView() {
   const rootData = useRouteLoaderData<RootLoader>('root');
+  const Container = config.getComponent('Container').component!;
 
   if (!rootData || rootData.content['@type'] !== 'News Item') {
     return null;

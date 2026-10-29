@@ -1,0 +1,1 @@
+Added `ComponentsPropsMap`, `ComponentSignature` and `RegisteredComponent`: a package declares the props of the components it registers, so the component registry types them. Without a declaration, any props are accepted, as before. @pnicolli

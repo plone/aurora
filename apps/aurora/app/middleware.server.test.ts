@@ -14,6 +14,7 @@ import {
   installServerMiddleware,
   linkMiddleware,
   matchContentResource,
+  multilingualRootRedirect,
   ploneClearAuthCookieContext,
   PloneClientMiddleware,
   otherResources,
@@ -1308,6 +1309,228 @@ describe('middleware', () => {
           nextMock,
         ),
       ).rejects.toMatchObject({ init: { status: 301 } });
+    });
+
+    // The multilingual root redirect: on a site whose /@site reads
+    // features.multilingual, the site root is managed, never visited — a
+    // request for / goes to the default language root, as Plone's language
+    // switcher view and Volto's MultilingualRedirector send it.
+    const multilingualSiteSetup = (site: Record<string, unknown>) => {
+      const getContentMock = vi.fn().mockResolvedValue({
+        data: { '@id': 'http://example.com/', title: 'Site' },
+      });
+      const getSiteMock = vi.fn().mockResolvedValue({ data: site });
+      config.settings.apiPath = 'http://example.com';
+      registerPloneClientFactory({
+        getContent: getContentMock,
+        getSite: getSiteMock,
+      });
+    };
+
+    // `url` is what React Router hands the middleware: the normalised path of
+    // the request (a `.data` suffix already stripped). It defaults to the
+    // request's own URL, as it is for a document request.
+    const runFetchAt = async (
+      requestPath: string,
+      starParam: string,
+      normalisedUrl?: URL,
+    ) => {
+      const request = new Request(`http://example.com${requestPath}`);
+      const context = new RouterContextProvider();
+      await initializePloneClientContext(request, context);
+      return fetchPloneContent(
+        {
+          request,
+          params: { '*': starParam },
+          context,
+          pattern: requestPath,
+          url: normalisedUrl ?? new URL(request.url),
+        },
+        vi.fn(),
+      );
+    };
+
+    it('redirects the site root to the default language root on a multilingual site', async () => {
+      multilingualSiteSetup({
+        features: { multilingual: true },
+        'plone.default_language': 'en',
+      });
+      const result = await runFetchAt('/', '');
+      expect(result).toBeInstanceOf(Response);
+      expect((result as Response).status).toBe(302);
+      expect((result as Response).headers.get('Location')).toBe('/en');
+    });
+
+    it('redirects the site root to a hyphenated default language root', async () => {
+      multilingualSiteSetup({
+        features: { multilingual: true },
+        'plone.default_language': 'pt-br',
+      });
+      const result = await runFetchAt('/', '');
+      expect((result as Response).headers.get('Location')).toBe('/pt-br');
+    });
+
+    it('redirects a root data request too — keyed on the normalised url, not the raw request path', async () => {
+      multilingualSiteSetup({
+        features: { multilingual: true },
+        'plone.default_language': 'en',
+      });
+      const result = await runFetchAt(
+        '/_.data',
+        '',
+        new URL('http://example.com/'),
+      );
+      expect(result).toBeInstanceOf(Response);
+      expect((result as Response).headers.get('Location')).toBe('/en');
+    });
+
+    it('leaves the site root alone on a monolingual site', async () => {
+      multilingualSiteSetup({
+        features: { multilingual: false },
+        'plone.default_language': 'en',
+      });
+      const request = new Request('http://example.com/');
+      const context = new RouterContextProvider();
+      await initializePloneClientContext(request, context);
+      const result = await fetchPloneContent(
+        {
+          request,
+          params: { '*': '' },
+          context,
+          pattern: '/',
+          url: new URL(request.url),
+        },
+        vi.fn(),
+      );
+      expect(result).toBeUndefined();
+      expect(context.get(ploneContentContext)).toEqual({
+        '@id': '/',
+        title: 'Site',
+      });
+    });
+
+    it('leaves a language root alone', async () => {
+      multilingualSiteSetup({
+        features: { multilingual: true },
+        'plone.default_language': 'en',
+      });
+      expect(await runFetchAt('/en', 'en')).toBeUndefined();
+    });
+
+    it('leaves the login page alone although its splat is empty', async () => {
+      multilingualSiteSetup({
+        features: { multilingual: true },
+        'plone.default_language': 'en',
+      });
+      expect(await runFetchAt('/login', '')).toBeUndefined();
+    });
+
+    const multilingualSite = {
+      features: { multilingual: true },
+      'plone.default_language': 'en',
+    } as any;
+
+    it('multilingualRootRedirect targets the default language root from the site root only', () => {
+      expect(multilingualRootRedirect('/', multilingualSite)).toBe('/en');
+      expect(multilingualRootRedirect('/en', multilingualSite)).toBeUndefined();
+      expect(
+        multilingualRootRedirect('/login', multilingualSite),
+      ).toBeUndefined();
+      expect(
+        multilingualRootRedirect('/@@contents', multilingualSite),
+      ).toBeUndefined();
+    });
+
+    it('multilingualRootRedirect does nothing on a monolingual site or without a default language', () => {
+      expect(
+        multilingualRootRedirect('/', {
+          features: { multilingual: false },
+          'plone.default_language': 'en',
+        } as any),
+      ).toBeUndefined();
+      expect(
+        multilingualRootRedirect('/', {
+          features: { multilingual: true },
+        } as any),
+      ).toBeUndefined();
+      expect(multilingualRootRedirect('/', {} as any)).toBeUndefined();
+    });
+
+    it('multilingualRootRedirect refuses a default language that is not a language token', () => {
+      expect(
+        multilingualRootRedirect('/', {
+          features: { multilingual: true },
+          'plone.default_language': '/evil.example',
+        } as any),
+      ).toBeUndefined();
+      expect(
+        multilingualRootRedirect('/', {
+          features: { multilingual: true },
+          'plone.default_language': 'zh-cn',
+        } as any),
+      ).toBe('/zh-cn');
+    });
+
+    it('redirects the site root after the anonymous retry of an expired cookie', async () => {
+      const authContent = vi
+        .fn()
+        .mockRejectedValueOnce({ data: undefined, status: 401 });
+      const authSite = vi.fn().mockResolvedValue({ data: {} });
+      const anonymousContent = vi.fn().mockResolvedValueOnce({
+        data: { '@id': 'http://example.com/', title: 'Site' },
+      });
+      const anonymousSite = vi.fn().mockResolvedValueOnce({
+        data: {
+          features: { multilingual: true },
+          'plone.default_language': 'en',
+        },
+      });
+      config.settings.apiPath = 'http://example.com';
+      const initializeMock = vi
+        .fn()
+        .mockReturnValueOnce({
+          getContent: authContent,
+          getSite: authSite,
+          getUser: vi.fn().mockResolvedValue(null),
+        })
+        .mockReturnValueOnce({
+          getContent: anonymousContent,
+          getSite: anonymousSite,
+          getUser: vi.fn().mockResolvedValue(null),
+        });
+      config.registerUtility({
+        name: 'ploneClient',
+        type: 'client',
+        method: () =>
+          ({
+            prototype: {},
+            initialize: initializeMock,
+          }) as any,
+      });
+      vi.mocked(getAuthFromRequest).mockResolvedValue('expired.jwt.token');
+      vi.mocked(jwtDecode).mockReturnValue({
+        sub: 'testuser',
+        exp: 9999999999,
+        fullname: 'Test User',
+      });
+      const request = new Request('http://example.com/');
+      const context = new RouterContextProvider();
+      await initializePloneClientContext(request, context);
+
+      const result = await fetchPloneContent(
+        {
+          request,
+          params: { '*': '' },
+          context,
+          pattern: '/',
+          url: new URL(request.url),
+        },
+        vi.fn(),
+      );
+
+      expect(result).toBeInstanceOf(Response);
+      expect((result as Response).headers.get('Location')).toBe('/en');
+      expect(context.get(ploneClearAuthCookieContext)).toBe(true);
     });
   });
 

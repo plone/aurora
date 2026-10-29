@@ -1,8 +1,9 @@
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { langmap } from '@plone/helpers';
-import { Link, Menu, MenuItem, MenuTrigger } from '@plone/components';
+import { Menu } from '@plone/components';
 import { ChevrondownIcon } from '@plone/icons';
+import config from '@plone/registry';
 import { Button } from 'react-aria-components';
 import type { RootLoader } from '@plone/aurora/app/root';
 import type { GetTranslationResponse } from '@plone/types';
@@ -51,6 +52,9 @@ type LanguageSelectorProps = {
 const LanguageSwitcher = (props: LanguageSelectorProps) => {
   const { t } = useTranslation();
   const { pathname } = useLocation();
+  const Link = config.getComponent('Link').component!;
+  const MenuItem = config.getComponent('MenuItem').component!;
+  const MenuTrigger = config.getComponent('MenuTrigger').component!;
   const rootData = useRouteLoaderData<RootLoader>('root');
   if (!rootData) {
     return null;
