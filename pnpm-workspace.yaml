@@ -26,12 +26,5 @@ allowBuilds:
   msgpackr-extract: true
   unrs-resolver: true
 
-minimumReleaseAgeExclude:
-  - '@react-router/dev@8.5.0'
-  - '@react-router/express@8.5.0'
-  - '@react-router/node@8.5.0'
-  - '@react-router/serve@8.5.0'
-  - react-router@8.5.0
-
 # The default pnpm catalog is loaded from `catalog.json` using `.pnpmfile.cjs`.
 # If you want to customize the versions of the catalog, do it in there.
