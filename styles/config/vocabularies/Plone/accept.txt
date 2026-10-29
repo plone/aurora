@@ -1,5 +1,4 @@
-(-[pP]lone-?)|([pP]lone-)
-(-[vV]olto-?)|([vV]olto-)
+^\(.+\)=$
 [Aa]sync
 [Bb]ackend
 [Bb]lockquotes?
