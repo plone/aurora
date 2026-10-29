@@ -8,6 +8,25 @@
 
 <!-- towncrier release notes start -->
 
+## 3.0.0-alpha.8 (2026-10-29)
+
+### Feature
+
+- Add shared form widget prop and component types. 
+- Add the `languageSwitcherMenuThreshold` setting. @mpalomaki 
+- Added `ComponentsPropsMap`, `ComponentSignature` and `RegisteredComponent`: a package declares the props of the components it registers, so the component registry types them. Without a declaration, any props are accepted, as before. @pnicolli 
+- Added `WidgetPropsMap` and `RegisteredWidgetProps`: an app declares the props its registered widgets take, and the widget registry types its widget slots with them. Without a declaration, any props are accepted, as before. Added `pattern_options` to `WidgetOptions`. @sneridagh 
+- Added the `ContentExpander` type for Plone Aurora `apiExpanders` settings, with `match`, `expand`, and an optional `authenticated` key. @sneridagh 
+- Added the `FieldSchema` type, and the `invalid` and `schema` props to `FormWidgetProps`. @sneridagh 
+- Added the optional `contentsPageSize` setting, the page size of the Contents view. @sneridagh 
+- Added the optional `docs` function to the block configuration and `schemaEnhancer` to block variations. @sneridagh 
+- The `validator` utility also receives `t` (i18next) and the field's name as `fieldName`, next to `formatMessage`, so validators written for Plone Aurora and for Volto both type-check. @sneridagh 
+- `ComponentsConfig` entries accept components with required props, by typing them as `ComponentType<any>`. @pnicolli 
+
+### Internal
+
+- Removed the unreleased `skipContent` option from `ReactRouterRouteEntry`: the root middleware decides from the route path whether it loads the content. @sneridagh 
+
 ## 3.0.0-alpha.7 (2026-10-03)
 
 ### Internal
