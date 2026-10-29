@@ -376,7 +376,7 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
         if (rootRedirect) return clearAuthOnResponse(redirect(rootRedirect));
         return;
       } catch (anonymousError: any) {
-        // An expired token is no sign-in at all (Volto's cookie expires with
+        // An expired token is no sign-in at all (Aurora's cookie expires with
         // the token): the visitor logs in again and comes back here. A live
         // token without permission keeps the 401 page.
         const loginRedirect =
