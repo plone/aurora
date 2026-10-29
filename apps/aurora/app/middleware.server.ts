@@ -38,6 +38,21 @@ export function multilingualRootRedirect(
     : undefined;
 }
 
+/**
+ * Where a 401 sends a visitor who is not signed in: the login page, with the
+ * requested path as `return_url`, as Volto's Unauthorized view does. No
+ * redirect when the request is for the login page itself — the root
+ * middleware runs for `/login` with an empty splat, and on a site whose root
+ * is private that would loop.
+ */
+export function unauthorizedLoginRedirect(
+  path: string,
+  pathname: string = path,
+): string | undefined {
+  if (pathname === '/login') return undefined;
+  return `/login?return_url=${encodeURIComponent(path)}`;
+}
+
 function getAuthorizedResourceHeaders(
   request: Request,
   token?: string,
@@ -286,6 +301,7 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
   const pathname = (url ?? new URL(request.url)).pathname;
 
   let userId = '';
+  let tokenExpired = false;
   if (token) {
     try {
       const decodedToken = jwtDecode<{
@@ -294,6 +310,9 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
         fullname: string | null;
       }>(token);
       userId = decodedToken.sub || '';
+      tokenExpired =
+        typeof decodedToken.exp === 'number' &&
+        decodedToken.exp * 1000 < Date.now();
     } catch {}
   }
 
@@ -357,6 +376,14 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
         if (rootRedirect) return clearAuthOnResponse(redirect(rootRedirect));
         return;
       } catch (anonymousError: any) {
+        // An expired token is no sign-in at all (Aurora's cookie expires with
+        // the token): the visitor logs in again and comes back here. A live
+        // token without permission keeps the 401 page.
+        const loginRedirect =
+          tokenExpired && anonymousError?.status === 401
+            ? unauthorizedLoginRedirect(path, pathname)
+            : undefined;
+        if (loginRedirect) return clearAuthOnResponse(redirect(loginRedirect));
         throw data('Content Not Found', {
           status:
             typeof anonymousError.status === 'number'
@@ -365,6 +392,12 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
         });
       }
     }
+
+    const loginRedirect =
+      !token && error?.status === 401
+        ? unauthorizedLoginRedirect(path, pathname)
+        : undefined;
+    if (loginRedirect) return redirect(loginRedirect);
 
     throw data('Content Not Found', {
       status: typeof error.status === 'number' ? error.status : 500,
