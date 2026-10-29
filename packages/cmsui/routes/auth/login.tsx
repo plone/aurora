@@ -16,6 +16,7 @@ import {
   ploneSiteContext,
 } from '@plone/aurora/app/middleware.server';
 import {
+  getReturnUrl,
   redirectIfLoggedInLoader,
   setAuthOnResponse,
 } from '@plone/react-router';
@@ -77,7 +78,9 @@ export async function action({
       fullname: string | null;
     }>(data.token);
     const expires = new Date(decodedToken.exp * 1000);
-    const response = redirect('/');
+    // Back to the page the login link was pressed on (its `return_url`),
+    // the site root when none was sent.
+    const response = redirect(getReturnUrl(request));
     return await setAuthOnResponse(response, data.token, { expires });
   } catch (error: any) {
     return {
@@ -136,7 +139,16 @@ export default function Login() {
               {t('cmsui.auth.signInTo', { site: siteTitle || 'Aurora' })}
             </h2>
           </div>
-          <div className="mx-auto mt-11 w-full max-w-[360px]">
+          <div className="relative mx-auto mt-11 w-full max-w-[360px]">
+            {/* The error is plain markup from the action data, not field
+                validity, which would block submitting the form again. It sits
+                in the gap above the form, so showing it moves nothing. */}
+            <p
+              role="alert"
+              className="absolute bottom-full mb-3 text-sm text-quanta-candy"
+            >
+              {actionResult?.data?.error?.message}
+            </p>
             <div className="bg-quanta-air">
               <Form className="space-y-6" method="post">
                 <TextField
@@ -151,12 +163,6 @@ export default function Login() {
                     type="password"
                     autoComplete="current-password"
                     isRequired
-                    isInvalid={actionResult?.status === 401 ? true : undefined}
-                    errorMessage={
-                      actionResult?.status === 401
-                        ? actionResult?.data?.error.message
-                        : undefined
-                    }
                   />
                   <span className="text-sm text-quanta-iron">
                     <Trans

@@ -33,9 +33,12 @@ import React, {
 } from 'react';
 import { type ComponentProps } from 'react';
 import { Button } from 'react-aria-components';
-import { MenuTrigger } from '@plone/components';
+import config from '@plone/registry';
+import type { RegisteredComponent } from '@plone/types';
 
-export interface ToolbarMenuProps extends ComponentProps<typeof MenuTrigger> {
+export interface ToolbarMenuProps extends ComponentProps<
+  RegisteredComponent<'MenuTrigger'>
+> {
   icon?: React.ReactNode;
   /** CSS string (imported with `?inline`) to inject into the shadow root. */
   styles?: string;
@@ -47,6 +50,7 @@ export function ToolbarMenu({
   children,
   ...props
 }: ToolbarMenuProps) {
+  const MenuTrigger = config.getComponent('MenuTrigger').component!;
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
 

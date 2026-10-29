@@ -29,6 +29,16 @@ import {
 // This is needed because to prevent circular import loops
 export type ContentsLoaderType = typeof loader;
 
+/** The page size when `config.settings.contentsPageSize` is not set. */
+export const DEFAULT_CONTENTS_PAGE_SIZE = 10;
+
+function getContentsPageSize() {
+  const pageSize = Number(config.settings.contentsPageSize);
+  return Number.isInteger(pageSize) && pageSize > 0
+    ? pageSize
+    : DEFAULT_CONTENTS_PAGE_SIZE;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function loader({
   params,
@@ -36,7 +46,7 @@ export async function loader({
   context,
 }: LoaderFunctionArgs<RouterContextProvider>) {
   await requireAuthCookie(request);
-  const b_size = 10;
+  const b_size = getContentsPageSize();
   const cli = context.get(ploneClientContext);
   const content = context.get(ploneContentContext);
 

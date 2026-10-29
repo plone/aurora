@@ -8,6 +8,7 @@ import {
   ploneClearAuthCookieContext,
   fetchPloneContent,
   getAPIResourceWithAuth,
+  contentResourceMiddleware,
   installServerMiddleware,
   PloneClientMiddleware,
   otherResources,
@@ -25,6 +26,7 @@ export const middleware = [
   PloneClientMiddleware,
   otherResources,
   getAPIResourceWithAuth,
+  contentResourceMiddleware,
   fetchPloneContent,
   linkMiddleware,
 ];

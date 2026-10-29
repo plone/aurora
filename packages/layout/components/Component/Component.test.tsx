@@ -19,9 +19,12 @@ beforeEach(() => {
 
 describe('Component', () => {
   it('renders a registered component by name', () => {
-    config.registerComponent({ name: 'Button', component: MockButton });
+    config.registerComponent({ name: 'MockButton', component: MockButton });
     render(
-      <Component<{ label?: string }> componentName="Button" label="Click me" />,
+      <Component<{ label?: string }>
+        componentName="MockButton"
+        label="Click me"
+      />,
     );
     expect(screen.getByTestId('mock-button')).toHaveTextContent('Click me');
   });
