@@ -294,7 +294,7 @@
    │    skin overrides it from data-skin on <html>.                      │
    └────────────────────────────────────────────────────────────────────┘ */
 
-/* ─── DEFAULT · glassy, sage-mist blooms, left aligned ──────────── */
+/* ─── DEFAULT · glassy, blue agave blooms, left aligned ─────────── */
 .app-slot,
 .content-area {
   --font-body:
@@ -311,14 +311,15 @@
   /* derived overrides */
   --type-scale: 1.25;
   --heading-tracking: -0.03em;
-  /* block tokens: glass cards and quote, a brand-tinted callout */
+  /* block tokens: glass cards and quote, a callout tinted with the
+     gradient's bloom colour */
   --card-background: light-dark(rgb(255 255 255 / 72%), rgb(22 34 36 / 60%));
   --card-shadow: 0 1px 2px light-dark(rgb(15 26 28 / 4%), rgb(0 0 0 / 20%));
   --card-lift: calc(var(--space-3xs) * 0.5);
   --card-image-rule: none;
   --callout-background: color-mix(
     in oklab,
-    var(--brand) 11%,
+    light-dark(#99d0db, #175663) 30%,
     var(--background)
   );
   --callout-foreground: color-mix(
@@ -329,8 +330,8 @@
   --quote-background: light-dark(rgb(255 255 255 / 55%), rgb(12 22 24 / 50%));
   --quote-image: radial-gradient(
     110% 620px at 50% -240px,
-    light-dark(rgb(168 210 203 / 62%), rgb(33 88 80 / 62%)) 0%,
-    light-dark(rgb(168 210 203 / 32%), rgb(33 88 80 / 28%)) 42%,
+    light-dark(rgb(153 208 219 / 62%), rgb(23 86 99 / 62%)) 0%,
+    light-dark(rgb(153 208 219 / 32%), rgb(23 86 99 / 28%)) 42%,
     transparent 78%
   );
   /* colours */
@@ -346,16 +347,16 @@
   --background-image:
     radial-gradient(
       130% 1300px at 25% -560px,
-      light-dark(#a3d6ce, #1d5c54) 0%,
-      light-dark(rgb(163 214 206 / 62%), rgb(29 92 84 / 52%)) 40%,
-      light-dark(rgb(163 214 206 / 36%), rgb(29 92 84 / 30%)) 55%,
-      light-dark(rgb(163 214 206 / 14%), rgb(29 92 84 / 12%)) 70%,
+      light-dark(#99d0db, #175663) 0%,
+      light-dark(rgb(153 208 219 / 62%), rgb(23 86 99 / 52%)) 40%,
+      light-dark(rgb(153 208 219 / 36%), rgb(23 86 99 / 30%)) 55%,
+      light-dark(rgb(153 208 219 / 14%), rgb(23 86 99 / 12%)) 70%,
       transparent 86%
     ),
     radial-gradient(
       100% 680px at 50% calc(100% + 200px),
-      light-dark(#a3d6ce, #1d5c54) 0%,
-      light-dark(rgb(163 214 206 / 50%), rgb(29 92 84 / 45%)) 45%,
+      light-dark(#99d0db, #175663) 0%,
+      light-dark(rgb(153 208 219 / 50%), rgb(23 86 99 / 45%)) 45%,
       transparent 80%
     );
   --shadow: 0 22px 44px -24px light-dark(rgb(30 60 62 / 38%), rgb(0 0 0 / 70%));

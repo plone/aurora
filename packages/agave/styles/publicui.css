@@ -12,7 +12,8 @@
    too. Rules here only read tokens and never mention a skin or a mode.
 
    SETTINGS on <html>
-     data-sticky="off"   header scrolls with the page
+     data-sticky="on"    the header stays at the top. Nothing sets it yet,
+                         so the header scrolls with the page
    ══════════════════════════════════════════════════════════════════════ */
 
 @layer custom {
@@ -21,16 +22,18 @@
      │    Reads layers A and B only.                                     │
      └──────────────────────────────────────────────────────────────────┘ */
   /* Internal constants, on :root for the scroll padding, where the tokens
-     (on .app-slot) don't reach: in rem, the --space unit. */
+     (on .app-slot) don't reach: in rem, the --space unit. The sticky offset
+     is the room above anchors and the event panel; section G makes it clear
+     a sticky header. */
   :root {
     --header-h: 4.5rem;
-    --sticky-offset: calc(var(--header-h) + 4rem);
+    --sticky-offset: 1.5rem;
   }
   html {
     scroll-padding-top: var(--sticky-offset);
   }
   /* The page: the tokens live on .app-slot (content.css). Its height lets
-     the header stay sticky past the first screen. */
+     a sticky header stay sticky past the first screen. */
   :root .app-slot {
     height: auto;
     min-height: 100dvh;
@@ -49,7 +52,7 @@
 
   /* ── HEADER (core region) ── */
   #header {
-    position: sticky;
+    position: relative;
     z-index: 50;
     top: 0;
     border-bottom: var(--border-width) solid var(--border);
@@ -568,11 +571,12 @@
   /* ┌──────────────────────────────────────────────────────────────────┐
      │ G. SITE SETTING — not theme tokens                                │
      └──────────────────────────────────────────────────────────────────┘ */
-  :root[data-sticky='off'] {
-    --sticky-offset: 1.5rem;
+  /* A sticky header, and the offset that clears it */
+  :root[data-sticky='on'] {
+    --sticky-offset: calc(var(--header-h) + 4rem);
   }
-  :root[data-sticky='off'] #header {
-    position: relative;
+  :root[data-sticky='on'] #header {
+    position: sticky;
   }
 
   /* ── Responsive: each region follows its own width (@plone/layout makes
