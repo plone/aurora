@@ -29,12 +29,12 @@
  * --background / --foreground locally; layer B is recomputed in those scopes,
  * so muted text, lines and fills follow automatically.
  *
- * SETTINGS on <html>, set for now by the temporary preview toolbar
- *   data-skin="default | nieve | mercado"  Default when absent
- *   data-mode="light | dark"              or the `dark` class; the Public UI
- *                                         follows the OS colour scheme when
- *                                         absent; the editor stays light
- *                                         in any mode
+ * SETTINGS on <html>
+ *   data-mode="dark"   or the `dark` class: the Public UI's dark colours.
+ *                      Nothing sets it yet, so the page is light whatever
+ *                      the OS prefers; the editor stays light in any mode
+ *   data-skin="<name>" selects a skin other than Default, such as the Nieve
+ *                      example in section D, which is commented out
  *
  * `@plone/layout` lays the blocks out as a stack: each block full width and
  * flush at the top, its content at most `--block-width` wide, then the gap
@@ -276,12 +276,11 @@
 /* ┌────────────────────────────────────────────────────────────────────┐
    │ COLOUR MODES — light-dark() follows color-scheme                    │
    └────────────────────────────────────────────────────────────────────┘ */
-/* The Public UI only: .app-slot doesn't exist in the CMSUI, so the editor's
-   content keeps the editor's light scheme whatever mode is set. */
+/* Light, whatever the OS prefers. Every colour token has its dark value
+   ready: data-mode="dark" (or the `dark` class) on <html> switches the
+   Public UI, and nothing sets it yet. .app-slot doesn't exist in the CMSUI,
+   so the editor's content stays light in any mode. */
 .app-slot {
-  color-scheme: light dark;
-}
-[data-mode='light'] .app-slot {
   color-scheme: light;
 }
 :is([data-mode='dark'], .dark) .app-slot {
@@ -291,12 +290,13 @@
 /* ┌────────────────────────────────────────────────────────────────────┐
    │ D. SKINS — values only                                              │
    │    Fonts name the skin's typeface first; until it's installed, the  │
-   │    bundled Funnel stands in.                                        │
+   │    bundled Funnel stands in. Default applies everywhere; another    │
+   │    skin overrides it from data-skin on <html>.                      │
    └────────────────────────────────────────────────────────────────────┘ */
 
 /* ─── DEFAULT · glassy, sage-mist blooms, left aligned ──────────── */
-:is(.app-slot, .content-area):not([data-skin] *),
-[data-skin='default'] :is(.app-slot, .content-area) {
+.app-slot,
+.content-area {
   --font-body:
     'Figtree', 'Funnel', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-size: 17.5px;
@@ -362,6 +362,9 @@
 }
 
 /* ─── NIEVE · monochrome, square, editorial ────────────────────────── */
+/* An example of another skin, switched off: uncomment it and set
+   data-skin="nieve" on <html> to apply it.
+
 [data-skin='nieve'] :is(.app-slot, .content-area) {
   --font-body:
     'Geist', 'Funnel', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -376,15 +379,12 @@
   --nav-align: start;
   --full-width-gutter: none;
   --card-lift: calc(var(--space-3xs) * 0.25);
-  /* derived overrides */
   --type-scale: 1.3;
   --heading-tracking: -0.035em;
   --font-meta: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
   --label-transform: uppercase;
-  /* block tokens */
   --section-rule: var(--border-width) solid var(--foreground);
   --callout-rule: var(--ring-width) solid var(--brand);
-  /* colours */
   --background: light-dark(#f4f5f5, #0e1011);
   --foreground: light-dark(#111416, #eceeef);
   --brand: light-dark(#46605d, #a3bab7);
@@ -407,78 +407,7 @@
     );
   --shadow: 0 18px 40px -26px light-dark(rgb(17 20 22 / 35%), rgb(0 0 0 / 80%));
 }
-
-/* ─── MERCADO · maximalist, solid colour, no transparency ──────────── */
-[data-skin='mercado'] :is(.app-slot, .content-area) {
-  --font-body:
-    'Bricolage Grotesque', 'Funnel', system-ui, -apple-system, 'Segoe UI',
-    sans-serif;
-  --font-size: 17.5px;
-  --heading-weight: 800;
-  --radius: 18px;
-  --blur: 0px;
-  --border-width: 3px;
-  --container-width: 1200px;
-  --text-width: 720px;
-  --align: center;
-  --nav-align: center;
-  /* derived overrides */
-  --type-scale: 1.34;
-  --heading-tracking: -0.03em;
-  --label-transform: uppercase;
-  /* block tokens */
-  --callout-background: #ffd23f;
-  --callout-foreground: #1a0f14;
-  --card-shadow: var(--shadow);
-  /* colours */
-  --background: light-dark(#ff5ca1, #1a0f14);
-  --foreground: light-dark(#1a0f14, #fff1e6);
-  --brand: light-dark(#1a0f14, #ffd23f);
-  --brand-foreground: light-dark(#ffd23f, #1a0f14);
-  --header-background: light-dark(#ffc2dc, #2a1420);
-  --header-foreground: var(--foreground);
-  --footer-background: #1b2fb3;
-  --footer-foreground: #ffffff;
-  --error: light-dark(#b42318, #f97066);
-  --background-image: radial-gradient(
-      circle,
-      light-dark(#ff7ab3, #33192a) 3px,
-      transparent 3.5px
-    )
-    0 0 / 26px 26px;
-  --shadow: 8px 8px 0 light-dark(#1a0f14, #ff5ca1);
-}
-/* derived overrides that must hold in every re-scoped region */
-[data-skin='mercado']
-  :is(
-    .app-slot,
-    .content-area,
-    #header,
-    #footer,
-    .block-teaser__content,
-    .slate-callout > .block-inner-container
-  ) {
-  --border: var(--foreground);
-  --input: var(--border);
-  --muted-foreground: color-mix(
-    in oklab,
-    var(--foreground) 85%,
-    var(--background)
-  );
-  --primary: var(--brand);
-  --primary-foreground: var(--brand-foreground);
-}
-[data-skin='mercado']
-  :is(
-    .app-slot,
-    .content-area,
-    #header,
-    .block-teaser__content,
-    .slate-callout > .block-inner-container
-  ) {
-  --muted: light-dark(#fff6ec, #2a1420);
-  --secondary: var(--muted);
-}
+*/
 
 /* The content's text follows the skin in both interfaces */
 .content-area {
