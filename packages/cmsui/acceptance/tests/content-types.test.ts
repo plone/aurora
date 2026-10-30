@@ -319,8 +319,9 @@ test.describe("A content type's fields", () => {
     await openNewType(page);
     await addField(page, { label: 'Pages', type: 'Integer' });
     await addField(page, { label: 'Reviewed', type: 'Yes/No' });
-    await save(page);
 
+    // Reorder before saving: saving reloads the schema, and the rows it
+    // redraws can take the focus away from the handle.
     await row(page, 'Reviewed')
       .getByRole('button', { name: 'Reviewed' })
       .focus();
