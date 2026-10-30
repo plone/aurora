@@ -1,4 +1,66 @@
 #header {
   container-name: header;
   container-type: inline-size;
+
+  /* Below 48rem the desktop row no longer fits: the navigation column takes
+     the whole width, the logo collapses and the language switcher lands on
+     top of the last nav items. `#header` declares itself the `header`
+     container (above); this is the rule that uses it. The nav slot keeps
+     only its toggle in the row, hugging the tools column; the item list
+     becomes a full-width panel dropped from the header row while the toggle
+     holds it open. `#header` in the selectors outranks the slots' own module
+     rules (Header.module.css, Navigation.module.css) whatever order the
+     sheets load in. */
+  @container header (max-width: 48rem) {
+    /* Scoped to the logo-nav-tools row: the breadcrumbs section is a
+       `section-header` too, and its list is that container's second child,
+       so an unscoped `> :nth-child(2)` rule would push the breadcrumbs to
+       the right edge on phones. */
+    .header-logo-nav-tools-wrapper .section-inner-container {
+      position: relative;
+      /* The middle track's floor is its content (the menu toggle). With
+         `minmax(0, 1fr)` a logo wider than the leftover collapses it to 0px
+         and the toggle overflows onto the logo. */
+      grid-template-columns: minmax(0, auto) minmax(min-content, 1fr) auto;
+
+      > :nth-child(2) {
+        /* navigation slot */
+        justify-self: end;
+      }
+    }
+
+    .navigation {
+      .navigation-toggle {
+        display: inline-flex;
+      }
+
+      ul {
+        position: absolute;
+        z-index: 10;
+        top: 100%;
+        right: 0;
+        left: 0;
+        display: none;
+        flex-direction: column;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid
+          color-mix(in oklab, var(--foreground) 15%, var(--background, #fff));
+        background: var(--background, #fff);
+        box-shadow: 0 8px 24px -8px
+          color-mix(in oklab, var(--foreground) 40%, transparent);
+
+        &[data-open] {
+          display: flex;
+        }
+
+        li a {
+          /* Same inline inset the theme gives the inner container, so the
+             items line up with the logo above them. */
+          display: block;
+          padding: 0.75rem calc(var(--spacing, 0.25rem) * 6);
+          margin-left: 0;
+        }
+      }
+    }
+  }
 }
