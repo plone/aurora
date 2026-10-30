@@ -35,6 +35,12 @@ describe('MoreMenu', () => {
       'href',
       '/@@sharing/news',
     );
+    // The menu takes the focus a moment after it opens. If that happens once
+    // the State submenu is open, the submenu closes.
+    const menu = screen.getByRole('menu', { name: 'More' });
+    await waitFor(() =>
+      expect(menu).toContainElement(document.activeElement as HTMLElement),
+    );
     fireEvent.click(screen.getByRole('menuitem', { name: /State.*Published/ }));
     const transition = await screen.findByRole('menuitem', { name: 'Retract' });
     await waitFor(() => expect(transition).toHaveFocus());
