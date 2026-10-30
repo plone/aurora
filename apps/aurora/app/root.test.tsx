@@ -20,18 +20,10 @@ vi.mock('./i18next.server', () => ({
 async function renderStub() {
   const Stub = createRoutesStub([
     {
+      id: 'root',
       path: '/',
       Component: () => (
-        <Layout
-          params={{}}
-          loaderData={{
-            locale: 'en',
-            content: {} as any,
-            site: {} as any,
-            isAuthenticated: false,
-          }}
-          matches={[{} as any]}
-        >
+        <Layout>
           <p>Root Layout</p>
         </Layout>
       ),
