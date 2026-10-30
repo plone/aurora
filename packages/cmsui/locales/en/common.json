@@ -193,6 +193,7 @@
         "imageOnly": "Choose an image file.",
         "readError": "The file could not be read."
       }
-    }
+    },
+    "saveFailed": "Could not save"
   }
 }

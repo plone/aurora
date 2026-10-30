@@ -127,6 +127,7 @@
         "imageOnly": "Wählen Sie eine Bilddatei aus.",
         "readError": "Die Datei konnte nicht gelesen werden."
       }
-    }
+    },
+    "saveFailed": "Speichern fehlgeschlagen"
   }
 }

@@ -34,6 +34,7 @@ import { AddIcon, LanguageIcon, LinkIcon } from '@plone/icons';
 import Back from '@plone/icons/svg/arrow-left.svg?react';
 import { ObjectBrowserProvider } from '../components/ObjectBrowserWidget/ObjectBrowserContext';
 import { ObjectBrowserModal } from '../components/ObjectBrowserWidget/ObjectBrowserModal';
+import { getTranslationsOrThrow } from '../helpers/translations.server';
 
 export async function loader({
   request,
@@ -45,12 +46,7 @@ export async function loader({
   const content = context.get(ploneContentContext);
   const contentPath = flattenToAppURL(content['@id']);
 
-  let translations;
-  try {
-    ({ data: translations } = await cli.getTranslation({ path: contentPath }));
-  } catch {
-    throw data('Content is not translatable', { status: 400 });
-  }
+  const translations = await getTranslationsOrThrow(cli, content);
 
   const language = content.language as { token?: string } | string | undefined;
   const contentLanguage =
@@ -83,6 +79,36 @@ export async function loader({
 type ActionBody =
   { intent: 'link'; target: string } | { intent: 'unlink'; language: string };
 
+// The link target must be a site path and the language a bare code, so
+// neither can point the request somewhere else.
+async function parseActionBody(request: Request): Promise<ActionBody | null> {
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return null;
+  }
+  if (!body || typeof body !== 'object') return null;
+  const { intent, target, language } = body as Record<string, unknown>;
+  if (
+    intent === 'link' &&
+    typeof target === 'string' &&
+    target.startsWith('/') &&
+    !target.startsWith('//')
+  ) {
+    return { intent, target };
+  }
+  if (
+    intent === 'unlink' &&
+    typeof language === 'string' &&
+    language !== '' &&
+    !language.includes('/')
+  ) {
+    return { intent, language };
+  }
+  return null;
+}
+
 export async function action({
   request,
   context,
@@ -92,7 +118,13 @@ export async function action({
   const cli = context.get(ploneClientContext);
   const content = context.get(ploneContentContext);
   const contentPath = flattenToAppURL(content['@id']);
-  const body = (await request.json()) as ActionBody;
+  const body = await parseActionBody(request);
+  if (!body) {
+    return data(
+      { ok: false as const, error: 'Invalid request' },
+      { status: 400 },
+    );
+  }
 
   try {
     if (body.intent === 'link') {
@@ -100,16 +132,11 @@ export async function action({
         path: contentPath,
         data: { id: body.target },
       });
-    } else if (body.intent === 'unlink') {
+    } else {
       await cli.unlinkTranslation({
         path: contentPath,
         data: { language: body.language },
       });
-    } else {
-      return data(
-        { ok: false as const, error: 'Unknown intent' },
-        { status: 400 },
-      );
     }
   } catch (e) {
     const err = e as {
@@ -292,11 +319,16 @@ export default function ManageTranslations() {
                                   'cmsui.manage_translations.create',
                                   { language: languageName },
                                 )}
+                                aria-disabled={busy || undefined}
+                                onClick={(event) => {
+                                  if (busy) event.preventDefault();
+                                }}
                                 className={`
                                   flex size-8 items-center justify-center rounded-full
                                   text-quanta-iron
                                   hover:bg-quanta-snow
                                   active:bg-quanta-silver
+                                  aria-disabled:pointer-events-none aria-disabled:opacity-50
                                 `}
                               >
                                 <LanguageIcon size="sm" />

@@ -4,6 +4,7 @@ import Settings from '@plone/icons/svg/settings.svg?react';
 import { Link, Tab, TabList, TabPanel, Tabs } from '@plone/quanta';
 import { FormProvider, useFormStore } from '@plone/helpers';
 import { Plug } from '@plone/layout/components/Pluggable';
+import config from '@plone/registry';
 import type { Content } from '@plone/types';
 import clsx from 'clsx';
 import { useAtom } from 'jotai';
@@ -40,6 +41,8 @@ interface ContentFormProps {
   asidePanels?: { header?: ReactNode; blocks?: ReactNode; content?: ReactNode };
   /** Placeholder text per field name (eg. the source values of a translation). */
   fieldPlaceholders?: Record<string, string>;
+  /** Where Cancel goes, when not the content itself (eg. a translation's source). */
+  cancelHref?: string;
 }
 
 export default function ContentForm({
@@ -50,6 +53,7 @@ export default function ContentForm({
   submitMethod,
   asidePanels,
   fieldPlaceholders,
+  cancelHref,
 }: ContentFormProps) {
   const { t } = useTranslation();
   const fetcher = useFetcher();
@@ -86,14 +90,24 @@ export default function ContentForm({
     [schema],
   );
 
-  // The save action returns the server's validation errors, by field.
+  // The save action returns the server's validation errors, by field, or an
+  // `error` message that belongs to no field (eg. a conflict).
   useEffect(() => {
-    const errors = (fetcher.data as { errors?: Record<string, string[]> })
-      ?.errors;
+    const { errors, error } = (fetcher.data ?? {}) as {
+      errors?: Record<string, string[]>;
+      error?: string;
+    };
+    if (error) {
+      config.getUtility({ name: 'show', type: 'toast' }).method({
+        title: t('cmsui.saveFailed'),
+        description: error,
+        className: 'error',
+      });
+    }
     if (!errors) return;
     form.setServerErrors(errors);
     showErrors(errors);
-  }, [fetcher.data, form, showErrors]);
+  }, [fetcher.data, form, showErrors, t]);
 
   // Non-reserved schema keys reach the widget, so a placeholder set on the
   // field's schema property is rendered by any widget that supports it.
@@ -203,9 +217,12 @@ export default function ContentForm({
             <Plug
               pluggable="toolbar-top"
               id="button-cancel"
-              dependencies={[content['@id']] as any}
+              dependencies={[cancelHref ?? content['@id']] as any}
             >
-              <Link aria-label={t('cmsui.cancel')} href={content['@id']}>
+              <Link
+                aria-label={t('cmsui.cancel')}
+                href={cancelHref ?? content['@id']}
+              >
                 <Close />
               </Link>
             </Plug>

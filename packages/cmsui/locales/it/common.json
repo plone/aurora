@@ -165,6 +165,7 @@
         "imageOnly": "Scegli un file immagine.",
         "readError": "Impossibile leggere il file."
       }
-    }
+    },
+    "saveFailed": "Impossibile salvare"
   }
 }

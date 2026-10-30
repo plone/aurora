@@ -195,9 +195,7 @@ describe('Manage translations route', () => {
     });
 
     it('should throw a 400 when the content is not translatable', async () => {
-      const getTranslationMock = vi
-        .fn()
-        .mockRejectedValue(new Error('Not Found'));
+      const getTranslationMock = vi.fn().mockRejectedValue({ status: 404 });
       config.settings.apiPath = 'http://example.com';
       const context = new RouterContextProvider();
       context.set(ploneClientContext, {
@@ -326,7 +324,16 @@ describe('Manage translations route', () => {
       expect(result.init?.status).toBe(400);
     });
 
-    it('should return a 400 for an unknown intent', async () => {
+    it.each([
+      ['an unknown intent', JSON.stringify({ intent: 'copy' })],
+      ['a protocol-relative target', '{"intent":"link","target":"//evil"}'],
+      ['a relative target', '{"intent":"link","target":"de/page"}'],
+      ['a non-string target', '{"intent":"link","target":42}'],
+      ['a language with a slash', '{"intent":"unlink","language":"de/x"}'],
+      ['an empty language', '{"intent":"unlink","language":""}'],
+      ['a null body', 'null'],
+      ['invalid JSON', '{'],
+    ])('should return a 400 for %s', async (_case, body) => {
       const linkTranslationMock = vi.fn();
       const unlinkTranslationMock = vi.fn();
       config.settings.apiPath = 'http://example.com';
@@ -342,7 +349,7 @@ describe('Manage translations route', () => {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ intent: 'copy' }),
+          body,
         },
       );
 
@@ -356,7 +363,7 @@ describe('Manage translations route', () => {
 
       expect(linkTranslationMock).not.toHaveBeenCalled();
       expect(unlinkTranslationMock).not.toHaveBeenCalled();
-      expect(result.data).toEqual({ ok: false, error: 'Unknown intent' });
+      expect(result.data).toEqual({ ok: false, error: 'Invalid request' });
       expect(result.init?.status).toBe(400);
     });
   });

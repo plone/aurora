@@ -26,6 +26,7 @@ const mockSchema = {
 const mockSource = {
   '@id': 'http://example.com/en/my-page',
   '@type': 'Document',
+  UID: 'source-uid',
   title: 'My Page',
   description: 'A test page',
   language: { title: 'English', token: 'en' },
@@ -183,6 +184,27 @@ describe('Translate route', () => {
       expect(status).toBe(400);
     });
 
+    it.each(['en', '__proto__'])(
+      'rejects the target language %s',
+      async (language) => {
+        config.settings.apiPath = 'http://example.com';
+        const context = makeContext({
+          getType: vi.fn().mockResolvedValue({ data: mockSchema }),
+          getTranslation: vi.fn().mockResolvedValue({ data: mockTranslations }),
+        });
+
+        const status = await caughtStatus(
+          loader(
+            loaderArgs(
+              context,
+              `http://example.com/@@translate/en/my-page?language=${language}`,
+            ) as any,
+          ) as Promise<unknown>,
+        );
+        expect(status).toBe(400);
+      },
+    );
+
     it('rejects untranslatable content', async () => {
       config.settings.apiPath = 'http://example.com';
       const context = makeContext({
@@ -221,12 +243,12 @@ describe('Translate route', () => {
       };
     }
 
-    it('creates the translation in the language root, links it, and redirects', async () => {
+    it('creates the translation linked to the source in one request, and redirects', async () => {
       config.settings.apiPath = 'http://example.com';
       const createContent = vi
         .fn()
         .mockResolvedValue({ data: { '@id': 'http://example.com/de/titel' } });
-      const linkTranslation = vi.fn().mockResolvedValue({});
+      const linkTranslation = vi.fn();
       const context = makeContext({
         getTranslation: vi.fn().mockResolvedValue({ data: mockTranslations }),
         createContent,
@@ -246,22 +268,21 @@ describe('Translate route', () => {
           title: 'Titel',
           '@type': 'Document',
           language: 'de',
+          translation_of: 'source-uid',
         }),
       });
       expect(createContent.mock.calls[0][0].data['@id']).toBeUndefined();
-      expect(linkTranslation).toHaveBeenCalledWith({
-        path: '/en/my-page',
-        data: { id: '/de/titel' },
-      });
+      expect(linkTranslation).not.toHaveBeenCalled();
       expect((result as Response).status).toBe(302);
       expect((result as Response).headers.get('Location')).toBe(
         '/@@edit/de/titel',
       );
     });
 
-    it('updates the translation instead when it already exists', async () => {
+    it('returns a 409 without writing when the translation already exists', async () => {
       config.settings.apiPath = 'http://example.com';
-      const updateContent = vi.fn().mockResolvedValue({});
+      const createContent = vi.fn();
+      const updateContent = vi.fn();
       const context = makeContext({
         getTranslation: vi.fn().mockResolvedValue({
           data: {
@@ -271,20 +292,100 @@ describe('Translate route', () => {
             ],
           },
         }),
+        createContent,
         updateContent,
       });
 
-      const result = await action(
+      const result = (await action(
         actionArgs(context, { title: 'Titel' }) as any,
-      );
+      )) as any;
 
-      expect(updateContent).toHaveBeenCalledWith({
-        path: '/de/meine-seite',
-        data: expect.objectContaining({ title: 'Titel' }),
-      });
-      expect((result as Response).headers.get('Location')).toBe(
-        '/@@edit/de/meine-seite',
-      );
+      expect(createContent).not.toHaveBeenCalled();
+      expect(updateContent).not.toHaveBeenCalled();
+      expect(result.init?.status).toBe(409);
+      expect(result.data.error).toEqual(expect.any(String));
     });
+
+    it('returns a 409 when the backend reports a translation created meanwhile', async () => {
+      config.settings.apiPath = 'http://example.com';
+      const context = makeContext({
+        getTranslation: vi.fn().mockResolvedValue({ data: mockTranslations }),
+        createContent: vi.fn().mockRejectedValue({
+          status: 503,
+          data: { type: 'KeyError', message: "'Translation already exists'" },
+        }),
+      });
+
+      const result = (await action(
+        actionArgs(context, { title: 'Titel' }) as any,
+      )) as any;
+
+      expect(result.init?.status).toBe(409);
+    });
+
+    it('returns the server validation errors to the form', async () => {
+      config.settings.apiPath = 'http://example.com';
+      const context = makeContext({
+        getTranslation: vi.fn().mockResolvedValue({ data: mockTranslations }),
+        createContent: vi.fn().mockRejectedValue({
+          status: 400,
+          data: {
+            message: JSON.stringify([
+              { field: 'title', message: 'Required input is missing.' },
+            ]),
+          },
+        }),
+      });
+
+      const result = (await action(
+        actionArgs(context, { title: '' }) as any,
+      )) as any;
+
+      expect(result.init?.status).toBe(400);
+      expect(result.data.errors).toEqual({
+        title: ['Required input is missing.'],
+      });
+    });
+
+    it('rethrows other backend errors', async () => {
+      config.settings.apiPath = 'http://example.com';
+      const failure = { status: 500, data: { message: 'Boom' } };
+      const context = makeContext({
+        getTranslation: vi.fn().mockResolvedValue({ data: mockTranslations }),
+        createContent: vi.fn().mockRejectedValue(failure),
+      });
+
+      await expect(
+        action(actionArgs(context, { title: 'Titel' }) as any),
+      ).rejects.toBe(failure);
+    });
+
+    it.each(['en', '__proto__'])(
+      'rejects the target language %s without creating anything',
+      async (language) => {
+        config.settings.apiPath = 'http://example.com';
+        const createContent = vi.fn();
+        const context = makeContext({
+          getTranslation: vi.fn().mockResolvedValue({ data: mockTranslations }),
+          createContent,
+        });
+        const args = actionArgs(context, { title: 'Titel' });
+        const request = new Request(
+          `http://example.com/@@translate/en/my-page?language=${language}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: 'Titel' }),
+          },
+        );
+
+        const status = await caughtStatus(
+          action({ ...args, request, url: new URL(request.url) } as any),
+        );
+
+        expect(status).toBe(400);
+        expect(createContent).not.toHaveBeenCalled();
+      },
+    );
   });
 });

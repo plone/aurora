@@ -6,6 +6,7 @@ import {
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from 'react-router';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { flattenToAppURL, hasBlocksData } from '@plone/helpers';
 import { requireAuthCookie } from '@plone/react-router';
@@ -16,6 +17,8 @@ import {
 } from '@plone/aurora/app/middleware.server';
 import RenderBlocks from '@plone/layout/blocks/RenderBlocks';
 import ContentForm from '../components/ContentForm/ContentForm';
+import { getServerValidationErrors } from '../components/Form/validation';
+import { getTranslationsOrThrow } from '../helpers/translations.server';
 
 const SERVER_MANAGED_KEYS = [
   '@id',
@@ -131,6 +134,42 @@ function placeholderBlocks(blocks: Record<string, unknown>) {
   return clean;
 }
 
+function contentLanguage(content: Content): string {
+  const language = content.language as { token?: string } | string | undefined;
+  return typeof language === 'string' ? language : (language?.token ?? '');
+}
+
+// Own keys only: a `?language=__proto__` must not resolve to a root.
+function targetRootOf(
+  translations: { root?: Record<string, string> },
+  language: string,
+): string | undefined {
+  const root = translations.root ?? {};
+  return language && Object.hasOwn(root, language) ? root[language] : undefined;
+}
+
+function validTargetLanguage(source: Content, targetLanguage: string) {
+  return targetLanguage !== '' && targetLanguage !== contentLanguage(source);
+}
+
+const conflict = () =>
+  data(
+    { error: 'A translation in this language already exists' },
+    { status: 409 },
+  );
+
+// plone.app.multilingual raises `KeyError('Translation already exists')`.
+function isTranslationExistsError(error: unknown) {
+  const { data: body } = (error ?? {}) as {
+    data?: { type?: unknown; message?: unknown };
+  };
+  return (
+    body?.type === 'KeyError' &&
+    typeof body.message === 'string' &&
+    body.message.includes('Translation already exists')
+  );
+}
+
 export async function loader({
   request,
   context,
@@ -139,24 +178,17 @@ export async function loader({
 
   const cli = context.get(ploneClientContext);
   const source = context.get(ploneContentContext);
-  const sourcePath = flattenToAppURL(source['@id']);
 
   const targetLanguage =
     new URL(request.url).searchParams.get('language') || '';
 
-  let schema;
-  let translations;
-  try {
-    [{ data: schema }, { data: translations }] = await Promise.all([
-      cli.getType({ type: source['@type'] }),
-      cli.getTranslation({ path: sourcePath }),
-    ]);
-  } catch {
-    // eg. content outside a language root
-    throw data('Content is not translatable', { status: 400 });
-  }
+  const [{ data: schema }, translations] = await Promise.all([
+    cli.getType({ type: source['@type'] }),
+    getTranslationsOrThrow(cli, source),
+  ]);
 
-  if (!targetLanguage || !(translations.root ?? {})[targetLanguage]) {
+  const targetRoot = targetRootOf(translations, targetLanguage);
+  if (!validTargetLanguage(source, targetLanguage) || !targetRoot) {
     throw data('Unknown target language', { status: 400 });
   }
 
@@ -180,63 +212,61 @@ export async function loader({
       schema,
       initial,
       targetLanguage,
-      targetRoot: translations.root[targetLanguage],
+      targetRoot,
     }),
   );
 }
 
 export async function action({
   request,
-  params,
   context,
 }: ActionFunctionArgs<RouterContextProvider>) {
   await requireAuthCookie(request);
 
   const cli = context.get(ploneClientContext);
   const source = context.get(ploneContentContext);
-  const sourcePath = `/${params['*'] || ''}`;
   const targetLanguage =
     new URL(request.url).searchParams.get('language') || '';
 
   const formData = (await request.json()) as Record<string, unknown>;
 
-  const { data: translations } = await cli.getTranslation({
-    path: sourcePath,
-  });
-  const existing = (translations.items ?? []).find(
-    (item) => item.language === targetLanguage,
-  );
-
-  if (existing) {
-    const translationPath = flattenToAppURL(existing['@id']);
-    await cli.updateContent({
-      path: translationPath,
-      data: stripServerKeys(formData),
-    });
-    return redirect(`/@@edit${translationPath}`);
-  }
-
-  const targetRoot = flattenToAppURL(
-    (translations.root ?? {})[targetLanguage] ?? '',
-  );
-  if (!targetLanguage || !targetRoot) {
+  const translations = await getTranslationsOrThrow(cli, source);
+  const targetRoot = targetRootOf(translations, targetLanguage);
+  if (!validTargetLanguage(source, targetLanguage) || !targetRoot) {
     throw data('Unknown target language', { status: 400 });
   }
-  const created = await cli.createContent({
-    path: targetRoot,
-    data: {
-      ...stripServerKeys(formData),
-      '@type': source['@type'],
-      language: targetLanguage,
-    } as any,
-  });
-  const translationPath = flattenToAppURL(created.data['@id']);
-  await cli.linkTranslation({
-    path: sourcePath,
-    data: { id: translationPath },
-  });
 
-  return redirect(`/@@edit${translationPath}`);
+  // The backend rejects a duplicate too (rolling back the create), but as a
+  // 503 KeyError we could only recognise by its message. We already have the
+  // translations here, so catch the common case cleanly and leave the message
+  // match below for a translation created in the meantime.
+  if (
+    (translations.items ?? []).some((item) => item.language === targetLanguage)
+  ) {
+    return conflict();
+  }
+
+  // `translation_of` creates and links in one request: if linking fails, the
+  // backend rolls back the create, leaving no unlinked copy behind.
+  let created;
+  try {
+    created = await cli.createContent({
+      path: flattenToAppURL(targetRoot),
+      data: {
+        ...stripServerKeys(formData),
+        '@type': source['@type'],
+        language: targetLanguage,
+        translation_of: source.UID,
+      } as any,
+    });
+  } catch (error) {
+    const errors = getServerValidationErrors(error);
+    if (errors) return data({ errors }, { status: 400 });
+    if (isTranslationExistsError(error)) return conflict();
+    throw error;
+  }
+
+  return redirect(`/@@edit${flattenToAppURL(created.data['@id'])}`);
 }
 
 export default function Translate() {
@@ -244,22 +274,25 @@ export default function Translate() {
     useLoaderData<typeof loader>();
   const { t } = useTranslation();
 
-  const sourceLanguage =
-    typeof source.language === 'string'
-      ? source.language
-      : ((source.language as { token?: string } | undefined)?.token ?? '—');
+  const sourceLanguage = contentLanguage(source) || '—';
 
-  const fieldPlaceholders: Record<string, string> = {};
-  for (const [field, value] of Object.entries(source)) {
-    if (typeof value === 'string' && value && field in schema.properties) {
-      fieldPlaceholders[field] = value;
+  const fieldPlaceholders = useMemo(() => {
+    const placeholders: Record<string, string> = {};
+    for (const [field, value] of Object.entries(source)) {
+      if (typeof value === 'string' && value && field in schema.properties) {
+        placeholders[field] = value;
+      }
     }
-  }
+    return placeholders;
+  }, [source, schema]);
 
   return (
     <ContentForm
+      // A new form store for each source and target language.
+      key={`${source['@id']}?language=${targetLanguage}`}
       content={initial}
       path={targetRoot}
+      cancelHref={source['@id']}
       schema={schema}
       fieldPlaceholders={fieldPlaceholders}
       asidePanels={{
@@ -280,7 +313,7 @@ export default function Translate() {
           <RenderBlocks content={source} />
         ) : (
           <>
-            <h1 className="text-2xl font-bold">{source.title}</h1>
+            <h2 className="text-2xl font-bold">{source.title}</h2>
             {source.description && (
               <p className="text-quanta-graphite mt-2">{source.description}</p>
             )}
