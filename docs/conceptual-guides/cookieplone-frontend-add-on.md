@@ -77,7 +77,7 @@ The generated project contains the following files and folders:
 
 ## Add-on folder structure
 
-The add-on folder {file}`packages/<add-on-name>` contains the folowing files and folders:
+The add-on folder {file}`packages/<add-on-name>` contains the following files and folders:
 
 {file}`packages/<add-on-name>/package.json`
 :   This file contains the metadata for your add-on package.
@@ -211,4 +211,3 @@ Then run:
 ```shell
 make install
 ```
-

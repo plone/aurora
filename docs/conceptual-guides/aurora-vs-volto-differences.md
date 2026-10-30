@@ -7,7 +7,7 @@ myst:
     "keywords": "Plone Aurora, Plone Volto, differences, comparison"
 ---
 
-# Plone Aurora vs Plone Volto: key differences
+# Plone Aurora vs Plone Volto: Key differences
 
 This guide highlights the main conceptual and design differences between Plone Aurora and Plone Volto.
 It helps Plone Volto developers move to Plone Aurora by explaining the design decisions behind Plone Aurora and the alternative tooling it offers.

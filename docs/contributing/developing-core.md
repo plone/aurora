@@ -20,7 +20,7 @@ To create a full Plone project with both frontend and backend, see {doc}`plone:i
 
 ## Monorepo structure
 
-The Plone Aurora core repository has the shape of a monorepo, where "mono" means "single" and "repo" is short for "repository".
+The Plone Aurora core repository has the shape of a monorepo, where "mono" means "single" and "repo" is short for "repository."
 This means that several apps and libraries related to each other are stored in the same repository.
 They are managed together but released individually.
 This allows the code to be shared effectively, and unifies tracking of changes across all of the apps and libraries.
@@ -294,12 +294,12 @@ By default, the use of TypeScript is required in Plone frontend libraries, inclu
 
 ## Core libraries
 
-The monorepository consists of several core libraries.
+The monorepo consists of several core libraries.
 
 ### Registry
 
 `@plone/registry` provides support for building an add-on registry and infrastructure for JavaScript and TypeScript-based apps.
-Used by Plone Aurora, you can also use it in other JavaScript frameworks and environments to help create an add-on driven extensiblility story.
+Used by Plone Aurora, you can also use it in other JavaScript frameworks and environments to help create an add-on driven extensibility story.
 
 ### Scripts
 
@@ -308,4 +308,3 @@ Used by Plone Aurora, you can also use it in other JavaScript frameworks and env
 ### Types
 
 `@plone/types` is the package that contains the TypeScript types in used in Plone.
-

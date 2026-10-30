@@ -13,13 +13,14 @@ backport(ed|ing)?
 breakpoints?
 Browserslist
 [bB]ugfix(es)?
-bundler
+bundlers?
 [Cc]allout('s|s)?
 [Cc]lassnames?
 CMFPlone
 CMSUI
 CommonJS
 Cookieplone
+Corepack
 Enum
 ESLint
 [eE]xpanders?
@@ -29,12 +30,14 @@ Hostname
 iCalendar
 IDEs
 JavaScript
+Jotai
 keyframes?
 lossy
-middleware
-monorepo
+middlewares?
+[mM]onorepo
 [mM]ultiline
 namespace
+Netlify
 npm
 nvm
 Pastanaga
@@ -43,12 +46,14 @@ Plone
 [pP]luggab(les?|ility)
 pnpm
 preloading
+preprocessors
 Prisma
 programatically
 Public UI
 Quanta
 Razzle
 reactively
+repo
 rethrown
 RichText
 [Rr]ulesets?
@@ -60,6 +65,7 @@ security@plone.org
 Stylelint
 subpaths?
 SVGs?
+syntaxes
 toctree
 transpile[dr]{0,1}
 unregister(ing)?
