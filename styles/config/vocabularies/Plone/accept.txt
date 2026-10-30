@@ -1,6 +1,3 @@
-^\(.+\)=$
-`plone.restapi`
-`plone.volto`
 Ansible
 APIs
 architected
@@ -43,6 +40,7 @@ nvm
 Pastanaga
 Plate
 Plone
+plone.restapi
 [pP]luggab(les?|ility)
 pnpm
 preloading

@@ -9,7 +9,7 @@ myst:
 
 # Configure style fields
 
-This guide explains how to configure Plone blocks (non-plate native, registry-backed) styles based on fields in the block schema in Plone Aurora.
+This guide explains how to configure Plone blocks (non-Plate native, registry-backed) styles based on fields in the block schema in Plone Aurora.
 It focuses on a `theme` field, because that is the common case for the new style field system.
 
 Use this model when you want a block to store a semantic ID, such as `default` or `sand`, and resolve that ID to a runtime style object later.

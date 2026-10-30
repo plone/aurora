@@ -168,7 +168,7 @@ The `blockWidth` policy supports:
 
 ## Configure widths for Plone blocks with editor controls
 
-Plone blocks (non-plate native, registry-backed) expose editor width controls through their block schema.
+Plone blocks (non-Plate native, registry-backed) expose editor width controls through their block schema.
 They are stored as `ploneBlock` nodes in the Somersault value.
 
 Example from `packages/blocks/Image/schema.tsx`:
