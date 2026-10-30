@@ -26,4 +26,5 @@ cookieplone-frontend-add-on
 routing
 slots
 unified-editor
+packages-for-volto-and-aurora
 ```
