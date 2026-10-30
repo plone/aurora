@@ -221,8 +221,12 @@ const mockCreateContentAction = async ({
 };
 
 function StoryImageWidget(props: ImageWidgetStoryProps) {
-  const [value, setValue] = useState<ImageWidgetStoryProps['value']>(
-    props.value ?? props.defaultValue ?? null,
+  const [value, setValue] = useState<string | null>(
+    typeof props.value === 'string'
+      ? props.value
+      : typeof props.defaultValue === 'string'
+        ? props.defaultValue
+        : null,
   );
 
   return (

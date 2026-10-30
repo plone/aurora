@@ -1,12 +1,14 @@
 import { useRouteLoaderData } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import prettybytes from 'pretty-bytes';
-import { Container, Link } from '@plone/components';
+import config from '@plone/registry';
 import type { RootLoader } from '@plone/aurora/app/root';
 
 export default function FileView() {
   const rootData = useRouteLoaderData<RootLoader>('root');
   const { t } = useTranslation();
+  const Container = config.getComponent('Container').component!;
+  const Link = config.getComponent('Link').component!;
 
   if (!rootData || rootData.content['@type'] !== 'File') {
     return null;

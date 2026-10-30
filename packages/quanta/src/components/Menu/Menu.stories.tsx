@@ -17,7 +17,6 @@ import {
   Menu,
   MenuItem,
   MenuSection,
-  MenuSectionHeader,
   MenuSeparator,
   MenuTrigger,
   SubmenuTrigger,
@@ -147,13 +146,11 @@ export const WithSections: Story = {
         <BackgroundIcon />
       </TriggerButton>
       <Menu {...args}>
-        <MenuSection>
-          <MenuSectionHeader>Styles</MenuSectionHeader>
+        <MenuSection title="Styles">
           <MenuItem id="bold">Bold</MenuItem>
           <MenuItem id="underline">Underline</MenuItem>
         </MenuSection>
-        <MenuSection>
-          <MenuSectionHeader>Align</MenuSectionHeader>
+        <MenuSection title="Align">
           <MenuItem id="left">Left</MenuItem>
           <MenuItem id="middle">Middle</MenuItem>
           <MenuItem id="right">Right</MenuItem>
@@ -171,8 +168,7 @@ export const WithCustomHeader: Story = {
         <BackgroundIcon />
       </TriggerButton>
       <Menu {...args}>
-        <MenuSection>
-          <MenuSectionHeader>Styles</MenuSectionHeader>
+        <MenuSection title="Styles">
           <MenuItem id="bold">Bold</MenuItem>
           <MenuItem id="underline">Underline</MenuItem>
         </MenuSection>

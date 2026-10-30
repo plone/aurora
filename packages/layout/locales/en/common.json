@@ -58,6 +58,13 @@
         "visitWebsite": "Visit website",
         "downloadEvent": "Download event"
       }
+    },
+    "personalTools": {
+      "label": "Personal tools",
+      "profile": "Profile",
+      "preferences": "Preferences",
+      "siteSetup": "Site setup",
+      "logout": "Log out"
     }
   }
 }

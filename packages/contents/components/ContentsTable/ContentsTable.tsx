@@ -8,10 +8,9 @@ import {
 } from 'react-aria-components';
 import { useFetcher, useLoaderData, useNavigate } from 'react-router';
 import { useDebounceCallback, useMediaQuery } from 'usehooks-ts';
-import { Pagination } from '@plone/components';
-
 import {
   Button,
+  Pagination,
   Container,
   Breadcrumbs,
   Breadcrumb,
@@ -178,7 +177,7 @@ export function ContentsTable({
       {
         method: 'PATCH',
         encType: 'application/json',
-        action: `/@@contents/@@order`,
+        action: `/@@contents/@order`,
       },
     );
   };
@@ -310,7 +309,7 @@ export function ContentsTable({
     await fetcher.submit(clipboard, {
       method: 'POST',
       encType: 'application/json',
-      action: `/@@contents/@@paste${pathname}`,
+      action: `/@@contents/@paste${pathname}`,
     });
     // TODO when do we clean the clipboard?
   };
@@ -625,6 +624,7 @@ export function ContentsTable({
                   totalPages={Math.ceil(search.items_total / b_size)}
                   currentPage={currentPage}
                   onPageChange={(page) => onPageChange(page)}
+                  className="mt-8 justify-end"
                 />
               </>
             ) : (

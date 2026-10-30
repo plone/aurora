@@ -1,43 +1,38 @@
 import Checkbox from '@plone/icons/svg/checkbox.svg?react';
 import Close from '@plone/icons/svg/close.svg?react';
 import Settings from '@plone/icons/svg/settings.svg?react';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionItemTrigger,
-  AccordionPanel,
-  Tabs,
-  Link,
-} from '@plone/quanta';
-import { InitAtoms } from '@plone/helpers';
+import { Link, Tab, TabList, TabPanel, Tabs } from '@plone/quanta';
+import { FormProvider, useFormStore } from '@plone/helpers';
 import { Plug } from '@plone/layout/components/Pluggable';
 import type { Content } from '@plone/types';
-import type { DeepKeys } from '@tanstack/react-form';
 import clsx from 'clsx';
-import { createStore, Provider, useAtom } from 'jotai';
+import { useAtom } from 'jotai';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
-import { useRef } from 'react';
+import type { Key } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
-import { useFetcher, useLocation, type SubmitTarget } from 'react-router';
-import { useAppForm } from '../Form/Form';
+import { useFetcher, type SubmitTarget } from 'react-router';
+import SchemaFieldsets, { type FieldsetsSchema } from '../Form/SchemaFieldsets';
+import {
+  buildSchemaValidators,
+  firstInvalidField,
+  focusField,
+} from '../Form/validation';
+import { WidgetContextProvider } from '../Form/WidgetContext';
 import Sidebar, { sidebarAtom } from '../Sidebar/Sidebar';
-import { formAtom } from '../../routes/atoms';
 import BlocksEditor from '../BlockEditor/BlocksEditor';
-import { getContentPathFromCmsUrl } from '../../helpers/cmsPath';
 
-interface Schema {
+interface Schema extends FieldsetsSchema {
   title: string;
-  fieldsets: Array<{
-    id: string;
-    title: string;
-    fields: string[];
-  }>;
-  properties: Record<string, { title: string; [key: string]: unknown }>;
-  required: string[];
 }
 
 interface ContentFormProps {
   content: Content;
+  /**
+   * The path the form is about: the edited object, or the container a new
+   * object is added to. Widgets such as the object browser start from it.
+   */
+  path: string;
   schema: Schema;
   heading: ReactNode;
   submitMethod: 'post' | 'patch';
@@ -45,32 +40,64 @@ interface ContentFormProps {
 
 export default function ContentForm({
   content,
+  path,
   schema,
   heading,
   submitMethod,
 }: ContentFormProps) {
   const { t } = useTranslation();
   const fetcher = useFetcher();
-  const location = useLocation();
-  const cancelHref =
-    content['@id'] || getContentPathFromCmsUrl(location.pathname);
-  const storeRef = useRef(createStore());
-  const store = storeRef.current;
   const [collapsed, setCollapsed] = useAtom(sidebarAtom);
+  const [selectedTab, setSelectedTab] = useState<Key>('blocks');
+  // Cancel goes back to the edited object or, on add, to the container: a
+  // new object has no `@id` yet.
+  const cancelHref = content['@id'] || path;
+  const validators = useMemo(
+    () => buildSchemaValidators<Content>(schema, { t }),
+    [schema, t],
+  );
 
-  const form = useAppForm({
-    defaultValues: content,
-    onSubmit: async () => {
-      fetcher.submit(store.get(formAtom) as unknown as SubmitTarget, {
+  // The form's values are the single source of truth for the content being
+  // edited: the fields, the blocks editor and Plate's title binding all read
+  // and write them through the form.
+  const form = useFormStore<Content>({
+    key: content['@id'] ?? 'add',
+    initialValues: content,
+    validators,
+    onSubmit: (values) => {
+      fetcher.submit(values as unknown as SubmitTarget, {
         method: submitMethod,
         encType: 'application/json',
       });
     },
   });
 
+  // Shows the fields with errors: they are in the Content tab.
+  const showErrors = useCallback(
+    (errors: Record<string, unknown>) => {
+      const field = firstInvalidField(schema, errors);
+      if (!field) return;
+      setSelectedTab('content');
+      focusField(field);
+    },
+    [schema],
+  );
+
+  // The save action returns the server's validation errors, by field.
+  useEffect(() => {
+    const errors = (fetcher.data as { errors?: Record<string, string[]> })
+      ?.errors;
+    if (!errors) return;
+    form.setServerErrors(errors);
+    showErrors(errors);
+  }, [fetcher.data, form, showErrors]);
+
   return (
-    <Provider store={store}>
-      <InitAtoms atomValues={[[formAtom, content]]}>
+    <FormProvider form={form}>
+      <WidgetContextProvider
+        mode={submitMethod === 'post' ? 'add' : 'edit'}
+        path={path}
+      >
         <div
           id="main"
           className={clsx(
@@ -85,73 +112,31 @@ export default function ContentForm({
           )}
         >
           <main className="mx-4 pt-8">
-            <Tabs
-              tabs={[
-                {
-                  id: 'blocks',
-                  title: t('cmsui.blocksEditor.blocksTab'),
-                  content: <BlocksEditor />,
-                },
-                {
-                  id: 'content',
-                  title: t('cmsui.blocksEditor.contentTab'),
-                  content: (
-                    <div className="flex flex-col">
-                      <h1 className="mb-4 text-2xl font-bold">{heading}</h1>
-                      <form>
-                        {schema.fieldsets.map((fieldset) => (
-                          <Accordion
-                            defaultExpandedKeys={['default']}
-                            key={fieldset.id}
-                          >
-                            <AccordionItem id={fieldset.id} key={fieldset.id}>
-                              <AccordionItemTrigger>
-                                {fieldset.title}
-                              </AccordionItemTrigger>
-                              <AccordionPanel>
-                                {(fieldset.fields as DeepKeys<Content>[]).map(
-                                  (schemaField, index) => (
-                                    <form.AppField
-                                      name={schemaField}
-                                      key={index}
-                                      // eslint-disable-next-line react/no-children-prop
-                                      children={(field) => (
-                                        <field.Quanta
-                                          {...schema.properties[schemaField]}
-                                          className="mb-4"
-                                          label={
-                                            schema.properties[field.name]?.title
-                                          }
-                                          name={field.name}
-                                          defaultValue={field.state.value}
-                                          required={
-                                            schema.required?.indexOf(
-                                              schemaField,
-                                            ) !== -1
-                                          }
-                                          error={field.state.meta.errors}
-                                          formAtom={formAtom}
-                                          value={field.state.value}
-                                        />
-                                      )}
-                                    />
-                                  ),
-                                )}
-                              </AccordionPanel>
-                            </AccordionItem>
-                          </Accordion>
-                        ))}
-                      </form>
-                    </div>
-                  ),
-                },
-              ]}
-            />
+            <Tabs selectedKey={selectedTab} onSelectionChange={setSelectedTab}>
+              <TabList>
+                <Tab id="blocks">{t('cmsui.blocksEditor.blocksTab')}</Tab>
+                <Tab id="content">{t('cmsui.blocksEditor.contentTab')}</Tab>
+              </TabList>
+              <TabPanel id="blocks" className="p-3">
+                <BlocksEditor />
+              </TabPanel>
+              <TabPanel id="content" className="p-3">
+                <div className="flex flex-col">
+                  <h1 className="mb-4 text-2xl font-bold">{heading}</h1>
+                  <form>
+                    <SchemaFieldsets schema={schema} />
+                  </form>
+                </div>
+              </TabPanel>
+            </Tabs>
             <Plug pluggable="toolbar-top" id="edit-save-button">
               <button
                 aria-label={t('cmsui.save')}
                 type="submit"
-                onClick={() => form.handleSubmit()}
+                onClick={async () => {
+                  const result = await form.submit();
+                  if (!result.ok) showErrors(result.errors);
+                }}
                 className="primary"
               >
                 <Checkbox />
@@ -177,7 +162,7 @@ export default function ContentForm({
           </main>
           <Sidebar />
         </div>
-      </InitAtoms>
-    </Provider>
+      </WidgetContextProvider>
+    </FormProvider>
   );
 }

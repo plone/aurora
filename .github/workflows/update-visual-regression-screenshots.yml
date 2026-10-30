@@ -58,7 +58,12 @@ jobs:
       - name: Set up Node.js environment
         uses: ./.github/actions/acceptance_tests_node_env_setup
         with:
-          node-version: 24.x
+          node-version: 26.x
+
+      # The Quanta component screenshots run against the static Storybook,
+      # which the visual config serves itself.
+      - name: Build the Quanta Storybook
+        run: pnpm --filter @plone/quanta build-storybook --quiet
 
       - uses: JarvusInnovations/background-action@v2
         name: Start Servers - Aurora and Plone
@@ -75,15 +80,20 @@ jobs:
           log-output: stderr,stdout
           log-output-if: failure
 
+      # The app and Quanta projects run one after the other, as in the
+      # "Visual Regression Tests" workflow, so the baselines are made under the
+      # same conditions. A grep can match no test in one of them.
       - name: Update visual regression screenshots
         env:
           GREP: ${{ inputs.grep }}
         run: |
-          if [ -n "$GREP" ]; then
-            pnpm visual-test --update-snapshots=all --grep "$GREP"
-          else
-            pnpm visual-test --update-snapshots=all
-          fi
+          for project in chromium quanta; do
+            if [ -n "$GREP" ]; then
+              pnpm visual-test --project="$project" --update-snapshots=all --pass-with-no-tests --grep "$GREP"
+            else
+              pnpm visual-test --project="$project" --update-snapshots=all
+            fi
+          done
 
       - name: Check for changes
         id: changes

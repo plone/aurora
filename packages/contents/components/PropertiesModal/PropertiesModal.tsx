@@ -1,17 +1,22 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useFetcher, type SubmitTarget } from 'react-router';
-import { Button as RACButton, Heading, TextArea } from 'react-aria-components';
+import { Button as RACButton, TextArea } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import {
   Button,
   Checkbox,
   DateTimePicker,
   Dialog,
+  Heading,
   Input,
   Modal,
 } from '@plone/quanta';
 import { ArrowrightIcon, CloseIcon, PropertiesIcon } from '@plone/icons';
 import { type ToastItem } from '@plone/layout/config/toast';
+import {
+  dateValueToIsoDateTime,
+  isoDateTimeToDateValue,
+} from '@plone/cmsui/helpers/dates';
 import { useContentsContext } from '../../providers/contents';
 import {
   buildPropertiesPatch,
@@ -60,7 +65,7 @@ export default function PropertiesModal() {
     if (showProperties) {
       const params = new URLSearchParams();
       items.forEach((item) => params.append('path', item['@id']));
-      dataFetcher.load(`/@@contents/@@properties?${params.toString()}`);
+      dataFetcher.load(`/@@contents/@properties?${params.toString()}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showProperties]);
@@ -139,7 +144,7 @@ export default function PropertiesModal() {
       {
         method: 'PATCH',
         encType: 'application/json',
-        action: '/@@contents/@@properties',
+        action: '/@@contents/@properties',
       },
     );
     close();
@@ -174,18 +179,18 @@ export default function PropertiesModal() {
         <div className="mx-auto grid max-w-sm gap-4">
           <DateTimePicker
             label={t('contents.modal_properties.effective')}
-            value={values.effective ?? null}
+            value={isoDateTimeToDateValue(values.effective)}
             granularity="minute"
             description={mixedPlaceholder('effective')}
-            onChange={(v) => setField('effective', v)}
+            onChange={(v) => setField('effective', dateValueToIsoDateTime(v))}
             className={dateFieldClasses}
           />
           <DateTimePicker
             label={t('contents.modal_properties.expires')}
-            value={values.expires ?? null}
+            value={isoDateTimeToDateValue(values.expires)}
             granularity="minute"
             description={mixedPlaceholder('expires')}
-            onChange={(v) => setField('expires', v)}
+            onChange={(v) => setField('expires', dateValueToIsoDateTime(v))}
             className={dateFieldClasses}
           />
           <Field label={t('contents.modal_properties.rights')}>

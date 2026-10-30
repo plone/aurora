@@ -5,7 +5,14 @@ import {
 } from 'react-router';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { flattenToAppURL } from '@plone/helpers';
-import { getContentPathFromCmsUrl } from '../helpers/cmsPath';
+
+function emptyOnClientError<T>(empty: T) {
+  return (error: unknown): T => {
+    const status = (error as { status?: number })?.status;
+    if (!status || status >= 500) throw error;
+    return empty;
+  };
+}
 
 export async function loader({
   params,
@@ -14,7 +21,7 @@ export async function loader({
 }: LoaderFunctionArgs<RouterContextProvider>) {
   const cli = context.get(ploneClientContext);
 
-  const path = getContentPathFromCmsUrl(`/${params['*'] || ''}`);
+  const path = `/${params['*'] || ''}`;
 
   const query = Object.fromEntries(new URL(request.url).searchParams.entries());
 
@@ -25,37 +32,33 @@ export async function loader({
 
   delete query['path.depth'];
   delete query['path.query'];
-  try {
-    const { data: results } = await cli.search({
-      query: {
-        path: pathQuery,
-        ...query,
-        SearchableText: query.SearchableText
-          ? `${query.SearchableText}*`
-          : undefined,
-      },
-    });
-
-    const { data: breadcrumbs } = await cli.getBreadcrumbs({
-      path,
-    });
-
-    return data(flattenToAppURL({ results, breadcrumbs }), {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  } catch {
-    return data(
-      {
-        results: { items: [] },
-        breadcrumbs: { items: [] },
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
+  // The root middleware doesn't load the browsed folder for this resource
+  // route, so a folder that doesn't exist gets here. A request the
+  // API rejects (that folder, or an invalid query) gives an empty part,
+  // instead of an error replacing the form the browser is used in.
+  const [results, breadcrumbs] = await Promise.all([
+    cli
+      .search({
+        query: {
+          path: pathQuery,
+          ...query,
+          SearchableText: query.SearchableText
+            ? `${query.SearchableText}*`
+            : undefined,
         },
-      },
-    );
-  }
+      })
+      .then(
+        ({ data }) => data,
+        emptyOnClientError({ '@id': '', items: [], items_total: 0 }),
+      ),
+    cli
+      .getBreadcrumbs({ path })
+      .then(({ data }) => data, emptyOnClientError({ '@id': '', items: [] })),
+  ]);
+
+  return data(flattenToAppURL({ results, breadcrumbs }), {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 }

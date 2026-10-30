@@ -8,6 +8,30 @@
 
 <!-- towncrier release notes start -->
 
+## 5.0.0-alpha.6 (2026-10-29)
+
+### Breaking
+
+- Removed the components that Plone Aurora and Volto don't use, and their CSS. The package keeps `Breadcrumbs`, `Button`, `Checkbox`, `Container`, `Link`, `Menu`, `Pagination`, `RadioGroup`, `Spinner`, `Table` and `Toast`. See the upgrade guide. @pnicolli 
+- The basic theme no longer includes a copy of the Quanta palette (the `--quanta-*` CSS custom properties). Import `@plone/quanta/src/styles/colors.css` if you need it. See the upgrade guide. @pnicolli 
+
+### Feature
+
+- Exported the `ContainerProps` and `BreadcrumbsProps` types. @pnicolli 
+
+### Bugfix
+
+- Fixed the `3xl` icon size in the basic CSS, which used the `icon3xl` class instead of `icon-3xl`. @pnicolli 
+
+### Internal
+
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+- Updated React Aria Components to 1.22, and moved all React Aria packages and `tailwindcss-react-aria-components` into the pnpm catalog. @sneridagh 
+
+### Documentation
+
+- Updated the README to name the Quanta pickers `SizePicker`, `AlignPicker`, and `WidthPicker`. @sneridagh 
+
 ## 5.0.0-alpha.5 (2026-10-03)
 
 ### Breaking

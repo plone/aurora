@@ -17,6 +17,18 @@ type apiExpandersType =
           ) => { [key: string]: string });
     };
 
+/**
+ * A Plone Aurora expander: components to expand in the main content request.
+ */
+export type ContentExpander = {
+  /** The path the expander applies to, and every path below it. `''` or `'/'` matches every page. */
+  match: string;
+  /** The names of the `plone.restapi` components to expand. */
+  expand: string[];
+  /** When `true`, the expander applies to signed-in users only. */
+  authenticated?: boolean;
+};
+
 type styleClassNameExtendersType = ({
   block,
   content,
@@ -55,7 +67,7 @@ export interface SettingsConfig {
   port: string;
   publicURL: string;
   apiPath: string;
-  apiExpanders: apiExpandersType[] | [];
+  apiExpanders: Array<apiExpandersType | ContentExpander>;
   devProxyToApiPath: string | undefined;
   proxyRewriteTarget: string | undefined;
   actions_raising_api_errors: string[];
@@ -74,6 +86,8 @@ export interface SettingsConfig {
   openExternalLinkInNewTab: boolean;
   notSupportedBrowsers: string[];
   defaultPageSize: number;
+  /** Items per page in the Contents view (`@plone/contents`). Default: 10. */
+  contentsPageSize?: number;
   supportedLanguages: string[]; // TODO: Improve list of possible values
   navDepth: number;
   expressMiddleware: unknown;
@@ -129,4 +143,6 @@ export interface SettingsConfig {
   hideBreadcrumbs: string[]; // Content types for which to hide breadcrumbs
   plate: PlateSettings | Record<string, never>;
   mostUsedTypes: string[];
+  /** Above this many languages the LanguageSwitcher is a dropdown menu. */
+  languageSwitcherMenuThreshold?: number;
 }

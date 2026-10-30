@@ -1,51 +1,39 @@
-import { useEffect } from 'react';
 import config from '@plone/registry';
-import type {
-  WidgetsConfigById,
-  WidgetsConfigByFactory,
-  WidgetsConfigByType,
-  WidgetsConfigByVocabulary,
-  WidgetsConfigByWidget,
-  Content,
-} from '@plone/types';
-import { useFieldFocusedAtom } from '@plone/helpers';
-import { useFieldContext } from './Form';
-import { type PrimitiveAtom } from 'jotai';
-import { type DeepKeys } from '@tanstack/react-form';
-import { useTranslation } from 'react-i18next';
+import type { FieldSchema, FormWidgetProps, WidgetOptions } from '@plone/types';
+import { useSchemaField } from '@plone/helpers';
 
-interface BaseFieldProps {
-  id?: keyof WidgetsConfigById;
-  className?: string;
-  label: string;
-  name: DeepKeys<Content>;
-  defaultValue?: unknown;
+/** The values `buildWidgetProps` builds the widget props from. */
+interface WidgetPropsSource {
+  /** The field's name in the form data. */
+  name: string;
+  /** The field's schema property. */
+  schema: FieldSchema;
+  value: unknown;
   required?: boolean;
-  error?: Array<unknown>;
-  widget?: keyof WidgetsConfigByWidget;
-  vocabulary?: { '@id': keyof WidgetsConfigByVocabulary };
-  choices?: Array<[string, string]>;
-  type?: keyof WidgetsConfigByType;
-  mode?: string;
-  widgetOptions?: {
-    [key: string]: any;
-  };
-  factory?: keyof WidgetsConfigByFactory;
-  onChange?: (value: any) => void;
-  placeholder?: string;
-  title?: string /* To remove? */;
-  value: any;
+  /** The field's validation errors, as the form reports them. */
+  errors?: Array<unknown>;
+  className?: string;
 }
 
-type AtomFieldProps = BaseFieldProps & {
-  formAtom: PrimitiveAtom<Content>;
-};
+export interface FieldProps {
+  /** The field's name (path) in the form data. */
+  name: string;
+  /** The field's schema property. */
+  schema: FieldSchema;
+  required?: boolean;
+  className?: string;
+  /** Called with the next value, in addition to updating the form. */
+  onChange?: (value: any) => void;
+  /**
+   * Writes the next value instead of the form's default write. Block settings
+   * use it to apply side effects on other fields in the same change.
+   */
+  setValue?: (value: any) => void;
+  onBlur?: () => void;
+}
 
-type FormFieldProps = BaseFieldProps & {
-  formAtom?: undefined;
-};
-
-export type FieldProps = AtomFieldProps | FormFieldProps;
+/** What the widget lookup reads: the field schema and the field's name. */
+type ResolvableField = FieldSchema & { name: string };
 
 const MODE_HIDDEN = 'hidden'; //hidden mode. If mode is hidden, field is not rendered
 /**
@@ -58,25 +46,29 @@ const getWidgetDefault = (): React.ComponentType<any> =>
  * Get widget by field's `id` attribute
  */
 const getWidgetByFieldId = (
-  id: FieldProps['name'],
+  id: ResolvableField['name'],
 ): React.ComponentType<any> | null =>
-  typeof id === 'string' ? (config.getWidget(id) ?? null) : null;
+  typeof id === 'string' ? (config.getWidget(id, 'id') ?? null) : null;
 
 /**
  * Get widget by factory attribute
  */
 const getWidgetByFactory = (
-  factory: FieldProps['factory'],
+  factory: ResolvableField['factory'],
 ): React.ComponentType<any> | null =>
-  factory ? (config.getWidget(factory) ?? null) : null;
+  factory ? (config.getWidget(factory, 'factory') ?? null) : null;
 
 /**
- * Get widget by field's `widget` attribute
+ * Get widget by field's `widget` attribute. An unknown widget name does not
+ * stop the lookup, so the field can still resolve by its choices, vocabulary,
+ * factory or type.
  */
 const getWidgetByName = (
-  widget: FieldProps['widget'],
+  widget: ResolvableField['widget'],
 ): React.ComponentType<any> | null =>
-  typeof widget === 'string' ? (config.getWidget(widget) ?? null) : null;
+  typeof widget === 'string'
+    ? (config.getWidget(widget, 'widget') ?? null)
+    : null;
 
 /**
  * Get widget by tagged values
@@ -90,11 +82,11 @@ directives.widget(
     })
 
  */
-const getWidgetFromTaggedValues = (widgetOptions?: {
-  frontendOptions?: { widget: FieldProps['widget']; widgetProps: any };
-}): React.ComponentType<any> | null =>
+const getWidgetFromTaggedValues = (
+  widgetOptions?: WidgetOptions,
+): React.ComponentType<any> | null =>
   typeof widgetOptions?.frontendOptions?.widget === 'string'
-    ? (config.getWidget(widgetOptions.frontendOptions.widget) ?? null)
+    ? (config.getWidget(widgetOptions.frontendOptions.widget, 'widget') ?? null)
     : null;
 
 /**
@@ -109,9 +101,9 @@ directives.widget(
     })
 
  */
-const getWidgetPropsFromTaggedValues = (widgetOptions?: {
-  frontendOptions?: { widget: string; widgetProps: any };
-}): Record<string, any> | null =>
+const getWidgetPropsFromTaggedValues = (
+  widgetOptions?: WidgetOptions,
+): Record<string, unknown> | null =>
   typeof widgetOptions?.frontendOptions?.widgetProps === 'object'
     ? widgetOptions.frontendOptions.widgetProps
     : null;
@@ -120,33 +112,33 @@ const getWidgetPropsFromTaggedValues = (widgetOptions?: {
  * Get widget by field's `vocabulary` attribute
  */
 const getWidgetByVocabulary = (
-  vocabulary: FieldProps['vocabulary'],
+  vocabulary: ResolvableField['vocabulary'],
 ): React.ComponentType<any> | null => {
   const vocabId = vocabulary?.['@id'];
   if (!vocabId) return null;
 
   const key = vocabId.replace(/^.*\/@vocabularies\//, '');
-  return config.getWidget(key) ?? null;
+  return config.getWidget(key, 'vocabulary') ?? null;
 };
 
 /**
  * Get widget by field's hints `vocabulary` attribute in widgetOptions
  */
 const getWidgetByVocabularyFromHint = (
-  props: FieldProps,
+  props: ResolvableField,
 ): React.ComponentType<any> | null => {
   const vocabId = props.widgetOptions?.vocabulary?.['@id'];
   if (!vocabId) return null;
 
   const key = vocabId.replace(/^.*\/@vocabularies\//, '');
-  return config.getWidget(key) ?? null;
+  return config.getWidget(key, 'vocabulary') ?? null;
 };
 
 /**
  * Get widget by field's `choices` attribute
  */
 const getWidgetByChoices = (
-  props: FieldProps,
+  props: ResolvableField,
 ): React.ComponentType<any> | null =>
   props.choices || props.vocabulary ? (config.widgets?.choices ?? null) : null;
 
@@ -154,135 +146,129 @@ const getWidgetByChoices = (
  * Get widget by field's `type` attribute
  */
 const getWidgetByType = (
-  type: FieldProps['type'],
+  type: ResolvableField['type'],
 ): React.ComponentType<any> | null =>
-  type ? (config.getWidget(type) ?? null) : null;
+  type ? (config.getWidget(type, 'type') ?? null) : null;
 
-const renderFieldWidget = ({
-  fieldProps,
-  onFieldChange,
-  defaultPlaceholder,
-}: {
-  fieldProps: FieldProps;
-  onFieldChange: (value: any) => void;
-  defaultPlaceholder: string;
-}) => {
+/**
+ * Schema keys that the form turns into widget contract props, or that only
+ * the form uses. They are not passed to the widget as they are.
+ */
+const RESERVED_SCHEMA_KEYS = new Set([
+  'title',
+  'description',
+  'type',
+  'default',
+  'widget',
+  'factory',
+  'readonly',
+  'required',
+  'choices',
+  'vocabulary',
+  'widgetOptions',
+  'onChangeSideEffects',
+  // JSON schema validation keywords, read from `schema` when needed.
+  'items',
+  'minLength',
+  'maxLength',
+  'minimum',
+  'maximum',
+  'pattern',
+  'format',
+  'additionalItems',
+  'uniqueItems',
+]);
+
+/**
+ * Builds the props a widget receives from the field's schema and state.
+ *
+ * Schema keys the form understands become widget contract props (see
+ * `FormWidgetProps`). Any other key of the field schema is a widget option,
+ * such as `actions` for the align widget, and is passed as is. Widget props
+ * from the tagged values (`frontendOptions.widgetProps`) come last.
+ */
+export const buildWidgetProps = ({
+  name,
+  schema,
+  value,
+  required,
+  errors,
+  className,
+}: WidgetPropsSource): Omit<FormWidgetProps, 'onChange' | 'onBlur'> &
+  Record<string, unknown> => {
+  const widgetOptions = Object.fromEntries(
+    Object.entries(schema).filter(([key]) => !RESERVED_SCHEMA_KEYS.has(key)),
+  );
+  const messages = (errors ?? []).filter(Boolean).map((error) => String(error));
+
+  return {
+    ...widgetOptions,
+    name,
+    value: value as FormWidgetProps['value'],
+    defaultValue: schema.default as FormWidgetProps['defaultValue'],
+    label: schema.title,
+    description: schema.description,
+    required: !!required,
+    readOnly: !!schema.readonly,
+    invalid: messages.length > 0,
+    errorMessage: messages.length > 0 ? messages.join(', ') : undefined,
+    className,
+    choices: schema.choices,
+    vocabulary: schema.vocabulary,
+    widgetOptions: schema.widgetOptions,
+    schema,
+    ...getWidgetPropsFromTaggedValues(schema.widgetOptions),
+  };
+};
+
+/**
+ * Renders the widget of one schema field of the current form.
+ *
+ * It reads the field's value and state from the form (`useSchemaField`),
+ * resolves the widget from the field schema, and passes it the widget
+ * contract.
+ */
+const SchemaField = (props: FieldProps) => {
+  const { name, schema, required, className } = props;
+  const field = useSchemaField(name);
+
+  if (schema.mode === MODE_HIDDEN) return null;
+
+  const resolvable: ResolvableField = { ...schema, name };
   const Widget =
-    getWidgetByFieldId(
-      (fieldProps.id ?? fieldProps.name) as FieldProps['name'],
-    ) ||
-    getWidgetFromTaggedValues(fieldProps.widgetOptions) ||
-    getWidgetByName(fieldProps.widget) ||
-    getWidgetByChoices(fieldProps) ||
-    getWidgetByVocabulary(fieldProps.vocabulary) ||
-    getWidgetByVocabularyFromHint(fieldProps) ||
-    getWidgetByFactory(fieldProps.factory) ||
-    getWidgetByType(fieldProps.type) ||
+    getWidgetByFieldId(name) ||
+    getWidgetFromTaggedValues(schema.widgetOptions) ||
+    getWidgetByName(schema.widget) ||
+    // A widget registered for the vocabulary is more specific than the
+    // widget of all the fields with choices.
+    getWidgetByVocabulary(schema.vocabulary) ||
+    getWidgetByVocabularyFromHint(resolvable) ||
+    getWidgetByChoices(resolvable) ||
+    getWidgetByFactory(schema.factory) ||
+    getWidgetByType(schema.type) ||
     getWidgetDefault();
 
-  const widgetOptions = fieldProps.widgetOptions;
-  const title = fieldProps.title;
-  const error = fieldProps.error;
-  const errorMessage = (fieldProps as { errorMessage?: unknown }).errorMessage;
-
-  const resolvedErrorMessage =
-    typeof errorMessage === 'string'
-      ? errorMessage
-      : Array.isArray(error)
-        ? error.filter(Boolean).join(', ')
-        : undefined;
-
-  // Forward only widget-safe props. JSON Schema metadata (`type`, `properties`,
-  // schema `default`, nested objects, etc.) must not reach RAC widgets / the DOM.
-  // Block widgets still need config like `actions` (Align/Size/Width) and
-  // object-browser options (`mode`, `selectedItemAttrs`, …).
-  const extraFieldProps = fieldProps as FieldProps & Record<string, unknown>;
-
-  const widgetProps = {
-    name: fieldProps.name,
-    id: fieldProps.id,
-    className: fieldProps.className,
-    label: title ?? fieldProps.label,
-    description:
-      typeof extraFieldProps.description === 'string'
-        ? extraFieldProps.description
-        : undefined,
-    placeholder: fieldProps.placeholder || defaultPlaceholder,
-    value: fieldProps.value,
-    defaultValue: fieldProps.defaultValue,
-    required: fieldProps.required,
-    isRequired: fieldProps.required,
-    errorMessage: resolvedErrorMessage,
-    widgetOptions,
-    choices: fieldProps.choices,
-    factory: fieldProps.factory,
-    widget: fieldProps.widget,
-    mode: fieldProps.mode,
-    actions: extraFieldProps.actions,
-    actionsInfoMap: extraFieldProps.actionsInfoMap,
-    selectedItemAttrs: extraFieldProps.selectedItemAttrs,
-    allowExternals: extraFieldProps.allowExternals,
-    isDisabled: extraFieldProps.isDisabled,
-    orientation: extraFieldProps.orientation,
-    ...getWidgetPropsFromTaggedValues(widgetOptions),
-  };
-
-  return fieldProps.mode !== MODE_HIDDEN ? (
+  return (
     <Widget
-      {...widgetProps}
+      {...buildWidgetProps({
+        name,
+        schema,
+        value: field.value,
+        required,
+        errors: field.meta.errors,
+        className,
+      })}
       onChange={(value: any) => {
-        fieldProps.onChange?.(value);
-        onFieldChange(value);
+        props.onChange?.(value);
+        if (props.setValue) props.setValue(value);
+        else field.onChange(value);
+      }}
+      onBlur={() => {
+        props.onBlur?.();
+        field.onBlur();
       }}
     />
-  ) : null;
+  );
 };
 
-const AtomField = (props: AtomFieldProps) => {
-  const { t } = useTranslation();
-  const field = useFieldContext();
-  const value = field.state.value;
-
-  const [fieldValue, setField] = useFieldFocusedAtom<
-    Content,
-    DeepKeys<Content>
-  >(props.formAtom, props.name);
-
-  // atom -> form (programmatic update; runs TanStack Form’s flow)
-  useEffect(() => {
-    if (fieldValue !== value) {
-      // prefer handleChange to keep validators/touched consistent
-      field.handleChange(fieldValue as typeof value);
-    }
-  }, [fieldValue, value, field]);
-
-  return renderFieldWidget({
-    fieldProps: props,
-    defaultPlaceholder: t('cmsui.form.typeSomething'),
-    onFieldChange: (value: any) => {
-      setField(value);
-      return field.handleChange(value);
-    },
-  });
-};
-
-const FormField = (props: FormFieldProps) => {
-  const { t } = useTranslation();
-  const field = useFieldContext();
-
-  return renderFieldWidget({
-    fieldProps: props,
-    defaultPlaceholder: t('cmsui.form.typeSomething'),
-    onFieldChange: (value: any) => field.handleChange(value),
-  });
-};
-
-const Field = (props: FieldProps) => {
-  if ('formAtom' in props && props.formAtom) {
-    return <AtomField {...props} />;
-  }
-
-  return <FormField {...props} />;
-};
-
-export default Field;
+export default SchemaField;

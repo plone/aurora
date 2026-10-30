@@ -252,3 +252,346 @@ Then add `@plone/icons` to your add-on's {file}`package.json` dependencies.
 +    "@plone/icons": "workspace:*"
    },
 ```
+
+### Forms and widgets
+
+```{versionchanged} 1.0.0-alpha.20
+These steps apply when you upgrade an add-on from Plone Aurora 1.0.0-alpha.19 or earlier to 1.0.0-alpha.20 or later.
+```
+
+The schema-driven forms (content, control panels, and block settings) now render their fields through one field renderer, keep their values in a form store from `@plone/helpers`, and pass every widget the same props, the widget contract.
+For the concepts, see {ref}`form-fields-controls-and-widgets-label`.
+
+#### Widgets receive the widget contract
+
+```{versionchanged} 1.0.0-alpha.20
+Registered widgets receive the widget contract, `FormWidgetProps` in `@plone/types`.
+```
+
+```{versionremoved} 1.0.0-alpha.20
+The `error` widget prop, and the raw field schema keys that the form understands, such as `type`, `title`, and `factory`, as widget props.
+```
+
+A registered widget now receives the props described by `FormWidgetProps` in `@plone/types`.
+If your add-on registers a widget, check the following changes.
+
+-   Validation errors arrive as `invalid` and a joined `errorMessage`, instead of the `error` list.
+-   `defaultValue` is the schema's `default`, not the current value.
+    Read the current value from `value`.
+-   The schema keys that the form understands, such as `type`, `title`, `default`, and `factory`, are no longer passed as props.
+    Read the label from `label`, and the whole field schema from `schema`.
+    Any other key of the field schema is still passed as a prop.
+-   The form no longer passes a "Type something..." placeholder to every widget.
+
+```diff
+- function MyWidget({ title, error, defaultValue, onChange }) {
++ function MyWidget({ label, invalid, errorMessage, value, onChange }: FormWidgetProps<string>) {
+```
+
+#### The form engine changed
+
+```{versionremoved} 1.0.0-alpha.20
+`useAppForm` and the `field.Quanta` field component of `@plone/cmsui`, the `formAtom` registry utility, and `formAtom`, `blockAtomFamily`, and `useFormFieldValue` from `@plone/cmsui/routes/atoms`.
+```
+
+```{versionadded} 1.0.0-alpha.20
+The form store of `@plone/helpers`: `useFormStore`, `FormProvider`, `useFormContext`, `useOptionalFormContext`, `useSchemaField`, `useFieldValue`, `useSetFieldValue`, and `useFormState`.
+`SchemaFieldsets` in `@plone/cmsui`.
+```
+
+The forms no longer use TanStack Form, and `@plone/cmsui` no longer depends on `@tanstack/react-form`.
+
+-   `useAppForm` and the `field.Quanta` field component are removed.
+    Render schema fields with `SchemaFieldsets` inside a `FormProvider` instead.
+-   The `formAtom` registry utility, and `formAtom`, `blockAtomFamily`, and `useFormFieldValue` from `@plone/cmsui/routes/atoms`, are removed.
+    Read and write the form your component is rendered in with the hooks from `@plone/helpers`.
+
+```diff
+- const formAtom = config.getUtility({ name: 'formAtom', type: 'atom' }).method();
+- const title = useAtomValue(focusAtom(formAtom, (optic) => optic.prop('title')));
++ import { useFieldValue, useSetFieldValue } from '@plone/helpers';
++
++ const title = useFieldValue<string>('title');
++ const setTitle = useSetFieldValue<string>('title');
+```
+
+#### Widgets read where the form is from `useWidgetContext`
+
+```{versionadded} 1.0.0-alpha.20
+`useWidgetContext` and `WidgetContextProvider` in `@plone/cmsui`, and the `path` prop of `ContentForm`.
+```
+
+Widgets must not read the route's loader data or the URL to know which content they are in.
+Read the form's `mode`, `path`, and `containerPath` with `useWidgetContext` instead.
+If your add-on renders `ContentForm`, pass it the `path` of the edited object, or of the container when adding.
+
+```diff
+- const { content } = useLoaderData<typeof editLoader>();
+- const path = content['@id'];
++ import { useWidgetContext } from '@plone/cmsui/components/Form/WidgetContext';
++
++ const { path } = useWidgetContext();
+```
+
+#### Registered widgets are type-checked against the contract
+
+```{versionchanged} 1.0.0-alpha.20
+The widget registry types the widgets it accepts with the widget contract, `FormWidgetProps`, once `@plone/cmsui` is installed.
+```
+
+```{versionadded} 1.0.0-alpha.20
+`WidgetPropsMap` and `RegisteredWidgetProps` in `@plone/types`, and the `describeWidgetContract` test helper in `@plone/cmsui/testing/widgetContract`.
+```
+
+If your add-on registers a widget whose props don't follow the widget contract, the type check now fails.
+Type the widget with `FormWidgetProps`, and adapt the props it reads, as described in the previous steps.
+Test it with `describeWidgetContract`, see {ref}`test-a-widget-label`.
+
+#### Validators receive `t`
+
+```{versionadded} 1.0.0-alpha.20
+The `t` and `fieldName` arguments of `validator` utilities.
+```
+
+The `validator` utilities receive i18next's `t` and the field's name as `fieldName`, next to `formatMessage`.
+Existing validators keep working.
+See {ref}`validate-form-fields-label`.
+
+#### Quanta's pickers are renamed
+
+```{versionadded} 1.0.0-alpha.20
+`AlignPicker`, `SizePicker`, and `WidthPicker` in `@plone/quanta`.
+```
+
+```{deprecated} 1.0.0-alpha.20
+`AlignWidget`, `SizeWidget`, and `WidthWidget` in `@plone/quanta`.
+```
+
+The `AlignWidget`, `SizeWidget`, and `WidthWidget` components of `@plone/quanta` are controls, not widgets.
+They are renamed `AlignPicker`, `SizePicker`, and `WidthPicker`.
+The old names still work, but are deprecated and will be removed in a future release.
+
+```diff
+- import { AlignWidget, SizeWidget, WidthWidget } from '@plone/quanta';
++ import { AlignPicker, SizePicker, WidthPicker } from '@plone/quanta';
+```
+
+The `align`, `size`, and `width` widgets that the forms use are now adapters in `@plone/cmsui`, around these pickers.
+
+#### File and image fields store files
+
+```{versionchanged} 1.0.0-alpha.20
+The fields with the `File` or `Image` factory use `FileWidget`, instead of `ImageWidget`.
+```
+
+```{versionadded} 1.0.0-alpha.20
+`SelectWidget`, `ArrayWidget`, `NumberWidget`, `FileWidget`, `EmailWidget`, `PasswordWidget`, and `UrlWidget` in `@plone/cmsui`, and `NumberField` in `@plone/quanta`.
+```
+
+A field with the `File` or `Image` factory stores the file itself, such as the image of an Image, or the lead image of a News Item.
+`ImageWidget` stored the URL of an image in such a field, which the content API can't save.
+These fields now use `FileWidget`, which uploads the file.
+`ImageWidget` stays the widget of the fields with `widget: 'image'`, which store the URL of an image, such as the image block's `url`.
+
+If your add-on registered a widget for the `Image` factory, it still overrides `FileWidget`.
+
+Plone Aurora now registers widgets for the fields with choices or a vocabulary, lists, numbers, files, email addresses, passwords, and URLs.
+These fields used to render as text inputs.
+See {ref}`core-widgets-label`.
+
+(upgrade-guide-quanta-starter-label)=
+
+### Quanta follows React Aria's Tailwind starter
+
+```{versionchanged} 1.0.0-alpha.20
+These steps apply when you upgrade an add-on from Plone Aurora 1.0.0-alpha.19 or earlier to 1.0.0-alpha.20 or later.
+```
+
+The components of `@plone/quanta` now have the same API as their counterparts in React Aria's Tailwind starter, so React Aria's documentation applies to them.
+Their look doesn't change.
+For each component, see {ref}`quanta-components-label`.
+
+#### `Checkbox`, `Radio`, and `Switch` use React Aria's field APIs
+
+```{versionchanged} 1.0.0-alpha.20
+`Checkbox`, `Radio`, and `CustomRadio` in `@plone/quanta` are built on React Aria's `CheckboxField` and `RadioField`.
+```
+
+```{versionadded} 1.0.0-alpha.20
+`Switch` in `@plone/quanta`, and the `description` and `errorMessage` props of `Checkbox`, and the `description` prop of `Radio`.
+```
+
+React Aria 1.18 deprecated its `Checkbox`, `Radio`, and `Switch` components in favor of `CheckboxField` and `CheckboxButton`, `RadioField` and `RadioButton`, and `SwitchField` and `SwitchButton`.
+Quanta's `Checkbox`, `Radio`, `CustomRadio`, and the new `Switch` are built on them.
+
+-   Their props are the props of the field: `CheckboxFieldProps`, `RadioFieldProps`, and `SwitchFieldProps`.
+-   `className` styles the clickable label, as before.
+    The label is now inside a wrapper `div`.
+-   `Checkbox` takes `description` and `errorMessage`, and `Radio` takes `description`.
+    You don't need a separate `Description` linked with `aria-describedby`.
+-   `CheckboxGroup` moved to its own module.
+    It's still exported from `@plone/quanta`.
+
+#### Date controls take date values
+
+```{versionchanged} 1.0.0-alpha.20
+`DatePicker` and `DateTimePicker` in `@plone/quanta` take and return React Aria's date values, instead of ISO strings.
+```
+
+`DatePicker` and `DateTimePicker` used to take and return ISO strings, and convert date-times between UTC and the browser's time zone.
+Now they work with React Aria's date values (`DateValue`), like React Aria's `DatePicker`.
+Converting Plone's ISO strings is the job of the widgets.
+`DateWidget` and `DateTimeWidget` in `@plone/cmsui` already do it, so the forms keep storing ISO strings.
+
+If you use the controls directly, convert the values with the helpers in `@plone/cmsui/helpers/dates`:
+
+```tsx
+import { DateTimePicker } from '@plone/quanta';
+import {
+  dateValueToIsoDateTime,
+  isoDateTimeToDateValue,
+} from '@plone/cmsui/helpers/dates';
+
+<DateTimePicker
+  value={isoDateTimeToDateValue(value)}
+  onChange={(newValue) => onChange(dateValueToIsoDateTime(newValue))}
+/>;
+```
+
+Use `isoDateToDateValue` and `dateValueToIsoDate` for dates without a time.
+
+`DatePicker` also takes `granularity`, and `Calendar` takes `visibleDuration` to show several months.
+
+#### Unused field parts are removed
+
+```{versionremoved} 1.0.0-alpha.20
+`Field` and `FieldWrapper`, and the `minValue` prop of `TextField`, in `@plone/quanta`.
+```
+
+`Field` and `FieldWrapper` had no counterpart in React Aria's starter, and nothing in Plone Aurora used them.
+Use React Aria's field components, such as `TextField`, with Quanta's `Label`, `Description`, and `FieldError`.
+
+`TextField`'s `minValue` prop had no effect.
+Remove it.
+
+#### Collection sections take a title
+
+```{versionchanged} 1.0.0-alpha.20
+`SelectSection` and `MenuSection` in `@plone/quanta` take `title` and `items`.
+```
+
+```{versionremoved} 1.0.0-alpha.20
+`SelectListBox`, `SelectSectionHeader`, `ComboBoxListBox`, and `MenuSectionHeader` in `@plone/quanta`.
+```
+
+```{versionadded} 1.0.0-alpha.20
+`ListBox`, `ComboBoxSection`, and `GridListHeader` in `@plone/quanta`, and multiple selection in `ComboBox`.
+```
+
+Like in React Aria's starter, the sections of `Select`, `ComboBox`, and `Menu` render their header from a `title` prop, and their items from `items` or their children.
+
+```diff
+- <SelectSection id="fruit">
+-   <SelectSectionHeader>Fruit</SelectSectionHeader>
+-   <SelectItem id="apple">Apple</SelectItem>
+- </SelectSection>
++ <SelectSection id="fruit" title="Fruit">
++   <SelectItem id="apple">Apple</SelectItem>
++ </SelectSection>
+```
+
+`MenuSection` works the same way, with `title` instead of `MenuSectionHeader`.
+If you composed your own select with `SelectListBox`, use `ListBox`, which `@plone/quanta` now exports.
+
+The collection components no longer require their item type to be an object, like React Aria's.
+
+#### `Tabs` uses composition
+
+```{versionchanged} 1.0.0-alpha.20
+`Tabs` in `@plone/quanta` takes its tabs and panels as children, instead of a `tabs` prop.
+```
+
+```{versionadded} 1.0.0-alpha.20
+`TabPanels`, `ToggleButton`, `ToggleButtonGroup`, and `ProgressBar` in `@plone/quanta`, and the pending spinner of `Button`.
+```
+
+Like React Aria's `Tabs`, Quanta's `Tabs` takes a `TabList` with a `Tab` for each tab, and a `TabPanel` for each panel.
+
+```diff
+- <Tabs
+-   tabs={[
+-     { id: 'blocks', title: 'Blocks', content: <BlocksEditor /> },
+-     { id: 'content', title: 'Content', content: <ContentFields /> },
+-   ]}
+- />
++ <Tabs>
++   <TabList>
++     <Tab id="blocks">Blocks</Tab>
++     <Tab id="content">Content</Tab>
++   </TabList>
++   <TabPanel id="blocks">
++     <BlocksEditor />
++   </TabPanel>
++   <TabPanel id="content">
++     <ContentFields />
++   </TabPanel>
++ </Tabs>
+```
+
+`orientation` is React Aria's prop, and still works.
+
+#### `DropZoneText` is renamed `Text`
+
+```{versionchanged} 1.0.0-alpha.20
+`DropZoneText` in `@plone/quanta` is renamed `Text`, like in React Aria's starter.
+```
+
+```diff
+- import { DropZone, DropZoneText } from '@plone/quanta';
++ import { DropZone, Text } from '@plone/quanta';
+```
+
+#### `ToolbarProps` is removed
+
+```{versionremoved} 1.0.0-alpha.20
+The `ToolbarProps` type in `@plone/quanta`.
+```
+
+It was React Aria's `ToolbarProps`.
+Import it from `react-aria-components` instead.
+
+#### `Sheet` is added
+
+```{versionadded} 1.0.0-alpha.20
+`Sheet` in `@plone/quanta`.
+```
+
+`Sheet` is React Aria's sheet, with Quanta's styles.
+With `position="right"` or `position="left"`, it's a full-height side panel, such as a settings panel next to the editor.
+With `position="bottom"`, it's a sheet that slides up, as on phones.
+On touch devices, you can swipe it away.
+For the details, see {ref}`quanta-side-panel-label`.
+
+#### `MultiSelect` is a controlled component
+
+```{versionchanged} 1.0.0-alpha.20
+`MultiSelect` in `@plone/quanta` takes its selected items as `value` and reports them with `onChange`.
+```
+
+```{versionremoved} 1.0.0-alpha.20
+The `selectedItems`, `creatable`, `onItemInserted`, `onItemCleared` and `renderEmptyState` props of `MultiSelect`, and the `Option` type, in `@plone/quanta`.
+```
+
+`MultiSelect` is now built on Quanta's `ComboBox` and `TagGroup`, and `ArrayWidget` in `@plone/cmsui` uses it.
+It's a controlled component, like the other Quanta fields:
+
+```diff
+- const selectedItems = useListData({ initialItems: [] });
+- <MultiSelect items={items} selectedItems={selectedItems} creatable />
++ const [value, setValue] = useState<MultiSelectItem[]>([]);
++ <MultiSelect items={items} value={value} onChange={setValue} allowsCustomValue />
+```
+
+Its items are `MultiSelectItem` objects, with an `id` and a `name`.
+`allowsCustomValue`, React Aria's name for it, replaces `creatable`, and defaults to `false`.
+To search the items on a server, pass `inputValue` and `onInputChange`.

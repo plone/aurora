@@ -17,8 +17,8 @@ export const link = tv({
         active:text-quanta-cobalt active:decoration-quanta-cobalt
       `,
       secondary: `
-        text-gray-700 underline decoration-gray-700/50
-        hover:decoration-gray-700
+        text-quanta-iron underline decoration-quanta-iron/50
+        hover:decoration-quanta-iron
       `,
     },
   },

@@ -1,23 +1,31 @@
-import { expect, describe, it, vi, afterEach } from 'vitest';
+import { expect, describe, it, vi, afterEach, beforeEach } from 'vitest';
 import config from '@plone/registry';
 import { RouterContextProvider } from 'react-router';
 import { jwtDecode } from 'jwt-decode';
 import { getAuthFromRequest } from '@plone/react-router';
 import PloneClient from '@plone/client';
 import {
+  contentResourceMiddleware,
   fetchPloneContent,
   getAPIResourceWithAuth,
+  getContentExpand,
   getPloneClientClass,
+  isResourcePattern,
   installServerMiddleware,
   linkMiddleware,
+  matchContentResource,
+  multilingualRootRedirect,
   ploneClearAuthCookieContext,
   PloneClientMiddleware,
   otherResources,
+  unauthorizedLoginRedirect,
   ploneClientContext,
   ploneContentContext,
   ploneSiteContext,
   ploneUserContext,
+  routeSkipsContent,
 } from './middleware.server';
+import { defaultApiExpanders } from './config/server.server';
 
 vi.mock('jwt-decode');
 vi.mock('@plone/react-router', async (importOriginal) => {
@@ -94,6 +102,41 @@ describe('middleware', () => {
           })
           .method(),
       ).toHaveProperty('initialize');
+    });
+
+    it('applies the configuration only once per process', async () => {
+      const request = new Request('http://example.com');
+      const runMiddleware = () =>
+        installServerMiddleware(
+          {
+            request,
+            context: new RouterContextProvider(),
+            params: {},
+            pattern: '/',
+            url: new URL(request.url),
+          },
+          vi.fn(),
+        );
+      const countSlotComponents = () =>
+        Object.values(config.slots).reduce(
+          (total, slot) =>
+            total +
+            Object.values(slot.data).reduce(
+              (sum, components) => sum + components.length,
+              0,
+            ),
+          0,
+        );
+
+      await runMiddleware();
+      const routes = config.routes?.length;
+      const slotComponents = countSlotComponents();
+
+      await runMiddleware();
+      await runMiddleware();
+
+      expect(config.routes?.length).toBe(routes);
+      expect(countSlotComponents()).toBe(slotComponents);
     });
   });
 
@@ -528,7 +571,9 @@ describe('middleware', () => {
     });
 
     it('intercepts requests to special urls: @portrait', async () => {
-      const request = new Request('http://example.com');
+      const request = new Request('http://example.com', {
+        headers: { Accept: 'image/avif,image/webp,image/*,*/*;q=0.8' },
+      });
       const context = new RouterContextProvider();
       const params = { '*': '@portrait/username' };
       const nextMock = vi.fn();
@@ -561,6 +606,11 @@ describe('middleware', () => {
           'Authorization',
         ),
       ).toBeNull();
+      expect(
+        (fetchMock.mock.calls[0]?.[1] as { headers: Headers }).headers.get(
+          'Accept',
+        ),
+      ).toBe('application/json');
     });
 
     it('retries resource requests anonymously after a 401 and clears the cookie', async () => {
@@ -629,9 +679,138 @@ describe('middleware', () => {
     });
   });
 
+  describe('getContentExpand', () => {
+    beforeEach(() => {
+      config.settings.apiExpanders = [...defaultApiExpanders];
+    });
+
+    afterEach(() => {
+      config.settings.apiExpanders = [];
+    });
+
+    it('returns the core expansions', () => {
+      expect(getContentExpand('/', false)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'navigation',
+        'actions',
+        'translations',
+      ]);
+      expect(getContentExpand('/', true)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'navigation',
+        'actions',
+        'translations',
+        'types',
+      ]);
+    });
+
+    it('adds the expansions of add-ons, once each', () => {
+      config.settings.apiExpanders = [
+        ...config.settings.apiExpanders,
+        { match: '', expand: ['translations', 'navigation'] },
+        { match: '/', expand: ['translations', 'workflow'] },
+      ];
+
+      expect(getContentExpand('/news', false)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'navigation',
+        'actions',
+        'translations',
+        'workflow',
+      ]);
+    });
+
+    it('matches expanders by path prefix', () => {
+      config.settings.apiExpanders = [
+        { match: '/news', expand: ['news-extra'] },
+      ];
+
+      expect(getContentExpand('/news', false)).toContain('news-extra');
+      expect(getContentExpand('/news/item', false)).toContain('news-extra');
+      expect(getContentExpand('/newsletter', false)).not.toContain(
+        'news-extra',
+      );
+      expect(getContentExpand('/', false)).not.toContain('news-extra');
+    });
+
+    it('ignores Volto-shaped expanders', () => {
+      config.settings.apiExpanders = [
+        { match: '', GET_CONTENT: ['translations'] },
+      ];
+
+      expect(getContentExpand('/', false)).not.toContain('translations');
+    });
+
+    it('lets add-ons change the core expansions', () => {
+      config.settings.apiExpanders = [
+        { match: '', expand: ['navroot', 'breadcrumbs', 'actions'] },
+      ];
+
+      expect(getContentExpand('/', false)).toEqual([
+        'navroot',
+        'breadcrumbs',
+        'actions',
+      ]);
+    });
+
+    it('applies authenticated expanders to signed-in users only', () => {
+      config.settings.apiExpanders = [
+        { match: '', expand: ['my-profile'], authenticated: true },
+      ];
+
+      expect(getContentExpand('/', true)).toContain('my-profile');
+      expect(getContentExpand('/', false)).not.toContain('my-profile');
+    });
+  });
+
   describe('fetchPloneContent', () => {
+    beforeEach(() => {
+      config.settings.apiExpanders = [...defaultApiExpanders];
+    });
+
     afterEach(() => {
       delete config.utilities['ploneClient'];
+      config.settings.apiExpanders = [];
+    });
+
+    it('skips fetching for resource routes', async () => {
+      const getContentMock = vi.fn();
+      const getSiteMock = vi.fn();
+      const getUserMock = vi.fn();
+      config.settings.apiPath = 'http://example.com';
+      registerPloneClientFactory({
+        getContent: getContentMock,
+        getSite: getSiteMock,
+        getUser: getUserMock,
+      });
+      vi.mocked(getAuthFromRequest).mockResolvedValue('valid.jwt.token');
+      vi.mocked(jwtDecode).mockReturnValue({ sub: 'admin' });
+      const request = new Request(
+        'http://example.com/@objectBrowserWidget/missing',
+      );
+      const context = new RouterContextProvider();
+
+      await initializePloneClientContext(request, context);
+
+      const result = await fetchPloneContent(
+        {
+          request,
+          params: { '*': 'missing' },
+          context,
+          pattern: '@objectBrowserWidget/*',
+          url: new URL(request.url),
+        },
+        vi.fn(),
+      );
+
+      expect(result).toBeUndefined();
+      expect(getContentMock).not.toHaveBeenCalled();
+      expect(getSiteMock).not.toHaveBeenCalled();
+      expect(getUserMock).not.toHaveBeenCalled();
+      expect(() => context.get(ploneContentContext)).toThrow();
     });
 
     it('fetches content and site and sets them in context', async () => {
@@ -665,7 +844,13 @@ describe('middleware', () => {
 
       expect(getContentMock).toHaveBeenCalledWith({
         path: '/',
-        expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'],
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'translations',
+        ],
       });
       expect(getSiteMock).toHaveBeenCalled();
       expect(context.get(ploneContentContext)).toEqual({
@@ -703,7 +888,13 @@ describe('middleware', () => {
 
       expect(getContentMock).toHaveBeenCalledWith({
         path: '/test-content',
-        expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'],
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'translations',
+        ],
       });
     });
 
@@ -840,7 +1031,14 @@ describe('middleware', () => {
       expect(context.get(ploneUserContext)).toEqual(mockUser.data);
       expect(getContentMock).toHaveBeenCalledWith({
         path: '/',
-        expand: ['navroot', 'breadcrumbs', 'navigation', 'actions', 'types'],
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'translations',
+          'types',
+        ],
       });
     });
 
@@ -879,7 +1077,14 @@ describe('middleware', () => {
 
       expect(getContentMock).toHaveBeenCalledWith({
         path: '/',
-        expand: ['navroot', 'breadcrumbs', 'navigation', 'actions', 'types'],
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'translations',
+          'types',
+        ],
       });
       expect(getSiteMock).toHaveBeenCalled();
       expect(getUserMock).toHaveBeenCalledWith({ id: 'testuser' });
@@ -919,7 +1124,13 @@ describe('middleware', () => {
       expect(context.get(ploneUserContext)).toBeNull();
       expect(getContentMock).toHaveBeenCalledWith({
         path: '/',
-        expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'],
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'translations',
+        ],
       });
     });
 
@@ -959,6 +1170,10 @@ describe('middleware', () => {
     });
 
     it('retries anonymously after a 401 and clears the auth cookie context', async () => {
+      config.settings.apiExpanders = [
+        ...config.settings.apiExpanders,
+        { match: '', expand: ['my-profile'], authenticated: true },
+      ];
       const authContent = vi
         .fn()
         .mockRejectedValueOnce({ data: undefined, status: 401 });
@@ -1014,9 +1229,27 @@ describe('middleware', () => {
         nextMock,
       );
 
+      expect(authContent).toHaveBeenCalledWith({
+        path: '/',
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'translations',
+          'types',
+          'my-profile',
+        ],
+      });
       expect(anonymousContent).toHaveBeenCalledWith({
         path: '/',
-        expand: ['navroot', 'breadcrumbs', 'navigation', 'actions'],
+        expand: [
+          'navroot',
+          'breadcrumbs',
+          'navigation',
+          'actions',
+          'translations',
+        ],
       });
       expect(context.get(ploneContentContext)).toEqual({
         '@id': '/',
@@ -1085,6 +1318,330 @@ describe('middleware', () => {
         ),
       ).rejects.toMatchObject({ init: { status: 301 } });
     });
+
+    // The multilingual root redirect: on a site whose /@site reads
+    // features.multilingual, the site root is managed, never visited — a
+    // request for / goes to the default language root, as Plone's language
+    // switcher view and Volto's MultilingualRedirector send it.
+    const multilingualSiteSetup = (site: Record<string, unknown>) => {
+      const getContentMock = vi.fn().mockResolvedValue({
+        data: { '@id': 'http://example.com/', title: 'Site' },
+      });
+      const getSiteMock = vi.fn().mockResolvedValue({ data: site });
+      config.settings.apiPath = 'http://example.com';
+      registerPloneClientFactory({
+        getContent: getContentMock,
+        getSite: getSiteMock,
+      });
+    };
+
+    // `url` is what React Router hands the middleware: the normalised path of
+    // the request (a `.data` suffix already stripped). It defaults to the
+    // request's own URL, as it is for a document request.
+    const runFetchAt = async (
+      requestPath: string,
+      starParam: string,
+      normalisedUrl?: URL,
+    ) => {
+      const request = new Request(`http://example.com${requestPath}`);
+      const context = new RouterContextProvider();
+      await initializePloneClientContext(request, context);
+      return fetchPloneContent(
+        {
+          request,
+          params: { '*': starParam },
+          context,
+          pattern: requestPath,
+          url: normalisedUrl ?? new URL(request.url),
+        },
+        vi.fn(),
+      );
+    };
+
+    it('redirects the site root to the default language root on a multilingual site', async () => {
+      multilingualSiteSetup({
+        features: { multilingual: true },
+        'plone.default_language': 'en',
+      });
+      const result = await runFetchAt('/', '');
+      expect(result).toBeInstanceOf(Response);
+      expect((result as Response).status).toBe(302);
+      expect((result as Response).headers.get('Location')).toBe('/en');
+    });
+
+    it('redirects the site root to a hyphenated default language root', async () => {
+      multilingualSiteSetup({
+        features: { multilingual: true },
+        'plone.default_language': 'pt-br',
+      });
+      const result = await runFetchAt('/', '');
+      expect((result as Response).headers.get('Location')).toBe('/pt-br');
+    });
+
+    it('redirects a root data request too — keyed on the normalised url, not the raw request path', async () => {
+      multilingualSiteSetup({
+        features: { multilingual: true },
+        'plone.default_language': 'en',
+      });
+      const result = await runFetchAt(
+        '/_.data',
+        '',
+        new URL('http://example.com/'),
+      );
+      expect(result).toBeInstanceOf(Response);
+      expect((result as Response).headers.get('Location')).toBe('/en');
+    });
+
+    it('leaves the site root alone on a monolingual site', async () => {
+      multilingualSiteSetup({
+        features: { multilingual: false },
+        'plone.default_language': 'en',
+      });
+      const request = new Request('http://example.com/');
+      const context = new RouterContextProvider();
+      await initializePloneClientContext(request, context);
+      const result = await fetchPloneContent(
+        {
+          request,
+          params: { '*': '' },
+          context,
+          pattern: '/',
+          url: new URL(request.url),
+        },
+        vi.fn(),
+      );
+      expect(result).toBeUndefined();
+      expect(context.get(ploneContentContext)).toEqual({
+        '@id': '/',
+        title: 'Site',
+      });
+    });
+
+    it('leaves a language root alone', async () => {
+      multilingualSiteSetup({
+        features: { multilingual: true },
+        'plone.default_language': 'en',
+      });
+      expect(await runFetchAt('/en', 'en')).toBeUndefined();
+    });
+
+    it('leaves the login page alone although its splat is empty', async () => {
+      multilingualSiteSetup({
+        features: { multilingual: true },
+        'plone.default_language': 'en',
+      });
+      expect(await runFetchAt('/login', '')).toBeUndefined();
+    });
+
+    const multilingualSite = {
+      features: { multilingual: true },
+      'plone.default_language': 'en',
+    } as any;
+
+    it('multilingualRootRedirect targets the default language root from the site root only', () => {
+      expect(multilingualRootRedirect('/', multilingualSite)).toBe('/en');
+      expect(multilingualRootRedirect('/en', multilingualSite)).toBeUndefined();
+      expect(
+        multilingualRootRedirect('/login', multilingualSite),
+      ).toBeUndefined();
+      expect(
+        multilingualRootRedirect('/@@contents', multilingualSite),
+      ).toBeUndefined();
+    });
+
+    it('multilingualRootRedirect does nothing on a monolingual site or without a default language', () => {
+      expect(
+        multilingualRootRedirect('/', {
+          features: { multilingual: false },
+          'plone.default_language': 'en',
+        } as any),
+      ).toBeUndefined();
+      expect(
+        multilingualRootRedirect('/', {
+          features: { multilingual: true },
+        } as any),
+      ).toBeUndefined();
+      expect(multilingualRootRedirect('/', {} as any)).toBeUndefined();
+    });
+
+    it('multilingualRootRedirect refuses a default language that is not a language token', () => {
+      expect(
+        multilingualRootRedirect('/', {
+          features: { multilingual: true },
+          'plone.default_language': '/evil.example',
+        } as any),
+      ).toBeUndefined();
+      expect(
+        multilingualRootRedirect('/', {
+          features: { multilingual: true },
+          'plone.default_language': 'zh-cn',
+        } as any),
+      ).toBe('/zh-cn');
+    });
+
+    it('redirects the site root after the anonymous retry of an expired cookie', async () => {
+      const authContent = vi
+        .fn()
+        .mockRejectedValueOnce({ data: undefined, status: 401 });
+      const authSite = vi.fn().mockResolvedValue({ data: {} });
+      const anonymousContent = vi.fn().mockResolvedValueOnce({
+        data: { '@id': 'http://example.com/', title: 'Site' },
+      });
+      const anonymousSite = vi.fn().mockResolvedValueOnce({
+        data: {
+          features: { multilingual: true },
+          'plone.default_language': 'en',
+        },
+      });
+      config.settings.apiPath = 'http://example.com';
+      const initializeMock = vi
+        .fn()
+        .mockReturnValueOnce({
+          getContent: authContent,
+          getSite: authSite,
+          getUser: vi.fn().mockResolvedValue(null),
+        })
+        .mockReturnValueOnce({
+          getContent: anonymousContent,
+          getSite: anonymousSite,
+          getUser: vi.fn().mockResolvedValue(null),
+        });
+      config.registerUtility({
+        name: 'ploneClient',
+        type: 'client',
+        method: () =>
+          ({
+            prototype: {},
+            initialize: initializeMock,
+          }) as any,
+      });
+      vi.mocked(getAuthFromRequest).mockResolvedValue('expired.jwt.token');
+      vi.mocked(jwtDecode).mockReturnValue({
+        sub: 'testuser',
+        exp: 9999999999,
+        fullname: 'Test User',
+      });
+      const request = new Request('http://example.com/');
+      const context = new RouterContextProvider();
+      await initializePloneClientContext(request, context);
+
+      const result = await fetchPloneContent(
+        {
+          request,
+          params: { '*': '' },
+          context,
+          pattern: '/',
+          url: new URL(request.url),
+        },
+        vi.fn(),
+      );
+
+      expect(result).toBeInstanceOf(Response);
+      expect((result as Response).headers.get('Location')).toBe('/en');
+      expect(context.get(ploneClearAuthCookieContext)).toBe(true);
+    });
+
+    const anonymous401Setup = () => {
+      const getContentMock = vi
+        .fn()
+        .mockRejectedValue({ data: undefined, status: 401 });
+      const getSiteMock = vi.fn().mockResolvedValue({ data: {} });
+      config.settings.apiPath = 'http://example.com';
+      registerPloneClientFactory({
+        getContent: getContentMock,
+        getSite: getSiteMock,
+      });
+    };
+
+    const runFetchFor = async (starParam: string) => {
+      const request = new Request(`http://example.com/${starParam}`);
+      const context = new RouterContextProvider();
+      await initializePloneClientContext(request, context);
+      return fetchPloneContent(
+        {
+          request,
+          params: { '*': starParam },
+          context,
+          pattern: `/${starParam}`,
+          url: new URL(request.url),
+        },
+        vi.fn(),
+      );
+    };
+
+    it('sends an anonymous 401 to the login page with the path as return_url', async () => {
+      anonymous401Setup();
+      const result = await runFetchFor('en/press');
+      expect(result).toBeInstanceOf(Response);
+      expect((result as Response).status).toBe(302);
+      expect((result as Response).headers.get('Location')).toBe(
+        '/login?return_url=%2Fen%2Fpress',
+      );
+    });
+
+    it('sends an anonymous 401 on the site root to the login page', async () => {
+      anonymous401Setup();
+      const result = await runFetchFor('');
+      expect((result as Response).headers.get('Location')).toBe(
+        '/login?return_url=%2F',
+      );
+    });
+
+    it('does not redirect /login to itself when the site root is private', async () => {
+      anonymous401Setup();
+      const request = new Request('http://example.com/login');
+      const context = new RouterContextProvider();
+      await initializePloneClientContext(request, context);
+      await expect(() =>
+        fetchPloneContent(
+          {
+            request,
+            params: {},
+            context,
+            pattern: '/login',
+            url: new URL(request.url),
+          },
+          vi.fn(),
+        ),
+      ).rejects.toMatchObject({ init: { status: 401 } });
+    });
+
+    const tokenBearing401Setup = (exp: number) => {
+      vi.mocked(getAuthFromRequest).mockResolvedValue('some.jwt.token');
+      vi.mocked(jwtDecode).mockReturnValue({ sub: 'salomon', exp } as any);
+      config.settings.apiPath = 'http://example.com';
+      registerPloneClientFactory({
+        getContent: vi.fn().mockRejectedValue({ data: undefined, status: 401 }),
+        getSite: vi.fn().mockResolvedValue({ data: {} }),
+        getUser: vi.fn().mockResolvedValue(null),
+      });
+    };
+
+    it('keeps the 401 page for a live token without permission', async () => {
+      tokenBearing401Setup(Date.now() / 1000 + 3600);
+      await expect(() => runFetchFor('en/press')).rejects.toMatchObject({
+        init: { status: 401 },
+      });
+    });
+
+    it('sends an expired token to the login page and clears the cookie', async () => {
+      tokenBearing401Setup(Date.now() / 1000 - 60);
+      const result = await runFetchFor('en/press');
+      expect(result).toBeInstanceOf(Response);
+      expect((result as Response).headers.get('Location')).toBe(
+        '/login?return_url=%2Fen%2Fpress',
+      );
+      expect((result as Response).headers.get('Set-Cookie')).toMatch(
+        /auth_seven=;/,
+      );
+    });
+
+    it('builds the login redirect like Volto', () => {
+      expect(unauthorizedLoginRedirect('/en/internal')).toBe(
+        '/login?return_url=%2Fen%2Finternal',
+      );
+      expect(unauthorizedLoginRedirect('/', '/login')).toBeUndefined();
+    });
   });
 
   describe('linkMiddleware', () => {
@@ -1151,6 +1708,117 @@ describe('middleware', () => {
       const result = await linkMiddleware(makeArgs(context), vi.fn());
 
       expect(result).toBeUndefined();
+    });
+
+    it('does nothing for resource routes, without content', async () => {
+      const context = new RouterContextProvider();
+
+      const result = await linkMiddleware(
+        { ...makeArgs(context), pattern: '@reset-fetcher' },
+        vi.fn(),
+      );
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('isResourcePattern', () => {
+    it('matches a segment that starts with a single @', () => {
+      expect(isResourcePattern('@search/*')).toBe(true);
+      expect(isResourcePattern('@@contents/@delete/*')).toBe(true);
+      expect(isResourcePattern('@layers.css')).toBe(true);
+      expect(isResourcePattern('@@edit/*')).toBe(false);
+      expect(isResourcePattern('@@contents/*')).toBe(false);
+      expect(isResourcePattern('*')).toBe(false);
+    });
+  });
+
+  describe('routeSkipsContent', () => {
+    it('skips resource routes and the health check', () => {
+      expect(routeSkipsContent('@objectBrowserWidget/*')).toBe(true);
+      expect(routeSkipsContent('/@objectBrowserWidget/*')).toBe(true);
+      expect(routeSkipsContent('@@contents/@delete/*')).toBe(true);
+      expect(routeSkipsContent('@reset-fetcher')).toBe(true);
+      expect(routeSkipsContent('ok')).toBe(true);
+      expect(routeSkipsContent('/ok')).toBe(true);
+      expect(routeSkipsContent('@@edit/*')).toBe(false);
+      expect(routeSkipsContent('*')).toBe(false);
+      expect(routeSkipsContent('/')).toBe(false);
+      // A content item named `ok` is matched by the content route.
+      expect(routeSkipsContent('folder/ok')).toBe(false);
+    });
+  });
+
+  describe('contentResourceMiddleware', () => {
+    const resource = vi.fn(async () => new Response('resource'));
+
+    beforeEach(() => {
+      config.registerUtility({
+        type: 'contentResource',
+        name: '@blocks-schema',
+        method: resource,
+      });
+    });
+
+    afterEach(() => {
+      resource.mockClear();
+      delete (config as any)._data.utilities.contentResource;
+    });
+
+    it('splits the content path from the resource', () => {
+      expect(matchContentResource('/news/2026/@blocks-schema')).toEqual({
+        method: resource,
+        path: '/news/2026',
+        subpath: undefined,
+      });
+      expect(matchContentResource('/news/@blocks-schema/teaser')).toEqual({
+        method: resource,
+        path: '/news',
+        subpath: 'teaser',
+      });
+    });
+
+    it('only matches registered resources below a content path', () => {
+      // Without a content path, it's a resource route.
+      expect(matchContentResource('/@blocks-schema')).toBeUndefined();
+      expect(matchContentResource('/@blocks-schema/teaser')).toBeUndefined();
+      expect(matchContentResource('/news/@other')).toBeUndefined();
+      expect(matchContentResource('/news/@@blocks-schema')).toBeUndefined();
+      expect(matchContentResource('/news/blocks-schema')).toBeUndefined();
+    });
+
+    it('answers with the resource', async () => {
+      const request = new Request(
+        'http://localhost/news/@blocks-schema/teaser',
+      );
+      const response = await contentResourceMiddleware(
+        {
+          request,
+          params: { '*': 'news/@blocks-schema/teaser' },
+          context: new RouterContextProvider(),
+        } as any,
+        vi.fn(),
+      );
+
+      expect(await (response as Response).text()).toBe('resource');
+      expect(resource).toHaveBeenCalledWith({
+        request,
+        path: '/news',
+        subpath: 'teaser',
+      });
+    });
+
+    it('lets other requests through', async () => {
+      const response = await contentResourceMiddleware(
+        {
+          request: new Request('http://localhost/news'),
+          params: { '*': 'news' },
+          context: new RouterContextProvider(),
+        } as any,
+        vi.fn(),
+      );
+      expect(response).toBeUndefined();
+      expect(resource).not.toHaveBeenCalled();
     });
   });
 });

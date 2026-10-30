@@ -104,13 +104,14 @@ export default function Index() {
       </head>
       <body className="cmsui">
         {/* We pre-define here the @layer before tailwind does, adding our own layers in a React 19 managed <link> tag */}
-        <link rel="stylesheet" href="/layers.css" precedence="first" />
+        <link rel="stylesheet" href="/@layers.css" precedence="first" />
         <RACRouterProvider navigate={navigate}>
           <PluggablesProvider>
             {showToolbar && <Toolbar />}
             <div
               className={clsx({
-                'ml-(--plone-toolbar-width)': showToolbar,
+                'ml-(--plone-toolbar-width) max-md:ml-0 max-md:pb-[calc(64px+env(safe-area-inset-bottom,0px))]':
+                  showToolbar,
               })}
             >
               <Outlet />

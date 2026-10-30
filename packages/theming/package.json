@@ -9,7 +9,7 @@
   ],
   "funding": "https://github.com/sponsors/plone",
   "license": "MIT",
-  "version": "1.0.0-alpha.9",
+  "version": "1.0.0-alpha.10",
   "repository": {
     "type": "git",
     "url": "https://github.com/plone/aurora.git"
@@ -59,7 +59,7 @@
     "tailwind-variants": "catalog:",
     "tailwindcss": "catalog:",
     "tailwindcss-animate": "^1.0.7",
-    "tailwindcss-react-aria-components": "^2.0.0"
+    "tailwindcss-react-aria-components": "catalog:"
   },
   "devDependencies": {
     "@plone/types": "workspace:*",

@@ -209,3 +209,12 @@ export const AsLink: Story = {
     },
   },
 };
+
+export const Pending: Story = {
+  args: {
+    children: 'Save',
+    variant: 'primary',
+    accent: true,
+    isPending: true,
+  },
+};

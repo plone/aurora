@@ -44,12 +44,13 @@ export function ObjectBrowserWidgetBody() {
   const gridListRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (currentPath && !loading && items?.length && gridListRef.current) {
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         const gridList = gridListRef.current?.querySelector('[role="row"]');
         if (gridList instanceof HTMLElement) {
           gridList.focus();
         }
       }, 400);
+      return () => clearTimeout(timeout);
     }
   }, [currentPath, loading, items]);
 
@@ -155,7 +156,7 @@ export function ObjectBrowserWidgetBody() {
             viewMode
               ? `
                 group data-[layout="grid"] grid h-fit grid-cols-2 gap-4 border-0 py-4
-                [&_label[slot="selection"]]:hidden
+                [&_[slot="selection"]]:hidden
                 [&>div]:rounded-lg [&>div]:p-0 [&>div]:transition-all [&>div]:duration-200
               `
               : `

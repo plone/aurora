@@ -1,9 +1,8 @@
 import { Input, TextField } from '@plone/quanta';
-import { type Updater } from '@tanstack/react-form';
 import { useTranslation } from 'react-i18next';
 
 interface ByMonthDayFieldProps {
-  onChange: (updater: Updater<number>) => void;
+  onChange: (value: number) => void;
   defaultValue: number;
 }
 
@@ -23,7 +22,6 @@ const ByMonthDayField = ({ onChange, defaultValue }: ByMonthDayFieldProps) => {
           validate={(value) =>
             Number(value) > 31 ? t('cmsui.recurrence.monthdayError') : null
           }
-          minValue={1}
           defaultValue={defaultValue?.toString()}
         >
           <Input />

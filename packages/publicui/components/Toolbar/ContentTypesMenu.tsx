@@ -5,7 +5,6 @@ import type { Content, GetTypesResponse, Type } from '@plone/types';
 import { Header, Menu, MenuSection, Text } from 'react-aria-components';
 import { useTranslation } from 'react-i18next';
 import config from '@plone/registry';
-import { MenuItem } from '@plone/components';
 import { useLocation } from 'react-router';
 import contentTypesMenuStyles from './ContentTypesMenu.css?inline';
 
@@ -36,6 +35,7 @@ export const ContentTypesMenu = ({ content }: ContentTypesMenuProps) => {
   const ContentTypeMenuItem = (type: Type) => {
     const typeToAdd = type['@id'].split('@types/')[1];
     const Icon = config.settings.contentIcons[type.id] ?? Page;
+    const MenuItem = config.getComponent('MenuItem').component!;
 
     return (
       <MenuItem
@@ -49,7 +49,11 @@ export const ContentTypesMenu = ({ content }: ContentTypesMenuProps) => {
   };
 
   return (
-    <ToolbarMenu icon={<Add />} styles={contentTypesMenuStyles}>
+    <ToolbarMenu
+      icon={<Add />}
+      triggerLabel={t('publicui.toolbar.addContent')}
+      styles={contentTypesMenuStyles}
+    >
       <Menu className="menu-contenttypes-add">
         <MenuSection className="most-used">
           <Header>{t('publicui.toolbar.addContent')}</Header>

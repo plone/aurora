@@ -8,7 +8,7 @@
     }
   ],
   "license": "MIT",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "repository": {
     "type": "git",
     "url": "http://github.com/plone/aurora.git",
@@ -78,11 +78,8 @@
   "dependencies": {
     "@internationalized/date": "catalog:",
     "@plone/icons": "workspace:*",
-    "@react-aria/utils": "catalog:",
     "clsx": "^2.1.1",
-    "react-aria": "catalog:",
     "react-aria-components": "catalog:",
-    "react-stately": "catalog:",
     "tailwind-merge": "catalog:",
     "tailwind-variants": "catalog:",
     "tailwindcss": "catalog:",
@@ -90,7 +87,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.16.4",
-    "@react-types/shared": "^3.32.1",
+    "@react-types/shared": "catalog:",
     "@storybook/addon-docs": "^10.4.0",
     "@storybook/addon-links": "^10.4.0",
     "@storybook/react-vite": "^10.4.0",
@@ -108,10 +105,11 @@
     "jsdom": "^28.1.0",
     "lightningcss": "^1.29.0",
     "lightningcss-cli": "^1.29.1",
+    "react-stately": "catalog:",
     "release-it": "catalog:",
     "storybook": "^10.4.0",
-    "tsup": "catalog:",
     "tsconfig": "workspace:*",
+    "tsup": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
     "vitest": "catalog:"

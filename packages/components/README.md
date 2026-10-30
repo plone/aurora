@@ -51,7 +51,7 @@ import '@plone/components/dist/basic.css';
 or selectively:
 
 ```js
-import '@plone/components/src/styles/basic/TextField.css';
+import '@plone/components/src/styles/basic/Button.css';
 ```
 
 ## Theming
@@ -76,65 +76,24 @@ It's even possible to use TailwindCSS for styling the components in this package
 
 ## Components list
 
-### Basic
+The package only contains the components that Plone Aurora uses.
+New components are added when something needs them.
 
-- BlockToolbar
+- Breadcrumbs, Breadcrumb
 - Button
 - Checkbox
 - Container
-- Dialog
-- GridList
 - Link
-- ListBox
-- Menu
-- Modal
-- Popover
-- Slider
-- Table
-- Tabs
-- TagGroup
-- ToggleButton
-- Toolbar
-- Tooltip
-
-### Forms
-
-- CheckboxField
-- Form
-- Meter
-- NumberField
-- SearchField
-- Select
-- TextAreaField
-- TextField
-- TimeField
-
-### Widgets
-
-- Calendar
-- CheckboxField
-- CheckboxGroup
-- ComboBox
-- DateField
-- DatePicker
-- DateRangePicker
-- ProgressBar
-- RadioGroup
-- RangeCalendar
-- Switch
-
-### Viewlets
-
-- Breadcrumbs
-
-### Views
-
-- DefaultBlockView
-- RenderBlocks
+- Menu, MenuItem, MenuSection, MenuSectionHeader, MenuSeparator, MenuTrigger, SubmenuTrigger
+- Pagination
+- RadioGroup, Radio
+- Spinner
+- Table, TableHeader, Row, Column
+- Toast
 
 ## Related packages
 
-- The Quanta design system components, the `SizeWidget`, `AlignWidget` and `WidthWidget` form widgets, and the Quanta CSS, typography and fonts live in the [`@plone/quanta`](../quanta/README.md) package.
+- The Quanta design system components, the `SizePicker`, `AlignPicker` and `WidthPicker` pickers, and the Quanta CSS, typography and fonts live in the [`@plone/quanta`](../quanta/README.md) package.
 - The icon set, the `Icon` component, the `*.svg?react` types and the `PloneSVGRVitePlugin` Vite plugin live in the [`@plone/icons`](../icons/README.md) package.
 
 ## Helper providers

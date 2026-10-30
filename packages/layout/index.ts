@@ -2,6 +2,7 @@ import type { ConfigType } from '@plone/registry';
 import installSlots from './config/slots';
 import installSettings from './config/settings';
 import installToast from './config/toast';
+import installComponents from './config/components';
 import DefaultView from './views/DefaultView';
 import FileView from './views/FileView';
 import ImageView from './views/ImageView';
@@ -32,6 +33,7 @@ export default function install(config: ConfigType) {
   installSettings(config);
   installSlots(config);
   installToast(config);
+  installComponents(config);
 
   return config;
 }

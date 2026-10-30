@@ -14,8 +14,11 @@ export default defineConfig({
   ],
   testIgnore: ['**/.codex/**', '**/node_modules/**'],
   outputDir: 'playwright/results-visual',
-  // Tests share one backend that is reset around every test.
-  workers: 1,
+  // The total worker limit. The app suites limit themselves to one worker, see
+  // `projects`. CI runs the two projects one after the other: the parallel
+  // Quanta tests load the machine enough to change how Chrome renders the
+  // app's images.
+  workers: isCI ? '100%' : '50%',
   forbidOnly: isCI,
   retries: isCI ? 1 : 0,
   timeout: 30_000,
@@ -35,9 +38,34 @@ export default defineConfig({
     viewport: { width: 1280, height: 720 },
     trace: 'retain-on-failure',
   },
+  // Serves Quanta's static Storybook build for its component screenshots
+  // (`pnpm --filter @plone/quanta build-storybook`). The app and the backend
+  // are started separately.
+  webServer: {
+    command:
+      'python3 -m http.server 6007 --directory packages/quanta/storybook-static',
+    port: 6007,
+    reuseExistingServer: true,
+    stdout: 'ignore',
+    stderr: 'ignore',
+  },
   projects: [
     {
+      // The app and the backend. Tests share one backend that is reset around
+      // every test, so they run one at a time.
       name: 'chromium',
+      testIgnore: ['packages/quanta/**'],
+      workers: 1,
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
+      // Quanta's components, from the static Storybook. No backend, so the
+      // tests run in parallel.
+      name: 'quanta',
+      testMatch: [
+        'packages/quanta/acceptance/visual/**/*.{spec,test}.{ts,tsx}',
+      ],
+      fullyParallel: true,
       use: { ...devices['Desktop Chrome'] },
     },
   ],

@@ -10,26 +10,18 @@ import {
 } from '@plone/icons';
 import type { Brain } from '@plone/types';
 import { Description, FieldError, Label } from '../Field/Field';
+import { setByPath, useOptionalFormContext } from '@plone/helpers';
+import { useWidgetContext } from '../Form/WidgetContext';
 import { ObjectBrowserModal } from '../ObjectBrowserWidget/ObjectBrowserModal';
 import {
   ObjectBrowserProvider,
   useObjectBrowserContext,
 } from '../ObjectBrowserWidget/ObjectBrowserContext';
-import { normalizeObjectBrowserPath } from '../ObjectBrowserWidget/utils';
 
 type BaseFormFieldProps = Pick<
   QuantaTextFieldProps,
   'label' | 'description' | 'errorMessage' | 'placeholder'
 >;
-
-type NamedBlobImage = {
-  'content-type': string;
-  data: string;
-  encoding: string;
-  filename: string;
-};
-
-type ImageFieldValue = string | NamedBlobImage | null;
 
 type ImageChangeExtras = {
   title?: string;
@@ -39,12 +31,12 @@ type ImageChangeExtras = {
 
 type ImageInputChange = (
   id: string,
-  value: ImageFieldValue,
+  value: string | null,
   extras?: ImageChangeExtras,
 ) => void;
 
 type ImageWidgetChange = (
-  value: ImageFieldValue,
+  value: string | null,
   extras?: ImageChangeExtras,
 ) => void;
 
@@ -62,7 +54,6 @@ type CommonImageInputProps = {
   onFocus?: () => void;
   uploadPath?: string;
   currentPath?: string;
-  blobField?: boolean;
 };
 
 type ImageInputProps = CommonImageInputProps & {
@@ -74,8 +65,12 @@ type ImageWidgetProps = BaseFormFieldProps &
   CommonImageInputProps & {
     onChange?: ImageWidgetChange;
     error?: Array<unknown>;
-    factory?: string;
-    widget?: string;
+    /**
+     * The details of a picked image (`image_field`, `image_scales`, `title`)
+     * to also store, in the form fields of the same name. Block schemas set
+     * it as a widget option, for example on the image block's `url` field.
+     */
+    extraFields?: Array<keyof ImageChangeExtras>;
   };
 
 type CreateContentResponse = {
@@ -114,31 +109,16 @@ async function parseJsonSafe(response: Response) {
   }
 }
 
-function blobDownloadUrl(value: Record<string, unknown>): string {
-  if (typeof value['@id'] === 'string') return value['@id'];
-  if (typeof value.download === 'string') return value.download;
-  return '';
-}
-
-function namedBlobPreviewSrc(value: Record<string, unknown>): string {
-  if (
-    typeof value.data === 'string' &&
-    typeof value['content-type'] === 'string'
-  ) {
-    return `data:${value['content-type']};base64,${value.data}`;
-  }
-  return blobDownloadUrl(value);
-}
-
 function normalizeImageValue(value: unknown): string {
   if (typeof value === 'string') return value;
 
   if (Array.isArray(value) && value[0] && isRecord(value[0])) {
-    return namedBlobPreviewSrc(value[0]);
+    const first = value[0];
+    return typeof first['@id'] === 'string' ? first['@id'] : '';
   }
 
-  if (isRecord(value)) {
-    return namedBlobPreviewSrc(value);
+  if (isRecord(value) && typeof value['@id'] === 'string') {
+    return value['@id'];
   }
 
   return '';
@@ -150,7 +130,6 @@ function isInternalUrl(url: string) {
 
 function getPreviewSrc(url: string, imageSize: string) {
   if (!url) return '';
-  if (url.startsWith('data:')) return url;
   return isInternalUrl(url) ? `${url}/@@images/image/${imageSize}` : url;
 }
 
@@ -160,10 +139,6 @@ function getBasePath(path: string) {
 
   if (segments.length <= 1) return '/';
   return `/${segments.slice(0, -1).join('/')}`;
-}
-
-function getEditPathFromUrl(pathname: string) {
-  return normalizeObjectBrowserPath(pathname);
 }
 
 function readFileAsDataURL(file: File) {
@@ -183,31 +158,6 @@ function parseDataUrl(dataUrl: string) {
   return {
     contentType: match[1],
     data: match[2],
-  };
-}
-
-async function fetchExistingImageAsBlob(
-  contentId: string,
-  filename: string,
-): Promise<NamedBlobImage | null> {
-  // Object-browser brains are flattened to app paths (always leading `/`).
-  const response = await fetch(`${contentId}/@@download/image`, {
-    credentials: 'include',
-  });
-  if (!response.ok) return null;
-
-  const fileBlob = await response.blob();
-  const contentType = fileBlob.type || 'image/jpeg';
-  const file = new File([fileBlob], filename, { type: contentType });
-  const dataUrl = await readFileAsDataURL(file);
-  const parsed = parseDataUrl(dataUrl);
-  if (!parsed) return null;
-
-  return {
-    data: parsed.data,
-    encoding: 'base64',
-    'content-type': parsed.contentType || contentType,
-    filename,
   };
 }
 
@@ -250,10 +200,9 @@ function ImageInputBase({
   currentPath,
   value,
   defaultValue,
-  blobField = false,
   onValueChange,
 }: CommonImageInputProps & {
-  onValueChange: (value: ImageFieldValue, extras?: ImageChangeExtras) => void;
+  onValueChange: (value: string | null, extras?: ImageChangeExtras) => void;
 }) {
   const resolvedValue = value !== undefined ? value : defaultValue;
   const imageValue = normalizeImageValue(resolvedValue);
@@ -261,24 +210,15 @@ function ImageInputBase({
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string>('');
-  const [linkValue, setLinkValue] = useState(
-    typeof resolvedValue === 'string' ? resolvedValue : '',
-  );
-  const showObjectBrowser = !hideObjectBrowserPicker;
-  const showLinkPicker = !hideLinkPicker && !blobField;
+  const [linkValue, setLinkValue] = useState(imageValue);
 
-  const resolvedCurrentPath = useMemo(() => {
-    const fallbackPath =
-      typeof window !== 'undefined'
-        ? getEditPathFromUrl(window.location.pathname)
-        : '/';
-    return currentPath || fallbackPath;
-  }, [currentPath]);
-
-  const resolvedUploadPath = useMemo(
-    () => uploadPath || getBasePath(resolvedCurrentPath),
-    [resolvedCurrentPath, uploadPath],
-  );
+  // Where the form is: the object browser starts there, and uploads go to
+  // its container. Explicit paths win.
+  const widgetContext = useWidgetContext();
+  const resolvedCurrentPath = currentPath || widgetContext.path;
+  const resolvedUploadPath =
+    uploadPath ||
+    (currentPath ? getBasePath(currentPath) : widgetContext.containerPath);
   const uploadAction = useMemo(
     () =>
       resolvedUploadPath === '/'
@@ -306,20 +246,6 @@ function ImageInputBase({
 
         if (!parsed) {
           setUploadError('Could not parse the selected file');
-          setIsUploading(false);
-          return;
-        }
-
-        const blob: NamedBlobImage = {
-          data: parsed.data,
-          encoding: 'base64',
-          'content-type': parsed.contentType,
-          filename: file.name,
-        };
-
-        if (blobField) {
-          setUploadError('');
-          onValueChange(blob, { title: file.name });
           setIsUploading(false);
           return;
         }
@@ -366,13 +292,7 @@ function ImageInputBase({
         setIsUploading(false);
       }
     },
-    [
-      restrictFileUpload,
-      resolvedUploadPath,
-      uploadAction,
-      onValueChange,
-      blobField,
-    ],
+    [restrictFileUpload, resolvedUploadPath, uploadAction, onValueChange],
   );
 
   const onDrop = useCallback(
@@ -393,45 +313,20 @@ function ImageInputBase({
   }, []);
 
   const onSelectInternalImage = useCallback(
-    async (selectedItems: Partial<Brain>[]) => {
+    (selectedItems: Partial<Brain>[]) => {
       const selectedImage = selectedItems[0];
-      if (!selectedImage || typeof selectedImage['@id'] !== 'string') return;
-
-      const title =
-        typeof selectedImage.title === 'string'
-          ? selectedImage.title
-          : undefined;
-
-      if (!blobField) {
+      if (selectedImage && typeof selectedImage['@id'] === 'string') {
         onValueChange(selectedImage['@id'], {
-          title,
+          title:
+            typeof selectedImage.title === 'string'
+              ? selectedImage.title
+              : undefined,
           image_field: selectedImage.image_field,
           image_scales: selectedImage.image_scales ?? undefined,
         });
-        return;
-      }
-
-      setUploadError('');
-      setIsUploading(true);
-      try {
-        const filename = title ? `${title}` : 'image';
-        const blob = await fetchExistingImageAsBlob(
-          selectedImage['@id'],
-          filename,
-        );
-        if (!blob) {
-          setUploadError('Could not load the selected image');
-          setIsUploading(false);
-          return;
-        }
-        onValueChange(blob, { title });
-        setIsUploading(false);
-      } catch {
-        setUploadError('Could not load the selected image');
-        setIsUploading(false);
       }
     },
-    [onValueChange, blobField],
+    [onValueChange],
   );
 
   if (imageValue) {
@@ -486,7 +381,7 @@ function ImageInputBase({
       </div>
 
       <div className="flex items-center gap-2">
-        {showObjectBrowser && (
+        {!hideObjectBrowserPicker && (
           <ObjectBrowserProvider
             config={{
               mode: objectBrowserMode,
@@ -542,7 +437,7 @@ function ImageInputBase({
         )}
       </div>
 
-      {showLinkPicker && (
+      {!hideLinkPicker && (
         <div className="flex items-center gap-2">
           <div className="text-quanta-pigeon">
             <LinkIcon />
@@ -592,13 +487,10 @@ export default function ImageWidget(props: ImageWidgetProps) {
     error,
     onChange,
     className,
-    factory,
-    widget,
-    blobField,
+    extraFields,
     ...rest
   } = props;
-
-  const isBlobField = blobField || factory === 'Image' || widget === 'file';
+  const form = useOptionalFormContext();
 
   const fieldError =
     typeof errorMessage === 'string'
@@ -614,8 +506,19 @@ export default function ImageWidget(props: ImageWidgetProps) {
         className={className}
         value={props.value}
         currentPath={rest.currentPath}
-        blobField={isBlobField}
-        onValueChange={(value, extras) => onChange?.(value, extras)}
+        onValueChange={(value, extras) => {
+          // Store the declared details of the picked image in their own
+          // fields, in one change, before the field itself.
+          if (form && extraFields?.length) {
+            form.setValues(
+              extraFields.reduce(
+                (values, field) => setByPath(values, field, extras?.[field]),
+                form.getValues(),
+              ),
+            );
+          }
+          onChange?.(value, extras);
+        }}
       />
 
       {description && <Description>{description}</Description>}

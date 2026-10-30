@@ -1,5 +1,5 @@
 import type { BlockViewProps } from '@plone/types';
-import { Link } from '@plone/components';
+import config from '@plone/registry';
 import Image from '@plone/layout/components/Image/Image';
 
 type TeaserViewProps = BlockViewProps & {
@@ -11,6 +11,7 @@ const asFirstItem = <T,>(value: T | T[] | undefined): T | undefined =>
 
 const TeaserBlockView = (props: TeaserViewProps) => {
   const { data } = props;
+  const Link = config.getComponent('Link').component!;
   const href = asFirstItem(data.href as any);
   const image = asFirstItem(data.preview_image as any);
   const link =

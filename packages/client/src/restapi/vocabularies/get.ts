@@ -9,19 +9,21 @@ const getVocabularySchema = z.object({
   title: z.string().optional(),
   token: z.string().optional(),
   tokens: z.array(z.string()).optional(),
+  b_size: z.number().optional(),
 });
 
 export type VocabulariesArgs = z.infer<typeof getVocabularySchema>;
 
 export async function getVocabulary(
   this: PloneClient,
-  { path, title, token, tokens }: VocabulariesArgs,
+  { path, title, token, tokens, b_size }: VocabulariesArgs,
 ): Promise<RequestResponse<GetVocabularyResponse>> {
   const validatedArgs = getVocabularySchema.parse({
     path,
     title,
     token,
     tokens,
+    b_size,
   });
 
   const options: ApiRequestParams = {
@@ -30,6 +32,9 @@ export async function getVocabulary(
       ...(validatedArgs.title && { title: validatedArgs.title }),
       ...(validatedArgs.token && { token: validatedArgs.token }),
       ...(validatedArgs.tokens && { tokens: validatedArgs.tokens }),
+      ...(validatedArgs.b_size !== undefined && {
+        b_size: validatedArgs.b_size,
+      }),
     },
   };
   const vocabulariesPath = `@vocabularies/${validatedArgs.path}`;

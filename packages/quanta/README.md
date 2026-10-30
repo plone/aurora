@@ -1,7 +1,7 @@
 # `@plone/quanta`
 
 [![NPM](https://img.shields.io/npm/v/@plone/quanta.svg)](https://www.npmjs.com/package/@plone/quanta)
-[![Build Status](https://app.readthedocs.org/projects/plone-quanta/badge/?version=latest)](https://plone-quanta.readthedocs.io/latest/)
+[![Build Status](https://app.readthedocs.org/projects/plone-quanta/badge/?version=latest)](https://plone-quanta.readthedocs.io/)
 
 The Quanta design system components for Plone Aurora.
 
@@ -15,7 +15,7 @@ Icons come from the [`@plone/icons`](../icons/README.md) package.
 
 You can find the self-documented Storybook in:
 
-https://plone-quanta.readthedocs.io/latest/
+https://plone-quanta.readthedocs.io/
 
 ## Installation
 
@@ -40,7 +40,7 @@ const MyComponent = () => (
 export default MyComponent;
 ```
 
-The form widgets `SizeWidget`, `AlignWidget` and `WidthWidget` are exported from the package root as well.
+The pickers `SizePicker`, `AlignPicker` and `WidthPicker` are exported from the package root as well. They are controls; the form widgets that use them live in `@plone/cmsui`.
 
 ## Tailwind requirement
 
