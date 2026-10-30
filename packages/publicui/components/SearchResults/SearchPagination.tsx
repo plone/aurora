@@ -37,11 +37,11 @@ export function SearchPagination({
       totalPages={Math.ceil(total / bSize)}
       currentPage={Math.floor(bStart / bSize)}
       getPageHref={getPageHref}
-      ariaLabel={t('layout.search.pagination')}
-      prevLabel={t('layout.search.previous')}
-      nextLabel={t('layout.search.next')}
+      ariaLabel={t('publicui.search.pagination')}
+      prevLabel={t('publicui.search.previous')}
+      nextLabel={t('publicui.search.next')}
       showPrevNextLabels
-      pageLabel={t('layout.search.pageLabel')}
+      pageLabel={t('publicui.search.pageLabel')}
     />
   );
 }

@@ -46,7 +46,7 @@ export function SearchSort() {
   return (
     <div className={styles.sort}>
       <label className={styles.sortLabel} htmlFor={selectId}>
-        {t('layout.search.sort.label')}
+        {t('publicui.search.sort.label')}
       </label>
       <select
         id={selectId}
@@ -56,7 +56,7 @@ export function SearchSort() {
       >
         {SORT_OPTIONS.map((option) => (
           <option key={option} value={option}>
-            {t(`layout.search.sort.${option}`)}
+            {t(`publicui.search.sort.${option}`)}
           </option>
         ))}
       </select>

@@ -24,7 +24,7 @@ export function SearchForm() {
       <div className={styles.searchField}>
         <SearchIcon className={styles.searchIcon} aria-hidden="true" />
         <label htmlFor={inputId} className="sr-only">
-          {t('layout.search.inputLabel')}
+          {t('publicui.search.inputLabel')}
         </label>
         <input
           // Reset the field when the term changes through navigation.
@@ -34,13 +34,13 @@ export function SearchForm() {
           type="search"
           name="SearchableText"
           defaultValue={query}
-          placeholder={t('layout.search.placeholder')}
+          placeholder={t('publicui.search.placeholder')}
         />
       </div>
       {path && <input type="hidden" name="path" value={path} />}
       {sort && <input type="hidden" name="sort" value={sort} />}
       <Button type="submit" className={styles.searchSubmit}>
-        {t('layout.search.submit')}
+        {t('publicui.search.submit')}
       </Button>
     </Form>
   );

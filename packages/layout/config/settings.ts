@@ -12,7 +12,6 @@ import PageIcon from '@plone/icons/svg/page.svg?react';
 export default function install(config: ConfigType) {
   config.settings.hideBreadcrumbs = ['Plone Site', 'Subsite', 'LRF'];
 
-  // Registered here (not only in @plone/contents) so the public UI has it too.
   config.settings.contentIcons = {
     Document: PageIcon,
     Folder: FolderIcon,
@@ -23,7 +22,6 @@ export default function install(config: ConfigType) {
     Link: LinkIcon,
     Video: VideoIcon,
     Collection: CollectionIcon,
-    ...(config.settings.contentIcons ?? {}),
   };
 
   config.settings.mostUsedTypes = ['Document', 'Folder', 'File'];

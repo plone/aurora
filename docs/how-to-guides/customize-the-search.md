@@ -26,11 +26,11 @@ The pagination derives the page count from this value, so no other change is nee
 
 ## Add a sort option
 
-The sort options live in {file}`packages/layout/components/SearchResults/SearchSort.tsx`.
+The sort options live in {file}`packages/publicui/components/SearchResults/SearchSort.tsx`.
 
 1.  Add the option to the `SORT_OPTIONS` array.
 2.  Add a `case` for it in `sortToQuery` that returns the backend `sort_on` and `sort_order` fields.
-3.  Add the matching label under `layout.search.sort` in each locale file in {file}`packages/layout/locales/`.
+3.  Add the matching label under `publicui.search.sort` in each locale file in {file}`packages/publicui/locales/`.
 
 For example, to sort by creation date, add `'created'` to `SORT_OPTIONS`, and add the following `case` to `sortToQuery`.
 

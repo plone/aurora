@@ -2,11 +2,31 @@
   "publicui": {
     "sitemap": "Sitemap",
     "search": {
-      "title": "Search results for",
-      "results": "Search results",
-      "placeholder": "Write here...",
-      "noResults": "No results found",
-      "heading": "Search"
+      "placeholder": "Search the site…",
+      "noResults": "No results",
+      "heading": "Search",
+      "pagination": "Search results pages",
+      "previous": "Previous",
+      "next": "Next",
+      "resultsLabel": "Search results",
+      "loading": "Searching…",
+      "sort": {
+        "label": "Sort by",
+        "relevance": "Relevance",
+        "date": "Date",
+        "title": "Title"
+      },
+      "resultCountFor_one": "{{count}} result for “{{query}}”",
+      "resultCountFor_other": "{{count}} results for “{{query}}”",
+      "showing": "showing {{start}}-{{end}}",
+      "noResultsFor": "No results for “{{query}}”",
+      "nothingFound": "Nothing found",
+      "noResultsHint": "Try a different term or check your spelling.",
+      "inputLabel": "Search terms",
+      "submit": "Search",
+      "resultCount_one": "{{count}} result",
+      "resultCount_other": "{{count}} results",
+      "pageLabel": "Page"
     },
     "toolbar": {
       "edit": "Edit",

@@ -35,7 +35,7 @@ describe('SearchForm', () => {
     renderForm('/search');
     expect(screen.getByRole('search')).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'layout.search.submit' }),
+      screen.getByRole('button', { name: 'publicui.search.submit' }),
     ).toHaveAttribute('type', 'submit');
   });
 });

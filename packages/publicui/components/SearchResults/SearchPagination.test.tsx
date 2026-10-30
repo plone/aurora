@@ -13,7 +13,7 @@ const renderPagination = (
   );
 
 const pageLink = (page: number) =>
-  screen.getByRole('link', { name: `layout.search.pageLabel ${page}` });
+  screen.getByRole('link', { name: `publicui.search.pageLabel ${page}` });
 
 describe('SearchPagination', () => {
   it('renders nothing when there is only one page', () => {
@@ -25,7 +25,7 @@ describe('SearchPagination', () => {
     renderPagination({ total: 60, bStart: 0, bSize: 25 });
     // 60 results / 25 => 3 pages
     expect(
-      screen.getByRole('navigation', { name: 'layout.search.pagination' }),
+      screen.getByRole('navigation', { name: 'publicui.search.pagination' }),
     ).toBeInTheDocument();
     expect(screen.getByText('1')).toHaveAttribute('aria-current', 'page');
     expect(pageLink(2)).toBeInTheDocument();
@@ -82,10 +82,10 @@ describe('SearchPagination', () => {
   it('links previous and next, except past the first and last page', () => {
     const { rerender } = renderPagination({ total: 60, bStart: 0, bSize: 25 });
     expect(
-      screen.queryByRole('link', { name: 'layout.search.previous' }),
+      screen.queryByRole('link', { name: 'publicui.search.previous' }),
     ).toBeNull();
     expect(
-      screen.getByRole('link', { name: 'layout.search.next' }),
+      screen.getByRole('link', { name: 'publicui.search.next' }),
     ).toHaveAttribute('rel', 'next');
 
     rerender(
@@ -94,10 +94,10 @@ describe('SearchPagination', () => {
       </MemoryRouter>,
     );
     expect(
-      screen.getByRole('link', { name: 'layout.search.previous' }),
+      screen.getByRole('link', { name: 'publicui.search.previous' }),
     ).toHaveAttribute('rel', 'prev');
     expect(
-      screen.queryByRole('link', { name: 'layout.search.next' }),
+      screen.queryByRole('link', { name: 'publicui.search.next' }),
     ).toBeNull();
   });
 });

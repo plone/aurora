@@ -17,32 +17,6 @@
         }
       }
     },
-    "search": {
-      "pagination": "Pagine dei risultati di ricerca",
-      "previous": "Precedente",
-      "next": "Successiva",
-      "resultsLabel": "Risultati della ricerca",
-      "loading": "Ricerca in corso…",
-      "sort": {
-        "label": "Ordina per",
-        "relevance": "Rilevanza",
-        "date": "Data",
-        "title": "Titolo"
-      },
-      "resultCountFor_one": "{{count}} risultato per “{{query}}”",
-      "resultCountFor_other": "{{count}} risultati per “{{query}}”",
-      "showing": "visualizzati {{start}}-{{end}}",
-      "noResultsFor": "Nessun risultato per “{{query}}”",
-      "nothingFound": "Nessun risultato trovato",
-      "noResultsHint": "Prova un termine diverso o controlla l’ortografia.",
-      "inputLabel": "Termini di ricerca",
-      "placeholder": "Cerca nel sito…",
-      "submit": "Cerca",
-      "resultCount_one": "{{count}} risultato",
-      "resultCount_other": "{{count}} risultati",
-      "noResults": "Nessun risultato",
-      "pageLabel": "Pagina"
-    },
     "contenttypes": {
       "common": {
         "size": "Dimensione:"

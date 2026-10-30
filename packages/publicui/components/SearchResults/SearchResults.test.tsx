@@ -51,9 +51,11 @@ describe('SearchResults', () => {
   it('renders the empty state for an empty result set', () => {
     const { container } = renderResults([], { total: 0, query: 'zzz' });
     expect(container.querySelectorAll('article')).toHaveLength(0);
-    expect(screen.getByText('layout.search.nothingFound')).toBeInTheDocument();
+    expect(
+      screen.getByText('publicui.search.nothingFound'),
+    ).toBeInTheDocument();
     expect(screen.getByRole('status')).toHaveTextContent(
-      'layout.search.noResultsFor',
+      'publicui.search.noResultsFor',
     );
     expect(screen.queryByRole('combobox')).toBeNull();
   });
@@ -61,10 +63,10 @@ describe('SearchResults', () => {
   it('counts without a term when the search is empty', () => {
     renderResults(items);
     expect(screen.getByRole('status')).toHaveTextContent(
-      'layout.search.resultCount',
+      'publicui.search.resultCount',
     );
     expect(screen.getByRole('status')).not.toHaveTextContent(
-      'layout.search.resultCountFor',
+      'publicui.search.resultCountFor',
     );
   });
 
@@ -76,14 +78,14 @@ describe('SearchResults', () => {
   it('adds the shown range when the results span several pages', () => {
     renderResults(items, { total: 60, bStart: 25 });
     expect(screen.getByRole('status')).toHaveTextContent(
-      'layout.search.showing',
+      'publicui.search.showing',
     );
   });
 
   it('omits the shown range when all results fit on one page', () => {
     renderResults(items);
     expect(screen.getByRole('status')).not.toHaveTextContent(
-      'layout.search.showing',
+      'publicui.search.showing',
     );
   });
 
@@ -160,7 +162,7 @@ describe('SearchResults', () => {
       screen.getByRole('region', { name: /resultsLabel/i }),
     ).toHaveAttribute('aria-busy', 'true');
     expect(screen.getByRole('status')).toHaveTextContent(
-      'layout.search.loading',
+      'publicui.search.loading',
     );
   });
 });

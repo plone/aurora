@@ -20,11 +20,12 @@ This file applies only to `packages/publicui` and its subdirectories.
   - `sitemap.tsx` — sitemap view
   - `index.tsx` — route index / layout wrapper
   - `layers.css.tsx` — CSS layer declarations injected via React
+- **Components** (`components/`) — components specific to a public page, such as `SearchResults/` for the search route.
 - **Styles** (`styles/publicui.css`) — public-facing page styles.
 
 ## Editing Rules
 
-- Route components should stay **thin**: resolve data from the REST API (via `@plone/client`) and delegate rendering to `@plone/layout` and `@plone/blocks`.
+- Route components should stay **thin**: resolve data from the REST API (via `@plone/client`) and delegate rendering to `@plone/layout`, `@plone/blocks`, or the page-specific components in `components/`.
 - Do not add editor or admin UI here — that belongs in `@plone/cmsui`.
 - When adding a new public route, register it in `routes/index.tsx`.
 - Keep CSS in `styles/` — do not inline significant styles into route components.

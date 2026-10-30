@@ -68,17 +68,17 @@ export function SearchResults({
 
   let count: string;
   if (loading) {
-    count = t('layout.search.loading');
+    count = t('publicui.search.loading');
   } else if (total === 0) {
     count = query
-      ? t('layout.search.noResultsFor', { query })
-      : t('layout.search.noResults');
+      ? t('publicui.search.noResultsFor', { query })
+      : t('publicui.search.noResults');
   } else {
     count = query
-      ? t('layout.search.resultCountFor', { count: total, query })
-      : t('layout.search.resultCount', { count: total });
+      ? t('publicui.search.resultCountFor', { count: total, query })
+      : t('publicui.search.resultCount', { count: total });
     if (total > items.length) {
-      count += ` · ${t('layout.search.showing', {
+      count += ` · ${t('publicui.search.showing', {
         start: bStart + 1,
         end: bStart + items.length,
       })}`;
@@ -88,7 +88,7 @@ export function SearchResults({
   return (
     <section
       className={styles.results}
-      aria-label={t('layout.search.resultsLabel')}
+      aria-label={t('publicui.search.resultsLabel')}
       aria-busy={loading || undefined}
     >
       <div className={styles.resultsBar}>
@@ -136,8 +136,8 @@ export function SearchResults({
       ) : (
         !loading && (
           <div className={styles.noResults}>
-            <strong>{t('layout.search.nothingFound')}</strong>
-            <p>{t('layout.search.noResultsHint')}</p>
+            <strong>{t('publicui.search.nothingFound')}</strong>
+            <p>{t('publicui.search.noResultsHint')}</p>
           </div>
         )
       )}

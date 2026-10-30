@@ -11,10 +11,10 @@ import {
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { flattenToAppURL } from '@plone/helpers';
 import { Container } from '@plone/quanta';
-import { SearchForm } from '@plone/layout/components/SearchResults/SearchForm';
-import { SearchResults } from '@plone/layout/components/SearchResults/SearchResults';
-import { SearchPagination } from '@plone/layout/components/SearchResults/SearchPagination';
-import { sortToQuery } from '@plone/layout/components/SearchResults/SearchSort';
+import { SearchForm } from '../components/SearchResults/SearchForm';
+import { SearchResults } from '../components/SearchResults/SearchResults';
+import { SearchPagination } from '../components/SearchResults/SearchPagination';
+import { sortToQuery } from '../components/SearchResults/SearchSort';
 
 export const handle = {
   bodyClass: 'search-route',

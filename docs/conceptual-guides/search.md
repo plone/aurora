@@ -25,8 +25,8 @@ It returns search results with sorting and pagination.
 The results are friendly to accessibility tools, keyboard navigation, search engine indexers, web crawlers, and AI agents.
 
 The route stays thin.
-It delegates rendering to reusable components in the {file}`@plone/layout/components/SearchResults/` directory, including `SearchForm`, `SearchResults`, `SearchSort`, and `SearchPagination`.
-The components live in `@plone/layout`, so both the CMS UI and the Public UI can reuse and theme them.
+It delegates rendering to the components in the {file}`packages/publicui/components/SearchResults/` directory: `SearchForm`, `SearchResults`, `SearchSort`, and `SearchPagination`.
+These components are specific to the search page, so they live in `@plone/publicui` next to the route.
 
 ## The query
 
@@ -114,7 +114,7 @@ The `SearchSort` component stores the choice in a single `sort` query parameter 
 The `loader` translates the parameter into the backend `sort_on` and `sort_order` fields with the `sortToQuery` helper, so the route stays the single source of truth for the query.
 
 ```{code-block} ts
-:caption: packages/layout/components/SearchResults/SearchSort.tsx
+:caption: packages/publicui/components/SearchResults/SearchSort.tsx
 
 export function sortToQuery(sort: string | null): {
   sort_on?: string;
