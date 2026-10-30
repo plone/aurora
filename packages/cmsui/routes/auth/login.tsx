@@ -167,7 +167,7 @@ export default function Login() {
                   <span className="text-sm text-quanta-iron">
                     <Trans
                       i18nKey="cmsui.auth.forgotPassword"
-                      components={{ a: <Link href="/reset-password" /> }}
+                      components={{ a: <Link href="/passwordreset" /> }}
                     />
                   </span>
                 </div>

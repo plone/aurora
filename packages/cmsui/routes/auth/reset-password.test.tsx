@@ -14,7 +14,7 @@ vi.mock('@plone/react-router', () => ({
 
 function buildRequest(fields: Record<string, string>) {
   const body = new URLSearchParams(fields);
-  return new Request('http://example.com/reset-password', {
+  return new Request('http://example.com/passwordreset', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body,
@@ -28,8 +28,8 @@ function callAction(request: Request, cli: Record<string, unknown>) {
     request,
     params: {},
     context,
-    unstable_pattern: '/reset-password',
-    unstable_url: new URL(request.url),
+    pattern: '/passwordreset',
+    url: new URL(request.url),
   }) as Promise<any>;
 }
 
@@ -102,19 +102,31 @@ describe('reset-password action — request flow', () => {
     expect(result).toEqual({
       ok: false,
       mode: 'request',
-      field: 'form',
       code: 'serverError',
     });
   });
 
-  it('skips the call but reports success when the identifier is empty', async () => {
+  it('validates the identifier on the server', async () => {
     const resetPassword = vi.fn();
     const result = await callAction(
-      buildRequest({ mode: 'request', usernameOrEmail: '' }),
+      buildRequest({ mode: 'request', usernameOrEmail: 'foo@bar.com' }),
       { resetPassword },
     );
     expect(resetPassword).not.toHaveBeenCalled();
-    expect(result).toEqual({ ok: true, mode: 'request' });
+    expect(result).toEqual({
+      ok: false,
+      mode: 'request',
+      code: 'usernameNoEmail',
+    });
+  });
+
+  it('URL-encodes the identifier used as a path segment', async () => {
+    const resetPassword = vi.fn().mockResolvedValue({});
+    await callAction(
+      buildRequest({ mode: 'request', usernameOrEmail: 'jo/hn' }),
+      { resetPassword },
+    );
+    expect(resetPassword).toHaveBeenCalledWith({ id: 'jo%2Fhn' });
   });
 });
 
@@ -155,7 +167,6 @@ describe('reset-password action — set flow', () => {
     expect(result).toEqual({
       ok: false,
       mode: 'set',
-      field: 'newPassword',
       code: 'passwordTooShort',
       params: { min: 8 },
     });
@@ -169,7 +180,6 @@ describe('reset-password action — set flow', () => {
     expect(result).toEqual({
       ok: false,
       mode: 'set',
-      field: 'confirmPassword',
       code: 'passwordsDoNotMatch',
     });
   });
@@ -181,15 +191,19 @@ describe('reset-password action — set flow', () => {
     expect(result).toEqual({
       ok: false,
       mode: 'set',
-      field: 'form',
       code: 'setFailed',
     });
   });
 
-  it('maps a 4xx from the backend to a generic setFailed error', async () => {
+  it('maps an unknown or expired token to setFailed', async () => {
     const resetPasswordWithToken = vi.fn().mockRejectedValue({
-      status: 400,
-      data: { error: { message: 'Invalid token internal detail' } },
+      status: 403,
+      data: {
+        error: {
+          type: 'Expired Token',
+          message: 'The reset_token is expired.',
+        },
+      },
     });
     const result = await callAction(buildRequest(validSet), {
       resetPasswordWithToken,
@@ -197,8 +211,38 @@ describe('reset-password action — set flow', () => {
     expect(result).toEqual({
       ok: false,
       mode: 'set',
-      field: 'form',
       code: 'setFailed',
     });
+  });
+
+  it("shows Plone's message when the password policy rejects it", async () => {
+    const resetPasswordWithToken = vi.fn().mockRejectedValue({
+      status: 400,
+      data: {
+        error: {
+          type: 'Invalid password',
+          message: 'Your password must contain at least 10 characters.',
+        },
+      },
+    });
+    const result = await callAction(buildRequest(validSet), {
+      resetPasswordWithToken,
+    });
+    expect(result).toEqual({
+      ok: false,
+      mode: 'set',
+      code: 'passwordRejected',
+      params: {
+        message: 'Your password must contain at least 10 characters.',
+      },
+    });
+  });
+
+  it('surfaces a generic server error on a 5xx', async () => {
+    const resetPasswordWithToken = vi.fn().mockRejectedValue({ status: 502 });
+    const result = await callAction(buildRequest(validSet), {
+      resetPasswordWithToken,
+    });
+    expect(result).toEqual({ ok: false, mode: 'set', code: 'serverError' });
   });
 });

@@ -147,6 +147,7 @@
           "usernameNoSpaces": "Username cannot contain spaces.",
           "passwordTooShort": "Password must be at least {{min}} characters.",
           "passwordsDoNotMatch": "Passwords do not match.",
+          "passwordRejected": "Your new password was not accepted: {{message}}",
           "setFailed": "We couldn't set your new password. Your reset link may be invalid or expired. Please request a new one.",
           "serverError": "Something went wrong on our end. Please try again in a few moments."
         }

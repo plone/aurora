@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   Form,
   useActionData,
   useLoaderData,
   useLocation,
   useParams,
+  useSearchParams,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   RouterContextProvider,
@@ -15,9 +16,9 @@ import {
   ploneContentContext,
 } from '@plone/aurora/app/middleware.server';
 import { redirectIfLoggedInLoader } from '@plone/react-router';
-import { TextField, Link, Button } from '@plone/components/quanta';
-import CloseSVG from '@plone/components/icons/close.svg?react';
-import ArrowRightSVG from '@plone/components/icons/arrow-right.svg?react';
+import { TextField, Link, Button } from '@plone/quanta';
+import CloseSVG from '@plone/icons/svg/close.svg?react';
+import ArrowRightSVG from '@plone/icons/svg/arrow-right.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import { useTranslation } from 'react-i18next';
 import type { RootLoader } from '@plone/aurora/app/root';
@@ -35,7 +36,7 @@ export function headers() {
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
   matches,
 }) => {
-  const rootData = matches.find((match) => match.id === 'root')?.data;
+  const rootData = matches.find((match) => match.id === 'root')?.loaderData;
   const siteTitle = rootData?.site?.['plone.site_title'];
   return [
     {
@@ -92,17 +93,31 @@ export function validatePasswordMatch(
   return null;
 }
 
-type ResultField = 'identifier' | 'newPassword' | 'confirmPassword' | 'form';
+type ResetPasswordMode = 'request' | 'set';
 
 type ResetPasswordActionResult =
-  | { ok: true; mode: 'request' | 'set' }
+  | { ok: true; mode: ResetPasswordMode }
   | {
       ok: false;
-      mode: 'request' | 'set';
-      field: ResultField;
+      mode: ResetPasswordMode;
       code: string;
       params?: Record<string, number | string>;
     };
+
+// plone.restapi answers 403 for an unknown or expired token, and 400 with the
+// "Invalid password" type when the password policy rejects the new password.
+function setPasswordFailure(error: any): NonNullable<ValidationFailure> {
+  const status = Number(error?.status) || 500;
+  if (status >= 500) return { code: 'serverError' };
+  const ploneError = error?.data?.error;
+  if (status === 400 && ploneError?.type === 'Invalid password') {
+    return {
+      code: 'passwordRejected',
+      params: { message: String(ploneError.message ?? '') },
+    };
+  }
+  return { code: 'setFailed' };
+}
 
 export async function action({
   request,
@@ -110,218 +125,56 @@ export async function action({
 }: ActionFunctionArgs<RouterContextProvider>) {
   const cli = context.get(ploneClientContext);
   const formData = await request.formData();
-  const mode = String(formData.get('mode') || 'request');
+  const mode: ResetPasswordMode =
+    formData.get('mode') === 'set' ? 'set' : 'request';
   const id = String(formData.get('usernameOrEmail') || '').trim();
+
+  const fail = (failure: NonNullable<ValidationFailure>) =>
+    ({ ok: false, mode, ...failure }) satisfies ResetPasswordActionResult;
+
+  const idError = validateIdentifier(id);
+  if (idError) return fail(idError);
+
+  // The id becomes a path segment of @users/{id}/reset-password.
+  const encodedId = encodeURIComponent(id);
 
   if (mode === 'set') {
     const reset_token = String(formData.get('token') || '');
     const new_password = String(formData.get('new_password') || '');
     const confirm = String(formData.get('confirm_password') || '');
 
-    const idError = validateIdentifier(id);
-    if (idError) {
-      return {
-        ok: false,
-        mode: 'set',
-        field: 'identifier',
-        ...idError,
-      } satisfies ResetPasswordActionResult;
-    }
-    if (!reset_token) {
-      return {
-        ok: false,
-        mode: 'set',
-        field: 'form',
-        code: 'setFailed',
-      } satisfies ResetPasswordActionResult;
-    }
+    if (!reset_token) return fail({ code: 'setFailed' });
     const passwordError = validatePassword(new_password);
-    if (passwordError) {
-      return {
-        ok: false,
-        mode: 'set',
-        field: 'newPassword',
-        ...passwordError,
-      } satisfies ResetPasswordActionResult;
-    }
+    if (passwordError) return fail(passwordError);
     const matchError = validatePasswordMatch(new_password, confirm);
-    if (matchError) {
-      return {
-        ok: false,
-        mode: 'set',
-        field: 'confirmPassword',
-        ...matchError,
-      } satisfies ResetPasswordActionResult;
-    }
+    if (matchError) return fail(matchError);
 
     try {
       await cli.resetPasswordWithToken({
-        id,
+        id: encodedId,
         data: { reset_token, new_password },
       });
-      return { ok: true, mode: 'set' } satisfies ResetPasswordActionResult;
+      return { ok: true, mode } satisfies ResetPasswordActionResult;
     } catch (error: any) {
-      const status = Number(error?.status) || 500;
-      return {
-        ok: false,
-        mode: 'set',
-        field: 'form',
-        code: status >= 500 ? 'serverError' : 'setFailed',
-      } satisfies ResetPasswordActionResult;
+      return fail(setPasswordFailure(error));
     }
   }
 
-  if (!id) {
-    return { ok: true, mode: 'request' } satisfies ResetPasswordActionResult;
-  }
   try {
-    await cli.resetPassword({ id });
-    return { ok: true, mode: 'request' } satisfies ResetPasswordActionResult;
+    await cli.resetPassword({ id: encodedId });
   } catch (error: any) {
+    // Any 4xx is reported as success so the response does not reveal
+    // whether an account exists.
     const status = Number(error?.status) || 500;
-    if (status >= 500) {
-      return {
-        ok: false,
-        mode: 'request',
-        field: 'form',
-        code: 'serverError',
-      } satisfies ResetPasswordActionResult;
-    }
-    return { ok: true, mode: 'request' } satisfies ResetPasswordActionResult;
+    if (status >= 500) return fail({ code: 'serverError' });
   }
+  return { ok: true, mode } satisfies ResetPasswordActionResult;
 }
 
-export default function ResetPassword() {
+function ResetPasswordLayout({ children }: { children: ReactNode }) {
   const { content } = useLoaderData<typeof loader>();
-  const actionResult = useActionData<typeof action>() as
-    | ResetPasswordActionResult
-    | undefined;
   const location = useLocation();
-  const params = useParams();
   const { t } = useTranslation();
-
-  const token = params.token ?? '';
-  const hasToken = token.length > 0;
-
-  const [newPassword, setNewPassword] = useState('');
-
-  const succeeded = actionResult?.ok === true;
-
-  const successHeadingRef = useRef<HTMLHeadingElement>(null);
-  useEffect(() => {
-    if (succeeded) successHeadingRef.current?.focus();
-  }, [succeeded]);
-
-  const translateFailure = (
-    failure: Extract<ResetPasswordActionResult, { ok: false }>,
-  ) =>
-    t(`cmsui.auth.resetPassword.errors.${failure.code}`, failure.params) ??
-    undefined;
-
-  const fieldError = (field: ResultField): string | undefined =>
-    actionResult && !actionResult.ok && actionResult.field === field
-      ? translateFailure(actionResult)
-      : undefined;
-
-  const formError = fieldError('form');
-
-  const runValidator =
-    (validator: (value: string) => ValidationFailure) =>
-    (value: string): string | null => {
-      const failure = validator(value);
-      return failure
-        ? t(`cmsui.auth.resetPassword.errors.${failure.code}`, failure.params)
-        : null;
-    };
-
-  const identifierVariant = USE_EMAIL_AS_LOGIN ? 'WithEmail' : '';
-  const identifierLabel = USE_EMAIL_AS_LOGIN
-    ? t('cmsui.auth.usernameOrEmail')
-    : t('cmsui.auth.username');
-
-  const heading = hasToken
-    ? t('cmsui.auth.resetPassword.setTitle')
-    : t('cmsui.auth.resetPassword.requestTitle');
-
-  const description = hasToken
-    ? t('cmsui.auth.resetPassword.setDescription')
-    : t(`cmsui.auth.resetPassword.requestDescription${identifierVariant}`);
-
-  if (succeeded) {
-    const isRequest = actionResult!.mode === 'request';
-    const successTitle = isRequest
-      ? t('cmsui.auth.resetPassword.requestSuccessTitle')
-      : t('cmsui.auth.resetPassword.setSuccessTitle');
-    const successBody = isRequest
-      ? t(`cmsui.auth.resetPassword.requestSuccessBody${identifierVariant}`)
-      : t('cmsui.auth.resetPassword.setSuccessBody');
-
-    return (
-      <main
-        className={`
-          grid min-h-screen
-          lg:has-[>*:nth-child(2)]:grid-cols-[minmax(50%,1fr)_auto]
-        `}
-      >
-        <div className="flex h-full flex-col justify-center p-15">
-          <div className="relative flex h-full flex-1 flex-col items-center justify-center">
-            <Link
-              className="absolute top-0 right-0"
-              variant="icon"
-              accent
-              size="L"
-              href="/"
-              aria-label={t('cmsui.auth.returnToHome')}
-              asButton
-            >
-              <CloseSVG />
-            </Link>
-            <div
-              className={`
-                flex flex-col items-center
-                sm:mx-auto sm:w-full sm:max-w-md
-              `}
-              role="status"
-              aria-live="polite"
-            >
-              <SlotRenderer
-                name="loginLogo"
-                content={content}
-                location={location}
-              />
-              <h2
-                ref={successHeadingRef}
-                tabIndex={-1}
-                className={`
-                  mt-6 text-center text-2xl leading-8 font-bold tracking-wide text-gray-900
-                `}
-              >
-                {successTitle}
-              </h2>
-              <p className="mt-4 text-center text-sm text-quanta-iron">
-                {successBody}
-              </p>
-              <div className="mt-6">
-                <Link href="/login">{t('cmsui.auth.signIn')}</Link>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div
-          className={`
-            hidden
-            lg:block
-          `}
-        >
-          <SlotRenderer
-            name="loginHero"
-            content={content}
-            location={location}
-          />
-        </div>
-      </main>
-    );
-  }
 
   return (
     <main
@@ -343,134 +196,7 @@ export default function ResetPassword() {
           >
             <CloseSVG />
           </Link>
-          <div
-            className={`
-              flex flex-col items-center
-              sm:mx-auto sm:w-full sm:max-w-md
-            `}
-          >
-            <SlotRenderer
-              name="loginLogo"
-              content={content}
-              location={location}
-            />
-            <h2
-              id="reset-password-header"
-              className={`mt-6 text-center text-2xl leading-8 font-bold tracking-wide text-gray-900`}
-            >
-              {heading}
-            </h2>
-            <p className="mt-3 text-center text-sm text-quanta-iron">
-              {description}
-            </p>
-          </div>
-          <div className="mx-auto mt-11 w-full max-w-90">
-            <div className="bg-quanta-air">
-              <Form
-                className="space-y-6"
-                method="post"
-                aria-labelledby="reset-password-header"
-              >
-                <input
-                  type="hidden"
-                  name="mode"
-                  value={hasToken ? 'set' : 'request'}
-                />
-                {hasToken && <input type="hidden" name="token" value={token} />}
-                {formError && (
-                  <div
-                    role="alert"
-                    className={`rounded border border-red-200 bg-red-50 p-3 text-sm text-red-800`}
-                  >
-                    {formError}
-                  </div>
-                )}
-                <TextField
-                  label={identifierLabel}
-                  name="usernameOrEmail"
-                  autoComplete="username"
-                  isRequired
-                  validate={runValidator(validateIdentifier)}
-                  isInvalid={fieldError('identifier') ? true : undefined}
-                  errorMessage={fieldError('identifier')}
-                  description={
-                    hasToken
-                      ? t(
-                          `cmsui.auth.resetPassword.setIdentifierHint${identifierVariant}`,
-                        )
-                      : undefined
-                  }
-                />
-                {hasToken && (
-                  <>
-                    <TextField
-                      label={t('cmsui.auth.resetPassword.newPassword')}
-                      name="new_password"
-                      type="password"
-                      autoComplete="new-password"
-                      isRequired
-                      minLength={MIN_PASSWORD_LENGTH}
-                      value={newPassword}
-                      onChange={setNewPassword}
-                      validate={runValidator(validatePassword)}
-                      isInvalid={fieldError('newPassword') ? true : undefined}
-                      errorMessage={fieldError('newPassword')}
-                      description={t('cmsui.auth.resetPassword.passwordHint', {
-                        min: MIN_PASSWORD_LENGTH,
-                      })}
-                    />
-                    <TextField
-                      label={t('cmsui.auth.resetPassword.confirmPassword')}
-                      name="confirm_password"
-                      type="password"
-                      autoComplete="new-password"
-                      isRequired
-                      validate={(value) => {
-                        const failure = validatePasswordMatch(
-                          newPassword,
-                          value,
-                        );
-                        return failure
-                          ? t(
-                              `cmsui.auth.resetPassword.errors.${failure.code}`,
-                              failure.params,
-                            )
-                          : null;
-                      }}
-                      isInvalid={
-                        fieldError('confirmPassword') ? true : undefined
-                      }
-                      errorMessage={fieldError('confirmPassword')}
-                    />
-                  </>
-                )}
-                <div
-                  className={
-                    hasToken
-                      ? 'flex items-center justify-end'
-                      : 'flex items-center justify-between'
-                  }
-                >
-                  {!hasToken && (
-                    <Link href="/login">{t('cmsui.auth.signIn')}</Link>
-                  )}
-                  <Button
-                    variant="primary"
-                    accent
-                    size="L"
-                    type="submit"
-                    aria-label={
-                      hasToken
-                        ? t('cmsui.auth.resetPassword.setSubmit')
-                        : t('cmsui.auth.resetPassword.requestSubmit')
-                    }
-                  >
-                    <ArrowRightSVG />
-                  </Button>
-                </div>
-              </Form>
-            </div>
-          </div>
+          {children}
         </div>
       </div>
       <div
@@ -482,5 +208,210 @@ export default function ResetPassword() {
         <SlotRenderer name="loginHero" content={content} location={location} />
       </div>
     </main>
+  );
+}
+
+export default function ResetPassword() {
+  const { content } = useLoaderData<typeof loader>();
+  const actionResult = useActionData<typeof action>() as
+    ResetPasswordActionResult | undefined;
+  const location = useLocation();
+  const params = useParams();
+  const [searchParams] = useSearchParams();
+  const { t } = useTranslation();
+
+  const token = params.token ?? '';
+  const hasToken = token.length > 0;
+  // Plone's reset email links to /passwordreset/<token>?userid=<id>.
+  const userIdFromLink = searchParams.get('userid') ?? undefined;
+
+  const [newPassword, setNewPassword] = useState('');
+
+  const succeeded = actionResult?.ok === true;
+
+  const successHeadingRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    if (succeeded) successHeadingRef.current?.focus();
+  }, [succeeded]);
+
+  const translateFailure = (failure: NonNullable<ValidationFailure>) =>
+    t(`cmsui.auth.resetPassword.errors.${failure.code}`, failure.params);
+
+  // Server errors are plain markup, not field validity: React Aria would keep
+  // a server-set invalid state as custom validity and block every resubmit.
+  const formError =
+    actionResult && !actionResult.ok ? translateFailure(actionResult) : null;
+
+  const runValidator =
+    (validator: (value: string) => ValidationFailure) =>
+    (value: string): string | null => {
+      const failure = validator(value);
+      return failure ? translateFailure(failure) : null;
+    };
+
+  const identifierVariant = USE_EMAIL_AS_LOGIN ? 'WithEmail' : '';
+  const identifierLabel = USE_EMAIL_AS_LOGIN
+    ? t('cmsui.auth.usernameOrEmail')
+    : t('cmsui.auth.username');
+
+  if (succeeded) {
+    const isRequest = actionResult.mode === 'request';
+    const successTitle = isRequest
+      ? t('cmsui.auth.resetPassword.requestSuccessTitle')
+      : t('cmsui.auth.resetPassword.setSuccessTitle');
+    const successBody = isRequest
+      ? t(`cmsui.auth.resetPassword.requestSuccessBody${identifierVariant}`)
+      : t('cmsui.auth.resetPassword.setSuccessBody');
+
+    return (
+      <ResetPasswordLayout>
+        <div
+          className={`
+            flex flex-col items-center
+            sm:mx-auto sm:w-full sm:max-w-md
+          `}
+          role="status"
+          aria-live="polite"
+        >
+          <SlotRenderer
+            name="loginLogo"
+            content={content}
+            location={location}
+          />
+          <h2
+            ref={successHeadingRef}
+            tabIndex={-1}
+            className={`mt-6 text-center text-2xl leading-8 font-bold tracking-wide text-gray-900`}
+          >
+            {successTitle}
+          </h2>
+          <p className="mt-4 text-center text-sm text-quanta-iron">
+            {successBody}
+          </p>
+          <div className="mt-6">
+            <Link href="/login">{t('cmsui.auth.signIn')}</Link>
+          </div>
+        </div>
+      </ResetPasswordLayout>
+    );
+  }
+
+  const heading = hasToken
+    ? t('cmsui.auth.resetPassword.setTitle')
+    : t('cmsui.auth.resetPassword.requestTitle');
+
+  const description = hasToken
+    ? t('cmsui.auth.resetPassword.setDescription')
+    : t(`cmsui.auth.resetPassword.requestDescription${identifierVariant}`);
+
+  return (
+    <ResetPasswordLayout>
+      <div
+        className={`
+          flex flex-col items-center
+          sm:mx-auto sm:w-full sm:max-w-md
+        `}
+      >
+        <SlotRenderer name="loginLogo" content={content} location={location} />
+        <h2
+          id="reset-password-header"
+          className={`mt-6 text-center text-2xl leading-8 font-bold tracking-wide text-gray-900`}
+        >
+          {heading}
+        </h2>
+        <p className="mt-3 text-center text-sm text-quanta-iron">
+          {description}
+        </p>
+      </div>
+      <div className="mx-auto mt-11 w-full max-w-90">
+        <div className="bg-quanta-air">
+          <Form
+            className="space-y-6"
+            method="post"
+            aria-labelledby="reset-password-header"
+          >
+            <input
+              type="hidden"
+              name="mode"
+              value={hasToken ? 'set' : 'request'}
+            />
+            {hasToken && <input type="hidden" name="token" value={token} />}
+            {formError && (
+              <div
+                role="alert"
+                className={`rounded border border-red-200 bg-red-50 p-3 text-sm text-red-800`}
+              >
+                {formError}
+              </div>
+            )}
+            <TextField
+              label={identifierLabel}
+              name="usernameOrEmail"
+              autoComplete="username"
+              isRequired
+              defaultValue={hasToken ? userIdFromLink : undefined}
+              validate={runValidator(validateIdentifier)}
+              description={
+                hasToken
+                  ? t(
+                      `cmsui.auth.resetPassword.setIdentifierHint${identifierVariant}`,
+                    )
+                  : undefined
+              }
+            />
+            {hasToken && (
+              <>
+                <TextField
+                  label={t('cmsui.auth.resetPassword.newPassword')}
+                  name="new_password"
+                  type="password"
+                  autoComplete="new-password"
+                  isRequired
+                  minLength={MIN_PASSWORD_LENGTH}
+                  value={newPassword}
+                  onChange={setNewPassword}
+                  validate={runValidator(validatePassword)}
+                  description={t('cmsui.auth.resetPassword.passwordHint', {
+                    min: MIN_PASSWORD_LENGTH,
+                  })}
+                />
+                <TextField
+                  label={t('cmsui.auth.resetPassword.confirmPassword')}
+                  name="confirm_password"
+                  type="password"
+                  autoComplete="new-password"
+                  isRequired
+                  validate={runValidator((value: string) =>
+                    validatePasswordMatch(newPassword, value),
+                  )}
+                />
+              </>
+            )}
+            <div
+              className={
+                hasToken
+                  ? 'flex items-center justify-end'
+                  : 'flex items-center justify-between'
+              }
+            >
+              {!hasToken && <Link href="/login">{t('cmsui.auth.signIn')}</Link>}
+              <Button
+                variant="primary"
+                accent
+                size="L"
+                type="submit"
+                aria-label={
+                  hasToken
+                    ? t('cmsui.auth.resetPassword.setSubmit')
+                    : t('cmsui.auth.resetPassword.requestSubmit')
+                }
+              >
+                <ArrowRightSVG />
+              </Button>
+            </div>
+          </Form>
+        </div>
+      </div>
+    </ResetPasswordLayout>
   );
 }

@@ -137,6 +137,7 @@
           "usernameNoSpaces": "Il nome utente non può contenere spazi.",
           "passwordTooShort": "La password deve contenere almeno {{min}} caratteri.",
           "passwordsDoNotMatch": "Le password non coincidono.",
+          "passwordRejected": "La nuova password non è stata accettata: {{message}}",
           "setFailed": "Non è stato possibile impostare la tua nuova password. Il link potrebbe essere non valido o scaduto. Richiedine uno nuovo.",
           "serverError": "Si è verificato un errore dal nostro lato. Riprova tra qualche istante."
         }

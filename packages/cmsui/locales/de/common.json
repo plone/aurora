@@ -99,6 +99,7 @@
           "usernameNoSpaces": "Der Benutzername darf keine Leerzeichen enthalten.",
           "passwordTooShort": "Das Passwort muss mindestens {{min}} Zeichen lang sein.",
           "passwordsDoNotMatch": "Die Passwörter stimmen nicht überein.",
+          "passwordRejected": "Ihr neues Passwort wurde nicht akzeptiert: {{message}}",
           "setFailed": "Ihr neues Passwort konnte nicht gesetzt werden. Möglicherweise ist Ihr Link ungültig oder abgelaufen. Bitte fordern Sie einen neuen an.",
           "serverError": "Auf unserer Seite ist ein Fehler aufgetreten. Bitte versuchen Sie es in Kürze erneut."
         }
