@@ -25,6 +25,5 @@ add-on-driven-configuration
 cookieplone-frontend-add-on
 routing
 slots
-search
 unified-editor
 ```
