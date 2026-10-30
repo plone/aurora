@@ -5,7 +5,7 @@ This file applies only to `packages/controlpanels` and its subdirectories.
 ## What This Package Is
 
 - `@plone/controlpanels` holds the control panels that need their own screens, starting with the content types control panel (plone/aurora#269).
-- **The same screens run in Plone Aurora and in Volto, unchanged.** Every rule below follows from that.
+- **The same screens run in Plone Aurora and in Volto, unchanged.** Every rule below follows from that, and `docs/conceptual-guides/packages-for-volto-and-aurora.md` explains the pattern, which `@plone/plate` follows too.
 - The generic, schema-driven control panel form stays in `@plone/cmsui`.
 
 > [!WARNING]
@@ -13,7 +13,7 @@ This file applies only to `packages/controlpanels` and its subdirectories.
 
 ## Package Model
 
-- `src/provider/`: `ControlPanelsProvider` connects the screens to the app: its router (`navigate`, `useHref`, through the react-aria-components `RouterProvider`), its translations (`translate`) and its notifications (`notify`).
+- `src/provider/`: `ControlPanelsProvider` connects the screens to the app: its router (`navigate`, `useHref`, through the react-aria-components `RouterProvider`), its translations (`t`, react-i18next's shape, as in `@plone/plate`) and its notifications (`notify`).
 - `src/content-types/`: the content types control panel.
   - `types.ts`: the data model the screens show and edit. It is not a backend payload.
   - `driver.tsx`: the `ContentTypesDriver` interface, its `capabilities`, and `ContentTypesDriverProvider`.
@@ -32,7 +32,8 @@ This file applies only to `packages/controlpanels` and its subdirectories.
 ## Editing Rules
 
 - Components get their data from a driver and their app services from the provider. They never fetch, route or translate by themselves.
-- Text goes through `useTranslate()` with messages declared by `defineMessages`. Placeholders use single braces: `{count}`.
+- Text goes through `useTranslate()` with messages declared by `defineMessages`, with ids under `controlpanels.`. Placeholders use i18next's double braces: `{{count}}`.
+- After adding or changing messages, run `pnpm i18n` to update `src/locales/en/common.json`, and add the other languages' translations when you can.
 - Anything a backend may not support sits behind a capability. Hide it or disable it with an explanation when the capability is off, and cover both cases in stories.
 - Style with Quanta components and Tailwind classes only. Don't assume a CSS reset: Volto has none of Tailwind's.
 - Every new component needs a Storybook story using the mock driver, under `Control panels/…`.

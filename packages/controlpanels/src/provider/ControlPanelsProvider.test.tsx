@@ -12,7 +12,7 @@ function Probe() {
   return (
     <button onClick={() => notify({ title: 'Saved' })}>
       {translate(
-        { id: 'probe', defaultMessage: 'Save {title}' },
+        { id: 'probe', defaultMessage: 'Save {{title}}' },
         { title: 'Event' },
       )}
     </button>
@@ -28,10 +28,7 @@ describe('ControlPanelsProvider', () => {
   it('uses the app translations and notifications', () => {
     const notify = vi.fn();
     render(
-      <ControlPanelsProvider
-        translate={(message) => `[${message.id}]`}
-        notify={notify}
-      >
+      <ControlPanelsProvider t={(key) => `[${key}]`} notify={notify}>
         <Probe />
       </ControlPanelsProvider>,
     );
