@@ -51,9 +51,10 @@ export interface ContentTypesCapabilities {
 /**
  * How the content types control panel reads and writes its data.
  *
- * Every framework provides its own driver: Aurora calls its resource routes,
- * Volto dispatches its redux actions, tests and stories use the mock driver.
- * Methods marked optional exist only when the matching capability is on.
+ * The screens never call a backend themselves: every app passes a driver
+ * that reads and writes through its own access to the backend, and tests and
+ * stories use the mock driver. Methods marked optional exist only when the
+ * matching capability is on.
  */
 export interface ContentTypesDriver {
   capabilities: ContentTypesCapabilities;
