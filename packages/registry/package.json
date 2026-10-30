@@ -9,17 +9,18 @@
   ],
   "funding": "https://github.com/sponsors/plone",
   "license": "MIT",
-  "version": "4.0.0-alpha.0",
+  "version": "4.0.0-alpha.7",
   "repository": {
     "type": "git",
-    "url": "https://github.com/plone/volto.git"
+    "url": "https://github.com/plone/aurora.git"
   },
   "bugs": {
-    "url": "https://github.com/plone/volto/issues"
+    "url": "https://github.com/plone/aurora/issues"
   },
   "homepage": "https://plone.org",
   "keywords": [
     "volto",
+    "aurora",
     "plone",
     "plone6",
     "react",
@@ -36,7 +37,8 @@
     "dist",
     "bin",
     "README.md",
-    "vite-plugin.*"
+    "vite-plugin.*",
+    "virtual"
   ],
   "bin": {
     "init-loaders": "./bin/init-loaders.js"
@@ -51,6 +53,10 @@
     "./create-addons-loader": {
       "import": "./dist/addon-registry/create-addons-loader.js",
       "default": "./dist/addon-registry/create-addons-loader.cjs"
+    },
+    "./create-blocks-docs-loader": {
+      "import": "./dist/addon-registry/create-blocks-docs-loader.js",
+      "default": "./dist/addon-registry/create-blocks-docs-loader.cjs"
     },
     "./create-addons-loader-server": {
       "import": "./dist/addon-registry/create-addons-loader-server.js",
@@ -68,12 +74,28 @@
       "import": "./dist/addon-registry/create-addons-locales-loader.js",
       "default": "./dist/addon-registry/create-addons-locales-loader.cjs"
     },
+    "./create-plate-plugins-loader": {
+      "import": "./dist/addon-registry/create-plate-plugins-loader.js",
+      "default": "./dist/addon-registry/create-plate-plugins-loader.cjs"
+    },
     "./vite-plugin": {
       "import": "./vite-plugin.js",
       "types": "./vite-plugin.d.ts"
     },
     "./addons-loader": {
       "types": "./vite-plugin.d.ts"
+    },
+    "./blocks-docs": {
+      "types": "./virtual/blocks-docs.d.ts",
+      "default": "./virtual/blocks-docs.js"
+    },
+    "./plate-editor": {
+      "types": "./virtual/plate-plugins.d.ts",
+      "default": "./virtual/plate-plugins.js"
+    },
+    "./plate-renderer": {
+      "types": "./virtual/plate-plugins.d.ts",
+      "default": "./virtual/plate-plugins.js"
     },
     ".": {
       "import": "./dist/index.js",
@@ -87,10 +109,10 @@
     "check:ts": "tsc --project tsconfig.json",
     "test": "vitest",
     "test:debug": "vitest --inspect-brk --no-file-parallelism registry",
-    "dry-release": "release-it --dry-run",
-    "release": "release-it",
-    "release-major-alpha": "release-it major --preRelease=alpha",
-    "release-alpha": "release-it --preRelease=alpha",
+    "dry-release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --dry-run",
+    "release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it",
+    "release-major-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it major --preRelease=alpha",
+    "release-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --preRelease=alpha",
     "prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx}'",
     "lint:fix": "eslint --max-warnings=0 './**/*.{js,jsx,ts,tsx}' --fix --no-error-on-unmatched-pattern",
     "stylelint:fix": "sh -c 'if [ -f .stylelintrc ] || [ -f .stylelintrc.json ] || [ -f .stylelintrc.js ] || [ -f .stylelintrc.cjs ] || [ -f stylelint.config.js ] || [ -f stylelint.config.cjs ] || [ -f stylelint.config.mjs ]; then stylelint '''./**/*.{css,scss,less}''' --fix --allow-empty-input; else echo \"No local stylelint config, skipping\"; fi'",

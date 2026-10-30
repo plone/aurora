@@ -68,7 +68,7 @@ The most important requirement is to include a submit button, unless you intenti
 
 ```tsx
 import type { ConfigType } from '@plone/registry';
-import { Button, Link } from '@plone/components/quanta';
+import { Button, Link } from '@plone/quanta';
 
 function MyLoginActions() {
   return (

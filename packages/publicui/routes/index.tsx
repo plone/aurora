@@ -8,6 +8,7 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useFetcher,
   useLocation,
   useMatches,
   useNavigate,
@@ -22,11 +23,18 @@ import {
   Link,
   RouterProvider as RACRouterProvider,
 } from 'react-aria-components';
-import i18next from '@plone/aurora/app/i18next.server';
-import { ploneContentContext } from '@plone/aurora/app/middleware.server';
+import { getLocale } from '@plone/aurora/app/i18next.server';
+import {
+  ploneContentContext,
+  ploneClientContext,
+  ploneSiteContext,
+  ploneUserContext,
+} from '@plone/aurora/app/middleware.server';
+import { PersonalTools } from '@plone/layout/components/Toolbar/PersonalTools/PersonalTools';
+import { MoreMenu } from '@plone/layout/components/Toolbar/MoreMenu/MoreMenu';
 import type { RootLoader } from '@plone/aurora/app/root';
-import { FolderIcon } from '@plone/components/Icons';
-import Pencil from '@plone/components/icons/pencil.svg?react';
+import { FolderIcon } from '@plone/icons';
+import Pencil from '@plone/icons/svg/pencil.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
 import { shouldShowToolbar } from '@plone/layout/helpers';
@@ -36,11 +44,13 @@ import config from '@plone/registry';
 
 import styles from '@plone/layout/slots/App/App.module.css';
 import stylesheet from '@plone/aurora/.plone/publicui.css?url';
+import { ContentTypesMenu } from '../components/Toolbar/ContentTypesMenu';
 
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
   matches,
 }) => {
-  const content = matches.find((match) => match.id === 'root')?.data?.content;
+  const content = matches.find((match) => match.id === 'root')?.loaderData
+    ?.content;
   if (!content) {
     return [];
   }
@@ -78,13 +88,43 @@ export const links: LinksFunction = () => [
 ];
 
 export async function loader({
-  request,
   context,
 }: LoaderFunctionArgs<RouterContextProvider>) {
-  const locale = await i18next.getLocale(request);
+  const locale = getLocale(context);
   const content = context.get(ploneContentContext);
+  const user = context.get(ploneUserContext);
+  const multilingual = !!context.get(ploneSiteContext)?.features?.multilingual;
+  const canEdit = shouldShowToolbar(content);
+  const cli = context.get(ploneClientContext);
+  const [workflowResult, typeResult] =
+    canEdit && (content['@type'] as string) !== 'Plone Site'
+      ? await Promise.all([
+          cli.getWorkflow({ path: content['@id'] }).catch(() => null),
+          cli.getType({ type: content['@type'] }).catch(() => null),
+        ])
+      : [null, null];
+  const workflow = workflowResult?.data as unknown as
+    | {
+        state?: { id: string; title: string };
+        transitions?: { '@id': string; title: string }[];
+      }
+    | undefined;
+  const layouts = (typeResult?.data.layouts ?? []).filter(
+    (layout) => layout in config.views.layoutViews,
+  );
   return {
     content,
+    moreData: { workflow, layouts },
+    multilingual,
+    user: user && {
+      id: user.id,
+      username: user.username,
+      fullname: user.fullname,
+      email: user.email,
+      portrait: (user.portrait as string | null)
+        ? `/@portrait/${encodeURIComponent(user.id)}`
+        : null,
+    },
     cssLayers: config.settings.cssLayers,
     locale,
   };
@@ -92,7 +132,9 @@ export async function loader({
 
 export default function Index() {
   const location = useLocation();
-  const { content, locale } = useLoaderData<typeof loader>();
+  const { content, locale, user, moreData, multilingual } =
+    useLoaderData<typeof loader>();
+  const moreFetcher = useFetcher();
   const { i18n } = useTranslation();
   const navigate = useNavigate();
   const matches = useMatches() as UIMatch<unknown, { bodyClass: string }>[];
@@ -101,6 +143,11 @@ export default function Index() {
     .map((match) => match.handle?.bodyClass);
   const contentLanguage = (content.language as { token?: string } | undefined)
     ?.token;
+
+  const hasContent =
+    matches.filter(
+      (match) => match.id === 'content' || match.id === 'content-index',
+    ).length > 0;
 
   const showToolbar = shouldShowToolbar(content);
 
@@ -119,37 +166,89 @@ export default function Index() {
         })}
       >
         {/* We pre-define here the @layer before tailwind does, adding our own layers in a React 19 managed <link> tag */}
-        <link rel="stylesheet" href="/layers.css" precedence="first" />
+        <link rel="stylesheet" href="/@layers.css" precedence="first" />
         <RACRouterProvider navigate={navigate}>
           <PluggablesProvider>
-            <Plug
-              pluggable="toolbar-top"
-              id="button-edit"
-              // @ts-expect-error this is currently typed as never[]
-              dependencies={[location.pathname]}
-            >
-              <Link
-                className="primary"
-                aria-label="Edit"
-                href={`/@@edit${location.pathname.replace(/^\/$/, '')}`}
+            {showToolbar && (
+              <Plug
+                pluggable="toolbar-bottom"
+                id="personal-tools"
+                // @ts-expect-error Plug's JavaScript declaration infers never[]
+                dependencies={[user, content?.['@components']?.actions]}
               >
-                <Pencil />
-              </Link>
-            </Plug>
-            <Plug
-              pluggable="toolbar-top"
-              id="button-contents"
-              // @ts-expect-error this is currently typed as never[]
-              dependencies={[location.pathname]}
-            >
-              <Link
-                className="secondary"
-                aria-label="Contents"
-                href={`/@@contents${location.pathname.replace(/^\/$/, '')}`}
-              >
-                <FolderIcon />
-              </Link>
-            </Plug>
+                <PersonalTools
+                  user={user}
+                  actions={content?.['@components']?.actions}
+                />
+              </Plug>
+            )}
+            {hasContent && (
+              <>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-edit"
+                  // @ts-expect-error this is currently typed as never[]
+                  dependencies={[location.pathname]}
+                >
+                  <Link
+                    className="primary"
+                    aria-label="Edit"
+                    href={`/@@edit${location.pathname.replace(/^\/$/, '')}`}
+                  >
+                    <Pencil />
+                  </Link>
+                </Plug>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-contents"
+                  // @ts-expect-error this is currently typed as never[]
+                  dependencies={[location.pathname]}
+                >
+                  <Link
+                    className="secondary"
+                    aria-label="Contents"
+                    href={`/@@contents${location.pathname.replace(/^\/$/, '')}`}
+                  >
+                    <FolderIcon />
+                  </Link>
+                </Plug>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-add"
+                  // @ts-expect-error this is currently typed as never[]
+                  dependencies={[location.pathname]}
+                >
+                  <ContentTypesMenu content={content} />
+                </Plug>
+                <Plug
+                  pluggable="toolbar-top"
+                  id="button-more"
+                  dependencies={
+                    [
+                      content,
+                      moreData,
+                      multilingual,
+                      location.pathname,
+                    ] as never[]
+                  }
+                >
+                  <MoreMenu
+                    content={content}
+                    path={location.pathname}
+                    actions={content?.['@components']?.actions}
+                    workflow={moreData.workflow}
+                    layouts={moreData.layouts}
+                    multilingual={multilingual}
+                    onChange={(operation, value) =>
+                      moreFetcher.submit(
+                        { path: location.pathname, operation, value },
+                        { method: 'post', action: '/@more-menu' },
+                      )
+                    }
+                  />
+                </Plug>
+              </>
+            )}
             {showToolbar && <Toolbar />}
             <div id="main">
               <div className={clsx(styles.app, 'app-slot')}>
@@ -160,7 +259,7 @@ export default function Index() {
                     location={location}
                   />
                 </header>
-                <div className="content-area">
+                <div className="main-slot">
                   <Outlet />
                 </div>
                 <footer id="footer">

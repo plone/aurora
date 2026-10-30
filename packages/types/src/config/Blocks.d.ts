@@ -11,6 +11,8 @@ export interface BlocksConfig {
   requiredBlocks: string[];
   initialBlocks: Record<string, string[]> | Record<string, object[]>;
   initialBlocksFocus: Record<string, string>;
+  alignments?: StyleDefinition[];
+  sizes?: StyleDefinition[];
   themes: StyleDefinition[];
   widths: StyleDefinition[];
 }
@@ -146,10 +148,28 @@ export interface BlockConfigBase {
   // TODO: Improve extensions shape
   extensions?: Record<string, BlockExtension>;
   blocksConfig?: Partial<BlocksConfigData>;
-  blockWidth?: BlockWidthConfig;
+  defaultBlockWidth?: string;
+  /**
+   * Tailors the block's documentation returned by the `@blocks-schema`
+   * endpoint. The documentation itself is a `*.block.md` file next to the
+   * block; this function receives its Markdown and returns the text to use.
+   * Only needed for special cases.
+   */
+  docs?: (args: BlockDocsArgs) => string;
 }
 
+export type BlockDocsArgs = {
+  blockConfig: BlockConfigBase;
+  intl?: IntlShape;
+  /**
+   * The Markdown of the block's `*.block.md` file, with its placeholders
+   * filled in, or an empty string if there is none.
+   */
+  markdown: string;
+};
+
 export interface PlateBlockConfigBase {
+  category?: string;
   blockWidth?: BlockWidthConfig;
 }
 
@@ -174,6 +194,11 @@ export interface BlockExtension {
   render?: React.ComponentType<any>;
   view?: React.ComponentType<any>;
   fullobjects?: boolean;
+  /**
+   * Enhances the block's schema while this variation is selected. It's
+   * applied before the block's own `schemaEnhancer`.
+   */
+  schemaEnhancer?: (args: SchemaEnhancerArgs) => JSONSchema;
 }
 
 export interface SlateBlock extends BlockConfigBase {

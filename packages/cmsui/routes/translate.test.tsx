@@ -67,8 +67,8 @@ function loaderArgs(context: RouterContextProvider, url: string) {
     request,
     params: { '*': 'en/my-page' },
     context,
-    unstable_pattern: '/@@translate/*',
-    unstable_url: new URL(request.url),
+    pattern: '/@@translate/*',
+    url: new URL(request.url),
   };
 }
 
@@ -216,8 +216,8 @@ describe('Translate route', () => {
         request,
         params: { '*': 'en/my-page' },
         context,
-        unstable_pattern: '/@@translate/*',
-        unstable_url: new URL(request.url),
+        pattern: '/@@translate/*',
+        url: new URL(request.url),
       };
     }
 

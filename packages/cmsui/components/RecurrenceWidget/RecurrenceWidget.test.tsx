@@ -1,9 +1,11 @@
-import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { RecurrenceWidget } from './RecurrenceWidget';
 
-const Widget = RecurrenceWidget as React.ComponentType<any>;
+// The widget reads its own value from the `value` prop.
+const Widget = (props: any) => (
+  <RecurrenceWidget value={mockFormContext.recurrence} {...props} />
+);
 
 const { mockRruleStr, mockGetRruleText } = vi.hoisted(() => ({
   mockRruleStr: vi.fn(),
@@ -12,13 +14,9 @@ const { mockRruleStr, mockGetRruleText } = vi.hoisted(() => ({
 
 let mockFormContext: any = { recurrence: null };
 
-vi.mock('jotai', () => ({
-  atom: vi.fn(),
-  useAtomValue: () => mockFormContext,
-}));
-
-vi.mock('../../routes/atoms', () => ({
-  formAtom: Symbol('formAtom'),
+vi.mock('@plone/helpers', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@plone/helpers')>()),
+  useFieldValue: (name: string) => mockFormContext[name],
 }));
 
 vi.mock('./rrule', () => ({
@@ -46,15 +44,15 @@ vi.mock('../Field/Field', () => ({
   Label: ({ children }: any) => <label>{children}</label>,
 }));
 
-vi.mock('@plone/components/icons/edit.svg?react', () => ({
+vi.mock('@plone/icons/svg/edit.svg?react', () => ({
   default: () => <svg data-testid="edit-icon" />,
 }));
 
-vi.mock('@plone/components/icons/bin.svg?react', () => ({
+vi.mock('@plone/icons/svg/bin.svg?react', () => ({
   default: () => <svg data-testid="delete-icon" />,
 }));
 
-vi.mock('@plone/components/quanta', () => ({
+vi.mock('@plone/quanta', () => ({
   Button: ({ children, onClick, onPress }: any) => (
     <button onClick={onClick ?? onPress}>{children}</button>
   ),

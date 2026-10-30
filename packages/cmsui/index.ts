@@ -3,31 +3,27 @@ import installWidgets from './config/widgets';
 import installControlpanels from './config/controlpanels';
 import installRoutes from './config/routes';
 import installSlots from './config/slots';
-import { formAtom } from './routes/atoms';
-import type { BlockConfigBase } from '@plone/types';
+import installValidators from './config/validators';
+import type { BlockConfigBase, FormWidgetProps } from '@plone/types';
 
 declare module '@plone/types' {
   export interface BlocksConfigData {
     __somersault__: BlockConfigBase;
   }
+
+  // The widgets registered for the CMS UI forms follow the widget contract,
+  // so the type checker rejects a widget that doesn't take its props.
+  export interface WidgetPropsMap {
+    props: FormWidgetProps<any>;
+  }
 }
 
 export default function install(config: ConfigType) {
-  config.settings.cssLayers = [...(config.settings.cssLayers || []), 'cmsui'];
-
-  // This registers the `formAtom` so it can be accessed from all the packages
-  // via config.getUtility({ name: 'formAtom', type: 'atom' })
-  // without needing to import it directly from cmsui
-  config.registerUtility({
-    name: 'formAtom',
-    type: 'atom',
-    method: () => formAtom,
-  });
-
   installWidgets(config);
   installControlpanels(config);
   installRoutes(config);
   installSlots(config);
+  installValidators(config);
 
   return config;
 }

@@ -6,6 +6,9 @@ export default defineConfig({
     'packages/*/acceptance/tests/**/*.{spec,test}.{ts,tsx}',
     'apps/*/acceptance/tests/**/*.{spec,test}.{ts,tsx}',
   ],
+  // Ignore ephemeral git worktrees (e.g. `.codex/worktrees/*`), whose duplicate
+  // test copies would otherwise be collected and fail to resolve dependencies.
+  testIgnore: ['**/.codex/**', '**/node_modules/**'],
   outputDir: 'playwright/results',
   // Disable parallel tests to avoid conflicts creating/deleting content
   workers: 1,
@@ -18,7 +21,7 @@ export default defineConfig({
     timeout: 10_000,
   },
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.BASE_URL ?? 'http://localhost:3000',
     browserName: 'chromium',
     viewport: { width: 1280, height: 720 },
     trace: 'retain-on-failure',

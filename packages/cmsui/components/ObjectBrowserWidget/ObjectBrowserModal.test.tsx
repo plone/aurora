@@ -74,7 +74,7 @@ vi.mock('react-aria-components', () => ({
   ),
 }));
 
-vi.mock('@plone/components/quanta', () => ({
+vi.mock('@plone/quanta', () => ({
   Button: ({
     children,
     onPress,
@@ -104,7 +104,7 @@ vi.mock('@plone/components/quanta', () => ({
   ),
 }));
 
-vi.mock('@plone/components/Icons', () => ({
+vi.mock('@plone/icons', () => ({
   SearchIcon: () => <span data-testid="search-icon">🔍</span>,
   CloseIcon: () => <span data-testid="close-icon">✕</span>,
 }));

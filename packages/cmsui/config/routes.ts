@@ -6,6 +6,16 @@ export default function install(config: ConfigType) {
     file: '@plone/cmsui/routes/layout.tsx',
     children: [
       {
+        type: 'route',
+        path: '@@personal-information',
+        file: '@plone/cmsui/routes/personal-information.tsx',
+      },
+      {
+        type: 'route',
+        path: '@@personal-preferences',
+        file: '@plone/cmsui/routes/personal-preferences.tsx',
+      },
+      {
         type: 'prefix',
         path: 'login',
         children: [
@@ -62,12 +72,55 @@ export default function install(config: ConfigType) {
       },
       {
         type: 'prefix',
+        path: '@@sharing',
+        children: [
+          {
+            type: 'route',
+            path: '*',
+            file: '@plone/cmsui/routes/sharing.tsx',
+          },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@history',
+        children: [
+          { type: 'route', path: '*', file: '@plone/cmsui/routes/history.tsx' },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@aliases',
+        children: [
+          { type: 'route', path: '*', file: '@plone/cmsui/routes/aliases.tsx' },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@links-to-item',
+        children: [
+          {
+            type: 'route',
+            path: '*',
+            file: '@plone/cmsui/routes/links-to-item.tsx',
+          },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@rules',
+        children: [
+          { type: 'route', path: '*', file: '@plone/cmsui/routes/rules.tsx' },
+        ],
+      },
+      {
+        type: 'prefix',
         path: '@@manage-translations',
         children: [
           {
             type: 'route',
             path: '*',
-            file: '@plone/cmsui/routes/manageTranslations.tsx',
+            file: '@plone/cmsui/routes/manage-translations.tsx',
           },
         ],
       },
@@ -148,6 +201,33 @@ export default function install(config: ConfigType) {
     ],
   });
   config.registerRoute({
+    type: 'route',
+    path: '@more-menu',
+    file: '@plone/cmsui/routes/api/more-menu.tsx',
+  });
+  config.registerRoute({
+    type: 'prefix',
+    path: '@vocabulary',
+    children: [
+      {
+        type: 'route',
+        path: '*',
+        file: '@plone/cmsui/routes/vocabulary.tsx',
+      },
+    ],
+  });
+  config.registerRoute({
+    type: 'prefix',
+    path: '@querystringSearch',
+    children: [
+      {
+        type: 'route',
+        path: '*',
+        file: '@plone/cmsui/routes/querystringSearch.tsx',
+      },
+    ],
+  });
+  config.registerRoute({
     type: 'prefix',
     path: '@createContent',
     children: [
@@ -158,6 +238,27 @@ export default function install(config: ConfigType) {
       },
     ],
   });
+  // The blocks of the site, with their docs and schemas, for agents.
+  config.registerRoute({
+    type: 'prefix',
+    path: '@blocks-schema',
+    children: [
+      {
+        type: 'index',
+        file: '@plone/cmsui/routes/blocksSchema.tsx',
+        options: {
+          id: 'index-blocks-schema',
+        },
+      },
+      {
+        type: 'route',
+        path: ':blockId',
+        file: '@plone/cmsui/routes/blocksSchema.tsx',
+      },
+    ],
+  });
+  // `/<path>/@blocks-schema[/<blockId>]` is a `contentResource` utility,
+  // registered in `config/server.ts`.
 
   return config;
 }

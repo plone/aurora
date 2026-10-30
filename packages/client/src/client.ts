@@ -6,22 +6,97 @@ const PLONECLIENT_DEFAULT_CONFIG = {
   apiPath: 'http://localhost:8080/Plone',
 };
 
-export default class PloneClient {
+/**
+ * Assigns each function of `methods` to `target`, bound to `target`, so the
+ * methods keep the client as `this` when detached from it
+ * (for example, `const { getContent } = cli`).
+ */
+function bindMethods(target: object, methods: object) {
+  for (const [key, value] of Object.entries(methods)) {
+    if (typeof value === 'function') {
+      (target as Record<string, unknown>)[key] = value.bind(target);
+    }
+  }
+}
+
+/**
+ * Methods added to `PloneClient` by `PloneClient.extend()`.
+ *
+ * Add-ons type their own methods through module augmentation:
+ *
+ * ```ts
+ * declare module '@plone/client' {
+ *   interface PloneClientExtensions {
+ *     getIdentityProviders: typeof getIdentityProviders;
+ *   }
+ * }
+ * ```
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface PloneClientExtensions {}
+
+/**
+ * A set of methods to add to `PloneClient`. Each method receives the client
+ * instance as `this`, so it can read `this.config` and call other methods.
+ */
+export type PloneClientMethods = Record<string, (...args: any[]) => any>;
+
+/**
+ * The class returned by `PloneClient.extend()`: `T` with `M` added to its
+ * instances.
+ */
+export type ExtendedPloneClient<
+  T extends typeof PloneClient,
+  M extends PloneClientMethods,
+> = Omit<T, 'prototype'> & {
+  new (config: PloneClientConfig): InstanceType<T> & M;
+  prototype: InstanceType<T> & M;
+};
+
+// Merge the augmentable interface into the class instance type.
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+interface PloneClient extends PloneClientExtensions {}
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+class PloneClient {
   public config: PloneClientConfig = PLONECLIENT_DEFAULT_CONFIG;
 
-  static initialize = (
+  static initialize<T extends typeof PloneClient>(
+    this: T,
     config: PloneClientConfig,
-  ): InstanceType<typeof PloneClient> =>
-    new PloneClient({ ...PLONECLIENT_DEFAULT_CONFIG, ...config });
+  ): InstanceType<T> {
+    return new this({
+      ...PLONECLIENT_DEFAULT_CONFIG,
+      ...config,
+    }) as InstanceType<T>;
+  }
+
+  /**
+   * Returns a subclass of this class whose instances also have `methods`.
+   * Calls can be chained, and each one builds on the class it is called on,
+   * so several add-ons can each contribute their own methods.
+   * A method with the same name as an existing one replaces it.
+   */
+  static extend<T extends typeof PloneClient, M extends PloneClientMethods>(
+    this: T,
+    methods: M,
+  ): ExtendedPloneClient<T, M> {
+    const extensions = { ...methods };
+    // Core endpoints are instance fields, so the extensions are assigned in
+    // the constructor (not on the prototype) to be able to override them.
+    const Extended = class extends (this as typeof PloneClient) {
+      constructor(config: PloneClientConfig) {
+        super(config);
+        bindMethods(this, extensions);
+      }
+    };
+    return Extended as unknown as ExtendedPloneClient<T, M>;
+  }
 
   constructor(config: PloneClientConfig) {
     this.config = config;
 
-    Object.values(this).forEach((propertyValue) => {
-      if (propertyValue instanceof Function) {
-        propertyValue = propertyValue.bind(this);
-      }
-    });
+    bindMethods(this, this);
   }
 
   getActions = restapi.getActions;
@@ -164,3 +239,5 @@ export default class PloneClient {
   checkInWorkingcopy = restapi.checkInWorkingcopy;
   deleteWorkingcopy = restapi.deleteWorkingcopy;
 }
+
+export default PloneClient;

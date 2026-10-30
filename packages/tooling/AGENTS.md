@@ -13,7 +13,7 @@ This file applies only to `packages/tooling` and its subdirectories.
 
 ## Package Model
 
-- **`playwright/`** — shared Playwright fixtures (`content.ts`, `login.ts`, `plate.ts`, `reset-fixture.ts`, `test.ts`) and test helpers.
+- **`playwright/`** — shared Playwright fixtures (`content.ts`, `login.ts`, `multilingual.ts`, `plate.ts`, `reset-fixture.ts`, `test.ts`) and test helpers.
 - **`stories/`** — shared Storybook stories or story utilities.
 - **`tsconfig.json`** — TypeScript config for the tooling package itself.
 - No `src/` directory — this package contains tooling artifacts, not compiled library code.
@@ -40,3 +40,5 @@ Tooling is validated indirectly through the acceptance tests that consume it:
 ```sh
 pnpm acceptance-test
 ```
+
+Visual regression tests in any package use `settle()` from `playwright/visual.ts` to wait for network idle and web fonts before taking a screenshot.

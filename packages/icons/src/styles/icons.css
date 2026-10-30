@@ -1,0 +1,25 @@
+@layer plone-icons {
+  .q.icon {
+    display: inline-block;
+
+    /* Inherit the text color */
+    color: inherit;
+
+    /* Fill should match the current text color */
+    fill: currentColor;
+
+    /* Hide the svg overflow in IE. */
+    &:not(:root) {
+      overflow: hidden;
+    }
+
+    /* Don't catch clicks or hover, otherwise they may not escape the SVG */
+    pointer-events: none;
+  }
+  @media (forced-colors: active) {
+    .q.icon {
+      /* Automatically adjust the SVG to pick up the text color for High Contrast mode */
+      forced-color-adjust: auto;
+    }
+  }
+}

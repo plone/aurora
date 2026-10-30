@@ -2,6 +2,7 @@ import { Content } from '../content';
 import { BlocksFormData } from '../blocks/index';
 import { ConfigData } from '.';
 import { Controlpanel, ControlPanelSchema } from '..';
+import type { ComponentType, SVGProps } from 'react';
 
 type apiExpandersType =
   | { match: string; GET_CONTENT: string[] }
@@ -16,6 +17,18 @@ type apiExpandersType =
           ) => { [key: string]: string });
     };
 
+/**
+ * A Plone Aurora expander: components to expand in the main content request.
+ */
+export type ContentExpander = {
+  /** The path the expander applies to, and every path below it. `''` or `'/'` matches every page. */
+  match: string;
+  /** The names of the `plone.restapi` components to expand. */
+  expand: string[];
+  /** When `true`, the expander applies to signed-in users only. */
+  authenticated?: boolean;
+};
+
 type styleClassNameExtendersType = ({
   block,
   content,
@@ -27,6 +40,10 @@ type styleClassNameExtendersType = ({
   data: BlocksFormData;
   classNames: string[];
 }) => string[];
+
+type IconType =
+  | { [key: string]: ComponentType<SVGProps<SVGSVGElement>> }
+  | Record<string, string>; // Volto ones
 
 export type PlateConfig = {
   editorConfig: {
@@ -50,7 +67,7 @@ export interface SettingsConfig {
   port: string;
   publicURL: string;
   apiPath: string;
-  apiExpanders: apiExpandersType[] | [];
+  apiExpanders: Array<apiExpandersType | ContentExpander>;
   devProxyToApiPath: string | undefined;
   proxyRewriteTarget: string | undefined;
   actions_raising_api_errors: string[];
@@ -69,6 +86,8 @@ export interface SettingsConfig {
   openExternalLinkInNewTab: boolean;
   notSupportedBrowsers: string[];
   defaultPageSize: number;
+  /** Items per page in the Contents view (`@plone/contents`). Default: 10. */
+  contentsPageSize?: number;
   supportedLanguages: string[]; // TODO: Improve list of possible values
   navDepth: number;
   expressMiddleware: unknown;
@@ -78,9 +97,7 @@ export interface SettingsConfig {
   persistentReducers: string[];
   initialReducersBlacklist: string[];
   asyncPropsExtenders: unknown[];
-  contentIcons:
-    | Record<string, React.ComponentType<any>>
-    | Record<string, string>; // Volto ones
+  contentIcons: IconType;
   loadables: unknown;
   lazyBundles: {
     [key: string]: string[];
@@ -99,7 +116,7 @@ export interface SettingsConfig {
   showTags: boolean;
   showRelatedItems: boolean;
   controlpanels: Controlpanel[];
-  controlPanelsIcons: Record<string, string>;
+  controlPanelsIcons: IconType;
   filterControlPanels: unknown;
   filterControlPanelsSchema: (schema: Controlpanel) => ControlPanelSchema;
   externalRoutes: {
@@ -125,4 +142,7 @@ export interface SettingsConfig {
   cssLayers: string[];
   hideBreadcrumbs: string[]; // Content types for which to hide breadcrumbs
   plate: PlateSettings | Record<string, never>;
+  mostUsedTypes: string[];
+  /** Above this many languages the LanguageSwitcher is a dropdown menu. */
+  languageSwitcherMenuThreshold?: number;
 }

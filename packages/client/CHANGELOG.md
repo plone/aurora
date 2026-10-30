@@ -8,6 +8,72 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.10 (2026-10-29)
+
+### Feature
+
+- Support filtering relations by target and managing content rules on a specific content item. @sneridagh 
+
+### Bugfix
+
+- Allow clearing a user's home page URL when updating their profile. @sneridagh 
+
+## 2.0.0-alpha.9 (2026-10-29)
+
+### Feature
+
+- Added `PloneClient.extend()` to add custom endpoint methods to the client, the augmentable `PloneClientExtensions` interface to type them, and exported `apiRequest`, `getBackendURL`, and their types. `PloneClient.initialize()` now returns an instance of the class it is called on. @sneridagh 
+- Added the `b_size` argument to `getVocabulary`, to get a batch of a given size, or all the terms with `-1`. @sneridagh 
+
+### Bugfix
+
+- Accepted the choice tokens of `allow_discussion`, a stored `preview_image`, and `null` for the file fields, in the content data of `createContent` and `updateContent`. @sneridagh 
+- Fixed the `@plone/types` dependency specifier, which was `workspace: *` instead of `workspace:*`. @sneridagh 
+- Fixed the `PloneClient` constructor, which did not bind the endpoint methods to the instance, so detached methods like `const { getContent } = cli` lost `this`. @sneridagh 
+
+### Internal
+
+- Removed a nonexistent entry point from the `tsup` configuration. @sneridagh 
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+
+## 2.0.0-alpha.8 (2026-10-03)
+
+### Internal
+
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
+## 2.0.0-alpha.7 (2026-09-29)
+
+### Feature
+
+- Added the optional `inherit` field to the `updateSharing` data schema. @jmevissen [#29](https://github.com/plone/aurora/pull/29)
+- Added an optional `transition` argument to `createWorkflow` so any workflow transition can be triggered, not only `publish`. @nils-pzr 
+- Allowed `updateContent` to set the `subjects` (tags) field. @nils-pzr 
+
+## 2.0.0-alpha.6 (2026-09-21)
+
+### Internal
+
+- Replaced `__dirname` with `import.meta.dirname` in `vite.config.ts` to silence the Vite native config loader deprecation warning. @sneridagh 
+- Updated package repository metadata and towncrier issue links from `plone/volto` to `plone/aurora`. @sneridagh 
+
+## 2.0.0-alpha.5 (2026-07-02)
+
+### Feature
+
+- Added Sharing get and update methods @pnicolli 
+- Allowed content update requests to include Plone ordering payloads. @pnicolli @giuliaghisini 
+- Handled redirect responses from the backend when fetching content objects. @pnicolli 
+
+### Bugfix
+
+- Stopped the content and user data schemas from silently stripping fields they do not declare (e.g. `changeNote`, custom dexterity fields, custom member properties). Unknown keys are now passed through to the backend, which is the authority on which fields exist. @jmevissen [#129](https://github.com/plone/volto/pull/129)
+- Fixed TypeScript error in `getTypes` test by narrowing `GetTypesResponse` union type before indexing. @arybakov05 [#6653](https://github.com/plone/volto/pull/6653)
+
+### Internal
+
+- Unify Makefile files across the packages. @ionlizarazu 
+
 ## 2.0.0-alpha.4 (2026-05-07)
 
 ### Internal

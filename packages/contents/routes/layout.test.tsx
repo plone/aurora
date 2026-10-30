@@ -4,9 +4,8 @@ import { loader } from './layout';
 import { ploneContentContext } from '@plone/aurora/app/middleware.server';
 
 vi.mock('@plone/aurora/app/i18next.server', () => ({
-  default: {
-    getLocale: vi.fn().mockResolvedValue('en'),
-  },
+  i18nextMiddleware: vi.fn(),
+  getLocale: vi.fn().mockReturnValue('en'),
 }));
 
 describe('Contents layout loader', () => {
@@ -28,17 +27,19 @@ describe('Contents layout loader', () => {
       request,
       context,
       params: { '*': 'news' },
-      unstable_pattern: '/@@contents/*',
-      unstable_url: new URL(request.url),
+      pattern: '/@@contents/*',
+      url: new URL(request.url),
     });
 
     expect(result).toEqual({
       locale: 'en',
+      path: '/news',
       content: {
         '@id': '/plone/news',
         title: 'News',
         language: { token: 'en' },
       },
+      path: '/news',
     });
   });
 });

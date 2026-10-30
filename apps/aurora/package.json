@@ -1,8 +1,35 @@
 {
   "name": "@plone/aurora",
-  "version": "1.0.0-alpha.4",
-  "private": true,
+  "description": "Plone Aurora is the next-generation frontend for Plone CMS",
+  "version": "1.0.0-alpha.20",
+  "maintainers": [
+    {
+      "name": "Plone Foundation",
+      "url": "https://plone.org"
+    }
+  ],
+  "funding": "https://github.com/sponsors/plone",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/plone/aurora.git",
+    "directory": "apps/aurora"
+  },
+  "bugs": {
+    "url": "https://github.com/plone/aurora/issues"
+  },
+  "homepage": "https://plone-aurora.readthedocs.io/",
+  "keywords": [
+    "aurora",
+    "plone",
+    "react",
+    "frontend",
+    "framework"
+  ],
   "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "scripts": {
     "dev": "pnpm exec init-loaders && react-router dev",
@@ -12,10 +39,11 @@
     "build": "pnpm exec init-loaders && react-router build",
     "build:publicui": "REGISTRYCONFIG=registry-publicui.config.ts pnpm exec init-loaders && react-router build",
     "start:prod": "react-router-serve ./build/server/index.js",
+    "check:ts": "react-router typegen && tsc",
     "typecheck": "react-router typegen && tsc",
     "typegen": "react-router typegen",
-    "release": "release-it",
-    "release-alpha": "release-it --preRelease=alpha",
+    "release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it",
+    "release-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --preRelease=alpha",
     "prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx}'",
     "lint:fix": "eslint --max-warnings=0 './**/*.{js,jsx,ts,tsx}' --fix --no-error-on-unmatched-pattern",
     "stylelint:fix": "sh -c 'if [ -f .stylelintrc ] || [ -f .stylelintrc.json ] || [ -f .stylelintrc.js ] || [ -f .stylelintrc.cjs ] || [ -f stylelint.config.js ] || [ -f stylelint.config.cjs ] || [ -f stylelint.config.mjs ]; then stylelint '''./**/*.{css,scss,less}''' --fix --allow-empty-input; else echo \"No local stylelint config, skipping\"; fi'",
@@ -27,17 +55,19 @@
     "@plone/client": "workspace:*",
     "@plone/cmsui": "workspace:*",
     "@plone/components": "workspace:*",
+    "@plone/icons": "workspace:*",
     "@plone/contents": "workspace:*",
     "@plone/helpers": "workspace:*",
     "@plone/layout": "workspace:*",
     "@plone/plate": "workspace:*",
     "@plone/publicui": "workspace:*",
+    "@plone/quanta": "workspace:*",
     "@plone/react-router": "workspace:*",
     "@plone/registry": "workspace:*",
     "@plone/theming": "workspace:*",
     "@react-router/node": "catalog:",
     "@react-router/serve": "catalog:",
-    "i18next": "^24.2.3",
+    "i18next": "catalog:",
     "i18next-browser-languagedetector": "^8.0.4",
     "i18next-fs-backend": "^2.6.0",
     "i18next-http-backend": "^3.0.2",
@@ -47,7 +77,7 @@
     "react-dom": "catalog:",
     "react-i18next": "catalog:",
     "react-router": "catalog:",
-    "remix-i18next": "^7.1.0"
+    "remix-i18next": "^8.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",
@@ -71,6 +101,6 @@
     "vitest": "catalog:"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=22.22.0"
   }
 }

@@ -15,7 +15,6 @@ import {
   ploneContentContext,
 } from '@plone/aurora/app/middleware.server';
 import RenderBlocks from '@plone/layout/blocks/RenderBlocks';
-import config from '@plone/registry';
 import ContentForm from '../components/ContentForm/ContentForm';
 
 const SERVER_MANAGED_KEYS = [
@@ -181,6 +180,7 @@ export async function loader({
       schema,
       initial,
       targetLanguage,
+      targetRoot: translations.root[targetLanguage],
     }),
   );
 }
@@ -240,7 +240,7 @@ export async function action({
 }
 
 export default function Translate() {
-  const { source, schema, initial, targetLanguage } =
+  const { source, schema, initial, targetLanguage, targetRoot } =
     useLoaderData<typeof loader>();
   const { t } = useTranslation();
 
@@ -259,6 +259,7 @@ export default function Translate() {
   return (
     <ContentForm
       content={initial}
+      path={targetRoot}
       schema={schema}
       fieldPlaceholders={fieldPlaceholders}
       asidePanels={{
@@ -276,11 +277,7 @@ export default function Translate() {
           </p>
         ),
         blocks: hasVisibleSourceBlocks(source) ? (
-          <RenderBlocks
-            content={source}
-            blocksConfig={config.blocks.blocksConfig}
-            pathname={source['@id']}
-          />
+          <RenderBlocks content={source} />
         ) : (
           <>
             <h1 className="text-2xl font-bold">{source.title}</h1>
