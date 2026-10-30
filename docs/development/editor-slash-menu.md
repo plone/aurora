@@ -130,7 +130,7 @@ The default renderer adapts the current editor i18n implementation to this narro
 
 Following are some common use cases of slash menu customization and how to implement them with the provided API.
 
-### Use case: keep the defaults and add one item
+### Use case: Keep the defaults and add one item
 
 This is the most common customization.
 
@@ -174,7 +174,7 @@ Use this when:
 - you only need to append or prepend a few commands
 - you want the smallest maintenance surface
 
-### Use case: remove items or groups from the defaults
+### Use case: Remove items or groups from the defaults
 
 You can filter the default groups with `extendGroups`.
 
@@ -212,7 +212,7 @@ Use this when:
 - your project wants to curate the default menu
 - some commands should not be available in a specific editor
 
-### Use case: reorder groups or items
+### Use case: Reorder groups or items
 
 `extendGroups` can also reorder the resolved menu.
 
@@ -236,7 +236,7 @@ Use this when:
 - one editor should emphasize project blocks over core text commands
 - you need an editorial workflow-specific ordering
 
-### Use case: replace the full menu with a static list
+### Use case: Replace the full menu with a static list
 
 Use `groups` when the menu is fixed and does not depend on runtime editor state.
 
@@ -278,7 +278,7 @@ Use this when:
 - an editor must expose a very narrow authoring surface
 - the menu is intentionally independent from the default menu
 
-### Use case: build the full menu dynamically
+### Use case: Build the full menu dynamically
 
 Use `getGroups` when the menu depends on editor state or external configuration.
 
@@ -325,7 +325,7 @@ Use this when:
 - commands differ based on selection, schema, or document content
 - you need more control than `extendGroups` provides
 
-### Use case: different slash menus for different editors
+### Use case: Different slash menus for different editors
 
 This is the main reason to use `createSlashKit(...)`.
 
@@ -364,11 +364,11 @@ export const LandingPageEditorKit = [
 
 This approach is preferable to shadowing because each editor keeps its own slash menu definition.
 
-### Use case: project-wide defaults in an add-on
+### Use case: Project-wide defaults in an add-on
 
 If a project wants to change the default slash menu everywhere, there are two reasonable approaches.
 
-#### Option 1: shadow the editor kit
+#### Option 1: Shadow the editor kit
 
 Shadow the editor kit that your project uses and replace:
 
@@ -391,7 +391,7 @@ with:
 
 This is the preferred approach when you control the editor composition.
 
-#### Option 2: shadow `slash-menu.tsx`
+#### Option 2: Shadow `slash-menu.tsx`
 
 This is acceptable only if your goal is to redefine the global defaults used by `createSlashKit()` with no explicit `menu` argument.
 
@@ -410,7 +410,7 @@ That should now be treated as a rendering component, not as the main extension p
 
 Shadow it only when you need to change:
 
-- the combobox layout
+- the autocomplete layout
 - visual styling
 - custom markup for items or groups
 - accessibility behavior of the rendered menu

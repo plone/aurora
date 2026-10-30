@@ -38,7 +38,7 @@ If you already know HTML forms or relational databases, the following comparison
 
 | Concept | Similar to | But in Plone Aurora |
 | --- | --- | --- |
-| Field | A column in a relational table, plus the value being edited | It also carries form state: validation errors, required, touched, and so on. |
+| Field | A column in a relational table, plus the value being edited | It also carries form state: validation errors, required, touched etc. |
 | Control | An [HTML form control](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Basic_native_form_controls), such as `<input type="checkbox">` | Usually a component of a design system, such as a Quanta or React Aria component, which renders the HTML control. |
 | Widget | A complex input, such as a date range picker | **Every** field gets a widget, even a simple one. A widget can be as small as a text input or as large as an image picker. |
 | Adapter | Glue code | A widget whose only job is to translate between the widget contract and a control's API. |
@@ -54,7 +54,7 @@ The form also tracks its validation state and whether it is required, and the sc
 
 A field belongs to the form.
 It takes part in the form's state, validation, and submission.
-It does not decide how it is displayed: that is the widget's job.
+It does not decide how it is displayed: that is the job of the widget.
 
 ## Control
 
@@ -89,7 +89,7 @@ Both are widgets, because both take the same field props and emit the field's va
 An adapter is a widget that wraps a single control.
 It translates the widget contract to the control's API: it renames props, converts values, and passes validation state in the shape the control expects.
 
-### Example: the boolean widget
+### Example: The boolean widget
 
 The checkbox control speaks `isSelected`.
 The form speaks `value`.
@@ -137,10 +137,10 @@ The following table shows how each prop is mapped.
 | `required` | `isRequired` |
 | `disabled` | `isDisabled` |
 | `readOnly` | `isReadOnly` |
-| `label` | the checkbox's children |
+| `label` | the children of the checkbox |
 | `onChange(value)` | `onChange(isSelected)`, which already emits a boolean |
 
-### Example: a date widget
+### Example: A date widget
 
 Some adapters must also convert values.
 A React Aria date field works with `DateValue` objects, while the content API stores a date as an ISO string such as `"2026-10-09"`.
@@ -246,7 +246,7 @@ Widget props from the field's tagged values, `frontendOptions.widgetProps`, are 
 
 In Plone Aurora, the widget registry checks this contract when it is type-checked.
 `@plone/cmsui` declares it in the `WidgetPropsMap` of `@plone/types`, so registering a widget that doesn't take the contract's props is a type error.
-To test a widget's behavior against the contract, see {ref}`test-a-widget-label`.
+To test the behavior of a widget against the contract, see {ref}`test-a-widget-label`.
 
 The contract is about values.
 The form does not need to know whether a widget uses an HTML input, a React Aria component, a modal picker, or several controls together.

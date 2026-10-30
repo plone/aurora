@@ -20,12 +20,12 @@ The internal names and data shapes described here (including the `__somersault__
 ## Motivation
 
 In Volto, the editing surface is split across two different models.
-Each text-based block instantiates its own [Slate](https://docs.slatejs.org/) editor, while non-text blocks (image, listing, custom blocks, and so on) live outside Slate and are managed by the block engine.
+Each text-based block instantiates its own [Slate](https://docs.slatejs.org/) editor, while non-text blocks (image, listing, custom blocks etc.) live outside Slate and are managed by the block engine.
 This split has structural costs: two mental models and rendering pipelines, selection state that is hard to coordinate across blocks, awkward keyboard navigation between blocks, and a per-instance performance overhead in large documents.
 
 Plone Aurora unifies both models into one editor tree.
 A single Plate editor holds the whole page, text is edited as native Plate blocks, and existing Plone blocks are mounted as nodes inside the same tree.
-There is no longer a separation between "editor text content" and "content blocks".
+There is no longer a separation between "editor text content" and "content blocks."
 
 ## The single editor tree
 
@@ -104,8 +104,8 @@ The unified content is stored inside the standard `blocks` mapping, under a sing
 The `__somersault__` entry follows the same shape as any other block: it has an `@type` and a `value`.
 The `value` holds the entire Plate editor value as an ordered array of nodes:
 
-- **Native text nodes** use a Plate `type` (`title`, `p`, and so on) and Slate-style `children`.
-- **Wrapped Plone blocks** use `type: "ploneBlock"`, carry the original block data verbatim (`@type` and all its fields), add a computed `blockWidth`, and include an empty `children` array because the node is a void element.
+* **Native text nodes** use a Plate `type` (`title`, `p` etc.) and Slate-style `children`.
+* **Wrapped Plone blocks** use `type: "ploneBlock"`, carry the original block data verbatim (`@type` and all its fields), add a computed `blockWidth`, and include an empty `children` array because the node is a void element.
 
 ```{note}
 The wrapped-block node uses `type: "ploneBlock"`.
@@ -121,7 +121,7 @@ This runs in the request middleware ([`app/middleware.server.ts`](https://github
 The process is:
 
 1. **Skip if already migrated.** If the content already has a `__somersault__` block, it is returned untouched. This keeps the operation idempotent and lets migrated and legacy content coexist during the transition.
-2. **Assemble the value.** The blocks are read in the order given by `blocks_layout.items`, and each block is converted into one or more Plate nodes by a chain of registered `somersaultBlockMigration` utilities — for example mapping a `title` block to the metadata title, passing through legacy Slate `value` arrays, and wrapping any registered block into a `ploneBlock` node.
+2. **Assemble the value.** The blocks are read in the order given by `blocks_layout.items`, and each block is converted into one or more Plate nodes by a chain of registered `somersaultBlockMigration` utilities—for example mapping a `title` block to the metadata title, passing through legacy Slate `value` arrays, and wrapping any registered block into a `ploneBlock` node.
 3. **Normalize the whole value.** A chain of `somersaultMigration` utilities then runs over the assembled value to convert legacy Slate shapes to Plate standards: bold, italic, strikethrough, links, lists, and block widths.
 
 The individual conversions are pure helpers exported from `@plone/plate/migrations`, so the same logic can run in an upgrade step or a one-time content transformation rather than only at request time.
@@ -131,7 +131,7 @@ That is handled on the client by a single paste plugin (`LegacyPastePlugin`), wi
 
 ## Editor and renderer presets
 
-`@plone/plate` composes its behavior into _presets_ — named editor configurations for a given use case.
+`@plone/plate` composes its behavior into _presets_—named editor configurations for a given use case.
 Two presets back the unified editor:
 
 `somersault-editor`
