@@ -152,8 +152,59 @@
         }
       }
     },
+    "sharing": {
+      "label": "Sharing for \"{{title}}\"",
+      "description": "You can control who can view and edit your item using the list below.",
+      "name": "Name",
+      "inherit": "Inherit permissions from higher levels",
+      "inheritDescription": "By default, permissions from the container of this item are inherited. If you disable this, only the explicitly defined sharing permissions will be valid. In the overview, a green arrow indicates an inherited value and a blue globe indicates a global role, which is managed by the site administrator.",
+      "globalRole": "Global role",
+      "inheritedValue": "Inherited value",
+      "user": "User",
+      "group": "Group",
+      "searchLabel": "Search for users and groups",
+      "searchPlaceholder": "Search for users and groups…",
+      "searchResults_one": "{{count}} entry found",
+      "searchResults_other": "{{count}} entries found"
+    },
     "toolbar": {
       "settings": "Settings"
+    },
+    "validation": {
+      "required": "Required input is missing.",
+      "minLength": "Minimum length is {{len}}.",
+      "maxLength": "Maximum length is {{len}}.",
+      "minimum": "Minimum value is {{len}}.",
+      "maximum": "Maximum value is {{len}}.",
+      "number": "Input must be a number.",
+      "integer": "Input must be an integer.",
+      "email": "Input must be a valid email address (something@domain.com).",
+      "url": "Input must be a valid URL (www.something.com or http(s)://www.something.com).",
+      "pattern": "The value does not match the pattern {{pattern}}.",
+      "minItems": "The number of items must be greater than or equal to {{minItems}}.",
+      "maxItems": "The number of items must be less than or equal to {{maxItems}}.",
+      "uniqueItems": "Items must be unique.",
+      "startEventRange": "Event start date must be on or before {{end}}.",
+      "endEventRange": "Event end date must be on or after {{start}}.",
+      "defaultLanguage": "The selected default language must be in the list of the field 'Available languages'."
+    },
+    "widgets": {
+      "select": {
+        "noValue": "No value",
+        "placeholder": "Select…"
+      },
+      "array": {
+        "placeholder": "Type to add…"
+      },
+      "file": {
+        "choose": "Choose a file",
+        "replace": "Replace the file",
+        "orDrop": "or drop it here",
+        "remove": "Remove {{filename}}",
+        "dropZone": "Drop a file for {{label}}",
+        "imageOnly": "Choose an image file.",
+        "readError": "The file could not be read."
+      }
     }
   }
 }

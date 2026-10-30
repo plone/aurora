@@ -102,12 +102,12 @@
       }
       /* Listing block */
       &.block-listing {
-        .item {
+        .block-listing__item {
           @apply p-1;
         }
-        .summary {
+        .block-listing__item[data-variation='summary'] {
           @apply flex;
-          img {
+          .block-listing__image {
             @apply mr-1;
           }
         }

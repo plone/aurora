@@ -5,6 +5,8 @@ import {
   data,
   redirect,
   useLoaderData,
+  useLocation,
+  useParams,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
   type RouterContextProvider,
@@ -12,6 +14,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import ContentForm from '../components/ContentForm/ContentForm';
+import { getServerValidationErrors } from '../components/Form/validation';
 
 export async function loader({
   params,
@@ -46,10 +49,18 @@ export async function action({
   const path = `/${params['*'] || ''}`;
   const formData = await request.json();
 
-  const createdContent = await cli.createContent({
-    path,
-    data: formData,
-  });
+  let createdContent;
+  try {
+    createdContent = await cli.createContent({
+      path,
+      data: formData,
+    });
+  } catch (error) {
+    // Validation errors go back to the form, on their fields.
+    const errors = getServerValidationErrors(error);
+    if (errors) return data({ errors }, { status: 400 });
+    throw error;
+  }
 
   const isRoot = /\/$/.test(path);
   const redir = `${isRoot ? path : `${path}/`}${createdContent.data.id}`;
@@ -59,6 +70,8 @@ export async function action({
 export default function Add() {
   const { schema, type } = useLoaderData<typeof loader>();
   const { t } = useTranslation();
+  const location = useLocation();
+  const params = useParams();
 
   const emptyContent = {
     '@type': type,
@@ -69,7 +82,11 @@ export default function Add() {
 
   return (
     <ContentForm
+      // Remount the form, and with it its store, when adding in another
+      // container or another type.
+      key={`${location.pathname}${location.search}`}
       content={emptyContent}
+      path={`/${params['*'] || ''}`}
       schema={schema}
       heading={`${t('cmsui.add')} ${schema.title}`}
       submitMethod="post"

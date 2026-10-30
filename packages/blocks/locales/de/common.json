@@ -1,0 +1,10 @@
+{
+  "blocks": {
+    "maps": {
+      "maps-block-input-placeholder": "Karten-Einbettungscode eingeben",
+      "embedded-map-block": "Eingebetteter Kartenblock",
+      "instructions": "Bitte gib den von deinem Kartenanbieter bereitgestellten Einbettungscode ein. Er muss den <iframe>-Code enthalten.",
+      "code-error": "Fehler im Einbettungscode. Bitte folge den Anweisungen und versuche es erneut."
+    }
+  }
+}

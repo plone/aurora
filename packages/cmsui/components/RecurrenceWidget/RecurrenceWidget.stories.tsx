@@ -1,10 +1,7 @@
-import { useMemo } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { I18nextProvider } from 'react-i18next';
-import { Provider, createStore } from 'jotai';
+import { FormProvider, useFormStore } from '@plone/helpers';
 import { RecurrenceWidget } from './RecurrenceWidget';
-import { formAtom } from '../../routes/atoms';
-import type { EventContent } from '@plone/types';
 
 const translations = {
   'cmsui.recurrence.editRecurrence': 'Edit recurrence',
@@ -127,22 +124,18 @@ function StoryRecurrenceWidget({
   onChange,
   ...widgetProps
 }: RecurrenceWidgetStoryProps) {
-  const store = useMemo(() => {
-    const s = createStore();
-    s.set(formAtom, formData as any);
-    return s;
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const form = useFormStore<Record<string, unknown>>({
+    key: 'story',
+    initialValues: formData,
+  });
 
   const handleChange = (rrule: string | null) => {
-    store.set(formAtom, {
-      ...(store.get(formAtom) as EventContent),
-      recurrence: rrule ?? '',
-    });
+    form.setFieldValue('recurrence', rrule ?? '');
     onChange?.(rrule);
   };
 
   return (
-    <Provider store={store}>
+    <FormProvider form={form}>
       <I18nextProvider i18n={storyI18n as any}>
         <div className="min-h-screen bg-quanta-air p-8">
           <div className="max-w-2xl">
@@ -153,7 +146,7 @@ function StoryRecurrenceWidget({
           </div>
         </div>
       </I18nextProvider>
-    </Provider>
+    </FormProvider>
   );
 }
 

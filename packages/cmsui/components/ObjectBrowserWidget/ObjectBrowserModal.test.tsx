@@ -43,7 +43,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 // Mock dei componenti
-vi.mock('@plone/components', () => ({
+vi.mock('react-aria-components', () => ({
   Modal: ({ children, isOpen, onOpenChange, className, ...props }: any) => (
     <div
       data-testid="modal"
@@ -62,9 +62,6 @@ vi.mock('@plone/components', () => ({
       )}
     </div>
   ),
-}));
-
-vi.mock('react-aria-components', () => ({
   Dialog: ({ children, className, ...props }: any) => (
     <div data-testid="dialog" className={className} {...props}>
       {children}
@@ -77,7 +74,7 @@ vi.mock('react-aria-components', () => ({
   ),
 }));
 
-vi.mock('@plone/components/quanta', () => ({
+vi.mock('@plone/quanta', () => ({
   Button: ({
     children,
     onPress,
@@ -107,7 +104,7 @@ vi.mock('@plone/components/quanta', () => ({
   ),
 }));
 
-vi.mock('@plone/components/Icons', () => ({
+vi.mock('@plone/icons', () => ({
   SearchIcon: () => <span data-testid="search-icon">🔍</span>,
   CloseIcon: () => <span data-testid="close-icon">✕</span>,
 }));

@@ -8,6 +8,64 @@
 
 <!-- towncrier release notes start -->
 
+## 4.0.0-alpha.7 (2026-10-29)
+
+### Feature
+
+- Added `createBlocksDocsLoader`, which collects the `*.block.md` docs of the add-ons' blocks and page elements, and the server-only `@plone/registry/blocks-docs` module that the Vite plugin generates from them. @sneridagh 
+- Added an optional `category` argument to `getWidget`, which looks the key up only in that widget category. @sneridagh 
+- Added the `@plone/registry/plate-editor` and `@plone/registry/plate-renderer` loaders, which collect the `config/plate-editor` and `config/plate-renderer` modules of the add-ons, in add-on order, for the page editor and renderer. @sneridagh 
+- The default widget is typed with the props the app declares in `WidgetPropsMap`. @sneridagh 
+- `getComponent` returns components typed with the props declared in `ComponentsPropsMap`, and `registerComponent` rejects components that require props the declared ones do not get. @pnicolli 
+- `registerComponent` accepts components with required props, matching the `ComponentType<any>` returned by `getComponent`. @pnicolli 
+- `registerWidget` registers the choices widget with `key: 'choices'`, and registers a widget component with keys of its own, such as `displayName`, as a widget instead of a map of widgets. @sneridagh 
+
+### Bugfix
+
+- Fixed `getUtilities` and `getUtility` so a dependency set matches exactly: a lookup for `{ widget: 'url' }` no longer returns utilities registered for `{ widget: 'url_list' }`, and dependency keys can be passed in any order. @sneridagh 
+- Register a route only once: `registerRoute` now skips a route that is identical to one already registered, so applying a configuration again no longer duplicates `config.routes`. @sneridagh 
+
+### Internal
+
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+
+## 4.0.0-alpha.5 (2026-10-06)
+
+### Feature
+
+- Added the `styles/content.css` add-on styles convention: every add-on's content styles are aggregated into `.plone/content.css`, which both the Public UI and the CMSUI loaders import first, inside the `plone-content` cascade layer. @sneridagh [#199](https://github.com/plone/aurora/issues/199)
+
+## 4.0.0-alpha.4 (2026-10-03)
+
+### Internal
+
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
+## 4.0.0-alpha.3 (2026-09-21)
+
+### Internal
+
+- Replaced remaining `Seven`/`seven` references with `Plone Aurora`/`aurora` across docs, config, and comments. @sneridagh 
+
+## 4.0.0-alpha.2 (2026-09-05)
+
+### Internal
+
+- Check whether `.plone/vite.loader.js` content has changed before writing it in `PloneRegistryVitePlugin`. @arybakov05 
+- Reformatted registry source for compatibility with Prettier 3.8. @sneridagh 
+
+## 4.0.0-alpha.1 (2026-07-02)
+
+### Bugfix
+
+- Updated `GetComponentResult` type, as retrieved component could be `undefined` if not found. @arybakov05 [#6691](https://github.com/plone/volto/issues/6691)
+- Externalize `bcrypt` and `node-gyp-build` in the registry Vite plugin SSR config to avoid native module resolution failures in Seven apps. @sneridagh 
+
+### Internal
+
+- Switch the registry Vite plugin from the deprecated esbuild top-level await setting to Vite 8's oxc configuration. @sneridagh 
+- Unify Makefile files across the packages. @ionlizarazu 
+
 ## 4.0.0-alpha.0 (2026-05-07)
 
 ### Feature

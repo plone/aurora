@@ -1,6 +1,6 @@
 @import '@plone/components/src/styles/basic/Menu.css';
 @import '@plone/components/src/styles/basic/Popover.css';
-@import '@plone/components/src/styles/quanta/Popover.css';
+@import '@plone/quanta/src/styles/Popover.css';
 
 @property --plone-toolbar-button-background-color {
   inherits: false;
@@ -161,4 +161,55 @@
 #toolbar-portals .react-aria-Popover {
   width: 400px;
   max-width: 400px;
+}
+
+@media (max-width: 767px) {
+  .toolbar {
+    top: auto;
+    right: 0;
+    width: 100%;
+    height: calc(64px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .toolbar-buttons {
+    top: auto;
+    right: 0;
+    width: 100%;
+    height: 64px;
+    box-sizing: border-box;
+    flex-direction: row-reverse;
+    padding: 0 20px;
+    margin: 0 0 env(safe-area-inset-bottom, 0px);
+    gap: 0;
+  }
+
+  .toolbar-region {
+    flex-direction: row-reverse;
+    gap: 0;
+  }
+
+  .toolbar-top {
+    min-width: 0;
+    gap: 16px;
+    overflow-x: auto;
+  }
+
+  .toolbar-region > button,
+  .toolbar-region > a,
+  .toolbar-button {
+    flex: 0 0 44px;
+  }
+
+  #toolbar-portals .react-aria-Popover {
+    position: fixed !important;
+    top: auto !important;
+    right: 8px !important;
+    bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
+    left: 8px !important;
+    width: auto;
+    max-width: none;
+    max-height: calc(100dvh - 88px - env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+    transform: none !important;
+  }
 }

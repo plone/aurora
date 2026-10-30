@@ -31,8 +31,8 @@ describe('loader', () => {
       request,
       params: {},
       context,
-      unstable_pattern: '/@search?SearchableText=test&path.depth=1',
-      unstable_url: new URL(request.url),
+      pattern: '/@search?SearchableText=test&path.depth=1',
+      url: new URL(request.url),
     });
 
     expect(searchMock).toHaveBeenCalledWith({
@@ -65,8 +65,8 @@ describe('loader', () => {
       request,
       params: {},
       context,
-      unstable_pattern: '@search',
-      unstable_url: new URL(request.url),
+      pattern: '@search',
+      url: new URL(request.url),
     });
 
     expect(searchMock).toHaveBeenCalledWith({

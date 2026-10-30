@@ -5,6 +5,7 @@ import {
 } from '@plone/helpers';
 import type { BlockConfigBase, BlocksFormData } from '@plone/types';
 import {
+  migrateLegacyBlockquotesInValue,
   migrateLegacyBoldInValue,
   migrateLegacyBlockWidthsInValue,
   migrateLegacyItalicInValue,
@@ -22,8 +23,7 @@ const isRegisteredNativeBlock = (block: Record<string, unknown>) => {
   if (typeof blockType !== 'string') return false;
 
   const blocksConfig = config.blocks?.blocksConfig as
-    | Record<string, unknown>
-    | undefined;
+    Record<string, unknown> | undefined;
 
   return Boolean(blocksConfig?.[blockType]);
 };
@@ -38,8 +38,7 @@ const getMigratedPloneBlockWidth = (block: Record<string, unknown>) => {
   }
 
   const blocksConfig = config.blocks?.blocksConfig as
-    | Record<string, BlockConfigBase>
-    | undefined;
+    Record<string, BlockConfigBase> | undefined;
   const blockConfig = blocksConfig?.[blockType];
   const styleFields = getStyleFieldsFromBlockSchema(
     blockConfig,
@@ -128,6 +127,13 @@ export default function install() {
     type: 'somersaultMigration',
     method: ({ value }: SomersaultMigrationArgs) =>
       migrateLegacyListsInValue(value),
+  });
+
+  config.registerUtility({
+    name: 'somersaultMigrationLegacyBlockquotes',
+    type: 'somersaultMigration',
+    method: ({ value }: SomersaultMigrationArgs) =>
+      migrateLegacyBlockquotesInValue(value),
   });
 
   config.registerUtility({

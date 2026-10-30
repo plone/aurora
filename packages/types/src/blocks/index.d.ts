@@ -83,7 +83,7 @@ export interface BlockEditProps {
   navRoot: Content;
   onAddBlock: (type: string, index: number) => string;
   onChangeBlock: (id: string, newData: any) => void;
-  // `setBlock` is part of Seven's API but not used in Volto
+  // `setBlock` is part of Plone Aurora's API but not used in Volto
   // Should we move it to @plone/registry (as decided with @pnicolli during the Salamina Sprint 2025)
   setBlock: (value: any) => void;
   onChangeField: (id: string, newData: any) => void;

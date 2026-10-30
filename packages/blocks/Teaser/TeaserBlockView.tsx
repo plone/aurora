@@ -1,5 +1,5 @@
 import type { BlockViewProps } from '@plone/types';
-import { Link } from '@plone/components';
+import config from '@plone/registry';
 import Image from '@plone/layout/components/Image/Image';
 
 type TeaserViewProps = BlockViewProps & {
@@ -11,6 +11,7 @@ const asFirstItem = <T,>(value: T | T[] | undefined): T | undefined =>
 
 const TeaserBlockView = (props: TeaserViewProps) => {
   const { data } = props;
+  const Link = config.getComponent('Link').component!;
   const href = asFirstItem(data.href as any);
   const image = asFirstItem(data.preview_image as any);
   const link =
@@ -23,8 +24,8 @@ const TeaserBlockView = (props: TeaserViewProps) => {
     (href as any)?.Description ||
     '';
   const teaserBody = (
-    <div className="teaser-item">
-      <div className="teaser-image-wrapper">
+    <div className="block-teaser__item">
+      <div className="block-teaser__image">
         <Image
           item={image || href}
           alt={title}
@@ -35,9 +36,9 @@ const TeaserBlockView = (props: TeaserViewProps) => {
           responsive={true}
         />
       </div>
-      <div className="teaser-content">
-        <h2>{title}</h2>
-        <p>{description}</p>
+      <div className="block-teaser__content">
+        <h2 className="block-teaser__title">{title}</h2>
+        <p className="block-teaser__description">{description}</p>
       </div>
     </div>
   );

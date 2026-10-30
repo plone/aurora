@@ -60,7 +60,13 @@ The core packages are:
 :   JavaScript API client for Plone backend.
 
 `@plone/components`
-:   Unified React components for Plone.
+:   Basic, white-label React components for Plone.
+
+`@plone/icons`
+:   Icon set, `Icon` component, and SVG tooling for Plone Aurora.
+
+`@plone/quanta`
+:   Quanta design system components, form widgets, and styles for the CMS UI.
 
 `@plone/registry`
 :   Configuration registry.
@@ -78,7 +84,7 @@ The utility packages are:
 :   Utility functions and helpers.
 
 `@plone/react-router`
-:   React Router 7 integration.
+:   React Router 8 integration.
 
 
 ## Add-on packages (level 3)

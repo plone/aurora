@@ -1,7 +1,7 @@
 import React from 'react';
 import type { BlockConfigBase } from '@plone/types';
 import { ImageSchema } from './schema';
-import { ImageIcon } from '@plone/components/Icons';
+import { ImageIcon } from '@plone/icons';
 
 const ImageBlockInfo = {
   id: 'image',

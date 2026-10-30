@@ -52,8 +52,8 @@ describe('Edit route', () => {
         request,
         params: { '*': 'my-page' },
         context,
-        unstable_pattern: '/my-page/edit',
-        unstable_url: new URL(request.url),
+        pattern: '/my-page/edit',
+        url: new URL(request.url),
       });
 
       expect(getTypeMock).toHaveBeenCalledWith({ type: 'Document' });
@@ -72,8 +72,8 @@ describe('Edit route', () => {
         request,
         params: { '*': 'my-page' },
         context,
-        unstable_pattern: '/my-page/edit',
-        unstable_url: new URL(request.url),
+        pattern: '/my-page/edit',
+        url: new URL(request.url),
       });
 
       const resultData = (result as any).data;
@@ -104,14 +104,74 @@ describe('Edit route', () => {
         request,
         params: { '*': 'my-page' },
         context,
-        unstable_pattern: '/my-page/edit',
-        unstable_url: new URL(request.url),
+        pattern: '/my-page/edit',
+        url: new URL(request.url),
       });
 
       expect(updateContentMock).toHaveBeenCalledWith({
         path: '/my-page',
         data: body,
       });
+    });
+
+    it('returns the validation errors of the server to the form', async () => {
+      const updateContentMock = vi.fn().mockRejectedValue({
+        status: 400,
+        data: {
+          type: 'BadRequest',
+          message:
+            "[{'field': 'title', 'message': 'Required input is missing.', 'error': 'ValidationError'}]",
+        },
+      });
+      config.settings.apiPath = 'http://example.com';
+      const context = new RouterContextProvider();
+      context.set(ploneClientContext, {
+        updateContent: updateContentMock,
+      } as any);
+
+      const request = new Request('http://example.com/my-page/edit', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: '' }),
+      });
+
+      const result: any = await action({
+        request,
+        params: { '*': 'my-page' },
+        context,
+        pattern: '/my-page/edit',
+        url: new URL(request.url),
+      });
+
+      expect(result.init.status).toBe(400);
+      expect(result.data).toEqual({
+        errors: { title: ['Required input is missing.'] },
+      });
+    });
+
+    it('rethrows other errors', async () => {
+      const failure = { status: 500, data: { message: 'Boom' } };
+      config.settings.apiPath = 'http://example.com';
+      const context = new RouterContextProvider();
+      context.set(ploneClientContext, {
+        updateContent: vi.fn().mockRejectedValue(failure),
+      } as any);
+
+      const request = new Request('http://example.com/my-page/edit', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+      });
+
+      await expect(
+        action({
+          request,
+          params: { '*': 'my-page' },
+          context,
+          pattern: '/my-page/edit',
+          url: new URL(request.url),
+        }),
+      ).rejects.toBe(failure);
     });
 
     it('should redirect back to the same path', async () => {
@@ -132,8 +192,8 @@ describe('Edit route', () => {
         request,
         params: { '*': 'my-page' },
         context,
-        unstable_pattern: '/my-page/edit',
-        unstable_url: new URL(request.url),
+        pattern: '/my-page/edit',
+        url: new URL(request.url),
       });
 
       expect((result as Response).status).toBe(302);
@@ -158,8 +218,8 @@ describe('Edit route', () => {
         request,
         params: {},
         context,
-        unstable_pattern: '/edit',
-        unstable_url: new URL(request.url),
+        pattern: '/edit',
+        url: new URL(request.url),
       });
 
       expect((result as Response).status).toBe(302);

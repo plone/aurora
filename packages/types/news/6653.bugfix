@@ -1,2 +1,0 @@
-Corrected `GetTypesResponse` to also include the non expanded type.
-Used more specific type for `contentIcons` setting in the config. @arybakov05

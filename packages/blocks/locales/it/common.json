@@ -1,0 +1,10 @@
+{
+  "blocks": {
+    "maps": {
+      "maps-block-input-placeholder": "Inserisci il codice di incorporamento della mappa",
+      "embedded-map-block": "Blocco mappa incorporato",
+      "instructions": "Inserisci il codice di incorporamento fornito dal tuo provider di mappe. Deve contenere il codice <iframe>",
+      "code-error": "Errore nel codice di incorporamento, segui le istruzioni e riprova."
+    }
+  }
+}

@@ -1,14 +1,10 @@
-import type { SlateLeafProps, TCommentText } from 'platejs';
+import type { TCommentText } from 'platejs';
+import type { SlateLeafProps } from 'platejs/static';
 
-import { SlateLeaf } from 'platejs';
+import { SlateLeaf } from 'platejs/static';
 
+// Comments are an editorial tool: the rendered content shows commented text
+// as plain text. The editor highlights it (`comment-node.tsx`).
 export function CommentLeafStatic(props: SlateLeafProps<TCommentText>) {
-  return (
-    <SlateLeaf
-      {...props}
-      className="border-b-highlight/35 bg-highlight/15 border-b-2"
-    >
-      {props.children}
-    </SlateLeaf>
-  );
+  return <SlateLeaf {...props}>{props.children}</SlateLeaf>;
 }
