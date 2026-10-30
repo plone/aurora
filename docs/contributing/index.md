@@ -138,4 +138,4 @@ language-features
 ## Final advice
 
 If you become hesitant after reading the foregoing, don't worry.
-You can always create a pull request, mark it as "Draft", and improve these points later while requesting help from the community.
+You can always create a pull request, mark it as "Draft," and improve these points later while requesting help from the community.
