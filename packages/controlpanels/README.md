@@ -29,11 +29,7 @@ const driver = createMockDriver();
 
 export function App({ children }) {
   return (
-    <ControlPanelsProvider
-      navigate={navigate}
-      translate={translate}
-      notify={notify}
-    >
+    <ControlPanelsProvider navigate={navigate} t={t} notify={notify}>
       <ContentTypesDriverProvider driver={driver}>
         {children}
       </ContentTypesDriverProvider>
@@ -89,6 +85,15 @@ export default function install(config: ConfigType) {
 ```
 
 Components get a state's color with `useStateColor()`, and code outside React with `stateColor(state, stateColors)`.
+
+## Translations
+
+The package follows `@plone/plate`'s i18n contract, which is react-i18next's: pass `t` to `ControlPanelsProvider`.
+In Plone Aurora that's react-i18next's `t`, and the translations in `src/locales` load with the add-on, which Aurora registers.
+Apps on react-intl, such as Volto, pass `translationFromIntl(intl)`, and keep the messages in their own catalogs: the keys are their react-intl message ids.
+
+The English catalog, `src/locales/en/common.json`, is generated from the messages in the code: run `pnpm i18n` after changing them.
+The test of the catalogs fails when it's outdated, or when a translation has unknown keys or placeholders.
 
 ## Styles in apps without Tailwind
 
