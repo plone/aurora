@@ -64,8 +64,9 @@ export interface ContentTypesCapabilities {
  *
  * The screens never call a backend themselves: every app passes a driver
  * that reads and writes through its own access to the backend, and tests and
- * stories use the mock driver. Methods marked optional exist only when the
- * matching capability is on.
+ * stories use the mock driver. For plone.restapi, `createRestApiDriver` is
+ * that driver: Aurora runs it on the server, Volto in the browser. Methods
+ * marked optional exist only when the matching capability is on.
  */
 export interface ContentTypesDriver {
   capabilities: ContentTypesCapabilities;
