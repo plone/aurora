@@ -2,6 +2,18 @@
   container-name: header;
   container-type: inline-size;
 
+  /* Above 48rem the navigation panel's wrapper and the header tools'
+     collapsible group stay out of the layout, so the list and the tools sit
+     in the row as before, and the panel's own copy of the tools is hidden. */
+  .navigation-panel,
+  .header-tools-collapsible {
+    display: contents;
+  }
+
+  .navigation-panel-tools {
+    display: none;
+  }
+
   /* Below 48rem the desktop row no longer fits: the navigation column takes
      the whole width, the logo collapses and the language switcher lands on
      top of the last nav items. `#header` declares itself the `header`
@@ -34,7 +46,7 @@
         display: inline-flex;
       }
 
-      ul {
+      .navigation-panel {
         position: absolute;
         z-index: 10;
         top: 100%;
@@ -52,6 +64,10 @@
         &[data-open] {
           display: flex;
         }
+      }
+
+      ul {
+        flex-direction: column;
 
         li a {
           /* Same inline inset the theme gives the inner container, so the
@@ -61,6 +77,47 @@
           margin-left: 0;
         }
       }
+
+      /* The account tools and the language switcher, moved here from the
+         header row. */
+      .navigation-panel-tools {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem calc(var(--spacing, 0.25rem) * 6) 0.25rem;
+        border-top: 1px solid
+          color-mix(in oklab, var(--foreground) 15%, var(--background, #fff));
+        margin-top: 0.5rem;
+        gap: 0.75rem;
+
+        /* Drop the spacing the tools carry for the header row. */
+        > * {
+          margin: 0;
+        }
+      }
+    }
+
+    /* A theme styles the navigation's links for the header row, and the
+       panel's tools are inside the navigation now: Agave gives them the
+       bottom padding of its underline bar, with
+       `#header .section-header.header-logo-nav-tools-wrapper .navigation a.react-aria-Link`.
+       This selector outranks it, so the tools line up in the panel. */
+    .header-logo-nav-tools-wrapper
+      .navigation
+      .navigation-panel
+      .navigation-panel-tools
+      > *
+      > a[href] {
+      padding-block: 0;
+    }
+
+    /* The header row keeps only the search icon of the tools: the account
+       tools and the language switcher are in the navigation panel, and the
+       search field gives way to the search page's own. */
+    .header-tools-collapsible,
+    .searchwidget .react-aria-TextField {
+      display: none;
     }
   }
 }
