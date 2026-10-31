@@ -8,6 +8,9 @@ const ALLOWED = [
   'react',
   'react-dom',
   'react-aria-components',
+  // React Aria Components' own dependency, for what it doesn't re-export
+  // (`UNSAFE_PortalProvider`), so it adds nothing for Volto either.
+  'react-aria',
   '@plone/quanta',
   // Quanta depends on it already, so it adds nothing for Volto.
   '@plone/icons',
