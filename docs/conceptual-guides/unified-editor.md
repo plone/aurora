@@ -24,7 +24,7 @@ Each text-based block instantiates its own [Slate](https://docs.slatejs.org/) ed
 This split has structural costs: two mental models and rendering pipelines, selection state that is hard to coordinate across blocks, awkward keyboard navigation between blocks, and a per-instance performance overhead in large documents.
 
 Plone Aurora unifies both models into one editor tree.
-A single Plate editor holds the whole page, text is edited as native Plate blocks, and existing Plone blocks are mounted as nodes inside the same tree.
+A single Plate editor holds the whole page, text is edited as Plate.js blocks, and existing Plone blocks are mounted as nodes inside the same tree.
 There is no longer a separation between "editor text content" and "content blocks".
 
 ## The single editor tree
@@ -35,8 +35,8 @@ One editor instance is initialized at the page level and renders every block, so
 ```text
 Page content
 └── Plate editor
-    ├── title        (native Plate block)
-    ├── p            (native Plate block)
+    ├── title        (Plate.js block)
+    ├── p            (Plate.js block)
     ├── ploneBlock   (wrapped image block)
     ├── ploneBlock   (wrapped listing block)
     └── ...
@@ -44,7 +44,7 @@ Page content
 
 Nodes come in two kinds:
 
-Native Plate blocks
+Plate.js blocks
 :   Text-based content such as the document `title`, paragraphs (`p`), and headings.
     These are edited directly by Plate using the Slate data model.
 
@@ -64,10 +64,10 @@ For each wrapped node, the adapter:
 - Renders the block's existing `edit` component in the editor (or its `view` component in the renderer), passing the familiar block props: `data`, `block`, `selected`, `setBlock`, `onChangeBlock`, `onSelectBlock`, and `blocksConfig`.
 - Maps changes from the block back into the Plate tree, keeping the node's data (everything except the internal `type`, `id`, and `children` fields) in sync with the block's data.
 
-A companion keyboard plugin handles caret movement in and out of these void nodes, so pressing {kbd}`Enter`, {kbd}`ArrowUp`, or {kbd}`ArrowDown` moves between wrapped blocks and native text blocks as a user would expect.
+A companion keyboard plugin handles caret movement in and out of these void nodes, so pressing {kbd}`Enter`, {kbd}`ArrowUp`, or {kbd}`ArrowDown` moves between wrapped blocks and Plate.js text blocks as a user would expect.
 
 The consequence is that **existing blocks require no changes**.
-Add-on authors keep writing blocks against the standard Plone block API and schema; the adapter is what makes them native Plate nodes.
+Add-on authors keep writing blocks against the standard Plone block API and schema; the adapter is what makes them Plate.js nodes.
 
 ## Data model
 
@@ -104,7 +104,7 @@ The unified content is stored inside the standard `blocks` mapping, under a sing
 The `__somersault__` entry follows the same shape as any other block: it has an `@type` and a `value`.
 The `value` holds the entire Plate editor value as an ordered array of nodes:
 
-- **Native text nodes** use a Plate `type` (`title`, `p`, and so on) and Slate-style `children`.
+- **Plate.js text nodes** use a Plate `type` (`title`, `p`, and so on) and Slate-style `children`.
 - **Wrapped Plone blocks** use `type: "ploneBlock"`, carry the original block data verbatim (`@type` and all its fields), add a computed `blockWidth`, and include an empty `children` array because the node is a void element.
 
 ```{note}
