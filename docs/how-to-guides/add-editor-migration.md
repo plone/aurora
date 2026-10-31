@@ -24,27 +24,27 @@ Building the editor value is a two-phase pipeline, and there is one migration ty
 Legacy content is stored as a **map of blocks** plus a separate **layout order** (`blocks_layout.items`), but the editor needs a **single flat, ordered list of nodes**.
 `migrateContent` runs the phases strictly in order:
 
-1. **Assembly** — all `somersaultBlockMigration` utilities run first, one pass per legacy block in `blocks_layout.items` order, producing the assembled `__somersault__` value (the flat node list).
-2. **Normalization** — only then do all `somersaultMigration` utilities run, each over that **entire assembled value**.
+1. **Assembly**—all `somersaultBlockMigration` utilities run first, one pass per legacy block in `blocks_layout.items` order, producing the assembled `__somersault__` value (the flat node list).
+2. **Normalization**—only then do all `somersaultMigration` utilities run, each over that **entire assembled value**.
 
-So block migrations never see the final value, and value migrations never see individual blocks — a value migration always operates on the complete list already produced by the assembly phase.
+So block migrations never see the final value, and value migrations never see individual blocks—a value migration always operates on the complete list already produced by the assembly phase.
 
-`somersaultBlockMigration` — the **assembly** phase
-:   Answers the question: _"given this stored block, what node(s) should appear in the editor, and where?"_
-    It runs once per legacy block, in `blocks_layout.items` order, and works at the **block boundary**: it receives one block (with its `blockId` and the full `content`) and returns the Plate node(s) that block becomes.
+`somersaultBlockMigration`—the **assembly** phase
+:   Answers the question: _"given this stored block, what node or nodes should appear in the editor, and where?"_
+    It runs once per legacy block, in `blocks_layout.items` order, and works at the **block boundary**: it receives one block (with its `blockId` and the full `content`) and returns the Plate node or nodes that the block becomes.
     This is where the block map turns into an ordered node list.
 
-`somersaultMigration` — the **normalization** phase
+`somersaultMigration`—the **normalization** phase
 :   Answers the question: _"given nodes that are already in the tree, is their internal shape correct?"_
-    It runs once over the **whole assembled value**, ignores block boundaries, and fixes **cross-cutting** shapes that can appear inside any node — regardless of which block produced them.
+    It runs once over the **whole assembled value**, ignores block boundaries, and fixes **cross-cutting** shapes that can appear inside any node—regardless of which block produced them.
     The built-in ones convert legacy Slate shapes (bold, italic, strikethrough, links, lists, block widths) to Plate standards.
 
 ### Which one should I write?
 
 Use the phase distinction to decide:
 
-- Write a **block migration** when your concern is a **whole block** — a block type that has no representation in the editor yet, or one that should map to a native Plate node instead of a wrapped block. You need the block boundary (its `@type`, `blockId`, or content metadata) to do the job.
-- Write a **value migration** when your concern is a **shape inside nodes** that should be fixed **everywhere it occurs** — a legacy mark, an inline element, an attribute — independent of which block it came from. You only need the nodes, not the blocks.
+- Write a **block migration** when your concern is a **whole block**—a block type that has no representation in the editor yet, or one that should map to a native Plate node instead of a wrapped block. You need the block boundary (its `@type`, `blockId`, or content metadata) to do the job.
+- Write a **value migration** when your concern is a **shape inside nodes** that should be fixed **everywhere it occurs**—a legacy mark, an inline element, an attribute—independent of which block it came from. You only need the nodes, not the blocks.
 
 A rule of thumb: if you find yourself branching on `block['@type']`, you want a block migration. If you find yourself walking the node tree looking for a `type` or a property, you want a value migration.
 
@@ -55,16 +55,16 @@ Both run server-side only. `migrateContent` is idempotent: if the content alread
 The migrations Plone Aurora registers by default (in [`migrations.server.ts`](https://github.com/plone/aurora/blob/main/apps/aurora/app/config/server/migrations.server.ts)) are a good illustration of the two phases.
 They run in this registration order.
 
-**Assembly** — the `somersaultBlockMigration` utilities, offered every block in `blocks_layout.items` order:
+**Assembly**—the `somersaultBlockMigration` utilities, offered every block in `blocks_layout.items` order:
 
-1. `somersaultBlockMigrationTitle` — turns the `title` block into a native `title` node, using the content's `title` metadata as its text.
-2. `somersaultBlockMigrationLegacyValue` — passes through the `value` array of a legacy text block (already Slate nodes) into the editor value.
-3. `somersaultBlockMigrationUnknown` — wraps any other registered block (image, listing, teaser, custom blocks) into a `ploneBlock` node, preserving its data and computing its `blockWidth`.
+1. `somersaultBlockMigrationTitle`—turns the `title` block into a native `title` node, using the content's `title` metadata as its text.
+2. `somersaultBlockMigrationLegacyValue`—passes through the `value` array of a legacy text block (already Slate nodes) into the editor value.
+3. `somersaultBlockMigrationUnknown`—wraps any other registered block (image, listing, teaser, custom blocks) into a `ploneBlock` node, preserving its data and computing its `blockWidth`.
 
 Because each block is offered to all three, and each returns `[]` when it does not apply, every block is handled by exactly one of them.
 The result is the assembled `__somersault__` value.
 
-**Normalization** — the `somersaultMigration` utilities, each run over that whole assembled value, in order:
+**Normalization**—the `somersaultMigration` utilities, each run over that whole assembled value, in order:
 
 1. `somersaultMigrationLegacyBold`
 2. `somersaultMigrationLegacyItalic`
@@ -87,13 +87,13 @@ Because utilities registered later under the same `name` override earlier ones, 
 ## Add a `somersaultBlockMigration`
 
 A block migration converts one legacy block into one or more Plate nodes.
-It must return an array — return `[]` for blocks it does not handle, since every registered block migration is offered every block.
+It must return an array—return `[]` for blocks it does not handle, since every registered block migration is offered every block.
 
 The utility method receives:
 
-- `block` — the block's data (`Record<string, unknown>`), including its `@type`.
-- `blockId` — the block's key in `blocks`.
-- `content` — the full content object, useful for reading metadata.
+- `block`—the block's data (`Record<string, unknown>`), including its `@type`.
+- `blockId`—the block's key in `blocks`.
+- `content`—the full content object, useful for reading metadata.
 
 For example, to convert a legacy `description` block into a native Plate paragraph:
 

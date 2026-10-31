@@ -28,7 +28,7 @@ The current model is:
 - Registry-backed Plone blocks expose width controls through their schema-driven block settings form when their schema declares `blockWidth`.
 - Normalization ensures Plate-native blocks and `ploneBlock` nodes get a valid `blockWidth` value.
 - If a Plate-native block does not define its own `defaultWidth`, the plugin resolves it from `config.blocks.widths`.
-- If a `ploneBlock` does not declare a `blockWidth` style field in its schema, `StyleFieldsPlugin` uses `defaultBlockWidth` from the Plone block config, then falls back to `default`.
+- If a `ploneBlock` does not declare a `blockWidth` style field in its schema, `StyleFieldsPlugin` uses `defaultBlockWidth` from the Plone block configuration, then falls back to `default`.
 
 The important consequence is that the node stores a width id, not a CSS value.
 
@@ -168,7 +168,7 @@ The `blockWidth` policy supports:
 
 ## Configure widths for Plone blocks with editor controls
 
-Plone blocks (non-plate native, registry-backed) expose editor width controls through their block schema.
+Plone blocks (non-Plate native, registry-backed) expose editor width controls through their block schema.
 They are stored as `ploneBlock` nodes in the Somersault value.
 
 Example from `packages/blocks/Image/schema.tsx`:
@@ -227,7 +227,7 @@ Width policy resolution is split by block family:
 - For Plone blocks, `StyleFieldsPlugin` reads fields marked with `styleField` from `config.blocks.blocksConfig[element['@type']].blockSchema`.
 - For Plone blocks without a schema-declared `blockWidth`, `StyleFieldsPlugin` reads `config.blocks.blocksConfig[element['@type']].defaultBlockWidth`.
 - If no Plone block default is configured, `StyleFieldsPlugin` falls back to `default`.
-- If no Plate-native registry config is found, `BlockWidthPlugin` falls back to plugin options for backward compatibility.
+- If no Plate-native registry configuration is found, `BlockWidthPlugin` falls back to plugin options for backward compatibility.
 
 For Plate-native blocks, the width toolbar uses the resolved policy and the shared width definitions together:
 

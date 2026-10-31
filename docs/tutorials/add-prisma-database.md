@@ -34,7 +34,7 @@ If you still need an add-on skeleton, follow {doc}`../get-started/create-package
 
 ## Install Prisma in your add-on
 
-Run this command from the repo root to install Prisma and its client in your add-on package:
+Run this command from the repository root to install Prisma and its client in your add-on package:
 
 ```shell
 pnpm --filter <add-on-name> add @prisma/client prisma @types/node
@@ -210,7 +210,7 @@ export default function install(config: ConfigType) {
 }
 ```
 
-Replace `<add-on-name>` with the actual package directory name you generated with cookieplone before using the snippets below.
+Replace `<add-on-name>` with the actual package directory name you generated with Cookieplone before using the snippets below.
 
 Wire it up in your add-on's {file}`package/<add-on-name>/index.ts` file:
 

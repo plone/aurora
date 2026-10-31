@@ -18,7 +18,7 @@ See {doc}`../reference/blocks-schema-endpoint`.
 ## Write the documentation of a block
 
 Write it in a Markdown file next to the block, with a name that ends in `.block.md`, such as {file}`docs.block.md`.
-Its frontmatter names the block by its ID.
+Its Frontmatter names the block by its ID.
 
 ````markdown
 ---
@@ -68,7 +68,7 @@ Follow these conventions, so the documentation reads well in every format.
 
 ## Document a variation
 
-To document a variation, add another file with the `variation` in its frontmatter.
+To document a variation, add another file with the `variation` in its Frontmatter.
 
 ```markdown
 ---
@@ -82,7 +82,7 @@ Shows the title, description and image of each item.
 ## Document an element
 
 The native elements of the page document, such as paragraphs, headings, or tables, are not blocks of `blocksConfig`, but the endpoint lists them too, so that a client knows every node it can use to build a page.
-Document an element with `element` in the frontmatter, set to the node `type`, and a `title`.
+Document an element with `element` in the Frontmatter, set to the node `type`, and a `title`.
 One file can document several elements that work the same way, separated by commas.
 
 ````markdown
@@ -136,7 +136,7 @@ If it throws or doesn't return a string, the endpoint uses the file's documentat
 ## The document format
 
 A page stores its content as one Plate document, in the `__somersault__` block.
-Its format is documented in {file}`packages/plate/docs/document.block.md`, a file whose frontmatter names `__somersault__`.
+Its format is documented in {file}`packages/plate/docs/document.block.md`, a file whose Frontmatter names `__somersault__`.
 The endpoint returns it as the `document` of the list of blocks, not as a block.
 
 ```{note}

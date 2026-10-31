@@ -71,7 +71,7 @@ From here we will have access to the commands to check for errors and to fix the
 
 (linting-eslint-prettier-and-stylelint-label)=
 
-### Eslint, Prettier, and Stylelint
+### ESLint, Prettier, and Stylelint
 
 You can run the pnpm `eslint`, `prettier`, and `stylelint` commands from the Plone Aurora package folder:
 

@@ -13,7 +13,7 @@ This chapter explains the anatomy of a frontend add-on in Plone Aurora that was 
 
 ## Root folder structure
 
-After you create a frontend add-on with the cookieplone generator as described in {doc}`../get-started/create-package`, the code lives in the folder {file}`packages/<add-on-name>`.
+After you create a frontend add-on with the Cookieplone generator as described in {doc}`../get-started/create-package`, the code lives in the folder {file}`packages/<add-on-name>`.
 
 The generated project contains the following files and folders:
 
@@ -77,7 +77,7 @@ The generated project contains the following files and folders:
 
 ## Add-on folder structure
 
-The add-on folder {file}`packages/<add-on-name>` contains the folowing files and folders:
+The add-on folder {file}`packages/<add-on-name>` contains the following files and folders:
 
 {file}`packages/<add-on-name>/package.json`
 :   This file contains the metadata for your add-on package.
@@ -211,4 +211,3 @@ Then run:
 ```shell
 make install
 ```
-

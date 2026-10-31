@@ -109,7 +109,7 @@ The schema's `items` decide which tokens are valid:
 -   Otherwise, the editor can add any token.
     A vocabulary in the field's `widgetOptions`, such as the keywords of the `subjects` field, suggests tokens as the editor types.
 
-The widget loads the suggestions from a vocabulary in the content API's default batch: the first terms whose title matches what the editor types.
+The widget loads the suggestions from a vocabulary in the default batch of the content API: the first terms whose title matches what the editor types.
 
 ```ts
 days: {
@@ -316,4 +316,3 @@ describeWidgetContract('MapWidget', MapWidget, {
 ```
 
 The core widgets run the same checks, in {file}`packages/cmsui/config/widgets.contract.test.tsx`.
-

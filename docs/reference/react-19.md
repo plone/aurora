@@ -7,7 +7,7 @@ myst:
     "keywords": "Plone, Plone Aurora, frontend, React 19, reference"
 ---
 
-# React 19: what's new compared to React 18
+# React 19: What's new compared to React 18
 
 React 19 builds on React 18's concurrent rendering and Suspense foundations.
 Its goals are to simplify async logic, stabilize Server Components, and improve hydration, performance, and developer experience.

@@ -415,7 +415,7 @@ Add the messages to your add-on's translation files, under a key with your add-o
 
 See {doc}`../development/i18n` for where translation files go and how they are loaded.
 
-## Invariants: validate a field against other fields
+## Invariants: Validate a field against other fields
 
 `formData` holds all the form's values, so a validator can compare the field with other fields.
 This is how you check an invariant, such as an event ending after it starts.
