@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useFetcher } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Button, Dialog, Heading, Modal } from '@plone/quanta';
+import { Button, Heading, ModalSheet } from '@plone/quanta';
 import { BinIcon } from '@plone/icons';
 import CloseSVG from '@plone/icons/svg/close.svg?react';
 import BinSVG from '@plone/icons/svg/bin.svg?react';
@@ -80,51 +80,48 @@ export default function DeleteModal() {
 
   //TODO: check linkintegrity
   return (
-    <Modal
-      isDismissable
+    <ModalSheet
       isOpen={showDelete}
       onOpenChange={setShowDelete}
       className="[--modal-max-width:360px]"
     >
-      <Dialog className="p-8">
-        <Heading
-          slot="title"
-          className="react-aria-Heading mb-1 text-center text-xl font-bold"
-        >
-          {itemsToDelete.size > 1
-            ? t('contents.modal_delete.multi.title', {
-                n: itemsToDelete.size,
-              })
-            : t('contents.modal_delete.single.title', {
-                item: [...itemsToDelete][0].title,
-              })}
-        </Heading>
+      <Heading
+        slot="title"
+        className="react-aria-Heading mb-1 text-center text-xl font-bold"
+      >
+        {itemsToDelete.size > 1
+          ? t('contents.modal_delete.multi.title', {
+              n: itemsToDelete.size,
+            })
+          : t('contents.modal_delete.single.title', {
+              item: [...itemsToDelete][0].title,
+            })}
+      </Heading>
 
-        <p className="text-center text-sm">
-          {t('contents.modal_delete.description')}
-        </p>
-        <div className="mt-8 flex justify-center gap-3">
-          <Button
-            className="react-aria-Button close"
-            onPress={close}
-            aria-label={t('contents.modal.close')}
-            accent={true}
-            size="L"
-          >
-            <CloseSVG />
-          </Button>
-          <Button
-            className="react-aria-Button delete"
-            onPress={submitDelete}
-            aria-label={t('contents.modal_delete.confirm')}
-            variant="destructive"
-            accent={true}
-            size="L"
-          >
-            <BinSVG />
-          </Button>
-        </div>
-      </Dialog>
-    </Modal>
+      <p className="text-center text-sm">
+        {t('contents.modal_delete.description')}
+      </p>
+      <div className="mt-8 flex justify-center gap-3">
+        <Button
+          className="react-aria-Button close"
+          onPress={close}
+          aria-label={t('contents.modal.close')}
+          accent={true}
+          size="L"
+        >
+          <CloseSVG />
+        </Button>
+        <Button
+          className="react-aria-Button delete"
+          onPress={submitDelete}
+          aria-label={t('contents.modal_delete.confirm')}
+          variant="destructive"
+          accent={true}
+          size="L"
+        >
+          <BinSVG />
+        </Button>
+      </div>
+    </ModalSheet>
   );
 }

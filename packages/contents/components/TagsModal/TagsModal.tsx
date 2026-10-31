@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useFetcher, type SubmitTarget } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Button, Dialog, Heading, Modal } from '@plone/quanta';
+import { Button, Heading, ModalSheet } from '@plone/quanta';
 import { CloseIcon, TagIcon, ChevrondownIcon } from '@plone/icons';
 import { type ToastItem } from '@plone/layout/config/toast';
 import { useContentsContext } from '../../providers/contents';
@@ -97,110 +97,108 @@ export default function TagsModal() {
   };
 
   return (
-    <Modal isDismissable isOpen={showTags} onOpenChange={setShowTags}>
-      <Dialog className="mx-auto w-full p-8">
-        <Heading
-          slot="title"
-          className="react-aria-Heading mb-6 text-xl font-bold"
-        >
-          {t('contents.modal_tags.title')}
-        </Heading>
-        <div className="mx-auto max-w-xl">
-          <span className="mb-2 block text-sm font-bold">
-            {t('contents.modal_tags.current_label')}
-          </span>
-          <div className="mb-5 flex min-h-8 flex-wrap items-center gap-2">
-            {visibleExisting.map((tag) => (
-              <TagChip
-                key={`e-${tag}`}
-                label={tag}
-                onRemove={() => removeExisting(tag)}
-              />
-            ))}
-            {added.map((tag) => (
-              <TagChip
-                key={`a-${tag}`}
-                label={tag}
-                added
-                onRemove={() => removeAdded(tag)}
-              />
-            ))}
-            {visibleExisting.length === 0 && added.length === 0 && (
-              <span className="text-quanta-graphite px-1 text-sm">
-                {t('contents.modal_tags.empty')}
-              </span>
-            )}
-          </div>
-
-          <label className="mb-1 block text-sm font-bold" htmlFor="tags-add">
-            {t('contents.modal_tags.add_label')}
-          </label>
-          <div
-            className={`
-              flex items-center gap-2 rounded-lg border border-quanta-silver bg-quanta-air pe-3
-              transition-colors
-              focus-within:border-quanta-sapphire
-            `}
-          >
-            <input
-              id="tags-add"
-              type="text"
-              list="tags-vocabulary"
-              value={input}
-              placeholder={t('contents.modal_tags.add_placeholder')}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  addTag(input);
-                }
-              }}
-              aria-label={t('contents.modal_tags.add_label')}
-              className={`
-                min-w-0 flex-1 appearance-none bg-transparent py-2 ps-3 text-sm outline-0
-                placeholder:text-quanta-pigeon
-                [&::-webkit-calendar-picker-indicator]:hidden!
-                [&::-webkit-calendar-picker-indicator]:appearance-none
-              `}
+    <ModalSheet isOpen={showTags} onOpenChange={setShowTags}>
+      <Heading
+        slot="title"
+        className="react-aria-Heading mb-6 text-xl font-bold"
+      >
+        {t('contents.modal_tags.title')}
+      </Heading>
+      <div className="mx-auto max-w-xl">
+        <span className="mb-2 block text-sm font-bold">
+          {t('contents.modal_tags.current_label')}
+        </span>
+        <div className="mb-5 flex min-h-8 flex-wrap items-center gap-2">
+          {visibleExisting.map((tag) => (
+            <TagChip
+              key={`e-${tag}`}
+              label={tag}
+              onRemove={() => removeExisting(tag)}
             />
-            <ChevrondownIcon
-              aria-hidden
-              size="base"
-              className="pointer-events-none shrink-0 text-quanta-pigeon"
+          ))}
+          {added.map((tag) => (
+            <TagChip
+              key={`a-${tag}`}
+              label={tag}
+              added
+              onRemove={() => removeAdded(tag)}
             />
-          </div>
-          <p className="text-quanta-graphite mt-1 text-xs">
-            {t('contents.modal_tags.add_hint')}
-          </p>
-          <datalist id="tags-vocabulary">
-            {vocabulary.map((tag) => (
-              <option key={tag} value={tag} />
-            ))}
-          </datalist>
-
-          <div className="mt-8 flex justify-center gap-3">
-            <Button
-              onPress={close}
-              aria-label={t('contents.modal.close')}
-              accent={true}
-              size="L"
-            >
-              <CloseIcon />
-            </Button>
-            <Button
-              onPress={confirm}
-              aria-label={t('contents.modal_tags.confirm')}
-              variant="primary"
-              accent={true}
-              size="L"
-              isDisabled={fetcher.state !== 'idle'}
-            >
-              <TagIcon />
-            </Button>
-          </div>
+          ))}
+          {visibleExisting.length === 0 && added.length === 0 && (
+            <span className="text-quanta-graphite px-1 text-sm">
+              {t('contents.modal_tags.empty')}
+            </span>
+          )}
         </div>
-      </Dialog>
-    </Modal>
+
+        <label className="mb-1 block text-sm font-bold" htmlFor="tags-add">
+          {t('contents.modal_tags.add_label')}
+        </label>
+        <div
+          className={`
+            flex items-center gap-2 rounded-lg border border-quanta-silver bg-quanta-air pe-3
+            transition-colors
+            focus-within:border-quanta-sapphire
+          `}
+        >
+          <input
+            id="tags-add"
+            type="text"
+            list="tags-vocabulary"
+            value={input}
+            placeholder={t('contents.modal_tags.add_placeholder')}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                addTag(input);
+              }
+            }}
+            aria-label={t('contents.modal_tags.add_label')}
+            className={`
+              min-w-0 flex-1 appearance-none bg-transparent py-2 ps-3 text-sm outline-0
+              placeholder:text-quanta-pigeon
+              [&::-webkit-calendar-picker-indicator]:hidden!
+              [&::-webkit-calendar-picker-indicator]:appearance-none
+            `}
+          />
+          <ChevrondownIcon
+            aria-hidden
+            size="base"
+            className="pointer-events-none shrink-0 text-quanta-pigeon"
+          />
+        </div>
+        <p className="text-quanta-graphite mt-1 text-xs">
+          {t('contents.modal_tags.add_hint')}
+        </p>
+        <datalist id="tags-vocabulary">
+          {vocabulary.map((tag) => (
+            <option key={tag} value={tag} />
+          ))}
+        </datalist>
+
+        <div className="mt-8 flex justify-center gap-3">
+          <Button
+            onPress={close}
+            aria-label={t('contents.modal.close')}
+            accent={true}
+            size="L"
+          >
+            <CloseIcon />
+          </Button>
+          <Button
+            onPress={confirm}
+            aria-label={t('contents.modal_tags.confirm')}
+            variant="primary"
+            accent={true}
+            size="L"
+            isDisabled={fetcher.state !== 'idle'}
+          >
+            <TagIcon />
+          </Button>
+        </div>
+      </div>
+    </ModalSheet>
   );
 }
 

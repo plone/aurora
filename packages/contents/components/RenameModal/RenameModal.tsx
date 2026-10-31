@@ -5,10 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { getContentIcon } from '@plone/helpers';
 import {
   Button as QuantaButton,
-  Dialog,
   Heading,
   Input,
-  Modal,
+  ModalSheet,
   Separator,
 } from '@plone/quanta';
 import { ArrowrightIcon, CloseIcon, RenameIcon } from '@plone/icons';
@@ -94,88 +93,81 @@ export default function RenameModal() {
   };
 
   return (
-    <Modal isDismissable isOpen={showRename} onOpenChange={setShowRename}>
-      <Dialog className="mx-auto w-full p-8">
-        <div className="mb-10 flex items-center justify-between">
-          <Heading
-            slot="title"
-            className="react-aria-Heading text-xl font-bold"
-          >
-            {t('contents.modal_rename.title')}
-          </Heading>
-          <Button
-            onPress={close}
-            aria-label={t('contents.modal.close')}
-            className={`
-              cursor-pointer text-quanta-space
-              hover:text-quanta-sapphire
-              [&_svg]:size-5
-            `}
-          >
-            <CloseIcon />
-          </Button>
-        </div>
-        <div className="mx-auto max-w-sm">
-          {rows.map((row, index) => {
-            const item = items[index];
-            const Icon = getContentIcon(item?.['@type'], item?.is_folderish);
-            return (
-              <div key={row['@id']}>
-                {index > 0 && <Separator className="my-6 bg-quanta-silver" />}
-                <label className="block">
-                  <span className="text-quanta-graphite mb-1 block text-xs">
-                    {t('contents.modal_rename.name')}
-                  </span>
-                  <div className="relative">
-                    <span
-                      className={`
-                        pointer-events-none absolute start-3 top-1/2 -translate-y-1/2
-                        text-quanta-space
-                        [&_svg]:size-4
-                      `}
-                    >
-                      <Icon />
-                    </span>
-                    <Input
-                      type="text"
-                      value={row.title}
-                      onChange={(e) =>
-                        updateRow(index, 'title', e.target.value)
-                      }
-                      aria-label={`${t('contents.modal_rename.name')}: ${row.originalTitle}`}
-                      className="h-11 w-full rounded-lg ps-10 pe-3"
-                    />
-                  </div>
-                </label>
-                <label className="mt-4 block">
-                  <span className="text-quanta-graphite mb-1 block text-xs">
-                    {t('contents.modal_rename.url')}
+    <ModalSheet isOpen={showRename} onOpenChange={setShowRename}>
+      <div className="mb-10 flex items-center justify-between">
+        <Heading slot="title" className="react-aria-Heading text-xl font-bold">
+          {t('contents.modal_rename.title')}
+        </Heading>
+        <Button
+          onPress={close}
+          aria-label={t('contents.modal.close')}
+          className={`
+            cursor-pointer text-quanta-space
+            hover:text-quanta-sapphire
+            [&_svg]:size-5
+          `}
+        >
+          <CloseIcon />
+        </Button>
+      </div>
+      <div className="mx-auto max-w-sm">
+        {rows.map((row, index) => {
+          const item = items[index];
+          const Icon = getContentIcon(item?.['@type'], item?.is_folderish);
+          return (
+            <div key={row['@id']}>
+              {index > 0 && <Separator className="my-6 bg-quanta-silver" />}
+              <label className="block">
+                <span className="text-quanta-graphite mb-1 block text-xs">
+                  {t('contents.modal_rename.name')}
+                </span>
+                <div className="relative">
+                  <span
+                    className={`
+                      pointer-events-none absolute start-3 top-1/2 -translate-y-1/2
+                      text-quanta-space
+                      [&_svg]:size-4
+                    `}
+                  >
+                    <Icon />
                   </span>
                   <Input
                     type="text"
-                    value={row.id}
-                    onChange={(e) => updateRow(index, 'id', e.target.value)}
-                    aria-label={`${t('contents.modal_rename.url')}: ${row.originalId}`}
-                    className="h-11 w-full rounded-lg px-3"
+                    value={row.title}
+                    onChange={(e) => updateRow(index, 'title', e.target.value)}
+                    aria-label={`${t('contents.modal_rename.name')}: ${row.originalTitle}`}
+                    className="h-11 w-full rounded-lg ps-10 pe-3"
                   />
-                </label>
-              </div>
-            );
-          })}
-          <div className="mt-10 flex justify-end">
-            <QuantaButton
-              onPress={confirm}
-              aria-label={t('contents.modal_rename.confirm')}
-              variant="primary"
-              accent={true}
-              size="L"
-              isDisabled={rows.length === 0 || fetcher.state !== 'idle'}
-            >
-              <ArrowrightIcon />
-            </QuantaButton>
-          </div>
+                </div>
+              </label>
+              <label className="mt-4 block">
+                <span className="text-quanta-graphite mb-1 block text-xs">
+                  {t('contents.modal_rename.url')}
+                </span>
+                <Input
+                  type="text"
+                  value={row.id}
+                  onChange={(e) => updateRow(index, 'id', e.target.value)}
+                  aria-label={`${t('contents.modal_rename.url')}: ${row.originalId}`}
+                  className="h-11 w-full rounded-lg px-3"
+                />
+              </label>
+            </div>
+          );
+        })}
+        <div className="mt-10 flex justify-end">
+          <QuantaButton
+            onPress={confirm}
+            aria-label={t('contents.modal_rename.confirm')}
+            variant="primary"
+            accent={true}
+            size="L"
+            isDisabled={rows.length === 0 || fetcher.state !== 'idle'}
+          >
+            <ArrowrightIcon />
+          </QuantaButton>
         </div>
-      </Dialog>
-    </Modal>
+      </div>
+    </ModalSheet>
   );
 }

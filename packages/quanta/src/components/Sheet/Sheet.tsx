@@ -79,9 +79,14 @@ export interface SheetProps extends Omit<SheetOverlayProps, 'children'> {
 export function Sheet({ children, overscrollPadding, ...props }: SheetProps) {
   const { snapPoints } = props;
   return (
+    // `z-20`, like `Modal`'s overlay, so it covers fixed and sticky page
+    // chrome, such as the CMS toolbar.
     <SheetOverlay
       {...props}
-      className={composeTailwindRenderProps(props.className, 'group/sheet')}
+      className={composeTailwindRenderProps(
+        props.className,
+        'group/sheet z-20',
+      )}
     >
       {/* The backdrop fades in as the sheet slides in. With snap points, it
           stays hidden until the sheet is dragged past the last one. */}
