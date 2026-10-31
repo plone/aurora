@@ -1,1 +1,0 @@
-`REACT_ROUTER_ALLOWED_ACTION_ORIGINS` is now read when the production server starts, not when building. Set it in the environment of the running server. @sneridagh

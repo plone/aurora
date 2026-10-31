@@ -1,1 +1,0 @@
-Fixed the interface language staying English when the project supports more languages: the i18next middleware and the client now read `config.settings.supportedLanguages` after the configuration is applied, and the client starts in the language the server detected. `app/i18n` now exports `getI18nOptions()` instead of a default options object. @sneridagh
