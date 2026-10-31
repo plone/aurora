@@ -50,11 +50,15 @@ export const ContentTypesMenu = ({ content }: ContentTypesMenuProps) => {
 
   return (
     <ToolbarMenu
+      mobileSheet
       icon={<Add />}
       triggerLabel={t('publicui.toolbar.addContent')}
       styles={contentTypesMenuStyles}
     >
-      <Menu className="menu-contenttypes-add">
+      <Menu
+        className="menu-contenttypes-add"
+        aria-label={t('publicui.toolbar.addContent')}
+      >
         <MenuSection className="most-used">
           <Header>{t('publicui.toolbar.addContent')}</Header>
           {highlightedTypes.length > 0 &&

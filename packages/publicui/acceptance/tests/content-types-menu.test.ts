@@ -117,4 +117,40 @@ test.describe('ContentTypesMenu', () => {
 
     await expect(page).toHaveURL(/\/@@add.*\?type=Document/);
   });
+
+  test('uses a dismissible mobile sheet and a desktop popover', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await login(page);
+    await page.goto('/', { waitUntil: 'networkidle' });
+
+    const button = addTrigger(page);
+    await button.click();
+    const sheet = page.getByRole('dialog', { name: 'Add content' });
+    await expect(sheet).toBeVisible();
+    await expect(page.locator('.toolbar-mobile-sheet')).not.toHaveAttribute(
+      'data-entering',
+    );
+    await expect(
+      sheet.locator('.most-used').getByRole('menuitem', { name: /Page/ }),
+    ).toBeVisible();
+    await sheet.getByRole('button', { name: 'Close Add content' }).click();
+    await expect(sheet).not.toBeVisible();
+    await expect(button).toBeFocused();
+
+    await button.click();
+    await expect(page.locator('.toolbar-mobile-sheet')).not.toHaveAttribute(
+      'data-entering',
+    );
+    await sheet.getByRole('menuitem', { name: /Page/ }).click();
+    await expect(page).toHaveURL(/\/@@add.*\?type=Document/);
+    await expect(sheet).not.toBeVisible();
+
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.setViewportSize({ width: 1024, height: 768 });
+    await button.click();
+    await expect(page.getByRole('menu', { name: 'Add content' })).toBeVisible();
+    await expect(page.locator('.toolbar-mobile-sheet')).toHaveCount(0);
+  });
 });
