@@ -47,6 +47,7 @@ const RELEASE_GROUPS = [
       '@plone/cmsui',
       '@plone/publicui',
       '@plone/contents',
+      '@plone/controlpanels',
     ],
   },
   {

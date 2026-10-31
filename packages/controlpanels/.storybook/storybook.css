@@ -1,0 +1,9 @@
+/*
+ * The same Tailwind setup Quanta's Storybook uses, plus the classes of this
+ * package and of the Quanta components it renders.
+ */
+@import '../../theming/styles/tailwind.css';
+@import '@plone/quanta/dist/quanta.css';
+
+@source '../src';
+@source '../node_modules/@plone/quanta/dist';

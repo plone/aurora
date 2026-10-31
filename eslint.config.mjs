@@ -169,6 +169,42 @@ export default tseslint.config(
     },
   },
   {
+    // The screens run in Aurora and in Volto: framework specifics come in
+    // through the provider and the drivers (see packages/controlpanels/AGENTS.md).
+    name: 'Control panels - framework-agnostic imports',
+    files: ['packages/controlpanels/src/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                'react-router',
+                'react-router/*',
+                'react-i18next',
+                'react-intl',
+                'i18next',
+                '@plone/client',
+                '@plone/cmsui',
+                '@plone/cmsui/*',
+                '@plone/components',
+                '@plone/components/*',
+                '@plone/layout',
+                '@plone/layout/*',
+                '@plone/react-router',
+                '@plone/volto',
+                '@plone/volto/*',
+              ],
+              message:
+                '@plone/controlpanels must run in Aurora and Volto: get this through the provider or a driver.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     name: 'General Ignores',
     ignores: [
       '**/node_modules',
