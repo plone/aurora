@@ -31,13 +31,20 @@ export interface ControlPanelsProviderProps {
 interface ControlPanelsContextValue {
   translate: Translate;
   notify: Notify;
+  navigate: (path: string) => void;
 }
 
 const noop: Notify = () => {};
 
+// Without an app router, a full page load is the only way to navigate.
+const assignLocation = (path: string) => {
+  window.location.assign(path);
+};
+
 const ControlPanelsContext = createContext<ControlPanelsContextValue>({
   translate: defaultTranslate,
   notify: noop,
+  navigate: assignLocation,
 });
 
 /**
@@ -51,7 +58,10 @@ export function ControlPanelsProvider({
   translate = defaultTranslate,
   notify = noop,
 }: ControlPanelsProviderProps) {
-  const value = useMemo(() => ({ translate, notify }), [translate, notify]);
+  const value = useMemo(
+    () => ({ translate, notify, navigate: navigate ?? assignLocation }),
+    [translate, notify, navigate],
+  );
   const content = (
     <ControlPanelsContext.Provider value={value}>
       {children}
@@ -72,4 +82,9 @@ export function useTranslate(): Translate {
 
 export function useNotify(): Notify {
   return useContext(ControlPanelsContext).notify;
+}
+
+/** Navigates to a path of the app, e.g. after creating something. */
+export function useNavigate(): (path: string) => void {
+  return useContext(ControlPanelsContext).navigate;
 }

@@ -62,6 +62,7 @@
     "@plone/blocks": "workspace:*",
     "@plone/client": "workspace:*",
     "@plone/components": "workspace:*",
+    "@plone/controlpanels": "workspace:*",
     "@plone/helpers": "workspace:*",
     "@plone/icons": "workspace:*",
     "@plone/layout": "workspace:*",
