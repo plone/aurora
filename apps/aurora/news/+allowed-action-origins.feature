@@ -1,1 +1,0 @@
-The hosts allowed as action origins can be set from the environment when building (`REACT_ROUTER_ALLOWED_ACTION_ORIGINS`, comma separated, with `*`/`**` wildcards). Behind a proxy that terminates TLS, React Router sees the request as `http` while the browser sends an `https` origin, so every action, login included, failed with a 400. @sneridagh
