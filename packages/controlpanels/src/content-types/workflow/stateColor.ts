@@ -21,7 +21,8 @@ const VISIBILITY_COLORS: Record<StateVisibility, StateColor> = {
 /**
  * The color to show a workflow state with. The first that applies wins:
  *
- * 1. `overrides`, by state id, e.g. from the app's configuration
+ * 1. `overrides`, by state id: what the site configures, which
+ *    `useStateColor` takes from `ContentTypesDriverProvider`'s `stateColors`
  * 2. the color the backend sets on the state
  * 3. `DEFAULT_STATE_COLORS`, by state id
  * 4. a color from who can see items in the state, so states of custom

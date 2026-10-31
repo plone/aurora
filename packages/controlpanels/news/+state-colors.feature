@@ -1,0 +1,1 @@
+`ContentTypesDriverProvider` takes `stateColors`, the colors of workflow states by state id, and `useStateColor()` returns the color to show a state with. The README explains how a state's color is chosen, and how to set the colors of a new workflow. @sneridagh

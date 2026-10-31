@@ -19,6 +19,7 @@ export {
   ContentTypesDriverProvider,
   NO_CAPABILITIES,
   useContentTypesDriver,
+  useStateColor,
 } from './content-types/driver';
 export type {
   ContentTypesCapabilities,
