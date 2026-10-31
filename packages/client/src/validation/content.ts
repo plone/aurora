@@ -149,6 +149,27 @@ export const updateContentDataSchema = z
       .passthrough()
       .nullable()
       .optional(),
+    // A new file, or the stored one as the API sent it.
+    image: z
+      .object({
+        'content-type': z.string(),
+        data: z.string().optional(),
+        encoding: z.string().optional(),
+        filename: z.string(),
+      })
+      .passthrough()
+      .nullable()
+      .optional(),
+    file: z
+      .object({
+        'content-type': z.string(),
+        data: z.string().optional(),
+        encoding: z.string().optional(),
+        filename: z.string(),
+      })
+      .passthrough()
+      .nullable()
+      .optional(),
     relatedItems: z.array(RelatedItemPayloadSchema).optional(),
     rights: z.string().nullable().optional(),
     subjects: z.array(z.string()).optional(),

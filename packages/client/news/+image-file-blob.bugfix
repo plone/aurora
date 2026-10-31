@@ -1,0 +1,1 @@
+Accept image and file payloads on content update, both a new upload and the stored file as the API sent it, matching createContent. @aryan7081

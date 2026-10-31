@@ -27,6 +27,31 @@ describe('content data schemas', () => {
       updateContentDataSchema.parse({ exclude_from_nav: 'yes' }),
     ).toThrow();
   });
+
+  test('updateContentDataSchema accepts a new or a stored image', () => {
+    const upload = {
+      'content-type': 'image/png',
+      data: 'ZmFrZQ==',
+      encoding: 'base64',
+      filename: 'photo.png',
+    };
+    const stored = {
+      'content-type': 'image/png',
+      download: 'http://localhost:8080/Plone/photo/@@images/image',
+      filename: 'photo.png',
+      size: 4,
+    };
+
+    expect(updateContentDataSchema.parse({ image: upload }).image).toEqual(
+      upload,
+    );
+    expect(updateContentDataSchema.parse({ image: stored }).image).toEqual(
+      stored,
+    );
+    expect(() =>
+      updateContentDataSchema.parse({ file: { filename: 'a.pdf' } }),
+    ).toThrow();
+  });
 });
 
 describe('user data schemas', () => {

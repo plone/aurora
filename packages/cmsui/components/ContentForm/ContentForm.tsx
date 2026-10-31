@@ -59,6 +59,9 @@ export default function ContentForm({
   const fetcher = useFetcher();
   const [collapsed, setCollapsed] = useAtom(sidebarAtom);
   const [selectedTab, setSelectedTab] = useState<Key>('blocks');
+  // Without a `cancelHref`, Cancel goes back to the edited object or, on
+  // add, to the container: a new object has no `@id` yet.
+  const cancelTarget = cancelHref ?? (content['@id'] || path);
   const validators = useMemo(
     () => buildSchemaValidators<Content>(schema, { t }),
     [schema, t],
@@ -217,12 +220,9 @@ export default function ContentForm({
             <Plug
               pluggable="toolbar-top"
               id="button-cancel"
-              dependencies={[cancelHref ?? content['@id']] as any}
+              dependencies={[cancelTarget] as any}
             >
-              <Link
-                aria-label={t('cmsui.cancel')}
-                href={cancelHref ?? content['@id']}
-              >
+              <Link aria-label={t('cmsui.cancel')} href={cancelTarget}>
                 <Close />
               </Link>
             </Plug>
