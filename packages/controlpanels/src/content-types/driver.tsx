@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, useCallback, useContext } from 'react';
 import type { ReactNode } from 'react';
 import type {
   BehaviorInfo,
@@ -7,13 +7,16 @@ import type {
   ContentTypeSummary,
   NewContentType,
   SiteDefaults,
+  StateColor,
   TypeSchema,
   WorkflowAssignments,
   WorkflowChangeJob,
   WorkflowChangePreview,
   WorkflowChangeRequest,
   WorkflowInfo,
+  WorkflowState,
 } from './types';
+import { stateColor } from './workflow/stateColor';
 
 /**
  * What a driver's backend supports beyond the basics. The screens hide or
@@ -108,18 +111,42 @@ const ContentTypesDriverContext = createContext<ContentTypesDriver | null>(
   null,
 );
 
+const StateColorsContext = createContext<
+  Readonly<Record<string, StateColor>> | undefined
+>(undefined);
+
 export function ContentTypesDriverProvider({
   driver,
+  stateColors,
   children,
 }: {
   driver: ContentTypesDriver;
+  /**
+   * The colors of workflow states, by state id, over every other source (see
+   * `stateColor`). Frameworks pass what the site configures, e.g. Aurora's
+   * `config.settings.workflowStateColors`.
+   */
+  stateColors?: Readonly<Record<string, StateColor>>;
   children?: ReactNode;
 }) {
   return (
     <ContentTypesDriverContext.Provider value={driver}>
-      {children}
+      <StateColorsContext.Provider value={stateColors}>
+        {children}
+      </StateColorsContext.Provider>
     </ContentTypesDriverContext.Provider>
   );
+}
+
+/**
+ * The color to show a workflow state with, with the `stateColors` of the
+ * closest `ContentTypesDriverProvider`.
+ */
+export function useStateColor(): (
+  state: Pick<WorkflowState, 'id' | 'visibility' | 'color'>,
+) => StateColor {
+  const stateColors = useContext(StateColorsContext);
+  return useCallback((state) => stateColor(state, stateColors), [stateColors]);
 }
 
 /** The driver of the closest `ContentTypesDriverProvider`. */
