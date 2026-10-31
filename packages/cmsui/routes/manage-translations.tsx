@@ -5,7 +5,6 @@ import {
   RouterContextProvider,
   useFetcher,
   useLoaderData,
-  useNavigate,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from 'react-router';
@@ -25,11 +24,14 @@ import {
   Cell,
   Column,
   Container,
+  Link as QuantaLink,
   Row,
   Table,
   TableBody,
   TableHeader,
+  Tooltip,
 } from '@plone/quanta';
+import { TooltipTrigger } from 'react-aria-components';
 import { AddIcon, LanguageIcon, LinkIcon } from '@plone/icons';
 import Back from '@plone/icons/svg/arrow-left.svg?react';
 import { ObjectBrowserProvider } from '../components/ObjectBrowserWidget/ObjectBrowserContext';
@@ -162,7 +164,6 @@ const showToast = (item: ToastItem) =>
 export default function ManageTranslations() {
   const { title, contentPath, rows } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -203,14 +204,17 @@ export default function ManageTranslations() {
 
   return (
     <>
-      <Plug pluggable="toolbar-top" id="button-back">
-        <Button
+      <Plug
+        pluggable="toolbar-top"
+        id="button-back"
+        dependencies={[contentPath] as any}
+      >
+        <QuantaLink
           aria-label={t('cmsui.manage_translations.back')}
-          size="L"
-          onPress={() => navigate(contentPath || '/')}
+          href={contentPath || '/'}
         >
           <Back />
-        </Button>
+        </QuantaLink>
       </Plug>
       <main>
         <Container width="default" className="route-manage-translations py-8">
@@ -288,18 +292,25 @@ export default function ManageTranslations() {
                       <div className="flex min-h-10 items-center gap-1">
                         {!row.isCurrent &&
                           (row.translationPath ? (
-                            <Button
-                              variant="icon"
-                              type="button"
-                              aria-label={t(
-                                'cmsui.manage_translations.unlink',
-                                { language: languageName },
-                              )}
-                              onPress={() => unlink(row.language)}
-                              isDisabled={busy}
-                            >
-                              <LinkIcon size="sm" />
-                            </Button>
+                            <TooltipTrigger>
+                              <Button
+                                variant="icon"
+                                type="button"
+                                aria-label={t(
+                                  'cmsui.manage_translations.unlink',
+                                  { language: languageName },
+                                )}
+                                onPress={() => unlink(row.language)}
+                                isDisabled={busy}
+                              >
+                                <LinkIcon size="sm" />
+                              </Button>
+                              <Tooltip>
+                                {t('cmsui.manage_translations.unlink', {
+                                  language: languageName,
+                                })}
+                              </Tooltip>
+                            </TooltipTrigger>
                           ) : (
                             <>
                               <LinkTranslationPicker
@@ -313,26 +324,25 @@ export default function ManageTranslations() {
                                   link(flattenToAppURL(item['@id']))
                                 }
                               />
-                              <Link
-                                to={`/@@translate${contentPath}?language=${row.language}`}
-                                aria-label={t(
-                                  'cmsui.manage_translations.create',
-                                  { language: languageName },
-                                )}
-                                aria-disabled={busy || undefined}
-                                onClick={(event) => {
-                                  if (busy) event.preventDefault();
-                                }}
-                                className={`
-                                  flex size-8 items-center justify-center rounded-full
-                                  text-quanta-iron
-                                  hover:bg-quanta-snow
-                                  active:bg-quanta-silver
-                                  aria-disabled:pointer-events-none aria-disabled:opacity-50
-                                `}
-                              >
-                                <LanguageIcon size="sm" />
-                              </Link>
+                              <TooltipTrigger>
+                                <QuantaLink
+                                  asButton
+                                  variant="icon"
+                                  href={`/@@translate${contentPath}?language=${row.language}`}
+                                  aria-label={t(
+                                    'cmsui.manage_translations.create',
+                                    { language: languageName },
+                                  )}
+                                  isDisabled={busy}
+                                >
+                                  <LanguageIcon size="sm" />
+                                </QuantaLink>
+                                <Tooltip>
+                                  {t('cmsui.manage_translations.create', {
+                                    language: languageName,
+                                  })}
+                                </Tooltip>
+                              </TooltipTrigger>
                             </>
                           ))}
                       </div>
@@ -362,15 +372,18 @@ function LinkTranslationPicker({
   const [open, setOpen] = useState(false);
   return (
     <>
-      <Button
-        variant="icon"
-        type="button"
-        aria-label={label}
-        onPress={() => setOpen(true)}
-        isDisabled={isDisabled}
-      >
-        <AddIcon size="sm" />
-      </Button>
+      <TooltipTrigger>
+        <Button
+          variant="icon"
+          type="button"
+          aria-label={label}
+          onPress={() => setOpen(true)}
+          isDisabled={isDisabled}
+        >
+          <AddIcon size="sm" />
+        </Button>
+        <Tooltip>{label}</Tooltip>
+      </TooltipTrigger>
       {open && (
         <ObjectBrowserProvider
           config={{
