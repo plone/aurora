@@ -338,8 +338,8 @@ async function loadFromContentTypes(
 
 /**
  * `POST`, `PATCH` and `DELETE` on a backend with `@content-types`.
- * `POST /@content-types/{type}/workflow` passes its body on, for a dry run
- * or a change.
+ * `POST /@content-types/{type}/workflow` and `POST /@content-types/@workflows`
+ * (the site default) pass their body on, for a dry run or a change.
  */
 async function actOnContentTypes(
   cli: PloneClient,
@@ -347,6 +347,15 @@ async function actOnContentTypes(
   part: string,
   request: Request,
 ) {
+  if (request.method === 'POST' && type === '@workflows') {
+    const body = await request.json();
+    try {
+      return json(await backendSend(cli, 'post', '/@workflows', body));
+    } catch (error) {
+      return failure(error, "The site default workflow couldn't be changed");
+    }
+  }
+
   if (request.method === 'POST' && type && part === 'workflow') {
     const body = await request.json();
     try {
