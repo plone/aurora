@@ -5,10 +5,9 @@ import { useTranslation } from 'react-i18next';
 import {
   Button,
   Checkbox,
-  Dialog,
   Heading,
   Input,
-  Modal,
+  ModalSheet,
   Select,
 } from '@plone/quanta';
 import { ArrowrightIcon, CloseIcon, StateIcon } from '@plone/icons';
@@ -103,91 +102,86 @@ export default function WorkflowModal() {
   };
 
   return (
-    <Modal isDismissable isOpen={showWorkflow} onOpenChange={setShowWorkflow}>
-      <Dialog className="mx-auto w-full p-8">
-        <div className="mb-10 flex items-center justify-between">
-          <Heading
-            slot="title"
-            className="react-aria-Heading text-xl font-bold"
-          >
-            {t('contents.modal_workflow.title')}
-          </Heading>
-          <RACButton
-            onPress={close}
-            aria-label={t('contents.modal.close')}
-            className={`
-              cursor-pointer text-quanta-space
-              hover:text-quanta-sapphire
-              [&_svg]:size-5
-            `}
-          >
-            <CloseIcon />
-          </RACButton>
-        </div>
-        <div className="mx-auto grid max-w-sm gap-4">
-          {stateSummary && (
-            <p className="text-quanta-graphite text-sm">
-              {t('contents.modal_workflow.current_state')}: {stateSummary}
-            </p>
+    <ModalSheet isOpen={showWorkflow} onOpenChange={setShowWorkflow}>
+      <div className="mb-10 flex items-center justify-between">
+        <Heading slot="title" className="react-aria-Heading text-xl font-bold">
+          {t('contents.modal_workflow.title')}
+        </Heading>
+        <RACButton
+          onPress={close}
+          aria-label={t('contents.modal.close')}
+          className={`
+            cursor-pointer text-quanta-space
+            hover:text-quanta-sapphire
+            [&_svg]:size-5
+          `}
+        >
+          <CloseIcon />
+        </RACButton>
+      </div>
+      <div className="mx-auto grid max-w-sm gap-4">
+        {stateSummary && (
+          <p className="text-quanta-graphite text-sm">
+            {t('contents.modal_workflow.current_state')}: {stateSummary}
+          </p>
+        )}
+
+        <div className="grid gap-1 text-sm">
+          <Select
+            aria-label={t('contents.modal_workflow.transition')}
+            items={transitions.map((tr) => ({
+              label: tr.title,
+              value: tr.id,
+            }))}
+            selectedKey={transition || null}
+            onSelectionChange={(key) => setTransition(String(key))}
+            placeholder={t('contents.modal_workflow.select_transition')}
+            isDisabled={loadingTransitions}
+          />
+          {!loadingTransitions && transitions.length === 0 && (
+            <span className="text-quanta-candy">
+              {t('contents.modal_workflow.no_common_transitions')}
+            </span>
           )}
-
-          <div className="grid gap-1 text-sm">
-            <Select
-              aria-label={t('contents.modal_workflow.transition')}
-              items={transitions.map((tr) => ({
-                label: tr.title,
-                value: tr.id,
-              }))}
-              selectedKey={transition || null}
-              onSelectionChange={(key) => setTransition(String(key))}
-              placeholder={t('contents.modal_workflow.select_transition')}
-              isDisabled={loadingTransitions}
-            />
-            {!loadingTransitions && transitions.length === 0 && (
-              <span className="text-quanta-candy">
-                {t('contents.modal_workflow.no_common_transitions')}
-              </span>
-            )}
-          </div>
-
-          <label className="block text-sm">
-            <span className="text-quanta-graphite mb-1 block text-xs">
-              {t('contents.modal_workflow.comment')}
-            </span>
-            <Input
-              type="text"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              aria-label={t('contents.modal_workflow.comment')}
-              className="h-11 w-full rounded-lg px-3"
-            />
-          </label>
-
-          <Checkbox
-            className="text-sm text-quanta-space"
-            isSelected={includeChildren}
-            onChange={setIncludeChildren}
-          >
-            <span className="relative top-px leading-5">
-              {t('contents.modal_workflow.include_children')}
-            </span>
-          </Checkbox>
-
-          <div className="mt-6 flex justify-end">
-            <Button
-              onPress={confirm}
-              aria-label={t('contents.modal_workflow.confirm')}
-              variant="primary"
-              accent={true}
-              size="L"
-              isDisabled={!transition || fetcher.state !== 'idle'}
-            >
-              <ArrowrightIcon />
-            </Button>
-          </div>
         </div>
-      </Dialog>
-    </Modal>
+
+        <label className="block text-sm">
+          <span className="text-quanta-graphite mb-1 block text-xs">
+            {t('contents.modal_workflow.comment')}
+          </span>
+          <Input
+            type="text"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            aria-label={t('contents.modal_workflow.comment')}
+            className="h-11 w-full rounded-lg px-3"
+          />
+        </label>
+
+        <Checkbox
+          className="text-sm text-quanta-space"
+          isSelected={includeChildren}
+          onChange={setIncludeChildren}
+        >
+          <span className="relative top-px leading-5">
+            {t('contents.modal_workflow.include_children')}
+          </span>
+        </Checkbox>
+
+        <div className="mt-6 flex justify-end">
+          <Button
+            onPress={confirm}
+            aria-label={t('contents.modal_workflow.confirm')}
+            variant="primary"
+            accent={true}
+            size="L"
+            isDisabled={!transition || fetcher.state !== 'idle'}
+          >
+            <ArrowrightIcon />
+          </Button>
+        </div>
+      </div>
+    </ModalSheet>
   );
 }
 
