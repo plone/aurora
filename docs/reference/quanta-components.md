@@ -209,5 +209,7 @@ Quanta styles them as a full-height panel, flush with the edge.
 A `Sheet` with `position="center"` reads as a modal, so it shows no handle.
 `ModalSheet` uses this for dialogs that should be a modal on desktop and a bottom sheet on phones.
 It takes the same props as `Sheet`, and `position` sets where it appears on wide screens, `center` by default.
+Centered, it's at most 600 pixels wide, the width of the Figma form modals, or 90% of the viewport on smaller screens.
+To change it, set the `--modal-max-width` custom property in its `className`, for example `className="[--modal-max-width:360px]"` for a confirmation.
 Below Tailwind's `md` breakpoint (`48rem`), it always opens from the bottom and can be swiped away.
 It keeps the position it opened with until it closes, even if the screen is resized or rotated.

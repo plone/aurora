@@ -39,11 +39,11 @@ function mockViewport(isNarrow: boolean) {
   };
 }
 
-function openModalSheet() {
+function openModalSheet(className?: string) {
   render(
     <DialogTrigger>
       <Button>Rename</Button>
-      <ModalSheet>
+      <ModalSheet className={className}>
         {({ close }) => (
           <>
             <Heading slot="title">Rename item</Heading>
@@ -88,5 +88,17 @@ describe('ModalSheet', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Done' }));
     fireEvent.click(screen.getByRole('button', { name: 'Rename' }));
     expect(sheetPanel()).toHaveAttribute('data-position', 'center');
+  });
+
+  it('sets its width from the --modal-max-width of its className', () => {
+    mockViewport(false);
+    openModalSheet('[--modal-max-width:360px]');
+    expect(sheetPanel()).toHaveClass(
+      'max-w-[min(90vw,var(--modal-max-width,600px))]',
+    );
+    // The custom property is set on an ancestor, so the panel inherits it.
+    expect(
+      sheetPanel()?.closest('.\\[--modal-max-width\\:360px\\]'),
+    ).not.toBeNull();
   });
 });

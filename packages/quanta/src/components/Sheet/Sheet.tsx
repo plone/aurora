@@ -37,9 +37,11 @@ const sheetStyles = tv({
       top: `
         max-h-[calc(100%_-_32px)] w-full max-w-[800px] origin-[center_150px] rounded-b-2xl border-b
       `,
+      // Centered, it's a modal: at most 600 pixels wide (or 90% of the
+      // viewport), unless `--modal-max-width` is set on the sheet.
       center: `
-        max-h-[calc(100%_-_32px)] w-[calc(100%-1rem)] max-w-[800px] origin-[center_-150px]
-        rounded-2xl border
+        max-h-[calc(100%_-_32px)] w-full max-w-[min(90vw,var(--modal-max-width,600px))]
+        origin-[center_-150px] rounded-2xl border
       `,
     },
   },

@@ -44,6 +44,33 @@ export const Default: Story = {
   ),
 };
 
+/** Set `--modal-max-width` to change its width on wide screens. */
+export const Narrow: Story = {
+  render: (args) => (
+    <DialogTrigger>
+      <Button variant="primary" accent>
+        Delete…
+      </Button>
+      <ModalSheet {...args} className="[--modal-max-width:360px]">
+        {({ close }) => (
+          <div className="flex flex-col gap-4 text-center">
+            <Heading slot="title" className="text-lg font-semibold">
+              Delete “News”?
+            </Heading>
+            <p className="text-sm">This action cannot be undone.</p>
+            <div className="flex justify-center gap-2">
+              <Button onPress={close}>Cancel</Button>
+              <Button variant="primary" accent onPress={close}>
+                Delete
+              </Button>
+            </div>
+          </div>
+        )}
+      </ModalSheet>
+    </DialogTrigger>
+  ),
+};
+
 /** On a phone-sized viewport, it opens as a bottom sheet. */
 export const Mobile: Story = {
   globals: {
