@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 5.0.0-alpha.7 (2026-10-30)
+
+### Feature
+
+- `Pagination` can render its pages as links: pass `getPageHref` to get an address per page, so the pages work without JavaScript and crawlers can follow them. The current page carries `aria-current="page"`, and the previous and next links carry `rel`. The new `showPrevNextLabels` prop shows the previous and next labels next to the arrows, and `className` adds a class to the `nav`. `onPageChange` is now optional. @pnicolli 
+
 ## 5.0.0-alpha.6 (2026-10-29)
 
 ### Breaking

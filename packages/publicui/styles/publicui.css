@@ -1,7 +1,14 @@
 @layer custom {
+  /* Reserve the scrollbar gutter on the search page, so its width doesn't
+     shift when the result count changes. */
+  html:has(body.search-route) {
+    scrollbar-gutter: stable;
+  }
+
   .with-toolbar #main {
     margin-inline-start: var(--plone-toolbar-width);
   }
+
   @media (max-width: 767px) {
     .with-toolbar #main {
       margin-inline-start: 0;

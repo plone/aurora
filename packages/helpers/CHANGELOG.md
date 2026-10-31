@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.11 (2026-10-30)
+
+### Bugfix
+
+- `@plone/registry` is a peer dependency only, for registry 3 and 4, so apps such as Volto use their own registry instead of getting a second copy, whose configuration helpers would read. Apps must depend on `@plone/registry` themselves, as Plone Aurora and Volto already do. @sneridagh 
+
 ## 2.0.0-alpha.10 (2026-10-29)
 
 ### Feature

@@ -1,0 +1,261 @@
+@layer custom {
+  /* Search field and submit button */
+  .searchForm {
+    display: flex;
+    margin-top: 24px;
+    gap: 12px;
+  }
+
+  .searchField {
+    display: flex;
+    height: 56px;
+    flex: 1;
+    align-items: center;
+    padding: 0 18px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background-color: var(--background);
+    gap: 12px;
+  }
+
+  .searchField:focus-within {
+    outline: 2px solid var(--color-quanta-peacock);
+    outline-offset: 2px;
+  }
+
+  .searchIcon {
+    width: 20px;
+    height: 20px;
+    flex: none;
+    color: var(--muted-foreground);
+  }
+
+  .searchInput {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--foreground);
+    font-size: 1.125rem;
+    outline: none;
+  }
+
+  .searchSubmit {
+    height: 56px;
+    padding-inline: 26px;
+  }
+
+  /* Results bar: count and sort on one row */
+  .resultsBar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+    margin-top: 34px;
+    gap: 20px;
+  }
+
+  .count {
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: 0.9375rem;
+  }
+
+  .sort {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sortLabel {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .sortSelect {
+    height: 42px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    background-color: var(--background);
+    color: var(--foreground);
+    cursor: pointer;
+    font-size: 0.875rem;
+  }
+
+  .sortSelect:focus-visible {
+    outline: 2px solid var(--color-quanta-peacock);
+    outline-offset: 2px;
+  }
+
+  /* Result list */
+  .list {
+    display: flex;
+    flex-direction: column;
+    transition: opacity 0.15s ease;
+  }
+
+  .results[aria-busy='true'] .list {
+    opacity: 0.5;
+  }
+
+  .item {
+    padding: 26px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 11px;
+    gap: 12px;
+  }
+
+  .type {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 11px;
+    border-radius: 4px;
+    background-color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .metaDate {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .description {
+    max-width: 68ch;
+    margin: 7px 0 0;
+    color: var(--foreground);
+  }
+
+  /* Empty state */
+  .noResults {
+    padding: 56px 0;
+    color: var(--muted-foreground);
+    text-align: center;
+  }
+
+  .noResults strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--foreground);
+    font-size: 1.1875rem;
+  }
+
+  .noResults p {
+    margin: 0;
+  }
+
+  /* Pagination, styling the markup of the registry's Pagination component */
+  .pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin-top: 42px;
+    font-size: 1rem;
+    gap: 7px;
+  }
+
+  .pagination :global(.pagination-item) {
+    display: inline-flex;
+    min-width: 42px;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--color-quanta-sapphire);
+    font-weight: 600;
+    gap: 6px;
+    text-decoration: none;
+  }
+
+  .pagination :global(.pagination-item) svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .pagination a:global(.pagination-item):hover {
+    background-color: var(--muted);
+  }
+
+  .pagination a:global(.pagination-item):focus-visible {
+    outline: 2px solid var(--color-quanta-peacock);
+    outline-offset: 2px;
+  }
+
+  .pagination :global(.pagination-item)[aria-current='page'] {
+    border-color: var(--color-quanta-sapphire);
+    background-color: var(--color-quanta-sapphire);
+    color: var(--primary-foreground);
+  }
+
+  .pagination :global(.pagination-item.disabled) {
+    opacity: 0.4;
+  }
+
+  .pagination :global(.pagination-item.ellipsis) {
+    min-width: 32px;
+    padding: 0;
+    border: 0;
+    color: var(--muted-foreground);
+  }
+
+  @media (max-width: 600px) {
+    .searchForm {
+      flex-direction: column;
+    }
+
+    .searchField {
+      flex: none;
+    }
+
+    .searchSubmit {
+      width: 100%;
+    }
+
+    .resultsBar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+  }
+}
+
+/* Outside @layer custom on purpose: must beat the unlayered global h2 typography. */
+.headline {
+  margin: 0;
+  font-size: 1.3125rem;
+  line-height: 1.3;
+}
+
+.headlineLink {
+  color: var(--color-quanta-sapphire);
+  font-size: 1.3125rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.headlineLink:hover {
+  text-decoration: underline;
+}
+
+.headlineLink:focus-visible {
+  outline: 2px solid var(--color-quanta-peacock);
+  outline-offset: 2px;
+}

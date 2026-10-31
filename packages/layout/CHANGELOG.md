@@ -8,6 +8,22 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.17 (2026-10-30)
+
+### Feature
+
+- Registered the `Pagination` component from `@plone/components` in the component registry. @pnicolli 
+
+### Bugfix
+
+- Fixed the "Search site" label staying English in German, because of a wrongly cased key in the German catalog. @sneridagh [#354](https://github.com/plone/aurora/issues/354)
+
+## 1.0.0-alpha.16 (2026-10-30)
+
+### Internal
+
+- Fixed a flaky `MoreMenu` test: it waits for the menu to take the focus before opening the State submenu, which closed when the focus arrived later. @sneridagh 
+
 ## 1.0.0-alpha.15 (2026-10-29)
 
 ### Feature
