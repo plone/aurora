@@ -149,6 +149,7 @@ These components have no counterpart in the starter.
 | `Spinner` | Loading indicator. | none |
 | `Pagination` | Page navigation for a batched listing, with previous and next buttons. Pages start from 0. | `contents` (ContentsTable) |
 | `CustomRadio` | Radio rendered as a toggle button. | the pickers |
+| `ModalSheet` | A modal dialog that is a `Modal` on wide screens and becomes a bottom sheet below the `md` breakpoint. Built on `Modal` and `Sheet`. See {ref}`quanta-side-panel-label`. | none |
 
 The deprecated `SizeWidget`, `AlignWidget` and `WidthWidget` aliases of the pickers aren't used, and can be removed.
 
@@ -204,3 +205,14 @@ A handle indicates the swipe direction and is hidden when `preventDismissal` is 
 The starter styles the side positions as a rounded, inset card 300 pixels wide.
 Quanta styles them as a full-height panel, flush with the edge.
 `Sheet` needs its own keyframes (`Sheet.css`), which Quanta bundles in its CSS.
+
+A `Sheet` with `position="center"` reads as a modal, so it shows no handle.
+
+`ModalSheet` is for dialogs that should be a modal on desktop and a bottom sheet on phones.
+It takes the same props as `Sheet`, and `position` sets where it appears on wide screens, `center` by default.
+Centered, it's a `Modal`, which appears in place: a centered sheet can only slide in from an edge.
+It's at most 600 pixels wide, or 90% of the viewport, like any `Modal`.
+To change it, set the `--modal-max-width` custom property in its `className`, for example `className="[--modal-max-width:360px]"` for a confirmation.
+Use a string `className` only for that: it applies to the modal on wide screens, and to the sheet's overlay on phones.
+Below Tailwind's `md` breakpoint (`48rem`), it always opens from the bottom and can be swiped away.
+It keeps the position it opened with until it closes, even if the screen is resized or rotated.
