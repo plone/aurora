@@ -1,0 +1,1 @@
+Protected the `@@contents` view with the `folderContents` action, like Volto: users without it get an Unauthorized page. The toolbar of the view now has the edit, back, add content and more buttons, and the personal tools. @sneridagh

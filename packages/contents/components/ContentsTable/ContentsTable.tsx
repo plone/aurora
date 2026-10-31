@@ -4,7 +4,6 @@ import {
   TooltipTrigger,
   useDragAndDrop,
   DialogTrigger,
-  MenuTrigger,
 } from 'react-aria-components';
 import { useFetcher, useLoaderData, useNavigate } from 'react-router';
 import { useDebounceCallback, useMediaQuery } from 'usehooks-ts';
@@ -14,7 +13,8 @@ import {
   Container,
   Breadcrumbs,
   Breadcrumb,
-  Input,
+  MenuTrigger,
+  SearchField,
   Table,
   Tooltip,
   TableHeader,
@@ -24,9 +24,7 @@ import {
   Cell,
 } from '@plone/quanta';
 import {
-  // AddIcon,
-  HomeIcon,
-  CollectionIcon,
+  EditIcon,
   MoreoptionsIcon,
   PasteIcon,
   CopyIcon,
@@ -48,8 +46,6 @@ import { ContentsDropZone } from './ContentsDropZone';
 import { type TableIndexes } from '../../types';
 
 import { type ToastItem } from '@plone/layout/config/toast';
-
-import './ContentsTable.css';
 
 interface ContentsTableProps {
   pathname: string;
@@ -91,7 +87,9 @@ export function ContentsTable({
   // moveToBottom,
   // addableTypes,
 }: ContentsTableProps) {
-  const isMobileScreenSize = useMediaQuery('(max-width: 992px)');
+  const isMobileScreenSize = useMediaQuery('(max-width: 992px)', {
+    initializeWithValue: false,
+  });
   const { t } = useTranslation();
   const navigate = useNavigate();
   const {
@@ -128,7 +126,6 @@ export function ContentsTable({
   const breadcrumbsRootItem = {
     '@id': `/@@contents${breadcrumbsRoot}`,
     title: 'Home',
-    icon: <HomeIcon size="sm" />,
   };
 
   const breadcrumbs = [breadcrumbsRootItem, ...breadcrumbsItems];
@@ -347,7 +344,7 @@ export function ContentsTable({
       id: 'title',
       name: t('contents.indexes.title'),
       isRowHeader: true,
-      width: undefined,
+      width: '1fr' as const,
     },
     ...(!isMobileScreenSize
       ? indexes.order
@@ -357,20 +354,26 @@ export function ContentsTable({
             // TODO: use translation
             name: indexes.values[index].label,
             isRowHeader: false,
-            width: undefined,
+            width: '1fr' as const,
           }))
       : []),
     {
       id: '_actions',
       isRowHeader: false,
-      width: 50,
+      width: 54,
       name: !isMobileScreenSize ? (
         <DialogTrigger>
           <TooltipTrigger>
-            <Button variant="icon" className="actions-cell-header">
+            <Button
+              variant="icon"
+              className="actions-cell-header"
+              aria-label={t('contents.indexes.select_columns')}
+            >
               <MoreoptionsIcon />
             </Button>
-            <Tooltip placement="bottom">{t('Select columns to show')}</Tooltip>
+            <Tooltip placement="bottom">
+              {t('contents.indexes.select_columns')}
+            </Tooltip>
           </TooltipTrigger>
           <TableIndexesPopover
             indexes={indexes}
@@ -380,10 +383,10 @@ export function ContentsTable({
       ) : canPaste ? (
         <TooltipTrigger>
           <Button
-            className="react-aria-Button contents-action-trigger paste"
+            variant="icon"
+            className="contents-action-trigger paste"
             onPress={paste}
             aria-label={t('contents.actions.paste')}
-            // isDisabled={!canPaste}
           >
             <PasteIcon />
           </Button>
@@ -502,35 +505,40 @@ export function ContentsTable({
         <article
           id="content"
           className={`
-            mx-auto px-4 py-2
-            lg:px-8
+            mx-auto px-4 pt-6 pb-8
+            lg:px-8 lg:pt-10
           `}
         >
           <Topbar>
-            <div className="title-block">
-              <Breadcrumbs
-                items={breadcrumbs}
-                className="contents-breadcrumbs text-quanta-sapphire"
-              >
+            <div className="title-block flex min-w-0 flex-col">
+              <Breadcrumbs items={breadcrumbs} className="contents-breadcrumbs">
                 {(item) => (
                   <Breadcrumb
                     id={item['@id']}
                     href={item['@id']}
+                    separator={
+                      <span aria-hidden className="text-quanta-pigeon">
+                        /
+                      </span>
+                    }
                     className={`
-                      text-quanta-sapphire decoration-quanta-sapphire/50
-                      hover:decoration-quanta-sapphire
+                      text-xs leading-[18px] font-medium
+                      [&_a]:text-quanta-sapphire [&_a]:no-underline
+                      [&_a:hover]:underline
                     `}
                   >
                     {item.title}
                   </Breadcrumb>
                 )}
               </Breadcrumbs>
-              <h1 className="text-2xl font-bold">{title}</h1>
+              <h1 className="truncate text-2xl leading-[30px] font-bold">
+                {title}
+              </h1>
             </div>
             <div
               className={`
-                group ms-auto flex shrink-0 grow basis-0 flex-wrap-reverse items-center justify-end
-                gap-4 self-end
+                ms-auto flex shrink-0 grow basis-0 flex-wrap-reverse items-center justify-end gap-4
+                self-end
                 lg:flex-nowrap
               `}
             >
@@ -546,18 +554,18 @@ export function ContentsTable({
                   paste={paste}
                   deleteItem={deleteItem}
                   canPaste={canPaste}
-                  // selected={selected}
                 />
               )}
-              <Input
-                name="sortable_title"
+              <SearchField
+                name="SearchableText"
                 placeholder={t('contents.actions.filter')}
                 value={searchInput ?? ''}
-                onChange={(e) => {
-                  setSearchInput(e.target.value);
-                }}
+                onChange={setSearchInput}
                 aria-label={t('contents.actions.filter')}
-                className="flex-0 basis-60"
+                className={`
+                  w-full
+                  sm:w-60 sm:shrink-0
+                `}
               />
             </div>
           </Topbar>
@@ -570,27 +578,30 @@ export function ContentsTable({
             {rows?.length > 0 ? (
               <>
                 <Table
-                  className="max-h-none border-0"
+                  className="max-h-none overflow-visible rounded-none border-0"
                   aria-label={t('contents.results.contents_of', { title })}
                   selectionMode={!isMobileScreenSize ? 'multiple' : undefined}
                   selectedKeys={[...selected].map((s) => s['@id'])}
                   onSelectionChange={setSelected}
                   dragAndDropHooks={dragAndDropHooks}
-                  // onRowSelection={onRowSelection}
                 >
                   <TableHeader
                     columns={[...columns]}
-                    dragColumnWidth={50}
+                    dragColumnWidth={42}
+                    className={`
+                      static rounded-none border-b-quanta-smoke bg-quanta-air backdrop-blur-none
+                    `}
                     dragColumnHeader={
-                      <MenuTrigger>
+                      <MenuTrigger placement="bottom start">
                         <TooltipTrigger>
-                          <Button variant="icon" className="drag-cell-header">
-                            <CollectionIcon />
-                          </Button>
-                          <Tooltip
-                            className="react-aria-Tooltip tooltip"
-                            placement="bottom"
+                          <Button
+                            variant="icon"
+                            className="drag-cell-header"
+                            aria-label={t('contents.rearrange.by')}
                           >
+                            <EditIcon size="sm" />
+                          </Button>
+                          <Tooltip placement="bottom">
                             {t('contents.rearrange.by')}
                           </Tooltip>
                         </TooltipTrigger>
@@ -605,7 +616,8 @@ export function ContentsTable({
                       <Column
                         isRowHeader={column.isRowHeader}
                         width={column.width}
-                        minWidth={column.width}
+                        minWidth={column.id === '_actions' ? 54 : 120}
+                        className="h-15 text-xs leading-[18px] font-medium text-quanta-sapphire"
                       >
                         {column.name}
                       </Column>
@@ -613,8 +625,27 @@ export function ContentsTable({
                   </TableHeader>
                   <TableBody items={rows}>
                     {(row) => (
-                      <Row columns={[...columns]} textValue={row.textValue}>
-                        {(column) => <Cell>{row[column.id]}</Cell>}
+                      <Row
+                        columns={[...columns]}
+                        textValue={row.textValue}
+                        className={`
+                          text-quanta-space
+                          selected:bg-quanta-arctic selected:text-quanta-space
+                          selected:hover:bg-quanta-arctic
+                          [&_[slot=drag]]:text-quanta-dolphin
+                          [&_[slot=drag]_svg]:size-4.5
+                        `}
+                      >
+                        {(column) => (
+                          <Cell
+                            className={`
+                              h-15 px-3 py-0
+                              [--selected-border:var(--color-quanta-smoke)]
+                            `}
+                          >
+                            {row[column.id]}
+                          </Cell>
+                        )}
                       </Row>
                     )}
                   </TableBody>
@@ -624,12 +655,12 @@ export function ContentsTable({
                   totalPages={Math.ceil(search.items_total / b_size)}
                   currentPage={currentPage}
                   onPageChange={(page) => onPageChange(page)}
-                  className="mt-8 justify-end"
+                  className="mt-6 justify-end"
                 />
               </>
             ) : (
-              <div className="empty-state">
-                <div className="text-center text-xl">
+              <div className="empty-state py-16">
+                <div className="text-center text-xl text-quanta-pigeon">
                   {t('contents.results.no_results')}
                 </div>
               </div>

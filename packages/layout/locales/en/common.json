@@ -29,7 +29,10 @@
       }
     },
     "toolbar": {
-      "label": "Toolbar"
+      "label": "Toolbar",
+      "edit": "Edit",
+      "addContent": "Add content",
+      "back": "Back"
     },
     "views": {
       "link": {

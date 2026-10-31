@@ -920,9 +920,6 @@ importers:
       '@plone/cmsui':
         specifier: workspace:*
         version: link:../cmsui
-      '@plone/components':
-        specifier: workspace:*
-        version: link:../components
       '@plone/helpers':
         specifier: workspace:*
         version: link:../helpers

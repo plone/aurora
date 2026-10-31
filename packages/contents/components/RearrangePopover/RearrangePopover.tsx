@@ -1,10 +1,7 @@
-import { Menu, MenuItem, SubmenuTrigger } from 'react-aria-components';
-import { Dialog, Popover, type PopoverProps } from '@plone/quanta';
-import ChevronrightIcon from '@plone/icons/svg/chevron-right.svg?react';
+import { Menu, MenuItem, MenuSection, SubmenuTrigger } from '@plone/quanta';
 import { useTranslation } from 'react-i18next';
-import './RearrangePopover.css';
 
-interface Props extends Omit<PopoverProps, 'children'> {
+interface Props {
   indexes: {
     [index: string]: {
       label: string;
@@ -24,102 +21,46 @@ const sortIndexes = [
   'portal_type',
 ];
 
-interface MenuItem {
-  id: string;
-  name: string;
-  children?: MenuItem[];
-}
+const sortOrders = [
+  { id: 'ascending', label: 'contents.rearrange.asc' },
+  { id: 'descending', label: 'contents.rearrange.desc' },
+] as const;
 
-export function RearrangePopover({
-  indexes,
-  sortItems,
-  ...popoverProps
-}: Props) {
+const itemClassName = 'border-b-0 py-1.5 text-quanta-space';
+
+/**
+ * The menu to rearrange the items of the folder permanently, by an index and
+ * an order. Render it inside a `MenuTrigger`, which places it in a popover.
+ */
+export function RearrangePopover({ indexes, sortItems }: Props) {
   const { t } = useTranslation();
 
-  const menuItems: MenuItem[] = sortIndexes.map((index) => ({
-    id: index,
-    name: t(indexes[index].label),
-    children: [
-      {
-        id: `${indexes[index].sort_on}|ascending`,
-        name: t('contents.rearrange.asc'),
-      },
-      {
-        id: `${indexes[index].sort_on}|descending`,
-        name: t('contents.rearrange.desc'),
-      },
-    ],
-  }));
-
   return (
-    <Popover
-      {...popoverProps}
-      className="q react-aria-Popover rearrange-popover"
-    >
-      <Dialog
-        aria-labelledby="rearrange-popover-label"
-        className="[[data-placement]>&]:p-3"
-      >
-        <fieldset>
-          <legend id="rearrange-popover-label">
-            {t('contents.rearrange.by')}
-          </legend>
-
-          <Menu items={menuItems}>
-            {function renderSubmenu(item) {
-              if (item.children) {
-                return (
-                  <SubmenuTrigger delay={100}>
-                    <MenuItem
-                      key={item.id}
-                      textValue={item.name}
-                      className={({ isFocused, isOpen }) =>
-                        `react-aria-MenuItem rearrange-menu-item ${
-                          isFocused ? 'focused' : ''
-                        } ${isOpen ? 'open' : ''}`
-                      }
-                    >
-                      {({ hasSubmenu }) => (
-                        <>
-                          {item.name}
-                          {hasSubmenu && <ChevronrightIcon size="xs" />}
-                        </>
-                      )}
-                    </MenuItem>
-                    <Popover className="q react-aria-Popover rearrange-popover">
-                      <Dialog
-                        className="[[data-placement]>&]:p-3"
-                        aria-label={t('contents.rearrange.pickOrder', {
-                          index: item.name,
-                        })}
-                      >
-                        <fieldset>
-                          <legend>
-                            {t('contents.rearrange.pickOrder', {
-                              index: item.name,
-                            })}
-                          </legend>
-                          <Menu
-                            items={item.children}
-                            onAction={(id) => {
-                              sortItems(id.toString());
-                            }}
-                          >
-                            {(item) => renderSubmenu(item)}
-                          </Menu>
-                        </fieldset>
-                      </Dialog>
-                    </Popover>
-                  </SubmenuTrigger>
-                );
-              } else {
-                return <MenuItem key={item.id}>{item.name}</MenuItem>;
-              }
-            }}
+    <Menu aria-label={t('contents.rearrange.by')} className="min-w-48 px-1.5">
+      {sortOrders.map((order) => (
+        <SubmenuTrigger key={order.id}>
+          <MenuItem id={order.id} className={itemClassName}>
+            {t(order.label)}
+          </MenuItem>
+          <Menu
+            aria-label={t('contents.rearrange.by')}
+            className="min-w-48 px-1.5"
+            onAction={(id) => sortItems(id.toString())}
+          >
+            <MenuSection title={t('contents.rearrange.permanently_by')}>
+              {sortIndexes.map((index) => (
+                <MenuItem
+                  key={index}
+                  id={`${indexes[index].sort_on}|${order.id}`}
+                  className={itemClassName}
+                >
+                  {t(indexes[index].label)}
+                </MenuItem>
+              ))}
+            </MenuSection>
           </Menu>
-        </fieldset>
-      </Dialog>
-    </Popover>
+        </SubmenuTrigger>
+      ))}
+    </Menu>
   );
 }

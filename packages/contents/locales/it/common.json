@@ -72,9 +72,9 @@
     "rearrange": {
       "error": "Errore durante la riposizione degli elementi",
       "by": "Riordina gli elementi per…",
-      "asc": "Crescente",
-      "desc": "Decrescente",
-      "pickOrder": "Riposiziona {{index}}"
+      "asc": "Ordina A–Z",
+      "desc": "Ordina Z–A",
+      "permanently_by": "Ordina permanentemente per"
     },
     "modal": {
       "close": "Annulla"
