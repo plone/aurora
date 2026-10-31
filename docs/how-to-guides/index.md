@@ -40,6 +40,8 @@ add-plate-plugins
 bind-metadata-fields-to-plate-text-blocks
 customize-toolbar
 custom-content-types
+translate-content
+manage-translations
 manage-folder-contents-in-bulk
 deploy-behind-a-reverse-proxy
 ```

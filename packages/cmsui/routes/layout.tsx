@@ -18,8 +18,10 @@ import { clsx } from 'clsx';
 import { getLocale } from '@plone/aurora/app/i18next.server';
 import type { RootLoader } from '@plone/aurora/app/root';
 import { Plug, PluggablesProvider } from '@plone/layout/components/Pluggable';
+import Toast from '@plone/layout/components/Toast/Toast';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
 import { shouldShowToolbar } from '@plone/layout/helpers';
+import config from '@plone/registry';
 
 import stylesheet from '@plone/aurora/.plone/cmsui.css?url';
 import {
@@ -142,6 +144,9 @@ export default function Index() {
             </div>
           </PluggablesProvider>
         </RACRouterProvider>
+        <Toast
+          queue={config.getUtility({ name: 'queue', type: 'toast' }).method()}
+        />
         <ScrollRestoration />
         <Scripts />
       </body>
