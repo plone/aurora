@@ -1,0 +1,1 @@
+Add the Behaviors tab to the content types control panel. It reads and saves a type's behaviors through `@controlpanels/dexterity-types`, and takes the behavior metadata of add-ons from `config.settings.behaviorMetadata`. @sneridagh

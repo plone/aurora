@@ -69,7 +69,29 @@ export const FieldsOfANewType: Story = {
   args: { id: 'Link', tab: 'fields' },
 };
 
+/**
+ * The behaviors that add fields, in order, and the features. Drag a row, or
+ * focus it and press Alt with the up or down arrow; the preview follows.
+ * Switch Blocks to its editable layout variant, or add behaviors from the
+ * dialog: Dublin Core's parts can't be added twice.
+ */
+export const Behaviors: Story = {
+  args: { tab: 'behaviors' },
+};
+
+/**
+ * What plone.restapi supports today: no order, no fields per behavior, and
+ * no preview from the backend. The tab works out what it can from the
+ * type's schema, and estimates the form.
+ */
+export const BehaviorsBasicBackend: Story = {
+  args: { tab: 'behaviors' },
+  parameters: {
+    driver: { basicBackend: true },
+  },
+};
+
 /** A tab that comes in a later phase. */
 export const OtherTab: Story = {
-  args: { tab: 'behaviors' },
+  args: { tab: 'layout' },
 };

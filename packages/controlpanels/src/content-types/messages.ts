@@ -562,4 +562,184 @@ export const messages = defineMessages({
     id: 'controlpanels.contentTypes.schemaLoadError',
     defaultMessage: "The fields couldn't be loaded.",
   },
+  behaviorsSummary: {
+    id: 'controlpanels.contentTypes.behaviorsSummary',
+    defaultMessage: '{on} on · {withFields} add fields · {features} features',
+  },
+  addBehaviors: {
+    id: 'controlpanels.contentTypes.addBehaviors',
+    defaultMessage: 'Add behaviors',
+  },
+  formBehaviors: {
+    id: 'controlpanels.contentTypes.formBehaviors',
+    defaultMessage: 'Add fields to the form',
+  },
+  formBehaviorsHelp: {
+    id: 'controlpanels.contentTypes.formBehaviorsHelp',
+    defaultMessage:
+      'Their order sets where their fields appear in the edit form: the first one comes first.',
+  },
+  formBehaviorsReorderHelp: {
+    id: 'controlpanels.contentTypes.formBehaviorsReorderHelp',
+    defaultMessage:
+      'Drag to change the order. With the keyboard, focus a row and press Alt with the up or down arrow.',
+  },
+  formBehaviorsFixedOrder: {
+    id: 'controlpanels.contentTypes.formBehaviorsFixedOrder',
+    defaultMessage:
+      "This site's content API can't change their order yet: new behaviors go to the end.",
+  },
+  noFormBehaviors: {
+    id: 'controlpanels.contentTypes.noFormBehaviors',
+    defaultMessage: 'No behaviors add fields to the form.',
+  },
+  behaviorFeatures: {
+    id: 'controlpanels.contentTypes.behaviorFeatures',
+    defaultMessage: 'Features',
+  },
+  behaviorFeaturesHelp: {
+    id: 'controlpanels.contentTypes.behaviorFeaturesHelp',
+    defaultMessage:
+      "These change how items behave and add no fields, so their order doesn't matter.",
+  },
+  noFeatures: {
+    id: 'controlpanels.contentTypes.noFeatures',
+    defaultMessage: 'No features are on.',
+  },
+  addsFieldsList: {
+    id: 'controlpanels.contentTypes.addsFieldsList',
+    defaultMessage: 'Adds {fields}',
+  },
+  addsFieldsUnknown: {
+    id: 'controlpanels.contentTypes.addsFieldsUnknown',
+    defaultMessage: 'Its fields show in the form after saving.',
+  },
+  includesList: {
+    id: 'controlpanels.contentTypes.includesList',
+    defaultMessage: 'Includes {behaviors}',
+  },
+  removeBehavior: {
+    id: 'controlpanels.contentTypes.removeBehavior',
+    defaultMessage: 'Remove {title}',
+  },
+  behaviorRemoved: {
+    id: 'controlpanels.contentTypes.behaviorRemoved',
+    defaultMessage: '{title} removed',
+  },
+  behaviorRemovedField: {
+    id: 'controlpanels.contentTypes.behaviorRemovedField',
+    defaultMessage: 'Editors no longer see its field. Stored values are kept.',
+  },
+  behaviorRemovedFields: {
+    id: 'controlpanels.contentTypes.behaviorRemovedFields',
+    defaultMessage:
+      'Editors no longer see its {count} fields. Stored values are kept.',
+  },
+  behaviorVariant: {
+    id: 'controlpanels.contentTypes.behaviorVariant',
+    defaultMessage: 'Variant of {title}',
+  },
+  formPreview: {
+    id: 'controlpanels.contentTypes.formPreview',
+    defaultMessage: 'Edit form preview',
+  },
+  formPreviewHelp: {
+    id: 'controlpanels.contentTypes.formPreviewHelp',
+    defaultMessage: 'Hover or focus a behavior to see its fields here.',
+  },
+  formPreviewEstimate: {
+    id: 'controlpanels.contentTypes.formPreviewEstimate',
+    defaultMessage:
+      "An estimate: after saving, the backend's ordering hints may move some fields.",
+  },
+  formPreviewUpdating: {
+    id: 'controlpanels.contentTypes.formPreviewUpdating',
+    defaultMessage: 'Updating the preview…',
+  },
+  pendingFields: {
+    id: 'controlpanels.contentTypes.pendingFields',
+    defaultMessage: 'Fields from {behaviors} show after saving.',
+  },
+  addBehaviorsTitle: {
+    id: 'controlpanels.contentTypes.addBehaviorsTitle',
+    defaultMessage: 'Add behaviors to {title}',
+  },
+  searchBehaviors: {
+    id: 'controlpanels.contentTypes.searchBehaviors',
+    defaultMessage: 'Search behaviors',
+  },
+  showDeprecated: {
+    id: 'controlpanels.contentTypes.showDeprecated',
+    defaultMessage: 'Show deprecated',
+  },
+  newBehaviorsAtEnd: {
+    id: 'controlpanels.contentTypes.newBehaviorsAtEnd',
+    defaultMessage: 'New behaviors go to the end of the list.',
+  },
+  newBehaviorsAtEndMovable: {
+    id: 'controlpanels.contentTypes.newBehaviorsAtEndMovable',
+    defaultMessage:
+      'New behaviors go to the end of the list. You can move them afterwards.',
+  },
+  includedIn: {
+    id: 'controlpanels.contentTypes.includedIn',
+    defaultMessage: 'Included in {title}',
+  },
+  instead: {
+    id: 'controlpanels.contentTypes.instead',
+    defaultMessage: 'Instead of {title}: switch it on its row.',
+  },
+  deprecatedUse: {
+    id: 'controlpanels.contentTypes.deprecatedUse',
+    defaultMessage: 'Deprecated: use {title} instead.',
+  },
+  containsEnabled: {
+    id: 'controlpanels.contentTypes.containsEnabled',
+    defaultMessage:
+      'Contains {behaviors}, which the type has. Remove them first.',
+  },
+  deprecated: {
+    id: 'controlpanels.contentTypes.deprecated',
+    defaultMessage: 'Deprecated.',
+  },
+  noMatchingBehaviors: {
+    id: 'controlpanels.contentTypes.noMatchingBehaviors',
+    defaultMessage: 'No behaviors match.',
+  },
+  addSelected: {
+    id: 'controlpanels.contentTypes.addSelected',
+    defaultMessage: 'Add {count}',
+  },
+  groupContent: {
+    id: 'controlpanels.contentTypes.groupContent',
+    defaultMessage: 'Content',
+  },
+  groupMetadata: {
+    id: 'controlpanels.contentTypes.groupMetadata',
+    defaultMessage: 'Metadata',
+  },
+  groupEvent: {
+    id: 'controlpanels.contentTypes.groupEvent',
+    defaultMessage: 'Events',
+  },
+  groupLayout: {
+    id: 'controlpanels.contentTypes.groupLayout',
+    defaultMessage: 'Layout and images',
+  },
+  groupNavigation: {
+    id: 'controlpanels.contentTypes.groupNavigation',
+    defaultMessage: 'Navigation',
+  },
+  groupNaming: {
+    id: 'controlpanels.contentTypes.groupNaming',
+    defaultMessage: 'Names and URLs',
+  },
+  groupFeatures: {
+    id: 'controlpanels.contentTypes.groupFeatures',
+    defaultMessage: 'Features',
+  },
+  groupOther: {
+    id: 'controlpanels.contentTypes.groupOther',
+    defaultMessage: 'Other',
+  },
 });

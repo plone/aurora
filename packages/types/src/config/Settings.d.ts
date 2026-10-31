@@ -119,6 +119,23 @@ export interface SettingsConfig {
   controlPanelsIcons: IconType;
   filterControlPanels: unknown;
   filterControlPanelsSchema: (schema: Controlpanel) => ControlPanelSchema;
+  /**
+   * What the content types control panel knows about behaviors beyond what
+   * the backend says, by behavior name. Merged over its defaults for the core
+   * behaviors. See `BehaviorMetadata` in `@plone/controlpanels`.
+   */
+  behaviorMetadata?: Record<
+    string,
+    {
+      group?: string;
+      includes?: string[];
+      alternatives?: string[];
+      deprecated?: boolean;
+      replacement?: string;
+      addsFields?: boolean;
+      aliases?: string[];
+    }
+  >;
   externalRoutes: {
     match?: string | { path: string; exact: boolean; strict: boolean };
   }[];

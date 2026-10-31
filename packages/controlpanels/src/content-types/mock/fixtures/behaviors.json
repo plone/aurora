@@ -39,7 +39,13 @@
     "name": "volto.blocks.editable.layout",
     "title": "Blocks (Editable Layout)",
     "description": "Enables Volto Blocks (editable layout) support",
-    "fieldsets": []
+    "fieldsets": [
+      {
+        "id": "layout",
+        "title": "Layout",
+        "fields": ["blocks", "blocks_layout"]
+      }
+    ]
   },
   {
     "name": "plone.categorization",
