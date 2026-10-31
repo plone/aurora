@@ -29,7 +29,10 @@
       }
     },
     "toolbar": {
-      "label": "Werkzeugleiste"
+      "label": "Werkzeugleiste",
+      "edit": "Bearbeiten",
+      "addContent": "Inhalt hinzufügen",
+      "back": "Zurück"
     },
     "views": {
       "link": {

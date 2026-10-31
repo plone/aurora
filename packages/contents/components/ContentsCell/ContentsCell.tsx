@@ -1,10 +1,10 @@
-import { type ComponentProps, useRef, useState } from 'react';
+import { type ComponentProps } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDateFormatter } from 'react-aria';
 import { getContentIcon } from '@plone/helpers';
 import type { Brain } from '@plone/types';
-import { Link, Button } from '@plone/quanta';
-import MoreOptionsSVG from '@plone/icons/svg/more-options.svg?react';
+import { Link, Button, MenuTrigger } from '@plone/quanta';
+import { MoreoptionsIcon } from '@plone/icons';
 import { ItemActionsPopover } from '../ItemActionsPopover/ItemActionsPopover';
 import ReviewState from '../ReviewState';
 import { isDateSet, isExpired, isScheduled } from '../../helpers/dates';
@@ -41,8 +41,6 @@ export function ContentsCell({
   onDelete,
 }: Props) {
   const { t } = useTranslation();
-  const [isMoreOptionsOpen, setIsMoreOptionsOpen] = useState(false);
-  const triggerRef = useRef<HTMLButtonElement>(null);
   const longFormatter = useDateFormatter({
     dateStyle: 'full',
     timeStyle: 'full',
@@ -56,68 +54,57 @@ export function ContentsCell({
   if (column === 'title') {
     return (
       <Link
-        className="title-link inline-flex items-center decoration-0"
+        className={`
+          title-link flex w-fit max-w-full items-center gap-3 text-sm font-medium
+          text-quanta-sapphire no-underline
+          hover:underline
+        `}
         href={`${item.is_folderish ? '/@@contents' : ''}${item['@id']}`}
       >
         <Icon
-          size="S"
           title={item['Type'] || item['@type']}
-          className="me-4 shrink-0 text-quanta-pigeon"
+          className="size-6 shrink-0 text-quanta-iron"
         />
-        {item.title}
+        <span className="truncate">{item.title}</span>
         {isExpired(item.ExpirationDate) && (
-          <span className="expired">{t('contents.item.expired')}</span>
+          <span className="expired text-xs text-quanta-candy">
+            {t('contents.item.expired')}
+          </span>
         )}
         {isScheduled(item.EffectiveDate) && (
-          <span className="future">{t('contents.item.scheduled')}</span>
+          <span className="future text-xs text-quanta-pigeon">
+            {t('contents.item.scheduled')}
+          </span>
         )}
       </Link>
     );
   } else if (column === '_actions') {
     return (
-      <>
+      <MenuTrigger placement="bottom end">
         <Button
           variant="icon"
-          className="item-actions-trigger"
+          className={`
+            item-actions-trigger opacity-0
+            group-focus-within/row:opacity-100
+            group-hover/row:opacity-100
+            group-focus-visible/row:opacity-100
+            aria-expanded:opacity-100
+            pointer-coarse:opacity-100
+          `}
           aria-label={t('contents.item.more_options')}
-          onPress={() => setIsMoreOptionsOpen(true)}
-          ref={triggerRef}
         >
-          <MoreOptionsSVG />
+          <MoreoptionsIcon />
         </Button>
         <ItemActionsPopover
-          triggerRef={triggerRef}
-          isOpen={isMoreOptionsOpen}
-          onOpenChange={setIsMoreOptionsOpen}
           editLink={`/@@edit${item['@id']}`}
           viewLink={item['@id']}
-          onMoveToBottom={async () => {
-            const res = await onMoveToBottom();
-            setIsMoreOptionsOpen(false);
-            return res;
-          }}
-          onMoveToTop={async () => {
-            const res = await onMoveToTop();
-            setIsMoreOptionsOpen(false);
-            return res;
-          }}
-          onCopy={async () => {
-            const res = await onCopy();
-            setIsMoreOptionsOpen(false);
-            return res;
-          }}
-          onCut={async () => {
-            const res = await onCut();
-            setIsMoreOptionsOpen(false);
-            return res;
-          }}
-          onDelete={async () => {
-            const res = await onDelete();
-            setIsMoreOptionsOpen(false);
-            return res;
-          }}
+          onMoveToBottom={onMoveToBottom}
+          onMoveToTop={onMoveToTop}
+          onCopy={onCopy}
+          onCut={onCut}
+          onDelete={onDelete}
         />
-      </>
+      </MenuTrigger>
     );
   } else {
     if (indexes.values[column].type === 'boolean') {

@@ -188,11 +188,23 @@ const rowStyles = tv({
   `,
 });
 
-export function Row<T>({ id, columns, children, ...otherProps }: RowProps<T>) {
+export function Row<T>({
+  id,
+  columns,
+  children,
+  className,
+  ...otherProps
+}: RowProps<T>) {
   const { selectionBehavior, allowsDragging } = useTableOptions();
 
   return (
-    <AriaRow id={id} {...otherProps} className={rowStyles}>
+    <AriaRow
+      id={id}
+      {...otherProps}
+      className={composeRenderProps(className, (className, renderProps) =>
+        rowStyles({ ...renderProps, className }),
+      )}
+    >
       {allowsDragging && (
         <Cell>
           {/* Reset the basic button styles explicitly instead of relying on a
@@ -272,7 +284,9 @@ export function Cell(props: CellProps) {
   return (
     <AriaCell
       {...props}
-      className={cellStyles}
+      className={composeRenderProps(props.className, (className, renderProps) =>
+        cellStyles({ ...renderProps, className }),
+      )}
       style={({ hasChildItems, isTreeColumn, level }) => ({
         paddingInlineStart: isTreeColumn
           ? 4 + (hasChildItems ? 0 : 20) + (level - 1) * 16

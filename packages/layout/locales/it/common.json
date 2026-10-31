@@ -29,7 +29,10 @@
       }
     },
     "toolbar": {
-      "label": "Barra degli strumenti"
+      "label": "Barra degli strumenti",
+      "edit": "Modifica",
+      "addContent": "Aggiungi contenuto",
+      "back": "Indietro"
     },
     "views": {
       "link": {

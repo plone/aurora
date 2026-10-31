@@ -3,8 +3,7 @@ import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
 import { settle } from '../../../tooling/playwright/visual';
 
-// The contents view loads its own stylesheets on top of the CMS UI ones
-// (`@plone/components` basic and quanta), so it gets its own screenshot.
+// The contents view has its own layout route, so it gets its own screenshot.
 
 test('Contents listing', async ({ page }) => {
   await createContent(page, {

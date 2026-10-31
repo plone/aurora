@@ -1,0 +1,1 @@
+Rebuilt the contents row actions, rearrange and column menus on Quanta `Menu` and `Popover` with Tailwind, removed `PopoverListItem` and the package CSS files, and stopped loading the `@plone/components` and `quanta.css` stylesheets in the contents layout. Shadows of `ItemActionsPopover` or `RearrangePopover` need updating. @sneridagh

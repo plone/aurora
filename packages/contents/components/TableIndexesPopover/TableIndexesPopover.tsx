@@ -1,6 +1,5 @@
 import { Checkbox, Dialog, Popover } from '@plone/quanta';
 import { useTranslation } from 'react-i18next';
-import PopoverListItem from '../PopoverListItem';
 import type { TableIndexes } from '../../types';
 
 interface Props {
@@ -12,40 +11,37 @@ export const TableIndexesPopover = ({ indexes, onSelectIndex }: Props) => {
   const { t } = useTranslation();
 
   return (
-    <Popover className="q react-aria-Popover table-indexes-popover">
+    <Popover placement="bottom end" className="table-indexes-popover w-48">
       <Dialog
         aria-labelledby="table-indexes-label"
-        className="[[data-placement]>&]:p-3"
+        className="max-h-60 overflow-auto px-3 py-2 outline-hidden"
       >
-        <fieldset>
-          <legend id="table-indexes-label">
-            {t('contents.indexes.select_columns')}
-          </legend>
-
-          <ul className="popover-list">
-            {indexes.order.map((index) => {
-              if (index === 'sortable_title') return null;
-              return (
-                <PopoverListItem
-                  key={index}
-                  ariaDescribedby="table-indexes-label"
+        <p
+          id="table-indexes-label"
+          className="mb-1 text-xs leading-[18px] text-quanta-pigeon"
+        >
+          {t('contents.indexes.select_columns')}
+        </p>
+        <ul className="flex flex-col">
+          {indexes.order.map((index) => {
+            if (index === 'sortable_title') return null;
+            return (
+              <li key={index} className="py-1">
+                <Checkbox
+                  value={index}
+                  isSelected={indexes.values[index].selected}
+                  onChange={() => {
+                    onSelectIndex(index);
+                  }}
+                  slot={null}
+                  className="text-sm text-quanta-space"
                 >
-                  <Checkbox
-                    value={index}
-                    isSelected={indexes.values[index].selected}
-                    onChange={() => {
-                      onSelectIndex(index);
-                    }}
-                    slot={null}
-                    className="text-base"
-                  >
-                    {t(indexes.values[index].label)}
-                  </Checkbox>
-                </PopoverListItem>
-              );
-            })}
-          </ul>
-        </fieldset>
+                  {t(indexes.values[index].label)}
+                </Checkbox>
+              </li>
+            );
+          })}
+        </ul>
       </Dialog>
     </Popover>
   );

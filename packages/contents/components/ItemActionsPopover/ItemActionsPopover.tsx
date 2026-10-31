@@ -1,18 +1,16 @@
-import { Button } from 'react-aria-components';
-import config from '@plone/registry';
-import { Dialog, Popover, type PopoverProps } from '@plone/quanta';
-import EditIcon from '@plone/icons/svg/edit.svg?react';
-import EyeIcon from '@plone/icons/svg/eye.svg?react';
-import RowbeforeIcon from '@plone/icons/svg/row-before.svg?react';
-import RowafterIcon from '@plone/icons/svg/row-after.svg?react';
-import CutIcon from '@plone/icons/svg/cut.svg?react';
-import CopyIcon from '@plone/icons/svg/copy.svg?react';
-import BinIcon from '@plone/icons/svg/bin.svg?react';
+import { Menu, MenuItem, MenuSeparator } from '@plone/quanta';
+import {
+  BinIcon,
+  CopyIcon,
+  CutIcon,
+  EditIcon,
+  EyeIcon,
+  RowafterIcon,
+  RowbeforeIcon,
+} from '@plone/icons';
 import { useTranslation } from 'react-i18next';
-import PopoverListItem from '../PopoverListItem';
-import './ItemActionsPopover.css';
 
-interface Props extends Omit<PopoverProps, 'children'> {
+interface Props {
   editLink: string;
   viewLink: string;
   onMoveToTop: () => Promise<void>;
@@ -22,6 +20,13 @@ interface Props extends Omit<PopoverProps, 'children'> {
   onDelete: () => Promise<void>;
 }
 
+const itemClassName = 'gap-4 border-b-0 py-1.5 text-quanta-space';
+const iconClassName = 'shrink-0 text-quanta-pigeon';
+
+/**
+ * The menu of actions for a single item. Render it inside a `MenuTrigger`,
+ * which places it in a popover.
+ */
 export function ItemActionsPopover({
   editLink,
   viewLink,
@@ -30,67 +35,59 @@ export function ItemActionsPopover({
   onCut,
   onCopy,
   onDelete,
-  ...popoverProps
 }: Props) {
   const { t } = useTranslation();
-  const Link = config.getComponent('Link').component!;
 
   return (
-    <Popover
-      {...popoverProps}
-      className="q react-aria-Popover item-actions-popover"
+    <Menu
+      aria-label={t('contents.actions.actions')}
+      className="min-w-48 px-1.5"
     >
-      <Dialog
-        aria-label={t('contents.actions.actions')}
-        className="[[data-placement]>&]:p-3"
+      <MenuItem id="edit" href={editLink} className={itemClassName}>
+        <EditIcon size="sm" className={iconClassName} />
+        {t('contents.actions.edit')}
+      </MenuItem>
+      <MenuItem id="view" href={viewLink} className={itemClassName}>
+        <EyeIcon size="sm" className={iconClassName} />
+        {t('contents.actions.view')}
+      </MenuItem>
+      <MenuSeparator />
+      <MenuItem
+        id="move-to-top"
+        onAction={onMoveToTop}
+        className={itemClassName}
       >
-        <ul className="popover-list">
-          <PopoverListItem className="edit">
-            <Link href={editLink}>
-              <EditIcon />
-              {t('contents.actions.edit')}
-            </Link>
-          </PopoverListItem>
-
-          <PopoverListItem className="view">
-            <Link href={viewLink}>
-              <EyeIcon />
-              {t('contents.actions.view')}
-            </Link>
-          </PopoverListItem>
-          <PopoverListItem className="move-to-top">
-            <Button onPress={onMoveToTop} className="react-aria-Link">
-              <RowbeforeIcon />
-              {t('contents.actions.move_to_top_folder')}
-            </Button>
-          </PopoverListItem>
-
-          <PopoverListItem className="move-to-bottom">
-            <Button onPress={onMoveToBottom} className="react-aria-Link">
-              <RowafterIcon />
-              {t('contents.actions.move_to_bottom_folder')}
-            </Button>
-          </PopoverListItem>
-          <PopoverListItem className="cut">
-            <Button onPress={onCut} className="react-aria-Link">
-              <CutIcon />
-              {t('contents.actions.cut')}
-            </Button>
-          </PopoverListItem>
-          <PopoverListItem className="copy">
-            <Button onPress={onCopy} className="react-aria-Link">
-              <CopyIcon />
-              {t('contents.actions.copy')}
-            </Button>
-          </PopoverListItem>
-          <PopoverListItem className="delete">
-            <Button onPress={onDelete} className="react-aria-Link">
-              <BinIcon />
-              {t('contents.actions.delete')}
-            </Button>
-          </PopoverListItem>
-        </ul>
-      </Dialog>
-    </Popover>
+        <RowbeforeIcon size="sm" className={iconClassName} />
+        {t('contents.actions.move_to_top_folder')}
+      </MenuItem>
+      <MenuItem
+        id="move-to-bottom"
+        onAction={onMoveToBottom}
+        className={itemClassName}
+      >
+        <RowafterIcon size="sm" className={iconClassName} />
+        {t('contents.actions.move_to_bottom_folder')}
+      </MenuItem>
+      <MenuSeparator />
+      <MenuItem id="cut" onAction={onCut} className={itemClassName}>
+        <CutIcon size="sm" className={iconClassName} />
+        {t('contents.actions.cut')}
+      </MenuItem>
+      <MenuItem id="copy" onAction={onCopy} className={itemClassName}>
+        <CopyIcon size="sm" className={iconClassName} />
+        {t('contents.actions.copy')}
+      </MenuItem>
+      <MenuItem
+        id="delete"
+        onAction={onDelete}
+        className={`
+          ${itemClassName}
+          text-quanta-candy
+        `}
+      >
+        <BinIcon size="sm" className="shrink-0" />
+        {t('contents.actions.delete')}
+      </MenuItem>
+    </Menu>
   );
 }
