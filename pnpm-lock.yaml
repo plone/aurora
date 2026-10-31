@@ -179,10 +179,10 @@ catalogs:
     '@react-router/dev':
       specifier: 8.5.0
       version: 8.5.0
-    '@react-router/node':
+    '@react-router/express':
       specifier: 8.5.0
       version: 8.5.0
-    '@react-router/serve':
+    '@react-router/node':
       specifier: 8.5.0
       version: 8.5.0
     '@react-spectrum/utils':
@@ -341,12 +341,18 @@ importers:
       '@plone/theming':
         specifier: workspace:*
         version: link:../../packages/theming
+      '@react-router/express':
+        specifier: 'catalog:'
+        version: 8.5.0(express@5.2.1(supports-color@8.1.1))(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@5.9.2)
       '@react-router/node':
         specifier: 'catalog:'
         version: 8.5.0(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@5.9.2)
-      '@react-router/serve':
-        specifier: 'catalog:'
-        version: 8.5.0(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@5.9.2)
+      compression:
+        specifier: ^1.8.1
+        version: 1.8.1(supports-color@8.1.1)
+      express:
+        specifier: ^5.2.1
+        version: 5.2.1(supports-color@8.1.1)
       i18next:
         specifier: 'catalog:'
         version: 26.3.6(typescript@5.9.2)
@@ -365,6 +371,9 @@ importers:
       jwt-decode:
         specifier: ^4.0.0
         version: 4.0.0
+      morgan:
+        specifier: ^1.10.1
+        version: 1.10.1(supports-color@8.1.1)
       react:
         specifier: ^19.2.7
         version: 19.3.1
@@ -11763,6 +11772,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
+    optional: true
 
   '@react-spectrum/utils@3.13.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
@@ -13042,7 +13052,8 @@ snapshots:
       node-releases: 2.0.37
       update-browserslist-db: 1.2.3(browserslist@4.28.2)
 
-  buffer-from@1.1.2: {}
+  buffer-from@1.1.2:
+    optional: true
 
   bundle-name@4.1.0:
     dependencies:
@@ -17121,6 +17132,7 @@ snapshots:
     dependencies:
       buffer-from: 1.1.2
       source-map: 0.6.1
+    optional: true
 
   source-map@0.6.1: {}
 
