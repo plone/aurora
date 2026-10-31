@@ -5,6 +5,7 @@ import {
   ContentTypesDriverProvider,
   ControlPanelsProvider,
   interpolate,
+  type ContentTypesCapabilities,
   type Notify,
   type Translate,
   type UseBlocker,
@@ -28,16 +29,25 @@ const useRouterBlocker: UseBlocker = (shouldBlock) => {
 /**
  * Connects the content types control panel to Aurora: React Router for
  * navigation, i18next for translations, the toast queue for notifications,
- * and the Aurora driver for data.
+ * and the Aurora driver for data, with what the backend supports.
  */
 export default function ContentTypesProviders({
+  capabilities,
   children,
 }: {
+  /** From `contentTypesBackend`, in the route's loader. */
+  capabilities?: ContentTypesCapabilities;
   children: ReactNode;
 }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const driver = useMemo(() => createAuroraDriver(), []);
+  // Loaders return new objects, so compare what they say.
+  const key = JSON.stringify(capabilities ?? null);
+  const driver = useMemo(
+    () => createAuroraDriver(capabilities),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [key],
+  );
 
   // The package's messages use single-brace placeholders (`{count}`), like
   // react-intl, so they're filled in after i18next looks the message up.
@@ -68,6 +78,7 @@ export default function ContentTypesProviders({
       <ContentTypesDriverProvider
         driver={driver}
         behaviorMetadata={config.settings.behaviorMetadata}
+        stateColors={config.settings.workflowStateColors}
       >
         {children}
       </ContentTypesDriverProvider>
