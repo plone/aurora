@@ -8,6 +8,16 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.17 (2026-10-30)
+
+### Feature
+
+- Registered the `Pagination` component from `@plone/components` in the component registry. @pnicolli 
+
+### Bugfix
+
+- Fixed the "Search site" label staying English in German, because of a wrongly cased key in the German catalog. @sneridagh [#354](https://github.com/plone/aurora/issues/354)
+
 ## 1.0.0-alpha.16 (2026-10-30)
 
 ### Internal
