@@ -1,4 +1,4 @@
-import { NO_CAPABILITIES } from '@plone/controlpanels';
+import { NO_CAPABILITIES } from '../driver';
 import {
   toCapabilities,
   toContentTypePatch,
@@ -9,7 +9,7 @@ import {
   toWorkflowInfo,
   type ContentTypeResponse,
   type WorkflowResponse,
-} from './contentTypesApi';
+} from './contentTypesService';
 
 // Trimmed from `GET @content-types/Event` on plone.restapi#2061.
 const event: ContentTypeResponse = {
