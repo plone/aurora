@@ -1,0 +1,1 @@
+The content types control panel passes react-i18next's `t` to `@plone/controlpanels`, which now uses i18next's placeholders. @sneridagh
