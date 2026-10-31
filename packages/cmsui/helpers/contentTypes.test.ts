@@ -3,6 +3,8 @@ import {
   toContentTypeSettings,
   toContentTypeSummary,
   toDexterityTypePatch,
+  toFieldTypes,
+  toTypeSchemaPut,
 } from './contentTypes';
 
 describe('toContentTypeSummary', () => {
@@ -136,5 +138,50 @@ describe('toDexterityTypePatch', () => {
     expect(toDexterityTypePatch({ allowedContents: { mode: 'all' } })).toEqual({
       filter_content_types: 'all',
     });
+  });
+});
+
+describe('toTypeSchemaPut', () => {
+  it('lets plone.restapi add and change the custom fields', () => {
+    const put = toTypeSchemaPut({
+      title: 'Event',
+      type: 'object',
+      fieldsets: [
+        { id: 'default', title: 'Default', fields: ['title', 'pages', 'new'] },
+      ],
+      properties: {
+        title: { title: 'Title', behavior: 'plone.dublincore' },
+        pages: {
+          title: 'Pages',
+          behavior: 'plone.dexterity.schema.generated.plone_5_1_0_Event',
+        },
+        new: { title: 'New', behavior: 'plone.dexterity.schema.generated' },
+      },
+      required: ['title', 'new'],
+    });
+    expect(put.properties.title).toEqual({
+      title: 'Title',
+      behavior: 'plone.dublincore',
+    });
+    expect(put.properties.pages).toMatchObject({
+      behavior: '',
+      required: false,
+    });
+    expect(put.properties.new).toMatchObject({ behavior: '', required: true });
+  });
+});
+
+describe('toFieldTypes', () => {
+  it('keys the field types by token, once per title', () => {
+    expect(
+      toFieldTypes([
+        { token: 'label_integer_field', title: 'Integer' },
+        { token: 'Email', title: 'Email' },
+        { token: 'label_email', title: 'Email' },
+      ]),
+    ).toEqual([
+      { id: 'label_integer_field', title: 'Integer' },
+      { id: 'Email', title: 'Email' },
+    ]);
   });
 });

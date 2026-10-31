@@ -3,6 +3,8 @@ import {
   type ContentTypeSettings,
   type ContentTypeSummary,
   type ContentTypesDriver,
+  type FieldType,
+  type TypeSchema,
 } from '@plone/controlpanels';
 
 /** Where the driver's resource routes live (see `routes/api/contentTypes.tsx`). */
@@ -32,8 +34,9 @@ const notYet = (what: string) => () =>
  *
  * Today's plone.restapi only lists, creates and deletes types, so every
  * capability is off: a type's settings are its name, description and what it
- * can contain. They turn on as plone/plone.restapi#2061 lands. Schemas and
- * behaviors come with their tabs (#269, phases 4 and 5).
+ * can contain. They turn on as plone/plone.restapi#2061 lands. Schemas use
+ * `@types`, which can't reorder fieldsets. Behaviors come with their tab
+ * (#269, phase 5).
  */
 export function createAuroraDriver(): ContentTypesDriver {
   return {
@@ -64,8 +67,19 @@ export function createAuroraDriver(): ContentTypesDriver {
       });
     },
 
-    getSchema: notYet('Reading a schema'),
-    saveSchema: notYet('Saving a schema'),
+    getSchema: (id) =>
+      request<TypeSchema>(`${API}/${encodeURIComponent(id)}/schema`),
+
+    saveSchema: async (id, schema) => {
+      await request(`${API}/${encodeURIComponent(id)}/schema`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(schema),
+      });
+    },
+
+    listFieldTypes: () => request<FieldType[]>(`${API}/@field-types`),
+
     listBehaviors: notYet('Listing behaviors'),
   };
 }

@@ -7,7 +7,7 @@ import type {
   WorkflowChangeJob,
   WorkflowChangeRequest,
 } from '../types';
-import { CUSTOM_FIELD_BEHAVIOR } from '../types';
+import { isCustomField } from '../schemaEditing';
 import { toShortName } from '../shortName';
 import { suggestStateMapping } from '../workflow/suggestStateMapping';
 import { mockData } from './fixtures';
@@ -65,6 +65,7 @@ export function createMockDriver(
     behaviorOrder: true,
     behaviorDetails: true,
     schemaPreview: true,
+    fieldsetOrder: true,
     workflows: true,
     workflowChange: true,
     siteDefaults: true,
@@ -258,7 +259,18 @@ export function createMockDriver(
 
     saveSchema: (id, schema) => {
       if (!findType(id)) return fail(`No type "${id}"`);
-      data.schemas[id] = clone(schema);
+      const saved = clone(schema);
+      // Like plone.restapi, keep the stored fieldset order, and add new
+      // fieldsets at the end.
+      const stored = data.schemas[id]?.fieldsets.map((fieldset) => fieldset.id);
+      if (!capabilities.fieldsetOrder && stored) {
+        const position = (fieldset: { id: string }) => {
+          const index = stored.indexOf(fieldset.id);
+          return index === -1 ? stored.length : index;
+        };
+        saved.fieldsets.sort((a, b) => position(a) - position(b));
+      }
+      data.schemas[id] = saved;
       return wait(undefined);
     },
 
@@ -271,7 +283,7 @@ export function createMockDriver(
       const enabled = new Set(behaviors);
       const keep = (field: string) => {
         const raw = schema.properties[field]?.behavior;
-        if (!raw || raw === CUSTOM_FIELD_BEHAVIOR) return true;
+        if (!raw || isCustomField(schema.properties[field])) return true;
         return enabled.has(BEHAVIOR_ALIASES[raw] ?? raw);
       };
       schema.fieldsets = schema.fieldsets
@@ -282,6 +294,8 @@ export function createMockDriver(
         .filter((fieldset) => fieldset.fields.length > 0);
       return wait(schema);
     },
+
+    listFieldTypes: () => wait(data.fieldTypes),
 
     listBehaviors: () =>
       wait(

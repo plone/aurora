@@ -213,6 +213,7 @@ class PloneClient {
   getTypeField = restapi.getTypeField;
   createTypeField = restapi.createTypeField;
   updateTypeField = restapi.updateTypeField;
+  updateTypeSchema = restapi.updateTypeSchema;
 
   getUpgrade = restapi.getUpgrade;
   runUpgrade = restapi.runUpgrade;

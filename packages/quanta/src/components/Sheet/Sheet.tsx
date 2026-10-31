@@ -50,6 +50,8 @@ const sheetStyles = tv({
 
 // Only scroll the inner content once the sheet is fully expanded. At a
 // partial snap point, a swipe on the content expands the sheet instead.
+// Side panels have no snap points, and their overscroll padding keeps them
+// from ever counting as expanded, so they always scroll.
 const contentStyles = tv({
   base: `
     box-border h-full overflow-hidden overscroll-auto p-6
@@ -57,6 +59,17 @@ const contentStyles = tv({
     [scrollbar-gutter:stable]
     group-data-[expanded]/sheet:overflow-auto
   `,
+  variants: {
+    position: {
+      left: 'overflow-auto',
+      right: 'overflow-auto',
+      start: 'overflow-auto',
+      end: 'overflow-auto',
+      bottom: '',
+      top: '',
+      center: '',
+    },
+  },
 });
 
 export interface SheetProps extends Omit<SheetOverlayProps, 'children'> {
@@ -81,7 +94,11 @@ export function Sheet({ children, overscrollPadding, ...props }: SheetProps) {
   return (
     <SheetOverlay
       {...props}
-      className={composeTailwindRenderProps(props.className, 'group/sheet')}
+      // Above sticky page chrome, like the Modal's overlay.
+      className={composeTailwindRenderProps(
+        props.className,
+        'group/sheet z-20',
+      )}
     >
       {/* The backdrop fades in as the sheet slides in. With snap points, it
           stays hidden until the sheet is dragged past the last one. */}
@@ -141,7 +158,9 @@ export function Sheet({ children, overscrollPadding, ...props }: SheetProps) {
             `}
           />
         )}
-        <SheetContent className={contentStyles()}>{children}</SheetContent>
+        <SheetContent className={contentStyles({ position: props.position })}>
+          {children}
+        </SheetContent>
       </RACSheet>
     </SheetOverlay>
   );
