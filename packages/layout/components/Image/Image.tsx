@@ -24,13 +24,13 @@ export function flattenScales(path: string, image: any) {
     download: removeObjectIdFromURL(basePath, image.download),
   };
 
-  // `null` is typeof 'object', so exclude it explicitly.
-  if (typeof imageInfo.scales !== 'object' || imageInfo.scales === null) {
+  // A blob image may have no scales (`typeof null` is 'object' too).
+  if (!imageInfo.scales || typeof imageInfo.scales !== 'object') {
     return imageInfo;
   }
 
   Object.keys(imageInfo.scales).forEach((key) => {
-    const scale = image.scales?.[key];
+    const scale = image.scales[key];
     if (!scale) return;
     imageInfo.scales[key].download = removeObjectIdFromURL(
       basePath,
