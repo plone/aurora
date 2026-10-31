@@ -742,4 +742,266 @@ export const messages = defineMessages({
     id: 'controlpanels.contentTypes.groupOther',
     defaultMessage: 'Other',
   },
+  currentWorkflow: {
+    id: 'controlpanels.contentTypes.currentWorkflow',
+    defaultMessage: 'Current workflow',
+  },
+  followsSiteDefault: {
+    id: 'controlpanels.contentTypes.followsSiteDefault',
+    defaultMessage: 'Follows the site default',
+  },
+  setForThisType: {
+    id: 'controlpanels.contentTypes.setForThisType',
+    defaultMessage: 'Set for this type',
+  },
+  workflowStates: {
+    id: 'controlpanels.contentTypes.workflowStates',
+    defaultMessage: 'States',
+  },
+  initialState: {
+    id: 'controlpanels.contentTypes.initialState',
+    defaultMessage: 'New items start here',
+  },
+  transitionTo: {
+    id: 'controlpanels.contentTypes.transitionTo',
+    defaultMessage: '{transition} → {state}',
+  },
+  noWorkflowHelp: {
+    id: 'controlpanels.contentTypes.noWorkflowHelp',
+    defaultMessage:
+      'Items of this type have no state. They take their visibility from their folder.',
+  },
+  workflowsUnavailable: {
+    id: 'controlpanels.contentTypes.workflowsUnavailable',
+    defaultMessage:
+      "This site's backend doesn't tell which workflow a type uses yet.",
+  },
+  changeWorkflow: {
+    id: 'controlpanels.contentTypes.changeWorkflow',
+    defaultMessage: 'Change workflow…',
+  },
+  changeWorkflowUnavailable: {
+    id: 'controlpanels.contentTypes.changeWorkflowUnavailable',
+    defaultMessage: 'Changing the workflow needs a newer backend.',
+  },
+  placefulNote: {
+    id: 'controlpanels.contentTypes.placefulNote',
+    defaultMessage: 'Folder-level workflow policies still override this.',
+  },
+  visibilityAnyone: {
+    id: 'controlpanels.contentTypes.visibilityAnyone',
+    defaultMessage: 'Anyone',
+  },
+  visibilityMembers: {
+    id: 'controlpanels.contentTypes.visibilityMembers',
+    defaultMessage: 'Logged-in members',
+  },
+  visibilityRestricted: {
+    id: 'controlpanels.contentTypes.visibilityRestricted',
+    defaultMessage: 'People with a role on the item',
+  },
+  visibilityUnknown: {
+    id: 'controlpanels.contentTypes.visibilityUnknown',
+    defaultMessage: 'Depends on the folder',
+  },
+  changeWorkflowTitle: {
+    id: 'controlpanels.contentTypes.changeWorkflowTitle',
+    defaultMessage: 'Change workflow for {title}',
+  },
+  changeWorkflowSubtitle: {
+    id: 'controlpanels.contentTypes.changeWorkflowSubtitle',
+    defaultMessage: '{items} · currently {workflow}',
+  },
+  oneItem: {
+    id: 'controlpanels.contentTypes.oneItem',
+    defaultMessage: '1 item',
+  },
+  steps: {
+    id: 'controlpanels.contentTypes.steps',
+    defaultMessage: 'Steps',
+  },
+  stepChoose: {
+    id: 'controlpanels.contentTypes.stepChoose',
+    defaultMessage: 'Choose workflow',
+  },
+  stepMap: {
+    id: 'controlpanels.contentTypes.stepMap',
+    defaultMessage: 'Map states',
+  },
+  stepReview: {
+    id: 'controlpanels.contentTypes.stepReview',
+    defaultMessage: 'Review and change',
+  },
+  workflow: {
+    id: 'controlpanels.contentTypes.workflow',
+    defaultMessage: 'Workflow',
+  },
+  followDefault: {
+    id: 'controlpanels.contentTypes.followDefault',
+    defaultMessage: 'Follow the site default',
+  },
+  current: {
+    id: 'controlpanels.contentTypes.current',
+    defaultMessage: 'Current',
+  },
+  mostVisible: {
+    id: 'controlpanels.contentTypes.mostVisible',
+    defaultMessage: 'Most visible state: {visibility}.',
+  },
+  noWorkflowDescription: {
+    id: 'controlpanels.contentTypes.noWorkflowDescription',
+    defaultMessage: 'Items take their visibility from their folder.',
+  },
+  otherScopeWorkflows: {
+    id: 'controlpanels.contentTypes.otherScopeWorkflows',
+    defaultMessage: '{count} more workflows are only offered for comments.',
+  },
+  nextMap: {
+    id: 'controlpanels.contentTypes.nextMap',
+    defaultMessage: 'Next: map states',
+  },
+  nextReview: {
+    id: 'controlpanels.contentTypes.nextReview',
+    defaultMessage: 'Next: review',
+  },
+  back: {
+    id: 'controlpanels.contentTypes.back',
+    defaultMessage: 'Back',
+  },
+  mapHint: {
+    id: 'controlpanels.contentTypes.mapHint',
+    defaultMessage:
+      'Choose a state in {workflow} for each current state. Suggestions keep who can see an item.',
+  },
+  mapNothing: {
+    id: 'controlpanels.contentTypes.mapNothing',
+    defaultMessage: '{workflow} has no states, so there is nothing to map.',
+  },
+  withoutState: {
+    id: 'controlpanels.contentTypes.withoutState',
+    defaultMessage: 'Without a state',
+  },
+  noItemsInState: {
+    id: 'controlpanels.contentTypes.noItemsInState',
+    defaultMessage: 'No items in this state',
+  },
+  newStateFor: {
+    id: 'controlpanels.contentTypes.newStateFor',
+    defaultMessage: 'New state for {state}',
+  },
+  stateOption: {
+    id: 'controlpanels.contentTypes.stateOption',
+    defaultMessage: '{state} · {visibility}',
+  },
+  suggested: {
+    id: 'controlpanels.contentTypes.suggested',
+    defaultMessage: 'Suggested',
+  },
+  lessVisible: {
+    id: 'controlpanels.contentTypes.lessVisible',
+    defaultMessage: 'Less visible: {visibility} only',
+  },
+  moreVisible: {
+    id: 'controlpanels.contentTypes.moreVisible',
+    defaultMessage: 'More visible: {visibility} can see it',
+  },
+  sameVisibility: {
+    id: 'controlpanels.contentTypes.sameVisibility',
+    defaultMessage: 'Same visibility',
+  },
+  lessVisibleWarning: {
+    id: 'controlpanels.contentTypes.lessVisibleWarning',
+    defaultMessage: 'Some items will be less visible.',
+  },
+  lessVisibleWarningHelp: {
+    id: 'controlpanels.contentTypes.lessVisibleWarningHelp',
+    defaultMessage:
+      'Visitors who can see them now will get a login page instead.',
+  },
+  dependsOnFolder: {
+    id: 'controlpanels.contentTypes.dependsOnFolder',
+    defaultMessage: 'Visibility then depends on the folder',
+  },
+  previewError: {
+    id: 'controlpanels.contentTypes.previewError',
+    defaultMessage: "The change couldn't be previewed.",
+  },
+  reviewIntro: {
+    id: 'controlpanels.contentTypes.reviewIntro',
+    defaultMessage: '{title} will use {workflow} instead of {current}.',
+  },
+  reviewFollowDefault: {
+    id: 'controlpanels.contentTypes.reviewFollowDefault',
+    defaultMessage: '{title} will follow the site default, {workflow}.',
+  },
+  reviewSame: {
+    id: 'controlpanels.contentTypes.reviewSame',
+    defaultMessage: 'Still visible to {visibility}.',
+  },
+  reviewLess: {
+    id: 'controlpanels.contentTypes.reviewLess',
+    defaultMessage: 'Now visible only to {visibility} (was {was}).',
+  },
+  reviewMore: {
+    id: 'controlpanels.contentTypes.reviewMore',
+    defaultMessage: 'Now visible to {visibility} (was {was}).',
+  },
+  reviewRow: {
+    id: 'controlpanels.contentTypes.reviewRow',
+    defaultMessage: '{items}: {from} → {to}.',
+  },
+  reviewInitial: {
+    id: 'controlpanels.contentTypes.reviewInitial',
+    defaultMessage: 'New items will start in {state}.',
+  },
+  reviewNoWorkflow: {
+    id: 'controlpanels.contentTypes.reviewNoWorkflow',
+    defaultMessage: 'Items will take their visibility from their folder.',
+  },
+  reviewNoItems: {
+    id: 'controlpanels.contentTypes.reviewNoItems',
+    defaultMessage: 'There are no items to move.',
+  },
+  reviewUnaffected: {
+    id: 'controlpanels.contentTypes.reviewUnaffected',
+    defaultMessage:
+      "{count} items under folders with their own workflow policy won't change.",
+  },
+  reviewNote: {
+    id: 'controlpanels.contentTypes.reviewNote',
+    defaultMessage:
+      'Permissions are updated and items reindexed. On a large site this can take minutes.',
+  },
+  changeWorkflowFor: {
+    id: 'controlpanels.contentTypes.changeWorkflowFor',
+    defaultMessage: 'Change workflow for {items}',
+  },
+  changingWorkflow: {
+    id: 'controlpanels.contentTypes.changingWorkflow',
+    defaultMessage: 'Changing workflow…',
+  },
+  changingWorkflowHelp: {
+    id: 'controlpanels.contentTypes.changingWorkflowHelp',
+    defaultMessage: 'Updating permissions and reindexing.',
+  },
+  workflowChanged: {
+    id: 'controlpanels.contentTypes.workflowChanged',
+    defaultMessage: '{title} now uses {workflow}.',
+  },
+  workflowChangedItems: {
+    id: 'controlpanels.contentTypes.workflowChangedItems',
+    defaultMessage: '{items} updated.',
+  },
+  workflowChangeError: {
+    id: 'controlpanels.contentTypes.workflowChangeError',
+    defaultMessage: "The workflow of {title} couldn't be changed.",
+  },
+  loadingPreview: {
+    id: 'controlpanels.contentTypes.loadingPreview',
+    defaultMessage: 'Working out what changes…',
+  },
+  changeWorkflowConfirm: {
+    id: 'controlpanels.contentTypes.changeWorkflowConfirm',
+    defaultMessage: 'Change workflow',
+  },
 });
