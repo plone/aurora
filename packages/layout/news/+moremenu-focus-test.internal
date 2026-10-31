@@ -1,1 +1,0 @@
-Fixed a flaky `MoreMenu` test: it waits for the menu to take the focus before opening the State submenu, which closed when the focus arrived later. @sneridagh

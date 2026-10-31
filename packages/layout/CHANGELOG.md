@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.16 (2026-10-30)
+
+### Internal
+
+- Fixed a flaky `MoreMenu` test: it waits for the menu to take the focus before opening the State submenu, which closed when the focus arrived later. @sneridagh 
+
 ## 1.0.0-alpha.15 (2026-10-29)
 
 ### Feature
