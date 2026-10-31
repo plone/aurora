@@ -1,0 +1,1 @@
+The `check-vite-optimize-deps` audit ignores a package's top-level `.storybook` directory and config files, as it already did for nested ones. @pnicolli
