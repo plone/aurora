@@ -1,8 +1,11 @@
-import type {
-  AllowedContents,
-  ContentTypeChanges,
-  ContentTypeSettings,
-  ContentTypeSummary,
+import {
+  isCustomField,
+  type AllowedContents,
+  type ContentTypeChanges,
+  type ContentTypeSettings,
+  type ContentTypeSummary,
+  type FieldType,
+  type TypeSchema,
 } from '@plone/controlpanels';
 
 // The content types control panel works with its own model
@@ -127,4 +130,40 @@ export function toDexterityTypePatch(
     }
   }
   return patch;
+}
+
+/**
+ * The body `PUT /@types/{type}` expects for a schema. plone.restapi only adds
+ * fields whose behavior is empty, and reads `required` from each existing
+ * field rather than from the `required` list.
+ */
+export function toTypeSchemaPut(
+  schema: TypeSchema,
+): TypeSchema & Record<string, unknown> {
+  const properties: TypeSchema['properties'] = {};
+  for (const [name, field] of Object.entries(schema.properties)) {
+    properties[name] = isCustomField(field)
+      ? { ...field, behavior: '', required: schema.required.includes(name) }
+      : field;
+  }
+  return { ...schema, properties };
+}
+
+/**
+ * The field types from the `Fields` vocabulary. Their tokens are what
+ * plone.restapi accepts as a new field's `factory`. Titles can repeat
+ * (e.g. two kinds of "Email"), so only the first of each is kept.
+ */
+export function toFieldTypes(
+  items: Array<{ token: string; title?: string | null }>,
+): FieldType[] {
+  const seen = new Set<string>();
+  const types: FieldType[] = [];
+  for (const { token, title } of items) {
+    const label = title || token;
+    if (seen.has(label)) continue;
+    seen.add(label);
+    types.push({ id: token, title: label });
+  }
+  return types;
 }

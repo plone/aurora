@@ -1,6 +1,7 @@
 import type {
   BehaviorInfo,
   ContentTypeSettings,
+  FieldType,
   SiteDefaults,
   TypeSchema,
   WorkflowAssignments,
@@ -8,6 +9,7 @@ import type {
 import behaviors from './behaviors.json';
 import documentSchema from './schema-Document.json';
 import eventSchema from './schema-Event.json';
+import { fieldTypes } from './fieldTypes';
 import { workflows } from './workflows';
 
 // Captured from a Plone 6.2 site with plone.volto (the acceptance test
@@ -21,6 +23,7 @@ export interface MockData {
   types: ContentTypeSettings[];
   schemas: Record<string, TypeSchema>;
   behaviors: BehaviorInfo[];
+  fieldTypes: FieldType[];
   workflows: typeof workflows;
   assignments: WorkflowAssignments;
   /** The number of items per type and workflow state. */
@@ -157,6 +160,7 @@ export const mockData: MockData = {
     Event: eventSchema as TypeSchema,
   },
   behaviors,
+  fieldTypes,
   workflows,
   assignments: {
     default: 'simple_publication_workflow',

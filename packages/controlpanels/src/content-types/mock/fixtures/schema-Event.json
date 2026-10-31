@@ -17,10 +17,18 @@
         "contact_email",
         "contact_phone",
         "event_url",
+        "registration_required",
         "changeNote"
       ],
       "id": "default",
       "title": "Default"
+    },
+    {
+      "id": "registration",
+      "title": "Registration",
+      "description": "",
+      "behavior": "plone.dexterity.schema.generated",
+      "fields": []
     },
     {
       "behavior": "plone",
@@ -455,6 +463,13 @@
       "widgetOptions": {
         "klass": "event_whole_day"
       }
+    },
+    "registration_required": {
+      "title": "Registration required",
+      "description": "Visitors must sign up before attending.",
+      "factory": "Yes/No",
+      "type": "boolean",
+      "behavior": "plone.dexterity.schema.generated"
     }
   },
   "required": ["title", "start", "end"],
