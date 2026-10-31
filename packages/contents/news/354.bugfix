@@ -1,1 +1,0 @@
-Added `data-locale` with the interface language to `<html>`, so the client starts in the language the server detected. @sneridagh
