@@ -84,6 +84,7 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
         '@plone/quanta > react-aria-components/composeRenderProps',
         '@plone/quanta > tailwind-merge',
         '@plone/quanta > tailwind-variants',
+        '@plone/quanta > usehooks-ts',
         '@plone/helpers > jotai',
         '@plone/helpers > jotai/utils',
         '@plone/helpers > jotai/vanilla',

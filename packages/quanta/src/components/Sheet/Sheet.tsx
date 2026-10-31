@@ -37,9 +37,11 @@ const sheetStyles = tv({
       top: `
         max-h-[calc(100%_-_32px)] w-full max-w-[800px] origin-[center_150px] rounded-b-2xl border-b
       `,
+      // Centered, it's a modal: at most 600 pixels wide (or 90% of the
+      // viewport), unless `--modal-max-width` is set on the sheet.
       center: `
-        max-h-[calc(100%_-_32px)] w-[calc(100%-1rem)] max-w-[800px] origin-[center_-150px]
-        rounded-2xl border
+        max-h-[calc(100%_-_32px)] w-full max-w-[min(90vw,var(--modal-max-width,600px))]
+        origin-[center_-150px] rounded-2xl border
       `,
     },
   },
@@ -100,6 +102,7 @@ export function Sheet({ children, overscrollPadding, ...props }: SheetProps) {
         stackAnimation="sheet-scale-back"
         className={({ position }) => sheetStyles({ position })}
       >
+        {/* A centered sheet reads as a modal, so it shows no handle. */}
         {!props.preventDismissal && (
           <div
             aria-hidden="true"
@@ -107,6 +110,7 @@ export function Sheet({ children, overscrollPadding, ...props }: SheetProps) {
             className={`
               pointer-events-none absolute z-10 rounded-md bg-quanta-silver transition-opacity
               group-data-[has-descendants]/sheet-panel:opacity-0
+              group-data-[position=center]/sheet-panel:hidden
               group-data-[swipe-direction=bottom]/sheet-panel:top-3
               group-data-[swipe-direction=bottom]/sheet-panel:left-1/2
               group-data-[swipe-direction=bottom]/sheet-panel:h-1.5
