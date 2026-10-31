@@ -9,6 +9,7 @@
 @import '@plone/quanta/src/styles/colors.css' layer(theme);
 /* Its own `plone-icons` layer nests in `components`, below the utilities. */
 @import '@plone/icons/icons.css' layer(components);
+@import '@plone/components/src/styles/basic/Toast.css' layer(components);
 
 @plugin 'tailwindcss-react-aria-components';
 @plugin 'tailwindcss-animate';

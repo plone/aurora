@@ -12,6 +12,7 @@ import {
   ChevrondownIcon,
   ChevronrightIcon,
   HistoryIcon,
+  LanguageIcon,
   LinkIcon,
   MandatoryIcon,
   MoreoptionsIcon,
@@ -302,6 +303,7 @@ export function MoreMenu({
                         defaultValue: 'Manage translations',
                       })}
                     >
+                      <LanguageIcon />
                       <Text slot="label">
                         {t('layout.moreMenu.translations', {
                           defaultValue: 'Manage translations',

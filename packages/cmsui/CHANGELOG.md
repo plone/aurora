@@ -8,6 +8,18 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.15 (2026-10-30)
+
+### Bugfix
+
+- Added `data-locale` with the interface language to `<html>`, so the client starts in the language the server detected. @sneridagh [#354](https://github.com/plone/aurora/issues/354)
+
+## 1.0.0-alpha.14 (2026-10-30)
+
+### Feature
+
+- Added the password reset flow at `/passwordreset`, the URL Plone's reset email links to: request a reset link, then set a new password with the token. @InteraktivPreuss [#48](https://github.com/plone/aurora/issues/48)
+
 ## 1.0.0-alpha.13 (2026-10-29)
 
 ### Breaking

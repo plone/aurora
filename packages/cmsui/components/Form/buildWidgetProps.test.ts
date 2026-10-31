@@ -115,4 +115,14 @@ describe('buildWidgetProps', () => {
 
     expect(props).toMatchObject({ label: 'Overridden', rows: 4 });
   });
+
+  it('passes a placeholder set on the field schema to the widget', () => {
+    const props = buildWidgetProps({
+      name: 'title',
+      schema: { title: 'Title', type: 'string', placeholder: 'My Page' } as any,
+      value: '',
+    });
+
+    expect(props.placeholder).toBe('My Page');
+  });
 });

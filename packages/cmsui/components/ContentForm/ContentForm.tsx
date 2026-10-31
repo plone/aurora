@@ -4,6 +4,7 @@ import Settings from '@plone/icons/svg/settings.svg?react';
 import { Link, Tab, TabList, TabPanel, Tabs } from '@plone/quanta';
 import { FormProvider, useFormStore } from '@plone/helpers';
 import { Plug } from '@plone/layout/components/Pluggable';
+import config from '@plone/registry';
 import type { Content } from '@plone/types';
 import clsx from 'clsx';
 import { useAtom } from 'jotai';
@@ -36,6 +37,12 @@ interface ContentFormProps {
   schema: Schema;
   heading: ReactNode;
   submitMethod: 'post' | 'patch';
+  /** Per-tab sticky panels rendered left of the form (eg. translation source). */
+  asidePanels?: { header?: ReactNode; blocks?: ReactNode; content?: ReactNode };
+  /** Placeholder text per field name (eg. the source values of a translation). */
+  fieldPlaceholders?: Record<string, string>;
+  /** Where Cancel goes, when not the content itself (eg. a translation's source). */
+  cancelHref?: string;
 }
 
 export default function ContentForm({
@@ -44,14 +51,17 @@ export default function ContentForm({
   schema,
   heading,
   submitMethod,
+  asidePanels,
+  fieldPlaceholders,
+  cancelHref,
 }: ContentFormProps) {
   const { t } = useTranslation();
   const fetcher = useFetcher();
   const [collapsed, setCollapsed] = useAtom(sidebarAtom);
   const [selectedTab, setSelectedTab] = useState<Key>('blocks');
-  // Cancel goes back to the edited object or, on add, to the container: a
-  // new object has no `@id` yet.
-  const cancelHref = content['@id'] || path;
+  // Without a `cancelHref`, Cancel goes back to the edited object or, on
+  // add, to the container: a new object has no `@id` yet.
+  const cancelTarget = cancelHref ?? (content['@id'] || path);
   const validators = useMemo(
     () => buildSchemaValidators<Content>(schema, { t }),
     [schema, t],
@@ -83,14 +93,73 @@ export default function ContentForm({
     [schema],
   );
 
-  // The save action returns the server's validation errors, by field.
+  // The save action returns the server's validation errors, by field, or an
+  // `error` message that belongs to no field (eg. a conflict).
   useEffect(() => {
-    const errors = (fetcher.data as { errors?: Record<string, string[]> })
-      ?.errors;
+    const { errors, error } = (fetcher.data ?? {}) as {
+      errors?: Record<string, string[]>;
+      error?: string;
+    };
+    if (error) {
+      config.getUtility({ name: 'show', type: 'toast' }).method({
+        title: t('cmsui.saveFailed'),
+        description: error,
+        className: 'error',
+      });
+    }
     if (!errors) return;
     form.setServerErrors(errors);
     showErrors(errors);
-  }, [fetcher.data, form, showErrors]);
+  }, [fetcher.data, form, showErrors, t]);
+
+  // Non-reserved schema keys reach the widget, so a placeholder set on the
+  // field's schema property is rendered by any widget that supports it.
+  const fieldsSchema = useMemo(
+    () =>
+      fieldPlaceholders
+        ? {
+            ...schema,
+            properties: Object.fromEntries(
+              Object.entries(schema.properties).map(([name, property]) => [
+                name,
+                fieldPlaceholders[name]
+                  ? { ...property, placeholder: fieldPlaceholders[name] }
+                  : property,
+              ]),
+            ),
+          }
+        : schema,
+    [schema, fieldPlaceholders],
+  );
+
+  const fieldsetsForm = (
+    <form>
+      <SchemaFieldsets schema={fieldsSchema} />
+    </form>
+  );
+
+  // The shared header row keeps both columns starting level; px-6 mirrors the
+  // blocks editor's own gutters, padBody pads bodies that lack them.
+  const withAside = (panel: ReactNode, body: ReactNode, padBody = false) =>
+    asidePanels ? (
+      <div
+        className={`
+          grid grid-cols-1 gap-x-8 pt-4
+          lg:grid-cols-2 lg:grid-rows-[auto_1fr]
+        `}
+      >
+        <div className="mb-4 self-end px-6">{asidePanels.header}</div>
+        <h1 className="mb-4 self-end px-6 text-2xl font-bold">{heading}</h1>
+        <aside className="sticky top-0 max-h-screen self-start overflow-y-auto px-6">
+          {panel}
+        </aside>
+        <div className={padBody ? 'flex flex-col px-6' : 'flex flex-col'}>
+          {body}
+        </div>
+      </div>
+    ) : (
+      body
+    );
 
   return (
     <FormProvider form={form}>
@@ -118,15 +187,21 @@ export default function ContentForm({
                 <Tab id="content">{t('cmsui.blocksEditor.contentTab')}</Tab>
               </TabList>
               <TabPanel id="blocks" className="p-3">
-                <BlocksEditor />
+                {withAside(asidePanels?.blocks, <BlocksEditor />)}
               </TabPanel>
               <TabPanel id="content" className="p-3">
-                <div className="flex flex-col">
-                  <h1 className="mb-4 text-2xl font-bold">{heading}</h1>
-                  <form>
-                    <SchemaFieldsets schema={schema} />
-                  </form>
-                </div>
+                {withAside(
+                  asidePanels?.content,
+                  asidePanels ? (
+                    fieldsetsForm
+                  ) : (
+                    <div className="flex flex-col">
+                      <h1 className="mb-4 text-2xl font-bold">{heading}</h1>
+                      {fieldsetsForm}
+                    </div>
+                  ),
+                  true,
+                )}
               </TabPanel>
             </Tabs>
             <Plug pluggable="toolbar-top" id="edit-save-button">
@@ -145,9 +220,9 @@ export default function ContentForm({
             <Plug
               pluggable="toolbar-top"
               id="button-cancel"
-              dependencies={[cancelHref] as any}
+              dependencies={[cancelTarget] as any}
             >
-              <Link aria-label={t('cmsui.cancel')} href={cancelHref}>
+              <Link aria-label={t('cmsui.cancel')} href={cancelTarget}>
                 <Close />
               </Link>
             </Plug>

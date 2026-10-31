@@ -1,103 +1,406 @@
+import { useEffect, useState } from 'react';
 import {
   data,
-  Form,
-  redirect,
+  Link,
   RouterContextProvider,
+  useFetcher,
   useLoaderData,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from 'react-router';
+import { useTranslation } from 'react-i18next';
+import { flattenToAppURL, langmap } from '@plone/helpers';
 import { requireAuthCookie } from '@plone/react-router';
-import { flattenToAppURL } from '@plone/helpers';
+import type { Brain } from '@plone/types';
+import config from '@plone/registry';
 import {
   ploneClientContext,
   ploneContentContext,
 } from '@plone/aurora/app/middleware.server';
-import { Container, Link } from '@plone/quanta';
-import { useTranslation } from 'react-i18next';
+import { Plug } from '@plone/layout/components/Pluggable';
+import { type ToastItem } from '@plone/layout/config/toast';
+import {
+  Button,
+  Cell,
+  Column,
+  Container,
+  Link as QuantaLink,
+  Row,
+  Table,
+  TableBody,
+  TableHeader,
+  Tooltip,
+} from '@plone/quanta';
+import { TooltipTrigger } from 'react-aria-components';
+import { AddIcon, LanguageIcon, LinkIcon } from '@plone/icons';
+import Back from '@plone/icons/svg/arrow-left.svg?react';
+import { ObjectBrowserProvider } from '../components/ObjectBrowserWidget/ObjectBrowserContext';
+import { ObjectBrowserModal } from '../components/ObjectBrowserWidget/ObjectBrowserModal';
+import { getTranslationsOrThrow } from '../helpers/translations.server';
 
 export async function loader({
   request,
-  params,
   context,
 }: LoaderFunctionArgs<RouterContextProvider>) {
   await requireAuthCookie(request);
-  const path = `/${params['*'] || ''}`;
-  const { data: translations } = await context
-    .get(ploneClientContext)
-    .getTranslation({ path });
-  return {
-    path,
-    title: context.get(ploneContentContext).title,
-    translations: flattenToAppURL(translations.items),
-  };
+
+  const cli = context.get(ploneClientContext);
+  const content = context.get(ploneContentContext);
+  const contentPath = flattenToAppURL(content['@id']);
+
+  const translations = await getTranslationsOrThrow(cli, content);
+
+  const language = content.language as { token?: string } | string | undefined;
+  const contentLanguage =
+    typeof language === 'string' ? language : (language?.token ?? '');
+
+  const linked = new Map(
+    (translations.items ?? []).map((item) => [
+      item.language,
+      flattenToAppURL(item['@id']),
+    ]),
+  );
+
+  const rows = Object.keys(translations.root ?? {})
+    .sort(
+      (a, b) =>
+        Number(b === contentLanguage) - Number(a === contentLanguage) ||
+        a.localeCompare(b),
+    )
+    .map((lang) => ({
+      language: lang,
+      isCurrent: lang === contentLanguage,
+      translationPath:
+        lang === contentLanguage ? contentPath : (linked.get(lang) ?? null),
+      rootPath: flattenToAppURL(translations.root[lang]),
+    }));
+
+  return { title: content.title, contentPath, rows };
+}
+
+type ActionBody =
+  { intent: 'link'; target: string } | { intent: 'unlink'; language: string };
+
+// The link target must be a site path and the language a bare code, so
+// neither can point the request somewhere else.
+async function parseActionBody(request: Request): Promise<ActionBody | null> {
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return null;
+  }
+  if (!body || typeof body !== 'object') return null;
+  const { intent, target, language } = body as Record<string, unknown>;
+  if (
+    intent === 'link' &&
+    typeof target === 'string' &&
+    target.startsWith('/') &&
+    !target.startsWith('//')
+  ) {
+    return { intent, target };
+  }
+  if (
+    intent === 'unlink' &&
+    typeof language === 'string' &&
+    language !== '' &&
+    !language.includes('/')
+  ) {
+    return { intent, language };
+  }
+  return null;
 }
 
 export async function action({
   request,
-  params,
   context,
 }: ActionFunctionArgs<RouterContextProvider>) {
   await requireAuthCookie(request);
-  const path = `/${params['*'] || ''}`;
-  const form = await request.formData();
-  const operation = form.get('operation');
-  const value = form.get('value');
-  if (typeof value !== 'string' || !value)
-    return data({ error: 'Invalid translation' }, { status: 400 });
+
   const cli = context.get(ploneClientContext);
-  if (operation === 'link' && value.startsWith('/') && !value.startsWith('//'))
-    await cli.linkTranslation({ path, data: { id: value } });
-  else if (operation === 'unlink' && !value.includes('/'))
-    await cli.unlinkTranslation({ path, data: { language: value } });
-  else return data({ error: 'Invalid translation' }, { status: 400 });
-  return redirect(`/@@manage-translations${path === '/' ? '' : path}`);
+  const content = context.get(ploneContentContext);
+  const contentPath = flattenToAppURL(content['@id']);
+  const body = await parseActionBody(request);
+  if (!body) {
+    return data(
+      { ok: false as const, error: 'Invalid request' },
+      { status: 400 },
+    );
+  }
+
+  try {
+    if (body.intent === 'link') {
+      await cli.linkTranslation({
+        path: contentPath,
+        data: { id: body.target },
+      });
+    } else {
+      await cli.unlinkTranslation({
+        path: contentPath,
+        data: { language: body.language },
+      });
+    }
+  } catch (e) {
+    const err = e as {
+      status?: number;
+      data?: { error?: { message?: string }; message?: string };
+    };
+    return data(
+      {
+        ok: false as const,
+        error:
+          err?.data?.error?.message ?? err?.data?.message ?? 'Request failed',
+      },
+      { status: typeof err?.status === 'number' ? err.status : 400 },
+    );
+  }
+
+  return { ok: true as const, intent: body.intent };
 }
 
+const showToast = (item: ToastItem) =>
+  config.getUtility({ name: 'show', type: 'toast' }).method(item);
+
 export default function ManageTranslations() {
-  const { path, title, translations } = useLoaderData<typeof loader>();
+  const { title, contentPath, rows } = useLoaderData<typeof loader>();
+  const fetcher = useFetcher<typeof action>();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (fetcher.state === 'idle' && fetcher.data) {
+      if (fetcher.data.ok) {
+        showToast({
+          title:
+            fetcher.data.intent === 'link'
+              ? t('cmsui.manage_translations.linked')
+              : t('cmsui.manage_translations.unlinked'),
+          icon: <LanguageIcon />,
+        });
+      } else {
+        showToast({
+          title: t('cmsui.manage_translations.failed'),
+          description: fetcher.data.error,
+          icon: <LanguageIcon />,
+          className: 'error',
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetcher.state, fetcher.data]);
+
+  const busy = fetcher.state !== 'idle';
+
+  const link = (target: string) =>
+    fetcher.submit(
+      { intent: 'link', target },
+      { method: 'POST', encType: 'application/json' },
+    );
+
+  const unlink = (language: string) =>
+    fetcher.submit(
+      { intent: 'unlink', language },
+      { method: 'POST', encType: 'application/json' },
+    );
+
   return (
-    <main>
-      <Container width="default">
-        <h1>
-          {t('cmsui.translations.title', {
-            defaultValue: 'Manage translations',
-          })}{' '}
-          — {title}
-        </h1>
-        <Link href={path}>
-          {t('cmsui.history.back', { defaultValue: 'Back to content' })}
-        </Link>
-        <ul>
-          {translations.map((item) => (
-            <li key={item.language}>
-              <Link href={item['@id']}>{item.language}</Link>{' '}
-              <Form method="post">
-                <input type="hidden" name="value" value={item.language} />
-                <button
-                  name="operation"
-                  value="unlink"
-                  aria-label={`${t('cmsui.translations.unlink', { defaultValue: 'Unlink' })} ${item.language}`}
-                >
-                  {t('cmsui.translations.unlink', { defaultValue: 'Unlink' })}
-                </button>
-              </Form>
-            </li>
-          ))}
-        </ul>
-        <Form method="post">
-          <label htmlFor="translation-path">
-            {t('cmsui.translations.path', {
-              defaultValue: 'Path of an existing translation',
-            })}
-          </label>{' '}
-          <input id="translation-path" name="value" required pattern="/.*" />
-          <button name="operation" value="link">
-            {t('cmsui.translations.link', { defaultValue: 'Link translation' })}
-          </button>
-        </Form>
-      </Container>
-    </main>
+    <>
+      <Plug
+        pluggable="toolbar-top"
+        id="button-back"
+        dependencies={[contentPath] as any}
+      >
+        <QuantaLink
+          aria-label={t('cmsui.manage_translations.back')}
+          href={contentPath || '/'}
+        >
+          <Back />
+        </QuantaLink>
+      </Plug>
+      <main>
+        <Container width="default" className="route-manage-translations py-8">
+          <h1 className="documentFirstHeading mb-6 text-2xl font-bold">
+            {t('cmsui.manage_translations.title', { title })}
+          </h1>
+          <Table
+            aria-label={t('cmsui.manage_translations.title', { title })}
+            className="max-h-none rounded-none border-0 border-b border-b-neutral-200"
+          >
+            <TableHeader
+              className={`
+                border-b-quanta-silver bg-transparent backdrop-blur-none
+                supports-[-moz-appearance:none]:bg-transparent
+              `}
+            >
+              <Column
+                isRowHeader
+                width="1fr"
+                minWidth={160}
+                className="border-b border-b-neutral-200 font-medium text-quanta-sapphire"
+              >
+                {t('cmsui.manage_translations.language')}
+              </Column>
+              <Column
+                width="2fr"
+                minWidth={240}
+                className="border-b border-b-neutral-200 font-medium text-quanta-sapphire"
+              >
+                {t('cmsui.manage_translations.path')}
+              </Column>
+              <Column
+                width={112}
+                className="border-b border-b-neutral-200 font-medium text-quanta-sapphire"
+              >
+                {t('cmsui.manage_translations.tools')}
+              </Column>
+            </TableHeader>
+            <TableBody>
+              {rows.map((row) => {
+                const languageName =
+                  langmap[row.language]?.nativeName ?? row.language;
+                return (
+                  <Row key={row.language}>
+                    <Cell>
+                      <div
+                        className={`
+                          flex min-h-10 items-center text-sm text-quanta-space
+                          ${row.isCurrent ? 'font-bold' : ''}
+                        `}
+                      >
+                        {languageName}
+                      </div>
+                    </Cell>
+                    <Cell>
+                      <div className="flex min-h-10 items-center text-sm">
+                        {row.translationPath ? (
+                          <Link
+                            to={row.translationPath}
+                            className={`
+                              text-quanta-sapphire
+                              hover:underline
+                            `}
+                          >
+                            {row.translationPath}
+                          </Link>
+                        ) : (
+                          <span className="text-quanta-pigeon">
+                            {t('cmsui.manage_translations.no_translation')}
+                          </span>
+                        )}
+                      </div>
+                    </Cell>
+                    <Cell>
+                      <div className="flex min-h-10 items-center gap-1">
+                        {!row.isCurrent &&
+                          (row.translationPath ? (
+                            <TooltipTrigger>
+                              <Button
+                                variant="icon"
+                                type="button"
+                                aria-label={t(
+                                  'cmsui.manage_translations.unlink',
+                                  { language: languageName },
+                                )}
+                                onPress={() => unlink(row.language)}
+                                isDisabled={busy}
+                              >
+                                <LinkIcon size="sm" />
+                              </Button>
+                              <Tooltip>
+                                {t('cmsui.manage_translations.unlink', {
+                                  language: languageName,
+                                })}
+                              </Tooltip>
+                            </TooltipTrigger>
+                          ) : (
+                            <>
+                              <LinkTranslationPicker
+                                label={t('cmsui.manage_translations.link', {
+                                  language: languageName,
+                                })}
+                                rootPath={row.rootPath}
+                                isDisabled={busy}
+                                onPick={(item) =>
+                                  item['@id'] &&
+                                  link(flattenToAppURL(item['@id']))
+                                }
+                              />
+                              <TooltipTrigger>
+                                <QuantaLink
+                                  asButton
+                                  variant="icon"
+                                  href={`/@@translate${contentPath}?language=${row.language}`}
+                                  aria-label={t(
+                                    'cmsui.manage_translations.create',
+                                    { language: languageName },
+                                  )}
+                                  isDisabled={busy}
+                                >
+                                  <LanguageIcon size="sm" />
+                                </QuantaLink>
+                                <Tooltip>
+                                  {t('cmsui.manage_translations.create', {
+                                    language: languageName,
+                                  })}
+                                </Tooltip>
+                              </TooltipTrigger>
+                            </>
+                          ))}
+                      </div>
+                    </Cell>
+                  </Row>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </Container>
+      </main>
+    </>
+  );
+}
+
+function LinkTranslationPicker({
+  label,
+  rootPath,
+  isDisabled,
+  onPick,
+}: {
+  label: string;
+  rootPath: string;
+  isDisabled?: boolean;
+  onPick: (item: Partial<Brain>) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <TooltipTrigger>
+        <Button
+          variant="icon"
+          type="button"
+          aria-label={label}
+          onPress={() => setOpen(true)}
+          isDisabled={isDisabled}
+        >
+          <AddIcon size="sm" />
+        </Button>
+        <Tooltip>{label}</Tooltip>
+      </TooltipTrigger>
+      {open && (
+        <ObjectBrowserProvider
+          config={{
+            mode: 'single',
+            title: label,
+            initialPath: rootPath,
+            onChange: (selected) => {
+              if (selected.length > 0) {
+                setOpen(false);
+                onPick(selected[0]);
+              }
+            },
+          }}
+        >
+          <ObjectBrowserModal isOpen={open} onOpenChange={setOpen} />
+        </ObjectBrowserProvider>
+      )}
+    </>
   );
 }

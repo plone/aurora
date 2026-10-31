@@ -8,6 +8,23 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.22 (2026-10-30)
+
+### Breaking
+
+- `REACT_ROUTER_ALLOWED_ACTION_ORIGINS` is now read when the production server starts, not when building. Set it in the environment of the running server. @sneridagh 
+
+### Bugfix
+
+- Fixed the interface language staying English when the project supports more languages: the i18next middleware and the client now read `config.settings.supportedLanguages` after the configuration is applied, and the client starts in the language the server detected. `app/i18n` now exports `getI18nOptions()` instead of a default options object. @sneridagh [#354](https://github.com/plone/aurora/issues/354)
+- Run the production server (`pnpm start:prod`) with an Aurora server that trusts the `X-Forwarded-*` headers of proxies on private networks, instead of `react-router-serve`. Behind a proxy that terminates TLS, React Router saw the request as `http` while the browser sends an `https` origin, so every action, login included, failed with a 400. It now works for every host the site is served on, without configuration. Set `TRUST_PROXY` to change which proxies are trusted. @sneridagh 
+
+## 1.0.0-alpha.21 (2026-10-30)
+
+### Feature
+
+- The hosts allowed as action origins can be set from the environment when building (`REACT_ROUTER_ALLOWED_ACTION_ORIGINS`, comma separated, with `*`/`**` wildcards). Behind a proxy that terminates TLS, React Router sees the request as `http` while the browser sends an `https` origin, so every action, login included, failed with a 400. @sneridagh 
+
 ## 1.0.0-alpha.20 (2026-10-29)
 
 ### Feature
