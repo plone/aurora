@@ -56,17 +56,22 @@ function openModalSheet(className?: string) {
   fireEvent.click(screen.getByRole('button', { name: 'Rename' }));
 }
 
+function dialog() {
+  return screen.getByRole('dialog', { name: 'Rename item' });
+}
+
 function sheetPanel() {
-  return screen
-    .getByRole('dialog', { name: 'Rename item' })
-    .closest('[data-position]');
+  return dialog().closest('[data-position]');
 }
 
 describe('ModalSheet', () => {
-  it('is a centered modal on wide screens', () => {
+  it('is a modal on wide screens', () => {
     mockViewport(false);
     openModalSheet();
-    expect(sheetPanel()).toHaveAttribute('data-position', 'center');
+    expect(sheetPanel()).toBeNull();
+    expect(dialog().parentElement).toHaveClass(
+      'max-w-[min(90vw,var(--modal-max-width,600px))]',
+    );
 
     fireEvent.click(screen.getByRole('button', { name: 'Done' }));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
@@ -87,18 +92,12 @@ describe('ModalSheet', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Done' }));
     fireEvent.click(screen.getByRole('button', { name: 'Rename' }));
-    expect(sheetPanel()).toHaveAttribute('data-position', 'center');
+    expect(sheetPanel()).toBeNull();
   });
 
-  it('sets its width from the --modal-max-width of its className', () => {
+  it('sets the modal width from the --modal-max-width of its className', () => {
     mockViewport(false);
     openModalSheet('[--modal-max-width:360px]');
-    expect(sheetPanel()).toHaveClass(
-      'max-w-[min(90vw,var(--modal-max-width,600px))]',
-    );
-    // The custom property is set on an ancestor, so the panel inherits it.
-    expect(
-      sheetPanel()?.closest('.\\[--modal-max-width\\:360px\\]'),
-    ).not.toBeNull();
+    expect(dialog().parentElement).toHaveClass('[--modal-max-width:360px]');
   });
 });

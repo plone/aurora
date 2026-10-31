@@ -1,1 +1,1 @@
-Added `ModalSheet`, a modal dialog that becomes a swipeable bottom sheet on narrow screens. A centered `Sheet` no longer shows the swipe handle, and takes the width of the Figma modals: at most 600 px, or the `--modal-max-width` set in its `className`. @sneridagh
+Added `ModalSheet`, a modal dialog that is a `Modal` on wide screens and becomes a swipeable bottom sheet on narrow screens. A centered `Sheet` no longer shows the swipe handle. @sneridagh
