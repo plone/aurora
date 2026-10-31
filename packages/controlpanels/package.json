@@ -1,0 +1,83 @@
+{
+  "name": "@plone/controlpanels",
+  "description": "Framework-agnostic control panel screens for Plone Aurora and Volto",
+  "maintainers": [
+    {
+      "name": "Plone Foundation",
+      "url": "https://plone.org"
+    }
+  ],
+  "funding": "https://github.com/sponsors/plone",
+  "license": "MIT",
+  "version": "1.0.0-alpha.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/plone/aurora.git",
+    "directory": "packages/controlpanels"
+  },
+  "bugs": {
+    "url": "https://github.com/plone/aurora/issues"
+  },
+  "homepage": "https://plone.org",
+  "keywords": [
+    "aurora",
+    "volto",
+    "plone",
+    "plone6",
+    "react",
+    "controlpanels"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "vitest",
+    "check:ts": "tsc --project tsconfig.json",
+    "storybook": "storybook dev -p 6007",
+    "build-storybook": "storybook build",
+    "dry-release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --dry-run",
+    "release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it",
+    "release-major-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it major --preRelease=alpha",
+    "release-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --preRelease=alpha",
+    "prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx}'",
+    "lint:fix": "eslint --max-warnings=0 './**/*.{js,jsx,ts,tsx}' --fix --no-error-on-unmatched-pattern",
+    "format": "pnpm prettier:fix && pnpm lint:fix"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "react-aria-components": "catalog:"
+  },
+  "devDependencies": {
+    "@plone/quanta": "workspace:*",
+    "@plone/theming": "workspace:*",
+    "@storybook/addon-docs": "^10.4.0",
+    "@storybook/react-vite": "^10.4.0",
+    "@tailwindcss/vite": "catalog:",
+    "@testing-library/jest-dom": "catalog:",
+    "@testing-library/react": "catalog:",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "jsdom": "^28.1.0",
+    "release-it": "catalog:",
+    "storybook": "^10.4.0",
+    "tailwindcss": "catalog:",
+    "tailwindcss-animate": "^1.0.7",
+    "tailwindcss-react-aria-components": "catalog:",
+    "tsconfig": "workspace:*",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}
