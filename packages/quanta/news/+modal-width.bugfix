@@ -1,1 +1,1 @@
-The `Modal` takes the adaptable width of the Figma design on desktop: it fills up to 90% of the viewport, with a maximum of 600 px, instead of spanning the whole screen. It also merges a `className`, so a modal can set another maximum width. @sneridagh
+The `Modal` takes the adaptable width of the Figma design on desktop: it fills up to 90% of the viewport, with a maximum of 600 px, instead of spanning the whole screen. To change the maximum, set the `--modal-max-width` custom property in its `className`, which it now merges. @sneridagh

@@ -84,7 +84,7 @@ export default function DeleteModal() {
       isDismissable
       isOpen={showDelete}
       onOpenChange={setShowDelete}
-      className="max-w-[min(90vw,360px)]"
+      className="[--modal-max-width:360px]"
     >
       <Dialog className="p-8">
         <Heading
