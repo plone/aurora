@@ -1,0 +1,1 @@
+The folder contents modals no longer span the whole screen on desktop. They follow the Figma widths: 600 px for the forms, 360 px for the delete confirmation and 660 px for the upload. @sneridagh
