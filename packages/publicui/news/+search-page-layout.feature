@@ -1,0 +1,1 @@
+Aligned the search page layout with the Agave design: a search field with a submit button on the page, a results bar with the count and the sort selector, results with a content type label, date and highlighted terms, an empty state, and centered pagination with labeled previous and next links. @pnicolli
