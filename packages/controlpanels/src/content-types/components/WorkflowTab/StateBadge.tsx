@@ -1,7 +1,7 @@
 import type { Message } from '../../../provider/messages';
 import { messages } from '../../messages';
 import type { StateColor, StateVisibility, WorkflowState } from '../../types';
-import { stateColor } from '../../workflow/stateColor';
+import { useStateColor } from '../../driver';
 
 /** Who can see items in a state, in words. */
 export const VISIBILITY_LABELS: Record<StateVisibility, Message> = {
@@ -22,13 +22,14 @@ const COLOR_STYLES: Record<StateColor, string> = {
 
 /** A workflow state's title, in the state's color. */
 export function StateBadge({ state }: { state: WorkflowState }) {
+  const color = useStateColor()(state);
   return (
     <span
-      data-color={stateColor(state)}
+      data-color={color}
       className={`
         inline-flex items-center gap-1.5 rounded-md border px-2 py-0.5 text-xs font-medium
         whitespace-nowrap
-        ${COLOR_STYLES[stateColor(state)]}
+        ${COLOR_STYLES[color]}
       `}
     >
       <span className="size-1.5 rounded-full bg-current" aria-hidden />
