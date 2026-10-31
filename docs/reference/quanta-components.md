@@ -115,7 +115,7 @@ Quanta keeps the RAC `*Field` parts as the reference for hand-written forms.
 | `Popover` | `Popover.tsx` | `aligned` | |
 | `Dialog`, `Heading` | `Dialog.tsx` | `aligned` | |
 | `DialogTrigger` | none | extra | Re-exported from RAC. Used by `cmsui` (ImageWidget, ObjectBrowserTrigger). |
-| `Modal` | `Modal.tsx` | `aligned` | |
+| `Modal` | `Modal.tsx` | `aligned` | At most 600 px wide (or 90% of the viewport). Also merges a `className`, to set another maximum width. |
 | `Tooltip` | `Tooltip.tsx` | `aligned` | |
 | `Sheet` | `Sheet.tsx` | `aligned` | A full-height side panel on the left or right, flush with the edge. See {ref}`quanta-side-panel-label`. |
 

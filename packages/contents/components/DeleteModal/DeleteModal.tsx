@@ -80,7 +80,12 @@ export default function DeleteModal() {
 
   //TODO: check linkintegrity
   return (
-    <Modal isDismissable isOpen={showDelete} onOpenChange={setShowDelete}>
+    <Modal
+      isDismissable
+      isOpen={showDelete}
+      onOpenChange={setShowDelete}
+      className="max-w-[min(90vw,360px)]"
+    >
       <Dialog className="p-8">
         <Heading
           slot="title"

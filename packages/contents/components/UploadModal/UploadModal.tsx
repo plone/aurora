@@ -134,7 +134,12 @@ export default function UploadModal() {
   };
 
   return (
-    <Modal isDismissable isOpen={showUpload} onOpenChange={setShowUpload}>
+    <Modal
+      isDismissable
+      isOpen={showUpload}
+      onOpenChange={setShowUpload}
+      className="max-w-[min(90vw,660px)]"
+    >
       <Dialog className="mx-auto w-full p-8">
         <Heading
           slot="title"
