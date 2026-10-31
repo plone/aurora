@@ -1029,12 +1029,18 @@ importers:
 
   packages/controlpanels:
     dependencies:
+      '@plone/helpers':
+        specifier: workspace:*
+        version: link:../helpers
       '@plone/icons':
         specifier: workspace:*
         version: link:../icons
       '@plone/quanta':
         specifier: workspace:*
         version: link:../quanta
+      jotai:
+        specifier: ^2.12.5
+        version: 2.15.0(@babel/core@7.29.7(supports-color@8.1.1))(@babel/template@7.29.7)(@types/react@19.2.6)(react@19.3.1)
       react:
         specifier: ^19.2.7
         version: 19.3.1
