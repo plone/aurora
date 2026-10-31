@@ -10,13 +10,14 @@ import type {
 import { useRouteLoaderData } from 'react-router';
 import type { RootLoader } from '@plone/aurora/app/root';
 
-function removeObjectIdFromURL(basePath: string, scale: unknown) {
-  if (typeof scale !== 'string') return scale;
+function removeObjectIdFromURL(basePath: string, scale: string) {
   return scale.replace(`${basePath}/`, '');
 }
 
 export function flattenScales(path: string, image: any) {
-  if (!image) return;
+  // A stored image has a `download` URL to show it from. A new one, such as
+  // a file picked in a form that is not saved yet, does not.
+  if (typeof image?.download !== 'string') return;
 
   const basePath = image.base_path || path;
   const imageInfo = {
@@ -31,7 +32,7 @@ export function flattenScales(path: string, image: any) {
 
   Object.keys(imageInfo.scales).forEach((key) => {
     const scale = image.scales[key];
-    if (!scale) return;
+    if (typeof scale?.download !== 'string') return;
     imageInfo.scales[key].download = removeObjectIdFromURL(
       basePath,
       scale.download,

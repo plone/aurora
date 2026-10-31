@@ -14,13 +14,27 @@ describe('flattenScales', () => {
     });
   });
 
-  it('keeps an image without scales or download as it is', () => {
-    const image = { 'content-type': 'image/png', filename: 'photo.png' };
+  it('keeps an image without scales as it is', () => {
+    const image = {
+      'content-type': 'image/png',
+      download: '@@images/image.png',
+    };
 
     expect(flattenScales('/photo', image)).toEqual(image);
     expect(flattenScales('/photo', { ...image, scales: null })).toEqual({
       ...image,
       scales: null,
     });
+  });
+
+  it('gives nothing for an image that has no download URL yet', () => {
+    expect(
+      flattenScales('/photo', {
+        'content-type': 'image/png',
+        data: 'ZmFrZQ==',
+        encoding: 'base64',
+        filename: 'photo.png',
+      }),
+    ).toBeUndefined();
   });
 });
