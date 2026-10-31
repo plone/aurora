@@ -39,7 +39,7 @@ A styling change in your pull request doesn't block it, but you should check the
     -   **Update VRT Screenshots**, where VRT stands for visual regression tests, regenerates the baselines and pushes them to the screenshots repository.
         You start it by hand, and a maintainer approves each run.
 
-The current tests cover the native blocks of the Plone Aurora editor presets, in both the public view and the editor, and the editor overlays, such as the floating toolbar, menus, and popovers.
+The current tests cover the Plate.js blocks of the Plone Aurora editor presets, in both the public view and the editor, and the editor overlays, such as the floating toolbar, menus, and popovers.
 They cover the essentials only.
 Behavior belongs in the acceptance tests.
 
@@ -146,7 +146,7 @@ Update them from a feature branch right before merging, or from the default bran
     Use the default branch to accept changes that are already merged.
 1.  Optionally, enter a pattern in {guilabel}`Only update tests whose title matches this pattern (empty for all)`, to update only some screenshots.
     The pattern is passed to Playwright's `--grep` option.
-    For example, `Native blocks` only updates the native blocks pages.
+    For example, `Plate\.js blocks` only updates the Plate.js blocks pages.
     Leave it empty to update all screenshots.
 1.  Select {guilabel}`Run workflow`.
 1.  The job waits for approval in the `visual-regression` environment.
@@ -166,7 +166,7 @@ gh workflow run update-visual-regression-screenshots.yml --repo plone/aurora --r
 To update only some screenshots, pass the pattern as an input.
 
 ```shell
-gh workflow run update-visual-regression-screenshots.yml --repo plone/aurora --ref my-branch -f grep="Native blocks"
+gh workflow run update-visual-regression-screenshots.yml --repo plone/aurora --ref my-branch -f grep="Plate\.js blocks"
 ```
 
 To check the result of your change on a branch before merging, start **Visual Regression Tests** on it.
