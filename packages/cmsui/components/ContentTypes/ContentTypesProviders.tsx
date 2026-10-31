@@ -78,6 +78,7 @@ export default function ContentTypesProviders({
       <ContentTypesDriverProvider
         driver={driver}
         behaviorMetadata={config.settings.behaviorMetadata}
+        stateColors={config.settings.workflowStateColors}
       >
         {children}
       </ContentTypesDriverProvider>
