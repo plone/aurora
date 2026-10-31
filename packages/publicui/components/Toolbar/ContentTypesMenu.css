@@ -1,5 +1,21 @@
 .menu-contenttypes-add {
   padding: 1rem;
+  outline: none;
+
+  /* Keep the items self-contained: on mobile the menu renders in a sheet,
+     outside the toolbar shadow root and its base Menu styles. */
+  .react-aria-MenuItem {
+    border-radius: 6px;
+    margin: 2px;
+    column-gap: 20px;
+    cursor: pointer;
+    outline: none;
+    text-decoration: none;
+
+    &[data-focused='true'] {
+      background: var(--highlight-background, var(--quanta-sapphire));
+    }
+  }
 
   .react-aria-Text {
     color: var(--quanta-sapphire);
@@ -52,6 +68,8 @@
   }
 
   .types .react-aria-MenuItem {
+    display: flex;
+    align-items: center;
     padding: 1rem;
 
     &:not(:last-child) {
