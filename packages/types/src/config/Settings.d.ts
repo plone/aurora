@@ -136,6 +136,15 @@ export interface SettingsConfig {
       aliases?: string[];
     }
   >;
+  /**
+   * The colors the content types control panel shows workflow states with,
+   * by state id, over its defaults. A color is a Quanta color family. See
+   * "Workflow state colors" in the README of `@plone/controlpanels`.
+   */
+  workflowStateColors?: Record<
+    string,
+    'gray' | 'blue' | 'teal' | 'green' | 'yellow' | 'red'
+  >;
   externalRoutes: {
     match?: string | { path: string; exact: boolean; strict: boolean };
   }[];
