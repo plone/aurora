@@ -290,4 +290,177 @@ export const messages = defineMessages({
     id: 'controlpanels.contentTypes.deleteError',
     defaultMessage: "{title} couldn't be deleted",
   },
+
+  // Type page
+  typeLoadError: {
+    id: 'controlpanels.contentTypes.typeLoadError',
+    defaultMessage: "This type couldn't be loaded.",
+  },
+  loadingType: {
+    id: 'controlpanels.contentTypes.loadingType',
+    defaultMessage: 'Loading…',
+  },
+  tabs: {
+    id: 'controlpanels.contentTypes.tabs',
+    defaultMessage: 'Type settings',
+  },
+  unsavedChanges: {
+    id: 'controlpanels.contentTypes.unsavedChanges',
+    defaultMessage: 'Unsaved changes',
+  },
+  unsavedChangesIn: {
+    id: 'controlpanels.contentTypes.unsavedChangesIn',
+    defaultMessage: 'Unsaved changes in {tabs}',
+  },
+  discard: {
+    id: 'controlpanels.contentTypes.discard',
+    defaultMessage: 'Discard',
+  },
+  save: {
+    id: 'controlpanels.contentTypes.save',
+    defaultMessage: 'Save',
+  },
+  saveError: {
+    id: 'controlpanels.contentTypes.saveError',
+    defaultMessage: "{title} couldn't be saved",
+  },
+  leaveTitle: {
+    id: 'controlpanels.contentTypes.leaveTitle',
+    defaultMessage: 'Leave without saving?',
+  },
+  leaveDescription: {
+    id: 'controlpanels.contentTypes.leaveDescription',
+    defaultMessage: 'Your changes to {title} will be lost.',
+  },
+  keepEditing: {
+    id: 'controlpanels.contentTypes.keepEditing',
+    defaultMessage: 'Keep editing',
+  },
+  discardChanges: {
+    id: 'controlpanels.contentTypes.discardChanges',
+    defaultMessage: 'Discard changes',
+  },
+  items: {
+    id: 'controlpanels.contentTypes.items',
+    defaultMessage: '{count} items',
+  },
+  comingLater: {
+    id: 'controlpanels.contentTypes.comingLater',
+    defaultMessage: 'This tab is coming soon.',
+  },
+  notADexterityType: {
+    id: 'controlpanels.contentTypes.notADexterityType',
+    defaultMessage:
+      "{title} isn't a Dexterity type, so it has no fields, behaviors or layout.",
+  },
+
+  // Settings tab
+  general: {
+    id: 'controlpanels.contentTypes.general',
+    defaultMessage: 'General',
+  },
+  generalHelp: {
+    id: 'controlpanels.contentTypes.generalHelp',
+    defaultMessage: 'Shown to editors in the Add menu.',
+  },
+  whereAdded: {
+    id: 'controlpanels.contentTypes.whereAdded',
+    defaultMessage: 'Where it can be added',
+  },
+  globalAllow: {
+    id: 'controlpanels.contentTypes.globalAllow',
+    defaultMessage: 'Globally addable',
+  },
+  globalAllowHelp: {
+    id: 'controlpanels.contentTypes.globalAllowHelp',
+    defaultMessage:
+      "Editors can add it in any folder that doesn't restrict its contents. When off, it can only be added where a folder allows it explicitly.",
+  },
+  contents: {
+    id: 'controlpanels.contentTypes.contents',
+    defaultMessage: 'Contents',
+  },
+  contentsHelp: {
+    id: 'controlpanels.contentTypes.contentsHelp',
+    defaultMessage: 'Items of this type can contain other items.',
+  },
+  allowedInside: {
+    id: 'controlpanels.contentTypes.allowedInside',
+    defaultMessage: 'Allowed inside',
+  },
+  allowAll: {
+    id: 'controlpanels.contentTypes.allowAll',
+    defaultMessage: 'All types',
+  },
+  allowSelected: {
+    id: 'controlpanels.contentTypes.allowSelected',
+    defaultMessage: 'Only selected types',
+  },
+  allowNone: {
+    id: 'controlpanels.contentTypes.allowNone',
+    defaultMessage: 'Nothing',
+  },
+  allowedTypes: {
+    id: 'controlpanels.contentTypes.allowedTypes',
+    defaultMessage: 'Allowed types',
+  },
+  addAllowedType: {
+    id: 'controlpanels.contentTypes.addAllowedType',
+    defaultMessage: 'Type to add a type',
+  },
+  visibility: {
+    id: 'controlpanels.contentTypes.visibility',
+    defaultMessage: 'Visibility',
+  },
+  searchable: {
+    id: 'controlpanels.contentTypes.searchable',
+    defaultMessage: 'Show in search results',
+  },
+  searchableHelp: {
+    id: 'controlpanels.contentTypes.searchableHelp',
+    defaultMessage:
+      'Turn off for helper types that should never appear in site search.',
+  },
+  defaultPage: {
+    id: 'controlpanels.contentTypes.defaultPage',
+    defaultMessage: "Can be used as a folder's default page",
+  },
+  defaultPageHelp: {
+    id: 'controlpanels.contentTypes.defaultPageHelp',
+    defaultMessage:
+      'Lets editors pick an item of this type as the page a folder shows.',
+  },
+  comments: {
+    id: 'controlpanels.contentTypes.comments',
+    defaultMessage: 'Comments',
+  },
+  allowDiscussion: {
+    id: 'controlpanels.contentTypes.allowDiscussion',
+    defaultMessage: 'Allow comments',
+  },
+  versioning: {
+    id: 'controlpanels.contentTypes.versioning',
+    defaultMessage: 'Versioning',
+  },
+  versioningHelp: {
+    id: 'controlpanels.contentTypes.versioningHelp',
+    defaultMessage: 'Versions let editors compare and revert changes.',
+  },
+  versioningOffHelp: {
+    id: 'controlpanels.contentTypes.versioningOffHelp',
+    defaultMessage: 'Only the current state is kept.',
+  },
+  versioningManualHelp: {
+    id: 'controlpanels.contentTypes.versioningManualHelp',
+    defaultMessage: 'Editors save a version when they choose to.',
+  },
+  versioningAutomaticHelp: {
+    id: 'controlpanels.contentTypes.versioningAutomaticHelp',
+    defaultMessage: 'Every save creates a version.',
+  },
+  moreSettingsLater: {
+    id: 'controlpanels.contentTypes.moreSettingsLater',
+    defaultMessage:
+      'Addability, search, default page, comments and versioning settings need a newer version of the content API.',
+  },
 });
