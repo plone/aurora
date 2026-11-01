@@ -98,3 +98,10 @@ export {
   CONTROLPANELS_SCOPE,
   ControlPanelsScope,
 } from './provider/ControlPanelsScope';
+export * from './content-types/restapi/contentTypesService';
+export * from './content-types/restapi/dexterityTypes';
+export {
+  createRestApiDriver,
+  detectRestApi,
+  type RestApiRequest,
+} from './content-types/restapi/createRestApiDriver';
