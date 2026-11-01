@@ -85,3 +85,12 @@ export {
   toEditableSettings,
 } from './content-types/editableSettings';
 export type { EditableSettings } from './content-types/editableSettings';
+export * from './content-types/workflow/workflowChange';
+export { WorkflowTab } from './content-types/components/WorkflowTab/WorkflowTab';
+export type { WorkflowTabProps } from './content-types/components/WorkflowTab/WorkflowTab';
+export { ChangeWorkflowDialog } from './content-types/components/WorkflowTab/ChangeWorkflowDialog';
+export type { ChangeWorkflowDialogProps } from './content-types/components/WorkflowTab/ChangeWorkflowDialog';
+export {
+  StateBadge,
+  VISIBILITY_LABELS,
+} from './content-types/components/WorkflowTab/StateBadge';
