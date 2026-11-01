@@ -126,15 +126,17 @@ describe('BehaviorsTab', () => {
       name: 'Add behaviors to Event',
     });
 
-    const basic = within(dialog).getByRole('checkbox', {
+    const basic = within(dialog).getByRole('row', {
       name: /Basic metadata/,
     });
-    expect(basic).toBeDisabled();
+    fireEvent.click(basic);
+    // It stays focusable, to read why, but can't be selected.
+    expect(basic).not.toHaveAttribute('aria-selected');
     expect(
       within(dialog).getAllByText('Included in Dublin Core metadata'),
     ).toHaveLength(4);
     expect(
-      within(dialog).queryByRole('checkbox', { name: /Head title/ }),
+      within(dialog).queryByRole('row', { name: /Head title/ }),
     ).toBeNull();
     fireEvent.click(
       within(dialog).getByRole('switch', { name: 'Show deprecated' }),
@@ -145,11 +147,16 @@ describe('BehaviorsTab', () => {
 
     fireEvent.change(
       within(dialog).getByRole('searchbox', { name: 'Search behaviors' }),
-      { target: { value: 'lead' } },
+      { target: { value: 'leadimage' } },
     );
-    fireEvent.click(
-      within(dialog).getByRole('checkbox', { name: /Lead Image/ }),
-    );
+    // The search matches ids too.
+    const leadImage = within(dialog).getByRole('row', { name: /Lead Image/ });
+    expect(leadImage).toHaveTextContent('plone.leadimage');
+    fireEvent.click(leadImage);
+    expect(leadImage).toHaveAttribute('aria-selected', 'true');
+    expect(
+      within(dialog).getByRole('button', { name: 'Remove Lead Image' }),
+    ).toBeVisible();
     fireEvent.click(within(dialog).getByRole('button', { name: 'Add 1' }));
 
     expect((await order()).at(-1)).toBe('plone.leadimage');
@@ -176,9 +183,7 @@ describe('BehaviorsTab', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Add behaviors' }));
     const dialog = await screen.findByRole('dialog');
-    fireEvent.click(
-      within(dialog).getByRole('checkbox', { name: /Lead Image/ }),
-    );
+    fireEvent.click(within(dialog).getByRole('row', { name: /Lead Image/ }));
     fireEvent.click(within(dialog).getByRole('button', { name: 'Add 1' }));
     const preview = screen.getByRole('complementary', {
       name: 'Edit form preview',

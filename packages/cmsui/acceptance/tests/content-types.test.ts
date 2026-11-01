@@ -401,17 +401,20 @@ test.describe("A content type's behaviors", () => {
     await page.getByRole('button', { name: 'Add behaviors' }).click();
     const dialog = page.getByRole('dialog', { name: 'Add behaviors to Notes' });
     // Dublin Core already has it.
+    await expect(dialog.getByRole('row', { name: /Ownership/ })).toContainText(
+      'Included in Dublin Core metadata',
+    );
     await expect(
-      dialog.getByRole('checkbox', { name: /Ownership/ }),
-    ).toBeDisabled();
+      dialog.getByRole('row', { name: /Ownership/ }),
+    ).not.toHaveAttribute('aria-selected');
     await dialog
       .getByRole('searchbox', { name: 'Search behaviors' })
-      .fill('lead');
-    await dialog.getByText('Lead Image', { exact: true }).click();
+      .fill('plone.leadimage');
+    await dialog.getByRole('row', { name: /Lead Image/ }).click();
     await dialog
       .getByRole('searchbox', { name: 'Search behaviors' })
       .fill('related');
-    await dialog.getByText('Related items', { exact: true }).click();
+    await dialog.getByRole('row', { name: /Related items/ }).click();
     await dialog.getByRole('button', { name: 'Add 2' }).click();
     await expect(
       page.getByRole('complementary', { name: 'Edit form preview' }),

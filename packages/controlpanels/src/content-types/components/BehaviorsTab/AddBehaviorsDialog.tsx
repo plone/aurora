@@ -1,13 +1,21 @@
 import { useEffect, useState } from 'react';
 import {
+  Button as RACButton,
+  GridList,
+  GridListHeader,
+  GridListItem,
+  GridListSection,
+  type Selection,
+} from 'react-aria-components';
+import {
   Button,
-  Checkbox,
   Dialog,
   Heading,
   Modal,
   SearchField,
   Switch,
 } from '@plone/quanta';
+import { CheckboxIcon, CloseIcon, DashIcon } from '@plone/icons';
 import { useTranslate } from '../../../provider/ControlPanelsProvider';
 import type { Message } from '../../../provider/messages';
 import {
@@ -126,95 +134,227 @@ export function AddBehaviorsDialog({
     return behavior.description;
   };
 
+  const setSelection = (keys: Selection) => {
+    const names =
+      keys === 'all'
+        ? available.map(({ name }) => name)
+        : [...keys].map(String);
+    // Keep the order they were picked in.
+    setSelected((current) => [
+      ...current.filter((name) => names.includes(name)),
+      ...names.filter((name) => !current.includes(name)),
+    ]);
+  };
+  const disabledKeys = available
+    .filter(({ name }) => !selected.includes(name) && blockedBecause(name))
+    .map(({ name }) => name);
+  const fieldsKnown = (behavior: BehaviorInfo) =>
+    behavior.fieldsets !== undefined;
+  const addsNoFields = (behavior: BehaviorInfo) =>
+    fieldsKnown(behavior) &&
+    behavior.fieldsets!.every((fieldset) => fieldset.fields.length === 0);
+
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable>
-      <Dialog className="mx-auto flex max-h-[85vh] w-full flex-col gap-4 p-8">
-        <Heading slot="title" className="text-xl font-semibold">
-          {t(messages.addBehaviorsTitle, { title })}
-        </Heading>
-        <div className="flex flex-wrap items-end gap-4">
-          <SearchField
-            aria-label={t(messages.searchBehaviors)}
-            placeholder={t(messages.searchBehaviors)}
-            value={search}
-            onChange={setSearch}
-            autoFocus
-            className="min-w-60 flex-1"
-          />
-          <Switch isSelected={showDeprecated} onChange={setShowDeprecated}>
-            {t(messages.showDeprecated)}
-          </Switch>
+      <Dialog className="flex h-[min(85vh,760px)] w-full flex-col gap-4 p-0">
+        <div className="flex flex-col gap-4 px-7 pt-6">
+          <Heading slot="title" className="text-xl font-semibold">
+            {t(messages.addBehaviorsTitle, { title })}
+          </Heading>
+          <div className="flex flex-wrap items-center gap-4">
+            <SearchField
+              aria-label={t(messages.searchBehaviors)}
+              placeholder={t(messages.searchBehaviorsHint)}
+              value={search}
+              onChange={setSearch}
+              autoFocus
+              className="min-w-60 flex-1"
+            />
+            <Switch isSelected={showDeprecated} onChange={setShowDeprecated}>
+              {t(messages.showDeprecated)}
+            </Switch>
+          </div>
         </div>
-        <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-auto pr-1">
-          {groups.length === 0 && (
-            <p className="text-sm text-quanta-pigeon">
+        <GridList
+          aria-label={t(messages.addBehaviorsTitle, { title })}
+          selectionMode="multiple"
+          selectionBehavior="toggle"
+          selectedKeys={selected}
+          onSelectionChange={setSelection}
+          disabledKeys={disabledKeys}
+          // Blocked behaviors stay focusable, so their reason can be read.
+          disabledBehavior="selection"
+          renderEmptyState={() => (
+            <p className="px-3 py-6 text-sm text-quanta-pigeon">
               {t(messages.noMatchingBehaviors)}
             </p>
           )}
+          className="min-h-0 flex-1 overflow-auto px-4 pb-4 outline-none"
+        >
           {groups.map(({ group, items }) => (
-            <section
-              key={group}
-              aria-labelledby={`behavior-group-${group}`}
-              className="flex flex-col gap-2"
-            >
-              <h3
-                id={`behavior-group-${group}`}
-                className="text-xs font-semibold tracking-wide text-quanta-pigeon uppercase"
+            <GridListSection key={group} className="flex flex-col gap-0.5 pb-3">
+              <GridListHeader
+                className={`
+                  sticky top-0 z-10 bg-quanta-air px-3 pt-2 pb-1.5 text-xs font-semibold
+                  tracking-wide text-quanta-pigeon uppercase
+                `}
               >
                 {GROUP_TITLES[group] ? t(GROUP_TITLES[group]) : group}
-              </h3>
+              </GridListHeader>
               {items.map((behavior) => {
                 const isSelected = selected.includes(behavior.name);
                 const blocked = isSelected
                   ? undefined
                   : blockedBecause(behavior.name);
+                const description = blocked ?? describe(behavior);
                 return (
-                  <Checkbox
+                  <GridListItem
                     key={behavior.name}
-                    isSelected={isSelected}
-                    isDisabled={!!blocked}
-                    onChange={(checked) =>
-                      setSelected((current) =>
-                        checked
-                          ? [...current, behavior.name]
-                          : current.filter((name) => name !== behavior.name),
-                      )
-                    }
-                    description={blocked ?? describe(behavior)}
+                    id={behavior.name}
+                    textValue={behavior.title}
+                    className={({ isFocusVisible }) => `
+                      group grid cursor-pointer grid-cols-[20px_minmax(0,1fr)] items-start gap-3
+                      rounded-lg border px-3 py-2.5 outline-none
+                      ${
+                        isSelected
+                          ? 'border-quanta-sky bg-quanta-arctic'
+                          : blocked
+                            ? 'cursor-not-allowed border-transparent'
+                            : 'border-transparent hover:bg-quanta-snow'
+                      }
+                      ${isFocusVisible ? 'ring-2 ring-quanta-cobalt' : ''}
+                    `}
                   >
-                    {behavior.title}
-                  </Checkbox>
+                    <span
+                      aria-hidden
+                      className={`
+                        mt-0.5 flex size-5 items-center justify-center rounded-md border-[1.5px]
+                        ${
+                          isSelected
+                            ? 'border-quanta-sapphire bg-quanta-sapphire text-quanta-air'
+                            : blocked
+                              ? `
+                                border-dashed border-quanta-silver bg-quanta-snow text-quanta-pigeon
+                              `
+                              : 'border-quanta-silver bg-quanta-air'
+                        }
+                      `}
+                    >
+                      {isSelected && <CheckboxIcon size="xs" />}
+                      {blocked && <DashIcon size="xs" />}
+                    </span>
+                    <span className="flex min-w-0 flex-col gap-1">
+                      <span className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                        <span
+                          className={`
+                            text-[15px] font-semibold
+                            ${blocked ? 'text-quanta-pigeon' : 'text-quanta-space'}
+                          `}
+                        >
+                          <Highlight text={behavior.title} query={query} />
+                        </span>
+                        <code
+                          className={`
+                            rounded-sm border border-quanta-smoke bg-quanta-snow px-1.5 font-mono
+                            text-xs text-quanta-iron
+                          `}
+                        >
+                          <Highlight text={behavior.name} query={query} />
+                        </code>
+                      </span>
+                      {(description || addsNoFields(behavior)) && (
+                        <span className="text-[13px] leading-snug text-quanta-iron">
+                          {description}
+                          {!blocked && addsNoFields(behavior) && (
+                            <>
+                              {description ? ' ' : ''}
+                              {t(messages.addsNoFields)}
+                            </>
+                          )}
+                        </span>
+                      )}
+                    </span>
+                  </GridListItem>
                 );
               })}
-            </section>
+            </GridListSection>
           ))}
-        </div>
-        <p className="text-sm text-quanta-pigeon">
-          {t(
-            capabilities.behaviorOrder
-              ? messages.newBehaviorsAtEndMovable
-              : messages.newBehaviorsAtEnd,
+        </GridList>
+        <div className="flex flex-col gap-3 border-t border-quanta-smoke px-7 pt-3.5 pb-5">
+          {selected.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="mr-1 text-[13px] text-quanta-iron">
+                {t(messages.behaviorsToAdd)}
+              </span>
+              {selected.map((name) => (
+                <RACButton
+                  key={name}
+                  aria-label={t(messages.removeBehavior, {
+                    title: titleOf(name),
+                  })}
+                  onPress={() =>
+                    setSelected((current) =>
+                      current.filter((other) => other !== name),
+                    )
+                  }
+                  className={`
+                    inline-flex cursor-pointer items-center gap-1 rounded-full bg-quanta-arctic py-1
+                    pr-1.5 pl-2.5 text-[13px] text-quanta-royal outline-none
+                    hover:bg-quanta-sky/40
+                    focus-visible:ring-2 focus-visible:ring-quanta-cobalt
+                  `}
+                >
+                  {titleOf(name)}
+                  <CloseIcon size="xs" />
+                </RACButton>
+              ))}
+            </div>
           )}
-        </p>
-        <div className="flex justify-end gap-2">
-          <Button onPress={() => onOpenChange(false)}>
-            {t(messages.cancel)}
-          </Button>
-          <Button
-            variant="primary"
-            accent
-            isDisabled={selected.length === 0}
-            onPress={() => {
-              onAdd(selected);
-              onOpenChange(false);
-            }}
-          >
-            {selected.length
-              ? t(messages.addSelected, { count: selected.length })
-              : t(messages.add)}
-          </Button>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <p className="text-[13px] text-quanta-pigeon">
+              {t(
+                capabilities.behaviorOrder
+                  ? messages.newBehaviorsAtEndMovable
+                  : messages.newBehaviorsAtEnd,
+              )}
+            </p>
+            <div className="flex gap-2">
+              <Button onPress={() => onOpenChange(false)}>
+                {t(messages.cancel)}
+              </Button>
+              <Button
+                variant="primary"
+                accent
+                isDisabled={selected.length === 0}
+                onPress={() => {
+                  onAdd(selected);
+                  onOpenChange(false);
+                }}
+              >
+                {selected.length
+                  ? t(messages.addSelected, { count: selected.length })
+                  : t(messages.add)}
+              </Button>
+            </div>
+          </div>
         </div>
       </Dialog>
     </Modal>
+  );
+}
+
+/** The text, with the part that matches the search marked. */
+function Highlight({ text, query }: { text: string; query: string }) {
+  const start = query ? text.toLowerCase().indexOf(query) : -1;
+  if (start < 0) return <>{text}</>;
+  const end = start + query.length;
+  return (
+    <>
+      {text.slice(0, start)}
+      <mark className="rounded-xs bg-quanta-banana text-inherit">
+        {text.slice(start, end)}
+      </mark>
+      {text.slice(end)}
+    </>
   );
 }

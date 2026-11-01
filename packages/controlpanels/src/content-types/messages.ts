@@ -668,6 +668,18 @@ export const messages = defineMessages({
     id: 'controlpanels.contentTypes.searchBehaviors',
     defaultMessage: 'Search behaviors',
   },
+  searchBehaviorsHint: {
+    id: 'controlpanels.contentTypes.searchBehaviorsHint',
+    defaultMessage: 'Search by name or id',
+  },
+  behaviorsToAdd: {
+    id: 'controlpanels.contentTypes.behaviorsToAdd',
+    defaultMessage: 'Adding',
+  },
+  addsNoFields: {
+    id: 'controlpanels.contentTypes.addsNoFields',
+    defaultMessage: 'Adds no fields.',
+  },
   showDeprecated: {
     id: 'controlpanels.contentTypes.showDeprecated',
     defaultMessage: 'Show deprecated',
