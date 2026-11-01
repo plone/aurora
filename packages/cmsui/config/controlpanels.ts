@@ -1,60 +1,56 @@
 import type { ConfigType } from '@plone/registry';
+import type { ComponentType, SVGProps } from 'react';
 import type { Controlpanel } from '@plone/types';
+import { controlPanelId } from '../helpers/controlpanels';
+import CalendarSVG from '@plone/icons/svg/calendar.svg?react';
+import CodeSVG from '@plone/icons/svg/code.svg?react';
+import DiscussionSVG from '@plone/icons/svg/discussion.svg?react';
+import EditSVG from '@plone/icons/svg/edit.svg?react';
+import ImageSVG from '@plone/icons/svg/image.svg?react';
+import LanguageSVG from '@plone/icons/svg/language.svg?react';
+import MailSVG from '@plone/icons/svg/mail.svg?react';
+import NavigationSVG from '@plone/icons/svg/navigation.svg?react';
+import PageSVG from '@plone/icons/svg/page.svg?react';
+import SearchSVG from '@plone/icons/svg/search.svg?react';
+import SecuritySVG from '@plone/icons/svg/security.svg?react';
+import SettingsSVG from '@plone/icons/svg/settings.svg?react';
+import SocialSVG from '@plone/icons/svg/social.svg?react';
+import UserSVG from '@plone/icons/svg/user.svg?react';
+import VoltoSVG from '@plone/icons/svg/volto.svg?react';
+import WorldSVG from '@plone/icons/svg/world.svg?react';
 
-// import contentSVG from '@plone/volto/icons/content.svg';
-// import calendarSVG from '@plone/volto/icons/calendar.svg';
-// import languageSVG from '@plone/volto/icons/language.svg';
-// import emailSVG from '@plone/volto/icons/email.svg';
-// import navSVG from '@plone/volto/icons/nav.svg';
-// import worldSVG from '@plone/volto/icons/world.svg';
-// import zoomSVG from '@plone/volto/icons/zoom.svg';
-// import megaphoneSVG from '@plone/volto/icons/megaphone.svg';
-// import editingSVG from '@plone/volto/icons/editing.svg';
-// import imageSVG from '@plone/volto/icons/image.svg';
-// import codeSVG from '@plone/volto/icons/code.svg';
-// import discussionSVG from '@plone/volto/icons/discussion.svg';
-// import securitySVG from '@plone/volto/icons/security.svg';
-// import groupSVG from '@plone/volto/icons/group.svg';
-// import userSVG from '@plone/volto/icons/user.svg';
-// import addonSVG from '@plone/volto/icons/add-on.svg';
-// import settingsSVG from '@plone/volto/icons/settings.svg';
-// import rulesSVG from '@plone/volto/icons/content-existing.svg';
-// import undoControlPanelSVG from '@plone/volto/icons/undo-control-panel.svg';
-// import linkSVG from '@plone/volto/icons/link.svg';
-// import relationsSVG from '@plone/volto/icons/ahead.svg';
+// One icon per control panel id; `default` is used for the others.
+// Add-ons can add theirs to `config.settings.controlPanelsIcons`.
+export const controlPanelsIcons: Record<
+  string,
+  ComponentType<SVGProps<SVGSVGElement>>
+> = {
+  default: SettingsSVG,
+  'date-and-time': CalendarSVG,
+  language: LanguageSVG,
+  mail: MailSVG,
+  navigation: NavigationSVG,
+  site: WorldSVG,
+  search: SearchSVG,
+  socialmedia: SocialSVG,
+  'volto-settings': VoltoSVG,
+  'dexterity-types': PageSVG,
+  'content-types': PageSVG,
+  discussion: DiscussionSVG,
+  editing: EditSVG,
+  imaging: ImageSVG,
+  markup: CodeSVG,
+  usergroup: UserSVG,
+  security: SecuritySVG,
+};
 
-// export const controlPanelsIcons = {
-//   default: settingsSVG,
-//   'dexterity-types': contentSVG,
-//   'date-and-time': calendarSVG,
-//   language: languageSVG,
-//   mail: emailSVG,
-//   navigation: navSVG,
-//   site: worldSVG,
-//   search: zoomSVG,
-//   socialmedia: megaphoneSVG,
-//   editing: editingSVG,
-//   imaging: imageSVG,
-//   markup: codeSVG,
-//   'moderate-comments': discussionSVG,
-//   security: securitySVG,
-//   users: userSVG,
-//   groups: groupSVG,
-//   addons: addonSVG,
-//   rules: rulesSVG,
-//   undo: undoControlPanelSVG,
-//   aliases: linkSVG,
-//   relations: relationsSVG,
-// };
-
-export const filterControlPanels = (controlpanels = []) => {
+// Panels the backend lists that Aurora does not show.
+export const filterControlPanels = (controlpanels: Controlpanel[] = []) => {
   const HIDDEN_CONTROL_PANELS = ['markup', 'content-rules'];
 
   return controlpanels.filter(
-    (controlpanel: Controlpanel) =>
-      !HIDDEN_CONTROL_PANELS.includes(
-        controlpanel['@id'].split('/').pop() || '',
-      ),
+    (controlpanel) =>
+      !HIDDEN_CONTROL_PANELS.includes(controlPanelId(controlpanel)),
   );
 };
 
@@ -102,7 +98,7 @@ export const unwantedControlPanelsFields = {
 
 // Filters controlpanel.schema to only valid/relevant fields
 export const filterControlPanelsSchema = (controlpanel: Controlpanel) => {
-  const panelType = controlpanel['@id'].split('/').pop();
+  const panelType = controlPanelId(controlpanel);
 
   // Creates modified version of properties object
   const newPropertiesObj = Object.fromEntries(
@@ -149,6 +145,11 @@ export const filterControlPanelsSchema = (controlpanel: Controlpanel) => {
 export default function install(config: ConfigType) {
   config.settings = config.settings ?? {};
   config.settings.filterControlPanelsSchema = filterControlPanelsSchema;
+  config.settings.filterControlPanels = filterControlPanels;
+  config.settings.controlPanelsIcons = {
+    ...controlPanelsIcons,
+    ...(config.settings.controlPanelsIcons as typeof controlPanelsIcons),
+  };
 
   return config;
 }
