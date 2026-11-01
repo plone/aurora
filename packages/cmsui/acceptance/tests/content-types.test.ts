@@ -264,7 +264,7 @@ test.describe("A content type's fields", () => {
       name: 'Title',
     });
     await expect(title).toHaveAttribute('aria-disabled', 'true');
-    await expect(title).toContainText('plone.dublincore');
+    await expect(title).toContainText('Dublin Core metadata');
   });
 
   test('adds a field and a fieldset', async ({ page }) => {
@@ -356,5 +356,84 @@ test.describe("A content type's fields", () => {
 
     await page.reload({ waitUntil: 'networkidle' });
     await expect(row(page, 'Reviewed')).toHaveCount(0);
+  });
+});
+
+test.describe("A content type's behaviors", () => {
+  test.beforeEach(async ({ page }) => {
+    await login(page);
+  });
+
+  const formBehaviors = (page: Page) =>
+    page.getByRole('grid', { name: 'Add fields to the form' });
+
+  async function openNewType(page: Page) {
+    const id = `notes_${Date.now()}`;
+    const response = await page.request.post('/@content-types', {
+      data: { title: 'Notes', id },
+    });
+    expect(response.ok()).toBe(true);
+    await page.goto(`${LIST}/${id}/behaviors`, { waitUntil: 'networkidle' });
+  }
+
+  async function save(page: Page) {
+    const bar = page.getByRole('region', { name: 'Unsaved changes' });
+    await expect(bar).toContainText('Unsaved changes in Behaviors');
+    await bar.getByRole('button', { name: 'Save' }).click();
+    await expect(page.getByText('Notes saved')).toBeVisible();
+    await expect(bar).toHaveCount(0);
+  }
+
+  test('shows what the behaviors add', async ({ page }) => {
+    await openNewType(page);
+
+    await expect(
+      formBehaviors(page).getByRole('row', { name: /Dublin Core metadata/ }),
+    ).toContainText('Adds Title, Summary');
+    await expect(
+      page.getByRole('complementary', { name: 'Edit form preview' }),
+    ).toContainText('Title');
+  });
+
+  test('adds behaviors and removes one', async ({ page }) => {
+    await openNewType(page);
+
+    await page.getByRole('button', { name: 'Add behaviors' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Add behaviors to Notes' });
+    // Dublin Core already has it.
+    await expect(dialog.getByRole('row', { name: /Ownership/ })).toContainText(
+      'Included in Dublin Core metadata',
+    );
+    await expect(
+      dialog.getByRole('row', { name: /Ownership/ }),
+    ).not.toHaveAttribute('aria-selected');
+    await dialog
+      .getByRole('searchbox', { name: 'Search behaviors' })
+      .fill('plone.leadimage');
+    await dialog.getByRole('row', { name: /Lead Image/ }).click();
+    await dialog
+      .getByRole('searchbox', { name: 'Search behaviors' })
+      .fill('related');
+    await dialog.getByRole('row', { name: /Related items/ }).click();
+    await dialog.getByRole('button', { name: 'Add 2' }).click();
+    await expect(
+      page.getByRole('complementary', { name: 'Edit form preview' }),
+    ).toContainText('Fields from Lead Image, Related items show after saving.');
+    await save(page);
+
+    await expect(
+      formBehaviors(page).getByRole('row', { name: /Lead Image/ }),
+    ).toContainText('Adds Lead Image');
+    await page.getByRole('button', { name: 'Remove Related items' }).click();
+    await expect(page.getByText('Related items removed')).toBeVisible();
+    await save(page);
+
+    await page.reload({ waitUntil: 'networkidle' });
+    await expect(
+      formBehaviors(page).getByRole('row', { name: /Lead Image/ }),
+    ).toBeVisible();
+    await expect(
+      formBehaviors(page).getByRole('row', { name: /Related items/ }),
+    ).toHaveCount(0);
   });
 });

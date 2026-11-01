@@ -3,6 +3,7 @@ import {
   toContentTypeSettings,
   toContentTypeSummary,
   toDexterityTypePatch,
+  toBehaviors,
   toFieldTypes,
   toTypeSchemaPut,
 } from './contentTypes';
@@ -183,5 +184,46 @@ describe('toFieldTypes', () => {
       { id: 'label_integer_field', title: 'Integer' },
       { id: 'Email', title: 'Email' },
     ]);
+  });
+});
+
+describe('behaviors', () => {
+  const overview = {
+    '@id': 'http://localhost:55001/plone/@controlpanels/dexterity-types/Event',
+    title: 'Event',
+    data: { 'plone.locking': true, 'plone.leadimage': false },
+    schema: {
+      properties: {
+        'plone.locking': { title: 'Locking', description: 'Locking support' },
+        'plone.leadimage': { title: 'Lead Image' },
+      },
+      fieldsets: [
+        { id: 'default', fields: [] },
+        { id: 'behaviors', fields: ['plone.locking', 'plone.leadimage'] },
+      ],
+    },
+  };
+
+  it('lists the behaviors of the overview form', () => {
+    expect(toBehaviors(overview)).toEqual([
+      {
+        name: 'plone.locking',
+        title: 'Locking',
+        description: 'Locking support',
+      },
+      { name: 'plone.leadimage', title: 'Lead Image', description: undefined },
+    ]);
+    expect(toContentTypeSettings('Event', overview).behaviors).toEqual([
+      'plone.locking',
+    ]);
+  });
+
+  it('saves behaviors as the on/off map, turning the others off', () => {
+    expect(
+      toDexterityTypePatch({ behaviors: ['plone.leadimage'] }, [
+        'plone.locking',
+        'plone.leadimage',
+      ]),
+    ).toEqual({ 'plone.locking': false, 'plone.leadimage': true });
   });
 });
