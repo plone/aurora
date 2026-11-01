@@ -19,7 +19,9 @@ test('The @blocks-schema endpoint lists the blocks with their docs', async ({
   expect(response.status()).toBe(200);
   expect(response.headers()['content-type']).toContain('application/json');
   const body = await response.json();
+  expect(body.document_model).toEqual({ id: 'plone.plate', version: 1 });
   expect(body.document).toContain('__somersault__');
+  expect(body).not.toHaveProperty('document_models');
   expect(body.items).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
@@ -77,7 +79,9 @@ test('The @blocks-schema endpoint answers in Markdown', async ({ page }) => {
   expect(response.headers()['content-type']).toContain('text/markdown');
   const markdown = await response.text();
   expect(markdown).toMatch(/^# Blocks\n/);
-  expect(markdown).toContain('## Document format');
+  expect(markdown).toContain(
+    '## Document format\n\n_Document model `plone.plate`, version 1._',
+  );
   expect(markdown).toMatch(
     /- \[Teaser\]\(https?:\/\/[^/]+\/@blocks-schema\/teaser\) \(`teaser`\): /,
   );
@@ -125,4 +129,34 @@ test('The @blocks-schema endpoint lists the blocks offered for a content item', 
 
   const missing = await page.request.get('/does-not-exist/@blocks-schema');
   expect(missing.status()).toBe(404);
+});
+
+test('The @blocks-schema endpoint keeps the content type in its links', async ({
+  page,
+}) => {
+  await login(page);
+  await createContent(page, {
+    contentType: 'Document',
+    contentId: 'blocks-schema-type',
+    contentTitle: 'Blocks schema type',
+  });
+
+  const response = await page.request.get(
+    '/blocks-schema-type/@blocks-schema?type=News%20Item',
+  );
+  expect(response.status()).toBe(200);
+  const body = await response.json();
+  expect(body['@id']).toMatch(
+    /\/blocks-schema-type\/@blocks-schema\?type=News%20Item$/,
+  );
+  expect(body.document_model).toEqual({ id: 'plone.plate', version: 1 });
+  const teaser = body.items.find(
+    (item: { id: string }) => item.id === 'teaser',
+  );
+  expect(teaser['@id']).toMatch(
+    /\/blocks-schema-type\/@blocks-schema\/teaser\?type=News%20Item$/,
+  );
+  expect((await (await page.request.get(teaser['@id'])).json()).id).toBe(
+    'teaser',
+  );
 });
