@@ -67,4 +67,38 @@ describe('SiteOverview', () => {
       await screen.findByRole('button', { name: 'cmsui.siteOverview.copied' }),
     ).toBeInTheDocument();
   });
+
+  it('says when the copy fails', async () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: vi.fn().mockRejectedValue(new Error('Denied')) },
+      configurable: true,
+    });
+    render(<SiteOverview system={system} />);
+
+    fireEvent.click(
+      await screen.findByRole('button', {
+        name: 'cmsui.siteOverview.copySystemInfo',
+      }),
+    );
+
+    expect(
+      await screen.findByRole('button', {
+        name: 'cmsui.siteOverview.copyFailed',
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it('has no copy button without a clipboard', () => {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: undefined,
+      configurable: true,
+    });
+    render(<SiteOverview system={system} />);
+
+    expect(
+      screen.queryByRole('button', {
+        name: 'cmsui.siteOverview.copySystemInfo',
+      }),
+    ).not.toBeInTheDocument();
+  });
 });

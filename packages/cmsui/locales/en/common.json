@@ -85,7 +85,8 @@
       "off": "Off",
       "debugMode": "Debug mode",
       "copySystemInfo": "Copy system info",
-      "copied": "Copied"
+      "copied": "Copied",
+      "copyFailed": "Couldn't copy"
     },
     "controlpanelDescriptions": {
       "date-and-time": "Time zone and first day of the week",

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@plone/quanta';
 import type { GetSiteResponse, GetSystemResponse } from '@plone/types';
@@ -7,7 +7,7 @@ import PackageJson from '../../../../apps/aurora/package.json';
 interface SiteOverviewProps {
   system: GetSystemResponse;
   site?: Partial<GetSiteResponse>;
-  /** The address visitors reach the site at. */
+  /** The address visitors reach the site at. Defaults to the browser's. */
   siteUrl?: string;
 }
 
@@ -32,9 +32,27 @@ const Details = ({ entries }: { entries: [string, string | undefined][] }) => (
 /**
  * The site and the software it runs on, beside the control panels.
  */
-const SiteOverview = ({ system, site, siteUrl }: SiteOverviewProps) => {
+const SiteOverview = ({
+  system,
+  site,
+  siteUrl: siteUrlProp,
+}: SiteOverviewProps) => {
   const { t } = useTranslation();
-  const [copied, setCopied] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>(
+    'idle',
+  );
+  const copyTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+  // Only known in the browser: the server may be reached at an internal
+  // address, behind a proxy, and the clipboard needs a secure origin.
+  const [siteUrl, setSiteUrl] = useState(siteUrlProp);
+  const [canCopy, setCanCopy] = useState(false);
+
+  useEffect(() => {
+    setSiteUrl(siteUrlProp ?? window.location.origin);
+    setCanCopy(Boolean(navigator.clipboard));
+  }, [siteUrlProp]);
+
+  useEffect(() => () => clearTimeout(copyTimeout.current), []);
   const title = site?.['plone.site_title'] || 'Plone';
   // Python's version string carries the build details after the number.
   const [pythonVersion] = system.python_version?.split(' ') ?? [];
@@ -61,9 +79,14 @@ const SiteOverview = ({ system, site, siteUrl }: SiteOverviewProps) => {
       .filter(([, value]) => value)
       .map(([term, value]) => `${term}: ${value}`)
       .join('\n');
-    await navigator.clipboard?.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyStatus('copied');
+    } catch {
+      setCopyStatus('failed');
+    }
+    clearTimeout(copyTimeout.current);
+    copyTimeout.current = setTimeout(() => setCopyStatus('idle'), 2000);
   };
 
   return (
@@ -153,16 +176,20 @@ const SiteOverview = ({ system, site, siteUrl }: SiteOverviewProps) => {
           </p>
         )}
         <Details entries={versions} />
-        <Button
-          variant="neutral"
-          accent
-          className="self-start text-[13px]"
-          onPress={copySystemInfo}
-        >
-          {copied
-            ? t('cmsui.siteOverview.copied')
-            : t('cmsui.siteOverview.copySystemInfo')}
-        </Button>
+        {canCopy && (
+          <Button
+            variant="neutral"
+            accent
+            className="self-start text-[13px]"
+            onPress={copySystemInfo}
+          >
+            {copyStatus === 'copied'
+              ? t('cmsui.siteOverview.copied')
+              : copyStatus === 'failed'
+                ? t('cmsui.siteOverview.copyFailed')
+                : t('cmsui.siteOverview.copySystemInfo')}
+          </Button>
+        )}
       </section>
     </aside>
   );

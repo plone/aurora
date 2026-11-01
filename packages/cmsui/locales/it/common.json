@@ -85,7 +85,8 @@
       "off": "Disattivo",
       "debugMode": "Modalità debug",
       "copySystemInfo": "Copia informazioni di sistema",
-      "copied": "Copiato"
+      "copied": "Copiato",
+      "copyFailed": "Impossibile copiare"
     },
     "controlpanelDescriptions": {
       "date-and-time": "Fuso orario e primo giorno della settimana",

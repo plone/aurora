@@ -23,19 +23,19 @@ export async function loader({
   const [controlpanelsRes, systemRes, siteRes] = await Promise.all([
     cli.getControlpanels(),
     cli.getSystem(),
-    cli.getSite(),
+    // The site card is optional: the control panels stay reachable
+    // without it.
+    cli.getSite().catch(() => undefined),
   ]);
   return {
     controlpanels: controlpanelsRes.data,
     system: systemRes.data,
-    site: siteRes.data,
-    siteUrl: new URL(request.url).origin,
+    site: siteRes?.data,
   };
 }
 
 export default function ControlPanels() {
-  const { controlpanels, system, site, siteUrl } =
-    useLoaderData<typeof loader>();
+  const { controlpanels, system, site } = useLoaderData<typeof loader>();
   const { t } = useTranslation();
   return (
     <main>
@@ -64,7 +64,7 @@ export default function ControlPanels() {
               lg:pt-[68px]
             `}
           >
-            <SiteOverview system={system} site={site} siteUrl={siteUrl} />
+            <SiteOverview system={system} site={site} />
           </div>
         </div>
       </Container>

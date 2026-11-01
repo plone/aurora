@@ -1,6 +1,7 @@
 import type { ConfigType } from '@plone/registry';
 import type { ComponentType, SVGProps } from 'react';
 import type { Controlpanel } from '@plone/types';
+import { controlPanelId } from '../helpers/controlpanels';
 import CalendarSVG from '@plone/icons/svg/calendar.svg?react';
 import CodeSVG from '@plone/icons/svg/code.svg?react';
 import DiscussionSVG from '@plone/icons/svg/discussion.svg?react';
@@ -49,9 +50,7 @@ export const filterControlPanels = (controlpanels: Controlpanel[] = []) => {
 
   return controlpanels.filter(
     (controlpanel) =>
-      !HIDDEN_CONTROL_PANELS.includes(
-        controlpanel['@id'].split('/').pop() || '',
-      ),
+      !HIDDEN_CONTROL_PANELS.includes(controlPanelId(controlpanel)),
   );
 };
 
@@ -99,7 +98,7 @@ export const unwantedControlPanelsFields = {
 
 // Filters controlpanel.schema to only valid/relevant fields
 export const filterControlPanelsSchema = (controlpanel: Controlpanel) => {
-  const panelType = controlpanel['@id'].split('/').pop();
+  const panelType = controlPanelId(controlpanel);
 
   // Creates modified version of properties object
   const newPropertiesObj = Object.fromEntries(

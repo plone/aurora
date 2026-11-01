@@ -1,13 +1,12 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import config from '@plone/registry';
 import { SearchField } from '@plone/quanta';
 import type { Controlpanel } from '@plone/types';
 import ChevronRight from '@plone/icons/svg/chevron-right.svg?react';
+import { controlPanelId } from '../../helpers/controlpanels';
 
 type ControlPanel = Pick<Controlpanel, '@id' | 'title' | 'group'>;
-
-const panelId = (panel: ControlPanel) => panel['@id'].split('/').pop() || '';
 
 // The icons of each group take the next Quanta color family.
 const groupTints = [
@@ -31,6 +30,7 @@ export const ControlPanelsList = ({
 }) => {
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
+  const listId = useId();
   const Link = config.getComponent('Link').component!;
   const { controlPanelsIcons: icons = {}, filterControlPanels } =
     config.settings;
@@ -42,11 +42,13 @@ export const ControlPanelsList = ({
     allControlPanels = filterControlPanels(allControlPanels);
   }
 
-  const panels = allControlPanels.map((panel) => {
-    const id = panelId(panel);
+  const panels = allControlPanels.map((panel, index) => {
+    const id = controlPanelId(panel);
     return {
       ...panel,
       id,
+      // Unique in the page, even when two panels end in the same id.
+      domId: `${listId}-${index}`,
       description: t(`cmsui.controlpanelDescriptions.${id}`, {
         defaultValue: '',
       }),
@@ -112,15 +114,15 @@ export const ControlPanelsList = ({
               const Icon = (icons[panel.id] ?? icons.default) as
                 React.ComponentType<{ className?: string }> | undefined;
               return (
-                <li key={panel['@id']} className="controlpanel-item">
+                <li key={panel.domId} className="controlpanel-item">
                   {/* Named by its title, so the description doesn't make
                     the link's name long. */}
                   <Link
                     href={`/controlpanel/${panel.id}`}
-                    aria-labelledby={`controlpanel-${panel.id}-title`}
+                    aria-labelledby={`${panel.domId}-title`}
                     aria-describedby={
                       panel.description
-                        ? `controlpanel-${panel.id}-description`
+                        ? `${panel.domId}-description`
                         : undefined
                     }
                     className={`
@@ -142,14 +144,14 @@ export const ControlPanelsList = ({
                     </span>
                     <span className="flex min-w-0 flex-1 flex-col">
                       <span
-                        id={`controlpanel-${panel.id}-title`}
+                        id={`${panel.domId}-title`}
                         className="text-[15px] leading-[22px] font-semibold"
                       >
                         {panel.title}
                       </span>
                       {panel.description && (
                         <span
-                          id={`controlpanel-${panel.id}-description`}
+                          id={`${panel.domId}-description`}
                           className="text-[13px] leading-[18px] text-quanta-pigeon"
                         >
                           {panel.description}
