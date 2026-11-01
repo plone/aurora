@@ -23,6 +23,7 @@ const files = fs
       file,
       elements: field('element')?.split(/\s*,\s*/) ?? [],
       title: field('title'),
+      documentModel: field('document_model'),
       examples: [...markdown.matchAll(/```json\n([\s\S]*?)\n```/g)].map(
         ([, json]) => JSON.parse(json),
       ),
@@ -66,6 +67,13 @@ describe('element docs', () => {
       expect(editor.plugins[element], element).toBeDefined();
     }
   });
+
+  it.each(files.map((file) => [file.file, file]))(
+    '%s names the plone.plate document model',
+    (_file, { documentModel }) => {
+      expect(documentModel).toBe('plone.plate');
+    },
+  );
 
   it.each(files.map((file) => [file.file, file]))(
     '%s has a title and an example of its element',

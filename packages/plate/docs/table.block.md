@@ -1,6 +1,7 @@
 ---
 element: table
 title: Table
+document_model: plone.plate
 ---
 
 A table. Its children are rows (`tr`), whose children are cells: `th` for header cells and `td` for the others. The children of a cell are block elements, usually paragraphs.

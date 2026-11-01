@@ -117,7 +117,14 @@ describe('docs', () => {
       'Lists items.\nMatching a query.\n\n### Fields\n\nUp to {{maxItems}}.',
     ),
     docs('listing', 'Shows a summary.', 'summary'),
-    docs('__somersault__', 'The page document.'),
+    {
+      document_model: 'plone.plate',
+      markdown: '---\ndocument_model: plone.plate\n---\n\nThe page document.',
+    },
+    {
+      document_model: 'plone.blocks',
+      markdown: '---\ndocument_model: plone.blocks\n---\n\nThe blocks.',
+    },
   ];
 
   it('strips the frontmatter and fills the placeholders', () => {
@@ -171,9 +178,18 @@ describe('docs', () => {
     });
   });
 
-  it('reads the document format docs', () => {
+  it('reads the docs of the plone.plate document model', () => {
     expect(getDocumentDocs(files)).toBe('The page document.');
+    expect(getDocumentDocs(files, 'plone.blocks')).toBe('The blocks.');
     expect(getDocumentDocs([])).toBe('');
+  });
+
+  it("doesn't take an element's docs for the document model's", () => {
+    expect(
+      getDocumentDocs([
+        { element: 'p', document_model: 'plone.plate', markdown: 'Text.' },
+      ]),
+    ).toBe('');
   });
 });
 
@@ -253,20 +269,24 @@ describe('elements', () => {
     {
       element: 'h2',
       title: 'Heading',
+      document_model: 'plone.plate',
       markdown:
         '---\nelement: h2, h3\ntitle: Heading\n---\n\nA heading.\n\nWidths: {{widths}}.',
     },
     {
       element: 'h3',
       title: 'Heading',
+      document_model: 'plone.plate',
       markdown:
         '---\nelement: h2, h3\ntitle: Heading\n---\n\nA heading.\n\nWidths: {{widths}}.',
     },
-    { element: 'callout', markdown: 'A box.' },
+    { element: 'callout', document_model: 'plone.plate', markdown: 'A box.' },
+    { element: 'p', document_model: 'other', markdown: 'Other text.' },
+    { element: 'hr', markdown: 'No document model.' },
     docs('teaser', 'Links.'),
   ];
 
-  it('lists the documented elements, with their placeholders filled', () => {
+  it('lists the documented elements of plone.plate, with their placeholders filled', () => {
     expect(getElements(files, { h2: { widths: ['narrow'] } })).toEqual([
       {
         id: 'h2',
@@ -440,8 +460,12 @@ describe('Markdown', () => {
       'The page document.',
     );
     expect(markdown).toMatch(
-      /^# Blocks\n\n.+\n\n## Document format\n\nThe page document\.\n\n## Elements\n\n- \[Paragraph\]\(http:\/\/localhost\/@blocks-schema\/p\) \(`p`\): Text\.\n\n## Blocks\n\n- \[Video\]\(http:\/\/localhost\/@blocks-schema\/video\) \(`video`\): Embeds a video\.\n- \[Maps\]\(http:\/\/localhost\/@blocks-schema\/maps\) \(`maps`\) _Offered depending on the content\._\n$/,
+      /^# Blocks\n\n.+\n\n## Document format\n\n_Document model `plone\.plate`, version 1\._\n\nThe page document\.\n\n## Elements\n\n- \[Paragraph\]\(http:\/\/localhost\/@blocks-schema\/p\) \(`p`\): Text\.\n\n## Blocks\n\n- \[Video\]\(http:\/\/localhost\/@blocks-schema\/video\) \(`video`\): Embeds a video\.\n- \[Maps\]\(http:\/\/localhost\/@blocks-schema\/maps\) \(`maps`\) _Offered depending on the content\._\n$/,
     );
-    expect(blocksToMarkdown([])).not.toContain('Document format');
+    expect(blocksToMarkdown([])).toEqual(
+      expect.stringMatching(
+        /## Document format\n\n_Document model `plone\.plate`, version 1\._\n$/,
+      ),
+    );
   });
 });

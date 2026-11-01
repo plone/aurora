@@ -7,10 +7,23 @@ import type { BlockConfigBase, BlocksFormData, JSONSchema } from '@plone/types';
 export type BlockDocsFile = {
   block?: string;
   variation?: string;
-  /** A native element of the page document, like a Plate `callout`. */
+  /** A native element of a document model, like a Plate `callout`. */
   element?: string;
   title?: string;
+  /**
+   * The document model of an element, or, alone, the document model that
+   * the file documents.
+   */
+  document_model?: string;
   markdown: string;
+};
+
+/**
+ * How content stores its blocks, as the list announces it.
+ */
+export type DocumentModelRef = {
+  id: string;
+  version: number;
 };
 
 /**
@@ -60,10 +73,20 @@ export type ElementDetail = {
 };
 
 /**
- * The block ID whose docs describe the format of the page document, a Plate
- * value stored in one block of the content, instead of a block.
+ * The document model of Aurora: a page is one Plate document, stored in the
+ * `__somersault__` block of the content. Its docs, and those of its
+ * elements, name it in their `document_model` frontmatter.
  */
-export const DOCUMENT_DOCS_ID = '__somersault__';
+export const DOCUMENT_MODEL: DocumentModelRef = {
+  id: 'plone.plate',
+  version: 1,
+};
+
+/**
+ * The block that stores the page document. It's not a block of the page, so
+ * it isn't listed.
+ */
+export const DOCUMENT_BLOCK_ID = '__somersault__';
 
 const SCHEMA_ERROR = 'The schema for this block could not be resolved.';
 
@@ -201,11 +224,18 @@ function getDocsFile(
 }
 
 /**
- * The docs of the page document format, from the `*.block.md` file that
- * names `__somersault__`.
+ * The docs of the page document format, from the `*.block.md` file whose
+ * frontmatter names only the `document_model`.
  */
-export function getDocumentDocs(docsFiles: BlockDocsFile[]): string {
-  return getDocsFile(docsFiles, DOCUMENT_DOCS_ID).trim();
+export function getDocumentDocs(
+  docsFiles: BlockDocsFile[],
+  documentModel = DOCUMENT_MODEL.id,
+): string {
+  const file = docsFiles.find(
+    (item) =>
+      item.document_model === documentModel && !item.element && !item.block,
+  );
+  return file ? file.markdown.replace(FRONTMATTER, '').trim() : '';
 }
 
 /**
@@ -296,16 +326,19 @@ export function buildFullDetail(
 }
 
 /**
- * The documented elements of the page document, in the order of their docs
- * files. Their placeholders are filled from their `plateBlocksConfig` entry.
+ * The documented elements of the page document, the ones whose docs name its
+ * document model, in the order of their docs files. Their placeholders are
+ * filled from their `plateBlocksConfig` entry.
  */
 export function getElements(
   docsFiles: BlockDocsFile[],
   plateBlocksConfig: Record<string, object> = {},
+  documentModel = DOCUMENT_MODEL.id,
 ): ElementDetail[] {
   return docsFiles
-    .filter((file): file is BlockDocsFile & { element: string } =>
-      Boolean(file.element),
+    .filter(
+      (file): file is BlockDocsFile & { element: string } =>
+        Boolean(file.element) && file.document_model === documentModel,
     )
     .map(({ element, title, markdown }) => ({
       id: element,
@@ -429,12 +462,13 @@ function summaryLine(item: BlockSummary): string {
 
 /**
  * The list as one Markdown document: an introduction, the format of the page
- * document (when documented), and a line per element and per block that
- * links to its documentation.
+ * document, with its document model and docs, and a line per element and per
+ * block that links to its documentation.
  */
 export function blocksToMarkdown(
   items: BlockSummary[],
   documentDocs = '',
+  documentModel: DocumentModelRef = DOCUMENT_MODEL,
 ): string {
   const elements = items.filter((item) => item.kind === 'element');
   const blocks = items.filter((item) => item.kind === 'block');
@@ -442,7 +476,9 @@ export function blocksToMarkdown(
     [
       '# Blocks',
       "The elements and blocks available on this site to build a page. Follow an item's link for its documentation and, for a block, the schema of its settings.",
-      ...(documentDocs ? ['## Document format', documentDocs] : []),
+      '## Document format',
+      `_Document model \`${documentModel.id}\`, version ${documentModel.version}._`,
+      ...(documentDocs ? [documentDocs] : []),
       ...(elements.length
         ? ['## Elements', elements.map(summaryLine).join('\n')]
         : []),
