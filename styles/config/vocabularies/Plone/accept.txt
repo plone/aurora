@@ -4,6 +4,7 @@
 [Bb]lockquotes?
 [Cc]allout('s|s)?
 [Cc]lassnames?
+[Cc]onfiglets?
 `plone.restapi`
 `plone.volto`
 CMSUI

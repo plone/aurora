@@ -67,6 +67,43 @@
       "show_more_dates": "Mostra più date"
     },
     "controlpanel": "Pannello di controllo",
+    "siteSetup": "Configurazione del sito",
+    "siteSetupSearch": {
+      "label": "Trova un'impostazione",
+      "placeholder": "Trova un'impostazione",
+      "noResults": "Nessuna impostazione corrisponde a “{{query}}”."
+    },
+    "siteOverview": {
+      "system": "Sistema",
+      "upToDate": "Aggiornato",
+      "upgradeAvailable": "Aggiornamento disponibile",
+      "upgrade": "Esegui l'aggiornamento di Plone dalla pagina di aggiornamento del backend (@@plone-upgrade).",
+      "language": "Lingua",
+      "timezone": "Fuso orario",
+      "multilingual": "Multilingua",
+      "on": "Attivo",
+      "off": "Disattivo",
+      "debugMode": "Modalità debug",
+      "copySystemInfo": "Copia informazioni di sistema",
+      "copied": "Copiato"
+    },
+    "controlpanelDescriptions": {
+      "date-and-time": "Fuso orario e primo giorno della settimana",
+      "language": "Lingue del sito e traduzioni",
+      "mail": "Server di posta in uscita e mittente",
+      "navigation": "Cosa mostra il menu principale",
+      "search": "Cosa si può trovare, e come",
+      "site": "Nome, logo e indicizzazione del sito",
+      "socialmedia": "Condivisione e account social",
+      "volto-settings": "Opzioni specifiche del frontend",
+      "dexterity-types": "Tipi, campi e workflow",
+      "content-types": "Tipi, campi e workflow",
+      "discussion": "Commenti e moderazione",
+      "editing": "Editor, blocchi e versioni",
+      "imaging": "Dimensioni e qualità delle immagini",
+      "usergroup": "Elenco membri e modalità molti utenti",
+      "security": "Registrazione, accesso e cartelle utente"
+    },
     "objectbrowserwidget": {
       "openDialog": "Seleziona contenuti",
       "dialogTitle": "Seleziona Contenuti",
@@ -87,27 +124,6 @@
         "list": "elenco",
         "grid": "griglia"
       }
-    },
-    "panelgroups": {
-      "general": "Generale",
-      "content": "Contenuto",
-      "security": "Sicurezza",
-      "users": "Utenti",
-      "site": "Sito",
-      "addons": "Configurazione prodotti aggiuntivi",
-      "maintenance": "Manutenzione"
-    },
-    "paneltitles": {
-      "addons": "Prodotti aggiuntivi",
-      "database": "Database",
-      "contentRules": "Regole di contenuto",
-      "undo": "Annulla operazioni",
-      "urlmanagement": "Gestione URL",
-      "relations": "Relazioni",
-      "moderatecomments": "Moderazione dei commenti",
-      "users": "Utenti",
-      "groupMembership": "Appartenenza ai gruppi",
-      "groups": "Gruppi"
     },
     "translate": {
       "source": "Origine",

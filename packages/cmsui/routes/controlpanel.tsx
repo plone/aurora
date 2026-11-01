@@ -68,7 +68,8 @@ export async function action({
     throw error;
   }
 
-  return redirect(`/controlpanel/${panel_id}`);
+  // Saved: back to the site setup.
+  return redirect('/controlpanel');
 }
 
 export default function SingleControlPanel() {
@@ -133,22 +134,47 @@ function ControlPanelForm({
     showErrors(errors);
   }, [fetcher.data, form, showErrors]);
 
-  // TODO: filter fields with filterControlPanelsSchema from config.settings
+  const description = t(`cmsui.controlpanelDescriptions.${panelId}`, {
+    defaultValue: '',
+  });
+
   return (
     <FormProvider form={form}>
       <WidgetContextProvider mode="settings" path="/">
-        <Plug pluggable="toolbar-top" id="button-back">
-          <Link aria-label="back" href="/controlpanel">
-            <Back />
-          </Link>
-        </Plug>
         <main>
-          <Container width="default" className="route-controlpanel">
-            <h1 className="documentFirstHeading">
-              {controlpanel.title || 'a control panel'}
-            </h1>
+          <Container
+            width="default"
+            className={`
+              route-controlpanel px-4 pt-6 pb-16
+              md:px-12 md:pt-12
+            `}
+          >
+            <header className="mb-8 flex flex-col gap-1">
+              <Link
+                href="/controlpanel"
+                className={`
+                  self-start text-[13px] font-medium text-quanta-sapphire no-underline
+                  hover:text-quanta-royal
+                `}
+              >
+                {t('cmsui.siteSetup')}
+              </Link>
+              <h1
+                className={`
+                  documentFirstHeading text-[28px] leading-[34px] font-bold text-quanta-denim
+                `}
+              >
+                {controlpanel.title || 'a control panel'}
+              </h1>
+              {description && (
+                <p className="text-sm text-quanta-iron">{description}</p>
+              )}
+            </header>
             <form>
-              <SchemaFieldsets schema={schema as FieldsetsSchema} />
+              <SchemaFieldsets
+                schema={schema as FieldsetsSchema}
+                layout="sections"
+              />
               <Plug pluggable="toolbar-top" id="edit-save-button">
                 {/* A native button: react-aria's onPress does not fire inside
                   the toolbar's shadow root. */}
@@ -167,6 +193,13 @@ function ControlPanelForm({
             </form>
           </Container>
         </main>
+        {/* The toolbar shows its plugs in render order: save first, as in
+          the edit form, then back. */}
+        <Plug pluggable="toolbar-top" id="button-back">
+          <Link aria-label="back" href="/controlpanel">
+            <Back />
+          </Link>
+        </Plug>
       </WidgetContextProvider>
     </FormProvider>
   );

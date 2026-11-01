@@ -19,6 +19,43 @@
     "save": "Speichern",
     "cancel": "Abbrechen",
     "controlpanel": "Konfiguration",
+    "siteSetup": "Konfiguration",
+    "siteSetupSearch": {
+      "label": "Einstellung finden",
+      "placeholder": "Einstellung finden",
+      "noResults": "Keine Einstellung passt zu „{{query}}“."
+    },
+    "siteOverview": {
+      "system": "System",
+      "upToDate": "Aktuell",
+      "upgradeAvailable": "Upgrade verfügbar",
+      "upgrade": "Führen Sie das Plone-Upgrade auf der Upgrade-Seite des Backends aus (@@plone-upgrade).",
+      "language": "Sprache",
+      "timezone": "Zeitzone",
+      "multilingual": "Mehrsprachig",
+      "on": "An",
+      "off": "Aus",
+      "debugMode": "Debug-Modus",
+      "copySystemInfo": "Systeminformationen kopieren",
+      "copied": "Kopiert"
+    },
+    "controlpanelDescriptions": {
+      "date-and-time": "Zeitzone und erster Wochentag",
+      "language": "Sprachen der Website und Übersetzungen",
+      "mail": "Server für ausgehende E-Mails und Absender",
+      "navigation": "Was das Hauptmenü zeigt",
+      "search": "Was gefunden werden kann, und wie",
+      "site": "Name, Logo und Indexierung der Website",
+      "socialmedia": "Teilen und Social-Media-Konten",
+      "volto-settings": "Frontend-spezifische Optionen",
+      "dexterity-types": "Typen, Felder und Workflows",
+      "content-types": "Typen, Felder und Workflows",
+      "discussion": "Kommentare und Moderation",
+      "editing": "Editor, Sperren und Versionierung",
+      "imaging": "Bildgrößen und Qualität",
+      "usergroup": "Mitgliederliste und Modus für viele Benutzer",
+      "security": "Registrierung, Anmeldung und Benutzerordner"
+    },
     "objectbrowserwidget": {
       "openDialog": "Inhalt auswählen",
       "dialogTitle": "Inhalt auswählen",
@@ -49,27 +86,6 @@
         "list": "Listenansicht",
         "grid": "Kachelansicht"
       }
-    },
-    "panelgroups": {
-      "general": "Allgemein",
-      "content": "Inhalt",
-      "security": "Sicherheit",
-      "users": "Benutzer",
-      "site": "Seitenkonfiguration",
-      "addons": "Erweiterungen",
-      "maintenance": "Wartung"
-    },
-    "paneltitles": {
-      "addons": "Erweiterungen",
-      "database": "Datenbank",
-      "contentRules": "Inhaltsregeln",
-      "undo": "Rückgängig machen",
-      "urlmanagement": "URL Verwaltung",
-      "relations": "Relationen",
-      "moderatecomments": "Kommentare moderieren",
-      "users": "Benutzer",
-      "groupMembership": "Gruppenmitgliedschaft",
-      "groups": "Gruppen"
     },
     "translate": {
       "source": "Quelle",

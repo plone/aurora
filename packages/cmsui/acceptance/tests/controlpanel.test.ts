@@ -36,7 +36,9 @@ test('As a site administrator, I can save a control panel', async ({
   await page.getByLabel('Save').click();
   await saved;
 
-  await page.reload();
+  // Saving goes back to the site setup.
+  await expect(page).toHaveURL(/\/controlpanel$/);
+  await page.goto('/controlpanel/socialmedia');
   await expect(page.getByLabel('Twitter username')).toHaveValue('plone');
   await expect(page.getByLabel('Facebook username')).toHaveValue('plonecms');
   await expect(
@@ -83,6 +85,7 @@ test('As a site administrator, I can edit a second control panel after opening a
   await page.getByLabel('Save').click();
   await saved;
 
-  await page.reload();
+  await expect(page).toHaveURL(/\/controlpanel$/);
+  await page.goto('/controlpanel/site');
   await expect(page.getByLabel('Site title')).toHaveValue('Renamed site');
 });
