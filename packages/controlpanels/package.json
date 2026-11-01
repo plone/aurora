@@ -42,6 +42,7 @@
     "test": "vitest",
     "check:ts": "tsc --project tsconfig.json",
     "build:css": "node build-css.mjs",
+    "i18n": "UPDATE_LOCALES=1 vitest run src/locales.test.ts",
     "storybook": "storybook dev -p 6007",
     "build-storybook": "storybook build",
     "dry-release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --dry-run",

@@ -24,11 +24,11 @@ export const messages = defineMessages({
   },
   showAll: {
     id: 'controlpanels.contentTypes.showAll',
-    defaultMessage: 'All {count}',
+    defaultMessage: 'All {{count}}',
   },
   showNotAddable: {
     id: 'controlpanels.contentTypes.showNotAddable',
-    defaultMessage: 'Not addable {count}',
+    defaultMessage: 'Not addable {{count}}',
   },
   columnType: {
     id: 'controlpanels.contentTypes.columnType',
@@ -64,7 +64,7 @@ export const messages = defineMessages({
   },
   addable: {
     id: 'controlpanels.contentTypes.addable',
-    defaultMessage: '{title}: globally addable',
+    defaultMessage: '{{title}}: globally addable',
   },
   versioningOff: {
     id: 'controlpanels.contentTypes.versioningOff',
@@ -84,7 +84,7 @@ export const messages = defineMessages({
   },
   actionsFor: {
     id: 'controlpanels.contentTypes.actionsFor',
-    defaultMessage: 'Actions for {title}',
+    defaultMessage: 'Actions for {{title}}',
   },
   tabSettings: {
     id: 'controlpanels.contentTypes.tabSettings',
@@ -116,7 +116,7 @@ export const messages = defineMessages({
   },
   selected: {
     id: 'controlpanels.contentTypes.selected',
-    defaultMessage: '{count} selected',
+    defaultMessage: '{{count}} selected',
   },
   selection: {
     id: 'controlpanels.contentTypes.selection',
@@ -140,11 +140,11 @@ export const messages = defineMessages({
   },
   updated: {
     id: 'controlpanels.contentTypes.updated',
-    defaultMessage: '{title} saved',
+    defaultMessage: '{{title}} saved',
   },
   updateError: {
     id: 'controlpanels.contentTypes.updateError',
-    defaultMessage: "{title} couldn't be saved",
+    defaultMessage: "{{title}} couldn't be saved",
   },
   siteDefaults: {
     id: 'controlpanels.contentTypes.siteDefaults',
@@ -152,11 +152,12 @@ export const messages = defineMessages({
   },
   defaultWorkflow: {
     id: 'controlpanels.contentTypes.defaultWorkflow',
-    defaultMessage: 'Workflow: {workflow}',
+    defaultMessage: 'Workflow: {{workflow}}',
   },
   newTypesStart: {
     id: 'controlpanels.contentTypes.newTypesStart',
-    defaultMessage: 'New types start {addable}, with {versioning} versioning',
+    defaultMessage:
+      'New types start {{addable}}, with {{versioning}} versioning',
   },
   globallyAddable: {
     id: 'controlpanels.contentTypes.globallyAddable',
@@ -236,7 +237,7 @@ export const messages = defineMessages({
   },
   created: {
     id: 'controlpanels.contentTypes.created',
-    defaultMessage: '{title} created',
+    defaultMessage: '{{title}} created',
   },
   createError: {
     id: 'controlpanels.contentTypes.createError',
@@ -246,11 +247,11 @@ export const messages = defineMessages({
   // Delete dialog
   deleteTitle: {
     id: 'controlpanels.contentTypes.deleteTitle',
-    defaultMessage: 'Delete {title}?',
+    defaultMessage: 'Delete {{title}}?',
   },
   deleteManyTitle: {
     id: 'controlpanels.contentTypes.deleteManyTitle',
-    defaultMessage: 'Delete {count} types?',
+    defaultMessage: 'Delete {{count}} types?',
   },
   deleteExplanation: {
     id: 'controlpanels.contentTypes.deleteExplanation',
@@ -264,7 +265,7 @@ export const messages = defineMessages({
   },
   deleteBlockedItem: {
     id: 'controlpanels.contentTypes.deleteBlockedItem',
-    defaultMessage: '{title}: {count} items',
+    defaultMessage: '{{title}}: {{count}} items',
   },
   deleteConfirm: {
     id: 'controlpanels.contentTypes.deleteConfirm',
@@ -272,7 +273,7 @@ export const messages = defineMessages({
   },
   deleteConfirmMany: {
     id: 'controlpanels.contentTypes.deleteConfirmMany',
-    defaultMessage: 'Delete {count} types',
+    defaultMessage: 'Delete {{count}} types',
   },
   close: {
     id: 'controlpanels.contentTypes.close',
@@ -280,15 +281,15 @@ export const messages = defineMessages({
   },
   deleted: {
     id: 'controlpanels.contentTypes.deleted',
-    defaultMessage: '{title} deleted',
+    defaultMessage: '{{title}} deleted',
   },
   deletedMany: {
     id: 'controlpanels.contentTypes.deletedMany',
-    defaultMessage: '{count} types deleted',
+    defaultMessage: '{{count}} types deleted',
   },
   deleteError: {
     id: 'controlpanels.contentTypes.deleteError',
-    defaultMessage: "{title} couldn't be deleted",
+    defaultMessage: "{{title}} couldn't be deleted",
   },
 
   // Type page
@@ -310,7 +311,7 @@ export const messages = defineMessages({
   },
   unsavedChangesIn: {
     id: 'controlpanels.contentTypes.unsavedChangesIn',
-    defaultMessage: 'Unsaved changes in {tabs}',
+    defaultMessage: 'Unsaved changes in {{tabs}}',
   },
   discard: {
     id: 'controlpanels.contentTypes.discard',
@@ -322,7 +323,7 @@ export const messages = defineMessages({
   },
   saveError: {
     id: 'controlpanels.contentTypes.saveError',
-    defaultMessage: "{title} couldn't be saved",
+    defaultMessage: "{{title}} couldn't be saved",
   },
   leaveTitle: {
     id: 'controlpanels.contentTypes.leaveTitle',
@@ -330,7 +331,7 @@ export const messages = defineMessages({
   },
   leaveDescription: {
     id: 'controlpanels.contentTypes.leaveDescription',
-    defaultMessage: 'Your changes to {title} will be lost.',
+    defaultMessage: 'Your changes to {{title}} will be lost.',
   },
   keepEditing: {
     id: 'controlpanels.contentTypes.keepEditing',
@@ -342,7 +343,7 @@ export const messages = defineMessages({
   },
   items: {
     id: 'controlpanels.contentTypes.items',
-    defaultMessage: '{count} items',
+    defaultMessage: '{{count}} items',
   },
   comingLater: {
     id: 'controlpanels.contentTypes.comingLater',
@@ -351,7 +352,7 @@ export const messages = defineMessages({
   notADexterityType: {
     id: 'controlpanels.contentTypes.notADexterityType',
     defaultMessage:
-      "{title} isn't a Dexterity type, so it has no fields, behaviors or layout.",
+      "{{title}} isn't a Dexterity type, so it has no fields, behaviors or layout.",
   },
 
   // Settings tab
@@ -370,6 +371,10 @@ export const messages = defineMessages({
   globalAllow: {
     id: 'controlpanels.contentTypes.globalAllow',
     defaultMessage: 'Globally addable',
+  },
+  notGlobalAllow: {
+    id: 'controlpanels.contentTypes.notGlobalAllow',
+    defaultMessage: 'Not globally addable',
   },
   globalAllowHelp: {
     id: 'controlpanels.contentTypes.globalAllowHelp',
@@ -477,7 +482,7 @@ export const messages = defineMessages({
   },
   fieldsIn: {
     id: 'controlpanels.contentTypes.fieldsIn',
-    defaultMessage: 'Fields in {fieldset}',
+    defaultMessage: 'Fields in {{fieldset}}',
   },
   custom: { id: 'controlpanels.contentTypes.custom', defaultMessage: 'Custom' },
   required: {
@@ -564,7 +569,8 @@ export const messages = defineMessages({
   },
   behaviorsSummary: {
     id: 'controlpanels.contentTypes.behaviorsSummary',
-    defaultMessage: '{on} on · {withFields} add fields · {features} features',
+    defaultMessage:
+      '{{on}} on · {{withFields}} add fields · {{features}} features',
   },
   addBehaviors: {
     id: 'controlpanels.contentTypes.addBehaviors',
@@ -608,7 +614,7 @@ export const messages = defineMessages({
   },
   addsFieldsList: {
     id: 'controlpanels.contentTypes.addsFieldsList',
-    defaultMessage: 'Adds {fields}',
+    defaultMessage: 'Adds {{fields}}',
   },
   addsFieldsUnknown: {
     id: 'controlpanels.contentTypes.addsFieldsUnknown',
@@ -616,15 +622,15 @@ export const messages = defineMessages({
   },
   includesList: {
     id: 'controlpanels.contentTypes.includesList',
-    defaultMessage: 'Includes {behaviors}',
+    defaultMessage: 'Includes {{behaviors}}',
   },
   removeBehavior: {
     id: 'controlpanels.contentTypes.removeBehavior',
-    defaultMessage: 'Remove {title}',
+    defaultMessage: 'Remove {{title}}',
   },
   behaviorRemoved: {
     id: 'controlpanels.contentTypes.behaviorRemoved',
-    defaultMessage: '{title} removed',
+    defaultMessage: '{{title}} removed',
   },
   behaviorRemovedField: {
     id: 'controlpanels.contentTypes.behaviorRemovedField',
@@ -633,11 +639,11 @@ export const messages = defineMessages({
   behaviorRemovedFields: {
     id: 'controlpanels.contentTypes.behaviorRemovedFields',
     defaultMessage:
-      'Editors no longer see its {count} fields. Stored values are kept.',
+      'Editors no longer see its {{count}} fields. Stored values are kept.',
   },
   behaviorVariant: {
     id: 'controlpanels.contentTypes.behaviorVariant',
-    defaultMessage: 'Variant of {title}',
+    defaultMessage: 'Variant of {{title}}',
   },
   formPreview: {
     id: 'controlpanels.contentTypes.formPreview',
@@ -658,11 +664,11 @@ export const messages = defineMessages({
   },
   pendingFields: {
     id: 'controlpanels.contentTypes.pendingFields',
-    defaultMessage: 'Fields from {behaviors} show after saving.',
+    defaultMessage: 'Fields from {{behaviors}} show after saving.',
   },
   addBehaviorsTitle: {
     id: 'controlpanels.contentTypes.addBehaviorsTitle',
-    defaultMessage: 'Add behaviors to {title}',
+    defaultMessage: 'Add behaviors to {{title}}',
   },
   searchBehaviors: {
     id: 'controlpanels.contentTypes.searchBehaviors',
@@ -695,20 +701,20 @@ export const messages = defineMessages({
   },
   includedIn: {
     id: 'controlpanels.contentTypes.includedIn',
-    defaultMessage: 'Included in {title}',
+    defaultMessage: 'Included in {{title}}',
   },
   instead: {
     id: 'controlpanels.contentTypes.instead',
-    defaultMessage: 'Instead of {title}: switch it on its row.',
+    defaultMessage: 'Instead of {{title}}: switch it on its row.',
   },
   deprecatedUse: {
     id: 'controlpanels.contentTypes.deprecatedUse',
-    defaultMessage: 'Deprecated: use {title} instead.',
+    defaultMessage: 'Deprecated: use {{title}} instead.',
   },
   containsEnabled: {
     id: 'controlpanels.contentTypes.containsEnabled',
     defaultMessage:
-      'Contains {behaviors}, which the type has. Remove them first.',
+      'Contains {{behaviors}}, which the type has. Remove them first.',
   },
   deprecated: {
     id: 'controlpanels.contentTypes.deprecated',
@@ -720,7 +726,7 @@ export const messages = defineMessages({
   },
   addSelected: {
     id: 'controlpanels.contentTypes.addSelected',
-    defaultMessage: 'Add {count}',
+    defaultMessage: 'Add {{count}}',
   },
   groupContent: {
     id: 'controlpanels.contentTypes.groupContent',
@@ -776,7 +782,7 @@ export const messages = defineMessages({
   },
   transitionTo: {
     id: 'controlpanels.contentTypes.transitionTo',
-    defaultMessage: '{transition} → {state}',
+    defaultMessage: '{{transition}} → {{state}}',
   },
   noWorkflowHelp: {
     id: 'controlpanels.contentTypes.noWorkflowHelp',
@@ -818,11 +824,11 @@ export const messages = defineMessages({
   },
   changeWorkflowTitle: {
     id: 'controlpanels.contentTypes.changeWorkflowTitle',
-    defaultMessage: 'Change workflow for {title}',
+    defaultMessage: 'Change workflow for {{title}}',
   },
   changeWorkflowSubtitle: {
     id: 'controlpanels.contentTypes.changeWorkflowSubtitle',
-    defaultMessage: '{items} · currently {workflow}',
+    defaultMessage: '{{items}} · currently {{workflow}}',
   },
   oneItem: {
     id: 'controlpanels.contentTypes.oneItem',
@@ -858,7 +864,7 @@ export const messages = defineMessages({
   },
   mostVisible: {
     id: 'controlpanels.contentTypes.mostVisible',
-    defaultMessage: 'Most visible state: {visibility}.',
+    defaultMessage: 'Most visible state: {{visibility}}.',
   },
   noWorkflowDescription: {
     id: 'controlpanels.contentTypes.noWorkflowDescription',
@@ -866,7 +872,7 @@ export const messages = defineMessages({
   },
   otherScopeWorkflows: {
     id: 'controlpanels.contentTypes.otherScopeWorkflows',
-    defaultMessage: '{count} more workflows are only offered for comments.',
+    defaultMessage: '{{count}} more workflows are only offered for comments.',
   },
   nextMap: {
     id: 'controlpanels.contentTypes.nextMap',
@@ -883,11 +889,11 @@ export const messages = defineMessages({
   mapHint: {
     id: 'controlpanels.contentTypes.mapHint',
     defaultMessage:
-      'Choose a state in {workflow} for each current state. Suggestions keep who can see an item.',
+      'Choose a state in {{workflow}} for each current state. Suggestions keep who can see an item.',
   },
   mapNothing: {
     id: 'controlpanels.contentTypes.mapNothing',
-    defaultMessage: '{workflow} has no states, so there is nothing to map.',
+    defaultMessage: '{{workflow}} has no states, so there is nothing to map.',
   },
   withoutState: {
     id: 'controlpanels.contentTypes.withoutState',
@@ -899,11 +905,11 @@ export const messages = defineMessages({
   },
   newStateFor: {
     id: 'controlpanels.contentTypes.newStateFor',
-    defaultMessage: 'New state for {state}',
+    defaultMessage: 'New state for {{state}}',
   },
   stateOption: {
     id: 'controlpanels.contentTypes.stateOption',
-    defaultMessage: '{state} · {visibility}',
+    defaultMessage: '{{state}} · {{visibility}}',
   },
   suggested: {
     id: 'controlpanels.contentTypes.suggested',
@@ -911,11 +917,11 @@ export const messages = defineMessages({
   },
   lessVisible: {
     id: 'controlpanels.contentTypes.lessVisible',
-    defaultMessage: 'Less visible: {visibility} only',
+    defaultMessage: 'Less visible: {{visibility}} only',
   },
   moreVisible: {
     id: 'controlpanels.contentTypes.moreVisible',
-    defaultMessage: 'More visible: {visibility} can see it',
+    defaultMessage: 'More visible: {{visibility}} can see it',
   },
   sameVisibility: {
     id: 'controlpanels.contentTypes.sameVisibility',
@@ -940,31 +946,31 @@ export const messages = defineMessages({
   },
   reviewIntro: {
     id: 'controlpanels.contentTypes.reviewIntro',
-    defaultMessage: '{title} will use {workflow} instead of {current}.',
+    defaultMessage: '{{title}} will use {{workflow}} instead of {{current}}.',
   },
   reviewFollowDefault: {
     id: 'controlpanels.contentTypes.reviewFollowDefault',
-    defaultMessage: '{title} will follow the site default, {workflow}.',
+    defaultMessage: '{{title}} will follow the site default, {{workflow}}.',
   },
   reviewSame: {
     id: 'controlpanels.contentTypes.reviewSame',
-    defaultMessage: 'Still visible to {visibility}.',
+    defaultMessage: 'Still visible to {{visibility}}.',
   },
   reviewLess: {
     id: 'controlpanels.contentTypes.reviewLess',
-    defaultMessage: 'Now visible only to {visibility} (was {was}).',
+    defaultMessage: 'Now visible only to {{visibility}} (was {{was}}).',
   },
   reviewMore: {
     id: 'controlpanels.contentTypes.reviewMore',
-    defaultMessage: 'Now visible to {visibility} (was {was}).',
+    defaultMessage: 'Now visible to {{visibility}} (was {{was}}).',
   },
   reviewRow: {
     id: 'controlpanels.contentTypes.reviewRow',
-    defaultMessage: '{items}: {from} → {to}.',
+    defaultMessage: '{{items}}: {{from}} → {{to}}.',
   },
   reviewInitial: {
     id: 'controlpanels.contentTypes.reviewInitial',
-    defaultMessage: 'New items will start in {state}.',
+    defaultMessage: 'New items will start in {{state}}.',
   },
   reviewNoWorkflow: {
     id: 'controlpanels.contentTypes.reviewNoWorkflow',
@@ -977,7 +983,7 @@ export const messages = defineMessages({
   reviewUnaffected: {
     id: 'controlpanels.contentTypes.reviewUnaffected',
     defaultMessage:
-      "{count} items under folders with their own workflow policy won't change.",
+      "{{count}} items under folders with their own workflow policy won't change.",
   },
   reviewNote: {
     id: 'controlpanels.contentTypes.reviewNote',
@@ -986,7 +992,7 @@ export const messages = defineMessages({
   },
   changeWorkflowFor: {
     id: 'controlpanels.contentTypes.changeWorkflowFor',
-    defaultMessage: 'Change workflow for {items}',
+    defaultMessage: 'Change workflow for {{items}}',
   },
   changingWorkflow: {
     id: 'controlpanels.contentTypes.changingWorkflow',
@@ -998,15 +1004,15 @@ export const messages = defineMessages({
   },
   workflowChanged: {
     id: 'controlpanels.contentTypes.workflowChanged',
-    defaultMessage: '{title} now uses {workflow}.',
+    defaultMessage: '{{title}} now uses {{workflow}}.',
   },
   workflowChangedItems: {
     id: 'controlpanels.contentTypes.workflowChangedItems',
-    defaultMessage: '{items} updated.',
+    defaultMessage: '{{items}} updated.',
   },
   workflowChangeError: {
     id: 'controlpanels.contentTypes.workflowChangeError',
-    defaultMessage: "The workflow of {title} couldn't be changed.",
+    defaultMessage: "The workflow of {{title}} couldn't be changed.",
   },
   loadingPreview: {
     id: 'controlpanels.contentTypes.loadingPreview',
@@ -1022,11 +1028,11 @@ export const messages = defineMessages({
   },
   typesCount: {
     id: 'controlpanels.contentTypes.typesCount',
-    defaultMessage: '{count} types',
+    defaultMessage: '{{count}} types',
   },
   siteDefaultChanged: {
     id: 'controlpanels.contentTypes.siteDefaultChanged',
-    defaultMessage: 'The site default workflow is now {workflow}.',
+    defaultMessage: 'The site default workflow is now {{workflow}}.',
   },
   changeDefaultWorkflowTitle: {
     id: 'controlpanels.contentTypes.changeDefaultWorkflowTitle',
@@ -1034,7 +1040,7 @@ export const messages = defineMessages({
   },
   changeDefaultWorkflowSubtitle: {
     id: 'controlpanels.contentTypes.changeDefaultWorkflowSubtitle',
-    defaultMessage: 'Currently {workflow} · followed by {types}',
+    defaultMessage: 'Currently {{workflow}} · followed by {{types}}',
   },
   noTypes: {
     id: 'controlpanels.contentTypes.noTypes',
@@ -1042,20 +1048,20 @@ export const messages = defineMessages({
   },
   mapGroup: {
     id: 'controlpanels.contentTypes.mapGroup',
-    defaultMessage: 'Types using {workflow}',
+    defaultMessage: 'Types using {{workflow}}',
   },
   mapGroupTitle: {
     id: 'controlpanels.contentTypes.mapGroupTitle',
-    defaultMessage: '{workflow}: {types}',
+    defaultMessage: '{{workflow}}: {{types}}',
   },
   reviewSiteDefault: {
     id: 'controlpanels.contentTypes.reviewSiteDefault',
     defaultMessage:
-      'The site default becomes {workflow} instead of {current}. The types that follow it change too: {types}. Types with a workflow of their own keep it.',
+      'The site default becomes {{workflow}} instead of {{current}}. The types that follow it change too: {{types}}. Types with a workflow of their own keep it.',
   },
   reviewIntroMany: {
     id: 'controlpanels.contentTypes.reviewIntroMany',
-    defaultMessage: 'These types will use {workflow}: {types}.',
+    defaultMessage: 'These types will use {{workflow}}: {{types}}.',
   },
   changeWorkflowBulk: {
     id: 'controlpanels.contentTypes.changeWorkflowBulk',
@@ -1067,6 +1073,6 @@ export const messages = defineMessages({
   },
   workflowChangedMany: {
     id: 'controlpanels.contentTypes.workflowChangedMany',
-    defaultMessage: '{title} now use {workflow}.',
+    defaultMessage: '{{title}} now use {{workflow}}.',
   },
 });

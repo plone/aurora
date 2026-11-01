@@ -290,7 +290,7 @@ function TypeEditor({
                 {t(
                   type.globalAllow
                     ? messages.globalAllow
-                    : messages.notGloballyAddable,
+                    : messages.notGlobalAllow,
                 )}
               </span>
             )}
