@@ -1,4 +1,10 @@
-import type { LinksFunction, LoaderFunctionArgs } from 'react-router';
+import {
+  useLoaderData,
+  type LinksFunction,
+  type LoaderFunctionArgs,
+  type RouterContextProvider,
+} from 'react-router';
+import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { requireAuthCookie } from '@plone/react-router';
 import { ContentTypesList } from '@plone/controlpanels';
 import { Plug } from '@plone/layout/components/Pluggable';
@@ -6,14 +12,20 @@ import { Container, Link } from '@plone/quanta';
 import toastStylesheet from '@plone/components/src/styles/basic/Toast.css?url';
 import Back from '@plone/icons/svg/arrow-left.svg?react';
 import ContentTypesProviders from '../components/ContentTypes/ContentTypesProviders';
+import { toCapabilities } from '../helpers/contentTypesApi';
+import { contentTypesBackend } from '../helpers/contentTypesBackend';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: toastStylesheet },
 ];
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({
+  request,
+  context,
+}: LoaderFunctionArgs<RouterContextProvider>) {
   await requireAuthCookie(request);
-  return null;
+  const backend = await contentTypesBackend(context.get(ploneClientContext));
+  return { capabilities: toCapabilities(backend) };
 }
 
 /**
@@ -21,6 +33,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
  * screens come from `@plone/controlpanels`, which also runs in Volto.
  */
 export default function ContentTypes() {
+  const { capabilities } = useLoaderData<typeof loader>();
   return (
     <main>
       <Plug pluggable="toolbar-top" id="button-back">
@@ -29,7 +42,7 @@ export default function ContentTypes() {
         </Link>
       </Plug>
       <Container width="default" className="route-controlpanel py-6">
-        <ContentTypesProviders>
+        <ContentTypesProviders capabilities={capabilities}>
           <ContentTypesList />
         </ContentTypesProviders>
       </Container>
