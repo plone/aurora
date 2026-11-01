@@ -1,5 +1,5 @@
 ---
-block: plate
+document_model: plone.plate
 ---
 
 A page stores all its content in one region, `main`, whose `@type` is `plate` and whose `value` is a Plate document: a list of nodes, from top to bottom. The elements and blocks described below are the nodes you can use.

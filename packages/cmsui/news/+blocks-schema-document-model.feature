@@ -1,0 +1,1 @@
+The `@blocks-schema` endpoint announces the `plone.plate` document model in `document_model`, only lists the elements of that document model, and accepts a `type` query parameter for new content of that type. @sneridagh
