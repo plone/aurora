@@ -1,0 +1,15 @@
+{
+  "id": "site",
+  "schema": {
+    "fieldsets": [
+      {
+        "id": "default",
+        "title": "Default",
+        "fields": ["site_title", "site_logo", "robots_txt"]
+      }
+    ]
+  },
+  "data": {
+    "site_title": "Plone site"
+  }
+}
