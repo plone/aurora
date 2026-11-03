@@ -1,0 +1,32 @@
+{
+  "id": "News Item",
+  "title:i18n": "News Item",
+  "description": "",
+  "global_allow": true,
+  "filter_content_types": false,
+  "allowed_content_types": [],
+  "schema": {
+    "fieldsets": [
+      { "id": "default", "title:i18n": "Default", "fields": ["image"] }
+    ],
+    "properties": {
+      "image": {
+        "title:i18n": "Lead image",
+        "type": "object",
+        "widget": "file",
+        "factory": "Image"
+      }
+    },
+    "behaviors": [
+      "dublin_core",
+      "dates",
+      "blocks",
+      "versioning",
+      "short_name",
+      "id_from_title",
+      "exclude_from_nav"
+    ],
+    "layouts": []
+  },
+  "workflow": "simple_publication_workflow"
+}

@@ -213,9 +213,17 @@ nick-start: ## Start Nick and PostgreSQL for local development
 nick-stop: ## Stop Nick, preserving its data
 	docker compose -p aurora-nick -f compose.nick.yml down
 
-.PHONY: nick-acceptance-frontend
-nick-acceptance-frontend: ## Start the acceptance frontend against Nick
-	pnpm --filter @plone/aurora build && PLONE_API_PATH=http://localhost:$${NICK_PORT:-8080} pnpm --filter @plone/aurora start:prod
+.PHONY: nick-shared-test-start
+nick-shared-test-start: ## Build and start the isolated Nick acceptance backend
+	docker compose -p aurora-nick-fixture -f acceptance/nick-addon/compose.yml up -d --build --wait
+
+.PHONY: nick-shared-test-frontend
+nick-shared-test-frontend: ## Start the frontend against the isolated Nick test backend
+	pnpm --filter @plone/aurora build && PLONE_API_PATH=http://localhost:$${NICK_ACCEPTANCE_PORT:-55002} pnpm --filter @plone/aurora start:prod
+
+.PHONY: nick-shared-test-stop
+nick-shared-test-stop: ## Remove the isolated Nick test backend and its disposable data
+	docker compose -p aurora-nick-fixture -f acceptance/nick-addon/compose.yml down --volumes
 
 .PHONY: acceptance-test
 acceptance-test: ## Start Cypress in interactive mode

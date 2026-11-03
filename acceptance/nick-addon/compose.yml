@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: nick
+      POSTGRES_PASSWORD: nick
+      POSTGRES_DB: nick
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nick -d nick']
+      interval: 2s
+      timeout: 5s
+      retries: 30
+    volumes:
+      - data:/var/lib/postgresql
+
+  nick:
+    build:
+      context: ../..
+      dockerfile: acceptance/nick-addon/Dockerfile
+    environment:
+      DB_HOST: db
+      DB_USER: nick
+      DB_PASSWORD: nick
+      DB_NAME: nick
+      SECRET: nick-acceptance-test-only-secret
+      ALLOWED_ORIGINS: http://localhost:3000
+      AUTH_RATE_LIMIT: '1000'
+      API_RATE_LIMIT: '1000'
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - '127.0.0.1:${NICK_ACCEPTANCE_PORT:-55002}:8080'
+    volumes:
+      - blobs:/app/var/blobstorage
+
+volumes:
+  data:
+  blobs:

@@ -58,31 +58,41 @@ Open <http://localhost:3000> and sign in with the Nick administrator account to 
 To connect Aurora to an existing Nick instance, start Aurora with `PLONE_API_PATH` set to that instance's API root.
 The URL must be reachable from the Aurora server process.
 
-## Run the Nick acceptance test
+## Run the acceptance suite with Nick
 
-Start Nick as described above, then build and start the acceptance frontend in a separate terminal.
+The shared Nick fixture is experimental and does not yet pass the complete acceptance suite.
+It runs the same test files as the Plone backend and reports compatibility failures without skipping them.
+
+Build and start the dedicated test image and database.
 
 ```shell
-make nick-acceptance-frontend
+make nick-shared-test-start
 ```
 
-If Nick uses a non-default port, set `NICK_PORT` to the same value for this command.
-In a third terminal, run the Nick Playwright suite.
+In another terminal, build and start Aurora against the isolated test backend.
+
+```shell
+make nick-shared-test-frontend
+```
+
+In a third terminal, run the shared suite.
 
 ```shell
 pnpm acceptance-test:nick
 ```
 
-For a non-default port, set `API_PATH` to Nick's API root when running the test.
-For example, if Nick uses port `8081`, run the following command.
+The fixture starts its own Nick and PostgreSQL stack and recreates its database and blob volumes before each test.
+Its Compose project is `aurora-nick-fixture`, separate from the development stack.
+Run only one instance of this suite at a time and use one Playwright worker, as the tests share that isolated stack.
+The fixture uses port `55002` by default.
+To use another port, set `NICK_ACCEPTANCE_PORT` to the same value when starting the stack, the frontend, and the tests.
+When you finish, remove the isolated stack and its test data.
 
 ```shell
-API_PATH=http://localhost:8081 pnpm acceptance-test:nick
+make nick-shared-test-stop
 ```
 
-The test signs in, creates a uniquely named folder and page, checks the page and contents view in Aurora, and deletes the test content.
-The Nick suite has its own configuration and does not use the Plone acceptance suite's RobotRemote reset fixture.
-It is an initial integration test and does not run the full Plone acceptance suite.
+The Nick adapter recreates the test site instead of using the Plone acceptance suite's RobotRemote reset fixture.
 See {doc}`../contributing/acceptance-tests` for the Plone acceptance workflow.
 
 ## Stop the stack

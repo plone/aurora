@@ -11,7 +11,7 @@ jobs:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
     name: Aurora with Nick
-    timeout-minutes: 30
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v7
 
@@ -21,12 +21,12 @@ jobs:
           node-version: 26.x
 
       - name: Start Nick
-        run: make nick-start
+        run: make nick-shared-test-start
 
       - uses: JarvusInnovations/background-action@v2
         name: Start Aurora
         with:
-          run: make nick-acceptance-frontend
+          run: make nick-shared-test-frontend
           wait-on: http://localhost:3000
           wait-for: 10m
           tail: true
@@ -35,13 +35,20 @@ jobs:
       - name: Run Nick acceptance tests
         run: pnpm acceptance-test:nick
 
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: nick-playwright-results
+          path: playwright/results-nick/
+          retention-days: 7
+
       - name: Show Nick logs on failure
         if: failure()
-        run: docker compose -p aurora-nick -f compose.nick.yml logs
+        run: docker compose -p aurora-nick-fixture -f acceptance/nick-addon/compose.yml logs
 
       - name: Stop Nick
         if: always()
-        run: docker compose -p aurora-nick -f compose.nick.yml down -v
+        run: make nick-shared-test-stop
 
   aurora:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name

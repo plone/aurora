@@ -1,0 +1,12 @@
+{
+  "purge": false,
+  "users": [
+    {
+      "id": "admin",
+      "password": "secret",
+      "fullname": "Site Administrator",
+      "email": "admin@example.com",
+      "roles": ["Administrator"]
+    }
+  ]
+}
