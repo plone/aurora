@@ -15,6 +15,9 @@
         "searchWidget": {
           "searchSite": "Seite durchsuchen"
         }
+      },
+      "navigation": {
+        "menu": "Menü"
       }
     },
     "contenttypes": {
