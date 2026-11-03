@@ -19,6 +19,11 @@ export function acceptanceApiURL(): string {
   return (process.env.API_PATH || fallback).replace(/\/$/, '');
 }
 
+/** The test site's administrator role on the selected backend. */
+export function acceptanceManagerRole(): string {
+  return acceptanceBackend() === 'nick' ? 'Administrator' : 'Manager';
+}
+
 export async function acceptanceAuthorization(
   request: APIRequestContext,
   apiURL: string,

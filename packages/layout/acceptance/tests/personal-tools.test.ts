@@ -1,6 +1,9 @@
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
-import { acceptanceApiURL } from '../../../tooling/playwright/backend';
+import {
+  acceptanceApiURL,
+  acceptanceManagerRole,
+} from '../../../tooling/playwright/backend';
 
 test.setTimeout(45_000);
 
@@ -25,7 +28,7 @@ test('personal tools edit the profile, save preferences and log out', async ({
       username,
       email: `${username}@example.com`,
       password: 'password',
-      roles: ['Manager'],
+      roles: [acceptanceManagerRole()],
     },
   });
   expect(created.ok()).toBeTruthy();
