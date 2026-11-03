@@ -18,7 +18,7 @@ export type EditableSettings = { schema?: TypeSchema } & Required<
     | 'allowedContents'
     | 'globalAllow'
     | 'searchable'
-    | 'defaultPage'
+    | 'inNavigation'
     | 'allowDiscussion'
     | 'versioning'
   >;
@@ -33,7 +33,7 @@ export const TAB_FIELDS: Partial<
     'allowedContents',
     'globalAllow',
     'searchable',
-    'defaultPage',
+    'inNavigation',
     'allowDiscussion',
     'versioning',
   ],
@@ -53,7 +53,7 @@ export function toEditableSettings(
     allowedContents,
     globalAllow,
     searchable,
-    defaultPage,
+    inNavigation,
     allowDiscussion,
     versioning,
   } = settings;
@@ -64,7 +64,7 @@ export function toEditableSettings(
     ...(allowedContents && { allowedContents }),
     ...(globalAllow !== undefined && { globalAllow }),
     ...(searchable !== undefined && { searchable }),
-    ...(defaultPage !== undefined && { defaultPage }),
+    ...(inNavigation !== undefined && { inNavigation }),
     ...(allowDiscussion !== undefined && { allowDiscussion }),
     ...(versioning !== undefined && { versioning }),
     ...(schema && { schema }),
@@ -106,7 +106,7 @@ export const SETTING_CAPABILITIES: Partial<
 > = {
   globalAllow: 'globalAllow',
   searchable: 'searchable',
-  defaultPage: 'defaultPage',
+  inNavigation: 'inNavigation',
   allowDiscussion: 'allowDiscussion',
   versioning: 'versioning',
 };
