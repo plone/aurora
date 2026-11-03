@@ -1,35 +1,34 @@
 import {
+  data,
   redirect,
   RouterContextProvider,
   useFetcher,
   useLoaderData,
-  useNavigate,
+  useParams,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
+  type SubmitTarget,
 } from 'react-router';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { atom } from 'jotai';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
-import type { DeepKeys } from '@tanstack/react-form';
 import { requireAuthCookie } from '@plone/react-router';
-import { InitAtoms } from '@plone/helpers';
-import type {
-  Controlpanel,
-  ControlPanelFieldset,
-  ControlPanelSchema,
-} from '@plone/types';
+import { FormProvider, useFormStore } from '@plone/helpers';
+import type { Controlpanel } from '@plone/types';
 import { Plug } from '@plone/layout/components/Pluggable';
+import { Container, Link } from '@plone/quanta';
+import SchemaFieldsets, {
+  type FieldsetsSchema,
+} from '../components/Form/SchemaFieldsets';
 import {
-  Accordion,
-  AccordionItem,
-  AccordionPanel,
-  AccordionItemTrigger,
-  Button,
-  Container,
-} from '@plone/components/quanta';
-import { useAppForm } from '../components/Form/Form';
-import Back from '@plone/components/icons/arrow-left.svg?react';
-import Checkbox from '@plone/components/icons/checkbox.svg?react';
+  buildSchemaValidators,
+  firstInvalidField,
+  focusField,
+  getServerValidationErrors,
+} from '../components/Form/validation';
+import { WidgetContextProvider } from '../components/Form/WidgetContext';
+import Back from '@plone/icons/svg/arrow-left.svg?react';
+import Checkbox from '@plone/icons/svg/checkbox.svg?react';
 import config from '@plone/registry';
 
 export async function loader({
@@ -50,122 +49,125 @@ export async function loader({
 export async function action({
   params,
   request,
-  // context,
+  context,
 }: ActionFunctionArgs<RouterContextProvider>) {
   await requireAuthCookie(request);
 
-  // const cli = context.get(ploneClientContext);
+  const cli = context.get(ploneClientContext);
+  const panel_id = params.id || 'navigation';
 
-  // const path = `/${params['*'] || ''}`;
+  try {
+    await cli.updateControlpanel({
+      path: panel_id,
+      data: await request.json(),
+    });
+  } catch (error) {
+    // Validation errors go back to the form, on their fields.
+    const errors = getServerValidationErrors(error);
+    if (errors) return data({ errors }, { status: 400 });
+    throw error;
+  }
 
-  // const formData = await request.json();
-
-  // TODO: Activate update of control panel data
-  // eslint-disable-next-line no-console
-  console.warn('Updating control panel data not yet implemented');
-  // console.log('formData', formData);
-  // await cli.updateContent({
-  //   path,
-  //   data: formData,
-  // });
-
-  return redirect(`/controlpanel/${params.id}`);
-
-  // return { ok: true };
+  return redirect(`/controlpanel/${panel_id}`);
 }
 
-const formAtom = atom<Controlpanel>({} as Controlpanel);
-
 export default function SingleControlPanel() {
-  const loaderData = useLoaderData<typeof loader>();
-  const controlpanel = loaderData.controlpanel;
+  const { controlpanel } = useLoaderData<typeof loader>();
+  const params = useParams();
+  const panelId = params.id || 'navigation';
+
+  // Remount the form when moving between panels.
+  return (
+    <ControlPanelForm
+      key={panelId}
+      panelId={panelId}
+      controlpanel={controlpanel}
+    />
+  );
+}
+
+function ControlPanelForm({
+  panelId,
+  controlpanel,
+}: {
+  panelId: string;
+  controlpanel: Controlpanel;
+}) {
   const { filterControlPanelsSchema } = config.settings;
   const schema = filterControlPanelsSchema(controlpanel);
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const fetcher = useFetcher();
+  const validators = useMemo(
+    () => buildSchemaValidators(schema as FieldsetsSchema, { t }),
+    [schema, t],
+  );
 
-  const form = useAppForm({
-    defaultValues: controlpanel.data,
-    onSubmit: async ({ value }) => {
-      // bug fix: @ts-expect-error: For some reason, the type of value is not inferred correctly
-      // as `useLoaderData` turns every "unknown" type into `undefined`
-      fetcher.submit(value, {
+  // Each panel gets a form store of its own.
+  const form = useFormStore({
+    key: panelId,
+    initialValues: controlpanel.data,
+    validators,
+    onSubmit: (values) => {
+      fetcher.submit(values as unknown as SubmitTarget, {
         method: 'post',
         encType: 'application/json',
       });
-
-      // return redirect(`/${content['@id']}`);
     },
   });
 
+  const showErrors = useCallback(
+    (errors: Record<string, unknown>) => {
+      const field = firstInvalidField(schema as FieldsetsSchema, errors);
+      if (field) focusField(field);
+    },
+    [schema],
+  );
+
+  // The save action returns the server's validation errors, by field.
+  useEffect(() => {
+    const errors = (fetcher.data as { errors?: Record<string, string[]> })
+      ?.errors;
+    if (!errors) return;
+    form.setServerErrors(errors);
+    showErrors(errors);
+  }, [fetcher.data, form, showErrors]);
+
   // TODO: filter fields with filterControlPanelsSchema from config.settings
   return (
-    <InitAtoms atomValues={[[formAtom, controlpanel.data]]}>
-      <Plug pluggable="toolbar-top" id="button-back">
-        <Button
-          aria-label="back"
-          size="L"
-          onPress={() => navigate('/controlpanel')}
-        >
-          <Back />
-        </Button>
-      </Plug>
-      <main>
-        <Container width="default" className="route-controlpanel">
-          <h1 className="documentFirstHeading">
-            {controlpanel.title || 'a control panel'}
-          </h1>
-          <form>
-            {schema.fieldsets.map((fieldset: ControlPanelFieldset) => (
-              <Accordion defaultExpandedKeys={['default']} key={fieldset.id}>
-                <AccordionItem id={fieldset.id} key={fieldset.id}>
-                  <AccordionItemTrigger>{fieldset.title}</AccordionItemTrigger>
-                  <AccordionPanel>
-                    {(fieldset.fields as DeepKeys<ControlPanelSchema>[]).map(
-                      (schemaField, index) => (
-                        <form.AppField
-                          name={schemaField}
-                          key={index}
-                          // eslint-disable-next-line react/no-children-prop
-                          children={(field) => (
-                            <field.Quanta
-                              {...schema.properties[schemaField]}
-                              className="mb-4"
-                              label={schema.properties[field.name].title}
-                              name={field.name}
-                              defaultValue={field.state.value}
-                              required={
-                                schema.required.indexOf(schemaField) !== -1
-                              }
-                              error={field.state.meta.errors}
-                              formAtom={formAtom}
-                            />
-                          )}
-                        />
-                      ),
-                    )}
-                  </AccordionPanel>
-                </AccordionItem>
-              </Accordion>
-            ))}
-            <Plug pluggable="toolbar-top" id="edit-save-button">
-              <Button
-                aria-label={t('cmsui.save')}
-                type="submit"
-                // Trigger the TS form submission
-                onPress={() => form.handleSubmit()}
-                variant="primary"
-                accent
-                size="L"
-              >
-                <Checkbox />
-              </Button>
-            </Plug>
-          </form>
-        </Container>
-      </main>
-    </InitAtoms>
+    <FormProvider form={form}>
+      <WidgetContextProvider mode="settings" path="/">
+        <Plug pluggable="toolbar-top" id="button-back">
+          <Link aria-label="back" href="/controlpanel">
+            <Back />
+          </Link>
+        </Plug>
+        <main>
+          <Container width="default" className="route-controlpanel">
+            <h1 className="documentFirstHeading">
+              {controlpanel.title || 'a control panel'}
+            </h1>
+            <form>
+              <SchemaFieldsets schema={schema as FieldsetsSchema} />
+              <Plug pluggable="toolbar-top" id="edit-save-button">
+                {/* A native button: react-aria's onPress does not fire inside
+                  the toolbar's shadow root. */}
+                <button
+                  aria-label={t('cmsui.save')}
+                  type="submit"
+                  onClick={async () => {
+                    const result = await form.submit();
+                    if (!result.ok) showErrors(result.errors);
+                  }}
+                  className="primary"
+                >
+                  <Checkbox />
+                </button>
+              </Plug>
+            </form>
+          </Container>
+        </main>
+      </WidgetContextProvider>
+    </FormProvider>
   );
 }

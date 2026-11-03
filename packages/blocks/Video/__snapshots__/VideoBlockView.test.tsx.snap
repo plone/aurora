@@ -3,13 +3,14 @@
 exports[`VideoBlockView > renders view video component 1`] = `
 <DocumentFragment>
   <div
-    class="video align block center"
+    class="block-video__wrapper"
+    data-align="center"
   >
     <figure
-      class="video-block"
+      class="block-video__figure"
     >
       <div
-        class="video-inner"
+        class="block-video__inner"
       >
         <iframe
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -27,13 +28,14 @@ exports[`VideoBlockView > renders view video component 1`] = `
 exports[`VideoBlockView > renders view video component with placeholder image 1`] = `
 <DocumentFragment>
   <div
-    class="video align block center"
+    class="block-video__wrapper"
+    data-align="center"
   >
     <figure
-      class="video-block"
+      class="block-video__figure"
     >
       <div
-        class="video-inner"
+        class="block-video__inner"
       >
         <iframe
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

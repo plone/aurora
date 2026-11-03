@@ -9,7 +9,7 @@ A single Plone installation is able to run many Plone sites.
 -   Minimum 512 MB hard disk space is required.
     40 GB or more hard disk space is recommended.
 
-```{disclaimer}
+```{note}
 The above hardware requirements for Plone Aurora are estimates based on the experience of the Plone community with Plone Volto.
 The hardware requirements for Plone Aurora should be lower than those of Plone Volto, as Plone Aurora is bundled with Vite, which is faster and more efficient than Webpack, the bundler used in Plone Volto.
 The hardware requirements for Plone Aurora may also change as the project evolves and new features are added.

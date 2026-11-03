@@ -1,0 +1,13 @@
+{
+  "extends": "tsconfig/react-library.json",
+  "compilerOptions": {
+    "paths": {}
+  },
+  "include": ["src", "src/svg.d.ts", "./setupTesting.ts"],
+  "exclude": ["node_modules", "dist", "coverage"],
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
+}

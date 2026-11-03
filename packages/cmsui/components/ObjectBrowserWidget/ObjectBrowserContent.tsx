@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, Input } from '@plone/components/quanta';
-import { SearchIcon, CloseIcon } from '@plone/components/Icons';
+import { Button, Input } from '@plone/quanta';
+import { SearchIcon, CloseIcon } from '@plone/icons';
 import { useTranslation } from 'react-i18next';
 
 interface ObjectBrowserContentProps {

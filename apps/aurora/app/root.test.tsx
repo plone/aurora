@@ -12,21 +12,18 @@ import {
 import { migrateContent } from './config/server/content-migrations.server';
 import { renderWithI18n } from '../tests/testHelpers';
 
+vi.mock('./i18next.server', () => ({
+  i18nextMiddleware: vi.fn(),
+  getLocale: vi.fn().mockReturnValue('en'),
+}));
+
 async function renderStub() {
   const Stub = createRoutesStub([
     {
+      id: 'root',
       path: '/',
       Component: () => (
-        <Layout
-          params={{}}
-          loaderData={{
-            locale: 'en',
-            content: {} as any,
-            site: {} as any,
-            isAuthenticated: false,
-          }}
-          matches={[{} as any]}
-        >
+        <Layout>
           <p>Root Layout</p>
         </Layout>
       ),
@@ -97,8 +94,8 @@ describe('loader', () => {
       request,
       params: {},
       context,
-      unstable_pattern: '/',
-      unstable_url: new URL(request.url),
+      pattern: '/',
+      url: new URL(request.url),
     });
 
     expect(result.data.locale).toBe('en');
@@ -124,8 +121,8 @@ describe('loader', () => {
       request,
       params: { '*': 'test-content' },
       context,
-      unstable_pattern: '/test-content',
-      unstable_url: new URL(request.url),
+      pattern: '/test-content',
+      url: new URL(request.url),
     });
 
     expect(result.data.locale).toBe('en');
@@ -149,8 +146,8 @@ describe('loader', () => {
       request,
       params: {},
       context,
-      unstable_pattern: '/',
-      unstable_url: new URL(request.url),
+      pattern: '/',
+      url: new URL(request.url),
     })) as any;
 
     expect(result.data.content).toEqual(mockContent);
@@ -215,8 +212,8 @@ it('should place the migrated title block in the legacy block order', async () =
     request,
     params: {},
     context,
-    unstable_pattern: '/',
-    unstable_url: new URL(request.url),
+    pattern: '/',
+    url: new URL(request.url),
   });
 
   expect(somersaultMigration).toHaveBeenCalledTimes(1);
@@ -283,8 +280,8 @@ it('should skip somersault migration when the somersault block already exists', 
     request,
     params: {},
     context,
-    unstable_pattern: '/',
-    unstable_url: new URL(request.url),
+    pattern: '/',
+    url: new URL(request.url),
   });
 
   expect(somersaultMigration).not.toHaveBeenCalled();

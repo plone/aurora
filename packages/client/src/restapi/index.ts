@@ -91,6 +91,9 @@ export { deleteRules } from './rules/delete';
 
 export { search } from './search/get';
 
+export { getSharing } from './sharing/get';
+export { updateSharing } from './sharing/update';
+
 export { getSite } from './site/get';
 
 export { getSource } from './sources/get';

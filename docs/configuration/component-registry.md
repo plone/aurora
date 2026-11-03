@@ -11,13 +11,15 @@ myst:
 
 # Component registry
 
-The {term}`configuration registry` has a component registry integrated on itself.
-These registry stores by a given name the components.
-Later you can retrieve them by this name, and use them in your code.
-The idea behind is to provide an alternative and more convenient way to customize components.
-You can override programmatically such registrations from your add-on or projects because it's stored in the configuration registry.
-You can customize a component without using {term}`shadowing` at all, if the code that calls the component retrieves the information of the component to use from the component registry.
-You can even have modifiers to the component registrations: dependencies. So you can "adapt" the call given an array of such dependencies.
+The {term}`configuration registry` includes a component registry for managing components globally.
+In this registry, you can register components given a unique component name.
+Any other add-on can then retrieve and use this component by searching for the component's name.
+
+The key motivation behind the component registry is to simplify the process of customization.
+Existing components can be overridden without {term}`shadowing` by registering a new component using the name of an existing component.
+Since the component registry is globally available, this means that all code pointing to this component will now use the newly registered component instead.
+
+Additionally, it's possible to modify the component registrations with dependencies.
 
 ## Registering components by name using `config.registerComponent`
 
@@ -48,9 +50,12 @@ or by using the convenience component `Component` if you want to use it in JSX d
 
 Please notice that you are able to pass `props` down to the retrieved component.
 
-## Adapting the component using `dependencies` array
+## Adapt components with dependencies
 
-You can register components, and retrieve them afterwards given a list of modifiers `dependencies`.
+Additionally, components can be registered with dependencies.
+This allows calling a component by its name and optionally by its dependencies, according to the use case.
+
+To register a component with dependencies, either pass a string or an array of strings.
 
 ```js
 import MyTeaserNewsItemComponent from './MyTeaserNewsItemComponent'
@@ -62,35 +67,55 @@ config.registerComponent({
   });
 ```
 
-and then retrieve it:
+To retrieve this component, pass the data used to check the dependencies.
 
 ```js
 config.getComponent({
     name: 'Teaser',
-    dependencies: ['News Item'],
+    dependencies: 'News Item',
   }).component
 ```
 
-The idea is that you can have both with and without dependencies:
+This is useful for components that have variations based on the context, such as the content type of the current item.
+
+For example, there might be a `Teaser` component that has a variation for the `News Item` content type.
+The component is registered as such:
 
 ```js
-import MyTeaserDefaultComponent from './MyTeaserDefaultComponent'
-import MyTeaserNewsItemComponent from './MyTeaserNewsItemComponent'
+import MyTeaserDefaultComponent from './MyTeaserDefaultComponent';
+import MyTeaserNewsItemComponent from './MyTeaserNewsItemComponent';
 
 config.registerComponent({
     name: 'Teaser',
     component: MyTeaserDefaultComponent,
-  });
+});
 
 config.registerComponent({
     name: 'Teaser',
     component: MyTeaserNewsItemComponent,
     dependencies: 'News Item',
-  });
+});
 ```
 
-and then retrieve them both, depending on the use case (in the example, given a content type value coming from `content` prop):
+The following example shows how to retrieve the `Teaser` component with a given content type value coming from the `content` prop.
+If the content type is a `News Item`, then it will retrieve the `Teaser` component registered with this dependency, in this case, `MyTeaserNewsItemComponent`.
 
 ```jsx
-<Component componentName="Toolbar" dependencies={[props.content['@type']]} {...props} />
+<Component componentName="Teaser" dependencies={[props.content['@type']]} {...props} />
 ```
+
+However, if the content type is different from `News Item`, no component is rendered, because the registry does not automatically fall back to the `MyTeaserDefaultComponent` registered without dependencies.
+If the `MyTeaserDefaultComponent` should be rendered when the dependency is not `News Item`, a manual fallback mechanism should be registered as a conditional expression:
+
+```{code-block} jsx
+:emphasize-lines: 4
+const Component = config.getComponent({
+    name: 'Teaser',
+    dependencies: props.content['@type']
+}).component || config.getComponent('Teaser').component;
+
+return <Component {...props} />;
+```
+
+This will explicitly use the `Teaser` component if one is registered with the matching content type as a dependency.
+Otherwise, the `config.getComponent(...).component` call returns `undefined` and the manual fallback returns the `Teaser` component that was registered without dependencies.

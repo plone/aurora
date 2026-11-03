@@ -7,6 +7,8 @@ import { createAddonsServerLoader } from '@plone/registry/create-addons-loader-s
 import { createThemeAddonsLoader } from '@plone/registry/create-theme-loader';
 import { createAddonsStyleLoader } from '@plone/registry/create-addons-styles-loader';
 import { createAddonsLocalesLoader } from '@plone/registry/create-addons-locales-loader';
+import { createBlocksDocsLoader } from '@plone/registry/create-blocks-docs-loader';
+import { createPlatePluginsLoaders } from '@plone/registry/create-plate-plugins-loader';
 import { pathToFileURL } from 'node:url';
 
 const titleCase = (w) => w.slice(0, 1).toUpperCase() + w.slice(1, w.length);
@@ -79,7 +81,14 @@ const load = (config, context = {}) => {
 export default load;
 `;
 
-  fs.writeFileSync(viteLoaderPath, code);
+  // Only write if content changed — vite.loader.js is imported by vite.config.ts
+  // so any write triggers a Vite server restart, causing an infinite loop
+  const existing = fs.existsSync(viteLoaderPath)
+    ? fs.readFileSync(viteLoaderPath, 'utf-8')
+    : null;
+  if (existing !== code) {
+    fs.writeFileSync(viteLoaderPath, code);
+  }
   return viteLoaderPath;
 }
 
@@ -146,6 +155,18 @@ export const PloneRegistryVitePlugin = () => {
   createViteLoader(getAddonViteExtenders(registry));
   createAddonsStyleLoader(registry);
   createAddonsLocalesLoader(registry);
+  // The *.block.md files of the add-ons, in load order, so that an add-on
+  // loaded later replaces the docs of an earlier one. Only server code
+  // imports this module, for the @blocks-schema endpoint.
+  const blocksDocsLoaderPath = createBlocksDocsLoader(
+    registry.getAddons().map((addon) => addon.basePath ?? addon.modulePath),
+    { tempInProject: true },
+  );
+
+  // The `config/plate-editor` and `config/plate-renderer` modules of the
+  // add-ons, in add-on order. Only the page editor and renderer presets
+  // import these loaders.
+  const platePluginsLoaders = createPlatePluginsLoaders(registry);
 
   const [addonsThemeLoaderVariablesPath, addonsThemeLoaderMainPath] =
     createThemeAddonsLoader(registry.getCustomThemeAddons());
@@ -181,7 +202,7 @@ export const PloneRegistryVitePlugin = () => {
             // This is still needed for internal resolution to "self"
             // in combination with shadowing
             ...addonAliases,
-            // ToDo: Deprecate `theme` feature in Seven
+            // ToDo: Deprecate `theme` feature in Plone Aurora
             ...(registry.theme
               ? // Load the theme aliases from the theme config
                 [
@@ -195,10 +216,22 @@ export const PloneRegistryVitePlugin = () => {
                   },
                 ]
               : []),
-            // This is no longer needed in Seven
+            // This is no longer needed in Plone Aurora
             {
               find: '@plone/registry/addons-loader',
               replacement: addonsLoaderPath,
+            },
+            {
+              find: '@plone/registry/blocks-docs',
+              replacement: blocksDocsLoaderPath,
+            },
+            {
+              find: '@plone/registry/plate-editor',
+              replacement: platePluginsLoaders.editor,
+            },
+            {
+              find: '@plone/registry/plate-renderer',
+              replacement: platePluginsLoaders.renderer,
             },
           ],
         },

@@ -5,7 +5,6 @@ import { useEmojiDropdownMenuState } from '@platejs/emoji/react';
 import { PlateElement } from 'platejs/react';
 
 import { BlockInnerContainer } from './block-inner-container';
-import { cn } from '../../lib/utils';
 
 export function CalloutElement({
   attributes,
@@ -34,12 +33,12 @@ export function CalloutElement({
       {...props}
     >
       <BlockInnerContainer
-        className={cn('my-1 flex rounded-sm bg-muted p-4 pl-3', className)}
+        className={className}
         style={{
           backgroundColor: props.element.backgroundColor as any,
         }}
       >
-        <div className="flex w-full gap-2 rounded-md">
+        <div className="block-callout__body">
           {/* ToDo: Replace the dependency on @platejs/emoji and @emoji-mart/data */}
           {/* with something more lightweight and sane */}
           {/* <EmojiPopover
@@ -60,7 +59,7 @@ export function CalloutElement({
         >
           <EmojiPicker {...emojiPickerState} {...calloutProps} />
         </EmojiPopover> */}
-          <div className="w-full">{children}</div>
+          <div className="block-callout__content">{children}</div>
         </div>
       </BlockInnerContainer>
     </PlateElement>

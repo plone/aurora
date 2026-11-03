@@ -1,37 +1,34 @@
-import { DatePicker } from '@plone/components/quanta';
-import type { Updater } from '@tanstack/react-form';
-import { useAtomValue } from 'jotai';
-import { formAtom } from '../../../routes/atoms';
+import { DatePicker } from '@plone/quanta';
+import { useFieldValue } from '@plone/helpers';
+import { dateValueToIsoDate, isoDateToDateValue } from '../../../helpers/dates';
+
+const pad = (value: number) => String(value).padStart(2, '0');
+
+/** Formats a date as `YYYY-MM-DD`, in local time. */
+export const toISODate = (date: Date) =>
+  `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 
 interface UntilEndFieldProps {
-  onChange: (updater: Updater<string>) => void;
+  onChange: (value: string) => void;
 }
 
 const UntilEndField = ({ onChange }: UntilEndFieldProps) => {
-  const formContext = useAtomValue(formAtom);
+  const end = useFieldValue<string>('end');
 
-  // @ts-ignore
-  const endDate = new Date(formContext.end);
-  const defaultYear = endDate.getFullYear();
-  const defaultMonth = endDate.getMonth() + 1;
-  const defaultDay = endDate.getDate();
-
-  const today = new Date();
-
-  const month = defaultMonth < 10 ? `0${defaultMonth}` : defaultMonth;
-
-  const defaultDate = endDate
-    ? `${defaultYear}-${month}-${defaultDay}`
-    : `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+  // The event's end date, or today without one, as an ISO date (YYYY-MM-DD).
+  const endDate = end ? new Date(end) : new Date();
+  const defaultDate = toISODate(
+    Number.isNaN(endDate.getTime()) ? new Date() : endDate,
+  );
 
   return (
     <DatePicker
       onChange={(value) => {
-        if (value && new Date(value).getFullYear().toString().length === 4) {
-          onChange(value);
+        if (value && value.year.toString().length === 4) {
+          onChange(dateValueToIsoDate(value)!);
         }
       }}
-      defaultValue={defaultDate}
+      defaultValue={isoDateToDateValue(defaultDate)}
       className="**:dark:text-foreground"
       resettable={false}
     />

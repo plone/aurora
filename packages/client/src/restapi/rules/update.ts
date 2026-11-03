@@ -7,16 +7,18 @@ import type { RequestResponse } from '../types';
 
 export const updateRulesArgsSchema = z.object({
   data: updateRulesDataSchema,
+  path: z.string().optional(),
 });
 
 export type UpdateRulesArgs = z.infer<typeof updateRulesArgsSchema>;
 
 export async function updateRules(
   this: PloneClient,
-  { data }: UpdateRulesArgs,
+  { data, path }: UpdateRulesArgs,
 ): Promise<RequestResponse<UpdateRuleRespose>> {
   const validatedArgs = updateRulesArgsSchema.parse({
     data,
+    path,
   });
 
   const options: ApiRequestParams = {
@@ -24,5 +26,9 @@ export async function updateRules(
     config: this.config,
   };
 
-  return apiRequest('patch', '/@content-rules', options);
+  return apiRequest(
+    'patch',
+    `${(validatedArgs.path ?? '').replace(/\/$/, '')}/@content-rules`,
+    options,
+  );
 }

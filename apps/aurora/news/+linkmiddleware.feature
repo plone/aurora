@@ -1,1 +1,0 @@
-Added a middleware to handle Link Content Type View redirecting users that don't have Edit permissions. @pnicolli

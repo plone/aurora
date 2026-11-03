@@ -1,17 +1,14 @@
 import { useId, useCallback, useMemo, useEffect, useRef } from 'react';
 import { tv } from 'tailwind-variants';
-import type { TextFieldProps as QuantaTextFieldProps } from '@plone/components/quanta';
+import type { TextFieldProps as QuantaTextFieldProps } from '@plone/quanta';
 import {
   Description,
   fieldBorderStyles,
   FieldError,
   Label,
 } from '../Field/Field';
-import { useLoaderData } from 'react-router';
-import type { loader as editLoader } from '../../routes/edit';
 
 import { focusRing } from '../utils';
-import { Switch } from '@plone/components';
 import {
   TextField,
   Select,
@@ -19,7 +16,8 @@ import {
   ComboBox,
   ComboBoxItem,
   Button,
-} from '@plone/components/quanta';
+  Switch,
+} from '@plone/quanta';
 import {
   QuerystringProvider,
   useQuerystringContext,
@@ -27,7 +25,7 @@ import {
   type QueryCriterion,
   type FieldMetadata,
 } from './QuerystringWidgetContext';
-import { BinIcon, AddIcon } from '@plone/components/Icons';
+import { BinIcon, AddIcon } from '@plone/icons';
 
 type BaseFormFieldProps = Pick<
   QuantaTextFieldProps,
@@ -432,8 +430,6 @@ function QuerystringWidgetComponent(props: QuerystringWidgetProps) {
 }
 
 export function QuerystringWidget(props: QuerystringWidgetProps) {
-  useLoaderData<typeof editLoader>();
-
   const { label, description, errorMessage, value, defaultValue, ...rest } =
     props;
   const initialValue = value ?? defaultValue;

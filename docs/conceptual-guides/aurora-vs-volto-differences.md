@@ -35,7 +35,7 @@ Plone Aurora relies on React Router's built-in SSR pipeline, keeping server and 
 The server sends ready-to-hydrate HTML, while framework loaders and actions own subsequent data access.
 Because this work happens on the server, the browser does not need to know where the backend lives.
 
-React Router 7 framework also has the concept of middlewares, which allow Plone Aurora to run code before or after every request.
+React Router 8 framework also has the concept of middlewares, which allow Plone Aurora to run code before or after every request.
 This is useful for tasks like authentication, logging, and error handling.
 It replaces Volto's custom Express server configuration and middleware stack.
 
@@ -56,7 +56,7 @@ Plone Volto supports TypeScript, but much of its core remains JavaScript.
 
 Plone Aurora uses standards-based CSS for styling.
 Modern CSS has evolved quickly, and features like custom properties cover many use cases that previously required preprocessors.
-Although Vite can compile SASS, LESS, and other syntaxes, Plone Aurora favors plain CSS to keep the pipeline simple.
+Although Vite can compile Sass, LESS, and other syntaxes, Plone Aurora favors plain CSS to keep the pipeline simple.
 
 ## Tailwind CSS
 

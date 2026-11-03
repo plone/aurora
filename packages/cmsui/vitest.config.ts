@@ -1,9 +1,20 @@
+import path from 'node:path';
 import { coverageConfigDefaults, defineConfig } from 'vitest/config';
+import { createBlocksDocsLoader } from '@plone/registry/create-blocks-docs-loader';
+
+// The block docs of the core packages, as the app build collects them.
+const blocksDocsLoaderPath = createBlocksDocsLoader([
+  path.resolve(__dirname, '../plate'),
+  path.resolve(__dirname, '../blocks'),
+]);
 
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
     tsconfigPaths: true,
+    alias: {
+      '@plone/registry/blocks-docs': blocksDocsLoaderPath,
+    },
   },
   test: {
     globals: true,

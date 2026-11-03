@@ -5,20 +5,22 @@ runs:
   using: "composite"
   steps:
     - name: Use Node.js ${{ inputs.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v7
       with:
         node-version: ${{ inputs.node-version }}
 
-    - name: Enable corepack
+    - name: Install and enable Corepack
       shell: bash
-      run: corepack enable
+      run: |
+        npm install --global corepack@latest
+        corepack enable
 
     - name: Get pnpm store directory
       shell: bash
       run: |
         echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-    - uses: actions/cache@v4
+    - uses: actions/cache@v6
       name: Setup pnpm cache
       with:
         path: ${{ env.STORE_PATH }}
@@ -26,11 +28,21 @@ runs:
         restore-keys: |
           ${{ runner.os }}-pnpm-store-
 
-    - name: Install dependencies
+    - name: Install dependencies and build packages
+      if: inputs.build-deps == 'true'
       shell: bash
       run: make install
+
+    - name: Install dependencies
+      if: inputs.build-deps != 'true'
+      shell: bash
+      run: pnpm install --frozen-lockfile
 
 inputs:
   node-version:
     description: 'Node.js version'
     required: true
+  build-deps:
+    description: 'Build the workspace packages (make build-deps) after installing the dependencies. Jobs that only lint or format the sources can skip it.'
+    required: false
+    default: 'true'

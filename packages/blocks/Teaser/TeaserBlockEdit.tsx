@@ -1,6 +1,6 @@
 import { useCallback, type ComponentType } from 'react';
 import type { BlockEditProps } from '@plone/types';
-import { ImageIcon } from '@plone/components/Icons';
+import { ImageIcon } from '@plone/icons';
 import config from '@plone/registry';
 import TeaserBlockView from './TeaserBlockView';
 
@@ -11,8 +11,7 @@ const TeaserEdit = (props: BlockEditProps) => {
   const { data, setBlock } = props;
   const href = asFirstItem(data.href as any);
   const ObjectBrowserWidget = config.getWidget('object_browser') as
-    | ComponentType<any>
-    | undefined;
+    ComponentType<any> | undefined;
   const onTargetChange = useCallback(
     (selectedItems: Array<Record<string, any>>) => {
       const selectedTarget = selectedItems?.[0];
@@ -44,7 +43,7 @@ const TeaserEdit = (props: BlockEditProps) => {
     return (
       <div
         className={[
-          'teaser-item placeholder rounded-md border border-dashed border-quanta-azure bg-quanta-air',
+          'block-teaser__placeholder rounded-md border border-dashed border-quanta-azure bg-quanta-air',
           'p-6 text-center text-quanta-iron',
         ].join(' ')}
       >

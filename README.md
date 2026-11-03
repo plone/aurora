@@ -1,13 +1,13 @@
 # @plone/aurora
 
-[![Unit Tests](https://github.com/plone/volto/actions/workflows/unit.yml/badge.svg?branch=seven)](https://github.com/plone/volto/actions/workflows/unit.yml)
-[![Acceptance Tests](https://github.com/plone/volto/actions/workflows/acceptance.yml/badge.svg?branch=seven)](https://github.com/plone/volto/actions/workflows/acceptance.yml)
-[![Build Status Docs](https://github.com/plone/volto/actions/workflows/docs.yml/badge.svg?branch=seven)](https://github.com/plone/volto/actions)
+[![Unit Tests](https://github.com/plone/aurora/actions/workflows/unit.yml/badge.svg?branch=main)](https://github.com/plone/aurora/actions/workflows/unit.yml)
+[![Acceptance Tests](https://github.com/plone/aurora/actions/workflows/acceptance.yml/badge.svg?branch=main)](https://github.com/plone/aurora/actions/workflows/acceptance.yml)
+[![Build Status Docs](https://github.com/plone/aurora/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/plone/aurora/actions)
 
 
 ## Introduction
 
-[Plone Aurora](https://github.com/plone/volto) is a ReactJS-based frontend for the [Plone](https://plone.org) Content Management System compatible with the `plone.restapi` specification.
+[Plone Aurora](https://github.com/plone/aurora) is a ReactJS-based frontend for the [Plone](https://plone.org) Content Management System compatible with the `plone.restapi` specification.
 
 [Plone](https://plone.org) is a CMS built on Python with more than 25 years of history and experience.
 

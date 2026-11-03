@@ -14,12 +14,32 @@ export interface UtilityTypeMap {
 }
 
 export type ValidatorUtilityArgs = {
+  /** The field's value. Validators only run on non-empty values. */
   value: any;
+  /** The field's schema property. */
   field: Record<string, any>;
+  /** The field's name in the form data. */
+  fieldName: string;
+  /** All the form's values, for validators that compare fields. */
   formData: any;
-  formatMessage: (...args: any[]) => any;
+  /** Translates a message (i18next). */
+  t: (key: string, options?: Record<string, unknown>) => string;
+  /**
+   * Translates a message descriptor (react-intl style), as validators
+   * written for Volto expect.
+   */
+  formatMessage: (
+    message: { id: string; defaultMessage?: string } | string,
+    values?: Record<string, unknown>,
+  ) => string;
 };
 
+/**
+ * A field validator, registered as a `validator` utility and matched to
+ * fields by its dependencies (`fieldType`, `widget`, `format`,
+ * `behaviorName` + `fieldName`, or `blockType` + `fieldName`). Returns an
+ * error message, or nothing if the value is valid.
+ */
 export type ValidatorUtility = (
   options: ValidatorUtilityArgs,
 ) => string | null | undefined;

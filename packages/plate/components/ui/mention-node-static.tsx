@@ -1,10 +1,24 @@
 import * as React from 'react';
 
-import type { SlateElementProps, TMentionElement } from 'platejs';
+import type { TMentionElement } from 'platejs';
+import type { SlateElementProps } from 'platejs/static';
 
-import { KEYS, SlateElement } from 'platejs';
+import { KEYS } from 'platejs';
+import { SlateElement } from 'platejs/static';
 
-import { cn } from '../../lib/utils';
+/**
+ * The marks of a mention's text, as data attributes: `.slate-mention` in
+ * `styles/content.css` styles `[data-bold]`, `[data-italic]` and
+ * `[data-underline]`.
+ */
+export function mentionMarkAttributes(element: TMentionElement) {
+  const text = element.children[0];
+  return {
+    'data-bold': text[KEYS.bold] === true ? '' : undefined,
+    'data-italic': text[KEYS.italic] === true ? '' : undefined,
+    'data-underline': text[KEYS.underline] === true ? '' : undefined,
+  };
+}
 
 export function MentionElementStatic(
   props: SlateElementProps<TMentionElement> & {
@@ -17,14 +31,9 @@ export function MentionElementStatic(
   return (
     <SlateElement
       {...props}
-      className={cn(
-        'inline-block rounded-md bg-muted px-1.5 py-0.5 align-baseline text-sm font-medium',
-        element.children[0][KEYS.bold] === true && 'font-bold',
-        element.children[0][KEYS.italic] === true && 'italic',
-        element.children[0][KEYS.underline] === true && 'underline',
-      )}
       attributes={{
         ...props.attributes,
+        ...mentionMarkAttributes(element),
         'data-slate-value': element.value,
       }}
     >

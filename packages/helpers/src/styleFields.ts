@@ -5,6 +5,7 @@ import type {
   JSONSchema,
   StyleDefinition,
 } from '@plone/types';
+import { PLONE_BLOCK_TYPE } from './blockAnatomy';
 
 type DataRecord = Record<string, unknown>;
 type StyleFieldConfig = {
@@ -102,7 +103,7 @@ const getBlockType = (data: DataRecord) => {
   const plateType = data.type;
   const ploneType = data['@type'];
 
-  if (typeof plateType === 'string' && plateType !== 'unknown')
+  if (typeof plateType === 'string' && plateType !== PLONE_BLOCK_TYPE)
     return plateType;
   if (typeof ploneType === 'string') return ploneType;
 
@@ -273,12 +274,13 @@ export const resolveStyleFields = ({
 
     if (!effectiveValue) return;
 
+    values[fieldName] = effectiveValue;
+
     const definition = findStyleDefinitionByName(definitions, effectiveValue);
 
-    if (!definition?.style) return;
-
-    values[fieldName] = effectiveValue;
-    Object.assign(style, definition.style);
+    if (definition?.style) {
+      Object.assign(style, definition.style);
+    }
   });
 
   return { style, values };

@@ -1,0 +1,55 @@
+.personal-tools-menu {
+  padding: 1rem;
+  outline: none;
+
+  .personal-tools-avatar {
+    display: flex;
+    height: 200px;
+    align-items: center;
+    justify-content: center;
+    background: var(--quanta-smoke);
+
+    svg {
+      width: 72px;
+      height: 72px;
+    }
+  }
+
+  .personal-tools-portrait {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .react-aria-Header {
+    color: var(--quanta-pigeon);
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+  }
+
+  .personal-tools-identity {
+    padding: 0.75rem;
+  }
+
+  .react-aria-MenuItem {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-top: 1px solid var(--quanta-smoke);
+    color: var(--quanta-sapphire);
+    cursor: pointer;
+    gap: 0.75rem;
+    outline: none;
+  }
+
+  .react-aria-MenuItem[data-focused] {
+    background: var(--quanta-snow);
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+    color: var(--quanta-pigeon);
+  }
+}

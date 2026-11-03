@@ -1,0 +1,92 @@
+@layer custom {
+  .language-switcher {
+    display: flex;
+    margin-right: 20px;
+
+    /* The row of links, up to three languages. */
+    .selected {
+      font-weight: bold;
+    }
+    a:not(:last-child):after {
+      margin-right: 5px;
+      margin-left: 5px;
+      content: '|';
+      font-weight: normal;
+    }
+  }
+
+  .language-switcher-trigger {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border: none;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    gap: 0.375rem;
+    white-space: nowrap;
+  }
+
+  .language-switcher-trigger[data-hovered='true'],
+  .language-switcher-trigger[aria-expanded='true'] {
+    color: var(--accent-color);
+  }
+
+  /* Sized here, not by the icon's size utility, which a public theme
+     without Tailwind or the basic theme does not define. */
+  .language-switcher-trigger .chevron {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    transition: transform 0.15s ease;
+  }
+
+  .language-switcher-trigger[aria-expanded='true'] .chevron {
+    transform: rotate(180deg);
+  }
+}
+
+/* The menu renders inside a portalled react-aria Popover, outside
+   .language-switcher — these classes must style their own surface
+   (no global .react-aria-Popover rule exists outside the toolbar). */
+@layer custom {
+  .language-switcher-menu {
+    min-width: 10rem;
+    max-height: 70vh;
+    padding: 0.25rem;
+    border: 1px solid
+      color-mix(in oklab, var(--foreground) 15%, var(--background, #fff));
+    border-radius: 0.375rem;
+    background: var(--background, #fff);
+    box-shadow: 0 8px 24px -8px
+      color-mix(in oklab, var(--foreground) 40%, transparent);
+    outline: none;
+    overflow-y: auto;
+  }
+
+  .language-switcher-item {
+    display: block;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    color: inherit;
+    cursor: pointer;
+    outline: none;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .language-switcher-item[data-hovered='true'],
+  .language-switcher-item[data-focused='true'] {
+    background: color-mix(
+      in oklab,
+      var(--accent-color) 10%,
+      var(--background, #fff)
+    );
+    color: var(--accent-color);
+  }
+
+  .language-switcher-item.selected {
+    font-weight: bold;
+  }
+}

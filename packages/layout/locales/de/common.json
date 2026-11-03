@@ -1,7 +1,24 @@
 {
   "layout": {
-    "languageSwitcher": {
-      "switchTo": "Zu {{ lang }} wechseln"
+    "slots": {
+      "headertools": {
+        "languageSwitcher": {
+          "switchTo": "Zu {{ lang }} wechseln"
+        },
+        "actions": {
+          "logout": "Abmelden"
+        },
+        "anonymousTools": {
+          "login": "Anmelden",
+          "register": "Registrieren"
+        },
+        "searchWidget": {
+          "searchSite": "Seite durchsuchen"
+        }
+      },
+      "navigation": {
+        "menu": "Menü"
+      }
     },
     "contenttypes": {
       "common": {

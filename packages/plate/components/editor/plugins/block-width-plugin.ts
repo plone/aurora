@@ -1,10 +1,12 @@
 import {
   createSlatePlugin,
   ElementApi,
+  PathApi,
   type SetNodesOptions,
   type SlateEditor,
   type TElement,
 } from 'platejs';
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import config from '@plone/registry';
 import type { StyleDefinition } from '@plone/types';
 import { toPlatePlugin } from 'platejs/react';
@@ -89,47 +91,27 @@ const getPlateBlockRegistryWidthConfig = (
   if (!element?.type) return {};
 
   const plateBlocksConfig = config?.blocks?.plateBlocksConfig as
-    | Record<string, { blockWidth?: BlockWidthConfig }>
-    | undefined;
+    Record<string, { blockWidth?: BlockWidthConfig }> | undefined;
 
   return plateBlocksConfig?.[element.type]?.blockWidth ?? {};
-};
-
-const getPloneBlockRegistryWidthConfig = (
-  element?: TElement | null,
-): BlockWidthConfig => {
-  const blockType = (
-    element as (TElement & { '@type'?: unknown }) | null | undefined
-  )?.['@type'];
-  if (!blockType || typeof blockType !== 'string') return {};
-
-  const blocksConfig = config?.blocks?.blocksConfig as unknown as
-    | Record<string, { blockWidth?: BlockWidthConfig }>
-    | undefined;
-
-  return blocksConfig?.[blockType]?.blockWidth ?? {};
 };
 
 export const resolveBlockWidthConfig = (
   editor: SlateEditor,
   element?: TElement | null,
 ): BlockWidthConfig => {
-  if (element?.type === 'unknown') {
+  if (element?.type === PLONE_BLOCK_TYPE) {
     return {};
   }
 
-  const registryConfig =
-    element?.type === 'unknown'
-      ? getPloneBlockRegistryWidthConfig(element)
-      : getPlateBlockRegistryWidthConfig(element);
+  const registryConfig = getPlateBlockRegistryWidthConfig(element);
 
   if (registryConfig.defaultWidth || registryConfig.widths?.length) {
     return registryConfig;
   }
 
   const pluginOptions = editor.getOptions(BaseBlockWidthPlugin) as
-    | BlockWidthPluginOptions
-    | undefined;
+    BlockWidthPluginOptions | undefined;
 
   return {
     widths: pluginOptions?.defaultWidths,
@@ -162,20 +144,33 @@ type ValueElement = Record<string, unknown> & {
   children?: unknown[];
 };
 
-export const applyBlockWidthDefaultsInValue = (value: unknown[]) => {
+/**
+ * Sets the width of every top-level native block that has none (or one it
+ * does not allow). With an `editor`, it resolves widths exactly like the
+ * editor's normalization does, so a saved value loads unchanged.
+ */
+export const applyBlockWidthDefaultsInValue = (
+  value: unknown[],
+  editor?: SlateEditor,
+) => {
   const fallbackWidths = getBlockWidthValueList();
   const fallbackDefaultWidth = getDefaultBlockWidth();
 
-  const visit = (node: unknown) => {
+  const applyDefault = (node: unknown) => {
     if (!node || typeof node !== 'object') return;
 
     const element = node as ValueElement;
     if (typeof element.type !== 'string') return;
 
-    if (element.type === 'unknown') {
-      if (Array.isArray(element.children)) {
-        element.children.forEach(visit);
-      }
+    if (element.type === PLONE_BLOCK_TYPE) {
+      return;
+    }
+
+    if (editor) {
+      element[BLOCK_WIDTH_KEY] = getEffectiveBlockWidth(
+        editor,
+        element as TElement,
+      );
       return;
     }
 
@@ -191,13 +186,9 @@ export const applyBlockWidthDefaultsInValue = (value: unknown[]) => {
     if (typeof currentWidth !== 'string' || !widths.includes(currentWidth)) {
       element[BLOCK_WIDTH_KEY] = defaultWidth;
     }
-
-    if (Array.isArray(element.children)) {
-      element.children.forEach(visit);
-    }
   };
 
-  value.forEach(visit);
+  value.forEach(applyDefault);
   return value;
 };
 
@@ -219,7 +210,7 @@ export const withBlockWidthDefaults = <T extends TElement>(
   editor: SlateEditor,
   element: T,
 ): T => {
-  if (element.type === 'unknown') {
+  if (element.type === PLONE_BLOCK_TYPE) {
     return element;
   }
 
@@ -235,31 +226,23 @@ export const withBlockWidthDefaults = <T extends TElement>(
   };
 };
 
-const withInsertedBlockWidthDefaults = (
+const withCreatedBlockWidthDefaults = (
   editor: SlateEditor,
   nodes: unknown,
 ): unknown => {
   if (Array.isArray(nodes)) {
-    return nodes.map((node) => withInsertedBlockWidthDefaults(editor, node));
+    return nodes.map((node) => withCreatedBlockWidthDefaults(editor, node));
   }
 
-  if (!ElementApi.isElement(nodes)) {
+  if (
+    !ElementApi.isElement(nodes) ||
+    !editor.api.isBlock(nodes) ||
+    nodes.type === PLONE_BLOCK_TYPE
+  ) {
     return nodes;
   }
 
-  const children: unknown[] | undefined = Array.isArray(nodes.children)
-    ? nodes.children.map((child: unknown) =>
-        withInsertedBlockWidthDefaults(editor, child),
-      )
-    : nodes.children;
-  const nextNode: TElement =
-    children === nodes.children ? nodes : ({ ...nodes, children } as TElement);
-
-  if (!editor.api.isBlock(nextNode) || nextNode.type === 'unknown') {
-    return nextNode;
-  }
-
-  return withBlockWidthDefaults(editor, nextNode);
+  return withBlockWidthDefaults(editor, nodes);
 };
 
 const setBlockWidth = (
@@ -268,7 +251,7 @@ const setBlockWidth = (
   setNodesOptions?: SetNodesOptions,
 ) => {
   const matchesValue = (node: TElement) => {
-    if (node.type === 'unknown') return false;
+    if (node.type === PLONE_BLOCK_TYPE) return false;
 
     const config = getBlockWidthConfig(editor, node);
 
@@ -287,20 +270,65 @@ const setBlockWidth = (
   );
 };
 
+const normalizeTopLevelBlockWidth = (
+  editor: SlateEditor,
+  element: TElement,
+  path: number[],
+) => {
+  if (path.length !== 1 || element.type === PLONE_BLOCK_TYPE) {
+    return false;
+  }
+
+  const currentWidth = element[BLOCK_WIDTH_KEY];
+  const config = getBlockWidthConfig(editor, element);
+
+  if (
+    typeof currentWidth === 'string' &&
+    isAllowedWidth(config.widths, currentWidth)
+  ) {
+    return false;
+  }
+
+  editor.tf.setNodes(
+    {
+      [BLOCK_WIDTH_KEY]: config.defaultWidth,
+    },
+    {
+      at: path,
+    },
+  );
+
+  return true;
+};
+
 export const BaseBlockWidthPlugin = createSlatePlugin({
   key: BLOCK_WIDTH_KEY,
-  normalizeInitialValue: ({ value }) => {
-    applyBlockWidthDefaultsInValue(value);
+  normalizeInitialValue: ({ editor, value }) => {
+    applyBlockWidthDefaultsInValue(value, editor);
   },
   inject: {
     isBlock: true,
     nodeProps: {
       nodeKey: BLOCK_WIDTH_KEY,
+      query: ({ nodeProps }) => {
+        const element = nodeProps.element;
+
+        return (
+          !ElementApi.isElement(element) || element.type !== PLONE_BLOCK_TYPE
+        );
+      },
+      transformStyle: () => ({}) as CSSStyleDeclaration,
       transformProps: ({ editor, element, nodeValue, props }) => {
         if (
           !element ||
           !ElementApi.isElement(element) ||
-          element.type === 'unknown'
+          element.type === PLONE_BLOCK_TYPE ||
+          (editor?.api?.isBlock && !editor.api.isBlock(element)) ||
+          // Block width is a top-level layout concern (see
+          // `normalizeTopLevelBlockWidth`). Nested blocks, like paragraphs in
+          // a blockquote, table cell or column, fill their container.
+          (Array.isArray(editor?.children) &&
+            !editor.children.includes(element))
         ) {
           return props;
         }
@@ -325,16 +353,30 @@ export const BaseBlockWidthPlugin = createSlatePlugin({
   },
   extendEditor: ({ editor }) => {
     const createBlock = editor.api.create.block.bind(editor.api.create);
-    const insertNodes = editor.tf.insertNodes.bind(editor.tf);
+    const normalizeNode =
+      typeof editor.normalizeNode === 'function'
+        ? editor.normalizeNode.bind(editor)
+        : () => undefined;
 
     editor.api.create.block = ((...args: any[]) =>
-      withInsertedBlockWidthDefaults(editor, createBlock(...args))) as any;
+      withCreatedBlockWidthDefaults(editor, createBlock(...args))) as any;
 
-    editor.tf.insertNodes = ((nodes: any, options?: any) =>
-      insertNodes(
-        withInsertedBlockWidthDefaults(editor, nodes) as any,
-        options,
-      )) as any;
+    // Every top-level block ends up with a width, however it got there
+    // (typed, pasted, inserted, wrapped or lifted out of a container), so the
+    // saved value is exactly what `normalizeInitialValue` produces on load.
+    editor.normalizeNode = ((entry: any) => {
+      const [node, path] = entry;
+
+      if (
+        ElementApi.isElement(node) &&
+        PathApi.isPath(path) &&
+        normalizeTopLevelBlockWidth(editor, node, path)
+      ) {
+        return;
+      }
+
+      normalizeNode(entry);
+    }) as any;
 
     return editor;
   },
@@ -344,7 +386,7 @@ export const BaseBlockWidthPlugin = createSlatePlugin({
     const block =
       blockEntry &&
       ElementApi.isElement(blockEntry[0]) &&
-      blockEntry[0].type !== 'unknown'
+      blockEntry[0].type !== PLONE_BLOCK_TYPE
         ? blockEntry[0]
         : undefined;
     const { defaultWidth } = getBlockWidthConfig(editor, block);

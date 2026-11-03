@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckboxIcon, InfoIcon, CloseIcon } from '../icons';
+import { CheckboxIcon, InfoIcon, CloseIcon } from '@plone/icons';
 
 interface Props {
   title?: string | Array<any>;

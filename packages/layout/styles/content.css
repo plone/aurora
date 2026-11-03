@@ -1,0 +1,67 @@
+/*
+ * The block model's spatial relationships: block widths by category, the
+ * spacing between blocks, and nested blocks. They're loaded in both the
+ * Public UI and the CMSUI editor, inside the `plone-content` cascade layer, so
+ * blocks are laid out the same in both. Follow the authoring rules in the
+ * "Content styles" section of the add-on styles loader docs.
+ */
+
+:where(.content-area > .block) {
+  max-width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Category text */
+:where(.content-area .category-text) {
+  --block-width: var(--narrow-container-width);
+}
+
+/* Nested blocks (e.g. paragraphs in a blockquote, table cell or column)
+   fill their container instead of using their category width. The inner
+   container's `justify-items: start` would otherwise shrink them to fit. */
+:where(.content-area .block .block) {
+  --block-width: 100%;
+  justify-self: stretch;
+}
+
+/* Category separator */
+:where(.content-area .category-separator),
+:where(.content-area .block:has(+ .category-separator)) {
+  --block-bottom-spacing: 0;
+}
+
+/* Category heading */
+:where(.content-area .category-heading) {
+  --block-width: var(--default-container-width);
+  --block-bottom-spacing: calc(var(--spacing) * 14);
+}
+
+/* Category action */
+:where(.content-area .category-action) {
+  --block-bottom-spacing: calc(var(--spacing) * 8);
+}
+
+:where(.content-area .block .block-inner-container) {
+  width: 100%;
+  max-width: var(--block-width, var(--default-container-width));
+  align-items: var(--align-items, center);
+  padding-bottom: var(--block-bottom-spacing, calc(var(--spacing) * 3));
+  margin: 0 auto;
+  grid-auto-flow: var(--grid-auto-flow, row);
+  justify-items: var(--justify-items, start);
+}
+
+:where(.content-area .block.layout) {
+  --block-width: var(--layout-container-width);
+}
+
+:where(.content-area .block.default) {
+  --block-width: var(--default-container-width);
+}
+
+:where(.content-area .block.narrow) {
+  --block-width: var(--narrow-container-width);
+}

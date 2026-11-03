@@ -1,0 +1,11 @@
+/*
+ * Agave's block content tokens and overrides. They're loaded in both the
+ * Public UI and the CMSUI editor, inside the `plone-content` cascade layer, so
+ * blocks look the same in both. Declare tokens on `.content-area`, and don't
+ * wrap these rules in a `@layer`.
+ */
+
+.content-area {
+  /* Floated images keep room for the wrapping content (framework default). */
+  --block-float-max-size: 66%;
+}

@@ -2,9 +2,11 @@ import type { ConfigType } from '@plone/registry';
 import installSlots from './config/slots';
 import installSettings from './config/settings';
 import installToast from './config/toast';
+import installComponents from './config/components';
 import DefaultView from './views/DefaultView';
 import FileView from './views/FileView';
 import ImageView from './views/ImageView';
+import NewsItemView from './views/NewsItemView';
 import LinkView from './views/LinkView';
 import EventView from './views/EventView';
 
@@ -20,6 +22,7 @@ export default function install(config: ConfigType) {
   config.views.contentTypesViews = {
     File: FileView,
     Image: ImageView,
+    'News Item': NewsItemView,
     Link: LinkView,
     Event: EventView,
     ...config.views.contentTypesViews,
@@ -30,6 +33,7 @@ export default function install(config: ConfigType) {
   installSettings(config);
   installSlots(config);
   installToast(config);
+  installComponents(config);
 
   return config;
 }

@@ -11,10 +11,10 @@ import { CommentPlugin, useCommentId } from '@platejs/comment/react';
 //   format,
 // } from 'date-fns';
 import {
-  ArrowUpIcon,
   CheckIcon,
   MoreHorizontalIcon,
   PencilIcon,
+  SendIcon,
   TrashIcon,
   XIcon,
 } from 'lucide-react';
@@ -60,6 +60,7 @@ export function Comment(props: {
   documentContent?: string;
   showDocumentContent?: boolean;
   onEditorClick?: () => void;
+  onReply?: () => void;
 }) {
   const {
     comment,
@@ -70,6 +71,7 @@ export function Comment(props: {
     setEditingId,
     showDocumentContent = false,
     onEditorClick,
+    onReply,
   } = props;
 
   const { discussions, setDiscussions, users, currentUserId } =
@@ -169,36 +171,28 @@ export function Comment(props: {
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
-      <div className="relative flex items-center">
-        <Avatar className="size-5">
+      <div className="relative flex items-start gap-2.5">
+        <Avatar className="size-8">
           <AvatarImage alt={userInfo?.name} src={userInfo?.avatarUrl} />
           <AvatarFallback>{userInfo?.name?.[0]}</AvatarFallback>
         </Avatar>
-        <h4 className="mx-2 text-sm leading-none font-semibold">
-          {/* Replace to your own backend or refer to potion */}
-          {userInfo?.name}
-        </h4>
 
-        <div className="text-xs leading-none text-muted-foreground/80">
-          <span className="mr-1">
-            {formatCommentDate(new Date(comment.createdAt))}
-          </span>
-          {comment.isEdited && <span>(edited)</span>}
+        <div className="min-w-0 flex-1">
+          <h4 className="mb-0! text-sm! leading-[1.2]! font-bold text-foreground">
+            {/* Replace to your own backend or refer to potion */}
+            {userInfo?.name}
+          </h4>
+
+          <div className="mt-px text-xs leading-[1.6] font-light text-muted-foreground">
+            <span className="mr-1">
+              {formatCommentDate(new Date(comment.createdAt))}
+            </span>
+            {comment.isEdited && <span>(edited)</span>}
+          </div>
         </div>
 
         {isMyComment && (hovering || dropdownOpen) && (
           <div className="absolute top-0 right-0 flex space-x-1">
-            {index === 0 && (
-              <Button
-                variant="ghost"
-                className="h-6 p-1 text-muted-foreground"
-                onClick={onResolveComment}
-                type="button"
-              >
-                <CheckIcon className="size-4" />
-              </Button>
-            )}
-
             <CommentMoreDropdown
               onCloseAutoFocus={() => {
                 setTimeout(() => {
@@ -221,24 +215,24 @@ export function Comment(props: {
       </div>
 
       {isFirst && showDocumentContent && (
-        <div className="text-subtle-foreground relative mt-1 flex pl-[32px] text-sm">
+        <div className="text-subtle-foreground relative mt-2 flex pl-[42px] text-sm">
           {discussionLength > 1 && (
-            <div className="absolute top-[5px] left-3 h-full w-0.5 shrink-0 bg-muted" />
+            <div className="absolute top-[5px] left-4 h-full w-0.5 shrink-0 bg-muted" />
           )}
           <div className="bg-highlight my-px w-0.5 shrink-0" />
           {documentContent && <div className="ml-2">{documentContent}</div>}
         </div>
       )}
 
-      <div className="relative my-1 pl-[26px]">
+      <div className="relative mt-1.5 mb-3 pl-[42px]">
         {!isLast && (
-          <div className="absolute top-0 left-3 h-full w-0.5 shrink-0 bg-muted" />
+          <div className="absolute top-0 left-4 h-full w-0.5 shrink-0 bg-muted" />
         )}
         <Plate readOnly={!isEditing} editor={commentEditor}>
           <EditorContainer variant="comment">
             <Editor
               variant="comment"
-              className="w-auto grow"
+              className="w-auto grow text-sm leading-normal font-light text-foreground"
               onClick={() => onEditorClick?.()}
             />
 
@@ -282,6 +276,33 @@ export function Comment(props: {
             )}
           </EditorContainer>
         </Plate>
+
+        {isFirst && onReply && !isEditing && (
+          <div className="mt-[7px] flex gap-4">
+            <button
+              className={`
+                cursor-pointer border-0 bg-transparent p-0 text-[13px]! leading-[1.6]! font-semibold
+                text-brand
+                hover:underline
+              `}
+              onClick={onResolveComment}
+              type="button"
+            >
+              Resolve
+            </button>
+            <button
+              className={`
+                cursor-pointer border-0 bg-transparent p-0 text-[13px]! leading-[1.6]! font-semibold
+                text-brand
+                hover:underline
+              `}
+              onClick={onReply}
+              type="button"
+            >
+              Reply
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -396,10 +417,11 @@ const useCommentEditor = (
   options: Omit<CreatePlateEditorOptions, 'plugins'> = {},
   deps: any[] = [],
 ) => {
+  const { commentEditorPlugins } = usePlatePlugins();
   const commentEditor = usePlateEditor(
     {
       id: 'comment',
-      plugins: BasicMarksKit,
+      plugins: commentEditorPlugins ?? BasicMarksKit,
       value: [],
       ...options,
     },
@@ -409,23 +431,31 @@ const useCommentEditor = (
   return commentEditor;
 };
 
-export function CommentCreateForm({
-  autoFocus = false,
-  className,
-  discussionId: discussionIdProp,
-  focusOnMount = false,
-}: {
-  autoFocus?: boolean;
-  className?: string;
-  discussionId?: string;
-  focusOnMount?: boolean;
-}) {
+export interface CommentCreateFormHandle {
+  focus: () => void;
+}
+
+export const CommentCreateForm = React.forwardRef<
+  CommentCreateFormHandle,
+  {
+    autoFocus?: boolean;
+    className?: string;
+    discussionId?: string;
+    focusOnMount?: boolean;
+  }
+>(function CommentCreateForm(
+  {
+    autoFocus = false,
+    className,
+    discussionId: discussionIdProp,
+    focusOnMount = false,
+  },
+  ref,
+) {
   const editor = useEditorRef();
   const commentId = useCommentId();
   const discussionId = discussionIdProp ?? commentId;
-  const { currentUser, currentUserId, discussions, setDiscussions } =
-    usePlatePlugins();
-  const userInfo = currentUser ?? undefined;
+  const { currentUserId, discussions, setDiscussions } = usePlatePlugins();
   const [commentValue, setCommentValue] = React.useState<Value | undefined>();
   const commentContent = React.useMemo(
     () =>
@@ -441,6 +471,16 @@ export function CommentCreateForm({
       commentEditor.tf.focus();
     }
   }, [commentEditor, focusOnMount]);
+
+  React.useImperativeHandle(
+    ref,
+    () => ({
+      focus: () => {
+        commentEditor.tf.focus({ edge: 'endEditor' });
+      },
+    }),
+    [commentEditor],
+  );
 
   const onAddComment = React.useCallback(async () => {
     if (!commentValue || !currentUserId) return;
@@ -554,14 +594,6 @@ export function CommentCreateForm({
 
   return (
     <div className={cn('flex w-full', className)}>
-      <div className="mt-2 mr-1 shrink-0">
-        {/* Replace to your own backend or refer to potion */}
-        <Avatar className="size-5">
-          <AvatarImage alt={userInfo?.name} src={userInfo?.avatarUrl} />
-          <AvatarFallback>{userInfo?.name?.[0]}</AvatarFallback>
-        </Avatar>
-      </div>
-
       <div className="relative flex grow gap-2">
         <Plate
           onChange={({ value }) => {
@@ -569,17 +601,23 @@ export function CommentCreateForm({
           }}
           editor={commentEditor}
         >
-          <EditorContainer variant="comment">
+          <EditorContainer
+            className={`
+              min-h-11 items-center rounded-full border border-border bg-muted py-1.5 pr-2 pl-4
+              shadow-inner shadow-slate-200/40
+            `}
+            variant="comment"
+          >
             <Editor
               variant="comment"
-              className="min-h-[25px] grow pt-0.5 pr-8"
+              className=""
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();
                   onAddComment();
                 }
               }}
-              placeholder="Reply..."
+              placeholder={discussionId ? 'Reply to thread...' : 'Reply...'}
               autoComplete="off"
               autoFocus={autoFocus}
             />
@@ -587,7 +625,10 @@ export function CommentCreateForm({
             <Button
               size="icon"
               variant="ghost"
-              className="absolute right-0.5 bottom-0.5 ml-auto size-6 shrink-0"
+              className={`
+                absolute right-2 bottom-1.5 ml-auto size-8 shrink-0 text-muted-foreground
+                hover:text-brand
+              `}
               disabled={commentContent.trim().length === 0}
               onClick={(e) => {
                 e.stopPropagation();
@@ -595,7 +636,7 @@ export function CommentCreateForm({
               }}
             >
               <div className="flex size-6 items-center justify-center rounded-full">
-                <ArrowUpIcon />
+                <SendIcon />
               </div>
             </Button>
           </EditorContainer>
@@ -603,7 +644,7 @@ export function CommentCreateForm({
       </div>
     </div>
   );
-}
+});
 
 export const formatCommentDate = (date: Date) => {
   // const now = new Date();

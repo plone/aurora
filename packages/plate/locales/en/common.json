@@ -1,3 +1,33 @@
 {
-  "plate": {}
+  "plate": {
+    "slashMenu": {
+      "groups": {
+        "actions": "Actions",
+        "textBlocks": "Text blocks",
+        "advancedBlocks": "Advanced blocks",
+        "blocks": "Blocks"
+      },
+      "items": {
+        "text": "Text",
+        "heading2": "Heading 2",
+        "heading3": "Heading 3",
+        "heading4": "Heading 4",
+        "heading5": "Heading 5",
+        "heading6": "Heading 6",
+        "bulletedList": "Bulleted list",
+        "numberedList": "Numbered list",
+        "todoList": "To-do list",
+        "toggle": "Toggle",
+        "codeBlock": "Code Block",
+        "table": "Table",
+        "blockquote": "Blockquote",
+        "callout": "Callout",
+        "calloutDescription": "Insert a highlighted block.",
+        "tableOfContents": "Table of contents",
+        "threeColumns": "3 columns",
+        "title": "Title"
+      },
+      "noResults": "No results"
+    }
+  }
 }

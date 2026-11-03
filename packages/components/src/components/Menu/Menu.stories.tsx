@@ -4,7 +4,7 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Header, Keyboard, Text, type Selection } from 'react-aria-components';
 import { Button } from '../Button/Button';
-import { SettingsIcon } from '../icons/SettingsIcon';
+import { SettingsIcon } from '@plone/icons';
 import {
   Menu,
   MenuItem,

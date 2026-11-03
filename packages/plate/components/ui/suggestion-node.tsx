@@ -36,13 +36,19 @@ export function SuggestionLeaf(props: PlateLeafProps<TSuggestionText>) {
       {...props}
       as={Component}
       className={cn(
-        'bg-emerald-100 text-emerald-700 no-underline transition-colors duration-200',
-        (hasActive || hasHover) && 'bg-emerald-200/80',
-        hasRemove && 'bg-red-100 text-red-700',
-        (hasActive || hasHover) && hasRemove && 'bg-red-200/80 no-underline',
+        `
+          border-b-2 border-b-quanta-emerald/40 bg-quanta-emerald/10 text-quanta-emerald
+          no-underline transition-colors duration-200
+        `,
+        (hasActive || hasHover) &&
+          'border-b-quanta-emerald/60 bg-quanta-emerald/20',
+        hasRemove &&
+          'border-b-0 bg-quanta-rose/15 text-quanta-rose line-through',
+        (hasActive || hasHover) && hasRemove && 'bg-quanta-rose/25',
       )}
       attributes={{
         ...props.attributes,
+        'data-suggestion-id': leafId,
         onMouseEnter: () => setOption('hoverId', leafId),
         onMouseLeave: () => setOption('hoverId', null),
       }}
@@ -95,17 +101,17 @@ function SuggestionLineBreakContent({
       ref={spanRef}
       className={cn(
         `
-          absolute border-b-2 border-b-brand/[.24] bg-brand/[.08] text-justify text-brand/80
-          no-underline transition-colors duration-200
+          absolute border-b-2 border-b-quanta-emerald/40 bg-quanta-emerald/10 text-justify
+          text-quanta-emerald no-underline transition-colors duration-200
         `,
         isInsert &&
           (isActive || isHover) &&
-          'border-b-brand/[.60] bg-brand/[.13]',
+          'border-b-quanta-emerald/60 bg-quanta-emerald/20',
         isRemove &&
-          'border-b-gray-300 bg-gray-300/25 text-gray-400 line-through',
+          'border-b-0 bg-quanta-rose/15 text-quanta-rose line-through',
         isRemove &&
           (isActive || isHover) &&
-          'border-b-gray-500 bg-gray-400/25 text-gray-500 no-underline',
+          'bg-quanta-rose/25 text-quanta-rose no-underline',
       )}
       style={{
         bottom: 4.5,

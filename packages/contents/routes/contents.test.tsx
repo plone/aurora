@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { RouterContextProvider } from 'react-router';
+import config from '@plone/registry';
 import { loader } from './contents';
 import {
   ploneClientContext,
@@ -13,7 +14,49 @@ vi.mock('@plone/react-router', () => ({
 describe('Contents route loader', () => {
   afterEach(() => {
     vi.restoreAllMocks();
+    delete config.settings.contentsPageSize;
   });
+
+  const runLoader = async (url: string) => {
+    const searchMock = vi.fn().mockResolvedValue({
+      data: {
+        '@id': 'http://example.com/++api++/@search',
+        items: [],
+        items_total: 0,
+      },
+    });
+    const context = new RouterContextProvider();
+    context.set(ploneClientContext, { search: searchMock } as any);
+    context.set(ploneContentContext, { '@id': '/plone', title: 'Home' } as any);
+    const request = new Request(url);
+    const result = await loader({
+      request,
+      params: {},
+      context,
+      pattern: '/@@contents',
+      url: new URL(request.url),
+    });
+    return { result, query: searchMock.mock.calls[0][0].query };
+  };
+
+  it('takes the page size from config.settings.contentsPageSize', async () => {
+    config.settings.contentsPageSize = 50;
+    const { result, query } = await runLoader(
+      'http://example.com/@@contents?page=2',
+    );
+    expect(query.b_size).toBe(50);
+    expect(query.b_start).toBe(100);
+    expect(result.b_size).toBe(50);
+  });
+
+  it.each([[0], [-5], [2.5], ['many']])(
+    'falls back to 10 items per page for an invalid page size (%s)',
+    async (pageSize) => {
+      config.settings.contentsPageSize = pageSize as any;
+      const { query } = await runLoader('http://example.com/@@contents');
+      expect(query.b_size).toBe(10);
+    },
+  );
 
   it('uses middleware contexts for content and client search', async () => {
     const searchMock = vi.fn().mockResolvedValue({
@@ -45,8 +88,8 @@ describe('Contents route loader', () => {
       request,
       params: { '*': 'news' },
       context,
-      unstable_pattern: '/@@contents/*',
-      unstable_url: new URL(request.url),
+      pattern: '/@@contents/*',
+      url: new URL(request.url),
     });
 
     expect(searchMock).toHaveBeenCalledWith({
@@ -106,8 +149,8 @@ describe('Contents route loader', () => {
       request,
       params: {},
       context,
-      unstable_pattern: '/@@contents',
-      unstable_url: new URL(request.url),
+      pattern: '/@@contents',
+      url: new URL(request.url),
     });
 
     expect(searchMock).toHaveBeenCalledWith({

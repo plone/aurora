@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [dts({ rollupTypes: true }), react()],
   build: {
     lib: {
-      entry: [path.resolve(__dirname, 'src/index.ts')],
+      entry: [path.resolve(import.meta.dirname, 'src/index.ts')],
       name: 'PloneRESTAPIClient',
     },
     rollupOptions: {

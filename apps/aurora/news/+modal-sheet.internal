@@ -1,0 +1,1 @@
+Added `usehooks-ts`, a new dependency of `@plone/quanta`, to the Vite `optimizeDeps` list. @sneridagh

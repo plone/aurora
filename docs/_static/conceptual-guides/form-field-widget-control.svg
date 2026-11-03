@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 330" role="img" aria-labelledby="title desc" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <title id="title">From a schema field to a control and back</title>
+  <desc id="desc">The schema describes a field. The form keeps the field's value and state, and asks the widget registry which widget renders it. The widget receives the field props and renders one or more controls. When the user interacts with a control, the widget reports the new value with onChange(value), and the form stores it.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4a5568"/>
+    </marker>
+    <marker id="arrow-back" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2b6cb0"/>
+    </marker>
+  </defs>
+  <rect width="880" height="330" rx="12" fill="#ffffff"/>
+
+  <!-- Layer labels -->
+  <g fill="#718096" font-size="14" text-anchor="middle" font-style="italic">
+    <text x="102" y="28">content type</text>
+    <text x="327" y="28">CMS form</text>
+    <text x="552" y="28">widget registry</text>
+    <text x="777" y="28">design system</text>
+  </g>
+
+  <!-- Boxes -->
+  <g stroke="#4a5568" stroke-width="1.5">
+    <rect x="10" y="66" width="185" height="124" rx="8" fill="#edf2f7"/>
+    <rect x="235" y="66" width="185" height="124" rx="8" fill="#e6fffa"/>
+    <rect x="460" y="66" width="185" height="124" rx="8" fill="#fefcbf"/>
+    <rect x="685" y="66" width="185" height="124" rx="8" fill="#fed7e2"/>
+  </g>
+
+  <!-- Titles -->
+  <g fill="#1a202c" font-size="20" font-weight="600" text-anchor="middle">
+    <text x="102" y="98">Schema field</text>
+    <text x="327" y="98">Form</text>
+    <text x="552" y="98">Widget</text>
+    <text x="777" y="98">Control</text>
+  </g>
+  <g fill="#2d3748" font-size="15" text-anchor="middle">
+    <text x="102" y="126">exclude_from_nav</text>
+    <text x="102" y="148">type: boolean</text>
+    <text x="102" y="170">title, default</text>
+
+    <text x="327" y="126">value and state;</text>
+    <text x="327" y="148">resolves the widget</text>
+    <text x="327" y="170">in the registry</text>
+
+    <text x="552" y="126">BooleanWidget</text>
+    <text x="552" y="148">field props in,</text>
+    <text x="552" y="170">field value out</text>
+
+    <text x="777" y="126">Quanta Checkbox</text>
+    <text x="777" y="148">isSelected,</text>
+    <text x="777" y="170">onChange(isSelected)</text>
+  </g>
+
+  <!-- Arrows down the stack -->
+  <g stroke="#4a5568" stroke-width="1.5" fill="none" marker-end="url(#arrow)">
+    <path d="M195 112 H231"/>
+    <path d="M420 112 H456"/>
+    <path d="M645 112 H681"/>
+  </g>
+  <g fill="#4a5568" font-size="14" text-anchor="middle">
+    <text x="215" y="56">describes</text>
+    <text x="440" y="56">field props</text>
+    <text x="665" y="56">control props</text>
+  </g>
+
+  <!-- Return path -->
+  <g stroke="#2b6cb0" stroke-width="1.5" fill="none" stroke-dasharray="6 4" marker-end="url(#arrow-back)">
+    <path d="M777 190 V246 H572 V194"/>
+    <path d="M532 190 V286 H327 V194"/>
+  </g>
+  <g fill="#2b6cb0" font-size="14" text-anchor="middle">
+    <text x="675" y="238">user clicks: isSelected = true</text>
+    <text x="430" y="308">onChange(true)</text>
+  </g>
+</svg>

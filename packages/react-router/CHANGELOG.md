@@ -8,6 +8,35 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.8 (2026-10-29)
+
+### Bugfix
+
+- Added `getReturnUrl(request, fallback)`: the request's `return_url` when it names a path on this site, the fallback otherwise. `redirectIfLoggedInLoader` sends an already-logged-in visitor there instead of always to the site root. @mpalomaki 
+
+### Internal
+
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+
+## 2.0.0-alpha.7 (2026-10-03)
+
+### Internal
+
+- The `release` scripts now take the GitHub token from `gh auth token` when `GITHUB_TOKEN` is not set, and run `towncrier` with `uvx` instead of `pipx`. @sneridagh 
+
+## 2.0.0-alpha.6 (2026-09-21)
+
+### Internal
+
+- Updated package repository metadata and towncrier issue links from `plone/volto` to `plone/aurora`. @sneridagh 
+
+## 2.0.0-alpha.5 (2026-07-02)
+
+### Internal
+
+- Add shared auth cookie clearing helpers so Seven routes can centralize stale-cookie cleanup behavior. @sneridagh 
+- Unify Makefile files across the packages. @ionlizarazu 
+
 ## 2.0.0-alpha.4 (2026-05-07)
 
 ### Internal

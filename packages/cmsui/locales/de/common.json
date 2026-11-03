@@ -2,8 +2,23 @@
   "cmsui": {
     "add": "Hinzufügen",
     "edit": "Bearbeiten",
+    "manage_translations": {
+      "title": "Übersetzungen verwalten für „{{title}}“",
+      "back": "Zurück",
+      "language": "Sprache",
+      "path": "Pfad",
+      "tools": "Werkzeuge",
+      "no_translation": "Keine Übersetzung",
+      "link": "Vorhandene Übersetzung ({{language}}) verknüpfen",
+      "unlink": "Übersetzung ({{language}}) trennen",
+      "create": "Übersetzung ({{language}}) erstellen",
+      "linked": "Übersetzung verknüpft",
+      "unlinked": "Übersetzung getrennt",
+      "failed": "Aktualisierung der Übersetzung fehlgeschlagen"
+    },
     "save": "Speichern",
-    "controlpanel": "Kontrollzentrum",
+    "cancel": "Abbrechen",
+    "controlpanel": "Konfiguration",
     "objectbrowserwidget": {
       "openDialog": "Inhalt auswählen",
       "dialogTitle": "Inhalt auswählen",
@@ -56,6 +71,11 @@
       "groupMembership": "Gruppenmitgliedschaft",
       "groups": "Gruppen"
     },
+    "translate": {
+      "source": "Quelle",
+      "view_source": "Quellinhalt ansehen",
+      "heading_new": "\"{{title}}\" nach {{language}} übersetzen"
+    },
     "blocksEditor": {
       "blocksTab": "Blöcke",
       "contentTab": "Inhalt"
@@ -65,12 +85,81 @@
     },
     "auth": {
       "username": "Benutzername",
+      "usernameOrEmail": "Benutzername oder E-Mail",
       "password": "Passwort",
       "signIn": "Anmelden",
       "signUp": "Registrieren",
       "signInTo": "Bei {{site}} anmelden",
-      "forgotPassword": "Passwort vergessen? <a>Neues Passwort anfordern</a>",
-      "returnToHome": "Zur Startseite zurückkehren"
-    }
+      "forgotPassword": "Passwort vergessen? <a>Neues Passwort anfordern</a>.",
+      "returnToHome": "Zur Startseite zurückkehren",
+      "resetPassword": {
+        "requestTitle": "Passwort zurücksetzen",
+        "requestDescription": "Geben Sie Ihren Benutzernamen ein und wir senden Ihnen einen Link, um ein neues Passwort zu vergeben.",
+        "requestDescriptionWithEmail": "Geben Sie Ihren Benutzernamen oder Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link, um ein neues Passwort zu vergeben.",
+        "requestSubmit": "Neues Passwort anfordern",
+        "requestSuccessTitle": "Bitte prüfen Sie Ihre E-Mails",
+        "requestSuccessBody": "Falls ein Konto mit diesem Benutzernamen existiert, haben wir eine Nachricht mit Anweisungen zum Zurücksetzen Ihres Passworts gesendet.",
+        "requestSuccessBodyWithEmail": "Falls ein Konto mit diesem Benutzernamen oder dieser E-Mail existiert, haben wir eine Nachricht mit Anweisungen zum Zurücksetzen Ihres Passworts gesendet.",
+        "setTitle": "Neues Passwort festlegen",
+        "setDescription": "Wählen Sie ein neues Passwort für Ihr Konto.",
+        "setSubmit": "Neues Passwort speichern",
+        "setSuccessTitle": "Passwort aktualisiert",
+        "setSuccessBody": "Ihr Passwort wurde gesetzt. Sie können sich nun mit dem neuen Passwort anmelden.",
+        "setIdentifierHint": "Geben Sie den Benutzernamen ein, mit dem Sie die Zurücksetzung angefordert haben.",
+        "setIdentifierHintWithEmail": "Geben Sie den Benutzernamen oder die E-Mail-Adresse ein, mit der Sie die Zurücksetzung angefordert haben.",
+        "newPassword": "Neues Passwort",
+        "confirmPassword": "Neues Passwort bestätigen",
+        "passwordHint": "Mindestens {{min}} Zeichen verwenden.",
+        "errors": {
+          "identifierRequired": "Bitte geben Sie einen Benutzernamen ein.",
+          "usernameNoEmail": "Bitte geben Sie Ihren Benutzernamen ein, keine E-Mail-Adresse.",
+          "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+          "usernameTooShort": "Der Benutzername muss mindestens {{min}} Zeichen lang sein.",
+          "usernameNoSpaces": "Der Benutzername darf keine Leerzeichen enthalten.",
+          "passwordTooShort": "Das Passwort muss mindestens {{min}} Zeichen lang sein.",
+          "passwordsDoNotMatch": "Die Passwörter stimmen nicht überein.",
+          "passwordRejected": "Ihr neues Passwort wurde nicht akzeptiert: {{message}}",
+          "setFailed": "Ihr neues Passwort konnte nicht gesetzt werden. Möglicherweise ist Ihr Link ungültig oder abgelaufen. Bitte fordern Sie einen neuen an.",
+          "serverError": "Auf unserer Seite ist ein Fehler aufgetreten. Bitte versuchen Sie es in Kürze erneut."
+        }
+      }
+    },
+    "sharing": {
+      "label": "Freigabe von „{{title}}“",
+      "description": "Über die folgende Liste lässt sich festlegen, wer dieses Element sehen und bearbeiten kann.",
+      "name": "Name",
+      "inherit": "Berechtigungen von höheren Ebenen erben",
+      "inheritDescription": "Standardmäßig werden die Berechtigungen aus dem übergeordneten Container vererbt. Wird dies deaktiviert, gelten nur die explizit definierten Freigabeberechtigungen. In der Übersicht kennzeichnet ein grüner Pfeil einen geerbten Wert und ein blauer Globus eine globale Rolle, die vom Site-Administrator verwaltet wird.",
+      "globalRole": "Globale Rolle",
+      "inheritedValue": "Geerbter Wert",
+      "user": "Benutzer",
+      "group": "Gruppe",
+      "searchLabel": "Nach Benutzern und Gruppen suchen",
+      "searchPlaceholder": "Nach Benutzern und Gruppen suchen…",
+      "searchResults_one": "{{count}} Eintrag gefunden",
+      "searchResults_other": "{{count}} Einträge gefunden"
+    },
+    "toolbar": {
+      "settings": "Einstellungen"
+    },
+    "widgets": {
+      "select": {
+        "noValue": "Kein Wert",
+        "placeholder": "Auswählen…"
+      },
+      "array": {
+        "placeholder": "Zum Hinzufügen tippen…"
+      },
+      "file": {
+        "choose": "Datei auswählen",
+        "replace": "Datei ersetzen",
+        "orDrop": "oder hier ablegen",
+        "remove": "{{filename}} entfernen",
+        "dropZone": "Datei für {{label}} ablegen",
+        "imageOnly": "Wählen Sie eine Bilddatei aus.",
+        "readError": "Die Datei konnte nicht gelesen werden."
+      }
+    },
+    "saveFailed": "Speichern fehlgeschlagen"
   }
 }

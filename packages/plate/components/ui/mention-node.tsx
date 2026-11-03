@@ -4,7 +4,7 @@ import type { TComboboxInputElement, TMentionElement } from 'platejs';
 import type { PlateElementProps } from 'platejs/react';
 
 import { getMentionOnSelectItem } from '@platejs/mention';
-import { IS_APPLE, KEYS } from 'platejs';
+import { IS_APPLE } from 'platejs';
 import {
   PlateElement,
   useFocused,
@@ -14,6 +14,7 @@ import {
 
 import { cn } from '../../lib/utils';
 import { useMounted } from '../../hooks/use-mounted';
+import { mentionMarkAttributes } from './mention-node-static';
 
 import {
   InlineCombobox,
@@ -40,15 +41,12 @@ export function MentionElement(
     <PlateElement
       {...props}
       className={cn(
-        'inline-block rounded-md bg-muted px-1.5 py-0.5 align-baseline text-sm font-medium',
         !readOnly && 'cursor-pointer',
         selected && focused && 'ring-2 ring-ring',
-        element.children[0][KEYS.bold] === true && 'font-bold',
-        element.children[0][KEYS.italic] === true && 'italic',
-        element.children[0][KEYS.underline] === true && 'underline',
       )}
       attributes={{
         ...props.attributes,
+        ...mentionMarkAttributes(element),
         contentEditable: false,
         'data-slate-value': element.value,
         draggable: true,

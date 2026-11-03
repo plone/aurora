@@ -1,13 +1,14 @@
-import type { PropsWithChildren } from 'react';
-import { data, isRouteErrorResponse } from 'react-router';
-import { useChangeLanguage } from 'remix-i18next/react';
-import i18next from './i18next.server';
+import { useEffect, type PropsWithChildren } from 'react';
+import { data, isRouteErrorResponse, useRouteLoaderData } from 'react-router';
+import { useTranslation } from 'react-i18next';
+import { i18nextMiddleware, getLocale } from './i18next.server';
 import type { Route } from './+types/root';
 import config from '@plone/registry';
 import {
   ploneClearAuthCookieContext,
   fetchPloneContent,
   getAPIResourceWithAuth,
+  contentResourceMiddleware,
   installServerMiddleware,
   PloneClientMiddleware,
   otherResources,
@@ -20,16 +21,20 @@ import {
 import { getClearAuthCookieHeader } from '@plone/react-router';
 
 export const middleware = [
+  // Install the configuration first: the i18next middleware reads the
+  // supported languages from it.
   installServerMiddleware,
+  i18nextMiddleware,
   PloneClientMiddleware,
   otherResources,
   getAPIResourceWithAuth,
+  contentResourceMiddleware,
   fetchPloneContent,
   linkMiddleware,
 ];
 
 export async function loader({ params, request, context }: Route.LoaderArgs) {
-  const locale = await i18next.getLocale(request);
+  const locale = getLocale(context);
 
   const cli = context.get(ploneClientContext);
   const content = context.get(ploneContentContext);
@@ -76,9 +81,19 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
       site,
       locale,
       isAuthenticated: user !== null,
+      // Each `rootLoaderData` utility returns a `{ status, data }` envelope
+      // (see `config/types.ts`). Merge each utility's `data` into the root
+      // loader data; utilities namespace their `data` to avoid clobbering.
+      // TODO: act on `status` (e.g. propagate a non-2xx to the response).
       ...rootLoaderDataUtilitiesData
         .filter((item) => item)
-        .reduce((acc, item) => ({ ...acc, ...item }), {}),
+        .reduce(
+          (acc, item) => ({
+            ...acc,
+            ...(item.data as Record<string, unknown>),
+          }),
+          {},
+        ),
     };
 
     return data(loaderData, {
@@ -105,18 +120,19 @@ export const handle = {
   i18n: 'common',
 };
 
-export function Layout({
-  children,
-  loaderData,
-}: PropsWithChildren<Route.ComponentProps>) {
-  // loaderData can be undefined in case of an error
+export function Layout({ children }: PropsWithChildren) {
+  // React Router doesn't pass the loader data to `Layout`, and it can be
+  // undefined in case of an error
+  const loaderData = useRouteLoaderData<RootLoader>('root');
   const locale = loaderData?.locale || 'en';
 
-  // This hook will change the i18n instance language to the current locale
-  // detected by the loader, this way, when we do something to change the
-  // language, this locale will change and i18next will load the correct
-  // translation files
-  useChangeLanguage(locale);
+  // Sync the i18n instance's language to the locale detected by the loader,
+  // this way, when we do something to change the language, this locale will
+  // change and i18next will load the correct translation files
+  const { i18n } = useTranslation();
+  useEffect(() => {
+    if (i18n.language !== locale) i18n.changeLanguage(locale);
+  }, [locale, i18n]);
 
   return children;
 }

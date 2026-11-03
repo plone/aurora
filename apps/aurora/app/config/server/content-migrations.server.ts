@@ -16,8 +16,7 @@ const createSomersaultValue = (content: Content): SomersaultValue => {
 
   return orderedBlockIds.flatMap((blockId) => {
     const block = content.blocks?.[blockId] as
-      | Record<string, unknown>
-      | undefined;
+      Record<string, unknown> | undefined;
     if (!block) return [];
 
     return somersaultBlockMigrations.flatMap(

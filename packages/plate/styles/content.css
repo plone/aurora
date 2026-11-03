@@ -1,0 +1,725 @@
+/*
+ * Block content styles of @plone/plate. They're loaded in both the Public UI
+ * and the CMSUI, inside the `plone-content` cascade layer. Follow the authoring
+ * rules in the "Content styles" section of the add-on styles loader docs: no
+ * `@layer`, selectors inside `:where()`, and no reliance on a particular reset.
+ */
+
+/*
+ * The block's inner container. In Aurora, `@plone/layout`'s `content.css`
+ * also lays it out (category widths, spacing between blocks) in both the
+ * Public UI and the editor.
+ */
+:where(.block-inner-container) {
+  display: block;
+  width: 100%;
+  max-width: var(--block-width);
+  margin-inline: auto;
+}
+
+/*
+ * Values read the theme's Tailwind variables when the theme defines them, and
+ * fall back to Tailwind's defaults, so they don't depend on Tailwind being
+ * loaded.
+ */
+
+/* Paragraph */
+
+:where(.slate-p) {
+  padding: calc(var(--spacing, 0.25rem) * 1) 0;
+  margin: 0;
+}
+
+/* Title */
+
+:where(.slate-title) {
+  padding-bottom: calc(var(--spacing, 0.25rem) * 1);
+  margin: 1.6em 0 0;
+  font-size: var(--text-4xl, 2.25rem);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--text-4xl--line-height, calc(2.5 / 2.25));
+}
+
+/* Headings */
+
+:where(.slate-h1, .slate-h2, .slate-h3, .slate-h4, .slate-h5, .slate-h6) {
+  position: relative;
+  margin-bottom: calc(var(--spacing, 0.25rem) * 1);
+}
+
+:where(.slate-h1) {
+  padding-bottom: calc(var(--spacing, 0.25rem) * 1);
+  margin-top: 1.6em;
+  font-size: var(--text-4xl, 2.25rem);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--text-4xl--line-height, calc(2.5 / 2.25));
+}
+
+:where(.slate-h2, .slate-h3, .slate-h4, .slate-h5, .slate-h6) {
+  font-weight: var(--font-weight-semibold, 600);
+  letter-spacing: var(--tracking-tight, -0.025em);
+}
+
+:where(.slate-h2) {
+  padding-bottom: 1px;
+  margin-top: 1.4em;
+  font-size: var(--text-2xl, 1.5rem);
+  line-height: var(--text-2xl--line-height, calc(2 / 1.5));
+}
+
+:where(.slate-h3) {
+  padding-bottom: 1px;
+  margin-top: 1em;
+  font-size: var(--text-xl, 1.25rem);
+  line-height: var(--text-xl--line-height, calc(1.75 / 1.25));
+}
+
+:where(.slate-h4, .slate-h5) {
+  margin-top: 0.75em;
+  font-size: var(--text-lg, 1.125rem);
+  line-height: var(--text-lg--line-height, calc(1.75 / 1.125));
+}
+
+:where(.slate-h6) {
+  margin-top: 0.75em;
+  font-size: var(--text-base, 1rem);
+  line-height: var(--text-base--line-height, 1.5);
+}
+
+/* Blockquote */
+
+:where(.slate-blockquote) {
+  margin: 0;
+}
+
+:where(.slate-blockquote > .block-inner-container) {
+  padding-left: calc(var(--spacing, 0.25rem) * 6);
+  border-left-width: 2px;
+  border-left-style: solid;
+  font-style: italic;
+  margin-block: calc(var(--spacing, 0.25rem) * 1);
+}
+
+/* Separator */
+
+:where(.block-hr__spacer) {
+  padding-block: calc(var(--spacing, 0.25rem) * 6);
+}
+
+:where(.block-hr__line) {
+  height: calc(var(--spacing, 0.25rem) * 0.5);
+  border-style: none;
+  border-radius: var(--radius-sm, 0.25rem);
+  margin: 0;
+  background-clip: content-box;
+  background-color: var(--block-separator-color, var(--muted));
+}
+
+/* Inline code */
+
+:where(.slate-code) {
+  padding: 0.2em 0.3em;
+  border-radius: var(--radius-md, 0.375rem);
+  background-color: var(--block-code-background, var(--muted));
+  font-family: var(
+    --font-mono,
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    'Liberation Mono',
+    'Courier New',
+    monospace
+  );
+  font-size: var(--text-sm, 0.875rem);
+  line-height: var(--text-sm--line-height, calc(1.25 / 0.875));
+  white-space: pre-wrap;
+}
+
+/* Keyboard input */
+
+:where(.slate-kbd) {
+  padding: calc(var(--spacing, 0.25rem) * 0.5)
+    calc(var(--spacing, 0.25rem) * 1.5);
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+  background-color: var(--block-kbd-background, var(--muted));
+  font-family: var(
+    --font-mono,
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    'Liberation Mono',
+    'Courier New',
+    monospace
+  );
+  font-size: var(--text-sm, 0.875rem);
+  line-height: var(--text-sm--line-height, calc(1.25 / 0.875));
+}
+
+/* Highlight */
+
+:where(.slate-highlight) {
+  background-color: var(--block-highlight-color, Mark);
+  color: inherit;
+}
+
+/* Link */
+
+:where(.slate-a) {
+  color: var(--primary);
+  font-weight: var(--font-weight-medium, 500);
+  text-decoration-color: var(--primary);
+  text-decoration-line: underline;
+  text-underline-offset: 4px;
+}
+
+/* Mention */
+
+:where(.slate-mention) {
+  display: inline-block;
+  padding: calc(var(--spacing, 0.25rem) * 0.5)
+    calc(var(--spacing, 0.25rem) * 1.5);
+  border-radius: var(--radius-md, 0.375rem);
+  background-color: var(--block-mention-background, var(--muted));
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  line-height: var(--text-sm--line-height, calc(1.25 / 0.875));
+  vertical-align: baseline;
+}
+
+:where(.slate-mention[data-bold]) {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+:where(.slate-mention[data-italic]) {
+  font-style: italic;
+}
+
+:where(.slate-mention[data-underline]) {
+  text-decoration-line: underline;
+}
+
+/*
+ * Lists. List items are paragraphs with a list style type, rendering
+ * `ul`/`ol` and `li` inside the paragraph block. The list style type itself
+ * is set inline from the data.
+ */
+
+:where(.block-p__list) {
+  position: relative;
+  padding: 0;
+  margin: 0;
+}
+
+/* To-do items */
+
+:where(.block-p__item[data-checked]) {
+  color: var(--muted-foreground);
+  text-decoration-line: line-through;
+}
+
+:where([data-list-style-type='todo'] .block-p__item) {
+  list-style-type: none;
+}
+
+/* The read-only checkbox of a to-do item in the rendered content. */
+:where(.block-p__checkbox) {
+  position: absolute;
+  top: calc(var(--spacing, 0.25rem) * 1);
+  left: calc(var(--spacing, 0.25rem) * -6);
+  width: calc(var(--spacing, 0.25rem) * 4);
+  height: calc(var(--spacing, 0.25rem) * 4);
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-sm, 0.25rem);
+  margin: 0;
+  appearance: none;
+  background-color: var(--background);
+  color: inherit;
+  font: inherit;
+  pointer-events: none;
+}
+
+:where(.block-p__checkbox[data-state='checked']) {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+:where(.block-p__checkmark) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
+:where(.block-p__checkmark svg) {
+  width: calc(var(--spacing, 0.25rem) * 4);
+  height: calc(var(--spacing, 0.25rem) * 4);
+}
+
+/* Code block */
+
+:where(.slate-code_block) {
+  padding: calc(var(--spacing, 0.25rem) * 1) 0;
+  margin: 0;
+}
+
+:where(.block-code_block__frame) {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-md, 0.375rem);
+  background-color: var(
+    --block-code-block-background,
+    color-mix(in oklab, var(--muted) 50%, transparent)
+  );
+}
+
+:where(.block-code_block__pre) {
+  padding: calc(var(--spacing, 0.25rem) * 8);
+  padding-right: calc(var(--spacing, 0.25rem) * 4);
+  margin: 0;
+  font-family: var(
+    --font-mono,
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    'Liberation Mono',
+    'Courier New',
+    monospace
+  );
+  font-size: var(--text-sm, 0.875rem);
+  line-height: normal;
+  overflow-x: auto;
+  tab-size: 2;
+  white-space: pre;
+}
+
+@media print {
+  :where(.block-code_block__pre) {
+    break-inside: avoid;
+  }
+}
+
+:where(.block-code_block__pre code) {
+  font: inherit;
+}
+
+/*
+ * Syntax highlighting. The highlighter puts `hljs-*` classes on the code's
+ * tokens. Their colors are custom properties a theme can set, for a dark
+ * mode for instance; the defaults are GitHub's light theme.
+ */
+
+:where(.slate-code_block .hljs-addition) {
+  background-color: var(--code-token-addition-background, #f0fff4);
+  color: var(--code-token-addition, #22863a);
+}
+
+:where(
+  .slate-code_block
+    :is(
+      .hljs-attr,
+      .hljs-attribute,
+      .hljs-literal,
+      .hljs-meta,
+      .hljs-number,
+      .hljs-operator,
+      .hljs-selector-attr,
+      .hljs-selector-class,
+      .hljs-selector-id,
+      .hljs-variable
+    )
+) {
+  color: var(--code-token-attribute, #005cc5);
+}
+
+:where(.slate-code_block .hljs-symbol) {
+  color: var(--code-token-symbol, #e36209);
+}
+
+:where(.slate-code_block .hljs-bullet) {
+  color: var(--code-token-bullet, #735c0f);
+}
+
+:where(.slate-code_block :is(.hljs-comment, .hljs-code, .hljs-formula)) {
+  color: var(--code-token-comment, #6a737d);
+}
+
+:where(.slate-code_block .hljs-deletion) {
+  background-color: var(--code-token-deletion-background, #ffeef0);
+  color: var(--code-token-deletion, #b31d28);
+}
+
+:where(.slate-code_block .hljs-emphasis) {
+  font-style: italic;
+}
+
+:where(
+  .slate-code_block
+    :is(
+      .hljs-keyword,
+      .hljs-doctag,
+      .hljs-template-tag,
+      .hljs-template-variable,
+      .hljs-type
+    )
+) {
+  color: var(--code-token-keyword, #d73a49);
+}
+
+:where(
+  .slate-code_block
+    :is(.hljs-name, .hljs-quote, .hljs-selector-tag, .hljs-selector-pseudo)
+) {
+  color: var(--code-token-name, #22863a);
+}
+
+:where(
+  .slate-code_block :is(.hljs-regexp, .hljs-string, .hljs-meta .hljs-string)
+) {
+  color: var(--code-token-string, #032f62);
+}
+
+:where(.slate-code_block .hljs-section) {
+  color: var(--code-token-section, #005cc5);
+  font-weight: var(--font-weight-bold, 700);
+}
+
+:where(.slate-code_block .hljs-strong) {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+:where(.slate-code_block .hljs-title) {
+  color: var(--code-token-title, #6f42c1);
+}
+
+/*
+ * Table. The table scrolls horizontally inside the block. Cell borders are
+ * drawn by each cell's `::before`, on the sides its `data-border-*` attributes
+ * name; a cell's own background color is set inline as `--cellBackground`.
+ */
+
+:where(.slate-table) {
+  padding: calc(var(--spacing, 0.25rem) * 5) 0;
+  margin: 0;
+}
+
+:where(.block-table__scroll) {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+:where(.block-table__wrapper) {
+  position: relative;
+  width: fit-content;
+}
+
+:where(.block-table__table) {
+  display: table;
+  height: 1px;
+  margin: 0 0 0 1px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  text-indent: 0;
+}
+
+:where(.block-table__table tbody) {
+  min-width: 100%;
+}
+
+:where(.slate-tr) {
+  height: 100%;
+}
+
+:where(.slate-td, .slate-th) {
+  overflow: visible;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  border-style: none;
+  margin: 0;
+  background-color: var(--cellBackground, transparent);
+}
+
+:where(.slate-th) {
+  font-weight: var(--font-weight-normal, 400);
+  text-align: left;
+}
+
+:where(.slate-th > *) {
+  margin: 0;
+}
+
+:where(.slate-td, .slate-th)::before {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 0 solid var(--block-table-border-color, var(--border));
+  content: '';
+  user-select: none;
+}
+
+:where(.slate-td[data-border-top], .slate-th[data-border-top])::before {
+  border-top-width: 1px;
+}
+
+:where(.slate-td[data-border-right], .slate-th[data-border-right])::before {
+  border-right-width: 1px;
+}
+
+:where(.slate-td[data-border-bottom], .slate-th[data-border-bottom])::before {
+  border-bottom-width: 1px;
+}
+
+:where(.slate-td[data-border-left], .slate-th[data-border-left])::before {
+  border-left-width: 1px;
+}
+
+:where(.block-table__cell-content) {
+  position: relative;
+  z-index: 20;
+  height: 100%;
+  box-sizing: border-box;
+  padding: calc(var(--spacing, 0.25rem) * 2) calc(var(--spacing, 0.25rem) * 4);
+}
+
+/*
+ * Callout. Its box is the block's inner container; a callout's own background
+ * color is set inline.
+ */
+
+:where(.slate-callout > .block-inner-container) {
+  display: flex;
+  padding: calc(var(--spacing, 0.25rem) * 4);
+  padding-left: calc(var(--spacing, 0.25rem) * 3);
+  border-radius: var(--radius-sm, 0.25rem);
+  background-color: var(--block-callout-background, var(--muted));
+  margin-block: calc(var(--spacing, 0.25rem) * 1);
+}
+
+:where(.block-callout__body) {
+  display: flex;
+  width: 100%;
+  border-radius: var(--radius-md, 0.375rem);
+  gap: calc(var(--spacing, 0.25rem) * 2);
+}
+
+:where(.block-callout__icon) {
+  width: calc(var(--spacing, 0.25rem) * 6);
+  height: calc(var(--spacing, 0.25rem) * 6);
+  font-family: var(
+    --block-callout-icon-font-family,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    NotoColorEmoji,
+    'Noto Color Emoji',
+    'Segoe UI Symbol',
+    'Android Emoji',
+    EmojiSymbols
+  );
+  font-size: 18px;
+  user-select: none;
+}
+
+:where(.block-callout__content) {
+  width: 100%;
+}
+
+/*
+ * Toggle. The rendered content shows a toggle open, with a chevron icon; in
+ * the editor, the chevron is a button that opens and closes it.
+ */
+
+:where(.slate-toggle > .block-inner-container) {
+  position: relative;
+  padding-left: calc(var(--spacing, 0.25rem) * 6);
+}
+
+:where(.block-toggle__icon) {
+  position: absolute;
+  top: 0;
+  left: calc(var(--spacing, 0.25rem) * -0.5);
+  width: calc(var(--spacing, 0.25rem) * 6);
+  height: calc(var(--spacing, 0.25rem) * 6);
+  padding: 1px;
+  border-radius: var(--radius-md, 0.375rem);
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition-duration: var(--default-transition-duration, 150ms);
+  transition-property: color, background-color;
+  transition-timing-function: var(
+    --default-transition-timing-function,
+    cubic-bezier(0.4, 0, 0.2, 1)
+  );
+  user-select: none;
+}
+
+@media (hover: hover) {
+  :where(.block-toggle__icon:hover) {
+    background-color: var(--accent);
+  }
+}
+
+:where(.block-toggle__icon svg) {
+  display: block;
+  width: calc(var(--spacing, 0.25rem) * 4);
+  height: calc(var(--spacing, 0.25rem) * 4);
+  vertical-align: middle;
+}
+
+/*
+ * Columns. Each column's width is set inline on its wrapper, the
+ * `block-column_group__column` part. In the editor, a toolbar anchor wraps
+ * the inner container, so it's matched by the row it holds.
+ */
+
+:where(.block-inner-container:has(> .block-column_group__row)) {
+  margin-bottom: calc(var(--spacing, 0.25rem) * 2);
+}
+
+:where(.block-column_group__row) {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  border-radius: 0.25rem;
+}
+
+:where(.block-column_group__column) {
+  position: relative;
+}
+
+:where(.slate-column) {
+  height: 100%;
+  padding: calc(var(--spacing, 0.25rem) * 2) calc(var(--spacing, 0.25rem) * 2) 0;
+}
+
+:where(.block-column_group__column:first-child > .slate-column) {
+  padding-left: 0;
+}
+
+:where(.block-column_group__column:last-child > .slate-column) {
+  padding-right: 0;
+}
+
+:where(.block-column__content) {
+  position: relative;
+  height: 100%;
+  padding: calc(var(--spacing, 0.25rem) * 1.5);
+  border: 1px solid transparent;
+}
+
+/*
+ * Table of contents. Each entry is a button that scrolls to its heading, with
+ * its heading level in `data-depth`.
+ */
+
+:where(.slate-toc > .block-inner-container) {
+  padding: 0;
+  margin-bottom: calc(var(--spacing, 0.25rem) * 1);
+}
+
+:where(.block-toc__item) {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  height: auto;
+  flex-shrink: 0;
+  padding: calc(var(--spacing, 0.25rem) * 1.5)
+    calc(var(--spacing, 0.25rem) * 0.5);
+  border: 0 solid;
+  border-radius: 0;
+  margin: 0;
+  appearance: none;
+  background-color: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  letter-spacing: inherit;
+  line-height: var(--text-sm--line-height, calc(1.25 / 0.875));
+  outline-style: none;
+  text-align: left;
+  text-decoration-line: underline;
+  text-decoration-thickness: 0.5px;
+  text-overflow: ellipsis;
+  text-underline-offset: 4px;
+  transition-duration: var(--default-transition-duration, 150ms);
+  transition-property: all;
+  transition-timing-function: var(
+    --default-transition-timing-function,
+    cubic-bezier(0.4, 0, 0.2, 1)
+  );
+  white-space: nowrap;
+}
+
+:where(.block-toc__item[data-depth='2']) {
+  padding-left: 26px;
+}
+
+:where(.block-toc__item[data-depth='3']) {
+  padding-left: 50px;
+}
+
+@media (hover: hover) {
+  :where(.block-toc__item:hover) {
+    background-color: var(--accent);
+  }
+}
+
+:where(.block-toc__item:focus-visible) {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+}
+
+:where(.block-toc__empty) {
+  color: var(--color-gray-500, oklch(55.1% 0.027 264.364));
+  font-size: var(--text-sm, 0.875rem);
+  line-height: var(--text-sm--line-height, calc(1.25 / 0.875));
+}
+
+/* The highlight shown on a heading after jumping to it from the contents. */
+:where(.block-toc__highlight) {
+  position: absolute;
+  z-index: 1;
+  background-color: color-mix(
+    in oklab,
+    var(--color-quanta-sapphire, #0b78d0) 13%,
+    transparent
+  );
+  inset: 0;
+  pointer-events: none;
+}
+
+/*
+ * The content root, Plate's `slate-editor`. These rules come last, so they
+ * win over the block rules above, as they did as Tailwind utilities.
+ */
+
+:where(.slate-editor) {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  border-radius: var(--radius-md, 0.375rem);
+  cursor: text;
+  overflow-wrap: break-word;
+  user-select: text;
+  white-space: pre-wrap;
+}
+
+:where(
+  .slate-editor [data-slate-node='element']:not([data-slate-inline='true'])
+) {
+  margin-inline: auto;
+}
+
+:where(.slate-editor strong) {
+  font-weight: var(--font-weight-bold, 700);
+}

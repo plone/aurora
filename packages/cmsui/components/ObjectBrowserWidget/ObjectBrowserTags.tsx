@@ -1,4 +1,4 @@
-import { Tag, TagGroup } from '@plone/components/quanta';
+import { Tag, TagGroup } from '@plone/quanta';
 import type { ComponentProps } from 'react';
 import { useObjectBrowserContext } from './ObjectBrowserContext';
 

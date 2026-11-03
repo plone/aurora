@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from './Button';
 import { Link } from '../Link/Link';
 import { Text } from 'react-aria-components';
-import { AddIcon } from '../icons/AddIcon';
+import { AddIcon } from '@plone/icons';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 

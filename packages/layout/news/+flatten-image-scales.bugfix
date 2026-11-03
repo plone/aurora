@@ -1,0 +1,1 @@
+Skip image scale flattening when `scales` or `download` is missing so Image views do not crash, and render no image for one without a `download` URL. @aryan7081

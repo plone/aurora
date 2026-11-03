@@ -7,3 +7,12 @@
   width: var(--plone-toolbar-width, 80px);
   background: var(--plone-toolbar-background, var(--quanta-smoke));
 }
+
+@media (max-width: 767px) {
+  .toolbar {
+    top: auto;
+    right: 0;
+    width: 100%;
+    height: calc(64px + env(safe-area-inset-bottom, 0px));
+  }
+}

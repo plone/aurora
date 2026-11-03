@@ -154,17 +154,13 @@ export const Editor = React.forwardRef<HTMLDivElement, EditorProps>(
 
 Editor.displayName = 'Editor';
 
-export function EditorView({
-  className,
-  variant,
-  ...props
-}: PlateViewProps & VariantProps<typeof editorVariants>) {
-  return (
-    <PlateView
-      {...props}
-      className={cn(editorVariants({ variant }), className)}
-    />
-  );
+/**
+ * The read-only view of the content, rendered in the public view. Unlike the
+ * editable `Editor`, it has no Tailwind classes: Plate's `slate-editor` root
+ * is styled by `styles/content.css`, so any theme can style it.
+ */
+export function EditorView(props: PlateViewProps) {
+  return <PlateView {...props} />;
 }
 
 EditorView.displayName = 'EditorView';

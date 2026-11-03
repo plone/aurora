@@ -18,7 +18,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 // Mock dei componenti di Plone
-vi.mock('@plone/components/quanta', () => ({
+vi.mock('@plone/quanta', () => ({
   Button: ({ children, onPress, 'aria-label': ariaLabel, ...props }: any) => (
     <button onClick={onPress} aria-label={ariaLabel} {...props}>
       {children}
@@ -35,7 +35,7 @@ vi.mock('@plone/components/quanta', () => ({
   ),
 }));
 
-vi.mock('@plone/components/Icons', () => ({
+vi.mock('@plone/icons', () => ({
   SearchIcon: ({ size }: any) => (
     <span data-testid="search-icon" data-size={size}>
       🔍

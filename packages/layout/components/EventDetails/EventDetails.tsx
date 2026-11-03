@@ -1,10 +1,10 @@
 import EventDate from '../EventDate/EventDate';
-import { Link } from '@plone/components/quanta';
+import { Link } from '@plone/quanta';
 import * as RRuleLib from 'rrule';
 import type * as RRuleTypes from 'rrule';
 import type { EventContent } from '@plone/types';
 import { getDate } from '../../helpers';
-import Calendar from '@plone/components/icons/calendar.svg?react';
+import Calendar from '@plone/icons/svg/calendar.svg?react';
 import { useTranslation } from 'react-i18next';
 import styles from './EventDetails.module.css';
 

@@ -14,7 +14,7 @@ export function ToggleElement(props: PlateElementProps) {
 
   return (
     <PlateElement {...props}>
-      <BlockInnerContainer className="relative pl-6">
+      <BlockInnerContainer>
         <Button
           size="icon"
           variant="ghost"
@@ -25,6 +25,8 @@ export function ToggleElement(props: PlateElementProps) {
             [&_svg]:size-4
           `}
           contentEditable={false}
+          aria-label="Toggle content"
+          aria-expanded={open}
           {...buttonProps}
         >
           <ChevronRight

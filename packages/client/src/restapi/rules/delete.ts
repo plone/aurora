@@ -6,16 +6,18 @@ import type { RequestResponse } from '../types';
 
 export const deleteRulesArgsSchema = z.object({
   data: deleteRulesDataSchema,
+  path: z.string().optional(),
 });
 
 type DeleteRulesArgs = z.infer<typeof deleteRulesArgsSchema>;
 
 export async function deleteRules(
   this: PloneClient,
-  { data }: DeleteRulesArgs,
+  { data, path }: DeleteRulesArgs,
 ): Promise<RequestResponse<undefined>> {
   const validatedArgs = deleteRulesArgsSchema.parse({
     data,
+    path,
   });
 
   const options: ApiRequestParams = {
@@ -23,7 +25,7 @@ export async function deleteRules(
     config: this.config,
   };
 
-  const deleteRulesPath = `/@content-rules`;
+  const deleteRulesPath = `${(validatedArgs.path ?? '').replace(/\/$/, '')}/@content-rules`;
 
   return apiRequest('delete', deleteRulesPath, options);
 }
