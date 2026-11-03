@@ -138,7 +138,10 @@ Plone orders the groups, and the control panels within each group by their trans
 
 Each control panel shows an icon and, if there is one, a short description, under the title of its group.
 
-Since version 10.2.0, `plone.restapi` sends the `description`, the `icon`, and the `group_id` of each control panel, taken from its configlet.
+```{versionadded} 10.2.0
+In `plone.restapi`, `@controlpanels` sends the `description`, the `icon`, and the `group_id` of each control panel, taken from its configlet.
+```
+
 Plone Aurora uses them when the backend sends them, and otherwise falls back to what it has for the control panel in the frontend.
 
 ### Translate its group
@@ -152,7 +155,8 @@ Plone Aurora picks the icon of a control panel in the following order.
 
 1.  The icon of its configlet, if the backend sends one, from `config.settings.controlPanelsIconNames`.
     On Plone 6, the icon of a configlet is the name of a [Bootstrap Icons](https://icons.getbootstrap.com/) icon, such as `gear` in the previous {file}`controlpanel.xml`.
-    Plone Aurora maps the icon names of the core control panels to its own icons.
+    Plone Blicca, the Classic UI, shows that Bootstrap Icons icon.
+    Plone Aurora doesn't: it maps the name to one of its own icons, and maps the names that the core control panels use by default.
 2.  The icon for its id, from `config.settings.controlPanelsIcons`.
 3.  The `default` icon from `config.settings.controlPanelsIcons`.
 
