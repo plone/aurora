@@ -43,7 +43,9 @@ const VersionOverview = ({
       <h3>Add-ons</h3>
       <ul>
         {config.settings.addonsInfo.map((addon) => (
-          <li key={addon.name}>{addon.name}: {addon.version}</li>
+          <li key={addon.name}>
+            {addon.name}: {addon.version}
+          </li>
         ))}
       </ul>
     </div>

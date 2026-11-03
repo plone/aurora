@@ -4,7 +4,9 @@
 import config from '@plone/registry';
 import PloneClient from '@plone/client';
 // eslint-disable-next-line import/no-unresolved
-import applyAddonConfiguration, { addonsInfo } from '../../.plone/registry.loader';
+import applyAddonConfiguration, {
+  addonsInfo,
+} from '../../.plone/registry.loader';
 // eslint-disable-next-line import/no-unresolved
 import applyServerAddonConfiguration from '../../.plone/registry.loader.server';
 
