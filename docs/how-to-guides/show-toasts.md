@@ -67,7 +67,10 @@ config.getUtility({ type: 'toast', name: 'show' }).method(
 `timeout`
 :   An integer representing the duration in milliseconds after which a toast will be auto-dismissed.
     Defaults to the value set by `DEFAULT_TOAST_TIMEOUT_MS`, currently 6000 milliseconds, exported from {file}`layout/config/toast.ts`.
+    Toasts with the `error` class are the exception: they default to sticky, so an error isn't gone before the user reads it.
+    Pass a number to give an error toast a timeout anyway.
     Pass `null` to require manual dismissal, which is useful for long-running operations that resolve via {ref}`dismiss <show-toasts-dismiss>`.
+    `0` and negative values also make the toast sticky.
     React Aria recommends a minimum of 5 seconds, so people who use a screen reader have time to read the announcement.
 
 `onClose`

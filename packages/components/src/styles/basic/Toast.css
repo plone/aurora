@@ -104,7 +104,14 @@
   }
 }
 
-.react-aria-ToastRegion:hover .react-aria-Toast-progress,
+/* Mirror React Aria, which pauses the timers on hover and focus within the
+   region. Its hover ignores touch, where `:hover` sticks after a tap. */
+@media (hover: hover) {
+  .react-aria-ToastRegion:hover .react-aria-Toast-progress {
+    animation-play-state: paused;
+  }
+}
+
 .react-aria-ToastRegion:focus-within .react-aria-Toast-progress {
   animation-play-state: paused;
 }

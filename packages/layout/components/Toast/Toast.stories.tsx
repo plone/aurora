@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Toast from './Toast';
 import config from '@plone/registry';
-import { CheckboxIcon, InfoIcon, CloseIcon } from '@plone/components/Icons';
+import { CheckboxIcon, InfoIcon, CloseIcon } from '@plone/icons';
 import type { ToastKey } from '../../config/toast';
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
@@ -61,6 +61,7 @@ export const Variants: Story = {
               title: 'Saved',
               description: 'Document published.',
               icon: <CheckboxIcon size="sm" />,
+              className: 'success',
             })
           }
         >
@@ -72,6 +73,7 @@ export const Variants: Story = {
               title: 'Heads up',
               description: 'Two unsaved blocks detected.',
               icon: <InfoIcon size="sm" />,
+              className: 'info',
             })
           }
         >

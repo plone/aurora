@@ -17,7 +17,11 @@ export type ToastItem = {
 };
 
 export type ShowToastOptions = {
-  /** Auto-dismiss after `n` ms, or `null` for sticky. */
+  /**
+   * Auto-dismiss after `n` ms. `null`, `0` or a negative value makes the
+   * toast sticky. Defaults to `DEFAULT_TOAST_TIMEOUT_MS`, except for `error`
+   * toasts, which are sticky so they are not gone before they are read.
+   */
   timeout?: number | null;
   onClose?: () => void;
 };
@@ -48,9 +52,12 @@ export default function install(config: ConfigType) {
     name: 'show',
     type: 'toast',
     method: (item: ToastItem, options?: ShowToastOptions): ToastKey => {
+      const isError = item.className?.split(/\s+/).includes('error');
       const raw =
         options?.timeout === undefined
-          ? DEFAULT_TOAST_TIMEOUT_MS
+          ? isError
+            ? null
+            : DEFAULT_TOAST_TIMEOUT_MS
           : options.timeout;
       // null or <=0 → sticky (no auto-dismiss timer)
       const timeout = raw && raw > 0 ? raw : undefined;

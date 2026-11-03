@@ -67,7 +67,8 @@ A toast appears and behaves as described below.
 - Background color is a lightening overlay, implemented with (`rgba(255, 255, 255, 0.35)`).
   It works against every variant background without per-variant styling.
 - Pauses on hover or focus, mirroring React Aria's own pause-timers behavior.
-- Never renders for sticky toasts, either declared with `timeout: null` or when the caller sets `showProgress: false` on the item.
+  Hover pauses it only on devices with a real pointer, because React Aria ignores the emulated hover that follows a tap.
+- Never renders for sticky toasts, which includes `error` toasts by default, nor when the caller sets `showProgress: false` on the item.
 - Marked `aria-hidden`, because it's decorative, not announced.
 
 
