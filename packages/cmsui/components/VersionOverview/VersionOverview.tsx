@@ -1,4 +1,6 @@
 import PackageJson from '../../../../apps/aurora/package.json';
+import config from '@plone/registry';
+import type { Package } from '@plone/registry/addon-registry';
 
 interface VersionOverviewProps {
   plone_version: string;
@@ -26,6 +28,9 @@ const VersionOverview = ({
   upgrade,
 }: VersionOverviewProps) => {
   const auroraVersion = PackageJson.version;
+
+  const addons = config.settings.addonsInfo as Package[];
+
   return (
     <div className="versionoverview-container">
       <h2>Version Overview</h2>
@@ -38,6 +43,14 @@ const VersionOverview = ({
         <li>Debug Mode: {debug_mode}</li>
         <li>PIL Version: {pil_version}</li>
         <li>Upgrade Available: {upgrade ? 'Yes' : 'No'}</li>
+      </ul>
+      <h3>Add-ons</h3>
+      <ul>
+        {addons.map((addon) => (
+          <li key={addon.name}>
+            {addon.name}: {addon.version}
+          </li>
+        ))}
       </ul>
     </div>
   );
