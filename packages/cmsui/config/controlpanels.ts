@@ -142,6 +142,30 @@ export const filterControlPanelsSchema = (controlpanel: Controlpanel) => {
   };
 };
 
+// The icons for the icon names the backend sends (plone.restapi 10.2.0 and
+// later), Bootstrap Icons names on Plone 6. They match the ones by id above,
+// which are used when the backend sends no icon, or one not listed here.
+export const controlPanelsIconNames: Record<
+  string,
+  ComponentType<SVGProps<SVGSVGElement>>
+> = {
+  clock: CalendarSVG,
+  flag: LanguageSVG,
+  'envelope-open': MailSVG,
+  'list-nested': NavigationSVG,
+  'house-door': WorldSVG,
+  search: SearchSVG,
+  'volume-up': SocialSVG,
+  'volto-settings': VoltoSVG,
+  gem: PageSVG,
+  'chat-square-dots': DiscussionSVG,
+  pencil: EditSVG,
+  image: ImageSVG,
+  'code-slash': CodeSVG,
+  toggles: UserSVG,
+  'shield-check': SecuritySVG,
+};
+
 export default function install(config: ConfigType) {
   config.settings = config.settings ?? {};
   config.settings.filterControlPanelsSchema = filterControlPanelsSchema;
@@ -149,6 +173,11 @@ export default function install(config: ConfigType) {
   config.settings.controlPanelsIcons = {
     ...controlPanelsIcons,
     ...(config.settings.controlPanelsIcons as typeof controlPanelsIcons),
+  };
+  config.settings.controlPanelsIconNames = {
+    ...controlPanelsIconNames,
+    ...(config.settings
+      .controlPanelsIconNames as typeof controlPanelsIconNames),
   };
 
   return config;

@@ -136,19 +136,37 @@ It opens at {file}`/controlpanel/my-settings`.
 The site setup page lists the control panels in the order the backend sends them.
 Plone orders the groups, and the control panels within each group by their translated title.
 
-Each control panel shows an icon and, if there is one, a short description.
+Each control panel shows an icon and, if there is one, a short description, under the title of its group.
+
+Since version 10.2.0, `plone.restapi` sends the `description`, the `icon`, and the `group_id` of each control panel, taken from its configlet.
+Plone Aurora uses them when the backend sends them, and otherwise falls back to what it has for the control panel in the frontend.
+
+### Translate its group
+
+When the backend sends the `group_id`, Plone Aurora translates the title of the group from the `cmsui.controlpanelGroups.<group_id>` translation, such as `cmsui.controlpanelGroups.plone-general`.
+Without that translation, or with an older `plone.restapi`, it shows the title of the group that the backend sends.
 
 ### Give it an icon
 
-Plone Aurora picks the icon of a control panel by its id from `config.settings.controlPanelsIcons`.
-Control panels without an icon there get the `default` one.
-Add yours in the configuration of your add-on.
+Plone Aurora picks the icon of a control panel in the following order.
+
+1.  The icon of its configlet, if the backend sends one, from `config.settings.controlPanelsIconNames`.
+    On Plone 6, the icon of a configlet is the name of a [Bootstrap Icons](https://icons.getbootstrap.com/) icon, such as `gear` in the previous {file}`controlpanel.xml`.
+    Plone Aurora maps the icon names of the core control panels to its own icons.
+2.  The icon for its id, from `config.settings.controlPanelsIcons`.
+3.  The `default` icon from `config.settings.controlPanelsIcons`.
+
+Add yours in the configuration of your add-on, by the icon name of its configlet, by its id, or both.
 
 ```ts
 import type { ConfigType } from '@plone/registry';
 import SettingsSVG from '@plone/icons/svg/settings.svg?react';
 
 export default function install(config: ConfigType) {
+  config.settings.controlPanelsIconNames = {
+    ...config.settings.controlPanelsIconNames,
+    gear: SettingsSVG,
+  };
   config.settings.controlPanelsIcons = {
     ...config.settings.controlPanelsIcons,
     'my-settings': SettingsSVG,
@@ -162,9 +180,29 @@ For the icons you can use, see {doc}`icons`.
 
 ### Give it a description
 
-The description comes from the `cmsui.controlpanelDescriptions.<id>` translation.
-It shows under the title on the site setup page, and under the heading of the control panel.
-Add it to the translation files of your add-on.
+The description shows under the title on the site setup page, and under the heading of the control panel.
+It's the description of the configlet, if the backend sends one, translated by the backend.
+Otherwise, it comes from the `cmsui.controlpanelDescriptions.<id>` translation in the frontend.
+
+To give the configlet a description, add a `description` to it in {file}`controlpanel.xml`, and list it in `i18n:attributes`.
+
+```xml
+<configlet action_id="my-settings"
+           appId="my.addon"
+           category="Products"
+           condition_expr=""
+           description="The service this site talks to"
+           icon_expr="string:gear"
+           title="My settings"
+           url_expr="string:${portal_url}/@@my-settings"
+           visible="True"
+           i18n:attributes="title description"
+>
+  <permission>Manage portal</permission>
+</configlet>
+```
+
+For older versions of `plone.restapi`, or to give a description in the frontend only, add it to the translation files of your add-on.
 
 ```json
 {

@@ -105,6 +105,14 @@
       "usergroup": "Member listing and many-users mode",
       "security": "Registration, login and user folders"
     },
+    "controlpanelGroups": {
+      "plone-general": "General",
+      "plone-content": "Content",
+      "plone-users": "Users",
+      "plone-security": "Security",
+      "plone-advanced": "Advanced",
+      "Products": "Add-on configuration"
+    },
     "objectbrowserwidget": {
       "openDialog": "Select content",
       "dialogTitle": "Select Content",

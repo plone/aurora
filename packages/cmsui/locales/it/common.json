@@ -105,6 +105,14 @@
       "usergroup": "Elenco membri e modalità molti utenti",
       "security": "Registrazione, accesso e cartelle utente"
     },
+    "controlpanelGroups": {
+      "plone-general": "Generale",
+      "plone-content": "Contenuti",
+      "plone-users": "Utenti",
+      "plone-security": "Sicurezza",
+      "plone-advanced": "Avanzate",
+      "Products": "Configurazione dei prodotti aggiuntivi"
+    },
     "objectbrowserwidget": {
       "openDialog": "Seleziona contenuti",
       "dialogTitle": "Seleziona Contenuti",

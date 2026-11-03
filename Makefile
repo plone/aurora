@@ -193,13 +193,17 @@ acceptance-frontend-dev-start: ## Start acceptance frontend in development mode
 
 ######### Plone Aurora Acceptance tests
 
+# The acceptance image starts robot-server directly, without the entrypoint
+# that installs ADDONS, so it installs $(KGS) itself first.
+ACCEPTANCE_BACKEND_ARGS=--rm -p 55001:55001 -e APPLY_PROFILES=plone.app.contenttypes:plone-content,plone.restapi:default,plone.volto:default,plone.app.discussion:default --entrypoint bash $(DOCKER_IMAGE_ACCEPTANCE) -c '$(if $(KGS),/app/bin/pip install $(KGS) && )exec /app/bin/robot-server plone.app.robotframework.testing.VOLTO_ROBOT_TESTING'
+
 .PHONY: acceptance-backend-start
 acceptance-backend-start: ## Start backend acceptance server
-	docker run -it --rm -p 55001:55001 -e APPLY_PROFILES=plone.app.contenttypes:plone-content,plone.restapi:default,plone.volto:default,plone.app.discussion:default $(DOCKER_IMAGE_ACCEPTANCE)
+	docker run -it $(ACCEPTANCE_BACKEND_ARGS)
 
 .PHONY: ci-acceptance-backend-start
 ci-acceptance-backend-start: ## Start backend acceptance server in headless mode for CI
-	docker run -i --rm -p 55001:55001 -e APPLY_PROFILES=plone.app.contenttypes:plone-content,plone.restapi:default,plone.volto:default,plone.app.discussion:default $(DOCKER_IMAGE_ACCEPTANCE)
+	docker run -i $(ACCEPTANCE_BACKEND_ARGS)
 
 .PHONY: acceptance-frontend-prod-start
 acceptance-frontend-prod-start: ## Start acceptance frontend in production mode

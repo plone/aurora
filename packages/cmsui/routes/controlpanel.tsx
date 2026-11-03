@@ -134,9 +134,10 @@ function ControlPanelForm({
     showErrors(errors);
   }, [fetcher.data, form, showErrors]);
 
-  const description = t(`cmsui.controlpanelDescriptions.${panelId}`, {
-    defaultValue: '',
-  });
+  // The backend's description (plone.restapi 10.2.0 and later) wins.
+  const description =
+    controlpanel.description ||
+    t(`cmsui.controlpanelDescriptions.${panelId}`, { defaultValue: '' });
 
   return (
     <FormProvider form={form}>

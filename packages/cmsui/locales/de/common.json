@@ -57,6 +57,14 @@
       "usergroup": "Mitgliederliste und Modus für viele Benutzer",
       "security": "Registrierung, Anmeldung und Benutzerordner"
     },
+    "controlpanelGroups": {
+      "plone-general": "Allgemein",
+      "plone-content": "Inhalt",
+      "plone-users": "Benutzer",
+      "plone-security": "Sicherheit",
+      "plone-advanced": "Erweitert",
+      "Products": "Add-on-Konfiguration"
+    },
     "objectbrowserwidget": {
       "openDialog": "Inhalt auswählen",
       "dialogTitle": "Inhalt auswählen",

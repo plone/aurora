@@ -20,6 +20,8 @@ CYAN=$(shell tput setaf 6)
 INSTANCE_PORT=8080
 DOCKER_IMAGE=plone/server-dev:6.2.2
 DOCKER_IMAGE_ACCEPTANCE=plone/server-acceptance:6.2.2
-KGS=
+# Python packages to install on top of the backend images, like newer
+# versions of the ones they ship with.
+KGS=plone.restapi==10.2.0
 NODEBIN = ./node_modules/.bin
 SCRIPTSPACKAGE = ./packages/scripts

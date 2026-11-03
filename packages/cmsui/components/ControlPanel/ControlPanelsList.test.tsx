@@ -186,4 +186,106 @@ describe('ControlPanelsList', () => {
       screen.getByRole('link', { name: 'Mail' }),
     ).toHaveAccessibleDescription('Outgoing mail');
   });
+
+  describe('with the fields of plone.restapi 10.2.0', () => {
+    const i18n = i18next.createInstance();
+    i18n.init({
+      lng: 'de',
+      initAsync: false,
+      resources: {
+        de: {
+          translation: {
+            cmsui: {
+              controlpanelDescriptions: { mail: 'Ausgehende E-Mails' },
+              controlpanelGroups: { 'plone-general': 'Allgemein' },
+            },
+          },
+        },
+      },
+    });
+    const mail = {
+      '@id': 'http://localhost:8080/Plone/@controlpanels/mail',
+      title: 'Mail',
+      group: 'General',
+    };
+
+    it("uses the backend's description, or else the translated one", () => {
+      render(
+        <I18nextProvider i18n={i18n}>
+          <ControlPanelsList
+            controlpanels={[
+              { ...mail, description: 'Mail server settings' },
+              {
+                ...mail,
+                '@id': 'http://localhost:8080/Plone/@controlpanels/other',
+                title: 'Other',
+                description: '',
+              },
+            ]}
+          />
+        </I18nextProvider>,
+      );
+
+      expect(
+        screen.getByRole('link', { name: 'Mail' }),
+      ).toHaveAccessibleDescription('Mail server settings');
+      expect(screen.getByRole('link', { name: 'Other' })).not.toHaveAttribute(
+        'aria-describedby',
+      );
+    });
+
+    it("uses the backend's icon, or else the one for the id", () => {
+      config.settings.controlPanelsIcons = {
+        default: () => <svg data-testid="default-icon" />,
+        mail: () => <svg data-testid="mail-icon" />,
+      };
+      config.settings.controlPanelsIconNames = {
+        'envelope-open': () => <svg data-testid="envelope-icon" />,
+      };
+      render(
+        <ControlPanelsList
+          controlpanels={[
+            { ...mail, icon: 'envelope-open' },
+            {
+              ...mail,
+              '@id': 'http://localhost:8080/Plone/@controlpanels/mail',
+              title: 'Unknown icon',
+              icon: 'not-mapped',
+            },
+          ]}
+        />,
+      );
+
+      expect(screen.getByTestId('envelope-icon')).toBeInTheDocument();
+      // An icon name without an SVG falls back to the icon for the id.
+      expect(screen.getByTestId('mail-icon')).toBeInTheDocument();
+      config.settings.controlPanelsIcons = {};
+      config.settings.controlPanelsIconNames = {};
+    });
+
+    it('translates the group by its id, or else shows its title', () => {
+      render(
+        <I18nextProvider i18n={i18n}>
+          <ControlPanelsList
+            controlpanels={[
+              { ...mail, group_id: 'plone-general' },
+              {
+                '@id': 'http://localhost:8080/Plone/@controlpanels/my-addon',
+                title: 'My add-on',
+                group: 'My group',
+                group_id: 'my-group',
+              },
+            ]}
+          />
+        </I18nextProvider>,
+      );
+
+      expect(
+        screen.getByRole('heading', { name: 'Allgemein', level: 2 }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('heading', { name: 'My group', level: 2 }),
+      ).toBeInTheDocument();
+    });
+  });
 });

@@ -6,7 +6,10 @@ import type { Controlpanel } from '@plone/types';
 import ChevronRight from '@plone/icons/svg/chevron-right.svg?react';
 import { controlPanelId } from '../../helpers/controlpanels';
 
-type ControlPanel = Pick<Controlpanel, '@id' | 'title' | 'group'>;
+type ControlPanel = Pick<
+  Controlpanel,
+  '@id' | 'title' | 'group' | 'group_id' | 'description' | 'icon'
+>;
 
 // The icons of each group take the next Quanta color family.
 const groupTints = [
@@ -32,8 +35,11 @@ export const ControlPanelsList = ({
   const [query, setQuery] = useState('');
   const listId = useId();
   const Link = config.getComponent('Link').component!;
-  const { controlPanelsIcons: icons = {}, filterControlPanels } =
-    config.settings;
+  const {
+    controlPanelsIcons: icons = {},
+    controlPanelsIconNames: iconNames = {},
+    filterControlPanels,
+  } = config.settings;
 
   let allControlPanels = controlpanels.concat(
     config.settings.controlpanels ?? [],
@@ -49,16 +55,29 @@ export const ControlPanelsList = ({
       id,
       // Unique in the page, even when two panels end in the same id.
       domId: `${listId}-${index}`,
-      description: t(`cmsui.controlpanelDescriptions.${id}`, {
-        defaultValue: '',
-      }),
+      // The backend's description and icon (plone.restapi 10.2.0 and
+      // later) win, then the ones Aurora has for the id.
+      description:
+        panel.description ||
+        t(`cmsui.controlpanelDescriptions.${id}`, { defaultValue: '' }),
+      Icon: ((panel.icon && iconNames[panel.icon]) ??
+        icons[id] ??
+        icons.default) as
+        React.ComponentType<{ className?: string }> | undefined,
+      // The group's id (plone.restapi 10.2.0 and later) gives a translated
+      // title; without it, the title the backend sends.
+      groupTitle: panel.group_id
+        ? t(`cmsui.controlpanelGroups.${panel.group_id}`, {
+            defaultValue: panel.group,
+          })
+        : panel.group || 'General',
     };
   });
 
   // Groups and panels keep the order the backend sends them in: Plone
   // orders the groups, and the panels by their translated title.
   const groups = panels.reduce<Record<string, typeof panels>>((acc, panel) => {
-    (acc[panel.group || 'General'] ??= []).push(panel);
+    (acc[panel.groupTitle] ??= []).push(panel);
     return acc;
   }, {});
   const tints = Object.fromEntries(
@@ -111,8 +130,7 @@ export const ControlPanelsList = ({
             `}
           >
             {items.map((panel) => {
-              const Icon = (icons[panel.id] ?? icons.default) as
-                React.ComponentType<{ className?: string }> | undefined;
+              const { Icon } = panel;
               return (
                 <li key={panel.domId} className="controlpanel-item">
                   {/* Named by its title, so the description doesn't make
