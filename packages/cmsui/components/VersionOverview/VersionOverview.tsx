@@ -1,6 +1,6 @@
 import PackageJson from '../../../../apps/aurora/package.json';
 import config from '@plone/registry';
-import type { Package } from '@plone/registry/addon-registry/addon-registry';
+import type { Package } from '@plone/registry/addon-registry';
 
 interface VersionOverviewProps {
   plone_version: string;
