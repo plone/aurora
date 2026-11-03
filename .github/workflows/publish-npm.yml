@@ -1,0 +1,56 @@
+name: Publish npm package
+
+on:
+  push:
+    tags:
+      - 'plone-*'
+      - '[0-9]*'
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm-release
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate release tag
+        id: release
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+          node packages/scripts/resolve-release-tag.js "$RELEASE_TAG" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26.x
+      - name: Enable pnpm
+        run: |
+          npm install --global corepack@latest
+          corepack enable
+      - name: Install and build
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build:deps
+      - name: Pack package
+        env:
+          PACKAGE_DIR: ${{ steps.release.outputs.directory }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/npm-package"
+          pnpm --dir "$PACKAGE_DIR" pack --pack-destination "$RUNNER_TEMP/npm-package"
+      - name: Publish using npm trusted publishing
+        env:
+          DIST_TAG: ${{ steps.release.outputs.dist_tag }}
+        run: |
+          set -euo pipefail
+          packages=("$RUNNER_TEMP"/npm-package/*.tgz)
+          test "${#packages[@]}" -eq 1 && test -f "${packages[0]}"
+          npm publish "${packages[0]}" --access public --tag "$DIST_TAG"

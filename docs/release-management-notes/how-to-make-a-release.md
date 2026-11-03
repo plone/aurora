@@ -15,7 +15,7 @@ This page describes how maintainers release the Plone Aurora packages and the `@
 
 The release process uses the following tools.
 
--   [`release-it`](https://www.npmjs.com/package/release-it) bumps the version, commits, tags, pushes, creates the GitHub release, and publishes the package to npm.
+-   [`release-it`](https://www.npmjs.com/package/release-it) bumps the version, commits, tags, pushes, and creates the GitHub release. A GitHub Actions workflow publishes the tagged package to npm using trusted publishing.
 -   [`towncrier`](https://towncrier.readthedocs.io/en/stable/) builds the change log of each package from its news fragments.
 -   The `prereleaser` convenience script lists the packages that have pending changes, and releases them in the correct order.
 
@@ -25,7 +25,8 @@ The release process uses the following tools.
 To make a release, you must fulfill the following requirements.
 
 -   Have permission to push to the `main` branch of the [`plone/aurora`](https://github.com/plone/aurora) repository.
--   Have permission to publish in the [`@plone` organization on npm](https://www.npmjs.com/org/plone), and be logged in to npm.
+-   Have permission to create release tags under the repository tag ruleset.
+-   Ensure the package has an npm trusted publisher configured as described below.
 -   Have the [GitHub CLI](https://cli.github.com/) (`gh`) installed and logged in with an account that can create releases in the [Plone Aurora releases page](https://github.com/plone/aurora/releases).
 -   Have [`uv`](https://docs.astral.sh/uv/) installed.
 
@@ -38,18 +39,23 @@ The release process commits the version bump and the change log, tags the releas
 The `main` branch is protected, so you need permission to push to it.
 
 
-### Permission to publish to the npm registry
+### Configure trusted publishing and tag protection
 
-The packages are published to the npm registry under the `@plone` organization.
-Only the current owners of the organization can grant you permission to publish.
+Before migrating releases, an npm package administrator must configure a [trusted publisher](https://docs.npmjs.com/trusted-publishers/) for each migrated package: owner `plone`, repository `aurora`, workflow filename `publish-npm.yml`, and environment `npm-release`.
+Configure the GitHub environment `npm-release` and restrict its deployment refs and required reviewers to the release managers as appropriate.
+Verify the configuration with a controlled release before disabling other publishing methods or revoking existing credentials.
+The workflow uses npm OIDC and needs no npm token.
 
-Log in to npm before releasing.
+A repository administrator must also create an active [tag ruleset](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets) targeting **all tags**, with creation, update, and deletion restricted.
+Grant bypass only to the release managers team and a dedicated team containing the explicitly approved users; keep those team memberships current.
+Do not grant a broad administrator or repository role bypass.
+Review organization-level rules and who can edit rulesets or team membership: administrators who can change these settings remain part of the trust boundary.
+Verify both an authorized and an unauthorized account before relying on this restriction.
+Protect `main`, workflow changes, and the environment as well; the workflow verifies that the tagged commit is reachable from `main`, but workflow code from a tag is itself part of the trust boundary.
 
-```shell
-npm login
-```
-
-If your npm account uses two-factor authentication, npm asks for a one-time password when publishing each package.
+The migrated packages are the packages listed in `packages/scripts/resolve-release-tag.js` and `@plone/aurora`.
+`@plone/scripts` retains its existing non-publishing release configuration.
+Volto packages retain their separate release process.
 
 
 ### Log in with the GitHub CLI
@@ -183,16 +189,23 @@ This starts `release-it` for that package, which does the following steps, askin
 
 1.  Asks you for the new version number.
 2.  Builds the change log of the package with `towncrier`, and removes the released news fragments.
-3.  Builds the package, for the packages that need a build step.
+3.  Builds the package locally, for packages whose release hooks require it.
 4.  Commits the changes, and tags the release.
 5.  Pushes the commit and the tag to the `main` branch.
 6.  Creates the GitHub release, with the change log of this version as release notes.
-7.  Publishes the package to npm.
+7.  Starts the `Publish npm package` workflow when the tag is pushed. The workflow builds workspace dependencies, packs the selected package with pnpm, and publishes the tarball with npm trusted publishing.
 
-For the `@plone/aurora` application, `release-it` also sets the `latest` npm distribution tag on the new version.
+The GitHub release can exist before the npm workflow finishes.
+Watch the workflow and confirm that the exact version is available on npm before continuing to a dependent package.
+The prereleaser asks for this confirmation after each tag; answer `y` only after publication succeeds.
+Stable versions use the `latest` distribution tag. Prereleases use their prerelease identifier, except `@plone/aurora` and `@plone/client`, which retain their existing behavior of promoting prereleases to `latest`.
+
+If publishing fails, correct the configuration or underlying issue and rerun the failed workflow from GitHub Actions.
+Do not move or recreate a release tag to retry. An npm version cannot be republished after it succeeds.
+A release commit and GitHub release may already exist when publishing fails; check both the workflow and npm before deciding how to recover.
 
 If a release fails, the script stops.
-Fix the problem, then run `pnpm prereleaser --release` again.
+Resolve any failed publication and verify it on npm, then run `pnpm prereleaser --release` again.
 The packages that were already released no longer have news fragments, so they don't appear in the plan.
 
 
@@ -241,3 +254,12 @@ For example, to make a dry run of the release of `@plone/client`, use the follow
 ```shell
 pnpm --filter @plone/client dry-release
 ```
+
+
+## Release the container image
+
+The image is maintained in the separate [container-aurora repository](https://github.com/plone/container-aurora). Its `make commit-and-release` commits the changed `version.txt`, pushes the commit, and creates and pushes `v<version>`. The tag triggers its image workflow, which builds four images for two architectures and publishes version tags and `latest`. A push to `main` alone publishes SHA tags; dispatching the current workflow on `main` does not make a versioned release.
+
+After `@plone/aurora` is available on npm, update `version.txt` in container-aurora, review and commit any intended image changes, and run the repository's release procedure with an authorized account. Verify the tag workflow and resulting image tags. Its current workflow promotes tagged prereleases to `latest`, so release managers must account for that behavior.
+
+Automating this handoff requires a separately reviewed change in container-aurora: accept an authenticated release request, validate the npm version, update `version.txt` through its protected branch process, and create the matching protected tag using a narrowly scoped GitHub App. The current repository token cannot write to another repository, and a workflow dispatch alone neither updates the version nor creates a release tag. Keep the manual handoff until that integration and its authorization rules are in place.
