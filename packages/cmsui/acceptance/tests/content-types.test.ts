@@ -508,6 +508,8 @@ test.describe('A content type, on a backend with @content-types', () => {
     await openNewType(page, 'settings');
 
     await page.getByText('Show in search results', { exact: true }).click();
+    // New types aren't in the navigation.
+    await page.getByText('Show in navigation', { exact: true }).click();
     await page
       .getByRole('radiogroup', { name: 'Versioning' })
       .getByText('Automatic', { exact: true })
@@ -518,6 +520,9 @@ test.describe('A content type, on a backend with @content-types', () => {
     await expect(
       page.getByRole('switch', { name: 'Show in search results' }),
     ).not.toBeChecked();
+    await expect(
+      page.getByRole('switch', { name: 'Show in navigation' }),
+    ).toBeChecked();
     await expect(page.getByRole('radio', { name: /^Automatic/ })).toBeChecked();
   });
 

@@ -16,7 +16,7 @@ const event: ContentTypeResponse = {
   '@id': 'http://localhost:55001/plone/@content-types/Event',
   id: 'Event',
   title: 'Event',
-  items_total: 3,
+  content_count: 3,
   data: {
     title: 'Event',
     description: 'Events can be shown in calendars.',
@@ -24,7 +24,7 @@ const event: ContentTypeResponse = {
     allowed_content_types_mode: { token: 'selected', title: 'Selected types' },
     allowed_content_types: [{ token: 'Image', title: 'Image' }],
     searchable: true,
-    default_page: true,
+    in_navigation: true,
     allow_discussion: false,
     versioning: { token: 'automatic', title: 'Automatic' },
     behaviors: [
@@ -38,7 +38,7 @@ const event: ContentTypeResponse = {
       { id: 'behaviors', fields: ['behaviors'] },
     ],
   },
-  workflow: { id: 'simple_publication_workflow', follows_default: true },
+  workflow: { chain: ['simple_publication_workflow'], follows_default: true },
 };
 
 // Trimmed from `GET @workflows/simple_publication_workflow`.
@@ -113,7 +113,7 @@ describe('toSettings and toSummary', () => {
       allowedContents: { mode: 'selected', types: ['Image'] },
       globalAllow: true,
       searchable: true,
-      defaultPage: true,
+      inNavigation: true,
       allowDiscussion: false,
       versioning: 'automatic',
       behaviors: ['plone.eventbasic', 'plone.dublincore'],
@@ -127,6 +127,22 @@ describe('toSettings and toSummary', () => {
       versioning: 'automatic',
       kind: 'dexterity',
     });
+  });
+
+  it('keeps the chain of a type with several workflows', () => {
+    const chain = ['simple_publication_workflow', 'comment_review_workflow'];
+    expect(
+      toSettings({ ...event, workflow: { chain, follows_default: false } })
+        .workflow,
+    ).toEqual({
+      workflow: 'simple_publication_workflow',
+      chain,
+      followsDefault: false,
+    });
+    expect(
+      toSettings({ ...event, workflow: { chain: [], follows_default: false } })
+        .workflow,
+    ).toEqual({ workflow: null, followsDefault: false });
   });
 
   it('tells the site and types without behaviors apart', () => {
@@ -146,13 +162,13 @@ describe('toContentTypePatch', () => {
     expect(
       toContentTypePatch({
         globalAllow: false,
-        defaultPage: true,
+        inNavigation: true,
         allowedContents: { mode: 'selected', types: ['File'] },
         behaviors: ['plone.dublincore'],
       }),
     ).toEqual({
       global_allow: false,
-      default_page: true,
+      in_navigation: true,
       allowed_content_types_mode: 'selected',
       allowed_content_types: ['File'],
       behaviors: ['plone.dublincore'],
