@@ -64,6 +64,7 @@ async function setupSomersaultEditPage(
           ],
         },
       },
+      blocks_layout: { items: ['__somersault__'] },
     }),
   });
 
