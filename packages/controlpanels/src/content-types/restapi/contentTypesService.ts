@@ -33,7 +33,7 @@ export function toCapabilities(
     ...(backend.contentTypes && {
       globalAllow: true,
       searchable: true,
-      defaultPage: true,
+      inNavigation: true,
       allowDiscussion: true,
       versioning: true,
       copyType: true,
@@ -58,7 +58,8 @@ export interface ContentTypeResponse {
   '@id': string;
   id: string;
   title: string;
-  items_total: number;
+  /** The number of items of the type. */
+  content_count: number;
   data: {
     title?: string;
     description?: string;
@@ -66,14 +67,15 @@ export interface ContentTypeResponse {
     allowed_content_types_mode?: Term;
     allowed_content_types?: Term[];
     searchable?: boolean;
-    default_page?: boolean;
+    in_navigation?: boolean;
     allow_discussion?: boolean;
     versioning?: Term;
     behaviors?: Term[];
     [field: string]: unknown;
   };
   schema: { fieldsets: Array<{ id: string; fields: string[] }> };
-  workflow?: { id: string | null; follows_default: boolean };
+  /** The workflows of the type's chain, in order, the first setting the state. */
+  workflow?: { chain: string[]; follows_default: boolean };
   /** Not sent yet: every type counts as folderish without it. */
   folderish?: boolean;
 }
@@ -91,7 +93,10 @@ const kindOf = (response: ContentTypeResponse) =>
 
 const workflowOf = (response: ContentTypeResponse) =>
   response.workflow && {
-    workflow: response.workflow.id,
+    workflow: response.workflow.chain[0] ?? null,
+    ...(response.workflow.chain.length > 1 && {
+      chain: response.workflow.chain,
+    }),
     followsDefault: response.workflow.follows_default,
   };
 
@@ -103,7 +108,7 @@ export function toSummary(response: ContentTypeResponse): ContentTypeSummary {
     title: data.title || response.title,
     description: data.description || undefined,
     kind: kindOf(response),
-    count: response.items_total ?? 0,
+    count: response.content_count ?? 0,
     globalAllow: data.global_allow,
     workflow: workflowOf(response),
     versioning: tokenOf(data.versioning) as VersioningPolicy | undefined,
@@ -131,7 +136,7 @@ export function toSettings(response: ContentTypeResponse): ContentTypeSettings {
     ...(folderish && { allowedContents }),
     globalAllow: data.global_allow,
     searchable: data.searchable,
-    defaultPage: data.default_page,
+    inNavigation: data.in_navigation,
     allowDiscussion: data.allow_discussion,
     versioning: tokenOf(data.versioning) as VersioningPolicy | undefined,
     behaviors: (data.behaviors ?? [])
@@ -151,7 +156,7 @@ export function toContentTypePatch(
     ['description', 'description'],
     ['globalAllow', 'global_allow'],
     ['searchable', 'searchable'],
-    ['defaultPage', 'default_page'],
+    ['inNavigation', 'in_navigation'],
     ['allowDiscussion', 'allow_discussion'],
     ['versioning', 'versioning'],
     ['behaviors', 'behaviors'],

@@ -34,7 +34,7 @@ export interface ContentTypesCapabilities {
   /** Read and change whether a type shows in search results. */
   searchable: boolean;
   /** Read and change whether a type can be a folder's default page. */
-  defaultPage: boolean;
+  inNavigation: boolean;
   /** Read and change whether a type allows comments. */
   allowDiscussion: boolean;
   /** Read and change a type's versioning policy. */
@@ -110,7 +110,7 @@ export interface ContentTypesDriver {
 export const NO_CAPABILITIES: ContentTypesCapabilities = {
   globalAllow: false,
   searchable: false,
-  defaultPage: false,
+  inNavigation: false,
   allowDiscussion: false,
   versioning: false,
   behaviorOrder: false,

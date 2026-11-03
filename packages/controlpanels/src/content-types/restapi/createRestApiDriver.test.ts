@@ -65,7 +65,7 @@ describe('createRestApiDriver', () => {
             '@id': 'x',
             id: 'Event',
             title: 'Event',
-            items_total: 2,
+            content_count: 2,
             data: { title: 'Event' },
             schema: { fieldsets: [{ id: 'behaviors', fields: [] }] },
           },

@@ -426,14 +426,18 @@ export const messages = defineMessages({
     defaultMessage:
       'Turn off for helper types that should never appear in site search.',
   },
-  defaultPage: {
-    id: 'controlpanels.contentTypes.defaultPage',
-    defaultMessage: "Can be used as a folder's default page",
-  },
-  defaultPageHelp: {
-    id: 'controlpanels.contentTypes.defaultPageHelp',
+  otherWorkflows: {
+    id: 'controlpanels.contentTypes.otherWorkflows',
     defaultMessage:
-      'Lets editors pick an item of this type as the page a folder shows.',
+      'Its chain also has {{workflows}}. Changing the workflow replaces the whole chain.',
+  },
+  inNavigation: {
+    id: 'controlpanels.contentTypes.inNavigation',
+    defaultMessage: 'Show in navigation',
+  },
+  inNavigationHelp: {
+    id: 'controlpanels.contentTypes.inNavigationHelp',
+    defaultMessage: "Lists items of this type in the site's navigation.",
   },
   comments: {
     id: 'controlpanels.contentTypes.comments',

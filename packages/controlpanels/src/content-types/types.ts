@@ -17,6 +17,11 @@ export type AllowedContents =
 export interface WorkflowAssignment {
   /** The workflow id, or `null` when the type has no workflow. */
   workflow: string | null;
+  /**
+   * The whole chain, when the type has more than one workflow. The first is
+   * `workflow`, which sets the state of items.
+   */
+  chain?: string[];
   /** Whether the type follows the site default instead of setting its own. */
   followsDefault: boolean;
 }
@@ -55,7 +60,7 @@ export interface ContentTypeSettings {
   /** Optional settings are missing when the driver can't provide them. */
   globalAllow?: boolean;
   searchable?: boolean;
-  defaultPage?: boolean;
+  inNavigation?: boolean;
   allowDiscussion?: boolean;
   versioning?: VersioningPolicy;
   /**
