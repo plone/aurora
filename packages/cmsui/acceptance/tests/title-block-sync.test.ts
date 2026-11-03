@@ -56,6 +56,7 @@ test('Title block and metadata title stay in sync', async ({ page }) => {
           ],
         },
       },
+      blocks_layout: { items: ['__somersault__'] },
     }),
   });
 
@@ -115,6 +116,7 @@ test('Newly created title block is initialized from metadata title', async ({
           ],
         },
       },
+      blocks_layout: { items: ['__somersault__'] },
     }),
   });
 
@@ -172,6 +174,7 @@ test('Reloading edit view with no stored title block does not trigger hydration 
           ],
         },
       },
+      blocks_layout: { items: ['__somersault__'] },
     }),
   });
 
@@ -220,6 +223,7 @@ test('Enter on title inserts a new empty paragraph before existing next block', 
           ],
         },
       },
+      blocks_layout: { items: ['__somersault__'] },
     }),
   });
 
@@ -280,6 +284,7 @@ test('Empty title block keeps showing its placeholder when another block is sele
           ],
         },
       },
+      blocks_layout: { items: ['__somersault__'] },
     }),
   });
 
