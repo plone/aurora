@@ -205,6 +205,18 @@ ci-acceptance-backend-start: ## Start backend acceptance server in headless mode
 acceptance-frontend-prod-start: ## Start acceptance frontend in production mode
 	pnpm --filter @plone/aurora build && PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start:prod
 
+.PHONY: nick-start
+nick-start: ## Start Nick and PostgreSQL for local development
+	docker compose -p aurora-nick -f compose.nick.yml up -d --wait
+
+.PHONY: nick-stop
+nick-stop: ## Stop Nick, preserving its data
+	docker compose -p aurora-nick -f compose.nick.yml down
+
+.PHONY: nick-acceptance-frontend
+nick-acceptance-frontend: ## Start the acceptance frontend against Nick
+	pnpm --filter @plone/aurora build && PLONE_API_PATH=http://localhost:$${NICK_PORT:-8080} pnpm --filter @plone/aurora start:prod
+
 .PHONY: acceptance-test
 acceptance-test: ## Start Cypress in interactive mode
 	pnpm exec playwright test --ui

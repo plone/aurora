@@ -7,6 +7,42 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
+  nick:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    runs-on: ubuntu-latest
+    name: Aurora with Nick
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Node.js environment
+        uses: ./.github/actions/acceptance_tests_node_env_setup
+        with:
+          node-version: 26.x
+
+      - name: Start Nick
+        run: make nick-start
+
+      - uses: JarvusInnovations/background-action@v2
+        name: Start Aurora
+        with:
+          run: make nick-acceptance-frontend
+          wait-on: http://localhost:3000
+          wait-for: 10m
+          tail: true
+          log-output-if: failure
+
+      - name: Run Nick acceptance tests
+        run: pnpm acceptance-test:nick
+
+      - name: Show Nick logs on failure
+        if: failure()
+        run: docker compose -p aurora-nick -f compose.nick.yml logs
+
+      - name: Stop Nick
+        if: always()
+        run: docker compose -p aurora-nick -f compose.nick.yml down -v
+
   aurora:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     runs-on: ubuntu-latest
