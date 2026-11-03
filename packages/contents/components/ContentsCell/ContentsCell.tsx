@@ -1,6 +1,6 @@
 import { type ComponentProps } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDateFormatter } from 'react-aria';
+import { useDateFormatter, VisuallyHidden } from 'react-aria';
 import { getContentIcon } from '@plone/helpers';
 import type { Brain } from '@plone/types';
 import { Link, Button, MenuTrigger } from '@plone/quanta';
@@ -83,14 +83,7 @@ export function ContentsCell({
       <MenuTrigger placement="bottom end">
         <Button
           variant="icon"
-          className={`
-            item-actions-trigger opacity-0
-            group-focus-within/row:opacity-100
-            group-hover/row:opacity-100
-            group-focus-visible/row:opacity-100
-            aria-expanded:opacity-100
-            pointer-coarse:opacity-100
-          `}
+          className="item-actions-trigger"
           aria-label={t('contents.item.more_options')}
         >
           <MoreoptionsIcon />
@@ -121,9 +114,17 @@ export function ContentsCell({
       } else {
         return (
           <ReviewState state={item[column]}>
-            {t(
-              'contents.indexes.review_state.' +
-                (item[column] ?? 'no_workflow_state'),
+            {item[column] ? (
+              t('contents.indexes.review_state.' + item[column])
+            ) : (
+              <>
+                <span aria-hidden>
+                  {t('contents.indexes.review_state.no_workflow_state')}
+                </span>
+                <VisuallyHidden>
+                  {t('contents.indexes.review_state.no_workflow_state_label')}
+                </VisuallyHidden>
+              </>
             )}
           </ReviewState>
         );

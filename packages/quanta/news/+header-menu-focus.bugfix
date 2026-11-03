@@ -1,0 +1,1 @@
+Fixed `Column` headers clipping content taller than the label, such as icon buttons, and the focus ring of the first `MenuItem` under a `MenuSection` title. @sneridagh

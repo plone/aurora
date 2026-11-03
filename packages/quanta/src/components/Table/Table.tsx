@@ -56,7 +56,7 @@ export function Table(props: TableProps) {
 
 const columnStyles = tv({
   extend: focusRing,
-  base: 'box-border flex h-5 flex-1 items-center gap-1 overflow-hidden px-2',
+  base: 'box-border flex min-h-5 flex-1 items-center gap-1 overflow-hidden px-2',
 });
 
 const resizerStyles = tv({

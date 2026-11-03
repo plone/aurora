@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { VisuallyHidden } from 'react-aria';
 import {
+  DropIndicator,
   TooltipTrigger,
   useDragAndDrop,
   DialogTrigger,
@@ -428,6 +429,14 @@ export function ContentsTable({
       [...keys].map((key) => ({
         'text/plain': key.toString(),
       })),
+    renderDropIndicator: (target) => (
+      <DropIndicator
+        target={target}
+        className={({ isDropTarget }) =>
+          isDropTarget ? 'outline-2 outline-quanta-sapphire outline-solid' : ''
+        }
+      />
+    ),
     onReorder(e) {
       if (e.keys.size !== 1) {
         showToast({
@@ -572,7 +581,7 @@ export function ContentsTable({
           <section className="contents-table">
             <VisuallyHidden>
               <span aria-live="polite">
-                {t('contents.results', { count: items.length })}
+                {t('contents.results.number', { count: items.length })}
               </span>
             </VisuallyHidden>
             {rows?.length > 0 ? (
@@ -596,7 +605,10 @@ export function ContentsTable({
                         <TooltipTrigger>
                           <Button
                             variant="icon"
-                            className="drag-cell-header"
+                            className={`
+                              drag-cell-header
+                              has-[svg]:p-1
+                            `}
                             aria-label={t('contents.rearrange.by')}
                           >
                             <EditIcon size="sm" />

@@ -3,7 +3,7 @@
     "loading": "Caricamento...",
     "results": {
       "number": "{{count}} elementi",
-      "contents_of": "Contenuti di {title}",
+      "contents_of": "Contenuti di {{title}}",
       "no_results": "Nessun elemento trovato"
     },
     "actions": {
@@ -61,7 +61,8 @@
         "intranet": "Intranet",
         "draft": "In bozza",
         "none": "Nessuno",
-        "no_workflow_state": "—"
+        "no_workflow_state": "—",
+        "no_workflow_state_label": "Nessuno stato di workflow"
       },
       "date": {
         "none": ""
