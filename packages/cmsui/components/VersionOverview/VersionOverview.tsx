@@ -27,6 +27,10 @@ const VersionOverview = ({
   upgrade,
 }: VersionOverviewProps) => {
   const auroraVersion = PackageJson.version;
+
+  const addons = config.settings.addonsInfo as
+    Array<{ name: string; version: string }>;
+
   return (
     <div className="versionoverview-container">
       <h2>Version Overview</h2>
@@ -42,7 +46,7 @@ const VersionOverview = ({
       </ul>
       <h3>Add-ons</h3>
       <ul>
-        {config.settings.addonsInfo.map((addon) => (
+        {addons.map((addon) => (
           <li key={addon.name}>
             {addon.name}: {addon.version}
           </li>
