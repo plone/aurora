@@ -1,0 +1,7 @@
+{
+  "id": "@plone/aurora-nick-acceptance:default",
+  "title": "Aurora acceptance test site",
+  "description": "Plone-compatible fixture data for Aurora acceptance tests",
+  "version": 1000,
+  "dependencies": ["@plone/nick:core", "@plone/nick:multilingual"]
+}

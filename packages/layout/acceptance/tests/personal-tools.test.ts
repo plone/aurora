@@ -1,12 +1,13 @@
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
+import { acceptanceApiURL } from '../../../tooling/playwright/backend';
 
 test.setTimeout(45_000);
 
 test('personal tools edit the profile, save preferences and log out', async ({
   page,
 }) => {
-  const api = process.env.API_PATH || 'http://127.0.0.1:55001/plone';
+  const api = acceptanceApiURL();
   const admin = await page.request.post(`${api}/@login`, {
     data: { login: 'admin', password: 'secret' },
     headers: { Accept: 'application/json' },

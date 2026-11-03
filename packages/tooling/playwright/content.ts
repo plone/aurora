@@ -2,6 +2,7 @@ import type { APIRequestContext, Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { basename, dirname, join } from 'node:path';
+import { acceptanceApiURL, acceptanceAuthorization } from './backend';
 
 export type SevenApi = 'plone' | 'guillotina';
 
@@ -50,7 +51,6 @@ function getRequestContext(requestOrPage: APIRequestContext | Page) {
 
 function getDefaultApiConfig(options: SevenRequestOptions) {
   const hostname = process.env.BACKEND_HOST || '127.0.0.1';
-  const siteId = process.env.SITE_ID || 'plone';
 
   const api =
     options.api || (process.env.API === 'guillotina' ? 'guillotina' : 'plone');
@@ -59,7 +59,7 @@ function getDefaultApiConfig(options: SevenRequestOptions) {
     options.apiURL ||
     (api === 'guillotina'
       ? `http://${hostname}:8081/db/web`
-      : process.env.API_PATH || `http://${hostname}:55001/${siteId}`);
+      : acceptanceApiURL());
 
   const username =
     options.username || (api === 'guillotina' ? 'root' : 'admin');
@@ -67,13 +67,6 @@ function getDefaultApiConfig(options: SevenRequestOptions) {
     options.password || (api === 'guillotina' ? 'root' : 'secret');
 
   return { api, apiURL, username, password };
-}
-
-function basicAuthHeader(username: string, password: string) {
-  const token = Buffer.from(`${username}:${password}`, 'utf8').toString(
-    'base64',
-  );
-  return `Basic ${token}`;
 }
 
 function normalizePath(value?: string) {
@@ -122,7 +115,12 @@ export async function setWorkflowSeven(
   const response = await request.post(url, {
     headers: {
       Accept: 'application/json',
-      Authorization: basicAuthHeader(username, password),
+      Authorization: await acceptanceAuthorization(
+        request,
+        apiURL,
+        username,
+        password,
+      ),
     },
     data: {
       actor,
@@ -164,7 +162,12 @@ export async function createContent(
   const { api, apiURL, username, password } =
     getDefaultApiConfig(requestOptions);
 
-  const authHeader = basicAuthHeader(username, password);
+  const authHeader = await acceptanceAuthorization(
+    request,
+    apiURL,
+    username,
+    password,
+  );
   const normalizedPath = normalizePath(path);
   const containerUrl = `${apiURL}/${normalizedPath}`;
 
