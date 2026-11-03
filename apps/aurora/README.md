@@ -51,19 +51,7 @@ The frontend is available at <http://localhost:3000> and the backend at <http://
 
 ### Develop and test with Nick
 
-To use the [Nick](https://nick.docs.plone.org/) backend instead, start its
-Docker image and PostgreSQL with `make nick-start`. The demo profile uses
-`admin` / `admin`. Start Aurora with
-`PLONE_API_PATH=http://localhost:8080 pnpm start`. Set `NICK_PORT` when starting
-the stack if port 8080 is occupied, and use that port in `PLONE_API_PATH`.
-`make nick-stop` stops the stack and preserves its database and blobs.
-
-For the dedicated Nick acceptance suite, start a frontend with
-`make nick-acceptance-frontend`, then run `pnpm acceptance-test:nick` in another
-terminal. If using a non-default port, set `NICK_PORT` for the frontend and
-`API_PATH=http://localhost:<port>` for the tests. The suite creates uniquely
-named content and removes it afterwards; it does not use Plone's RobotRemote
-reset fixture. The Compose credentials and secret are for local testing only.
+To run Aurora with Nick and test their integration, follow the [Nick backend guide](https://plone-aurora.readthedocs.io/how-to-guides/use-nick-backend.html).
 
 ## Releases
 
