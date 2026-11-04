@@ -1,0 +1,1 @@
+A form validator can report the errors of the fields inside its field, such as the fields of the items of a list, by returning them by relative path. The form state has a `submitCount`, the number of submit attempts. @sneridagh
