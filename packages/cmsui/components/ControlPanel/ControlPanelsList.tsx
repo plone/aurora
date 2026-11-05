@@ -143,12 +143,17 @@ export const ControlPanelsList = ({
                         ? `${panel.domId}-description`
                         : undefined
                     }
+                    // An inset focus ring, since the list clips anything
+                    // outside the row, like the Link's own ring, which is
+                    // hidden. `outline-hidden` clears the outline style, so
+                    // focus sets it again.
                     className={`
                       flex h-full min-h-16 items-center gap-3.5 bg-quanta-air px-4 py-2.5
-                      text-quanta-denim no-underline outline-none
+                      text-quanta-denim no-underline outline-hidden
                       hover:bg-quanta-snow
                       focus-visible:outline-2 focus-visible:-outline-offset-2
-                      focus-visible:outline-quanta-cobalt
+                      focus-visible:outline-quanta-cobalt focus-visible:outline-solid
+                      data-focus-visible:after:hidden
                     `}
                   >
                     <span

@@ -109,7 +109,9 @@ const SiteOverview = ({
             >
               {title}
             </h2>
-            {siteUrl && (
+            {/* The address is known only in the browser: until then, its
+              line is kept, so the title doesn't move. */}
+            {siteUrl ? (
               <a
                 href={siteUrl}
                 className={`
@@ -119,6 +121,8 @@ const SiteOverview = ({
               >
                 {siteUrl.replace(/^https?:\/\//, '')}
               </a>
+            ) : (
+              <span aria-hidden="true" className="h-[18px]" />
             )}
           </div>
         </div>
