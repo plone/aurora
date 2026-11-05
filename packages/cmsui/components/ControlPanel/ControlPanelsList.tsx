@@ -132,7 +132,10 @@ export const ControlPanelsList = ({
             {items.map((panel) => {
               const { Icon } = panel;
               return (
-                <li key={panel.domId} className="controlpanel-item">
+                <li
+                  key={panel.domId}
+                  className="controlpanel-item bg-quanta-air"
+                >
                   {/* Named by its title, so the description doesn't make
                     the link's name long. */}
                   <Link
@@ -146,13 +149,15 @@ export const ControlPanelsList = ({
                     // An inset focus ring, since the list clips anything
                     // outside the row, like the Link's own ring, which is
                     // hidden. `outline-hidden` clears the outline style, so
-                    // focus sets it again.
+                    // focus sets it again. The ring is rounded like the
+                    // list's inner corners, so the ones in a corner fit.
                     className={`
                       flex h-full min-h-16 items-center gap-3.5 bg-quanta-air px-4 py-2.5
                       text-quanta-denim no-underline outline-hidden
                       hover:bg-quanta-snow
-                      focus-visible:outline-2 focus-visible:-outline-offset-2
-                      focus-visible:outline-quanta-cobalt focus-visible:outline-solid
+                      focus-visible:rounded-[9px] focus-visible:outline-2
+                      focus-visible:-outline-offset-2 focus-visible:outline-quanta-cobalt
+                      focus-visible:outline-solid
                       data-focus-visible:after:hidden
                     `}
                   >
