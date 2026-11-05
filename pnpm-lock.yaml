@@ -144,6 +144,9 @@ importers:
       '@plone/blocks':
         specifier: workspace:*
         version: link:../../packages/blocks
+      '@plone/christmas-theme':
+        specifier: workspace:*
+        version: link:../../packages/christmas-theme
       '@plone/client':
         specifier: workspace:*
         version: link:../../packages/client
@@ -402,6 +405,31 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 4.1.4(@opentelemetry/api@1.9.0)(@types/node@24.10.1)(@vitest/coverage-v8@4.1.4)(jsdom@28.1.0(supports-color@8.1.1))(vite@8.0.8(@types/node@24.10.1)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))
+
+  packages/christmas-theme:
+    dependencies:
+      '@plone/registry':
+        specifier: workspace:*
+        version: link:../registry
+      react:
+        specifier: ^19.2.0
+        version: 19.2.0
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.0(react@19.2.0)
+    devDependencies:
+      '@plone/types':
+        specifier: workspace:*
+        version: link:../types
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.6
+      '@types/react-dom':
+        specifier: 'catalog:'
+        version: 19.2.3(@types/react@19.2.6)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.2
 
   packages/client:
     dependencies:

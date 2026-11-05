@@ -7,6 +7,7 @@ const addons = [
   '@plone/publicui',
   '@plone/contents',
   '@plone/agave',
+  '@plone/christmas-theme',
 ];
 const theme = '';
 

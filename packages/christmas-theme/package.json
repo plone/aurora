@@ -1,0 +1,26 @@
+{
+  "name": "@plone/christmas-theme",
+  "version": "0.1.0",
+  "description": "A festive Christmas theme for Plone Aurora",
+  "license": "MIT",
+  "type": "module",
+  "main": "index.ts",
+  "files": [
+    "index.ts",
+    "src",
+    "styles"
+  ],
+  "peerDependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "dependencies": {
+    "@plone/registry": "workspace:*"
+  },
+  "devDependencies": {
+    "@plone/types": "workspace:*",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "typescript": "catalog:"
+  }
+}
