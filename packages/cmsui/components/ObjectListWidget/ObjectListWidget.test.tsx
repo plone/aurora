@@ -7,6 +7,12 @@ import { FormProvider, useFormStore, type FormApi } from '@plone/helpers';
 import { TextWidget } from '../TextWidget/TextWidget';
 import { BooleanWidget } from '../BooleanWidget/BooleanWidget';
 import { buildSchemaValidators } from '../Form/validation';
+import {
+  Button,
+  Disclosure,
+  DisclosureGroup,
+  DisclosurePanel,
+} from 'react-aria-components';
 import { ObjectListWidget } from './ObjectListWidget';
 import type { ItemSchema, ObjectListItem } from './objectList';
 
@@ -74,6 +80,7 @@ const validators = buildSchemaValidators<Record<string, unknown>>(
 function renderInForm(
   props: Partial<React.ComponentProps<typeof ObjectListWidget>> = {},
   initial: ObjectListItem[] = actions,
+  wrap: (children: React.ReactNode) => React.ReactNode = (children) => children,
 ) {
   function Harness() {
     form = useFormStore<Record<string, unknown>>({
@@ -82,9 +89,7 @@ function renderInForm(
       validators,
     });
     return (
-      <FormProvider form={form}>
-        <Field {...props} />
-      </FormProvider>
+      <FormProvider form={form}>{wrap(<Field {...props} />)}</FormProvider>
     );
   }
   function Field(fieldProps: typeof props) {
@@ -136,6 +141,27 @@ describe('ObjectListWidget, accordion layout', () => {
     expect(
       screen.getByRole('button', { name: /^Get in touch/ }),
     ).toBeInTheDocument();
+  });
+
+  it('opens an item inside a disclosure group, such as a fieldset', () => {
+    // The fieldsets of the block settings are an accordion: opening an item
+    // must not close the fieldset it's in.
+    renderInForm({}, actions, (children) => (
+      <DisclosureGroup defaultExpandedKeys={['default']}>
+        <Disclosure id="default">
+          <Button slot="trigger">Default</Button>
+          <DisclosurePanel>{children}</DisclosurePanel>
+        </Disclosure>
+      </DisclosureGroup>
+    ));
+    fireEvent.click(screen.getByRole('button', { name: /^Contact/ }));
+    expect(screen.getByRole('textbox', { name: 'Title' })).toHaveValue(
+      'Contact',
+    );
+    expect(screen.getByRole('button', { name: 'Default' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
   });
 
   it('adds an item with the defaults of its schema, and opens it', () => {

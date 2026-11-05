@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Button,
   Disclosure,
+  DisclosureGroupStateContext,
   DisclosurePanel,
   GridList,
   GridListItem,
@@ -71,23 +72,27 @@ export function ObjectListRows(props: ObjectListRowsProps) {
     onAction,
   } = props;
 
+  // The rows are disclosures of their own. Inside a disclosure group, such
+  // as the accordion of a form's fieldsets, React Aria would make them items
+  // of that group: opening an item would close the fieldset it's in.
   return (
-    <GridList
-      aria-labelledby={labelId}
-      keyboardNavigationBehavior="tab"
-      dragAndDropHooks={dragAndDropHooks}
-      className="flex flex-col gap-2 outline-hidden"
-    >
-      {rows.map((row, index) => {
-        const name = row.title || row.fallbackTitle;
-        const isOpen =
-          props.mode === 'accordion' && props.expandedKey === row.key;
-        return (
-          <GridListItem
-            key={row.key}
-            id={row.key}
-            textValue={name}
-            className={({ isFocusVisible, isDragging, isDropTarget }) => `
+    <DisclosureGroupStateContext.Provider value={null}>
+      <GridList
+        aria-labelledby={labelId}
+        keyboardNavigationBehavior="tab"
+        dragAndDropHooks={dragAndDropHooks}
+        className="flex flex-col gap-2 outline-hidden"
+      >
+        {rows.map((row, index) => {
+          const name = row.title || row.fallbackTitle;
+          const isOpen =
+            props.mode === 'accordion' && props.expandedKey === row.key;
+          return (
+            <GridListItem
+              key={row.key}
+              id={row.key}
+              textValue={name}
+              className={({ isFocusVisible, isDragging, isDropTarget }) => `
               rounded-lg border bg-quanta-air outline-hidden transition-shadow
               ${
                 row.invalid
@@ -100,54 +105,89 @@ export function ObjectListRows(props: ObjectListRowsProps) {
               ${isDragging ? 'opacity-60 shadow-lg' : ''}
               ${isDropTarget ? 'border-quanta-sapphire' : ''}
             `}
-          >
-            {({ allowsDragging }) => (
-              <div className="flex items-start gap-1 p-1.5">
-                {allowsDragging ? (
-                  <Button
-                    slot="drag"
-                    className={`
-                      ${iconButtonClass}
-                      cursor-grab
-                    `}
-                  >
-                    <DraggableIcon />
-                  </Button>
-                ) : (
-                  // Without dragging (an item is open, or the list is
-                  // disabled), the handle is only a picture: the menu
-                  // still moves the item.
-                  <span
-                    aria-hidden
-                    className={`
-                      ${iconButtonClass}
-                      opacity-40
-                    `}
-                  >
-                    <DraggableIcon />
-                  </span>
-                )}
-                {props.mode === 'accordion' ? (
-                  <Disclosure
-                    isExpanded={isOpen}
-                    onExpandedChange={(expanded) =>
-                      props.onExpandedChange(expanded ? row.key : null)
-                    }
-                    className="min-w-0 flex-1"
-                  >
-                    <div className="flex items-center gap-1">
-                      <RowTitle
-                        row={row}
-                        trigger
-                        chevron={
-                          <ChevrondownIcon
-                            className={`
-                              size-5 shrink-0 text-quanta-pigeon transition-transform
-                              ${isOpen ? `rotate-180` : ''}
-                            `}
-                          />
-                        }
-                      />
+            >
+              {({ allowsDragging }) => (
+                <div className="flex items-start gap-1 p-1.5">
+                  {allowsDragging ? (
+                    <Button
+                      slot="drag"
+                      className={`
+                        ${iconButtonClass}
+                        cursor-grab
+                      `}
+                    >
+                      <DraggableIcon />
+                    </Button>
+                  ) : (
+                    // Without dragging (an item is open, or the list is
+                    // disabled), the handle is only a picture: the menu
+                    // still moves the item.
+                    <span
+                      aria-hidden
+                      className={`
+                        ${iconButtonClass}
+                        opacity-40
+                      `}
+                    >
+                      <DraggableIcon />
+                    </span>
+                  )}
+                  {props.mode === 'accordion' ? (
+                    <Disclosure
+                      isExpanded={isOpen}
+                      onExpandedChange={(expanded) =>
+                        props.onExpandedChange(expanded ? row.key : null)
+                      }
+                      className="min-w-0 flex-1"
+                    >
+                      <div className="flex items-center gap-1">
+                        <RowTitle
+                          row={row}
+                          trigger
+                          chevron={
+                            <ChevrondownIcon
+                              className={`
+                                size-5 shrink-0 text-quanta-pigeon transition-transform
+                                ${isOpen ? `rotate-180` : ''}
+                              `}
+                            />
+                          }
+                        />
+                        <ItemActions
+                          title={name}
+                          index={index}
+                          count={rows.length}
+                          canDuplicate={canDuplicate}
+                          isDisabled={isDisabled}
+                          onAction={(action) => onAction(index, action)}
+                        />
+                      </div>
+                      <DisclosurePanel>
+                        <div
+                          role="presentation"
+                          onPointerDown={stopInPanel}
+                          onMouseDown={stopInPanel}
+                          onClick={stopInPanel}
+                          onKeyDown={stopKeysInPanel}
+                          className="px-1.5 pt-3 pb-2"
+                        >
+                          {isOpen && props.renderPanel(index)}
+                        </div>
+                      </DisclosurePanel>
+                    </Disclosure>
+                  ) : (
+                    <div className="flex min-w-0 flex-1 items-center gap-1">
+                      <RowTitle row={row} />
+                      <Button
+                        aria-label={t('cmsui.widgets.objectList.edit', {
+                          title: name,
+                        })}
+                        isDisabled={isDisabled}
+                        onPress={() => props.onEdit(index)}
+                        className={iconButtonClass}
+                      >
+                        <PencilIcon />
+                      </Button>
                       <ItemActions
                         title={name}
                         index={index}
@@ -157,48 +197,14 @@ export function ObjectListRows(props: ObjectListRowsProps) {
                         onAction={(action) => onAction(index, action)}
                       />
                     </div>
-                    <DisclosurePanel>
-                      <div
-                        role="presentation"
-                        onPointerDown={stopInPanel}
-                        onMouseDown={stopInPanel}
-                        onClick={stopInPanel}
-                        onKeyDown={stopKeysInPanel}
-                        className="px-1.5 pt-3 pb-2"
-                      >
-                        {isOpen && props.renderPanel(index)}
-                      </div>
-                    </DisclosurePanel>
-                  </Disclosure>
-                ) : (
-                  <div className="flex min-w-0 flex-1 items-center gap-1">
-                    <RowTitle row={row} />
-                    <Button
-                      aria-label={t('cmsui.widgets.objectList.edit', {
-                        title: name,
-                      })}
-                      isDisabled={isDisabled}
-                      onPress={() => props.onEdit(index)}
-                      className={iconButtonClass}
-                    >
-                      <PencilIcon />
-                    </Button>
-                    <ItemActions
-                      title={name}
-                      index={index}
-                      count={rows.length}
-                      canDuplicate={canDuplicate}
-                      isDisabled={isDisabled}
-                      onAction={(action) => onAction(index, action)}
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-          </GridListItem>
-        );
-      })}
-    </GridList>
+                  )}
+                </div>
+              )}
+            </GridListItem>
+          );
+        })}
+      </GridList>
+    </DisclosureGroupStateContext.Provider>
   );
 }
 

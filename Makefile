@@ -188,8 +188,8 @@ frontend-docker-start: ## Starts a Docker-based frontend for development
 ######### Dev mode Acceptance tests
 
 .PHONY: acceptance-frontend-dev-start
-acceptance-frontend-dev-start: ## Start acceptance frontend in development mode
-	PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start
+acceptance-frontend-dev-start: ## Start acceptance frontend in development mode, with the test add-on
+	PLONE_TEST_ADDON=1 PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start
 
 ######### Plone Aurora Acceptance tests
 
@@ -202,8 +202,8 @@ ci-acceptance-backend-start: ## Start backend acceptance server in headless mode
 	docker run -i --rm -p 55001:55001 -e APPLY_PROFILES=plone.app.contenttypes:plone-content,plone.restapi:default,plone.volto:default,plone.app.discussion:default $(DOCKER_IMAGE_ACCEPTANCE)
 
 .PHONY: acceptance-frontend-prod-start
-acceptance-frontend-prod-start: ## Start acceptance frontend in production mode
-	pnpm --filter @plone/aurora build && PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start:prod
+acceptance-frontend-prod-start: ## Start acceptance frontend in production mode, with the test add-on
+	PLONE_TEST_ADDON=1 pnpm --filter @plone/aurora build && PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start:prod
 
 .PHONY: acceptance-test
 acceptance-test: ## Start Cypress in interactive mode
