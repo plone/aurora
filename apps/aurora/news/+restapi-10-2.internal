@@ -1,0 +1,1 @@
+Installed `plone.restapi` 10.2.0 in the development and acceptance backends, through `KGS` in `variables.mk`, which the acceptance backend now installs too. @sneridagh

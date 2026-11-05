@@ -23,6 +23,7 @@ register-and-retrieve-utilities
 configure-style-fields
 couple-block-schema-fields
 validate-form-fields
+add-a-control-panel
 work-with-dates-in-widgets
 add-editor-migration
 register-slots

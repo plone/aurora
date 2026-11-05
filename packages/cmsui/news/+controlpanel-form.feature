@@ -1,0 +1,1 @@
+Gave the control panel forms a clear header, even spacing between fields, and their fieldsets as titled sections when there is more than one. Saving a control panel goes back to the site setup, and the toolbar shows Save before Back, as in the edit form. @sneridagh

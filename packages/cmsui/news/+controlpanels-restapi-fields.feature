@@ -1,0 +1,1 @@
+Used the `description`, `icon` and `group_id` that `plone.restapi` 10.2.0 sends for each control panel, when it sends them: the backend description wins over the translated one, the icon name maps to an icon in the new `config.settings.controlPanelsIconNames` before the icon by id, and the group title is translated by its id from `cmsui.controlpanelGroups.<group_id>`. @sneridagh

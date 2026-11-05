@@ -117,7 +117,8 @@ export interface SettingsConfig {
   showRelatedItems: boolean;
   controlpanels: Controlpanel[];
   controlPanelsIcons: IconType;
-  filterControlPanels: unknown;
+  controlPanelsIconNames: IconType;
+  filterControlPanels: (controlpanels: Controlpanel[]) => Controlpanel[];
   filterControlPanelsSchema: (schema: Controlpanel) => ControlPanelSchema;
   externalRoutes: {
     match?: string | { path: string; exact: boolean; strict: boolean };
