@@ -12,6 +12,7 @@ export const test = base.extend<TestFixtures>({
   resetBackend: [
     async ({ page, request }, use, testInfo) => {
       const backend = acceptanceBackend();
+      const startedAt = new Date();
       if (backend === 'nick') {
         if (testInfo.config.workers !== 1) {
           throw new Error('Nick acceptance tests require exactly one worker');
@@ -26,7 +27,9 @@ export const test = base.extend<TestFixtures>({
         await use();
       } finally {
         if (backend === 'nick' && testInfo.status !== testInfo.expectedStatus) {
-          const logs = await nickLogs().catch(() => 'Could not read Nick logs');
+          const logs = await nickLogs(startedAt).catch(
+            () => 'Could not read Nick logs',
+          );
           await testInfo.attach('nick-logs', {
             body: logs,
             contentType: 'text/plain',

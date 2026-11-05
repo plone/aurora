@@ -81,7 +81,10 @@ In a third terminal, run the shared suite.
 pnpm acceptance-test:nick
 ```
 
-The fixture starts its own Nick and PostgreSQL stack and recreates its database and blob volumes before each test.
+The suite runs against its own Nick and PostgreSQL stack.
+Before each test, the acceptance add-on puts the database back into its seeded state.
+On the first reset it copies the seeded database to a template database, and each reset then recreates the database from that template, which takes a fraction of a second.
+The stack stores blobs in the database, so the reset covers them too.
 Its Compose project is `aurora-nick-fixture`, separate from the development stack.
 Run only one instance of this suite at a time and use one Playwright worker, as the tests share that isolated stack.
 The fixture uses port `55002` by default.
@@ -92,7 +95,9 @@ When you finish, remove the isolated stack and its test data.
 make nick-shared-test-stop
 ```
 
-The Nick adapter recreates the test site instead of using the Plone acceptance suite's RobotRemote reset fixture.
+The reset plays the role of the Plone acceptance suite's RobotRemote reset fixture.
+The acceptance add-on enables it only when `AURORA_ACCEPTANCE_RESET=1`, as set in its Compose file, at `POST /@aurora-acceptance-reset`.
+Never enable it on a site with data you want to keep.
 See {doc}`../contributing/acceptance-tests` for the Plone acceptance workflow.
 
 ## Stop the stack
