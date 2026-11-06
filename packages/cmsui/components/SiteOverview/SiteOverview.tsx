@@ -1,14 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@plone/quanta';
 import type { GetSiteResponse, GetSystemResponse } from '@plone/types';
-import appInfo from '@plone/registry/app-info';
+import PackageJson from '../../../../apps/aurora/package.json';
+import config from '@plone/registry';
+import type { Package } from '@plone/registry/addon-registry';
 
 interface SiteOverviewProps {
   system: GetSystemResponse;
   site?: Partial<GetSiteResponse>;
   /** The address visitors reach the site at. Defaults to the browser's. */
   siteUrl?: string;
+  addons?: Package[];
 }
 
 const cardClassName =
@@ -36,12 +39,20 @@ const SiteOverview = ({
   system,
   site,
   siteUrl: siteUrlProp,
+  addons = [],
 }: SiteOverviewProps) => {
   const { t } = useTranslation();
-  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>(
-    'idle',
-  );
-  const copyTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const [copySystemInfoStatus, setCopySystemInfoStatus] = useState<
+    'idle' | 'copied' | 'failed'
+  >('idle');
+  const [copyAddonsInfoStatus, setCopyAddonsInfoStatus] = useState<
+    'idle' | 'copied' | 'failed'
+  >('idle');
+  const copySystemInfoTimeout =
+    useRef<ReturnType<typeof setTimeout>>(undefined);
+  const copyAddonsInfoTimeout =
+    useRef<ReturnType<typeof setTimeout>>(undefined);
+
   // Only known in the browser: the server may be reached at an internal
   // address, behind a proxy, and the clipboard needs a secure origin.
   const [siteUrl, setSiteUrl] = useState(siteUrlProp);
@@ -52,17 +63,21 @@ const SiteOverview = ({
     setCanCopy(Boolean(navigator.clipboard));
   }, [siteUrlProp]);
 
-  useEffect(() => () => clearTimeout(copyTimeout.current), []);
+  useEffect(
+    () => () => {
+      clearTimeout(copySystemInfoTimeout.current);
+      clearTimeout(copyAddonsInfoTimeout.current);
+    },
+    [],
+  );
   const title = site?.['plone.site_title'] || 'Plone';
+
   // Python's version string carries the build details after the number.
   const [pythonVersion] = system.python_version?.split(' ') ?? [];
 
   const versions: [string, string | undefined][] = [
     ['Plone', system.plone_version],
-    [
-      appInfo.name === '@plone/aurora' ? 'Plone Aurora' : appInfo.name,
-      appInfo.version,
-    ],
+    ['Plone Aurora', PackageJson.version],
     ['plone.restapi', system.plone_restapi_version],
     ['Zope', system.zope_version],
     ['Python', pythonVersion],
@@ -84,12 +99,45 @@ const SiteOverview = ({
       .join('\n');
     try {
       await navigator.clipboard.writeText(text);
-      setCopyStatus('copied');
+      setCopySystemInfoStatus('copied');
     } catch {
-      setCopyStatus('failed');
+      setCopySystemInfoStatus('failed');
     }
-    clearTimeout(copyTimeout.current);
-    copyTimeout.current = setTimeout(() => setCopyStatus('idle'), 2000);
+    clearTimeout(copySystemInfoTimeout.current);
+    copySystemInfoTimeout.current = setTimeout(
+      () => setCopySystemInfoStatus('idle'),
+      2000,
+    );
+  };
+
+  const finalAddons =
+    Array.isArray(addons) && addons.length > 0
+      ? addons
+      : (config.settings.addonsInfo as Package[]);
+  const addonsList: [string, string | undefined][] = useMemo(() => {
+    return finalAddons.map((addon) => [addon.name, addon.version]);
+  }, [finalAddons]);
+
+  const copyAddonsInfo = async () => {
+    const text = addonsList
+      .map(
+        ([name, version]: [string, string | undefined]) =>
+          `${name}: ${version}`,
+      )
+      .join('\n');
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyAddonsInfoStatus('copied');
+    } catch {
+      setCopyAddonsInfoStatus('failed');
+    }
+
+    clearTimeout(copyAddonsInfoTimeout.current);
+    copyAddonsInfoTimeout.current = setTimeout(
+      () => setCopyAddonsInfoStatus('idle'),
+      2000,
+    );
   };
 
   return (
@@ -190,11 +238,37 @@ const SiteOverview = ({
             className="self-start text-[13px]"
             onPress={copySystemInfo}
           >
-            {copyStatus === 'copied'
+            {copySystemInfoStatus === 'copied'
               ? t('cmsui.siteOverview.copied')
-              : copyStatus === 'failed'
+              : copySystemInfoStatus === 'failed'
                 ? t('cmsui.siteOverview.copyFailed')
                 : t('cmsui.siteOverview.copySystemInfo')}
+          </Button>
+        )}
+      </section>
+
+      <section className={cardClassName} aria-labelledby="siteoverview-addons">
+        <div className="flex items-center justify-between gap-3">
+          <h2
+            id="siteoverview-addons"
+            className="text-[15px] leading-[22px] font-semibold text-quanta-denim"
+          >
+            {t('cmsui.siteOverview.addons')}
+          </h2>
+        </div>
+        <Details entries={addonsList} />
+        {canCopy && (
+          <Button
+            variant="neutral"
+            accent
+            className="self-start text-[13px]"
+            onPress={copyAddonsInfo}
+          >
+            {copyAddonsInfoStatus === 'copied'
+              ? t('cmsui.siteOverview.copied')
+              : copyAddonsInfoStatus === 'failed'
+                ? t('cmsui.siteOverview.copyFailed')
+                : t('cmsui.siteOverview.copyAddonsInfo')}
           </Button>
         )}
       </section>
