@@ -11,6 +11,7 @@ interface SiteOverviewProps {
   site?: Partial<GetSiteResponse>;
   /** The address visitors reach the site at. Defaults to the browser's. */
   siteUrl?: string;
+  addons?: Package[];
 }
 
 const cardClassName =
@@ -38,16 +39,19 @@ const SiteOverview = ({
   system,
   site,
   siteUrl: siteUrlProp,
+  addons = [],
 }: SiteOverviewProps) => {
   const { t } = useTranslation();
-  const [copySystemInfoStatus, setCopySystemInfoStatus] =
-    useState<'idle' | 'copied' | 'failed'>('idle');
-  const [copyAddonsInfoStatus, setCopyAddonsInfoStatus] =
-    useState<'idle' | 'copied' | 'failed'>('idle');
-  const copySystemInfoTimeout = useRef<ReturnType<typeof setTimeout>>(
-    undefined);
-  const copyAddonsInfoTimeout = useRef<ReturnType<typeof setTimeout>>(
-    undefined);
+  const [copySystemInfoStatus, setCopySystemInfoStatus] = useState<
+    'idle' | 'copied' | 'failed'
+  >('idle');
+  const [copyAddonsInfoStatus, setCopyAddonsInfoStatus] = useState<
+    'idle' | 'copied' | 'failed'
+  >('idle');
+  const copySystemInfoTimeout =
+    useRef<ReturnType<typeof setTimeout>>(undefined);
+  const copyAddonsInfoTimeout =
+    useRef<ReturnType<typeof setTimeout>>(undefined);
   // Only known in the browser: the server may be reached at an internal
   // address, behind a proxy, and the clipboard needs a secure origin.
   const [siteUrl, setSiteUrl] = useState(siteUrlProp);
@@ -58,10 +62,13 @@ const SiteOverview = ({
     setCanCopy(Boolean(navigator.clipboard));
   }, [siteUrlProp]);
 
-  useEffect(() => () => {
-    clearTimeout(copySystemInfoTimeout.current);
-    clearTimeout(copyAddonsInfoTimeout.current);
-  }, []);
+  useEffect(
+    () => () => {
+      clearTimeout(copySystemInfoTimeout.current);
+      clearTimeout(copyAddonsInfoTimeout.current);
+    },
+    [],
+  );
   const title = site?.['plone.site_title'] || 'Plone';
   // Python's version string carries the build details after the number.
   const [pythonVersion] = system.python_version?.split(' ') ?? [];
@@ -95,18 +102,24 @@ const SiteOverview = ({
       setCopySystemInfoStatus('failed');
     }
     clearTimeout(copySystemInfoTimeout.current);
-    copySystemInfoTimeout.current = setTimeout(() =>
-        setCopySystemInfoStatus('idle'), 2000);
+    copySystemInfoTimeout.current = setTimeout(
+      () => setCopySystemInfoStatus('idle'),
+      2000,
+    );
   };
 
-  const addons: Package[] = config.settings.addonsInfo;
-  const addonsList = useMemo(() => {
-    return addons.map((addon) => [addon.name, addon.version]);
-  }, []);
+  const finalAddons = addons || (config.settings.addonsInfo as Package[]);
+  const addonsList: [string, string | undefined][] = useMemo(() => {
+    return finalAddons.map((addon) => [addon.name, addon.version]);
+  }, [finalAddons]);
 
   const copyAddonsInfo = async () => {
-    const text = addonsList.map(([name, version]: [string, string]) =>
-        `${name}: ${version}`).join('\n');
+    const text = addonsList
+      .map(
+        ([name, version]: [string, string | undefined]) =>
+          `${name}: ${version}`,
+      )
+      .join('\n');
 
     try {
       await navigator.clipboard.writeText(text);
@@ -116,8 +129,10 @@ const SiteOverview = ({
     }
 
     clearTimeout(copyAddonsInfoTimeout.current);
-    copyAddonsInfoTimeout.current = setTimeout(() =>
-      setCopyAddonsInfoStatus('idle'), 2000);
+    copyAddonsInfoTimeout.current = setTimeout(
+      () => setCopyAddonsInfoStatus('idle'),
+      2000,
+    );
   };
 
   return (
