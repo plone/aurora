@@ -11,6 +11,7 @@ import {
 
 import { Editor, EditorContainer, EditorView } from '../ui/editor';
 import { EditorToaster } from '../ui/editor-toaster';
+import { PlateHostProvider } from './plate-host-context';
 import {
   I18nPlugin,
   defaultLanguage,
@@ -46,6 +47,11 @@ export function PlateEditor(props: {
    * @default true
    */
   toaster?: boolean;
+  /**
+   * The element where block settings render, such as the host's sidebar.
+   * Without it, settings open in a popover next to the block.
+   */
+  settingsContainer?: () => HTMLElement | null;
   onChange: (options: {
     editor: TPlateEditor<Value, AnyPluginConfig>;
     value: TElement[];
@@ -58,6 +64,11 @@ export function PlateEditor(props: {
   );
   const t = props.t ?? legacy?.t ?? fallbackTranslate;
   const language = props.language ?? legacy?.language ?? defaultLanguage;
+
+  const host = useMemo(
+    () => ({ settingsContainer: props.settingsContainer }),
+    [props.settingsContainer],
+  );
 
   const editor = usePlateEditor({
     // Normalize the loaded value so plugin invariants hold from the start
@@ -92,24 +103,26 @@ export function PlateEditor(props: {
   }, [editor]);
 
   return (
-    <Plate
-      editor={editor}
-      onChange={(options) => {
-        props.onChange?.(options);
-      }}
-    >
-      {/* Provides editor context */}
-      <EditorContainer className="">
-        {/* Styles the editor area */}
-        <Editor
-          className={props.className}
-          variant="block"
-          placeholder="Type text..."
-        />
-      </EditorContainer>
-      {props.children}
-      {props.toaster !== false && <EditorToaster />}
-    </Plate>
+    <PlateHostProvider value={host}>
+      <Plate
+        editor={editor}
+        onChange={(options) => {
+          props.onChange?.(options);
+        }}
+      >
+        {/* Provides editor context */}
+        <EditorContainer className="">
+          {/* Styles the editor area */}
+          <Editor
+            className={props.className}
+            variant="block"
+            placeholder="Type text..."
+          />
+        </EditorContainer>
+        {props.children}
+        {props.toaster !== false && <EditorToaster />}
+      </Plate>
+    </PlateHostProvider>
   );
 }
 
@@ -123,6 +136,7 @@ export {
 } from 'platejs/react';
 export { BlockSelectionPlugin };
 export { getClosestPloneBlockEntry } from './plugins/plone-block-adapter';
+export { usePlateHost, type PlateHostContextValue } from './plate-host-context';
 
 export function PlateRenderer(
   props: Omit<

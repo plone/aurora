@@ -9,18 +9,56 @@ import { createTPlatePlugin } from 'platejs/react';
 import {
   ACCORDION_EDITOR_KEY,
   enterPanel,
+  findAccordionEntry,
+  getSettingsTarget,
   movePanel,
+  setSettingsTarget,
   type AccordionEditorOptions,
 } from './editor-transforms';
 import { moveInnerBlock } from './inner-block-transforms';
 import {
+  ACCORDION_KEY,
   ACCORDION_PANEL_CONTENT_KEY,
+  ACCORDION_PANEL_KEY,
   ACCORDION_PANEL_TITLE_KEY,
 } from './types';
 
 /**
+ * Esc selects the level above in the accordion's settings: a panel's title or
+ * settings › the accordion › nothing. Elsewhere, the editor's own Esc (which
+ * selects the block) applies.
+ */
+const handleEscape = (editor: SlateEditor): boolean => {
+  const target = getSettingsTarget(editor);
+  if (target?.type === ACCORDION_KEY) {
+    setSettingsTarget(editor, null);
+    return true;
+  }
+
+  let panelPath: number[] | undefined;
+  if (target?.type === ACCORDION_PANEL_KEY) {
+    panelPath = findAccordionEntry(editor, target)?.[1];
+  } else {
+    const title = editor.api.above({
+      match: { type: ACCORDION_PANEL_TITLE_KEY },
+    });
+    if (title) panelPath = PathApi.parent(title[1]);
+  }
+  if (!panelPath) return false;
+
+  const accordion = editor.api.node(PathApi.parent(panelPath))?.[0];
+  if (!ElementApi.isElement(accordion)) return false;
+  setSettingsTarget(editor, {
+    type: ACCORDION_KEY,
+    id: String(accordion.id),
+  });
+  return true;
+};
+
+/**
  * Handles a key press in an accordion. Returns `true` when it handled it.
  *
+ * - Esc selects the level above: panel › accordion › nothing.
  * - Enter in a panel title moves into the panel's first block.
  * - Alt+Shift+↑ and Alt+Shift+↓ move the panel, in a panel title, or the
  *   block, in a block of a panel.
@@ -39,6 +77,11 @@ export const handleAccordionKeyDown = (
   },
 ): boolean => {
   if (event.defaultPrevented) return false;
+  if (event.key === 'Escape') {
+    if (!handleEscape(editor)) return false;
+    event.preventDefault();
+    return true;
+  }
   const isMove =
     event.altKey &&
     event.shiftKey &&
@@ -123,7 +166,7 @@ export const AccordionEditorPlugin = createTPlatePlugin<
   key: ACCORDION_EDITOR_KEY,
   // Runs before the plugins that merge blocks on Backspace and Delete.
   priority: 200,
-  options: { closedPanels: {}, typing: false },
+  options: { closedPanels: {}, settingsTarget: null, typing: false },
   handlers: {
     onKeyDown: ({ editor, event, getOption, setOption }) => {
       const key = (event as unknown as KeyboardEvent).key;
@@ -142,6 +185,23 @@ export const AccordionEditorPlugin = createTPlatePlugin<
     },
     onMouseMove: ({ getOption, setOption }) => {
       if (getOption('typing')) setOption('typing', false);
+    },
+    // When the caret moves out of the accordion or panel whose settings show,
+    // its settings close, so the host shows what holds the selection.
+    onChange: ({ editor }) => {
+      const target = getSettingsTarget(editor);
+      if (!target || !editor.selection) return;
+      const movedSelection = editor.operations.some(
+        (operation) => operation.type === 'set_selection',
+      );
+      if (!movedSelection) return;
+      const entry = findAccordionEntry(editor, target);
+      if (
+        !entry ||
+        !PathApi.isAncestor(entry[1], editor.selection.anchor.path)
+      ) {
+        setSettingsTarget(editor, null);
+      }
     },
   },
 });
