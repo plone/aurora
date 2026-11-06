@@ -42,7 +42,7 @@ The fields on `ToastItem` are:
 
 `className`
 :   Optional modifier class.
-    Pass `'success'`, `'info'`, or `'error'` to use one of the variants that ship in {file}`Toast.css`.
+    Pass `'success'`, `'info'`, or `'error'` to use one of the variants that ship in {file}`Toast.module.css`.
     Project add-ons can register their own classes for additional toast alert styles.
 
 `showProgress`

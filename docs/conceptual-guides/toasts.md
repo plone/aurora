@@ -9,6 +9,8 @@ myst:
 
 # Toast notifications
 
+This chapter explains the concepts of the {term}`toast` framework.
+
 Plone Aurora ships a global toast framework based on the `UNSTABLE_Toast` primitives from React Aria Components.
 It is registered by `@plone/layout` and reachable from anywhere in the app via `@plone/registry`.
 Add-ons can confirm successful actions, surface route errors, or report background task progress without each one having to mount its own region.
@@ -47,13 +49,15 @@ The `install()` function registers three utilities in `@plone/registry` for work
 The visual `<Toast>` region is defined in {file}`packages/layout/components/Toast/Toast.tsx`.
 It's mounted once per layout, so toasts appear regardless of which route the user is on.
 
-The shared CSS lives in {file}`components/src/styles/basic/Toast.css`.
-It defines:
+Its styles live next to it, in the CSS module {file}`packages/layout/components/Toast/Toast.module.css`, which the component imports, so they load wherever the region is mounted.
+They sit in the `components` cascade layer, so a theme's rules win over them.
+The module defines:
 
-- The region anchor (`.react-aria-ToastRegion`) and base toast container (`.react-aria-Toast`).
+- The region anchor and the base toast container.
 - Four visual variants picked up from the toast's `className`: the default (Quanta `denim`), `.success` (`turtle`), `.info` (`royal`), and `.error` (`wine`).
   All colors reference Quanta tokens with hexadecimal fallbacks, so the styles render correctly outside a Quanta theme.
-- The countdown bar (`.react-aria-Toast-progress`) rendered along the bottom edge of every timed toast.
+  Each variant sets the `--toast-bg` custom property, and `--toast-fg` sets the text color.
+- The countdown bar rendered along the bottom edge of every timed toast.
 
 
 ## Countdown bar
