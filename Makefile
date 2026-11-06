@@ -160,8 +160,11 @@ packages/helpers/dist: $(shell find packages/helpers/src -type f)
 packages/react-router/dist: $(shell find packages/react-router/src -type f)
 	pnpm build:react-router
 
+packages/devtools/dist: $(shell find packages/devtools/src -type f)
+	pnpm build:devtools
+
 .PHONY: build-deps
-build-deps: packages/registry/dist packages/icons/dist packages/quanta/dist packages/components/dist packages/client/dist packages/react-router/dist packages/helpers/dist  ## Build dependencies
+build-deps: packages/registry/dist packages/icons/dist packages/quanta/dist packages/components/dist packages/client/dist packages/react-router/dist packages/helpers/dist packages/devtools/dist  ## Build dependencies
 
 ##### Release
 
@@ -189,7 +192,7 @@ frontend-docker-start: ## Starts a Docker-based frontend for development
 
 .PHONY: acceptance-frontend-dev-start
 acceptance-frontend-dev-start: ## Start acceptance frontend in development mode, with the test add-on
-	PLONE_TEST_ADDON=1 PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start
+	PLONE_DEVTOOLS=false PLONE_TEST_ADDON=1 PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start
 
 ######### Plone Aurora Acceptance tests
 

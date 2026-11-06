@@ -15,6 +15,12 @@ import { I18nextProvider } from 'react-i18next';
 
 export const streamTimeout = 5_000;
 
+// The Plone devtools, in development only (see `@plone/devtools/vite`).
+export const instrumentations =
+  import.meta.env.DEV && import.meta.env.PLONE_DEVTOOLS
+    ? [(await import('@plone/devtools/server')).serverInstrumentation]
+    : [];
+
 export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
