@@ -10,11 +10,11 @@ myst:
 # Toast notifications
 
 Plone Aurora ships a global toast framework based on the `UNSTABLE_Toast` primitives from React Aria Components.
-It is registered by `@plone/layout` and reachable from anywhere in the app via `@plone/registry`, so add-ons can confirm successful actions, surface route errors, or report background task progress without each one having to mount its own region.
+It is registered by `@plone/layout` and reachable from anywhere in the app via `@plone/registry`.
+Add-ons can confirm successful actions, surface route errors, or report background task progress without each one having to mount its own region.
 
 See a [demo of toasts](https://plone-storybook.readthedocs.io/?path=/docs/layout_toast--docs).
 
-For task-oriented guidance, see {doc}`../how-to-guides/show-toasts`.
 
 
 ## Architecture

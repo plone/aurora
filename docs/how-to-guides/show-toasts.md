@@ -13,12 +13,11 @@ Plone Aurora ships a global toast framework based on the `UNSTABLE_Toast` primit
 It is registered by `@plone/layout` and reachable from anywhere in the app via `@plone/registry`.
 Use it to confirm successful actions, surface route errors, or report background task progress.
 
-See a [demo of toasts](https://plone-storybook.readthedocs.io/?path=/docs/layout_toast--docs).
-
-For an explanation of how the framework is wired and where the region is mounted, see {doc}`../conceptual-guides/toasts`.
 
 
 ## Show a toast
+
+The following code example demonstrates how to show a toast.
 
 ```ts
 import config from '@plone/registry';
@@ -67,11 +66,13 @@ config.getUtility({ type: 'toast', name: 'show' }).method(
 `timeout`
 :   An integer representing the duration in milliseconds after which a toast will be auto-dismissed.
     Defaults to the value set by `DEFAULT_TOAST_TIMEOUT_MS`, currently 6000 milliseconds, exported from {file}`layout/config/toast.ts`.
-    Toasts with the `error` class are the exception: they default to sticky, so an error isn't gone before the user reads it.
-    Pass a number to give an error toast a timeout anyway.
+    Toasts with the `error` class are the exception.
+    They default to sticky, so an error isn't gone before the user reads it.
+    Pass a positive integer to give an error toast a timeout anyway.
     Pass `null` to require manual dismissal, which is useful for long-running operations that resolve via {ref}`dismiss <show-toasts-dismiss>`.
     `0` and negative values also make the toast sticky.
-    React Aria recommends a minimum of 5 seconds, so people who use a screen reader have time to read the announcement.
+    React Aria recommends a minimum of 5 seconds to allow visitors time to read the announcement.
+    Adjust the time according your visitors' needs.
 
 `onClose`
 :   Fires when the toast is removed for any reason, including auto-dismiss, close button, and programmatic dismiss.
