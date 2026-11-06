@@ -10,6 +10,7 @@ import {
 } from 'platejs/react';
 
 import { Editor, EditorContainer, EditorView } from '../ui/editor';
+import { EditorToaster } from '../ui/editor-toaster';
 import {
   I18nPlugin,
   defaultLanguage,
@@ -39,6 +40,12 @@ export function PlateEditor(props: {
   intl?: any;
   children?: ReactNode;
   className?: string;
+  /**
+   * Whether the editor renders a sonner `Toaster` for its notifications.
+   * Pass `false` when the host already renders one.
+   * @default true
+   */
+  toaster?: boolean;
   onChange: (options: {
     editor: TPlateEditor<Value, AnyPluginConfig>;
     value: TElement[];
@@ -101,6 +108,7 @@ export function PlateEditor(props: {
         />
       </EditorContainer>
       {props.children}
+      {props.toaster !== false && <EditorToaster />}
     </Plate>
   );
 }

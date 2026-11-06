@@ -147,3 +147,49 @@ test('does not offer an accordion inside an accordion', async ({ page }) => {
     page.getByRole('option', { name: 'Accordion', exact: true }),
   ).toHaveCount(0);
 });
+
+const panelTitles = async (page: Page, editorHandle: EditorHandle) =>
+  ((await accordionOf(page, editorHandle))?.children ?? []).map((panel) =>
+    nodeText(panel.children?.[0]),
+  );
+
+test('moves, duplicates and deletes panels, with undo', async ({ page }) => {
+  const { editorHandle } = await openAccordionPage(page);
+
+  // The caret is in the first panel's title, so its actions show.
+  await page.getByRole('button', { name: 'Move panel down' }).first().click();
+  await expect
+    .poll(() => panelTitles(page, editorHandle))
+    .toEqual(['How to find us', 'Opening hours']);
+  await expect(page.locator('[data-plate-announcer]')).toHaveText(
+    'Panel moved to position 2 of 2',
+  );
+
+  // Alt+Shift+↑ moves the panel whose title holds the caret.
+  await selectPlateEditorPoint(page, editorHandle, {
+    path: [1, 1, 0, 0],
+    offset: 0,
+  });
+  await page.keyboard.press('Alt+Shift+ArrowUp');
+  await expect
+    .poll(() => panelTitles(page, editorHandle))
+    .toEqual(['Opening hours', 'How to find us']);
+
+  await page.getByRole('button', { name: 'Duplicate panel' }).first().click();
+  await expect
+    .poll(() => panelTitles(page, editorHandle))
+    .toEqual(['Opening hours', 'Opening hours (copy)', 'How to find us']);
+
+  await page.getByRole('button', { name: 'Delete panel' }).nth(1).click();
+  await expect
+    .poll(() => panelTitles(page, editorHandle))
+    .toEqual(['Opening hours', 'How to find us']);
+  await expect(
+    page.getByText('Panel “Opening hours (copy)” deleted'),
+  ).toBeVisible();
+
+  await page.getByRole('button', { name: 'Undo' }).click();
+  await expect
+    .poll(() => panelTitles(page, editorHandle))
+    .toEqual(['Opening hours', 'Opening hours (copy)', 'How to find us']);
+});
