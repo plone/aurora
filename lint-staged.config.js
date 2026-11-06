@@ -1,12 +1,20 @@
 const { ESLint } = require('eslint');
 
+function shellQuote(arg) {
+  return "'" + String(arg).replace(/'/g, "'\\''") + "'";
+}
+
 const removeIgnoredFiles = async (files) => {
   const eslint = new ESLint();
   const ignoredFiles = await Promise.all(
     files.map((file) => eslint.isPathIgnored(file)),
   );
   const filteredFiles = files.filter((_, i) => !ignoredFiles[i]);
-  return filteredFiles.join(' ');
+
+  // escape parameters for CLI
+  const finalFiles = filteredFiles.map(shellQuote);
+
+  return finalFiles.join(' ');
 };
 module.exports = {
   'packages/!(volto)/**/*.{js,jsx,ts,tsx}': async (files) => {

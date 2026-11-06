@@ -26,9 +26,9 @@ export function Breadcrumb(
     <RACBreadcrumb {...props}>
       {({ isCurrent }) => (
         <>
-          {props.value?.icon && props.value?.icon}
+          {props.value?.icon}
           <Link {...props} />
-          {!isCurrent && props.separator && props.separator}
+          {!isCurrent && props.separator}
         </>
       )}
     </RACBreadcrumb>
@@ -42,50 +42,46 @@ export interface BreadcrumbsProps<
    * If we should include a root item in the breadcrumbs, we provide a Breadcrumb object.
    */
   root?: Breadcrumb;
+
+  /**
+   * Shall we surround the RAC Breadcrumbs component with a navigation landmark?
+   */
+  withNavigationLandmark?: boolean;
+
+  /**
+   * Props for the navigation landmark.
+   * Extends: <nav role="navigation">...</nav>
+   */
+  navigationLandmarkProps?: Record<string, any>;
 }
 
 /**
  * Breadcrumbs display a hierarchy of links to the current page or resource in an application.
  */
 export function Breadcrumbs<T extends Breadcrumb>(props: BreadcrumbsProps<T>) {
-  const { root, items } = props;
+  const {
+    root,
+    items,
+    withNavigationLandmark,
+    navigationLandmarkProps = {},
+  } = props;
   let itemsWithRoot: typeof items;
   if (root && items) {
     const rootItem = {
       '@id': root['@id'] || '/',
-      title: 'Home',
+      title: root.title,
       icon: root.icon || <HomeIcon size="sm" />,
     } as T;
-    itemsWithRoot = [rootItem, ...items!];
+    itemsWithRoot = [rootItem, ...items];
   }
 
-  return <RACBreadcrumbs {...props} items={itemsWithRoot || items} />;
-}
-
-// TODO: Unused? It's not exported
-export function BreadcrumbsSlot<T extends Breadcrumb>(
-  props: BreadcrumbsProps<T>,
-) {
-  const { root, items } = props;
-  let itemsWithRoot: typeof items;
-  if (root && items) {
-    const rootItem = {
-      '@id': root['@id'] || '/',
-      title: 'Home',
-      icon: root.icon || <HomeIcon size="sm" />,
-    } as T;
-    itemsWithRoot = [rootItem, ...items!];
+  const r = <RACBreadcrumbs {...props} items={itemsWithRoot || items} />;
+  if (withNavigationLandmark) {
+    return (
+      <nav role="navigation" {...navigationLandmarkProps}>
+        {r}
+      </nav>
+    );
   }
-
-  return (
-    <nav aria-label="breadcrumbs" role="navigation">
-      <Breadcrumbs items={itemsWithRoot || items}>
-        {(item) => (
-          <Breadcrumb id={item['@id']} href={item['@id']}>
-            {item.title}
-          </Breadcrumb>
-        )}
-      </Breadcrumbs>
-    </nav>
-  );
+  return r;
 }
