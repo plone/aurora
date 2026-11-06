@@ -1,3 +1,4 @@
+import { BaseAccordionKit } from './plugins/accordion/accordion-base-kit';
 import { BaseAlignKit } from './plugins/align-base-kit';
 import { BaseBasicBlocksKit } from './plugins/basic-blocks-base-kit';
 import { BaseBasicMarksKit } from './plugins/basic-marks-base-kit';
@@ -26,6 +27,7 @@ export const BlockBaseEditorKit = [
   ...BaseTocKit,
   ...BaseCalloutKit,
   ...BaseColumnKit,
+  ...BaseAccordionKit,
   ...BaseLinkKit,
   ...BaseMentionKit,
   ...BaseBasicMarksKit,

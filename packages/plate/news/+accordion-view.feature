@@ -1,0 +1,1 @@
+Added the accordion block: panels with a title that open and close, an option to keep only one panel open at a time, panels that open when the page loads, link anchors that open a panel, and White or Grey backgrounds. It works in any editor that uses the Plate presets, and its published view follows the WAI-ARIA accordion pattern. @Humanaice
