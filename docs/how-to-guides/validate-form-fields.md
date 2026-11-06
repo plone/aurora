@@ -330,6 +330,29 @@ The validators see the field with its `frontendOptions` widget props merged in, 
 The form builds its validators when it is created.
 A validator registered while a form is open applies to the forms created after it.
 
+### Fields of objects and lists of objects
+
+The fields of an `object` or `object_list` field are validated with its item schema, by the same rules as the other fields.
+Their errors show on the fields of each item, at paths such as `site_actions.2.title`.
+A required field of an item must not be empty, and the validators registered for its format, type, or widget check its value.
+The `blockType` and `fieldName` dependencies don't apply to the fields of an item.
+
+A validator of an item field gets the item as `formData`, not the whole form.
+With a `schemaEnhancer`, each item is validated with its enhanced schema.
+
+When a submit fails on the fields of an item, the accordion opens the first item with errors, and the form focuses its field.
+The rows of the items with errors are marked, in both layouts.
+
+A validator can do the same for a widget of your own that holds fields.
+It returns the errors of those fields by their path relative to the field, and the errors of the field itself under the `''` key:
+
+```ts
+const validate = (value) => ({
+  '': value.length > 10 ? 'Add at most 10 links.' : [],
+  '1.title': 'Required input is missing.',
+});
+```
+
 (override-a-validator-label)=
 
 ### Override a validator

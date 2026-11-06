@@ -249,6 +249,26 @@
         "dropZone": "Drop a file for {{label}}",
         "imageOnly": "Choose an image file.",
         "readError": "The file could not be read."
+      },
+      "objectList": {
+        "item": "Item",
+        "add": "Add {{item}}",
+        "addButton": "Add",
+        "untitled": "{{item}} {{position}}",
+        "empty": "Nothing added yet.",
+        "invalid": "Some fields of this item need attention.",
+        "actions": "Actions for {{title}}",
+        "moveUp": "Move up",
+        "moveDown": "Move down",
+        "duplicate": "Duplicate",
+        "remove": "Remove",
+        "edit": "Edit {{title}}",
+        "editTitle": "Edit {{item}}",
+        "save": "Save",
+        "cancel": "Cancel",
+        "removeTitle": "Remove {{title}}?",
+        "removeDescription": "The item is removed from the list. The change is kept when you save the form.",
+        "columnActions": "Actions"
       }
     },
     "saveFailed": "Could not save"

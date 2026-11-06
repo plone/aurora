@@ -183,6 +183,103 @@ describe('getServerValidationErrors', () => {
   });
 });
 
+describe('buildSchemaValidators, nested fields', () => {
+  const linkSchema = {
+    fieldsets: [{ id: 'default', title: 'Default', fields: ['title', 'href'] }],
+    properties: { title: { title: 'Title' }, href: { title: 'Link' } },
+    required: ['title'],
+  };
+
+  it('validates the fields of each item of an object list', () => {
+    const { links } = buildSchemaValidators<any>(
+      {
+        properties: {
+          links: { title: 'Links', widget: 'object_list', schema: linkSchema },
+        },
+      },
+      { t },
+    );
+    expect(
+      links([{ title: 'Home' }, { title: '' }, { href: '/x' }], {}),
+    ).toEqual({
+      '1.title': 'cmsui.validation.required',
+      '2.title': 'cmsui.validation.required',
+    });
+  });
+
+  it('runs the registered validators on the item fields', () => {
+    register({ fieldType: 'string' }, 'Bad value');
+    const { links } = buildSchemaValidators<any>(
+      {
+        properties: {
+          links: { title: 'Links', widget: 'object_list', schema: linkSchema },
+        },
+      },
+      { t },
+    );
+    expect(links([{ title: 'Home', href: 'bad' }], {})).toMatchObject({
+      '0.href': ['Bad value'],
+    });
+  });
+
+  it('keeps the required rule of the list itself', () => {
+    const { links } = buildSchemaValidators<any>(
+      {
+        properties: {
+          links: { title: 'Links', widget: 'object_list', schema: linkSchema },
+        },
+        required: ['links'],
+      },
+      { t },
+    );
+    expect(links([], {})).toEqual({ '': 'cmsui.validation.required' });
+  });
+
+  it('finds the item schema in the tagged values, and of an object', () => {
+    const { link } = buildSchemaValidators<any>(
+      {
+        properties: {
+          link: {
+            title: 'Link',
+            widgetOptions: {
+              frontendOptions: {
+                widget: 'object',
+                widgetProps: { schema: linkSchema },
+              },
+            },
+          },
+        },
+      },
+      { t },
+    );
+    expect(link({ href: '/x' }, {})).toEqual({
+      title: 'cmsui.validation.required',
+    });
+  });
+
+  it('validates each item with its enhanced schema', () => {
+    const { links } = buildSchemaValidators<any>(
+      {
+        properties: {
+          links: {
+            title: 'Links',
+            widget: 'object_list',
+            schema: linkSchema,
+            schemaEnhancer: ({ schema, formData }: any) =>
+              formData.external
+                ? { ...schema, required: ['title', 'href'] }
+                : schema,
+          },
+        },
+      },
+      { t },
+    );
+    expect(links([{ title: 'A' }, { title: 'B', external: true }], {})).toEqual(
+      { '1.href': 'cmsui.validation.required' },
+    );
+  });
+});
+
 describe('firstInvalidField', () => {
   it('follows the order of the fieldsets', () => {
     const schema = {
@@ -193,6 +290,13 @@ describe('firstInvalidField', () => {
     };
     expect(firstInvalidField(schema, { effective: [], description: [] })).toBe(
       'description',
+    );
+  });
+
+  it('finds the errors of the fields inside a field', () => {
+    const schema = { fieldsets: [{ fields: ['title', 'links'] }] };
+    expect(firstInvalidField(schema, { 'links.1.title': [] })).toBe(
+      'links.1.title',
     );
   });
 });

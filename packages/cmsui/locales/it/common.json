@@ -221,6 +221,26 @@
         "dropZone": "Trascina un file per {{label}}",
         "imageOnly": "Scegli un file immagine.",
         "readError": "Impossibile leggere il file."
+      },
+      "objectList": {
+        "item": "Elemento",
+        "add": "Aggiungi {{item}}",
+        "addButton": "Aggiungi",
+        "untitled": "{{item}} {{position}}",
+        "empty": "Nessun elemento aggiunto.",
+        "invalid": "Alcuni campi di questo elemento vanno controllati.",
+        "actions": "Azioni per {{title}}",
+        "moveUp": "Sposta su",
+        "moveDown": "Sposta giù",
+        "duplicate": "Duplica",
+        "remove": "Rimuovi",
+        "edit": "Modifica {{title}}",
+        "editTitle": "Modifica {{item}}",
+        "save": "Salva",
+        "cancel": "Annulla",
+        "removeTitle": "Rimuovere {{title}}?",
+        "removeDescription": "L'elemento viene rimosso dall'elenco. La modifica viene mantenuta quando salvi il modulo.",
+        "columnActions": "Azioni"
       }
     },
     "saveFailed": "Impossibile salvare"

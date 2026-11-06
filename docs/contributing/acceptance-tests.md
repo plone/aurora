@@ -54,7 +54,7 @@ We provide the following major test specs:
 -   Core (`core` used to test the core functionality of Plone Aurora)
 -   Multilingual (`multilingual` tests the multilingual support of Plone Aurora)
 -   Working Copy (`workingCopy` tests the working copy feature of Plone Aurora)
--   Core Sandbox (`coresandbox` tests Plone Aurora using configuration and elements that are not present in vanilla Plone Aurora)
+-   Test add-on (tests Plone Aurora with blocks and fields that are not present in vanilla Plone Aurora, see {ref}`acceptance-tests-test-addon-label`)
 
 There are convenience commands for each of these specs.
 See `Makefile` at the root of the repository for more information.
@@ -69,6 +69,25 @@ All test files are automatically picked up by Playwright.
 ```{seealso}
 -   [Playwright documentation](https://playwright.dev/docs/intro)
 -   {doc}`visual-regression-tests`, to check the look of Plone Aurora with screenshots
+```
+
+
+(acceptance-tests-test-addon-label)=
+
+### Test what the core doesn't ship
+
+Some features need configuration that vanilla Plone Aurora doesn't have, such as a block whose settings use a widget no core block uses yet.
+Register it in the test add-on, {file}`packages/test-addon`.
+It's a private package, never published, and the app only loads it when the `PLONE_TEST_ADDON` environment variable is set when the app is built or started.
+The `acceptance-frontend-dev-start` and `acceptance-frontend-prod-start` make targets set it, so the acceptance and visual regression tests in CI have it too.
+
+For example, the `objectListTest` block has an `object_list` field in each layout.
+It's restricted, so it doesn't show in the block chooser: the tests in {file}`packages/cmsui/acceptance/tests/object-list-widget.test.ts` create a page with the block in its data, and edit it in the block settings.
+
+To run the app with the test add-on yourself:
+
+```shell
+PLONE_TEST_ADDON=1 PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start
 ```
 
 

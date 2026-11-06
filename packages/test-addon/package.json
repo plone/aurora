@@ -1,0 +1,28 @@
+{
+  "name": "@plone/test-addon",
+  "description": "A Plone Aurora add-on that only the acceptance and visual regression tests load. It registers blocks and fields the core does not ship, to test widgets and features in a real form.",
+  "private": true,
+  "license": "MIT",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/plone/aurora.git",
+    "directory": "packages/test-addon"
+  },
+  "main": "index.ts",
+  "scripts": {
+    "lint:fix": "eslint --max-warnings=0 './**/*.{js,jsx,ts,tsx}' --fix --no-error-on-unmatched-pattern"
+  },
+  "peerDependencies": {
+    "react": "^19.1.0"
+  },
+  "dependencies": {
+    "@plone/registry": "workspace:*"
+  },
+  "devDependencies": {
+    "@plone/types": "workspace:*",
+    "@types/react": "catalog:",
+    "tsconfig": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
