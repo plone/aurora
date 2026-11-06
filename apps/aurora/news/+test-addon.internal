@@ -1,1 +1,0 @@
-Load the private `@plone/test-addon` add-on when the `PLONE_TEST_ADDON` environment variable is set, as the acceptance `make` targets do. It registers blocks and fields that only the acceptance and visual regression tests use. @sneridagh
