@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.10 (2026-11-06)
+
+### Bugfix
+
+- The Somersault page body gets the theme's inline inset on narrow screens, like the header and breadcrumbs, instead of running to the screen edge. @mpalomaki 
+
 ## 1.0.0-alpha.9 (2026-10-06)
 
 ### Feature
