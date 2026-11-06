@@ -8,6 +8,17 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.4 (2026-11-06)
+
+### Feature
+
+- Added `ModalSheet`, a modal dialog that is a `Modal` on wide screens and becomes a swipeable bottom sheet on narrow screens. A centered `Sheet` no longer shows the swipe handle. @sneridagh 
+
+### Bugfix
+
+- Sheets, and `ModalSheet` on mobile, now cover the CMS toolbar and other fixed or sticky page chrome, like `Modal` does. @sneridagh 
+- The `Modal` takes the adaptable width of the Figma design on desktop: it fills up to 90% of the viewport, with a maximum of 600 px, instead of spanning the whole screen. To change the maximum, set the `--modal-max-width` custom property in its `className`, which it now merges. @sneridagh 
+
 ## 1.0.0-alpha.3 (2026-10-29)
 
 ### Breaking
