@@ -58,6 +58,8 @@ export function SlashInputElement(
     [editor, inAccordion],
   );
 
+  const noteId = React.useId();
+
   const groups = React.useMemo(() => {
     return resolveSlashMenuGroups(editor, menuConfig, {
       container,
@@ -69,7 +71,9 @@ export function SlashInputElement(
   return (
     <PlateElement {...props} as="span">
       <InlineCombobox element={element} trigger="/">
-        <InlineComboboxInput />
+        <InlineComboboxInput
+          {...(inAccordion ? { 'aria-describedby': noteId } : {})}
+        />
 
         <InlineComboboxContent>
           <InlineComboboxEmpty>
@@ -100,6 +104,16 @@ export function SlashInputElement(
               )}
             </InlineComboboxGroup>
           ))}
+          {inAccordion && (
+            <p
+              id={noteId}
+              className="border-t px-3 py-2 text-xs text-muted-foreground"
+            >
+              {t('plate.accordion.noNesting', {
+                defaultValue: "Accordions can't be placed inside an accordion.",
+              })}
+            </p>
+          )}
         </InlineComboboxContent>
       </InlineCombobox>
 
