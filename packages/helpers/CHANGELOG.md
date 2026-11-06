@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.12 (2026-11-06)
+
+### Feature
+
+- A form validator can report the errors of the fields inside its field, such as the fields of the items of a list, by returning them by relative path. The form state has a `submitCount`, the number of submit attempts. @sneridagh 
+
 ## 2.0.0-alpha.11 (2026-10-30)
 
 ### Bugfix

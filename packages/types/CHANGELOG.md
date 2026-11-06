@@ -8,6 +8,17 @@
 
 <!-- towncrier release notes start -->
 
+## 3.0.0-alpha.10 (2026-11-06)
+
+### Feature
+
+- Added the `description`, `icon` and `group_id` fields of `plone.restapi` 10.2.0 to `Controlpanel`, and the `controlPanelsIconNames` setting. @sneridagh 
+- Typed `config.settings.filterControlPanels` as a function and added `plone_restapi_version` and `plone.distribution` to `GetSystemResponse`. @sneridagh 
+
+### Internal
+
+- Use bundler moduleResolution instead of deprecated node10. @aryan7081 
+
 ## 3.0.0-alpha.9 (2026-10-29)
 
 ### Feature

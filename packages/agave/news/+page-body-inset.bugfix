@@ -1,1 +1,0 @@
-The Somersault page body gets the theme's inline inset on narrow screens, like the header and breadcrumbs, instead of running to the screen edge. @mpalomaki

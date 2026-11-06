@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.11 (2026-11-06)
+
+### Bugfix
+
+- Accept image and file payloads on content update, both a new upload and the stored file as the API sent it, matching createContent. @aryan7081 
+
 ## 2.0.0-alpha.10 (2026-10-29)
 
 ### Feature

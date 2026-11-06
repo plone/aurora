@@ -4,7 +4,7 @@ myst:
     "description": "The core widgets of Plone Aurora's forms: what they are registered for, the value they read and write, and their widget options"
     "property=og:description": "The core widgets of Plone Aurora's forms: what they are registered for, the value they read and write, and their widget options"
     "property=og:title": "Core widgets"
-    "keywords": "Plone Aurora, forms, widgets, widget options, extraFields, object browser, image widget, select, vocabulary, tags, file upload, block schema"
+    "keywords": "Plone Aurora, forms, widgets, widget options, extraFields, object browser, image widget, select, vocabulary, tags, file upload, block schema, object, object list, object_list"
 ---
 
 (core-widgets-label)=
@@ -59,6 +59,8 @@ const blockSchema = {
 | `ImageWidget` | `widget: 'image'` | the image's URL, an app path for site content, or `null` |
 | `ObjectBrowserWidget` | `widget: 'object_browser'`, `factory: 'Relation List'`, `vocabulary: 'plone.app.vocabularies.Catalog'` | a list of the selected items |
 | `QuerystringWidget` | `widget: 'querystring'` | a query object |
+| `ObjectWidget` | `widget: 'object'` | an object with the fields of its schema |
+| `ObjectListWidget` | `widget: 'object_list'` | a list of objects with the fields of their schema, each with an `@id` |
 | `RecurrenceWidget` | the `recurrence` field | an RFC 5545 recurrence rule, or `null` |
 
 ## Text widgets
@@ -264,6 +266,155 @@ Its value is an object with the query's criteria, and its sorting and size.
   "limit": 10
 }
 ```
+
+(object-widget-label)=
+
+## `ObjectWidget`
+
+Edits an object whose fields a schema describes, such as a link with a title and a target.
+Each field of the object gets the widget its own schema asks for.
+Its value is the object, such as `{ "title": "Read more", "href": "/news" }`, or `null`.
+
+In a form, the fields of the object are fields of the form, at `<name>.<field>`.
+The form validates and saves them with the other fields.
+
+`schema`
+:   The schema of the object, with `fieldsets`, `properties`, and `required`, as in Volto.
+    It can also be a function that builds the schema from the widget's props.
+    In a block schema, set it as the field's `schema`.
+    In a content type's schema, set it in the `widgetProps` of `frontendOptions`.
+
+`schemaName`
+:   The name of a registered `schema` utility that builds the schema.
+    It wins over `schema`.
+
+`schemaEnhancer`
+:   A function that changes the schema from the object's values, `({ schema, formData, t }) => schema`.
+
+```ts
+const blockSchema = {
+  // ...
+  properties: {
+    cta: {
+      title: 'Call to action',
+      widget: 'object',
+      schema: {
+        title: 'Link',
+        fieldsets: [{ id: 'default', title: 'Default', fields: ['title', 'href'] }],
+        properties: {
+          title: { title: 'Title' },
+          href: { title: 'Target' },
+        },
+        required: ['title'],
+      },
+    },
+  },
+};
+```
+
+(object-list-widget-label)=
+
+## `ObjectListWidget`
+
+Edits a list of objects whose fields a schema describes, such as the actions of a site, or its social links.
+Its value is the list of objects, as Volto's `object_list` widget stores it.
+Each object has an `@id`, a UUID that keys it while the list is reordered.
+The widget gives one to every object that has none.
+
+```json
+[
+  { "@id": "9f0c6a3e-4b1d-4f0e-9a43-2c6f0a1b7d55", "title": "Sitemap", "href": "/sitemap" },
+  { "@id": "1b77d2c4-8e5f-4a3b-b2c1-7d9e0f6a4c33", "title": "Contact", "href": "/contact" }
+]
+```
+
+The widget has two layouts.
+
+`accordion`
+:   The default.
+    Each item is a row with its title and a summary.
+    An item opens to edit its fields in place, as fields of the form at `<name>.<index>.<field>`.
+    Use it where items are few, such as in the block settings.
+
+`table`
+:   Each item is a row of the `columns` you choose.
+    An item opens in a dialog, a bottom sheet on phones, which edits a draft of the item.
+    Save validates the draft with the item schema, and only then writes it to the list.
+    Cancel throws the draft away.
+    Where the table has no room, such as in the sidebar, its rows become a list.
+    Use it where the list is long or the order matters, such as social links.
+
+Items reorder by dragging their handle, with the mouse, touch, or keyboard.
+While an item is open in the accordion, its fields take the pointer, so the items don't drag: close the item first, or use its menu.
+The menu of each item moves it up or down, duplicates it, or removes it.
+The widget asks before it removes an item.
+
+The widget takes the widget options of `ObjectWidget` for the item schema: `schema`, `schemaName`, and `schemaEnhancer`, which it calls for each item.
+The item schema's `title` names one item, such as `Action`, and its `addMessage` replaces the text of the add button.
+
+`layout`
+:   `accordion`, the default, or `table`.
+
+`columns`
+:   The table's columns: field names of the item schema.
+    The default is every field.
+
+`itemTitle`
+:   The field that names an item in its row, in its menu, and in the remove dialog.
+    The default is the item's `title`, or else its first field with a value.
+
+`maxItems`
+:   The most items the list can hold.
+    The add and duplicate actions are disabled when it is full.
+
+`expandedItem` and `onExpandedChange`
+:   The `@id` of the open item, to control it from code, for example from a block that shows the item being edited.
+
+`cells`
+:   How the cells of a column render, by field name: `(value, item) => ReactNode`.
+    A backend can't send functions, so set it from code, in a widget of your own that renders `ObjectListWidget`.
+
+A backend picks the widget for a JSON field with `frontendOptions`:
+
+```python
+from plone.autoform import directives
+
+directives.widget(
+    "social_links",
+    frontendOptions={
+        "widget": "object_list",
+        "widgetProps": {
+            "schemaName": "socialLinks",
+            "layout": "table",
+            "columns": ["id", "title", "href"],
+        },
+    },
+)
+```
+
+To show a column with more than text, such as a network by its icon, register a widget of your own that sets `cells`:
+
+```tsx
+import type { FormWidgetProps } from '@plone/types';
+import { ObjectListWidget } from '@plone/cmsui/components/ObjectListWidget/ObjectListWidget';
+import { NetworkIcon } from './NetworkIcon';
+
+export function SocialLinksWidget(props: FormWidgetProps<any>) {
+  return (
+    <ObjectListWidget
+      layout="table"
+      columns={['id', 'title', 'href']}
+      cells={{ id: (value) => <NetworkIcon network={String(value)} /> }}
+      {...props}
+    />
+  );
+}
+```
+
+The form validates the fields of each item with the item schema, along with the other fields.
+When a submit fails on the fields of an item, the accordion opens the first item with errors, and the rows of the items with errors are marked.
+In the table, the dialog also validates an item before it saves it.
+See {ref}`validate-form-fields-label`.
 
 ## `RecurrenceWidget`
 

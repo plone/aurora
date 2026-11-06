@@ -67,6 +67,54 @@
       "show_more_dates": "Show more dates"
     },
     "controlpanel": "Control Panel",
+    "siteSetup": "Site setup",
+    "siteSetupSearch": {
+      "label": "Find a setting",
+      "placeholder": "Find a setting",
+      "noResults": "No settings match “{{query}}”."
+    },
+    "siteOverview": {
+      "system": "System",
+      "upToDate": "Up to date",
+      "upgradeAvailable": "Upgrade available",
+      "upgrade": "Run the Plone upgrade from the backend's upgrade page (@@plone-upgrade).",
+      "language": "Language",
+      "timezone": "Time zone",
+      "multilingual": "Multilingual",
+      "on": "On",
+      "off": "Off",
+      "debugMode": "Debug mode",
+      "copySystemInfo": "Copy system info",
+      "copied": "Copied",
+      "copyFailed": "Couldn't copy",
+      "copyAddonsInfo": "Copy add-ons info",
+      "addons": "Add-ons"
+    },
+    "controlpanelDescriptions": {
+      "date-and-time": "Time zone and first day of the week",
+      "language": "Site languages and translation setup",
+      "mail": "Outgoing mail server and sender",
+      "navigation": "What the main menu shows",
+      "search": "What can be found, and how",
+      "site": "Site name, logo and indexing",
+      "socialmedia": "Sharing and social accounts",
+      "volto-settings": "Frontend-specific options",
+      "dexterity-types": "Types, fields and workflows",
+      "content-types": "Types, fields and workflows",
+      "discussion": "Comments and moderation",
+      "editing": "Editor, locking and versioning",
+      "imaging": "Image scales and quality",
+      "usergroup": "Member listing and many-users mode",
+      "security": "Registration, login and user folders"
+    },
+    "controlpanelGroups": {
+      "plone-general": "General",
+      "plone-content": "Content",
+      "plone-users": "Users",
+      "plone-security": "Security",
+      "plone-advanced": "Advanced",
+      "Products": "Add-on configuration"
+    },
     "objectbrowserwidget": {
       "openDialog": "Select content",
       "dialogTitle": "Select Content",
@@ -97,27 +145,6 @@
         "list": "list",
         "grid": "grid"
       }
-    },
-    "panelgroups": {
-      "general": "General",
-      "content": "Content",
-      "security": "Security",
-      "users": "Users",
-      "site": "Site Setup",
-      "addons": "Add-ons",
-      "maintenance": "Maintenance"
-    },
-    "paneltitles": {
-      "addons": "Add-ons",
-      "database": "Database",
-      "contentRules": "Content Rules",
-      "undo": "Undo",
-      "urlmanagement": "URL Management",
-      "relations": "Relations",
-      "moderatecomments": "Moderate Comments",
-      "users": "Users",
-      "groupMembership": "Group Membership",
-      "groups": "Groups"
     },
     "translate": {
       "source": "Source",
@@ -224,6 +251,26 @@
         "dropZone": "Drop a file for {{label}}",
         "imageOnly": "Choose an image file.",
         "readError": "The file could not be read."
+      },
+      "objectList": {
+        "item": "Item",
+        "add": "Add {{item}}",
+        "addButton": "Add",
+        "untitled": "{{item}} {{position}}",
+        "empty": "Nothing added yet.",
+        "invalid": "Some fields of this item need attention.",
+        "actions": "Actions for {{title}}",
+        "moveUp": "Move up",
+        "moveDown": "Move down",
+        "duplicate": "Duplicate",
+        "remove": "Remove",
+        "edit": "Edit {{title}}",
+        "editTitle": "Edit {{item}}",
+        "save": "Save",
+        "cancel": "Cancel",
+        "removeTitle": "Remove {{title}}?",
+        "removeDescription": "The item is removed from the list. The change is kept when you save the form.",
+        "columnActions": "Actions"
       }
     },
     "saveFailed": "Could not save"
