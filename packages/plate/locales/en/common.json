@@ -102,7 +102,9 @@
       "anchor": "Link anchor",
       "anchorHint": "Links to #{{anchor}} open this panel and scroll to it.",
       "anchorTaken": "Another panel already uses this anchor. Choose another one.",
-      "panelActions": "Panel actions"
+      "panelActions": "Panel actions",
+      "innerImageNote": "Inside an accordion, images always use the panel's full width, so size and alignment aren't offered.",
+      "innerTeaserNote": "Inside an accordion, a teaser takes the accordion's background, so its own background isn't offered."
     },
     "undo": "Undo",
     "undone": "Undone"
