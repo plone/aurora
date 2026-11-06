@@ -111,12 +111,22 @@ export function PloneDevtoolsVitePlugin(
   const define: Plugin = {
     name: 'plone-devtools:define',
     config(_config, { command }) {
+      const on = enabled && command === 'serve';
       return {
         define: {
-          'import.meta.env.PLONE_DEVTOOLS': JSON.stringify(
-            enabled && command === 'serve',
-          ),
+          'import.meta.env.PLONE_DEVTOOLS': JSON.stringify(on),
         },
+        // The client entry is loaded lazily, so without this Vite would
+        // discover these dependencies on the first page load, optimize them
+        // and reload the page, mixing old and new chunks (two copies of React).
+        optimizeDeps: on
+          ? {
+              include: [
+                '@plone/devtools > @tanstack/react-devtools',
+                '@plone/devtools > @tanstack/devtools-event-client/production',
+              ],
+            }
+          : undefined,
       };
     },
   };

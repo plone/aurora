@@ -46,6 +46,8 @@ if (import.meta.env.DEV && import.meta.env.PLONE_DEVTOOLS) {
 // <HydratedRouter instrumentations={instrumentations} />
 ```
 
+`mountPloneDevtools()` mounts the devtools in a React root of their own, outside the app's tree. Don't render anything next to `<HydratedRouter />`: `useId` values depend on the tree's shape, so that would change every id and break hydration. It also waits until React has hydrated `<html>`, because TanStack Devtools sets an attribute on it that the server-rendered HTML doesn't have.
+
 The Vite plugin sets `import.meta.env.PLONE_DEVTOOLS`. It is `true` while the development server runs with the devtools enabled, and `false` otherwise. In a production build both conditions are constant and false, so the imports are removed.
 
 To turn the devtools off, for example for acceptance tests against the development server, set `PLONE_DEVTOOLS=false` or pass `PloneDevtoolsVitePlugin({ enabled: false })`.
@@ -55,7 +57,8 @@ To turn the devtools off, for example for acceptance tests against the developme
 - Server timings come from React Router's instrumentation API (`instrumentations`), so route modules are not rewritten. Routes that live in add-on packages are covered too.
 - Backend calls are captured with Node's `diagnostics_channel` (`http.client.*`), with no change to `@plone/client`. An `AsyncLocalStorage` links each call to the request and to the route handler that made it.
 - Events travel over the TanStack Devtools event bus. The server keeps the last 500 events and replays them when a panel connects. This means the first request of a page load, which the server handles before the browser connects, still shows up.
-- The panel is mounted in a React root of its own, outside the app's hydration.
+- The panel is mounted in a React root of its own, outside the app's tree, once `<html>` is hydrated.
+- The Vite plugin pre-bundles the TanStack dependencies, so the first page load doesn't trigger a dependency re-optimization and a reload.
 
 See [plone/aurora#381](https://github.com/plone/aurora/issues/381) for the design and the plan.
 
