@@ -8,6 +8,16 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.6 (2026-11-06)
+
+### Feature
+
+- The contents view's modals use Quanta's `ModalSheet`, so on mobile they open as a bottom sheet that can be swiped away. @sneridagh 
+
+### Bugfix
+
+- The folder contents modals no longer span the whole screen on desktop. They follow the Figma widths: 600 px for the forms, 360 px for the delete confirmation and 660 px for the upload. @sneridagh 
+
 ## 1.0.0-alpha.5 (2026-10-30)
 
 ### Bugfix
