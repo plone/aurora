@@ -16,6 +16,7 @@ async function hydrate() {
   let instrumentations: ClientInstrumentation[] | undefined;
   if (import.meta.env.DEV && import.meta.env.PLONE_DEVTOOLS) {
     const devtools = await import('@plone/devtools/client');
+    // Mounts outside the app's tree, once React has hydrated `<html>`.
     devtools.mountPloneDevtools();
     instrumentations = [devtools.clientInstrumentation];
   }
