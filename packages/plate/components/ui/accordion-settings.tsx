@@ -232,12 +232,17 @@ function PanelOutline({
             >
               <GripVerticalIcon aria-hidden="true" className="size-4" />
             </AriaButton>
-            <span className="min-w-0 flex-1 truncate">
-              {index + 1}. {title}
+            {/* The meta goes below the title: sidebars are narrow. */}
+            <span className="flex min-w-0 flex-1 flex-col py-1.5">
+              <span className="truncate">
+                {index + 1}. {title}
+              </span>
+              {meta && (
+                <small className="truncate text-xs text-muted-foreground">
+                  {meta}
+                </small>
+              )}
             </span>
-            <small className="text-xs whitespace-nowrap text-muted-foreground">
-              {meta}
-            </small>
           </GridListItem>
         );
       })}

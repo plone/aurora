@@ -38,6 +38,7 @@ style-blocks-in-a-theme
 icons
 configure-plate-code-block-languages
 add-plate-plugins
+configure-accordion-blocks
 bind-metadata-fields-to-plate-text-blocks
 customize-toolbar
 custom-content-types

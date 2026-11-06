@@ -89,6 +89,7 @@ Every block exposes the same kinds of hooks.
 | Callout | `slate-callout` | `block-callout__body`, `block-callout__icon`, `block-callout__content`. |
 | Toggle | `slate-toggle` | `block-toggle__icon`. |
 | Columns | `slate-column_group`, `slate-column` | `block-column_group__row`, `block-column_group__column` (each column's wrapper), `block-column__content`. |
+| Accordion | `slate-accordion`, `slate-accordion_panel`, `slate-accordion_panel_title`, `slate-accordion_panel_content` | `block-accordion__panel` (with `data-open`), `block-accordion__heading` (the title's heading), `block-accordion__trigger` (the button that opens the panel), `block-accordion__title`, `block-accordion__icon`, `block-accordion__content` (the panel's region; its empty paragraphs have `data-empty`). The root has `data-exclusive` and `data-theme`. |
 | Table of contents | `slate-toc` | `block-toc__item` (with `data-depth`), `block-toc__empty`, `block-toc__highlight`. |
 | Inline elements | `slate-code`, `slate-kbd`, `slate-highlight`, `slate-a`, `slate-mention` | Mentions have `data-bold`, `data-italic`, and `data-underline` for their marks. |
 
@@ -121,6 +122,8 @@ Each value falls back to the default shown when it isn't set.
 
 `--block-width` holds a block's computed width, and `--block-size`, `--block-margin`, and `--block-float` hold the image block's style fields.
 The framework sets them; don't set them in a theme.
+Likewise, `--block-accordion-background` holds the color of the accordion's background, which editors choose; the accordion's `themes` option sets the colors on offer.
+See {doc}`configure-accordion-blocks`.
 
 ### Plate.js blocks
 
@@ -135,6 +138,10 @@ The framework sets them; don't set them in a theme.
 | `--block-table-border-color` | `var(--border)` | Table cell borders. |
 | `--block-callout-background` | `var(--muted)` | The callout's box, unless the callout has its own color. |
 | `--block-callout-icon-font-family` | An emoji font stack | The callout's icon. |
+| `--block-accordion-radius` | `var(--radius-md)` | The accordion's corners. |
+| `--block-accordion-border-color` | `var(--border)` | The line below each panel. |
+| `--block-accordion-title-size` | `var(--text-xl)` | The panel titles. |
+| `--block-accordion-focus-color` | `var(--ring)` | The focus outline of the panel titles. |
 
 The code block's syntax colors are tokens too.
 Their defaults are GitHub's light theme.
