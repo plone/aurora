@@ -14,6 +14,7 @@ import {
   createAccordion,
   createAccordionPanel,
   createAccordionPanelTitle,
+  createEmptyParagraph,
 } from './transforms';
 import {
   ACCORDION_KEY,
@@ -167,6 +168,30 @@ export const enterPanel = (editor: SlateEditor, panelPath: Path) => {
   if (!getPanel(editor, panelPath)) return;
   setPanelOpen(editor, panelPath, true);
   editor.tf.select(editor.api.start([...panelPath, 1, 0]));
+};
+
+/**
+ * Puts the caret in the block after an accordion (adding a paragraph when
+ * there's none) or at the end of the block before it, and focuses the editor.
+ * Returns `false` when there's no block before the accordion.
+ */
+export const moveCaretOutOfAccordion = (
+  editor: SlateEditor,
+  accordionPath: Path,
+  edge: 'before' | 'after',
+): boolean => {
+  if (edge === 'before') {
+    if (accordionPath.at(-1) === 0) return false;
+    editor.tf.select(editor.api.end(PathApi.previous(accordionPath)!));
+  } else {
+    const next = PathApi.next(accordionPath);
+    if (!editor.api.node(next)) {
+      editor.tf.insertNodes(createEmptyParagraph(), { at: next });
+    }
+    editor.tf.select(editor.api.start(next));
+  }
+  editor.tf.focus();
+  return true;
 };
 
 const announcePanel = (
@@ -328,6 +353,18 @@ export const getSettingsEntry = (editor: SlateEditor) => {
   });
   if (title) return editor.api.node<TElement>(PathApi.parent(title[1]));
   return undefined;
+};
+
+/**
+ * The accordion whose settings show, or else the one that holds the
+ * selection.
+ */
+export const getCurrentAccordionEntry = (editor: SlateEditor) => {
+  const entry = getSettingsEntry(editor);
+  if (entry?.[0].type === ACCORDION_KEY) return entry;
+  const at = entry?.[1] ?? editor.selection;
+  if (!at) return undefined;
+  return editor.api.above<TElement>({ at, match: { type: ACCORDION_KEY } });
 };
 
 /** Moves a panel to another position of its accordion. */

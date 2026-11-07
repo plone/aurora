@@ -629,15 +629,19 @@
   background-color: var(--block-accordion-background, transparent);
 }
 
+/*
+ * The panels fill the accordion, even when the block's container aligns its
+ * children to the start, as `@plone/layout`'s `justify-items` does.
+ */
 :where(.block-accordion__panel) {
   border-bottom: 1px solid
     var(--block-accordion-border-color, var(--border, #8a8a85));
+  justify-self: stretch;
 }
 
 :where(.block-accordion__heading) {
   margin: 0;
   font-size: var(--block-accordion-title-size, var(--text-xl, 1.25rem));
-  font-weight: var(--font-weight-semibold, 600);
   line-height: var(--text-xl--line-height, calc(1.75 / 1.25));
 }
 
@@ -664,9 +668,18 @@
   outline-offset: 2px;
 }
 
+/*
+ * The title sets its own size and weight, since a theme's heading styles
+ * would otherwise apply to the heading around it.
+ */
 :where(.block-accordion__title) {
   min-width: 0;
   flex: 1;
+  font-size: var(--block-accordion-title-size, var(--text-xl, 1.25rem));
+  font-weight: var(
+    --block-accordion-title-weight,
+    var(--font-weight-bold, 700)
+  );
 }
 
 :where(.block-accordion__icon) {
@@ -696,6 +709,10 @@
  * reveal it: only the former is taken out of the layout here, since
  * `display: none` would keep the browser from finding the text of the latter.
  */
+:where(.block-accordion__content[hidden]) {
+  padding-block: 0;
+}
+
 :where(.block-accordion__content[hidden]:not([hidden='until-found'])) {
   display: none;
 }

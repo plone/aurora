@@ -36,7 +36,6 @@
       "collapseAll": "Collapse all",
       "panel": "Panel",
       "addPanelAtEnd": "Add a panel at the end",
-      "insertPanelBetween": "Insert a panel between panel {{before}} and {{after}}",
       "untitledPanel": "Untitled panel",
       "untitledPanelLower": "untitled panel",
       "oneBlock": "1 block",

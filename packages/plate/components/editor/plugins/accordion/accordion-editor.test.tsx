@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { Plate, PlateContent, createPlateEditor } from 'platejs/react';
 
 import { BaseBasicBlocksKit } from '../basic-blocks-base-kit';
@@ -11,6 +11,7 @@ import {
   insertAccordion,
   insertAccordionPanel,
   isPanelOpen,
+  moveCaretOutOfAccordion,
   setAllPanelsOpen,
   setPanelOpen,
 } from './editor-transforms';
@@ -154,6 +155,22 @@ describe('accordion editing operations', () => {
     expect(isPanelOpen(editor, 'a')).toBe(true);
     expect(editor.selection?.anchor).toEqual(editor.api.start([0, 0, 1, 0]));
   });
+
+  it('moves the caret before or after an accordion', () => {
+    const editor = createEditor([p('Before'), accordion(panel('a', 'A'))]);
+
+    expect(moveCaretOutOfAccordion(editor, [1], 'before')).toBe(true);
+    expect(editor.selection?.anchor).toEqual(editor.api.end([0]));
+
+    // With no block after the accordion, a paragraph is added.
+    expect(moveCaretOutOfAccordion(editor, [1], 'after')).toBe(true);
+    expect(editor.children).toHaveLength(3);
+    expect(editor.children[2]).toMatchObject({ type: 'p' });
+    expect(editor.selection?.anchor).toEqual(editor.api.start([2]));
+
+    const first = createEditor([accordion(panel('a', 'A'))]);
+    expect(moveCaretOutOfAccordion(first, [0], 'before')).toBe(false);
+  });
 });
 
 describe('accordion keyboard', () => {
@@ -274,7 +291,8 @@ describe('accordion editor view', () => {
 
     const expand = screen.getByRole('button', { name: 'Expand Opening hours' });
     expect(expand).toHaveAttribute('aria-expanded', 'false');
-    expect(content).toHaveAttribute('hidden');
+    // Find-in-page can still reveal a closed panel.
+    expect(content).toHaveAttribute('hidden', 'until-found');
     expect(screen.getByText('2 blocks')).toBeInTheDocument();
   });
 
@@ -285,6 +303,17 @@ describe('accordion editor view', () => {
     expect(
       screen.getByRole('button', { name: 'Collapse untitled panel' }),
     ).toBeInTheDocument();
+  });
+
+  it('keeps the title of a panel after the panel before it is removed', async () => {
+    const { editor } = renderEditor([
+      accordion(panel('a', 'A'), panel('b', 'B')),
+    ]);
+
+    await act(async () => editor.tf.removeNodes({ at: [0, 0] }));
+
+    expect(screen.getByRole('heading', { level: 3 })).toHaveTextContent('B');
+    expect(screen.queryByText('Untitled panel')).toBeNull();
   });
 
   it('shows the panel controls only while the selection is in the accordion', () => {
@@ -306,11 +335,10 @@ describe('accordion editor view', () => {
 
     expect(screen.getByRole('button', { name: 'Expand all' })).toBeVisible();
     expect(screen.getByRole('button', { name: 'Collapse all' })).toBeVisible();
+    // Panels are only added at the end.
     expect(
-      screen.getByRole('button', {
-        name: 'Insert a panel between panel 1 and 2',
-      }),
-    ).toBeInTheDocument();
+      screen.getAllByRole('button', { name: /^(Add|Insert) a panel/ }),
+    ).toHaveLength(1);
 
     fireEvent.click(
       screen.getByRole('button', { name: 'Add a panel at the end' }),
@@ -321,6 +349,44 @@ describe('accordion editor view', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Collapse all' }));
     expect(isPanelOpen(editor, 'a')).toBe(false);
     expect(isPanelOpen(editor, 'b')).toBe(false);
+  });
+
+  it('moves the caret out of the accordion on Tab from its edge controls', () => {
+    const editor = createEditor([
+      p('Before'),
+      accordion(panel('a', 'A'), panel('b', 'B')),
+      p('After'),
+    ]);
+    editor.tf.select(editor.api.start([1, 0, 0]));
+    const { container } = render(
+      <Plate editor={editor}>
+        <PlateContent />
+      </Plate>,
+    );
+
+    // Tab on any other control moves the focus as usual.
+    expect(
+      fireEvent.keyDown(screen.getByRole('button', { name: 'Collapse A' }), {
+        key: 'Tab',
+      }),
+    ).toBe(true);
+    expect(editor.selection?.anchor.path).toEqual([1, 0, 0, 0]);
+
+    act(() => {
+      fireEvent.keyDown(
+        screen.getByRole('button', { name: 'Add a panel at the end' }),
+        { key: 'Tab' },
+      );
+    });
+    expect(editor.selection?.anchor).toEqual(editor.api.start([2]));
+
+    const first = container.querySelector<HTMLElement>(
+      '.slate-accordion button',
+    )!;
+    act(() => {
+      fireEvent.keyDown(first, { key: 'Tab', shiftKey: true });
+    });
+    expect(editor.selection?.anchor).toEqual(editor.api.end([0]));
   });
 
   it('renders panel titles as headings', () => {

@@ -244,6 +244,54 @@ describe('settings in the host sidebar', () => {
 
     sidebar.remove();
   });
+
+  it('takes Tab through the sidebar between the accordion and the text after it', async () => {
+    const sidebar = document.createElement('aside');
+    document.body.appendChild(sidebar);
+    let editorRef: any;
+
+    render(
+      <PlateEditor
+        editorConfig={{ plugins }}
+        value={
+          [
+            accordion(panel('a', 'Hours'), panel('b', 'Prices')),
+            p('After'),
+          ] as any
+        }
+        settingsContainer={() => sidebar}
+        onChange={() => {}}
+      >
+        <Capture onEditor={(editor) => (editorRef = editor)} />
+      </PlateEditor>,
+    );
+    await act(async () => {
+      editorRef.tf.select(editorRef.api.start([0, 1, 0]));
+    });
+
+    // From the accordion's last control to the sidebar's first.
+    const addPanel = screen.getByRole('button', {
+      name: 'Add a panel at the end',
+    });
+    fireEvent.keyDown(addPanel, { key: 'Tab' });
+    const controls = Array.from(
+      sidebar.querySelectorAll<HTMLElement>('button, input'),
+    ).filter((element) => !(element as HTMLButtonElement).disabled);
+    expect(document.activeElement).toBe(controls[0]);
+
+    // Shift+Tab from the sidebar's first control goes back.
+    fireEvent.keyDown(controls[0], { key: 'Tab', shiftKey: true });
+    expect(document.activeElement).toBe(addPanel);
+
+    // Tab from the sidebar's last control goes to the text after the
+    // accordion.
+    await act(async () => {
+      fireEvent.keyDown(controls.at(-1)!, { key: 'Tab' });
+    });
+    expect(editorRef.selection.anchor).toEqual(editorRef.api.start([1]));
+
+    sidebar.remove();
+  });
 });
 
 function Capture({ onEditor }: { onEditor: (editor: any) => void }) {

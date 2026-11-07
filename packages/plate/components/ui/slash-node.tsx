@@ -58,6 +58,11 @@ export function SlashInputElement(
     [editor, inAccordion],
   );
 
+  // A control can open the menu without typing "/", which then isn't shown
+  // or put back when the menu closes.
+  const withoutTrigger =
+    (element as { withoutTrigger?: boolean }).withoutTrigger === true;
+
   const noteId = React.useId();
 
   const groups = React.useMemo(() => {
@@ -70,7 +75,12 @@ export function SlashInputElement(
 
   return (
     <PlateElement {...props} as="span">
-      <InlineCombobox element={element} trigger="/">
+      <InlineCombobox
+        element={element}
+        trigger="/"
+        restoreOnCancel={!withoutTrigger}
+        showTrigger={!withoutTrigger}
+      >
         <InlineComboboxInput
           {...(inAccordion ? { 'aria-describedby': noteId } : {})}
         />

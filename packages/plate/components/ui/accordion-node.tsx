@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { PathApi, type Path, type TElement } from 'platejs';
+import { NodeApi, PathApi, type Path, type TElement } from 'platejs';
 import type { PlateElementProps } from 'platejs/react';
 
 import {
@@ -20,11 +20,13 @@ import {
   useReadOnly,
 } from 'platejs/react';
 
+import { getFocusableControls } from '../../lib/focusable';
 import { cn } from '../../lib/utils';
 import { AccordionEditorPlugin } from '../editor/plugins/accordion/accordion-editor-plugin';
 import {
   duplicatePanel,
   insertAccordionPanel,
+  moveCaretOutOfAccordion,
   movePanel,
   removePanel,
   setAllPanelsOpen,
@@ -39,10 +41,12 @@ import type {
   TAccordionPanelElement,
 } from '../editor/plugins/accordion/types';
 import { findAccordionNodePath } from '../editor/plugins/accordion/find-path';
+import { usePlateHost } from '../editor/plate-host-context';
 import { InsertBlockPoint } from './accordion-block-toolbar';
 import { AccordionSettingsTrigger } from './accordion-settings';
 import { useTranslation } from '../editor/plugins/i18n';
 import { BlockInnerContainer } from './block-inner-container';
+import { usePanelCollapse } from './use-panel-collapse';
 import { Button } from './button';
 
 /*
@@ -106,6 +110,41 @@ const keepSelection = (event: React.MouseEvent) => {
   event.preventDefault();
 };
 
+/*
+ * The text around an accordion is part of the editor, which Tab reaches only
+ * once. Tab from the accordion's last control goes on to the settings in the
+ * host's sidebar, if it shows any (Tab from the last of them comes back to
+ * the text after the accordion), and otherwise puts the caret in the block
+ * after the accordion. Shift+Tab from its first control puts the caret at the
+ * end of the block before it.
+ */
+const useTabOutOfAccordion = (path: Path) => {
+  const editor = useEditorRef();
+  const { settingsContainer } = usePlateHost();
+  return (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key !== 'Tab' || event.defaultPrevented) return;
+    const target = event.target as HTMLElement;
+    if (target.isContentEditable) return;
+    const controls = getFocusableControls(event.currentTarget);
+    const edge = event.shiftKey ? controls[0] : controls.at(-1);
+    if (target !== edge) return;
+    if (!event.shiftKey) {
+      const settings = settingsContainer?.();
+      const first = settings ? getFocusableControls(settings)[0] : undefined;
+      if (first) {
+        event.preventDefault();
+        first.focus();
+        return;
+      }
+    }
+    if (
+      moveCaretOutOfAccordion(editor, path, event.shiftKey ? 'before' : 'after')
+    ) {
+      event.preventDefault();
+    }
+  };
+};
+
 function InsertPanelButton({
   accordionPath,
   index,
@@ -125,7 +164,8 @@ function InsertPanelButton({
       contentEditable={false}
       className={cn(
         `
-          group/insert relative flex h-6 items-center justify-center select-none
+          group/insert relative flex h-6 items-center justify-center justify-self-stretch
+          select-none
           before:absolute before:inset-x-0 before:top-1/2 before:border-t-2 before:border-primary
           before:opacity-0 before:transition-opacity
           hover:before:opacity-40
@@ -157,6 +197,7 @@ export function AccordionElement(props: PlateElementProps<TAccordionElement>) {
   const active = useSelectionInside(path);
   const { themes } = getAccordionOptions(editor);
   const theme = resolveAccordionTheme(themes, element.theme);
+  const onKeyDown = useTabOutOfAccordion(path);
 
   return (
     <PlateElement
@@ -166,6 +207,7 @@ export function AccordionElement(props: PlateElementProps<TAccordionElement>) {
         'data-exclusive': element.exclusive === false ? 'false' : 'true',
         'data-theme': theme.id,
         ...(active ? { 'data-active': 'true' } : {}),
+        ...(readOnly ? {} : { onKeyDown }),
       }}
       style={
         {
@@ -188,7 +230,9 @@ export function AccordionElement(props: PlateElementProps<TAccordionElement>) {
         {!readOnly && (
           <div
             contentEditable={false}
-            className="flex min-h-8 items-center justify-between gap-2 select-none"
+            className={`
+              flex min-h-8 items-center justify-between gap-2 justify-self-stretch select-none
+            `}
           >
             <AccordionSettingsTrigger
               target={{ type: 'accordion', id: element.id }}
@@ -251,16 +295,9 @@ export function AccordionPanelElement(
   props: PlateElementProps<TAccordionPanelElement>,
 ) {
   const { children, element } = props;
-  const { t } = useTranslation();
-  const readOnly = useReadOnly();
   const open = usePanelOpen(element.id);
-  const { accordionPath, index, panelPath, total } = usePanelPosition(
-    element,
-    0,
-  );
-  const accordionActive = useSelectionInside(accordionPath);
+  const { panelPath } = usePanelPosition(element, 0);
   const active = useSelectionInside(panelPath);
-  const isLast = index === total - 1;
 
   return (
     <PlateElement
@@ -273,18 +310,6 @@ export function AccordionPanelElement(
       }}
     >
       {children}
-      {!readOnly && accordionActive && !isLast && (
-        <InsertPanelButton
-          accordionPath={accordionPath}
-          index={index + 1}
-          label={t('plate.accordion.insertPanelBetween', {
-            defaultValue:
-              'Insert a panel between panel {{before}} and {{after}}',
-            before: index + 1,
-            after: index + 2,
-          })}
-        />
-      )}
     </PlateElement>
   );
 }
@@ -390,7 +415,7 @@ function PanelActions({
 }
 
 export function AccordionPanelTitleElement(props: PlateElementProps) {
-  const { children, editor, element, path } = props;
+  const { children, editor, element } = props;
   const { t } = useTranslation();
   const readOnly = useReadOnly();
   const { index, panelPath, total } = usePanelPosition(element, 1);
@@ -401,7 +426,9 @@ export function AccordionPanelTitleElement(props: PlateElementProps) {
   const open = usePanelOpen(panelId);
   const { headingLevel } = getAccordionOptions(editor);
 
-  const text = editor.api.string(path);
+  // The element, not `path`: the path can be stale for a render after a
+  // panel before this one is removed.
+  const text = NodeApi.string(element);
   const blockCount = panel?.children[1]?.children.length ?? 0;
   const titleOrUntitled =
     text ||
@@ -499,15 +526,24 @@ export function AccordionPanelContentElement(props: PlateElementProps) {
   const { editor, element } = props;
   const { t } = useTranslation();
   const readOnly = useReadOnly();
-  const { panelPath, accordionPath } = usePanelPosition(element, 1);
+  const { panelPath } = usePanelPosition(element, 1);
   const panel = (
     panelPath.length > 0 ? editor.api.node(panelPath)?.[0] : undefined
   ) as TAccordionPanelElement | undefined;
   const panelId = panel?.id ?? '';
   const open = usePanelOpen(panelId);
-  const accordionActive = useSelectionInside(accordionPath);
   const title =
     panelPath.length > 0 ? editor.api.string([...panelPath, 0]) : '';
+
+  // Closed panels animate closed and stay findable, as in the published view.
+  const panelKey = panelPath.join('.');
+  usePanelCollapse(
+    () => editor.api.toDOMNode(element),
+    open,
+    () => {
+      if (panelKey) setPanelOpen(editor, panelKey.split('.').map(Number), true);
+    },
+  );
 
   return (
     <PlateElement
@@ -516,18 +552,22 @@ export function AccordionPanelContentElement(props: PlateElementProps) {
       attributes={{
         ...props.attributes,
         id: `accordion-editor-${panelId}-content`,
-        ...(open ? {} : { hidden: true }),
       }}
     >
       {props.children}
-      {!readOnly && open && panelPath.length > 0 && (
+      {!readOnly && panelPath.length > 0 && (
         <InsertBlockPoint
           contentPath={[...panelPath, 1]}
           index={element.children.length}
-          visible={accordionActive}
-          className={`
-            h-9
-            [&>button]:opacity-100
+          visible
+          className="h-9"
+          // Faint while the pointer is over the panel, and fully shown while
+          // the panel holds the selection.
+          buttonClassName={`
+            opacity-0
+            group-hover/panel:opacity-40
+            group-data-[active=true]/panel:opacity-100
+            active:opacity-100
           `}
           label={t('plate.accordion.addBlockToPanel', {
             defaultValue: 'Add a block to “{{title}}”',

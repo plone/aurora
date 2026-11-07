@@ -93,3 +93,37 @@ test('adapts the settings of an image in a panel', async ({ page }) => {
     sidebar.getByText('Block 1 of 2 in “Opening hours”'),
   ).toHaveCount(0);
 });
+
+test('takes Tab from the accordion through the sidebar to the text after it', async ({
+  page,
+}) => {
+  await login(page);
+  const pageId = await createNativeBlocksPage(page, ['accordion'], {
+    extra: [{ type: 'p', children: [{ text: 'After the accordion' }] }],
+  });
+  await openInEditor(page, pageId);
+  const editorHandle = await getEditorHandle(page);
+  await selectPlateEditorPoint(page, editorHandle, {
+    path: [1, 0, 0, 0],
+    offset: 0,
+  });
+  const sidebar = page.getByRole('complementary', { name: 'Sidebar' });
+  await expect(sidebar.getByRole('heading', { name: 'Panel' })).toBeVisible();
+
+  // From the accordion's last control, Tab goes to the panel's settings.
+  await page.getByRole('button', { name: 'Add a panel at the end' }).focus();
+  await page.keyboard.press('Tab');
+  await expect(sidebar.locator(':focus')).toHaveCount(1);
+
+  // Through them, and then to the text after the accordion.
+  const inSidebar = () =>
+    page.evaluate(() => !!document.activeElement?.closest('#sidebar'));
+  for (let presses = 0; presses < 30 && (await inSidebar()); presses++) {
+    await page.keyboard.press('Tab');
+  }
+  await page.keyboard.type('Text ');
+
+  await expect
+    .poll(async () => nodeText((await getValue(page, editorHandle))[2]))
+    .toBe('Text After the accordion');
+});

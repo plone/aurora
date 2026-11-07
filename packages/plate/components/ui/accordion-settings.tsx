@@ -19,6 +19,7 @@ import {
   usePluginOption,
 } from 'platejs/react';
 
+import { getFocusableControls } from '../../lib/focusable';
 import { cn } from '../../lib/utils';
 import { usePlateHost } from '../editor/plate-host-context';
 import { AccordionEditorPlugin } from '../editor/plugins/accordion/accordion-editor-plugin';
@@ -30,8 +31,10 @@ import {
 import {
   duplicatePanel,
   findAccordionEntry,
+  getCurrentAccordionEntry,
   getSettingsEntry,
   insertAccordionPanel,
+  moveCaretOutOfAccordion,
   movePanel,
   removePanel,
   reorderPanel,
@@ -597,6 +600,7 @@ export function AccordionSettingsForm({
  * settings container. Without one, they open in popovers instead.
  */
 export function AccordionSettingsHost() {
+  const editor = useEditorRef();
   const { settingsContainer } = usePlateHost();
   // The chosen target lives in the plugin options, outside the editor value.
   const target = usePluginOption(AccordionEditorPlugin, 'settingsTarget');
@@ -606,6 +610,36 @@ export function AccordionSettingsHost() {
     (editor) => getSettingsEntry(editor),
     [target, selection],
   );
+
+  // Tab reaches the settings from the accordion's last control. From the
+  // last control of the settings container, Tab goes back to the text after
+  // the accordion, and Shift+Tab from its first control goes back to the
+  // accordion's last control.
+  React.useEffect(() => {
+    const container = settingsContainer?.();
+    if (!container) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab' || event.defaultPrevented) return;
+      const controls = getFocusableControls(container);
+      const edge = event.shiftKey ? controls[0] : controls.at(-1);
+      if (event.target !== edge) return;
+      const accordion = getCurrentAccordionEntry(editor);
+      if (!accordion) return;
+      if (!event.shiftKey) {
+        event.preventDefault();
+        moveCaretOutOfAccordion(editor, accordion[1], 'after');
+        return;
+      }
+      const element = editor.api.toDOMNode(accordion[0]);
+      const last = element ? getFocusableControls(element).at(-1) : undefined;
+      if (last) {
+        event.preventDefault();
+        last.focus();
+      }
+    };
+    container.addEventListener('keydown', onKeyDown);
+    return () => container.removeEventListener('keydown', onKeyDown);
+  }, [editor, settingsContainer, entry]);
 
   if (!settingsContainer || !entry) return null;
   const container = settingsContainer();

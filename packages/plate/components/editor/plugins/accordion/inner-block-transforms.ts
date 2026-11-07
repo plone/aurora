@@ -86,8 +86,18 @@ export const insertInnerBlockAt = (
   editor.tf.insertNodes(createEmptyParagraph(), { at });
   editor.tf.select(editor.api.start(at));
   editor.tf.focus();
-  // Typing "/" at the start of an empty block opens the slash menu.
-  editor.tf.insertText('/');
+  // Opens the slash menu in the new block, as typing "/" there would, but
+  // without the "/": closing the menu leaves the block empty.
+  if (KEYS.slashInput in editor.plugins) {
+    editor.tf.insertNodes(
+      {
+        type: editor.getType(KEYS.slashInput),
+        withoutTrigger: true,
+        children: [{ text: '' }],
+      },
+      { select: true },
+    );
+  }
 };
 
 /** Moves a block of a panel up (`-1`) or down (`1`) within the panel. */

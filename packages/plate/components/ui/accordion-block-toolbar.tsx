@@ -96,12 +96,22 @@ export function InsertBlockPoint({
   label,
   visible,
   className,
+  buttonClassName = `
+    opacity-0
+    group-hover/insert-block:opacity-40
+    active:opacity-100
+  `,
 }: {
   contentPath: Path;
   index: number;
   label: string;
   visible: boolean;
   className?: string;
+  /**
+   * Classes of the button. By default it's hidden, faint while hovered, and
+   * fully shown while pressed or focused with the keyboard.
+   */
+  buttonClassName?: string;
 }) {
   const editor = useEditorRef();
   const { t } = useTranslation();
@@ -115,28 +125,42 @@ export function InsertBlockPoint({
           group/insert-block relative flex h-3.5 items-center justify-center select-none
           before:absolute before:inset-x-0 before:top-1/2 before:border-t-2 before:border-primary
           before:opacity-0 before:transition-opacity
-          hover:before:opacity-40
-          has-[button:focus-visible]:before:opacity-100 has-[button:hover]:before:opacity-100
+          hover:before:opacity-20
+          has-[button:active]:before:opacity-100 has-[button:focus-visible]:before:opacity-100
+          has-[button:hover]:before:opacity-40
         `,
         className,
       )}
     >
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
+      {/*
+        An opaque backdrop in the accordion's background keeps the line from
+        showing through the button while the button is faint.
+      */}
+      <span
         className={`
-          relative z-10 h-6 rounded-full px-2.5 text-xs opacity-0 transition-opacity
-          group-hover/insert-block:opacity-100
-          focus-visible:opacity-100
+          relative z-10 inline-flex rounded-full
+          bg-[var(--block-accordion-background,var(--background))]
         `}
-        aria-label={label}
-        onMouseDown={keepSelection}
-        onClick={() => insertInnerBlockAt(editor, contentPath, index)}
       >
-        <PlusIcon aria-hidden="true" />
-        {t('plate.accordion.block', { defaultValue: 'Block' })}
-      </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className={cn(
+            `
+              h-6 rounded-full px-2.5 text-xs transition-opacity
+              focus-visible:opacity-100
+            `,
+            buttonClassName,
+          )}
+          aria-label={label}
+          onMouseDown={keepSelection}
+          onClick={() => insertInnerBlockAt(editor, contentPath, index)}
+        >
+          <PlusIcon aria-hidden="true" />
+          {t('plate.accordion.block', { defaultValue: 'Block' })}
+        </Button>
+      </span>
     </div>
   );
 }

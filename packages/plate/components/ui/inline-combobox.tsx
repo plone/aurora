@@ -64,6 +64,11 @@ interface InlineComboboxProps {
   trigger: string;
   filter?: FilterFn | false;
   hideWhenNoValue?: boolean;
+  /**
+   * Whether closing the combobox without choosing an item puts the trigger
+   * and the typed text back in the editor.
+   */
+  restoreOnCancel?: boolean;
   showTrigger?: boolean;
   value?: string;
   setValue?: (value: string) => void;
@@ -74,6 +79,7 @@ const InlineCombobox = ({
   element,
   filter = defaultFilter,
   hideWhenNoValue = false,
+  restoreOnCancel = true,
   setValue: setValueProp,
   showTrigger = true,
   trigger,
@@ -126,7 +132,7 @@ const InlineCombobox = ({
     cursorState,
     ref: inputRef,
     onCancelInput: (cause) => {
-      if (cause !== 'backspace') {
+      if (restoreOnCancel && cause !== 'backspace') {
         editor.tf.insertText(trigger + value, {
           at: insertPoint?.current ?? undefined,
         });
