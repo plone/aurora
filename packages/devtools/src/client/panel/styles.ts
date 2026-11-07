@@ -150,6 +150,9 @@ export const css = `
 .pdt-wf .axis { display: flex; justify-content: space-between; font: 11.5px/16px var(--mono); color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 2px; margin-bottom: 2px; }
 .pdt-wf .lbl { display: flex; gap: 6px; align-items: center; min-width: 0; padding: 2px 4px; border-radius: 4px; }
 .pdt-wf .lbl .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pdt-wf .lbl .name { font-weight: 600; flex: none; }
+.pdt-wraps { flex: none; font-size: 11.5px; line-height: 16px; padding: 0 5px; border-radius: 8px; background: var(--neutral); color: var(--muted); cursor: help; }
+.pdt-bar > i.wraps { opacity: .4; }
 .pdt-wf .lbl .kind { font-weight: 600; color: var(--text2); flex: none; }
 .pdt-wf .lbl.l3 { margin-left: 16px; }
 .pdt-wf button.lbl:hover { background: var(--hover); }
