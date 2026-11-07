@@ -41,6 +41,7 @@ vi.mock('../BlockEditor/BlocksEditor', () => ({
 vi.mock('../Sidebar/Sidebar', () => ({
   default: () => null,
   sidebarAtom: atom(false),
+  useToggleSidebar: () => () => {},
 }));
 
 // Renders the schema it receives, to check what reaches the fields.
