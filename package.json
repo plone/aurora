@@ -39,7 +39,9 @@
     "acceptance-test:open": "pnpm exec playwright test --ui --config=playwright.config.ts",
     "visual-test": "pnpm exec playwright test --config=playwright-visual.config.ts",
     "visual-test:open": "pnpm exec playwright test --ui --config=playwright-visual.config.ts",
-    "update-baseline-browser-mapping": "pnpm update baseline-browser-mapping browserslist -r"
+    "update-baseline-browser-mapping": "pnpm update baseline-browser-mapping browserslist -r",
+    "start-storybook": "cd packages/tooling && pnpm run storybook:main",
+    "build-storybook": "cd packages/tooling && pnpm run build-storybook"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
