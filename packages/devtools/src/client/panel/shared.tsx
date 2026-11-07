@@ -192,7 +192,14 @@ export function Handlers({ r }: { r?: RouteInfo }) {
   return (
     <span className="pdt-handlers">
       {r.hasMiddleware && (
-        <abbr className="M" title="middleware">
+        <abbr
+          className="M"
+          title={
+            r.middleware?.length
+              ? `middleware: ${r.middleware.map((n, i) => n || `#${i + 1}`).join(', ')}`
+              : 'middleware'
+          }
+        >
           M
         </abbr>
       )}

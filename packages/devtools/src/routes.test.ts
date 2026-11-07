@@ -3,6 +3,7 @@ import {
   addonOf,
   buildRouteInfos,
   createRouteId,
+  middlewareNames,
   routeFilesById,
   type ServerBuildRoute,
 } from './routes';
@@ -57,10 +58,18 @@ describe('addonOf', () => {
   });
 });
 
+const i18nMiddleware = async () => {};
+
 describe('buildRouteInfos', () => {
   it('combines the server build, the config and the add-ons', () => {
     const routes: Record<string, ServerBuildRoute> = {
-      root: { id: 'root', module: { loader() {}, middleware: [] } },
+      root: {
+        id: 'root',
+        module: {
+          loader() {},
+          middleware: [async function installConfig() {}, i18nMiddleware],
+        },
+      },
       ok: { id: 'ok', parentId: 'root', path: 'ok', module: { loader() {} } },
       [`${cmsui}/routes/edit`]: {
         id: `${cmsui}/routes/edit`,
@@ -87,6 +96,7 @@ describe('buildRouteInfos', () => {
         hasLoader: true,
         hasMiddleware: true,
         hasAction: false,
+        middleware: ['installConfig', 'i18nMiddleware'],
       }),
       expect.objectContaining({
         id: 'ok',
@@ -101,7 +111,23 @@ describe('buildRouteInfos', () => {
         hasLoader: true,
         hasAction: true,
         hasMiddleware: false,
+        middleware: undefined,
       }),
     ]);
+  });
+});
+
+describe('middlewareNames', () => {
+  it('names each middleware in order, empty for anonymous ones', () => {
+    const named = async () => {};
+    expect(middlewareNames([named, () => {}, 'not a function'])).toEqual([
+      'named',
+      '',
+      '',
+    ]);
+  });
+
+  it('is undefined for a route without middleware', () => {
+    expect(middlewareNames(undefined)).toBeUndefined();
   });
 });
