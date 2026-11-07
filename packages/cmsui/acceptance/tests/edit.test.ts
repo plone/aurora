@@ -36,7 +36,10 @@ test('As an editor, I can edit /mypage and interact with the editor', async ({
     transition: 'publish',
   });
   await page.goto('/@@edit/mypage');
-  await expect(page.locator('h1', { hasText: 'My page' })).toBeVisible();
+  // The title block, not the edit header's heading ("My page - Edit").
+  await expect(
+    page.getByRole('heading', { name: 'My page', exact: true }),
+  ).toBeVisible();
   await waitForPlateEditorReady(page);
   const editorHandle = await getEditorHandle(page);
   await clickAtPath(page, editorHandle, [1]);
@@ -54,7 +57,10 @@ test('As an editor, I can edit /mypage and interact with the editor - Selects a 
     transition: 'publish',
   });
   await page.goto('/@@edit/mypage');
-  await expect(page.locator('h1', { hasText: 'My page' })).toBeVisible();
+  // The title block, not the edit header's heading ("My page - Edit").
+  await expect(
+    page.getByRole('heading', { name: 'My page', exact: true }),
+  ).toBeVisible();
   await waitForPlateEditorReady(page);
   const editorHandle = await getEditorHandle(page);
   await clickAtPath(page, editorHandle, [1]);

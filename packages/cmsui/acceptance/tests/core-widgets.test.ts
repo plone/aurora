@@ -32,7 +32,7 @@ test('The tags of a page are added as tokens and saved as a list', async ({
 
   await page.goto('/@@edit/tagged-page', { waitUntil: 'networkidle' });
   await page.getByRole('tab', { name: 'Content' }).click();
-  await page.locator('button', { hasText: /^Categorization$/ }).click();
+  await page.getByRole('tab', { name: 'Categorization' }).click();
 
   const tags = page.getByRole('combobox', { name: 'Tags' });
   await tags.fill('aurora');
@@ -67,13 +67,13 @@ test('A field with a vocabulary or choices is a select', async ({
   await page.getByRole('tab', { name: 'Content' }).click();
 
   // The language's options come from its vocabulary.
-  await page.locator('button', { hasText: /^Categorization$/ }).click();
+  await page.getByRole('tab', { name: 'Categorization' }).click();
   await page.getByRole('button', { name: /Language/ }).click();
   await page.getByRole('option', { name: 'English' }).click();
 
   // Allow discussion has its choices in the schema. The content API sends
   // its value as a boolean.
-  await page.locator('button', { hasText: /^Settings$/ }).click();
+  await page.getByRole('tab', { name: 'Settings' }).click();
   const allowDiscussion = page.getByRole('button', {
     name: /Allow discussion/,
   });
