@@ -140,7 +140,7 @@
     "translate": {
       "source": "Origine",
       "view_source": "Visualizza il contenuto di origine",
-      "heading_new": "Traduci \"{{title}}\" in {{language}}"
+      "translatingTo": "Traduzione in {{language}}"
     },
     "addons": {
       "title": "Prodotti aggiuntivi",
@@ -186,7 +186,8 @@
     },
     "blocksEditor": {
       "blocksTab": "Blocchi",
-      "contentTab": "Contenuto"
+      "contentTab": "Metadati",
+      "modeLabel": "Modalità editor"
     },
     "sidebar": {
       "label": "Barra laterale destra"
@@ -288,6 +289,15 @@
         "columnActions": "Azioni"
       }
     },
-    "saveFailed": "Impossibile salvare"
+    "saveFailed": "Impossibile salvare",
+    "form": {
+      "fieldsets": "Gruppi di campi",
+      "fieldsetHasErrors": "Questo gruppo di campi contiene errori"
+    },
+    "editor": {
+      "home": "Home",
+      "breadcrumbs": "Briciole di pane",
+      "newItem": "Nuovo {{type}}"
+    }
   }
 }

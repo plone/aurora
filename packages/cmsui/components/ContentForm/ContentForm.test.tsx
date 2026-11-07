@@ -27,6 +27,15 @@ vi.mock('@plone/layout/components/Pluggable', () => ({
 vi.mock('@plone/icons/svg/checkbox.svg?react', () => ({ default: () => null }));
 vi.mock('@plone/icons/svg/close.svg?react', () => ({ default: () => null }));
 vi.mock('@plone/icons/svg/settings.svg?react', () => ({ default: () => null }));
+vi.mock('@plone/icons/svg/properties.svg?react', () => ({
+  default: () => null,
+}));
+vi.mock('@plone/icons/svg/thumbnails.svg?react', () => ({
+  default: () => null,
+}));
+vi.mock('@plone/icons/svg/chevron-right.svg?react', () => ({
+  default: () => null,
+}));
 
 vi.mock('../BlockEditor/BlocksEditor', () => ({
   default: () => <div data-testid="blocks-editor" />,
@@ -62,7 +71,10 @@ function renderForm(props: Record<string, unknown> = {}) {
       content={content as any}
       path="/en/page"
       schema={schema}
-      heading="Edit page"
+      breadcrumbs={[
+        { '@id': '/', title: 'Home' },
+        { '@id': '/en/page', title: 'Page' },
+      ]}
       submitMethod="patch"
       {...props}
     />,
@@ -97,10 +109,13 @@ describe('ContentForm', () => {
 
     expect(screen.getByText('Source header')).toBeInTheDocument();
     expect(screen.getByText('Source blocks')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Edit page' })).toBeVisible();
+    // The breadcrumbs end with the edited item.
+    expect(screen.getByRole('link', { name: 'Home' })).toBeInTheDocument();
 
     showContentTab();
     expect(screen.getByText('Source fields')).toBeInTheDocument();
+    // The Metadata view's heading is the title being edited.
+    expect(screen.getByRole('heading', { name: 'Page' })).toBeVisible();
   });
 
   it('passes the field placeholders to the fields through the schema', () => {
@@ -138,7 +153,10 @@ describe('ContentForm', () => {
           content={content as any}
           path="/en/page"
           schema={schema}
-          heading="Edit page"
+          breadcrumbs={[
+            { '@id': '/', title: 'Home' },
+            { '@id': '/en/page', title: 'Page' },
+          ]}
           submitMethod="patch"
         />,
       );
