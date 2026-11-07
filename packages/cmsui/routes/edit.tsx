@@ -1,4 +1,5 @@
 import { flattenToAppURL } from '@plone/helpers';
+import { canEdit } from '@plone/layout/helpers';
 import { requireAuthCookie } from '@plone/react-router';
 import {
   data,
@@ -24,6 +25,11 @@ export async function loader({
 
   const cli = context.get(ploneClientContext);
   const content = context.get(ploneContentContext);
+  // Like Volto, the view needs the `edit` action, which Plone gives to users
+  // who can modify the item.
+  if (!canEdit(content)) {
+    throw data('Unauthorized', { status: 401 });
+  }
 
   const { data: schema } = await cli.getType({ type: content['@type'] });
 

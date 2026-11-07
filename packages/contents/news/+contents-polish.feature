@@ -1,0 +1,1 @@
+Polished the folder contents view after the Quanta Figma design: full-width table with taller rows, light blue selected rows, a drop indicator when rearranging rows, and a Quanta `SearchField` filter. The row actions and every toolbar action stay visible, disabled until they can be used. @sneridagh

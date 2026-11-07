@@ -65,3 +65,42 @@ test('As an editor, I can edit /mypage and interact with the editor - Selects a 
   });
   await expect(page.getByLabel('Editor toolbar')).toBeVisible();
 });
+
+test('refuses @@edit to users who cannot edit the item', async ({ page }) => {
+  await createContent(page, {
+    contentType: 'Document',
+    contentId: 'not-editable',
+    contentTitle: 'Not editable',
+    transition: 'publish',
+  });
+  const api = process.env.API_PATH || 'http://127.0.0.1:55001/plone';
+  const admin = await page.request.post(`${api}/@login`, {
+    data: { login: 'admin', password: 'secret' },
+    headers: { Accept: 'application/json' },
+  });
+  expect(admin.ok()).toBeTruthy();
+  const { token } = await admin.json();
+  const username = `editmember${Date.now()}`;
+  const headers = {
+    Accept: 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
+  const created = await page.request.post(`${api}/@users`, {
+    headers,
+    data: {
+      username,
+      email: `${username}@example.com`,
+      password: 'password',
+    },
+  });
+  expect(created.ok()).toBeTruthy();
+  try {
+    await login(page, { username, password: 'password' });
+    const response = await page.goto('/@@edit/not-editable');
+
+    expect(response?.status()).toBe(401);
+    await expect(page.getByRole('button', { name: 'Save' })).toHaveCount(0);
+  } finally {
+    await page.request.delete(`${api}/@users/${username}`, { headers });
+  }
+});

@@ -1,0 +1,1 @@
+Moved `ContentTypesMenu` here from `@plone/publicui`, with a `path` prop, and added the `canEdit`, `canViewContents` and `getMoreMenuData` helpers, so other views can check the same permissions and build the same toolbar. @sneridagh

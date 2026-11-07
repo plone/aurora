@@ -30,6 +30,7 @@ const mockContent = {
   description: 'A test page',
   blocks: {},
   blocks_layout: { items: [] },
+  '@components': { actions: { object: [{ id: 'edit' }] } },
 };
 
 describe('Edit route', () => {
@@ -81,6 +82,31 @@ describe('Edit route', () => {
       // flattenToAppURL strips the API path prefix from @id
       expect(resultData.content['@id']).toBe('/++api++/my-page');
       expect(resultData.content.title).toBe('My Page');
+    });
+  });
+
+  describe('loader permissions', () => {
+    it('refuses the view without the edit action', async () => {
+      const getTypeMock = vi.fn().mockResolvedValue({ data: mockSchema });
+      const context = new RouterContextProvider();
+      context.set(ploneClientContext, { getType: getTypeMock } as any);
+      context.set(ploneContentContext, {
+        ...mockContent,
+        '@components': { actions: { object: [{ id: 'view' }] } },
+      } as any);
+
+      const request = new Request('http://example.com/@@edit/my-page');
+
+      await expect(
+        loader({
+          request,
+          params: { '*': 'my-page' },
+          context,
+          pattern: '/@@edit/*',
+          url: new URL(request.url),
+        }),
+      ).rejects.toMatchObject({ init: { status: 401 } });
+      expect(getTypeMock).not.toHaveBeenCalled();
     });
   });
 
