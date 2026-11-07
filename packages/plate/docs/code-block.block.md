@@ -1,6 +1,7 @@
 ---
 element: code_block
 title: Code block
+document_model: plone.plate
 ---
 
 A block of code, shown in a monospace font with syntax highlighting. Each line is a `code_line` element whose children are one text node.

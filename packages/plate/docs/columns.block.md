@@ -1,6 +1,7 @@
 ---
 element: column_group
 title: Columns
+document_model: plone.plate
 ---
 
 Shows content side by side in columns. Its children are `column` elements, and the children of each column are block elements, such as paragraphs, headings or blocks.

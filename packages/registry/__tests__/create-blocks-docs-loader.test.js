@@ -1,4 +1,5 @@
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import {
@@ -40,13 +41,19 @@ describe('findBlocksDocs', () => {
   test('finds *.block.md files with a block, outside node_modules', () => {
     expect(findBlocksDocs([core])).toEqual([
       {
+        document_model: 'plone.blocks',
+        path: path.join(core, 'document-model.block.md'),
+      },
+      {
         element: 'h2',
         title: 'Heading',
+        document_model: 'plone.plate',
         path: path.join(core, 'Heading', 'heading.block.md'),
       },
       {
         element: 'h3',
         title: 'Heading',
+        document_model: 'plone.plate',
         path: path.join(core, 'Heading', 'heading.block.md'),
       },
       {
@@ -72,11 +79,65 @@ describe('findBlocksDocs', () => {
     expect(sources.find((source) => source.element === 'h3')).toEqual({
       element: 'h3',
       title: 'Subheading',
+      document_model: 'plone.plate',
       path: path.join(addon, 'h3.block.md'),
     });
-    expect(sources).toHaveLength(5);
+    expect(sources).toHaveLength(7);
     expect(warn).toHaveBeenCalledWith(
       expect.stringContaining('no-frontmatter.block.md'),
+    );
+  });
+
+  test('keeps an element of the same name in each document model', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'blocks-docs-'));
+    try {
+      fs.writeFileSync(
+        path.join(dir, 'a.block.md'),
+        '---\nelement: p\ndocument_model: plone.plate\n---\n',
+      );
+      fs.writeFileSync(
+        path.join(dir, 'b.block.md'),
+        '---\nelement: p\ndocument_model: other\n---\n',
+      );
+
+      expect(
+        findBlocksDocs([dir]).map(({ element, document_model }) => [
+          element,
+          document_model,
+        ]),
+      ).toEqual([
+        ['p', 'plone.plate'],
+        ['p', 'other'],
+      ]);
+    } finally {
+      fs.rmSync(dir, { recursive: true });
+    }
+  });
+
+  test('finds the docs of document models', () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const sources = findBlocksDocs([core, addon]).filter(
+      (source) => source.document_model && !source.element,
+    );
+
+    expect(sources).toEqual([
+      {
+        document_model: 'plone.blocks',
+        path: path.join(core, 'document-model.block.md'),
+      },
+      {
+        document_model: 'plone.plate',
+        path: path.join(addon, 'document.block.md'),
+      },
+    ]);
+  });
+
+  test('warns about a file without block, element or document_model', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    findBlocksDocs([addon]);
+
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('"block", "element" or "document_model"'),
     );
   });
 
@@ -104,14 +165,18 @@ describe('getBlocksDocsLoaderCode', () => {
     const code = getBlocksDocsLoaderCode([
       { element: 'h2', title: 'Heading', path: '/a/heading.block.md' },
       { element: 'h3', title: 'Heading', path: '/a/heading.block.md' },
+      { document_model: 'plone.plate', path: '/b/document.block.md' },
     ]);
 
-    expect(code.match(/^import /gm)).toHaveLength(1);
+    expect(code.match(/^import /gm)).toHaveLength(2);
     expect(code).toContain(
       '{ element: "h2", title: "Heading", markdown: docs0 },',
     );
     expect(code).toContain(
       '{ element: "h3", title: "Heading", markdown: docs0 },',
+    );
+    expect(code).toContain(
+      '{ document_model: "plone.plate", markdown: docs1 },',
     );
   });
 

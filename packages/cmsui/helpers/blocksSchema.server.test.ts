@@ -46,14 +46,26 @@ const docs = [
     markdown: '---\nblock: teaser\n---\n\nLinks to one item.\n\n### Fields',
   },
   {
-    block: '__somersault__',
-    markdown: '---\nblock: __somersault__\n---\n\nOne document.',
+    document_model: 'plone.plate',
+    markdown: '---\ndocument_model: plone.plate\n---\n\nOne document.',
+  },
+  {
+    document_model: 'plone.blocks',
+    markdown: '---\ndocument_model: plone.blocks\n---\n\nBlocks.',
   },
   {
     element: 'callout',
     title: 'Callout',
+    document_model: 'plone.plate',
     markdown:
-      '---\nelement: callout\ntitle: Callout\n---\n\nA box.\n\n### Example',
+      '---\nelement: callout\ntitle: Callout\ndocument_model: plone.plate\n---\n\nA box.\n\n### Example',
+  },
+  {
+    element: 'slide',
+    title: 'Slide',
+    document_model: 'other',
+    markdown:
+      '---\nelement: slide\ntitle: Slide\ndocument_model: other\n---\n\nA slide.',
   },
 ];
 
@@ -205,6 +217,7 @@ describe('the list of blocks', () => {
     );
     expect(await response.json()).toEqual({
       '@id': 'http://localhost/@blocks-schema',
+      document_model: { id: 'plone.plate', version: 1 },
       document: 'One document.',
       items: [
         {
@@ -296,7 +309,9 @@ describe('the list of blocks', () => {
       'text/markdown; charset=utf-8',
     );
     expect(markdown).toMatch(/^# Blocks\n/);
-    expect(markdown).toContain('## Document format\n\nOne document.');
+    expect(markdown).toContain(
+      '## Document format\n\n_Document model `plone.plate`, version 1._\n\nOne document.',
+    );
     expect(markdown).toContain(
       '## Elements\n\n- [Callout](http://localhost/@blocks-schema/callout) (`callout`): A box.',
     );
@@ -344,7 +359,7 @@ describe('one block', () => {
   });
 
   it('is 404 when the block is not registered', async () => {
-    for (const blockId of ['nope', '__somersault__']) {
+    for (const blockId of ['nope', '__somersault__', 'slide']) {
       const response = await blocksSchemaResponse({
         request: request(`/@blocks-schema/${blockId}`),
         blockId,
@@ -424,6 +439,54 @@ describe('for a content item', () => {
         user: { id: 'editor' },
       }),
     );
+  });
+
+  it('evaluates restricted for new content of the given type', async () => {
+    const restricted = vi.fn(() => false);
+    (config.blocks.blocksConfig as any).events.restricted = restricted;
+
+    const response = await blocksSchemaContentResource({
+      request: request('/events/@blocks-schema?type=Event'),
+      path: '/events',
+    });
+    const body = await response.json();
+
+    expect(restricted).toHaveBeenCalledWith(
+      expect.objectContaining({
+        properties: expect.objectContaining({ '@id': '/events' }),
+        contentType: 'Event',
+      }),
+    );
+    // Aurora has one document model, whatever the type.
+    expect(body.document_model).toEqual({ id: 'plone.plate', version: 1 });
+    expect(body).not.toHaveProperty('document_models');
+  });
+
+  it('keeps the type in the links', async () => {
+    const response = await blocksSchemaContentResource({
+      request: request('/events/@blocks-schema?type=Event'),
+      path: '/events',
+    });
+    const body = await response.json();
+    expect(body['@id']).toBe(
+      'http://localhost/events/@blocks-schema?type=Event',
+    );
+    expect(body.items.find((item: any) => item.id === 'teaser')['@id']).toBe(
+      'http://localhost/events/@blocks-schema/teaser?type=Event',
+    );
+    expect(body.items.find((item: any) => item.id === 'p')['@id']).toBe(
+      'http://localhost/events/@blocks-schema/p?type=Event',
+    );
+
+    const detail = await blocksSchemaContentResource({
+      request: request('/events/@blocks-schema/events?type=News%20Item'),
+      path: '/events',
+      subpath: 'events',
+    });
+    expect(await detail.json()).toMatchObject({
+      '@id': 'http://localhost/events/@blocks-schema/events?type=News%20Item',
+      restricted: true,
+    });
   });
 
   it('flags one block as restricted or not', async () => {

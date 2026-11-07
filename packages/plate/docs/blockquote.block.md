@@ -1,6 +1,7 @@
 ---
 element: blockquote
 title: Quote
+document_model: plone.plate
 ---
 
 A quotation. Its children are block elements, usually paragraphs.

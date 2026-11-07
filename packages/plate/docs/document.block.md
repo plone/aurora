@@ -1,5 +1,5 @@
 ---
-block: __somersault__
+document_model: plone.plate
 ---
 
 A page stores all its content in one block, `__somersault__`, whose `value` is a Plate document: a list of nodes, from top to bottom. The elements and blocks described below are the nodes you can use.

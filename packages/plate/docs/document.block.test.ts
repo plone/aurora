@@ -5,10 +5,8 @@ import { TITLE_BLOCK_TYPE } from '../components/editor/plugins/title-renderer';
 import markdown from './document.block.md?raw';
 
 describe('document format docs', () => {
-  it('documents the somersault block', () => {
-    expect(markdown).toMatch(
-      new RegExp(`^---\\nblock: ${SOMERSAULT_KEY}\\n---\\n`),
-    );
+  it('documents the plone.plate document model', () => {
+    expect(markdown).toMatch(/^---\ndocument_model: plone\.plate\n---\n/);
   });
 
   it('has examples that are valid JSON and use the real node types', () => {

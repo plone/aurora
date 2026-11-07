@@ -4,15 +4,17 @@ import tmp from 'tmp';
 
 /*
  * A docs file documents a block (`block`, and optionally one of its
- * `variation`s), or a native element of the page document (`element`), such
- * as a Plate `callout`. `title` names an element, which has no configuration
- * with a title.
+ * `variation`s), a native element of a document model (`element`, with its
+ * `document_model`), such as a Plate `callout`, or a document model itself
+ * (`document_model` alone), that is how a content type stores its blocks.
+ * `title` names an element, which has no configuration with a title.
  */
 export type BlockDocsSource = {
   block?: string;
   variation?: string;
   element?: string;
   title?: string;
+  document_model?: string;
   path: string;
 };
 
@@ -62,10 +64,10 @@ function findFiles(dir: string, found: string[] = []): string[] {
 
 /*
  * Finds the block docs (`*.block.md` files whose frontmatter names a `block`,
- * and optionally a `variation`, or one or more comma-separated `element`s) in
- * the given folders, in order. When two files document the same block,
- * variation or element, the last one wins, so add-ons listed after core can
- * replace its docs.
+ * and optionally a `variation`, one or more comma-separated `element`s of a
+ * `document_model`, or a `document_model`) in the given folders, in order.
+ * When two files document the same block, variation, element or document
+ * model, the last one wins, so add-ons listed after core can replace its docs.
  */
 export function findBlocksDocs(paths: string[]): BlockDocsSource[] {
   const sources = new Map<string, BlockDocsSource>();
@@ -76,9 +78,8 @@ export function findBlocksDocs(paths: string[]): BlockDocsSource[] {
 
   for (const dir of paths) {
     for (const file of findFiles(dir)) {
-      const { block, variation, element, title } = parseFrontmatter(
-        fs.readFileSync(file, 'utf-8'),
-      );
+      const { block, variation, element, title, document_model } =
+        parseFrontmatter(fs.readFileSync(file, 'utf-8'));
       if (block) {
         add(variation ? `${block}|${variation}` : block, {
           block,
@@ -88,16 +89,22 @@ export function findBlocksDocs(paths: string[]): BlockDocsSource[] {
       } else if (element) {
         for (const name of element.split(',').map((item) => item.trim())) {
           if (!name) continue;
-          add(`element:${name}`, {
+          add(`element:${document_model || ''}:${name}`, {
             element: name,
             ...(title ? { title } : {}),
+            ...(document_model ? { document_model } : {}),
             path: file,
           });
         }
+      } else if (document_model) {
+        add(`document_model:${document_model}`, {
+          document_model,
+          path: file,
+        });
       } else {
         // eslint-disable-next-line no-console
         console.warn(
-          `[@plone/registry] ${file} has no "block" or "element" in its frontmatter, ignoring it.`,
+          `[@plone/registry] ${file} has no "block", "element" or "document_model" in its frontmatter, ignoring it.`,
         );
       }
     }

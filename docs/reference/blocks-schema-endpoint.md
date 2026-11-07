@@ -49,11 +49,16 @@ GET /@blocks-schema HTTP/1.1
 Authorization: Bearer <token>
 ```
 
-This returns the URL, ID, title, kind, and summary of every documented element and every registered block, and the documentation of the page document format in `document`.
+This returns the document model of the site in `document_model`, the documentation of the page document format in `document`, and the URL, ID, title, kind, and summary of every documented element and every registered block.
 The summary is the first paragraph of the documentation.
 Each item's `@id` is the absolute URL of its details, so a client follows it to get the item's documentation and schema.
 The URL uses the block's key in `blocksConfig`, which is what the endpoint looks up.
 The protocol comes from the `X-Forwarded-Proto` header, when a proxy sets it, and the host from the request.
+
+`document_model` tells how content stores its blocks, as an object with an `id` and a `version`.
+Plone Aurora stores a page as one Plate document, so its document model is `plone.plate`, version 1.
+Volto stores the blocks of content with the `plone.blocks` document model.
+A new `version` means that the stored data changed in a way that clients of the previous version can't read.
 
 `kind` tells how the item is stored in the page document:
 
@@ -66,6 +71,7 @@ The protocol comes from the `X-Forwarded-Proto` header, when a proxy sets it, an
 ```json
 {
   "@id": "http://localhost:3000/@blocks-schema",
+  "document_model": { "id": "plone.plate", "version": 1 },
   "document": "A page stores all its content in one block, `__somersault__`...",
   "items": [
     {
@@ -100,6 +106,9 @@ It is `true` when the block is never offered, and `"context"` when that depends 
 See {ref}`blocks-schema-context`.
 
 `document` has no `@id`, because no URL returns it on its own.
+It is the documentation of the document model, and the elements listed are the ones of that document model.
+
+Plone Aurora has a single document model, so the list never has the `document_models` key that the Volto server returns when content types use different document models.
 
 ## Get one block
 
@@ -145,10 +154,18 @@ The endpoint also returns Markdown when the `Accept` header asks for `text/markd
 JSON is the default.
 The query string doesn't change the format.
 
-The list returns the document format, then one line per element and per block, with a link to its details, its ID, and its summary.
+The list returns the document format, with a line that names the document model and its version, then one line per element and per block, with a link to its details, its ID, and its summary.
 A line notes when a block is not offered in the block chooser, or when that depends on the content.
 
 ```markdown
+## Document format
+
+_Document model `plone.plate`, version 1._
+
+A page stores all its content in one block, `__somersault__`...
+
+## Blocks
+
 - [Teaser](http://localhost:3000/@blocks-schema/teaser) (`teaser`): Shows a card that links to one content item...
 - [Listing](http://localhost:3000/@blocks-schema/listing) (`listing`): Shows a list of content items... _Offered depending on the content._
 ```
@@ -177,6 +194,22 @@ With a path, the endpoint returns one block with a `restricted` value of `true` 
 ```http
 GET /news/@blocks-schema/listing HTTP/1.1
 ```
+
+(blocks-schema-type)=
+
+## Blocks for a content type
+
+Add a `type` query parameter to ask for new content of that type, for example before you create it.
+
+```http
+GET /news/@blocks-schema?type=Event HTTP/1.1
+```
+
+With a content path, the endpoint evaluates each block's `restricted` setting with that `contentType` instead of the type of the content item, so the list has the blocks offered for an item of that type created in that container.
+Without a content path, the list doesn't depend on the content, so `type` doesn't change it.
+Plone Aurora has a single document model, so `type` doesn't change `document_model` either.
+
+The `@id` of the list and the links of its items keep `?type=<type>`, for example `http://localhost:3000/news/@blocks-schema/teaser?type=Event`.
 
 React Router can't match a route below a content path, so these URLs are answered by the `contentResource` utility named `@blocks-schema`, which the root middleware calls before it fetches the content.
 See {ref}`content-resources`.

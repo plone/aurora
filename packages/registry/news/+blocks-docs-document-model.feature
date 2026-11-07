@@ -1,0 +1,1 @@
+The block docs loader collects the `document_model` of element docs, keeps an element of the same name in each document model, and collects the docs of document models, files whose frontmatter only has `document_model`. @sneridagh

@@ -1,6 +1,7 @@
 ---
 element: p
 title: Paragraph
+document_model: plone.plate
 ---
 
 A paragraph of text, the most common node of a page. Its children are text nodes and inline elements, such as links.
