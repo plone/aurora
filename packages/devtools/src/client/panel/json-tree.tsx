@@ -27,6 +27,16 @@ function Leaf({ value }: { value: unknown }) {
   return <span>{String(value)}</span>;
 }
 
+/** The first keys of a collapsed object, or the length of an array. */
+function preview(
+  isArr: boolean,
+  entries: readonly (readonly [string, unknown])[],
+) {
+  if (isArr) return '…';
+  const keys = entries.slice(0, 4).map(([k]) => k);
+  return `${keys.join(', ')}${entries.length > keys.length ? ', …' : ''}`;
+}
+
 function Node({
   name,
   value,
@@ -46,7 +56,7 @@ function Node({
   const key =
     name !== undefined ? (
       <>
-        <span className="k">{`"${name}"`}</span>:{' '}
+        <span className="k">{name}</span>:{' '}
       </>
     ) : null;
   if (!isObj) {
@@ -102,8 +112,12 @@ function Node({
           {c}
         </>
       ) : (
-        <button onClick={() => setOpen(true)}>
-          {o}…{c}
+        <button className="collapsed" onClick={() => setOpen(true)}>
+          {o}
+          {entries.length > 0 && (
+            <span className="preview">{preview(isArr, entries)}</span>
+          )}
+          {c}
           <span className="meta">
             {entries.length} {entries.length === 1 ? 'item' : 'items'}
           </span>
