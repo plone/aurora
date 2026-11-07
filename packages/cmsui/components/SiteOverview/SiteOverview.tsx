@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@plone/quanta';
 import type { GetSiteResponse, GetSystemResponse } from '@plone/types';
-import PackageJson from '../../../../apps/aurora/package.json';
+import appInfo from '@plone/registry/app-info';
 
 interface SiteOverviewProps {
   system: GetSystemResponse;
@@ -59,7 +59,10 @@ const SiteOverview = ({
 
   const versions: [string, string | undefined][] = [
     ['Plone', system.plone_version],
-    ['Plone Aurora', PackageJson.version],
+    [
+      appInfo.name === '@plone/aurora' ? 'Plone Aurora' : appInfo.name,
+      appInfo.version,
+    ],
     ['plone.restapi', system.plone_restapi_version],
     ['Zope', system.zope_version],
     ['Python', pythonVersion],
