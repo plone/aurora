@@ -119,3 +119,90 @@ test.describe('The content types control panel', () => {
     );
   });
 });
+
+test.describe("A content type's page", () => {
+  test.beforeEach(async ({ page }) => {
+    await login(page);
+  });
+
+  test('saves the name and the description', async ({ page }) => {
+    await page.goto(`${LIST}/Document/settings`, { waitUntil: 'networkidle' });
+
+    await page
+      .getByRole('textbox', { name: 'Description' })
+      .fill('Pages are documents.');
+    const bar = page.getByRole('region', { name: 'Unsaved changes' });
+    await expect(bar).toContainText('Unsaved changes in Settings');
+    await bar.getByRole('button', { name: 'Save' }).click();
+
+    await expect(page.getByText('Page saved')).toBeVisible();
+    await expect(bar).toHaveCount(0);
+    await page.reload({ waitUntil: 'networkidle' });
+    await expect(
+      page.getByRole('textbox', { name: 'Description' }),
+    ).toHaveValue('Pages are documents.');
+  });
+
+  test('chooses which types can be added inside', async ({ page }) => {
+    await page.goto(`${LIST}/Document/settings`, { waitUntil: 'networkidle' });
+
+    const allowed = page.getByRole('radiogroup', { name: 'Allowed inside' });
+    await allowed.getByText('Only selected types').click();
+    await page.getByRole('combobox', { name: 'Allowed types' }).fill('Imag');
+    await page.getByRole('option', { name: 'Image' }).click();
+    await page.getByRole('button', { name: 'Save' }).click();
+    await expect(page.getByText('Page saved')).toBeVisible();
+
+    await page.reload({ waitUntil: 'networkidle' });
+    await expect(
+      allowed.getByRole('radio', { name: 'Only selected types' }),
+    ).toBeChecked();
+    // The allowed types show as tags under the picker.
+    await expect(page.getByRole('row', { name: 'Image' })).toBeVisible();
+  });
+
+  test('keeps the changes across tabs, and asks before leaving', async ({
+    page,
+  }) => {
+    await page.goto(`${LIST}/Document/settings`, { waitUntil: 'networkidle' });
+    await page.getByRole('textbox', { name: 'Description' }).fill('Changed');
+
+    await page.getByRole('tab', { name: 'Fields' }).click();
+    await expect(page).toHaveURL(/\/Document\/fields$/);
+    await expect(page.getByRole('alertdialog')).toHaveCount(0);
+    await page.getByRole('tab', { name: /Settings/ }).click();
+    await expect(
+      page.getByRole('textbox', { name: 'Description' }),
+    ).toHaveValue('Changed');
+
+    await page.getByRole('link', { name: 'back' }).click();
+    const dialog = page.getByRole('alertdialog', {
+      name: 'Leave without saving?',
+    });
+    await expect(dialog).toBeVisible();
+    await dialog.getByRole('button', { name: 'Keep editing' }).click();
+    await expect(page).toHaveURL(/\/Document\/settings$/);
+
+    await page.getByRole('link', { name: 'back' }).click();
+    await dialog.getByRole('button', { name: 'Discard changes' }).click();
+    await expect(page).toHaveURL(/\/controlpanel\/content-types$/);
+  });
+
+  test("doesn't offer the contents settings for a type that isn't folderish", async ({
+    page,
+  }) => {
+    await page.goto(`${LIST}/Link/settings`, { waitUntil: 'networkidle' });
+
+    await expect(
+      page.getByRole('heading', { level: 1, name: 'Link' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('radiogroup', { name: 'Allowed inside' }),
+    ).toHaveCount(0);
+  });
+
+  test('opens the Settings tab without a tab in the URL', async ({ page }) => {
+    await page.goto(`${LIST}/Event`);
+    await expect(page).toHaveURL(/\/Event\/settings$/);
+  });
+});

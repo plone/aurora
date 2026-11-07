@@ -55,8 +55,10 @@
     }
   },
   "dependencies": {
+    "@plone/helpers": "workspace:*",
     "@plone/icons": "workspace:*",
     "@plone/quanta": "workspace:*",
+    "jotai": "^2.12.3",
     "react-aria-components": "catalog:"
   },
   "devDependencies": {

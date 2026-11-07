@@ -1,5 +1,5 @@
 import { useCallback, useMemo, type ReactNode } from 'react';
-import { useNavigate } from 'react-router';
+import { useBlocker, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import {
   ContentTypesDriverProvider,
@@ -7,10 +7,23 @@ import {
   interpolate,
   type Notify,
   type Translate,
+  type UseBlocker,
 } from '@plone/controlpanels';
 import Toast from '@plone/layout/components/Toast/Toast';
 import config from '@plone/registry';
 import { createAuroraDriver } from './auroraDriver';
+
+/** React Router's blocker, in the shape the control panels expect. */
+const useRouterBlocker: UseBlocker = (shouldBlock) => {
+  const blocker = useBlocker(({ nextLocation }) =>
+    shouldBlock(nextLocation.pathname),
+  );
+  return {
+    isBlocked: blocker.state === 'blocked',
+    proceed: () => blocker.proceed?.(),
+    cancel: () => blocker.reset?.(),
+  };
+};
 
 /**
  * Connects the content types control panel to Aurora: React Router for
@@ -50,6 +63,7 @@ export default function ContentTypesProviders({
       navigate={navigate}
       translate={translate}
       notify={notify}
+      useBlocker={useRouterBlocker}
     >
       <ContentTypesDriverProvider driver={driver}>
         {children}

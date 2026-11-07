@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, useContext, useEffect, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import { RouterProvider } from 'react-aria-components';
 import { defaultTranslate } from './messages';
@@ -13,6 +13,24 @@ export interface Notification {
 /** Shows a notification, e.g. a toast. */
 export type Notify = (notification: Notification) => void;
 
+/** A navigation the app held back, waiting for the user to decide. */
+export interface NavigationBlocker {
+  isBlocked: boolean;
+  /** Goes on with the navigation. */
+  proceed: () => void;
+  /** Stays on the page. */
+  cancel: () => void;
+}
+
+/**
+ * A hook that holds back in-app navigation to the paths `shouldBlock` returns
+ * true for, e.g. built on React Router's `useBlocker`. Every app passes its
+ * own.
+ */
+export type UseBlocker = (
+  shouldBlock: (nextPath: string) => boolean,
+) => NavigationBlocker;
+
 export interface ControlPanelsProviderProps {
   children?: ReactNode;
   /**
@@ -26,15 +44,28 @@ export interface ControlPanelsProviderProps {
   translate?: Translate;
   /** Shows notifications. Does nothing when missing. */
   notify?: Notify;
+  /**
+   * Holds back in-app navigation, e.g. while there are unsaved changes.
+   * Without it, only reloading and closing the page ask first.
+   */
+  useBlocker?: UseBlocker;
 }
 
 interface ControlPanelsContextValue {
   translate: Translate;
   notify: Notify;
   navigate: (path: string) => void;
+  useBlocker: UseBlocker;
 }
 
 const noop: Notify = () => {};
+
+const notBlocked: NavigationBlocker = {
+  isBlocked: false,
+  proceed: () => {},
+  cancel: () => {},
+};
+const neverBlock: UseBlocker = () => notBlocked;
 
 // Without an app router, a full page load is the only way to navigate.
 const assignLocation = (path: string) => {
@@ -45,6 +76,7 @@ const ControlPanelsContext = createContext<ControlPanelsContextValue>({
   translate: defaultTranslate,
   notify: noop,
   navigate: assignLocation,
+  useBlocker: neverBlock,
 });
 
 /**
@@ -57,10 +89,16 @@ export function ControlPanelsProvider({
   useHref,
   translate = defaultTranslate,
   notify = noop,
+  useBlocker = neverBlock,
 }: ControlPanelsProviderProps) {
   const value = useMemo(
-    () => ({ translate, notify, navigate: navigate ?? assignLocation }),
-    [translate, notify, navigate],
+    () => ({
+      translate,
+      notify,
+      navigate: navigate ?? assignLocation,
+      useBlocker,
+    }),
+    [translate, notify, navigate, useBlocker],
   );
   const content = (
     <ControlPanelsContext.Provider value={value}>
@@ -87,4 +125,27 @@ export function useNotify(): Notify {
 /** Navigates to a path of the app, e.g. after creating something. */
 export function useNavigate(): (path: string) => void {
   return useContext(ControlPanelsContext).navigate;
+}
+
+/**
+ * Holds back navigation while `when` is true: in-app navigation through the
+ * app's `useBlocker`, and reloading or closing the page through the browser.
+ * In-app navigation to a path `allows` accepts goes on, e.g. to another tab
+ * of the same item.
+ */
+export function useNavigationBlocker(
+  when: boolean,
+  allows: (nextPath: string) => boolean = () => false,
+): NavigationBlocker {
+  const useBlocker = useContext(ControlPanelsContext).useBlocker;
+  const blocker = useBlocker((nextPath) => when && !allows(nextPath));
+  useEffect(() => {
+    if (!when) return;
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+    };
+    window.addEventListener('beforeunload', onBeforeUnload);
+    return () => window.removeEventListener('beforeunload', onBeforeUnload);
+  }, [when]);
+  return blocker;
 }
