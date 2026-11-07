@@ -9,6 +9,7 @@ import { createTPlatePlugin } from 'platejs/react';
 import {
   ACCORDION_EDITOR_KEY,
   enterPanel,
+  movePanel,
   type AccordionEditorOptions,
 } from './editor-transforms';
 import {
@@ -20,6 +21,7 @@ import {
  * Handles a key press in an accordion. Returns `true` when it handled it.
  *
  * - Enter in a panel title moves into the panel's first block.
+ * - Alt+Shift+↑ and Alt+Shift+↓ in a panel title move the panel.
  * - The title and the content of a panel never merge: Backspace at the start
  *   of a title, Delete at its end, and Delete at the end of the last block of
  *   a panel do nothing, and Backspace at the start of the first block of a
@@ -27,12 +29,21 @@ import {
  */
 export const handleAccordionKeyDown = (
   editor: SlateEditor,
-  event: Pick<KeyboardEvent, 'key' | 'shiftKey' | 'preventDefault'> & {
+  event: Pick<
+    KeyboardEvent,
+    'key' | 'shiftKey' | 'altKey' | 'preventDefault'
+  > & {
     defaultPrevented?: boolean;
   },
 ): boolean => {
   if (event.defaultPrevented) return false;
-  if (!['Enter', 'Backspace', 'Delete'].includes(event.key)) return false;
+  const isMove =
+    event.altKey &&
+    event.shiftKey &&
+    (event.key === 'ArrowUp' || event.key === 'ArrowDown');
+  if (!isMove && !['Enter', 'Backspace', 'Delete'].includes(event.key)) {
+    return false;
+  }
   const selection = editor.selection;
   if (!selection || !editor.api.isCollapsed()) return false;
 
@@ -42,6 +53,11 @@ export const handleAccordionKeyDown = (
   if (title) {
     const [, titlePath] = title;
     const panelPath = PathApi.parent(titlePath);
+    if (isMove) {
+      event.preventDefault();
+      movePanel(editor, panelPath, event.key === 'ArrowUp' ? -1 : 1);
+      return true;
+    }
     if (event.key === 'Enter') {
       event.preventDefault();
       enterPanel(editor, panelPath);
@@ -58,7 +74,7 @@ export const handleAccordionKeyDown = (
     return false;
   }
 
-  if (event.key === 'Enter') return false;
+  if (event.key === 'Enter' || isMove) return false;
 
   const block = editor.api.block();
   if (!block) return false;
