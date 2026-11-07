@@ -74,6 +74,23 @@ describe('SiteOverview', () => {
     ).toBeInTheDocument();
   });
 
+  it('shows custom addons', async () => {
+    render(<SiteOverview system={system} addons={addons} />);
+
+    expect(screen.getByText('cmsui.siteOverview.addons')).toBeInTheDocument();
+
+    expect(screen.getByText('@some/addon')).toBeInTheDocument();
+    expect(screen.getByText('1.3.5')).toBeInTheDocument();
+    expect(screen.getByText('@some/other-addon')).toBeInTheDocument();
+    expect(screen.getByText('2.2.5')).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('button', {
+        name: 'cmsui.siteOverview.copyAddonsInfo',
+      }),
+    ).toBeInTheDocument();
+  });
+
   it('says when the copy fails', async () => {
     Object.defineProperty(navigator, 'clipboard', {
       value: { writeText: vi.fn().mockRejectedValue(new Error('Denied')) },
@@ -106,20 +123,5 @@ describe('SiteOverview', () => {
         name: 'cmsui.siteOverview.copySystemInfo',
       }),
     ).not.toBeInTheDocument();
-  });
-
-  it('shows custom addons', () => {
-    render(<SiteOverview system={system} addons={addons} />);
-
-    expect(screen.getByText('Add-ons')).toBeInTheDocument();
-
-    expect(screen.getByText('@some/addon')).toBeInTheDocument();
-    expect(screen.getByText('1.3.5')).toBeInTheDocument();
-    expect(screen.getByText('@some/other-addon')).toBeInTheDocument();
-    expect(screen.getByText('2.2.5')).toBeInTheDocument();
-
-    expect(screen.getByText('Copy add-ons info')).toBeInstanceOf(
-      HTMLButtonElement,
-    );
   });
 });

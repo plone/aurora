@@ -52,6 +52,7 @@ const SiteOverview = ({
     useRef<ReturnType<typeof setTimeout>>(undefined);
   const copyAddonsInfoTimeout =
     useRef<ReturnType<typeof setTimeout>>(undefined);
+
   // Only known in the browser: the server may be reached at an internal
   // address, behind a proxy, and the clipboard needs a secure origin.
   const [siteUrl, setSiteUrl] = useState(siteUrlProp);
@@ -70,6 +71,7 @@ const SiteOverview = ({
     [],
   );
   const title = site?.['plone.site_title'] || 'Plone';
+
   // Python's version string carries the build details after the number.
   const [pythonVersion] = system.python_version?.split(' ') ?? [];
 
