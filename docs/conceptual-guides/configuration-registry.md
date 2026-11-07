@@ -78,3 +78,11 @@ The configuration registry also stores special elements that can be queried and 
 -   Utilities
 
 Some of the components are particular to the use case of a CMS, such as slots, but the abstraction can be ported and applied to different scenarios.
+
+## Metadata of add-ons
+
+`config.settings.addonsInfo` is an array of `Package`s:
+
+```ts
+import type { Package } from '@plone/registry/addon-registry';
+```

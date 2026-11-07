@@ -86,7 +86,9 @@
       "debugMode": "Modalità debug",
       "copySystemInfo": "Copia informazioni di sistema",
       "copied": "Copiato",
-      "copyFailed": "Impossibile copiare"
+      "copyFailed": "Impossibile copiare",
+      "copyAddonsInfo": "Copia info dei componenti aggiuntivi",
+      "addons": "Componenti aggiuntivi"
     },
     "controlpanelDescriptions": {
       "date-and-time": "Fuso orario e primo giorno della settimana",

@@ -1,6 +1,7 @@
 import { vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import SiteOverview from './SiteOverview';
+import type { Package } from '@plone/registry/addon-registry';
 
 const system = {
   '@id': 'http://localhost:8080/Plone/@system',
@@ -15,6 +16,11 @@ const system = {
   upgrade: false,
   zope_version: '6.2',
 };
+
+const addons = [
+  { name: '@some/addon', version: '1.3.5' },
+  { name: '@some/other-addon', version: '2.2.5' },
+] as Package[];
 
 describe('SiteOverview', () => {
   it('shows the site and the versions it runs on', () => {
@@ -65,6 +71,23 @@ describe('SiteOverview', () => {
     );
     expect(
       await screen.findByRole('button', { name: 'cmsui.siteOverview.copied' }),
+    ).toBeInTheDocument();
+  });
+
+  it('shows custom addons', async () => {
+    render(<SiteOverview system={system} addons={addons} />);
+
+    expect(screen.getByText('cmsui.siteOverview.addons')).toBeInTheDocument();
+
+    expect(screen.getByText('@some/addon')).toBeInTheDocument();
+    expect(screen.getByText('1.3.5')).toBeInTheDocument();
+    expect(screen.getByText('@some/other-addon')).toBeInTheDocument();
+    expect(screen.getByText('2.2.5')).toBeInTheDocument();
+
+    expect(
+      screen.getByRole('button', {
+        name: 'cmsui.siteOverview.copyAddonsInfo',
+      }),
     ).toBeInTheDocument();
   });
 

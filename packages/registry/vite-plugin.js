@@ -216,7 +216,6 @@ export const PloneRegistryVitePlugin = () => {
                   },
                 ]
               : []),
-            // This is no longer needed in Plone Aurora
             {
               find: '@plone/registry/addons-loader',
               replacement: addonsLoaderPath,
