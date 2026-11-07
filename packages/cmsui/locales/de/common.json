@@ -99,11 +99,12 @@
     "translate": {
       "source": "Quelle",
       "view_source": "Quellinhalt ansehen",
-      "heading_new": "\"{{title}}\" nach {{language}} übersetzen"
+      "translatingTo": "Übersetzung nach {{language}}"
     },
     "blocksEditor": {
       "blocksTab": "Blöcke",
-      "contentTab": "Inhalt"
+      "contentTab": "Metadaten",
+      "modeLabel": "Editormodus"
     },
     "sidebar": {
       "label": "Seitenleiste"
@@ -205,6 +206,15 @@
         "columnActions": "Aktionen"
       }
     },
-    "saveFailed": "Speichern fehlgeschlagen"
+    "saveFailed": "Speichern fehlgeschlagen",
+    "form": {
+      "fieldsets": "Feldgruppen",
+      "fieldsetHasErrors": "Diese Feldgruppe enthält Fehler"
+    },
+    "editor": {
+      "home": "Startseite",
+      "breadcrumbs": "Brotkrumen",
+      "newItem": "Neu: {{type}}"
+    }
   }
 }

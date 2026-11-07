@@ -28,8 +28,8 @@ test('The edit form shows the related items a page already has', async ({
   });
 
   await page.goto('/@@edit/related-source', { waitUntil: 'networkidle' });
-  await page.getByRole('tab', { name: 'Content' }).click();
-  await page.locator('button', { hasText: /^Categorization$/ }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
+  await page.getByRole('tab', { name: 'Categorization' }).click();
 
   // The object browser starts from the field's value.
   await expect(page.getByRole('row', { name: 'Related target' })).toBeVisible();
@@ -47,7 +47,7 @@ test('Saving the edit form stores the changed metadata', async ({
   });
 
   await page.goto('/@@edit/metadata-save', { waitUntil: 'networkidle' });
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
   await page.getByLabel('Summary').fill('A summary typed in the form');
 
   const saved = page.waitForResponse(

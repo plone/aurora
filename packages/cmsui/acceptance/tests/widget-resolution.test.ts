@@ -15,7 +15,7 @@ test('The edit form resolves image and boolean fields to their widgets', async (
   });
 
   await page.goto('/@@edit/widget-news', { waitUntil: 'networkidle' });
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
 
   // The lead image is an `Image` factory field: it stores the image file.
   await expect(
@@ -23,7 +23,7 @@ test('The edit form resolves image and boolean fields to their widgets', async (
   ).toHaveCount(1);
 
   // Boolean fields resolve by their `boolean` type.
-  await page.locator('button', { hasText: /^Settings$/ }).click();
+  await page.getByRole('tab', { name: 'Settings' }).click();
   await expect(
     page.locator('label', { hasText: 'Exclude from navigation' }),
   ).toBeVisible();
@@ -41,7 +41,7 @@ test('A page summary is edited in a multi-line text area', async ({ page }) => {
   });
 
   await page.goto('/@@edit/summary-page', { waitUntil: 'networkidle' });
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
 
   // plone.restapi sends `widget: 'textarea'` for the description field.
   const summary = page.getByRole('textbox', { name: 'Summary' });

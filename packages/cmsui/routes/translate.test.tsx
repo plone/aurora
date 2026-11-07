@@ -93,6 +93,9 @@ describe('Translate route', () => {
       config.settings.apiPath = 'http://example.com';
       const context = makeContext({
         getType: vi.fn().mockResolvedValue({ data: mockSchema }),
+        getBreadcrumbs: vi
+          .fn()
+          .mockResolvedValue({ data: { root: '/de', items: [] } }),
         getTranslation: vi.fn().mockResolvedValue({ data: mockTranslations }),
       });
 
@@ -124,6 +127,9 @@ describe('Translate route', () => {
       config.settings.apiPath = 'http://example.com';
       const context = makeContext({
         getType: vi.fn().mockResolvedValue({ data: mockSchema }),
+        getBreadcrumbs: vi
+          .fn()
+          .mockResolvedValue({ data: { root: '/de', items: [] } }),
         getTranslation: vi.fn().mockResolvedValue({
           data: {
             ...mockTranslations,
@@ -152,6 +158,9 @@ describe('Translate route', () => {
       config.settings.apiPath = 'http://example.com';
       const context = makeContext({
         getType: vi.fn().mockResolvedValue({ data: mockSchema }),
+        getBreadcrumbs: vi
+          .fn()
+          .mockResolvedValue({ data: { root: '/de', items: [] } }),
         getTranslation: vi.fn().mockResolvedValue({ data: mockTranslations }),
       });
 
@@ -170,6 +179,9 @@ describe('Translate route', () => {
       config.settings.apiPath = 'http://example.com';
       const context = makeContext({
         getType: vi.fn().mockResolvedValue({ data: mockSchema }),
+        getBreadcrumbs: vi
+          .fn()
+          .mockResolvedValue({ data: { root: '/de', items: [] } }),
         getTranslation: vi.fn().mockResolvedValue({ data: mockTranslations }),
       });
 
@@ -190,6 +202,9 @@ describe('Translate route', () => {
         config.settings.apiPath = 'http://example.com';
         const context = makeContext({
           getType: vi.fn().mockResolvedValue({ data: mockSchema }),
+          getBreadcrumbs: vi
+            .fn()
+            .mockResolvedValue({ data: { root: '/de', items: [] } }),
           getTranslation: vi.fn().mockResolvedValue({ data: mockTranslations }),
         });
 
@@ -209,6 +224,9 @@ describe('Translate route', () => {
       config.settings.apiPath = 'http://example.com';
       const context = makeContext({
         getType: vi.fn().mockResolvedValue({ data: mockSchema }),
+        getBreadcrumbs: vi
+          .fn()
+          .mockResolvedValue({ data: { root: '/de', items: [] } }),
         getTranslation: vi.fn().mockRejectedValue({ status: 404 }),
       });
 

@@ -123,7 +123,7 @@ Quanta keeps the RAC `*Field` parts as the reference for hand-written forms.
 
 | Component | Starter | Status | Notes |
 | --- | --- | --- | --- |
-| `Tabs`, `TabList`, `Tab`, `TabPanels`, `TabPanel` | `Tabs.tsx` | `aligned` | `TabPanels` is optional, and adds no styles. |
+| `Tabs`, `TabList`, `Tab`, `TabPanels`, `TabPanel` | `Tabs.tsx` | `aligned` | `TabList`'s `variant` (`underline` or `segmented`) is an extra. `TabPanels` is optional: it animates the panels' height and cross-fades them. See {ref}`quanta-tabs-label`. |
 | `Accordion`, `AccordionItem`, `AccordionItemTrigger`, `AccordionPanel` | `Disclosure.tsx`, `DisclosureGroup.tsx` | `Plone-specific` | Keeps its names. |
 | `Breadcrumbs`, `Breadcrumb` | `Breadcrumbs.tsx` | `Plone-specific` | Takes Plone items (`@id`, `title`) and a `root` item. |
 | `Button` | `Button.tsx` | `Plone-specific` | Keeps all of Quanta's variants. Shows a spinner when `isPending`. See {ref}`quanta-button-label`. |
@@ -149,6 +149,7 @@ These components have no counterpart in the starter.
 | `Spinner` | Loading indicator. | none |
 | `Pagination` | Page navigation for a batched listing, with previous and next buttons. Pages start from 0. | `contents` (ContentsTable) |
 | `CustomRadio` | Radio rendered as a toggle button. | the pickers |
+| `TabPanelCarousel` | Lays tab panels side by side, so they can be swiped on narrow touch screens. Based on React Aria's swipeable tabs example. See {ref}`quanta-tabs-label`. | `cmsui` (SchemaFieldsets) |
 | `ModalSheet` | A modal dialog that is a `Modal` on wide screens and becomes a bottom sheet below the `md` breakpoint. Built on `Modal` and `Sheet`. See {ref}`quanta-side-panel-label`. | none |
 
 The deprecated `SizeWidget`, `AlignWidget` and `WidthWidget` aliases of the pickers aren't used, and can be removed.
@@ -188,6 +189,44 @@ Quanta's date controls take and return React Aria's date values (`DateValue`), l
 Plone's content API stores dates as ISO strings: `YYYY-MM-DD` for dates, and UTC date-times.
 The widgets in `@plone/cmsui` convert them to date values and back, and decide the time zone policy: store UTC, show the browser's local time.
 The conversion helpers live in `@plone/cmsui`, next to the date widgets, and `@plone/contents` uses them too.
+
+(quanta-tabs-label)=
+
+### Tabs
+
+Quanta's tabs follow the starter: the selected tab has a `SelectionIndicator` that slides to the next selected tab, the tab list scrolls sideways when its tabs don't fit, and `TabPanels` animates the height of the panels.
+
+`TabList` takes a `variant`, an extra:
+
+-   `underline`, the default, for a set of views, such as the fieldsets of a form.
+    The selected tab is in Quanta's primary color, with a line under it, or beside it in a vertical list.
+-   `segmented`, for a switch between a few modes of the same page, such as the editor's {guilabel}`Blocks` and {guilabel}`Metadata`.
+    The selected tab is a raised chip on a gray track.
+
+The two looks don't compete, so a `segmented` switch can sit above `underline` tabs, as in the content editor.
+
+`TabPanelCarousel` is an extension, based on React Aria's [swipeable tabs example](https://react-aria.adobe.com/examples/swipeable-tabs).
+It lays the panels side by side.
+Below Tailwind's `md` breakpoint, on touch screens, the panels can be swiped, and snap into place.
+The selected tab's indicator follows the swipe, and the tab is selected when the swipe ends.
+On other screens, selecting a tab shows its panel with a short fade.
+The carousel takes the height of the selected panel, and never makes its container wider.
+
+Render it as a direct child of `Tabs`, after the `TabList`, and give every `TabPanel` `shouldForceMount`.
+React Aria makes the panels that aren't selected `inert`, so they can't take focus: select a panel before you focus one of its fields.
+
+```tsx
+<Tabs>
+  <TabList aria-label="Fieldsets">
+    <Tab id="default">Default</Tab>
+    <Tab id="dates">Dates</Tab>
+  </TabList>
+  <TabPanelCarousel>
+    <TabPanel id="default" shouldForceMount>…</TabPanel>
+    <TabPanel id="dates" shouldForceMount>…</TabPanel>
+  </TabPanelCarousel>
+</Tabs>
+```
 
 (quanta-side-panel-label)=
 
