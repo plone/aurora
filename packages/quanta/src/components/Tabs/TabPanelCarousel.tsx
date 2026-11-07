@@ -16,6 +16,13 @@ export interface TabPanelCarouselProps {
   className?: string;
 }
 
+// How far, in pixels, the mouse moves before a drag starts.
+const DRAG_THRESHOLD = 6;
+
+// What a mouse drag never starts on: fields and controls take their own drags.
+const DRAG_EXCLUDED =
+  'input, textarea, select, button, a[href], [contenteditable]:not([contenteditable="false"]), [role="slider"], [role="textbox"], [draggable="true"]';
+
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
   window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
@@ -25,6 +32,8 @@ const prefersReducedMotion = () =>
  * be swiped, with scroll snapping. The selected tab follows the swipe, and its
  * indicator follows the finger. On other screens, selecting a tab shows its
  * panel with a short fade.
+ *
+ * Where they can be swiped, the panels can also be dragged with a mouse.
  *
  * Based on React Aria's swipeable tabs example. Render it as a direct child
  * of `Tabs`, after the `TabList`, and give every `TabPanel` `shouldForceMount`.
@@ -45,6 +54,8 @@ export function TabPanelCarousel({
   // A smooth scroll cancels another one running on the tab list: the tab is
   // revealed once the panels stop scrolling.
   const revealPending = useRef(false);
+  // The panels are being dragged with the mouse.
+  const isDragging = useRef(false);
 
   const panelAt = (index: number) =>
     ref.current?.children[index] as HTMLElement | undefined;
@@ -142,7 +153,8 @@ export function TabPanelCarousel({
 
   const onScrollEnd = () => {
     const el = ref.current;
-    if (!el || !state || !el.clientWidth) return;
+    // A mouse drag scrolls step by step: it settles when the button is up.
+    if (!el || !state || !el.clientWidth || isDragging.current) return;
     isProgrammatic.current = false;
     isSwiping.current = false;
     if (revealPending.current) {
@@ -191,6 +203,102 @@ export function TabPanelCarousel({
       clearTimeout(timeout);
       el.removeEventListener('scroll', onScrollStop);
     };
+  }, []);
+
+  // Where the panels can be swiped, they can also be dragged with a mouse, as
+  // touch screens are often tried out with one. A drag starts once the mouse
+  // moves sideways, and never on a field or a control, which take their own
+  // drags (eg. to select text).
+  const stateRef = useRef(state);
+  stateRef.current = state;
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let start: { x: number; y: number; left: number; id: number } | null = null;
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (
+        event.pointerType !== 'mouse' ||
+        event.button !== 0 ||
+        !isSwipeable() ||
+        (event.target as Element).closest?.(DRAG_EXCLUDED)
+      ) {
+        return;
+      }
+      start = {
+        x: event.clientX,
+        y: event.clientY,
+        left: el.scrollLeft,
+        id: event.pointerId,
+      };
+    };
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (!start || event.pointerId !== start.id) return;
+      const dx = event.clientX - start.x;
+      if (!isDragging.current) {
+        const dy = event.clientY - start.y;
+        if (Math.abs(dy) > DRAG_THRESHOLD && Math.abs(dy) >= Math.abs(dx)) {
+          start = null;
+          return;
+        }
+        if (Math.abs(dx) <= DRAG_THRESHOLD) return;
+        isDragging.current = true;
+        isProgrammatic.current = false;
+        el.setPointerCapture?.(event.pointerId);
+        // Snapping would fight the drag.
+        el.style.scrollSnapType = 'none';
+        el.style.cursor = 'grabbing';
+        el.style.userSelect = 'none';
+      }
+      event.preventDefault();
+      el.scrollLeft = start.left - dx;
+    };
+
+    const onPointerUp = (event: PointerEvent) => {
+      if (!start || event.pointerId !== start.id) return;
+      const dx = event.clientX - start.x;
+      start = null;
+      if (!isDragging.current) return;
+      isDragging.current = false;
+      el.style.scrollSnapType = '';
+      el.style.cursor = '';
+      el.style.userSelect = '';
+      // The click that ends the drag must not reach what is under the mouse.
+      const stopClick = (click: MouseEvent) => {
+        click.stopPropagation();
+        click.preventDefault();
+      };
+      window.addEventListener('click', stopClick, { capture: true });
+      setTimeout(
+        () => window.removeEventListener('click', stopClick, { capture: true }),
+        0,
+      );
+      const current = stateRef.current;
+      const last = (current?.collection.size ?? 1) - 1;
+      const index = current?.selectedItem?.index ?? 0;
+      const width = el.clientWidth;
+      // A short drag is enough to go to the next panel.
+      let target = index;
+      if (dx < -width * 0.15) target = Math.min(last, index + 1);
+      else if (dx > width * 0.15) target = Math.max(0, index - 1);
+      el.scrollTo({
+        left: target * width,
+        behavior: prefersReducedMotion() ? 'instant' : 'smooth',
+      });
+    };
+
+    el.addEventListener('pointerdown', onPointerDown);
+    el.addEventListener('pointermove', onPointerMove);
+    el.addEventListener('pointerup', onPointerUp);
+    el.addEventListener('pointercancel', onPointerUp);
+    return () => {
+      el.removeEventListener('pointerdown', onPointerDown);
+      el.removeEventListener('pointermove', onPointerMove);
+      el.removeEventListener('pointerup', onPointerUp);
+      el.removeEventListener('pointercancel', onPointerUp);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Shows the selected panel when a tab is selected: by scrolling to it on
