@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" role="img" aria-label="Aurora">
+<defs><clipPath id="h16c"><circle cx="8.0" cy="8.0" r="8.0"/></clipPath>
+<linearGradient id="h16s" x1="0" y1="0" x2="0" y2="8" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#2f3384"/><stop offset=".5" stop-color="#b2468c"/><stop offset="1" stop-color="#fbb168"/></linearGradient>
+<linearGradient id="h16b0" x1="0" x2="1"><stop offset="0.140" stop-color="#3a3a78"/><stop offset="0.374" stop-color="#f8a862"/><stop offset="0.626" stop-color="#f8a862"/><stop offset="0.860" stop-color="#3a3a78"/></linearGradient><linearGradient id="h16b1" x1="0" x2="1"><stop offset="0.230" stop-color="#2a3270"/><stop offset="0.405" stop-color="#e07a7c"/><stop offset="0.595" stop-color="#e07a7c"/><stop offset="0.770" stop-color="#2a3270"/></linearGradient><linearGradient id="h16b2" x1="0" x2="1"><stop offset="0.310" stop-color="#20295e"/><stop offset="0.433" stop-color="#a65a8c"/><stop offset="0.567" stop-color="#a65a8c"/><stop offset="0.690" stop-color="#20295e"/></linearGradient><linearGradient id="h16b3" x1="0" x2="1"><stop offset="0.380" stop-color="#18204c"/><stop offset="0.458" stop-color="#5c4683"/><stop offset="0.542" stop-color="#5c4683"/><stop offset="0.620" stop-color="#18204c"/></linearGradient><linearGradient id="h16b4" x1="0" x2="1"><stop offset="0.430" stop-color="#111839"/><stop offset="0.475" stop-color="#2a2b62"/><stop offset="0.524" stop-color="#2a2b62"/><stop offset="0.570" stop-color="#111839"/></linearGradient></defs>
+<g clip-path="url(#h16c)">
+<rect width="16" height="8" fill="url(#h16s)"/>
+<rect y="8" width="16" height="8" fill="#0b1130"/>
+<rect y="9" width="16" height="2" fill="#3a3a78"/><rect x="4.0" y="9" width="8" height="2" fill="#f8a862"/><rect y="12" width="16" height="2" fill="#2a3270"/><rect x="6.0" y="12" width="4" height="2" fill="#e07a7c"/><rect y="15" width="16" height="1" fill="#20295e"/>
+</g>
+</svg>
