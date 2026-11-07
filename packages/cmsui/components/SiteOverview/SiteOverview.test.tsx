@@ -1,6 +1,7 @@
 import { vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import SiteOverview from './SiteOverview';
+import type { Package } from '@plone/registry/addon-registry';
 
 const system = {
   '@id': 'http://localhost:8080/Plone/@system',
@@ -19,7 +20,7 @@ const system = {
 const addons = [
   { name: '@some/addon', version: '1.3.5' },
   { name: '@some/other-addon', version: '2.2.5' },
-];
+] as Package[];
 
 describe('SiteOverview', () => {
   it('shows the site and the versions it runs on', () => {
@@ -110,12 +111,14 @@ describe('SiteOverview', () => {
   it('shows custom addons', () => {
     render(<SiteOverview system={system} addons={addons} />);
 
+    expect(screen.getByText('Add-ons')).toBeInTheDocument();
+
     expect(screen.getByText('@some/addon')).toBeInTheDocument();
     expect(screen.getByText('1.3.5')).toBeInTheDocument();
     expect(screen.getByText('@some/other-addon')).toBeInTheDocument();
     expect(screen.getByText('2.2.5')).toBeInTheDocument();
 
-    expect(screen.getByText('Copy add-on info')).toBeInstanceOf(
+    expect(screen.getByText('Copy add-ons info')).toBeInstanceOf(
       HTMLButtonElement,
     );
   });

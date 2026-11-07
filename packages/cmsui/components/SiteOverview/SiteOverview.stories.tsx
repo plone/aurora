@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import SiteOverview from './SiteOverview';
+import type { Package } from '@plone/registry/addon-registry';
 
 const system = {
   '@id': 'http://localhost:8080/Plone/@system',
@@ -18,7 +19,7 @@ const system = {
 const addons = [
   { name: '@some/addon', version: '1.3.5' },
   { name: '@some/other-addon', version: '2.2.5' },
-];
+] as Package[];
 
 const meta = {
   title: 'CMSUI/SiteOverview',
