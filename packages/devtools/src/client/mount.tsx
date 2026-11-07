@@ -1,8 +1,33 @@
 import { createRoot } from 'react-dom/client';
 import { TanStackDevtools } from '@tanstack/react-devtools';
+import { installFrameStyles } from './frame-styles';
 import { PloneDevtoolsPanel } from './panel/panel';
 
 const ROOT_ID = 'plone-devtools';
+const STATE_KEY = 'tanstack_devtools_state';
+
+/**
+ * On first use, start with TanStack's plugin strip folded (with a single
+ * plugin it is an empty band that takes height from the panel) and with a
+ * taller panel than TanStack's 400px, which leaves no room for a backend
+ * call's details. TanStack merges a stored state over its defaults, so the
+ * user's own changes win from then on.
+ */
+function seedFrameState() {
+  try {
+    if (localStorage.getItem(STATE_KEY) === null) {
+      localStorage.setItem(
+        STATE_KEY,
+        JSON.stringify({
+          subheaderCollapsed: true,
+          height: Math.max(400, Math.round(window.innerHeight * 0.55)),
+        }),
+      );
+    }
+  } catch {
+    // Storage may be unavailable (private mode, blocked site data).
+  }
+}
 
 /** Whether React has hydrated `<html>`: it marks the elements it hydrates. */
 const htmlHydrated = () =>
@@ -15,6 +40,8 @@ function mount() {
   const el = document.createElement('div');
   el.id = ROOT_ID;
   document.body.appendChild(el);
+  seedFrameState();
+  installFrameStyles();
   createRoot(el).render(
     <TanStackDevtools
       eventBusConfig={{ connectToServerBus: true }}
