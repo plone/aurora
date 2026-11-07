@@ -15,7 +15,7 @@ This page describes how maintainers release the Plone Aurora packages and the `@
 
 The release process uses the following tools.
 
--   [`release-it`](https://www.npmjs.com/package/release-it) bumps the version, commits, tags, pushes, and creates the GitHub release. A GitHub Actions workflow publishes the tagged package to npm using trusted publishing.
+-   [`release-it`](https://www.npmjs.com/package/release-it) bumps the version, commits, tags, pushes, and creates the GitHub release. A GitHub Actions workflow publishes the new versions to npm using trusted publishing.
 -   [`towncrier`](https://towncrier.readthedocs.io/en/stable/) builds the change log of each package from its news fragments.
 -   The `prereleaser` convenience script lists the packages that have pending changes, and releases them in the correct order.
 
@@ -53,7 +53,7 @@ Review organization-level rules and who can edit rulesets or team membership: ad
 Verify both an authorized and an unauthorized account before relying on this restriction.
 Protect `main`, workflow changes, and the environment as well; the workflow verifies that the tagged commit is reachable from `main`, but workflow code from a tag is itself part of the trust boundary.
 
-The migrated packages are the packages listed in `packages/scripts/resolve-release-tag.js` and `@plone/aurora`.
+The migrated packages are the packages listed in `packages/scripts/publish-packages.js`.
 `@plone/scripts` retains its existing non-publishing release configuration.
 Volto packages retain their separate release process.
 
@@ -193,19 +193,29 @@ This starts `release-it` for that package, which does the following steps, askin
 4.  Commits the changes, and tags the release.
 5.  Pushes the commit and the tag to the `main` branch.
 6.  Creates the GitHub release, with the change log of this version as release notes.
-7.  Starts the `Publish npm package` workflow when the tag is pushed. The workflow builds workspace dependencies, packs the selected package with pnpm, and publishes the tarball with npm trusted publishing.
+7.  Starts the `Publish npm packages` workflow when the tag is pushed.
+
+You don't need to wait for npm between packages.
+Each workflow run checks out the tagged commit, builds the workspace dependencies, and runs `packages/scripts/publish-packages.js`.
+The script runs `pnpm publish --recursive` on the migrated packages, which does the following.
+
+-   Skips every package whose version is already on npm, so a run publishes whatever is new at that commit, including packages from earlier tags.
+-   Publishes in dependency order, and waits until each published version is available on npm before it publishes the packages that depend on it.
+-   Replaces the `workspace:` and `catalog:` dependency specifiers with the exact versions, as `pnpm pack` does.
+
+Runs never overlap.
+If several tags arrive while a run is in progress, GitHub keeps only the newest pending run; it publishes the versions of the earlier tags as well.
+
+Stable versions use the `latest` distribution tag. Prereleases use their prerelease identifier, except `@plone/aurora` and `@plone/client`, which retain their existing behavior of promoting prereleases to `latest`.
+The script writes the distribution tag of each package to a top-level `tag` field of its manifest during the run, because pnpm uses that field instead of the `--tag` option.
 
 The GitHub release can exist before the npm workflow finishes.
-Watch the workflow and confirm that the exact version is available on npm before continuing to a dependent package.
-The prereleaser asks for this confirmation after each tag; answer `y` only after publication succeeds.
-Stable versions use the `latest` distribution tag. Prereleases use their prerelease identifier, except `@plone/aurora` and `@plone/client`, which retain their existing behavior of promoting prereleases to `latest`.
-
-If publishing fails, correct the configuration or underlying issue and rerun the failed workflow from GitHub Actions.
+Check the last workflow run after the release sequence.
+If publishing fails, correct the configuration or underlying issue and rerun the failed workflow from GitHub Actions; it continues with the versions that are not on npm yet.
 Do not move or recreate a release tag to retry. An npm version cannot be republished after it succeeds.
-A release commit and GitHub release may already exist when publishing fails; check both the workflow and npm before deciding how to recover.
 
 If a release fails, the script stops.
-Resolve any failed publication and verify it on npm, then run `pnpm prereleaser --release` again.
+Fix the problem, then run `pnpm prereleaser --release` again.
 The packages that were already released no longer have news fragments, so they don't appear in the plan.
 
 

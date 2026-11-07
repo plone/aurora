@@ -220,13 +220,6 @@ async function promptAndRelease(plannedReleases) {
       }
 
       runRelease(pkg.name);
-      console.log(
-        `Wait for the Publish npm package workflow to publish ${pkg.name} successfully before continuing.`,
-      );
-      const published = await rl.question('Published successfully? [y/N] ');
-      if (published.trim().toLowerCase() !== 'y') {
-        throw new Error(`Release sequence stopped after tagging ${pkg.name}.`);
-      }
     }
   } finally {
     rl.close();
