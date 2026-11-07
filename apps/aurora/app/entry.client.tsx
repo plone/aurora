@@ -1,5 +1,6 @@
 import { startTransition, StrictMode } from 'react';
 import { hydrateRoot } from 'react-dom/client';
+import type { ClientInstrumentation } from 'react-router';
 import { HydratedRouter } from 'react-router/dom';
 import { getI18nOptions } from './i18n';
 import i18next from 'i18next';
@@ -11,6 +12,15 @@ import install from './config';
 install();
 
 async function hydrate() {
+  // The Plone devtools, in development only (see `@plone/devtools/vite`).
+  let instrumentations: ClientInstrumentation[] | undefined;
+  if (import.meta.env.DEV && import.meta.env.PLONE_DEVTOOLS) {
+    const devtools = await import('@plone/devtools/client');
+    // Mounts outside the app's tree, once React has hydrated `<html>`.
+    devtools.mountPloneDevtools();
+    instrumentations = [devtools.clientInstrumentation];
+  }
+
   // Read the options after `install()`, which sets the supported languages
   const i18n = getI18nOptions();
   await i18next
@@ -40,7 +50,7 @@ async function hydrate() {
       document,
       <I18nextProvider i18n={i18next}>
         <StrictMode>
-          <HydratedRouter />
+          <HydratedRouter instrumentations={instrumentations} />
         </StrictMode>
       </I18nextProvider>,
     );

@@ -2,6 +2,7 @@ import { reactRouter } from '@react-router/dev/vite';
 import path from 'node:path';
 import { defineConfig, PluginOption } from 'vite';
 import { PloneRegistryVitePlugin } from '@plone/registry/vite-plugin';
+import { PloneDevtoolsVitePlugin } from '@plone/devtools/vite';
 import { PloneSVGRVitePlugin } from '@plone/icons/vite-plugin-svgr';
 import applyAddonViteConfiguration from './.plone/vite.loader.js';
 import babel from 'vite-plugin-babel';
@@ -16,6 +17,8 @@ export default defineConfig(({ command, mode, isSsrBuild }) => {
 
   const baseConfig = {
     plugins: [
+      // Development only. Set PLONE_DEVTOOLS=false to turn it off.
+      ...PloneDevtoolsVitePlugin(),
       PloneSVGRVitePlugin(),
       PloneRegistryVitePlugin(),
       tailwindcss(),
