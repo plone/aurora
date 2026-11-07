@@ -161,3 +161,18 @@ The additional comma-separated names should be exported from the add-on configur
 The main configuration function should be exported as the default.
 An add-on's default configuration method will always be loaded.
 ```
+
+## Read the app and add-on versions
+
+The `@plone/registry` Vite plugin also generates the `@plone/registry/app-info` module.
+Its default export holds the name and version of the app, from its {file}`package.json`, and of each of its add-ons, in the order they load.
+
+```ts
+import appInfo from '@plone/registry/app-info';
+
+appInfo.version; // '1.0.0'
+appInfo.addons; // [{ name: 'my-volto-add-on-name', version: '2.1.0' }, …]
+```
+
+It has no file system paths, so both server and client code can import it, for example to show the versions in a control panel.
+Outside of an app built with the Vite plugin, such as in unit tests or Storybook, the import resolves to an empty app with no add-ons.
