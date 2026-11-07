@@ -141,6 +141,7 @@ See {doc}`configure-accordion-blocks`.
 | `--block-accordion-radius` | `var(--radius-md)` | The accordion's corners. |
 | `--block-accordion-border-color` | `var(--border)` | The line below each panel. |
 | `--block-accordion-title-size` | `var(--text-xl)` | The panel titles. |
+| `--block-accordion-title-weight` | `var(--font-weight-bold)` | The panel titles. |
 | `--block-accordion-focus-color` | `var(--ring)` | The focus outline of the panel titles. |
 
 The code block's syntax colors are tokens too.
