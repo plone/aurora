@@ -25,7 +25,7 @@ test('An event recurrence edited in the modal is saved with the event', async ({
   });
 
   await page.goto('/@@edit/weekly-event', { waitUntil: 'networkidle' });
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
 
   // The recurrence widget is the innermost group with that label (the
   // fieldset panel is a group too). Its first button opens the modal.

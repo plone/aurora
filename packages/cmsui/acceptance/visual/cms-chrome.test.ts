@@ -56,7 +56,7 @@ test('Add form', async ({ page }) => {
 test('Edit form with the metadata fields', async ({ page }) => {
   await createPage(page);
   await openEditor(page);
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
   await settle(page);
 
   await expect(page).toHaveScreenshot('edit-form-metadata.png');

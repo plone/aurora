@@ -1,8 +1,10 @@
 import Checkbox from '@plone/icons/svg/checkbox.svg?react';
 import Close from '@plone/icons/svg/close.svg?react';
+import Properties from '@plone/icons/svg/properties.svg?react';
 import Settings from '@plone/icons/svg/settings.svg?react';
+import Thumbnails from '@plone/icons/svg/thumbnails.svg?react';
 import { Link, Tab, TabList, TabPanel, Tabs } from '@plone/quanta';
-import { FormProvider, useFormStore } from '@plone/helpers';
+import { FormProvider, useFieldValue, useFormStore } from '@plone/helpers';
 import { Plug } from '@plone/layout/components/Pluggable';
 import config from '@plone/registry';
 import type { Content } from '@plone/types';
@@ -22,6 +24,7 @@ import {
 import { WidgetContextProvider } from '../Form/WidgetContext';
 import Sidebar, { sidebarAtom } from '../Sidebar/Sidebar';
 import BlocksEditor from '../BlockEditor/BlocksEditor';
+import EditorBreadcrumbs, { type EditorBreadcrumb } from './EditorBreadcrumbs';
 
 interface Schema extends FieldsetsSchema {
   title: string;
@@ -35,7 +38,13 @@ interface ContentFormProps {
    */
   path: string;
   schema: Schema;
-  heading: ReactNode;
+  /**
+   * The trail to the item, ending with the item itself: its title, or a name
+   * such as "New Page" when it doesn't exist yet. See `breadcrumbTrail`.
+   */
+  breadcrumbs: EditorBreadcrumb[];
+  /** Shown after the breadcrumbs, eg. that the item is a translation. */
+  badge?: ReactNode;
   submitMethod: 'post' | 'patch';
   /** Per-tab sticky panels rendered left of the form (eg. translation source). */
   asidePanels?: { header?: ReactNode; blocks?: ReactNode; content?: ReactNode };
@@ -49,7 +58,8 @@ export default function ContentForm({
   content,
   path,
   schema,
-  heading,
+  breadcrumbs,
+  badge,
   submitMethod,
   asidePanels,
   fieldPlaceholders,
@@ -59,6 +69,11 @@ export default function ContentForm({
   const fetcher = useFetcher();
   const [collapsed, setCollapsed] = useAtom(sidebarAtom);
   const [selectedTab, setSelectedTab] = useState<Key>('blocks');
+  const [selectedFieldset, setSelectedFieldset] = useState<Key>(
+    () =>
+      schema.fieldsets.find((fieldset) => fieldset.fields.length > 0)?.id ??
+      'default',
+  );
   // Without a `cancelHref`, Cancel goes back to the edited object or, on
   // add, to the container: a new object has no `@id` yet.
   const cancelTarget = cancelHref ?? (content['@id'] || path);
@@ -88,6 +103,12 @@ export default function ContentForm({
       const field = firstInvalidField(schema, errors);
       if (!field) return;
       setSelectedTab('content');
+      // The field may be in another fieldset's tab, which can't take focus.
+      const name = field.split('.')[0];
+      const fieldset = schema.fieldsets.find((candidate) =>
+        candidate.fields.includes(name),
+      );
+      if (fieldset) setSelectedFieldset(fieldset.id);
       focusField(field);
     },
     [schema],
@@ -134,12 +155,18 @@ export default function ContentForm({
 
   const fieldsetsForm = (
     <form>
-      <SchemaFieldsets schema={fieldsSchema} />
+      <SchemaFieldsets
+        schema={fieldsSchema}
+        layout="tabs"
+        selectedKey={selectedFieldset}
+        onSelectionChange={setSelectedFieldset}
+      />
     </form>
   );
 
-  // The shared header row keeps both columns starting level; px-6 mirrors the
-  // blocks editor's own gutters, padBody pads bodies that lack them.
+  // The aside's header spans both columns, so the aside and the body start
+  // level; px-6 mirrors the blocks editor's own gutters, padBody pads bodies
+  // that lack them.
   const withAside = (panel: ReactNode, body: ReactNode, padBody = false) =>
     asidePanels ? (
       <div
@@ -148,8 +175,14 @@ export default function ContentForm({
           lg:grid-cols-2 lg:grid-rows-[auto_1fr]
         `}
       >
-        <div className="mb-4 self-end px-6">{asidePanels.header}</div>
-        <h1 className="mb-4 self-end px-6 text-2xl font-bold">{heading}</h1>
+        <div
+          className={`
+            mb-4 px-6
+            lg:col-span-2
+          `}
+        >
+          {asidePanels.header}
+        </div>
         <aside className="sticky top-0 max-h-screen self-start overflow-y-auto px-6">
           {panel}
         </aside>
@@ -175,33 +208,41 @@ export default function ContentForm({
               ease-linear
             `,
             {
-              'grid-cols-[1fr_300px]': !collapsed,
-              'grid-cols-[1fr_0px]': collapsed,
+              'grid-cols-[minmax(0,1fr)_300px]': !collapsed,
+              'grid-cols-[minmax(0,1fr)_0px]': collapsed,
             },
           )}
         >
           <main className="mx-4 pt-8">
             <Tabs selectedKey={selectedTab} onSelectionChange={setSelectedTab}>
-              <TabList>
-                <Tab id="blocks">{t('cmsui.blocksEditor.blocksTab')}</Tab>
-                <Tab id="content">{t('cmsui.blocksEditor.contentTab')}</Tab>
-              </TabList>
+              {/* The edit header: the breadcrumbs, and the mode switch, which
+                  spans the width under them on narrow screens. */}
+              <div className="flex flex-wrap items-center justify-between gap-4 px-3">
+                <EditorBreadcrumbs items={breadcrumbs} badge={badge} />
+                <TabList
+                  variant="segmented"
+                  aria-label={t('cmsui.blocksEditor.modeLabel')}
+                  className="max-md:w-full max-md:*:flex-1"
+                >
+                  <Tab id="blocks">
+                    <Thumbnails aria-hidden className="size-5" />
+                    {t('cmsui.blocksEditor.blocksTab')}
+                  </Tab>
+                  <Tab id="content">
+                    <Properties aria-hidden className="size-5" />
+                    {t('cmsui.blocksEditor.contentTab')}
+                  </Tab>
+                </TabList>
+              </div>
               <TabPanel id="blocks" className="p-3">
                 {withAside(asidePanels?.blocks, <BlocksEditor />)}
               </TabPanel>
               <TabPanel id="content" className="p-3">
-                {withAside(
-                  asidePanels?.content,
-                  asidePanels ? (
-                    fieldsetsForm
-                  ) : (
-                    <div className="flex flex-col">
-                      <h1 className="mb-4 text-2xl font-bold">{heading}</h1>
-                      {fieldsetsForm}
-                    </div>
-                  ),
-                  true,
-                )}
+                {/* In the Blocks view, the title block is the page's title. */}
+                <LiveTitle
+                  fallback={breadcrumbs[breadcrumbs.length - 1]?.title}
+                />
+                {withAside(asidePanels?.content, fieldsetsForm, true)}
               </TabPanel>
             </Tabs>
             <Plug pluggable="toolbar-top" id="edit-save-button">
@@ -239,5 +280,15 @@ export default function ContentForm({
         </div>
       </WidgetContextProvider>
     </FormProvider>
+  );
+}
+
+/** The title the editor is typing, as the Metadata view's heading. */
+function LiveTitle({ fallback }: { fallback?: string }) {
+  const title = useFieldValue<string>('title');
+  return (
+    <h1 className="mt-2 mb-2 px-0.5 text-2xl font-bold">
+      {title?.trim() || fallback}
+    </h1>
   );
 }

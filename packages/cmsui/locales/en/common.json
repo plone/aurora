@@ -147,11 +147,12 @@
     "translate": {
       "source": "Source",
       "view_source": "View source content",
-      "heading_new": "Translate \"{{title}}\" to {{language}}"
+      "translatingTo": "Translating to {{language}}"
     },
     "blocksEditor": {
       "blocksTab": "Blocks",
-      "contentTab": "Content"
+      "contentTab": "Metadata",
+      "modeLabel": "Editor mode"
     },
     "sidebar": {
       "label": "Sidebar"
@@ -271,6 +272,15 @@
         "columnActions": "Actions"
       }
     },
-    "saveFailed": "Could not save"
+    "saveFailed": "Could not save",
+    "form": {
+      "fieldsets": "Fieldsets",
+      "fieldsetHasErrors": "This fieldset has errors"
+    },
+    "editor": {
+      "home": "Home",
+      "breadcrumbs": "Breadcrumbs",
+      "newItem": "New {{type}}"
+    }
   }
 }

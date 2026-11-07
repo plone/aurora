@@ -2,7 +2,10 @@ import { expect, describe, it, vi, afterEach } from 'vitest';
 import config from '@plone/registry';
 import { loader, action } from './add';
 import { RouterContextProvider } from 'react-router';
-import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+import {
+  ploneClientContext,
+  ploneContentContext,
+} from '@plone/aurora/app/middleware.server';
 
 vi.mock('@plone/react-router', () => ({
   requireAuthCookie: vi.fn().mockResolvedValue('fake-token'),
@@ -32,6 +35,7 @@ describe('Add route', () => {
       config.settings.apiPath = 'http://example.com';
       const context = new RouterContextProvider();
       context.set(ploneClientContext, { getType: getTypeMock } as any);
+      context.set(ploneContentContext, {} as any);
 
       const request = new Request(
         'http://example.com/@@add/my-folder/?type=Document',
@@ -53,6 +57,7 @@ describe('Add route', () => {
       config.settings.apiPath = 'http://example.com';
       const context = new RouterContextProvider();
       context.set(ploneClientContext, { getType: getTypeMock } as any);
+      context.set(ploneContentContext, {} as any);
 
       const request = new Request(
         'http://example.com/@@add/my-folder/?type=Document',
@@ -76,6 +81,7 @@ describe('Add route', () => {
       config.settings.apiPath = 'http://example.com';
       const context = new RouterContextProvider();
       context.set(ploneClientContext, {} as any);
+      context.set(ploneContentContext, {} as any);
 
       const request = new Request('http://example.com/my-folder/add');
 
@@ -102,6 +108,7 @@ describe('Add route', () => {
       config.settings.apiPath = 'http://example.com';
       const context = new RouterContextProvider();
       context.set(ploneClientContext, { getType: getTypeMock } as any);
+      context.set(ploneContentContext, {} as any);
 
       const request = new Request('http://example.com/@@add?type=Document');
 
@@ -237,7 +244,7 @@ describe('Add route', () => {
             data-content-type={props.content['@type']}
             data-content-title={props.content.title}
           >
-            {props.heading}
+            {props.breadcrumbs.at(-1)?.title}
           </div>
         ),
       }));
@@ -257,7 +264,8 @@ describe('Add route', () => {
       expect(form).toHaveAttribute('data-submit-method', 'post');
       expect(form).toHaveAttribute('data-content-type', 'Document');
       expect(form).toHaveAttribute('data-content-title', '');
-      expect(form.textContent).toContain('Page');
+      // The trail ends with the new item.
+      expect(form.textContent).toContain('cmsui.editor.newItem');
     });
   });
 });

@@ -62,7 +62,7 @@ test('Title block and metadata title stay in sync', async ({ page }) => {
   await page.goto('/@@edit/title-sync-page');
   await waitForPlateEditorReady(page);
 
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
   const metadataTitleInput = page.locator('input[name="title"]').first();
   await metadataTitleInput.fill('Metadata updated title');
 
@@ -84,7 +84,7 @@ test('Title block and metadata title stay in sync', async ({ page }) => {
 
   await expectTitleNodeText(page, editorHandle, 'Editor updated title');
 
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
   await expect(metadataTitleInput).toHaveValue('Editor updated title');
 });
 
@@ -123,7 +123,7 @@ test('Newly created title block is initialized from metadata title', async ({
   let editorHandle = await getEditorHandle(page);
   await expectTitleNodeText(page, editorHandle, 'Initial title');
 
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
   const metadataTitleInput = page.locator('input[name="title"]').first();
   await metadataTitleInput.fill('Seeded metadata title');
 
