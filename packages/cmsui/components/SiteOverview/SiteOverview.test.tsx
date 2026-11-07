@@ -16,6 +16,11 @@ const system = {
   zope_version: '6.2',
 };
 
+const addons = [
+  { name: '@some/addon', version: '1.3.5' },
+  { name: '@some/other-addon', version: '2.2.5' },
+];
+
 describe('SiteOverview', () => {
   it('shows the site and the versions it runs on', () => {
     render(
@@ -100,5 +105,18 @@ describe('SiteOverview', () => {
         name: 'cmsui.siteOverview.copySystemInfo',
       }),
     ).not.toBeInTheDocument();
+  });
+
+  it('shows custom addons', () => {
+    render(<SiteOverview system={system} addons={addons} />);
+
+    expect(screen.getByText('@some/addon')).toBeInTheDocument();
+    expect(screen.getByText('1.3.5')).toBeInTheDocument();
+    expect(screen.getByText('@some/other-addon')).toBeInTheDocument();
+    expect(screen.getByText('2.2.5')).toBeInTheDocument();
+
+    expect(screen.getByText('Copy add-on info')).toBeInstanceOf(
+      HTMLButtonElement,
+    );
   });
 });

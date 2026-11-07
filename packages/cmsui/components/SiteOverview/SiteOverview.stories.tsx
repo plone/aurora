@@ -15,6 +15,11 @@ const system = {
   zope_version: '6.2',
 };
 
+const addons = [
+  { name: '@some/addon', version: '1.3.5' },
+  { name: '@some/other-addon', version: '2.2.5' },
+];
+
 const meta = {
   title: 'CMSUI/SiteOverview',
   component: SiteOverview,
@@ -42,6 +47,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const CustomAddons: Story = {
+  args: { addons },
+};
 
 export const UpgradeAvailable: Story = {
   args: {
