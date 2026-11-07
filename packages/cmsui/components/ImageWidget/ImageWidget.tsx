@@ -338,7 +338,7 @@ function ImageInputBase({
     return (
       <div
         className={`
-          border-quanta-azure bg-quanta-snow relative overflow-hidden rounded-md border
+          relative overflow-hidden rounded-md border border-quanta-azure bg-quanta-snow
           ${className || ''}
         `}
       >
@@ -372,8 +372,8 @@ function ImageInputBase({
   return (
     <div
       className={`
-        bg-quanta-arctic flex flex-col items-center gap-2 rounded-md px-4 py-6 text-center
-        ${isDragging ? 'inset-ring-quanta-cobalt inset-ring-3' : ''}
+        flex flex-col items-center gap-2 rounded-md bg-quanta-arctic px-4 py-6 text-center
+        ${isDragging ? 'inset-ring-3 inset-ring-quanta-cobalt' : ''}
         ${className || ''}
       `}
       onDrop={onDrop}
@@ -385,13 +385,13 @@ function ImageInputBase({
     >
       <div
         className={`
-          bg-quanta-azure text-quanta-royal flex size-30 shrink-0 items-center justify-center
-          rounded-full
+          flex size-30 shrink-0 items-center justify-center rounded-full bg-quanta-azure
+          text-quanta-royal
         `}
       >
         <ImageIcon className="size-12" />
       </div>
-      <p className="text-quanta-iron -mt-1.25 text-xl/[25px] font-bold">
+      <p className="-mt-1.25 text-xl/[25px] font-bold text-quanta-iron">
         {isDragging ? 'Drop an image to upload' : 'Add your image'}
       </p>
 
@@ -455,16 +455,16 @@ function ImageInputBase({
           <>
             <div
               className={`
-                bg-quanta-air text-quanta-sapphire flex h-9 max-w-90 min-w-0 flex-1 basis-48
-                items-center gap-3 rounded-md pl-3
+                flex h-9 max-w-90 min-w-0 flex-1 basis-48 items-center gap-3 rounded-md
+                bg-quanta-air pl-3 text-quanta-sapphire
               `}
             >
               <WorldIcon className="size-4.5 shrink-0" />
               <Input
                 aria-label="Image URL"
                 className={`
-                  placeholder:text-quanta-sapphire
                   h-full rounded-none bg-transparent px-0 py-0 font-medium
+                  placeholder:text-quanta-sapphire
                   hover:bg-transparent
                   focus:bg-transparent
                   active:bg-transparent
@@ -498,10 +498,10 @@ function ImageInputBase({
       </div>
 
       {isUploading && (
-        <p className="text-quanta-pigeon text-sm">Uploading image...</p>
+        <p className="text-sm text-quanta-pigeon">Uploading image...</p>
       )}
       {uploadError && (
-        <p className="text-quanta-candy text-sm">{uploadError}</p>
+        <p className="text-sm text-quanta-candy">{uploadError}</p>
       )}
     </div>
   );
