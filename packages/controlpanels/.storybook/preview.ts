@@ -1,3 +1,4 @@
+import '@plone/icons/icons.css';
 import './storybook.css';
 
 export const parameters = {

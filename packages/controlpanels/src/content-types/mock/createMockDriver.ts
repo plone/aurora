@@ -8,6 +8,7 @@ import type {
   WorkflowChangeRequest,
 } from '../types';
 import { CUSTOM_FIELD_BEHAVIOR } from '../types';
+import { toShortName } from '../shortName';
 import { suggestStateMapping } from '../workflow/suggestStateMapping';
 import { mockData } from './fixtures';
 import type { MockData } from './fixtures';
@@ -29,15 +30,6 @@ const BEHAVIOR_ALIASES: Record<string, string> = {
 };
 
 const clone = <T>(value: T): T => structuredClone(value);
-
-function toId(title: string): string {
-  return title
-    .normalize('NFKD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '_')
-    .replace(/^_+|_+$/g, '');
-}
 
 function emptySchema(title: string): TypeSchema {
   return {
@@ -209,7 +201,7 @@ export function createMockDriver(
     },
 
     createType: ({ title, id, description, copyFrom }) => {
-      const newId = id || toId(title);
+      const newId = id || toShortName(title);
       if (!newId || findType(newId)) {
         return fail(`A type with the short name "${newId}" already exists`);
       }

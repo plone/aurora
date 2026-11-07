@@ -9,6 +9,8 @@ const ALLOWED = [
   'react-dom',
   'react-aria-components',
   '@plone/quanta',
+  // Quanta depends on it already, so it adds nothing for Volto.
+  '@plone/icons',
   '@plone/helpers',
   '@plone/registry',
   'jotai',
@@ -20,7 +22,9 @@ const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
 function sourceFiles(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const path = join(dir, entry.name);
-    if (entry.isDirectory()) return sourceFiles(path);
+    // Stories and their helpers only run in this package's Storybook.
+    if (entry.isDirectory())
+      return entry.name === 'stories' ? [] : sourceFiles(path);
     return /\.tsx?$/.test(entry.name) &&
       !/\.(test|stories)\.tsx?$/.test(entry.name)
       ? [path]
