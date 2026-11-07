@@ -53,7 +53,28 @@
         "panelAdded": "Panel added at position {{position}} of {{total}}",
         "panelMoved": "Panel moved to position {{position}} of {{total}}",
         "panelDuplicated": "Panel duplicated",
-        "panelDeleted": "Panel deleted"
+        "panelDeleted": "Panel deleted",
+        "blockMoved": "Block moved to position {{position}} of {{total}}",
+        "blockDuplicated": "Block duplicated",
+        "blockDeleted": "{{type}} block deleted",
+        "blockChanged": "Block changed to {{type}}"
+      },
+      "block": "Block",
+      "blockActions": "Block actions",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "duplicate": "Duplicate",
+      "turnInto": "Turn into…",
+      "delete": "Delete",
+      "moveBlockUp": "Move block up",
+      "moveBlockDown": "Move block down",
+      "insertBlockAtTop": "Insert a block at the top of “{{title}}”",
+      "insertBlockBetween": "Insert a block between block {{before}} and {{after}} of “{{title}}”",
+      "addBlockToPanel": "Add a block to “{{title}}”",
+      "noNesting": "Accordions can't be placed inside an accordion.",
+      "blockDeleted": "{{type}} block deleted",
+      "blockTypes": {
+        "separator": "Separator"
       }
     },
     "undo": "Undo",

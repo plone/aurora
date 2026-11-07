@@ -61,8 +61,15 @@ function getBlockId(element: NativeBlockElement, path: number[]) {
   return explicitId ? String(explicitId) : path.join('-');
 }
 
-const getTopLevelBlockPath = (path: number[]) =>
-  path.length > 1 ? [path[0]] : path;
+/**
+ * The Plone block that holds the selection, or else the closest block. Blocks
+ * can be nested, in an accordion panel for example, so this is not the
+ * top-level block.
+ */
+export const getClosestPloneBlockEntry = (editor: PlateEditor) =>
+  editor.api.above<NativeBlockElement>({
+    match: { type: PLONE_BLOCK_TYPE },
+  }) ?? editor.api.block();
 
 function PloneBlockAdapterContent(
   props: PlateElementProps<NativeBlockElement> & {
@@ -231,11 +238,10 @@ export const BasePloneBlockKeyboardPlugin = createSlatePlugin({
       if (!nativeEvent) return;
       if (!editor.selection || !editor.api.isCollapsed()) return;
 
-      const currentEntry = editor.api.block({ highest: true });
+      const currentEntry = getClosestPloneBlockEntry(editor);
       if (!currentEntry) return;
 
-      const [currentNode, currentPath] = currentEntry;
-      const currentBlockPath = getTopLevelBlockPath(currentPath as number[]);
+      const [currentNode, currentBlockPath] = currentEntry;
       const currentIsPloneBlock =
         ElementApi.isElement(currentNode) &&
         currentNode.type === PLONE_BLOCK_TYPE;
@@ -376,7 +382,7 @@ export const BasePloneBlockAdapterPlugin = createSlatePlugin({
     const insertBreak = editor.tf.insertBreak;
 
     editor.tf.insertBreak = () => {
-      const blockEntry = editor.api.block({ highest: true });
+      const blockEntry = getClosestPloneBlockEntry(editor);
       if (blockEntry) {
         const [node, path] = blockEntry;
         if (ElementApi.isElement(node) && node.type === PLONE_BLOCK_TYPE) {
