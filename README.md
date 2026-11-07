@@ -48,6 +48,7 @@ This allows the code to be shared effectively, and unifies tracking of changes a
 | [`@plone/publicui`](https://www.npmjs.com/package/@plone/publicui) | [`packages/publicui`](https://github.com/plone/aurora/tree/main/packages/publicui#readme) |
 | [`@plone/cmsui`](https://www.npmjs.com/package/@plone/cmsui) | [`packages/cmsui`](https://github.com/plone/aurora/tree/main/packages/cmsui#readme) |
 | [`@plone/contents`](https://www.npmjs.com/package/@plone/contents) | [`packages/contents`](https://github.com/plone/aurora/tree/main/packages/contents#readme) |
+| [`@plone/controlpanels`](https://www.npmjs.com/package/@plone/controlpanels) | [`packages/controlpanels`](https://github.com/plone/aurora/tree/main/packages/controlpanels#readme) |
 | [`@plone/plate`](https://www.npmjs.com/package/@plone/plate) | [`packages/plate`](https://github.com/plone/aurora/tree/main/packages/plate#readme) |
 | [`@plone/agave`](https://www.npmjs.com/package/@plone/agave) | [`packages/agave`](https://github.com/plone/aurora/tree/main/packages/agave#readme) |
 

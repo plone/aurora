@@ -1,0 +1,86 @@
+# @plone/controlpanels
+
+Control panel screens for Plone that run in both Plone Aurora and Volto.
+
+It starts with the content types control panel: a list of types, and one page per type with its settings, workflow, fields, behaviors and default layout.
+See [plone/aurora#269](https://github.com/plone/aurora/issues/269).
+
+> [!WARNING]
+> This package is experimental. Breaking changes may occur without notice.
+
+## How it works
+
+The screens know nothing about the app they run in.
+
+- `ControlPanelsProvider` connects them to the app's router, translations and notifications.
+- A driver, such as `ContentTypesDriver`, reads and writes their data.
+  Each app provides its own, and `createMockDriver()` serves stories and tests.
+- A driver's `capabilities` say what its backend supports.
+  The screens hide or disable whatever it can't do yet.
+
+```tsx
+import {
+  ContentTypesDriverProvider,
+  ControlPanelsProvider,
+  createMockDriver,
+} from '@plone/controlpanels';
+
+const driver = createMockDriver();
+
+export function App({ children }) {
+  return (
+    <ControlPanelsProvider
+      navigate={navigate}
+      translate={translate}
+      notify={notify}
+    >
+      <ContentTypesDriverProvider driver={driver}>
+        {children}
+      </ContentTypesDriverProvider>
+    </ControlPanelsProvider>
+  );
+}
+```
+
+## Workflow state colors
+
+The screens show each workflow state in a color, for example in the badges of the Workflow tab.
+A color is one of the six Quanta color families, so themes and dark mode style it: `gray`, `blue`, `teal`, `green`, `yellow` or `red`.
+
+The color of a state is the first of these that applies:
+
+1. **The site's configuration,** by state id: the `stateColors` of `ContentTypesDriverProvider`.
+2. **The backend,** when the driver sets a `color` on the state. plone.restapi doesn't send one yet.
+3. **The defaults,** by state id, for the states of the workflows Plone ships with (`DEFAULT_STATE_COLORS`):
+
+   | State                   | Color    |
+   | ----------------------- | -------- |
+   | `private`               | `red`    |
+   | `pending`               | `yellow` |
+   | `published`, `external` | `green`  |
+   | `visible`               | `teal`   |
+   | `internally_published`  | `blue`   |
+   | `internal`              | `gray`   |
+
+4. **Who can see items in the state,** so the states of a new workflow get a meaningful color without any configuration: `green` when anyone can, `blue` when members can, and `gray` otherwise.
+
+To give the states of a new workflow their own colors, or to change the colors of the core ones, pass `stateColors`, keyed by state id.
+A state id means the same state in every workflow that has it, so `published` changes in all of them.
+
+```tsx
+<ContentTypesDriverProvider
+  driver={driver}
+  stateColors={{ in_print: 'teal', published: 'blue' }}
+>
+  {children}
+</ContentTypesDriverProvider>
+```
+
+Components get a state's color with `useStateColor()`, and code outside React with `stateColor(state, stateColors)`.
+
+## Development
+
+```sh
+pnpm --filter @plone/controlpanels test
+pnpm --filter @plone/controlpanels storybook
+```

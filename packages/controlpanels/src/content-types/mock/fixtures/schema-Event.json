@@ -1,0 +1,463 @@
+{
+  "fieldsets": [
+    {
+      "behavior": "plone",
+      "fields": [
+        "title",
+        "description",
+        "start",
+        "end",
+        "whole_day",
+        "open_end",
+        "sync_uid",
+        "recurrence",
+        "location",
+        "attendees",
+        "contact_name",
+        "contact_email",
+        "contact_phone",
+        "event_url",
+        "changeNote"
+      ],
+      "id": "default",
+      "title": "Default"
+    },
+    {
+      "behavior": "plone",
+      "description": "",
+      "fields": ["subjects", "language", "relatedItems"],
+      "id": "categorization",
+      "title": "Categorization"
+    },
+    {
+      "behavior": "plone",
+      "description": "",
+      "fields": ["effective", "expires"],
+      "id": "dates",
+      "title": "Dates"
+    },
+    {
+      "behavior": "plone",
+      "description": "",
+      "fields": ["creators", "contributors", "rights"],
+      "id": "ownership",
+      "title": "Ownership"
+    },
+    {
+      "behavior": "plone",
+      "description": "",
+      "fields": [
+        "allow_discussion",
+        "exclude_from_nav",
+        "id",
+        "versioning_enabled",
+        "nav_title"
+      ],
+      "id": "settings",
+      "title": "Settings"
+    },
+    {
+      "behavior": "plone",
+      "description": "",
+      "fields": ["preview_image_link", "preview_caption_link"],
+      "id": "preview_image",
+      "title": "Preview image"
+    },
+    {
+      "behavior": "plone",
+      "description": "",
+      "fields": ["blocks", "blocks_layout"],
+      "id": "layout",
+      "title": "Layout"
+    }
+  ],
+  "layouts": ["event_view"],
+  "properties": {
+    "allow_discussion": {
+      "behavior": "plone.app.discussion.behavior.IAllowDiscussion",
+      "choices": [
+        ["True", "Yes"],
+        ["False", "No"]
+      ],
+      "description": "Allow discussion for this content object.",
+      "enum": ["True", "False"],
+      "enumNames": ["Yes", "No"],
+      "factory": "Choice",
+      "title": "Allow discussion",
+      "type": "string",
+      "vocabulary": {
+        "@id": "/@sources/allow_discussion"
+      }
+    },
+    "attendees": {
+      "additionalItems": true,
+      "behavior": "plone.eventattendees",
+      "default": [],
+      "description": "List of attendees.",
+      "factory": "Tuple",
+      "items": {
+        "description": "",
+        "factory": "Text line (String)",
+        "title": "",
+        "type": "string"
+      },
+      "title": "Attendees",
+      "type": "array",
+      "uniqueItems": true,
+      "widgetOptions": {
+        "klass": "event_attendees"
+      }
+    },
+    "blocks": {
+      "behavior": "volto.blocks",
+      "default": {},
+      "description": "The JSON representation of the object blocks information. Must be a JSON object.",
+      "factory": "JSONField",
+      "title": "Blocks",
+      "type": "dict",
+      "widget": "json"
+    },
+    "blocks_layout": {
+      "behavior": "volto.blocks",
+      "default": {
+        "items": []
+      },
+      "description": "The JSON representation of the object blocks layout. Must be a JSON array.",
+      "factory": "JSONField",
+      "title": "Blocks Layout",
+      "type": "dict",
+      "widget": "json"
+    },
+    "changeNote": {
+      "behavior": "plone.versioning",
+      "description": "Enter a comment that describes the changes you made.",
+      "factory": "Text line (String)",
+      "title": "Change Note",
+      "type": "string"
+    },
+    "contact_email": {
+      "behavior": "plone.eventcontact",
+      "description": "Email address to contact about this event.",
+      "factory": "Text line (String)",
+      "title": "Contact E-mail",
+      "type": "string",
+      "widgetOptions": {
+        "klass": "event_contact_email"
+      }
+    },
+    "contact_name": {
+      "behavior": "plone.eventcontact",
+      "description": "Name of a person to contact about this event.",
+      "factory": "Text line (String)",
+      "title": "Contact Name",
+      "type": "string",
+      "widgetOptions": {
+        "klass": "event_contact_name"
+      }
+    },
+    "contact_phone": {
+      "behavior": "plone.eventcontact",
+      "description": "Phone number to contact about this event.",
+      "factory": "Text line (String)",
+      "title": "Contact Phone",
+      "type": "string",
+      "widgetOptions": {
+        "klass": "event_contact_phone"
+      }
+    },
+    "contributors": {
+      "additionalItems": true,
+      "behavior": "plone.dublincore",
+      "description": "The names of people that have contributed to this item. Each contributor should be on a separate line.",
+      "factory": "Tuple",
+      "items": {
+        "description": "",
+        "factory": "Text line (String)",
+        "title": "",
+        "type": "string"
+      },
+      "title": "Contributors",
+      "type": "array",
+      "uniqueItems": true,
+      "widgetOptions": {
+        "vocabulary": {
+          "@id": "/@vocabularies/plone.app.vocabularies.Users"
+        }
+      }
+    },
+    "creators": {
+      "additionalItems": true,
+      "behavior": "plone.dublincore",
+      "description": "Persons responsible for creating the content of this item. Please enter a list of user names, one per line. The principal creator should come first.",
+      "factory": "Tuple",
+      "items": {
+        "description": "",
+        "factory": "Text line (String)",
+        "title": "",
+        "type": "string"
+      },
+      "title": "Creators",
+      "type": "array",
+      "uniqueItems": true,
+      "widgetOptions": {
+        "vocabulary": {
+          "@id": "/@vocabularies/plone.app.vocabularies.Users"
+        }
+      }
+    },
+    "description": {
+      "behavior": "plone.dublincore",
+      "description": "Used in item listings and search results.",
+      "factory": "Text",
+      "maxLength": 10000,
+      "title": "Summary",
+      "type": "string",
+      "widget": "textarea"
+    },
+    "effective": {
+      "behavior": "plone.dublincore",
+      "description": "If this date is in the future, the content will not show up in listings and searches until this date.",
+      "factory": "Date/Time",
+      "title": "Publishing Date",
+      "type": "string",
+      "widget": "datetime"
+    },
+    "end": {
+      "behavior": "plone.eventbasic",
+      "default": "2026-10-11T10:00:00+00:00",
+      "description": "Date and Time, when the event ends.",
+      "factory": "Date/Time",
+      "title": "Event Ends",
+      "type": "string",
+      "widget": "datetime",
+      "widgetOptions": {
+        "default_timezone": "UTC",
+        "klass": "event_end",
+        "pattern_options": {
+          "after": "input.event_end",
+          "behavior": "styled",
+          "offset-days": "0.125"
+        }
+      }
+    },
+    "event_url": {
+      "behavior": "plone.eventcontact",
+      "description": "Web address with more info about the event. Add http:// for external links.",
+      "factory": "URL",
+      "title": "Event URL",
+      "type": "string",
+      "widget": "url",
+      "widgetOptions": {
+        "klass": "event_url"
+      }
+    },
+    "exclude_from_nav": {
+      "behavior": "plone.excludefromnavigation",
+      "default": false,
+      "description": "If selected, this item will not appear in the navigation tree",
+      "factory": "Yes/No",
+      "title": "Exclude from navigation",
+      "type": "boolean"
+    },
+    "expires": {
+      "behavior": "plone.dublincore",
+      "description": "When this date is reached, the content will no longer be visible in listings and searches.",
+      "factory": "Date/Time",
+      "title": "Expiration Date",
+      "type": "string",
+      "widget": "datetime"
+    },
+    "id": {
+      "behavior": "plone.shortname",
+      "description": "This name will be displayed in the URL.",
+      "factory": "Text line (String)",
+      "title": "Short name",
+      "type": "string"
+    },
+    "language": {
+      "behavior": "plone.dublincore",
+      "default": "en",
+      "description": "",
+      "factory": "Choice",
+      "title": "Language",
+      "type": "string",
+      "vocabulary": {
+        "@id": "/@vocabularies/plone.app.vocabularies.SupportedContentLanguages"
+      }
+    },
+    "location": {
+      "behavior": "plone.eventlocation",
+      "description": "Location of the event.",
+      "factory": "Text line (String)",
+      "title": "Location",
+      "type": "string",
+      "widgetOptions": {
+        "klass": "event_location"
+      }
+    },
+    "nav_title": {
+      "behavior": "volto.navtitle",
+      "description": "",
+      "factory": "Text line (String)",
+      "title": "Navigation title",
+      "type": "string"
+    },
+    "open_end": {
+      "behavior": "plone.eventbasic",
+      "default": false,
+      "description": "This event is open ended.",
+      "factory": "Yes/No",
+      "title": "Open End",
+      "type": "boolean",
+      "widgetOptions": {
+        "klass": "event_open_end"
+      }
+    },
+    "preview_caption_link": {
+      "behavior": "volto.preview_image_link",
+      "description": "",
+      "factory": "Text line (String)",
+      "title": "Preview image caption",
+      "type": "string"
+    },
+    "preview_image_link": {
+      "behavior": "volto.preview_image_link",
+      "description": "Select an image that will be used in listing and teaser blocks.",
+      "factory": "Relation Choice",
+      "title": "Preview image",
+      "type": "string",
+      "vocabulary": {
+        "@id": "/@vocabularies/plone.app.multilingual.RootCatalog"
+      },
+      "widgetOptions": {
+        "frontendOptions": {
+          "widget": "object_browser",
+          "widgetProps": {
+            "mode": "image",
+            "return": "single"
+          }
+        }
+      }
+    },
+    "recurrence": {
+      "behavior": "plone.eventrecurrence",
+      "description": "Define the event recurrence rule.",
+      "factory": "Text",
+      "title": "Recurrence",
+      "type": "string",
+      "widget": "textarea",
+      "widgetOptions": {
+        "first_day": 0,
+        "klass": "event_recurrence",
+        "show_repeat_forever": false,
+        "start_field": "IEventBasic.start"
+      }
+    },
+    "relatedItems": {
+      "additionalItems": true,
+      "behavior": "plone.relateditems",
+      "default": [],
+      "description": "",
+      "factory": "Relation List",
+      "items": {
+        "description": "",
+        "factory": "Relation Choice",
+        "title": "Related",
+        "type": "string",
+        "vocabulary": {
+          "@id": "/@vocabularies/plone.app.vocabularies.Catalog"
+        }
+      },
+      "title": "Related Items",
+      "type": "array",
+      "uniqueItems": true,
+      "widgetOptions": {
+        "pattern_options": {
+          "recentlyUsed": true
+        },
+        "vocabulary": {
+          "@id": "/@vocabularies/plone.app.vocabularies.Catalog"
+        }
+      }
+    },
+    "rights": {
+      "behavior": "plone.dublincore",
+      "description": "Copyright statement or other rights information on this item.",
+      "factory": "Text",
+      "title": "Rights",
+      "type": "string",
+      "widget": "textarea"
+    },
+    "start": {
+      "behavior": "plone.eventbasic",
+      "default": "2026-10-11T09:00:00+00:00",
+      "description": "Date and Time, when the event begins.",
+      "factory": "Date/Time",
+      "title": "Event Starts",
+      "type": "string",
+      "widget": "datetime",
+      "widgetOptions": {
+        "default_timezone": "UTC",
+        "klass": "event_start"
+      }
+    },
+    "subjects": {
+      "additionalItems": true,
+      "behavior": "plone.dublincore",
+      "description": "Tags are commonly used for ad-hoc organization of content.",
+      "factory": "Tuple",
+      "items": {
+        "description": "",
+        "factory": "Text line (String)",
+        "title": "",
+        "type": "string"
+      },
+      "title": "Tags",
+      "type": "array",
+      "uniqueItems": true,
+      "widgetOptions": {
+        "vocabulary": {
+          "@id": "/@vocabularies/plone.app.vocabularies.Keywords"
+        }
+      }
+    },
+    "sync_uid": {
+      "behavior": "plone.eventbasic",
+      "description": "",
+      "factory": "Text line (String)",
+      "mode": "hidden",
+      "title": "",
+      "type": "string"
+    },
+    "title": {
+      "behavior": "plone.dublincore",
+      "description": "",
+      "factory": "Text line (String)",
+      "maxLength": 1024,
+      "title": "Title",
+      "type": "string"
+    },
+    "versioning_enabled": {
+      "behavior": "plone.versioning",
+      "default": true,
+      "description": "Enable/disable versioning for this document.",
+      "factory": "Yes/No",
+      "title": "Versioning enabled",
+      "type": "boolean"
+    },
+    "whole_day": {
+      "behavior": "plone.eventbasic",
+      "default": false,
+      "description": "Event lasts whole day.",
+      "factory": "Yes/No",
+      "title": "Whole Day",
+      "type": "boolean",
+      "widgetOptions": {
+        "klass": "event_whole_day"
+      }
+    }
+  },
+  "required": ["title", "start", "end"],
+  "title": "Event",
+  "type": "object"
+}
