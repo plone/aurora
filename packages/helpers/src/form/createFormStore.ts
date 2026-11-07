@@ -7,13 +7,25 @@ import type { Path, PathValue } from './path';
 type Store = ReturnType<typeof createStore>;
 
 /**
- * Validates one field. Returns its error messages, one message, or nothing if
- * the value is valid.
+ * The errors of fields inside a field, such as the fields of the items of a
+ * list, by their path relative to it: `'2.title'` is the error of the field
+ * at `<path>.2.title`. The `''` key holds the errors of the field itself.
  */
+export type NestedFieldErrors = Record<string, string | string[]>;
+
+/**
+ * What a validator returns: the field's error messages, one message, or
+ * nothing if the value is valid. A field that holds other fields (an object,
+ * a list of objects) can also return their errors, by relative path.
+ */
+export type FieldValidationResult =
+  string | string[] | NestedFieldErrors | null | undefined;
+
+/** Validates one field, and the fields inside it if it holds any. */
 export type FieldValidator<T> = (
   value: any,
   values: T,
-) => string | string[] | null | undefined;
+) => FieldValidationResult;
 
 /** Error messages by field path. */
 export type FieldErrors = Record<string, string[]>;
@@ -26,6 +38,28 @@ const toMessages = (errors: string | string[] | null | undefined) =>
     (error): error is string => !!error,
   );
 
+/** A validator's result, as error messages by field path. */
+const toFieldErrors = (
+  path: string,
+  result: FieldValidationResult,
+): FieldErrors => {
+  const errors: FieldErrors = {};
+  const add = (target: string, messages: string | string[]) => {
+    const list = toMessages(messages);
+    if (list.length > 0) (errors[target] ??= []).push(...list);
+  };
+  if (result && typeof result === 'object' && !Array.isArray(result)) {
+    for (const [relative, messages] of Object.entries(result)) {
+      add(relative ? `${path}.${relative}` : path, messages);
+    }
+  } else if (result) {
+    add(path, result);
+  }
+  return errors;
+};
+
+const NO_ERRORS: FieldErrors = {};
+
 export type SubmitResult = { ok: true } | { ok: false; errors: FieldErrors };
 
 export type FormOptions<T> = {
@@ -33,6 +67,10 @@ export type FormOptions<T> = {
   initialValues: T;
   /**
    * Validators by field path. They are fixed for the life of the form.
+   *
+   * A validator can also validate the fields inside its field, such as the
+   * fields of the items of a list, by returning their errors by relative
+   * path (see `NestedFieldErrors`).
    */
   validators?: Record<string, FieldValidator<T>>;
   /** Called with the new values after each change made through the form. */
@@ -61,6 +99,11 @@ export type FormState = {
   isSubmitting: boolean;
   /** The editor tried to submit the form at least once. */
   submitted: boolean;
+  /**
+   * How many times the editor tried to submit the form, valid or not. A
+   * field can react to each attempt, for example to show its first error.
+   */
+  submitCount: number;
   /** Some value differs from the initial values. */
   isDirty: boolean;
 };
@@ -130,7 +173,8 @@ export function createFormStore<T>(initialOptions: FormOptions<T>): FormApi<T> {
 
   const valuesAtom = atom(initialOptions.initialValues);
   const initialValuesAtom = atom(initialOptions.initialValues);
-  const submittedAtom = atom(false);
+  const submitCountAtom = atom(0);
+  const submittedAtom = atom((get) => get(submitCountAtom) > 0);
   const isSubmittingAtom = atom(false);
 
   const perPath = <A>(create: (path: string) => A) => {
@@ -161,13 +205,36 @@ export function createFormStore<T>(initialOptions: FormOptions<T>): FormApi<T> {
     return serverError;
   });
 
+  // The errors a validator finds, by field path: its field's, and those of
+  // the fields inside it. Shared by all the fields it reports on.
+  const validationAtom = perPath((path) =>
+    atom((get) => {
+      const validator = validators[path];
+      if (!validator) return NO_ERRORS;
+      return toFieldErrors(
+        path,
+        validator(get(fieldAtom(path)), get(valuesAtom)),
+      );
+    }),
+  );
+
+  // The paths of the validators that can report on a field: its own, and
+  // those of the fields it is inside of (`a` and `a.2` for `a.2.title`).
+  const validatorPaths = (path: string) => {
+    const segments = path.split('.');
+    return segments
+      .map((_, index) => segments.slice(0, index + 1).join('.'))
+      .filter((candidate) => candidate in validators);
+  };
+
   const metaAtom = perPath((path) =>
     stabilized<FieldMeta>((get) => {
       const value = get(fieldAtom(path));
-      const validator = validators[path];
       // Only a validated field depends on the other values.
       const allErrors = [
-        ...(validator ? toMessages(validator(value, get(valuesAtom))) : []),
+        ...validatorPaths(path).flatMap(
+          (validatorPath) => get(validationAtom(validatorPath))[path] ?? [],
+        ),
         ...get(serverErrorAtom(path)),
       ];
       const touched = get(touchedAtom(path));
@@ -184,6 +251,7 @@ export function createFormStore<T>(initialOptions: FormOptions<T>): FormApi<T> {
   const stateAtom = stabilized<FormState>((get) => ({
     isSubmitting: get(isSubmittingAtom),
     submitted: get(submittedAtom),
+    submitCount: get(submitCountAtom),
     isDirty: !isDeepEqual(get(valuesAtom), get(initialValuesAtom)),
   }));
 
@@ -198,8 +266,13 @@ export function createFormStore<T>(initialOptions: FormOptions<T>): FormApi<T> {
     const values = getValues();
     const errors: FieldErrors = {};
     for (const [path, validator] of Object.entries(validators)) {
-      const messages = toMessages(validator(getByPath(values, path), values));
-      if (messages.length > 0) errors[path] = messages;
+      const found = toFieldErrors(
+        path,
+        validator(getByPath(values, path), values),
+      );
+      for (const [target, messages] of Object.entries(found)) {
+        (errors[target] ??= []).push(...messages);
+      }
     }
     return errors;
   };
@@ -230,14 +303,14 @@ export function createFormStore<T>(initialOptions: FormOptions<T>): FormApi<T> {
       const next = values ?? store.get(initialValuesAtom);
       store.set(initialValuesAtom, next);
       store.set(valuesAtom, next);
-      store.set(submittedAtom, false);
+      store.set(submitCountAtom, 0);
       for (const touched of touchedAtoms.values()) store.set(touched, false);
       for (const error of serverErrorAtoms.values()) store.set(error, []);
     },
     getErrors,
     setServerErrors,
     submit: async () => {
-      store.set(submittedAtom, true);
+      store.set(submitCountAtom, (count) => count + 1);
       const errors = getErrors();
       if (Object.keys(errors).length > 0) return { ok: false, errors };
 

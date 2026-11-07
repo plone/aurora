@@ -8,6 +8,18 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.18 (2026-11-06)
+
+### Feature
+
+- Below 48rem the header navigation collapses into a menu toggle, which opens the items as a full-width panel under the header. @mpalomaki 
+- On phones the header row keeps only the logo, the navigation toggle and the search icon: the login or user tools and the language switcher move into the navigation panel. @sneridagh 
+- Show the language icon on the "Manage translations" item of the toolbar More menu. @pnicolli 
+
+### Bugfix
+
+- Skip image scale flattening when `scales` or `download` is missing so Image views do not crash, and render no image for one without a `download` URL. @aryan7081 
+
 ## 1.0.0-alpha.17 (2026-10-30)
 
 ### Feature

@@ -8,6 +8,18 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.23 (2026-11-06)
+
+### Internal
+
+- Added `usehooks-ts`, a new dependency of `@plone/quanta`, to the Vite `optimizeDeps` list. @sneridagh 
+- Installed `plone.restapi` 10.2.0 in the development and acceptance backends, through `KGS` in `variables.mk`, which the acceptance backend now installs too. @sneridagh 
+- Load the private `@plone/test-addon` add-on when the `PLONE_TEST_ADDON` environment variable is set, as the acceptance `make` targets do. It registers blocks and fields that only the acceptance and visual regression tests use. @sneridagh 
+
+### Documentation
+
+- Added the how-to guide "Add a control panel": the backend parts, the icon and description on the site setup page, hiding a control panel, and replacing its form with a page of your own. @sneridagh 
+
 ## 1.0.0-alpha.22 (2026-10-30)
 
 ### Breaking

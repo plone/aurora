@@ -22,6 +22,8 @@ import {
   PasswordWidget,
   UrlWidget,
 } from '../components/InputWidgets/InputWidgets';
+import { ObjectWidget } from '../components/ObjectWidget/ObjectWidget';
+import { ObjectListWidget } from '../components/ObjectListWidget/ObjectListWidget';
 
 export default function install(config: ConfigType) {
   config.registerDefaultWidget(TextWidget);
@@ -99,6 +101,13 @@ export default function install(config: ConfigType) {
     key: 'widget',
     definition: {
       querystring: QuerystringWidget,
+    },
+  });
+  config.registerWidget({
+    key: 'widget',
+    definition: {
+      object: ObjectWidget,
+      object_list: ObjectListWidget,
     },
   });
   config.registerWidget({
