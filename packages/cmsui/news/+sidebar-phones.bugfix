@@ -1,0 +1,1 @@
+Fixed the editor's sidebar on phones: it starts closed, and opens with the toolbar's settings button as a panel over the bottom of the page, which a swipe down, its handle or Escape closes. A collapsed sidebar no longer leaves a strip on the right. @sneridagh
