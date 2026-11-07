@@ -104,7 +104,8 @@
       "anchorTaken": "Un altro pannello usa già questa àncora. Scegline un’altra.",
       "panelActions": "Azioni del pannello",
       "innerImageNote": "In una fisarmonica le immagini occupano sempre tutta la larghezza del pannello, quindi dimensione e allineamento non sono disponibili.",
-      "innerTeaserNote": "In una fisarmonica un teaser prende lo sfondo della fisarmonica, quindi il suo sfondo non è disponibile."
+      "innerTeaserNote": "In una fisarmonica un teaser prende lo sfondo della fisarmonica, quindi il suo sfondo non è disponibile.",
+      "blockPosition": "Blocco {{position}} di {{total}} in “{{title}}”"
     },
     "undo": "Annulla",
     "undone": "Annullato"
