@@ -248,7 +248,7 @@ const createImageWidgetRouter = (props: ImageWidgetStoryProps) =>
         path: '/',
         element: (
           <I18nextProvider i18n={storyI18n as any}>
-            <div className="min-h-screen bg-quanta-air p-8">
+            <div className="bg-quanta-air min-h-screen p-8">
               <div className="max-w-2xl">
                 <StoryImageWidget {...props} />
               </div>
