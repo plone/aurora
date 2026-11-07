@@ -1,0 +1,1 @@
+Tab from an accordion's last control goes on to its settings in the host's sidebar, and from the last of them to the text after the accordion; without a sidebar, it goes straight to that text. Shift+Tab from the accordion's first control goes to the text before it. @Humanaice

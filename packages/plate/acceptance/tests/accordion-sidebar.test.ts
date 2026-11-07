@@ -93,3 +93,100 @@ test('adapts the settings of an image in a panel', async ({ page }) => {
     sidebar.getByText('Block 1 of 2 in “Opening hours”'),
   ).toHaveCount(0);
 });
+
+test('takes Tab from the accordion through the sidebar to the text after it', async ({
+  page,
+}) => {
+  await login(page);
+  const pageId = await createNativeBlocksPage(page, ['accordion'], {
+    extra: [{ type: 'p', children: [{ text: 'After the accordion' }] }],
+  });
+  await openInEditor(page, pageId);
+  const editorHandle = await getEditorHandle(page);
+  await selectPlateEditorPoint(page, editorHandle, {
+    path: [1, 0, 0, 0],
+    offset: 0,
+  });
+  const sidebar = page.getByRole('complementary', { name: 'Sidebar' });
+  await expect(sidebar.getByRole('heading', { name: 'Panel' })).toBeVisible();
+
+  // From the accordion's last control, Tab goes to the panel's settings.
+  await page.getByRole('button', { name: 'Add a panel at the end' }).focus();
+  await page.keyboard.press('Tab');
+  await expect(sidebar.locator(':focus')).toHaveCount(1);
+
+  // Through them, and then to the text after the accordion.
+  const inSidebar = () =>
+    page.evaluate(() => !!document.activeElement?.closest('#sidebar'));
+  for (let presses = 0; presses < 30 && (await inSidebar()); presses++) {
+    await page.keyboard.press('Tab');
+  }
+  await page.keyboard.type('Text ');
+
+  await expect
+    .poll(async () => nodeText((await getValue(page, editorHandle))[2]))
+    .toBe('Text After the accordion');
+});
+
+test('climbs the levels with Esc, from a block to the page', async ({
+  page,
+}) => {
+  const editorHandle = await openAccordionPage(page);
+  const sidebar = page.getByRole('complementary', { name: 'Sidebar' });
+  await selectPlateEditorPoint(page, editorHandle, {
+    path: [1, 0, 1, 0, 0],
+    offset: 0,
+  });
+  // A text block shows its place and its actions.
+  await expect(
+    sidebar.getByText('Block 1 of 2 in “Opening hours”'),
+  ).toBeVisible();
+  await expect(
+    sidebar.getByRole('button', { name: 'Move down' }),
+  ).toBeVisible();
+
+  // The block, not the whole accordion.
+  await page.keyboard.press('Escape');
+  await expect(page.locator('[data-slot="block-selection"]')).toHaveCount(1);
+  await expect(
+    page.locator('.block-accordion__content [data-slot="block-selection"]'),
+  ).toHaveCount(1);
+  await page.keyboard.press('Escape');
+  await expect(sidebar.getByRole('heading', { name: 'Panel' })).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(
+    sidebar.getByRole('heading', { name: 'Accordion' }),
+  ).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(
+    sidebar.getByText(/Click the accordion's frame or its label/),
+  ).toBeVisible();
+});
+
+test('deletes a selected block with Delete, with Undo', async ({ page }) => {
+  const editorHandle = await openAccordionPage(page);
+  await selectPlateEditorPoint(page, editorHandle, {
+    path: [1, 0, 1, 0, 0],
+    offset: 0,
+  });
+
+  await page.keyboard.press('Escape');
+  await page.keyboard.press('Delete');
+
+  await expect
+    .poll(
+      async () =>
+        ((await firstPanel(page, editorHandle))?.children?.[1]?.children ?? [])
+          .length,
+    )
+    .toBe(1);
+  await expect(
+    page.locator('[data-sonner-toast]').getByText('Text block deleted'),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Undo' }).click();
+  await expect
+    .poll(async () =>
+      nodeText((await firstPanel(page, editorHandle))?.children?.[1]),
+    )
+    .toContain('Monday to Friday');
+});

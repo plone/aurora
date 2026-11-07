@@ -1,8 +1,11 @@
 import {
   ElementApi,
+  KEYS,
   PathApi,
+  type Path,
   type PluginConfig,
   type SlateEditor,
+  type TElement,
 } from 'platejs';
 import { createTPlatePlugin } from 'platejs/react';
 
@@ -12,10 +15,17 @@ import {
   findAccordionEntry,
   getSettingsTarget,
   movePanel,
+  PAGE_SETTINGS_TARGET,
+  selectionMovedSinceTarget,
   setSettingsTarget,
   type AccordionEditorOptions,
 } from './editor-transforms';
-import { moveInnerBlock } from './inner-block-transforms';
+import {
+  getInnerBlockEntry,
+  isInnerBlockPath,
+  moveInnerBlock,
+  removeInnerBlock,
+} from './inner-block-transforms';
 import {
   ACCORDION_KEY,
   ACCORDION_PANEL_CONTENT_KEY,
@@ -23,18 +33,49 @@ import {
   ACCORDION_PANEL_TITLE_KEY,
 } from './types';
 
+type BlockSelectionApi = {
+  blockSelection?: {
+    deselect: () => void;
+    getNodes: (options?: { sort?: boolean }) => [TElement, Path][];
+    set: (id: string) => void;
+  };
+};
+
+const getBlockSelection = (editor: SlateEditor) => {
+  try {
+    return (editor.getApi({ key: KEYS.blockSelection }) as BlockSelectionApi)
+      .blockSelection;
+  } catch {
+    return undefined;
+  }
+};
+
+/** Shows the settings of a panel, with the caret at the end of its title. */
+const selectPanel = (editor: SlateEditor, panelPath: Path) => {
+  const panel = editor.api.node<TElement>(panelPath)?.[0];
+  if (!panel) return;
+  editor.tf.select(editor.api.end([...panelPath, 0]));
+  setSettingsTarget(editor, {
+    type: ACCORDION_PANEL_KEY,
+    id: String(panel.id),
+  });
+};
+
 /**
- * Esc selects the level above in the accordion's settings: a panel's title or
- * settings › the accordion › nothing. Elsewhere, the editor's own Esc (which
- * selects the block) applies.
+ * Esc selects the level above: a block of a panel › its panel › the
+ * accordion › the page › nothing. From the text of a block, it selects the
+ * block, which the editor's block selection then takes on.
  */
 const handleEscape = (editor: SlateEditor): boolean => {
   const target = getSettingsTarget(editor);
-  if (target?.type === ACCORDION_KEY) {
+  if (target?.type === PAGE_SETTINGS_TARGET) {
     setSettingsTarget(editor, null);
     return true;
   }
-
+  if (target?.type === ACCORDION_KEY) {
+    setSettingsTarget(editor, { type: PAGE_SETTINGS_TARGET });
+    return true;
+  }
   let panelPath: number[] | undefined;
   if (target?.type === ACCORDION_PANEL_KEY) {
     panelPath = findAccordionEntry(editor, target)?.[1];
@@ -44,8 +85,17 @@ const handleEscape = (editor: SlateEditor): boolean => {
     });
     if (title) panelPath = PathApi.parent(title[1]);
   }
-  if (!panelPath) return false;
-
+  if (!panelPath) {
+    const block = getInnerBlockEntry(editor);
+    if (!block) return false;
+    const blockSelection = getBlockSelection(editor);
+    if (blockSelection && block[0].id) {
+      blockSelection.set(String(block[0].id));
+    } else {
+      selectPanel(editor, block[1].slice(0, -2));
+    }
+    return true;
+  }
   const accordion = editor.api.node(PathApi.parent(panelPath))?.[0];
   if (!ElementApi.isElement(accordion)) return false;
   setSettingsTarget(editor, {
@@ -56,9 +106,34 @@ const handleEscape = (editor: SlateEditor): boolean => {
 };
 
 /**
+ * Handles a key press while the editor's block selection holds one block of
+ * an accordion panel: Esc selects its panel, and Delete or Backspace removes
+ * it with an Undo notification. Returns `true` when it handled it.
+ */
+export const handleAccordionBlockSelectionKeyDown = (
+  editor: SlateEditor,
+  event: Pick<KeyboardEvent, 'key' | 'preventDefault'>,
+): boolean => {
+  if (!['Escape', 'Delete', 'Backspace'].includes(event.key)) return false;
+  const blockSelection = getBlockSelection(editor);
+  const entries = blockSelection?.getNodes({ sort: true }) ?? [];
+  if (entries.length !== 1 || !isInnerBlockPath(editor, entries[0][1])) {
+    return false;
+  }
+  const [, blockPath] = entries[0];
+  event.preventDefault();
+  // With nothing selected, the block selection's own handling stops here.
+  blockSelection!.deselect();
+  if (event.key === 'Escape') selectPanel(editor, blockPath.slice(0, -2));
+  else removeInnerBlock(editor, blockPath);
+  editor.tf.focus();
+  return true;
+};
+
+/**
  * Handles a key press in an accordion. Returns `true` when it handled it.
  *
- * - Esc selects the level above: panel › accordion › nothing.
+ * - Esc selects the level above: block › panel › accordion › page › nothing.
  * - Enter in a panel title moves into the panel's first block.
  * - Alt+Shift+↑ and Alt+Shift+↓ move the panel, in a panel title, or the
  *   block, in a block of a panel.
@@ -186,20 +261,15 @@ export const AccordionEditorPlugin = createTPlatePlugin<
     onMouseMove: ({ getOption, setOption }) => {
       if (getOption('typing')) setOption('typing', false);
     },
-    // When the caret moves out of the accordion or panel whose settings show,
-    // its settings close, so the host shows what holds the selection.
+    // When the user moves the caret, such as with a click on a block, the
+    // chosen settings close, so the host shows what holds the selection.
     onChange: ({ editor }) => {
       const target = getSettingsTarget(editor);
       if (!target || !editor.selection) return;
       const movedSelection = editor.operations.some(
         (operation) => operation.type === 'set_selection',
       );
-      if (!movedSelection) return;
-      const entry = findAccordionEntry(editor, target);
-      if (
-        !entry ||
-        !PathApi.isAncestor(entry[1], editor.selection.anchor.path)
-      ) {
+      if (movedSelection && selectionMovedSinceTarget(editor)) {
         setSettingsTarget(editor, null);
       }
     },
