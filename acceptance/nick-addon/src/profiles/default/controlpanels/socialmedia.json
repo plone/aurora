@@ -1,0 +1,58 @@
+{
+  "id": "socialmedia",
+  "title": "Social Media",
+  "group": "General",
+  "schema": {
+    "fieldsets": [
+      {
+        "behavior": "plone",
+        "fields": [
+          "share_social_data",
+          "twitter_username",
+          "facebook_app_id",
+          "facebook_username"
+        ],
+        "id": "default",
+        "title": "Default"
+      }
+    ],
+    "properties": {
+      "facebook_app_id": {
+        "default": "",
+        "description": "To be used with some integrations like Open Graph data",
+        "factory": "Text line (String)",
+        "title": "Facebook App ID",
+        "type": "string"
+      },
+      "facebook_username": {
+        "default": "",
+        "description": "For linking Open Graph data to a Facebook account",
+        "factory": "Text line (String)",
+        "title": "Facebook username",
+        "type": "string"
+      },
+      "share_social_data": {
+        "default": true,
+        "description": "Include meta tags on pages to give hints to social media on how to better render your pages when shared",
+        "factory": "Yes/No",
+        "title": "Share social data",
+        "type": "boolean"
+      },
+      "twitter_username": {
+        "default": "",
+        "description": "To identify things like Twitter Cards. Do not include the \"@\" prefix character.",
+        "factory": "Text line (String)",
+        "title": "Twitter username",
+        "type": "string"
+      }
+    },
+    "required": [],
+    "type": "object"
+  },
+  "data": {
+    "facebook_app_id": "",
+    "facebook_username": "",
+    "share_social_data": true,
+    "twitter_username": ""
+  }
+}

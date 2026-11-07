@@ -1,12 +1,12 @@
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
+import {
+  acceptanceApiURL,
+  acceptanceAuthorization,
+} from '../../../tooling/playwright/backend';
 
-const API = 'http://localhost:55001/plone';
-const auth = {
-  Accept: 'application/json',
-  Authorization: `Basic ${Buffer.from('admin:secret').toString('base64')}`,
-};
+const API = acceptanceApiURL();
 
 test('An event recurrence edited in the modal is saved with the event', async ({
   page,
@@ -52,7 +52,17 @@ test('An event recurrence edited in the modal is saved with the event', async ({
   await saved;
 
   const event = await (
-    await request.get(`${API}/weekly-event`, { headers: auth })
+    await request.get(`${API}/weekly-event`, {
+      headers: {
+        Accept: 'application/json',
+        Authorization: await acceptanceAuthorization(
+          request,
+          API,
+          'admin',
+          'secret',
+        ),
+      },
+    })
   ).json();
   expect(event.recurrence).toContain('FREQ=WEEKLY');
 });

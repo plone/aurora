@@ -1,10 +1,9 @@
 import { expect, test as base } from './test';
-
-function getDefaultApiURL() {
-  const hostname = process.env.BACKEND_HOST || '127.0.0.1';
-  const siteId = process.env.SITE_ID || 'plone';
-  return process.env.API_PATH || `http://${hostname}:55001/${siteId}`;
-}
+import {
+  acceptanceApiURL,
+  acceptanceAuthorization,
+  acceptanceBackend,
+} from './backend';
 
 type MultilingualFixtures = {
   /** The site's languages, the first one being the default. */
@@ -13,21 +12,26 @@ type MultilingualFixtures = {
 };
 
 /**
- * A `test` whose site is multilingual: after the per-test backend reset, it
- * sets the available languages and installs `plone.app.multilingual`, which
- * creates a published language root folder per language (`/en`, `/de`).
- * It all happens in the test's own ZODB layer, so the reset's teardown
- * removes it and no other test sees a multilingual site.
+ * A `test` whose site is multilingual: after the per-test reset, configure
+ * the languages and create a published root for each language. Plone's
+ * multilingual add-on creates the roots; Nick's test profile provides the
+ * type and the adapter creates them through the API.
  */
 export const test = base.extend<MultilingualFixtures>({
   languages: [['en', 'de'], { option: true }],
   multilingualSite: [
     async ({ request, languages, resetBackend }, use) => {
       void resetBackend;
-      const apiURL = getDefaultApiURL();
+      const apiURL = acceptanceApiURL();
+      const backend = acceptanceBackend();
       const headers = {
         Accept: 'application/json',
-        Authorization: `Basic ${Buffer.from('admin:secret').toString('base64')}`,
+        Authorization: await acceptanceAuthorization(
+          request,
+          apiURL,
+          'admin',
+          'secret',
+        ),
       };
 
       const languageSettings = await request.patch(
@@ -37,16 +41,37 @@ export const test = base.extend<MultilingualFixtures>({
           data: {
             available_languages: languages,
             default_language: languages[0],
+            ...(backend === 'nick' ? { multilingual: true } : {}),
           },
         },
       );
       expect(languageSettings.ok()).toBe(true);
 
-      const install = await request.post(
-        `${apiURL}/@addons/plone.app.multilingual/install`,
-        { headers },
-      );
-      expect(install.ok()).toBe(true);
+      if (backend === 'plone') {
+        const install = await request.post(
+          `${apiURL}/@addons/plone.app.multilingual/install`,
+          { headers },
+        );
+        expect(install.ok()).toBe(true);
+      } else {
+        for (const language of languages) {
+          const created = await request.post(apiURL, {
+            headers,
+            data: {
+              '@type': 'Languageroot',
+              id: language,
+              title: language,
+              language,
+            },
+          });
+          expect(created.status(), await created.text()).toBe(201);
+          const published = await request.post(
+            `${apiURL}/${language}/@workflow/publish`,
+            { headers },
+          );
+          expect(published.ok(), await published.text()).toBe(true);
+        }
+      }
 
       await use();
     },

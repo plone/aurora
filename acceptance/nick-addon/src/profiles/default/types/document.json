@@ -1,0 +1,60 @@
+{
+  "id": "Document",
+  "title:i18n": "Page",
+  "description": "",
+  "global_allow": true,
+  "filter_content_types": false,
+  "allowed_content_types": [],
+  "schema": {
+    "fieldsets": [
+      {
+        "id": "settings",
+        "title:i18n": "Settings",
+        "fields": ["allow_discussion"]
+      }
+    ],
+    "properties": {
+      "description": {
+        "title:i18n": "Summary",
+        "type": "string",
+        "factory": "Text",
+        "widget": "textarea"
+      },
+      "subjects": {
+        "title:i18n": "Tags",
+        "type": "array",
+        "factory": "Tuple",
+        "additionalItems": true,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "factory": "Text line (String)",
+          "title": ""
+        }
+      },
+      "allow_discussion": {
+        "title:i18n": "Allow discussion",
+        "type": "string",
+        "factory": "Choice",
+        "choices": [
+          ["True", "Yes"],
+          ["False", "No"]
+        ],
+        "enum": ["True", "False"],
+        "enumNames": ["Yes", "No"]
+      }
+    },
+    "behaviors": [
+      "dublin_core",
+      "dates",
+      "blocks",
+      "versioning",
+      "short_name",
+      "id_from_title",
+      "folderish",
+      "exclude_from_nav"
+    ],
+    "layouts": []
+  },
+  "workflow": "simple_publication_workflow"
+}

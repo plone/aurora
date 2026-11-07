@@ -1,0 +1,12 @@
+{
+  "purge": false,
+  "groups": [
+    {
+      "id": "Reviewers",
+      "title": "Reviewers",
+      "description": "",
+      "email": "",
+      "roles": ["Reviewer"]
+    }
+  ]
+}

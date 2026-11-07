@@ -49,6 +49,10 @@ pnpm start
 
 The frontend is available at <http://localhost:3000> and the backend at <http://localhost:8080>.
 
+### Develop and test with Nick
+
+To run Aurora with Nick and test their integration, follow the [Nick backend guide](https://plone-aurora.readthedocs.io/how-to-guides/use-nick-backend.html).
+
 ## Releases
 
 The Plone team publishes Aurora as a sequence of alpha releases during active development.

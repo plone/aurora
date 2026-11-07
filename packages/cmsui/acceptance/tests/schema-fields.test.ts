@@ -1,6 +1,12 @@
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
+import {
+  acceptanceApiURL,
+  acceptanceAuthorization,
+} from '../../../tooling/playwright/backend';
+
+const API = acceptanceApiURL();
 
 test('The edit form shows the related items a page already has', async ({
   page,
@@ -13,10 +19,15 @@ test('The edit form shows the related items a page already has', async ({
     contentTitle: 'Related target',
   });
   const target = await (
-    await request.get('http://localhost:55001/plone/related-target', {
+    await request.get(`${API}/related-target`, {
       headers: {
         Accept: 'application/json',
-        Authorization: `Basic ${Buffer.from('admin:secret').toString('base64')}`,
+        Authorization: await acceptanceAuthorization(
+          request,
+          API,
+          'admin',
+          'secret',
+        ),
       },
     })
   ).json();
@@ -57,10 +68,15 @@ test('Saving the edit form stores the changed metadata', async ({
   await saved;
 
   const content = await (
-    await request.get('http://localhost:55001/plone/metadata-save', {
+    await request.get(`${API}/metadata-save`, {
       headers: {
         Accept: 'application/json',
-        Authorization: `Basic ${Buffer.from('admin:secret').toString('base64')}`,
+        Authorization: await acceptanceAuthorization(
+          request,
+          API,
+          'admin',
+          'secret',
+        ),
       },
     })
   ).json();

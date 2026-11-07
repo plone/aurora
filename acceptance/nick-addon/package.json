@@ -1,0 +1,19 @@
+{
+  "name": "@plone/aurora-nick-acceptance",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "nick": {
+    "profiles": "src/profiles"
+  },
+  "peerDependencies": {
+    "@plone/nick": "^3.0.0"
+  },
+  "dependencies": {
+    "pg": "8.23.1"
+  }
+}

@@ -2,14 +2,25 @@ import type { APIRequestContext } from '@playwright/test';
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
+import {
+  acceptanceApiURL,
+  acceptanceAuthorization,
+} from '../../../tooling/playwright/backend';
 
-const API = 'http://localhost:55001/plone';
-const AUTH = `Basic ${Buffer.from('admin:secret').toString('base64')}`;
+const API = acceptanceApiURL();
 
 const getJSON = async (request: APIRequestContext, path: string) =>
   (
     await request.get(`${API}${path}`, {
-      headers: { Accept: 'application/json', Authorization: AUTH },
+      headers: {
+        Accept: 'application/json',
+        Authorization: await acceptanceAuthorization(
+          request,
+          API,
+          'admin',
+          'secret',
+        ),
+      },
     })
   ).json();
 
@@ -151,7 +162,12 @@ test('A control panel saves its numbers as numbers, and hides passwords', async 
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      Authorization: AUTH,
+      Authorization: await acceptanceAuthorization(
+        request,
+        API,
+        'admin',
+        'secret',
+      ),
     },
     data: {
       smtp_port: 25,
