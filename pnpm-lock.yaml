@@ -1806,6 +1806,9 @@ importers:
 
   packages/react-router:
     dependencies:
+      '@plone/registry':
+        specifier: workspace:*
+        version: link:../registry
       react:
         specifier: ^19.2.7
         version: 19.3.1

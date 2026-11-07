@@ -1,0 +1,1 @@
+Fixed `getAddonRoutesConfig` resolving a file of `@plone/cmsui-extra` to the folder of `@plone/cmsui`, and changing the routes passed to it. @sneridagh
