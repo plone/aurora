@@ -312,6 +312,34 @@ describe('block toolbar', () => {
   });
 });
 
+describe('text placeholder', () => {
+  it('says how to choose another block in an empty text block', () => {
+    const editor = createEditor([accordion(panel('a', 'Hours', p('')))]);
+    editor.tf.select(editor.api.start([0, 0, 1, 0]));
+    render(
+      <Plate editor={editor}>
+        <PlateContent />
+      </Plate>,
+    );
+
+    expect(
+      screen.getByText('Type text, or / for other blocks'),
+    ).toBeInTheDocument();
+  });
+
+  it('shows nothing in a text block with text', () => {
+    const editor = createEditor([accordion(panel('a', 'Hours', p('One')))]);
+    editor.tf.select(editor.api.start([0, 0, 1, 0]));
+    render(
+      <Plate editor={editor}>
+        <PlateContent />
+      </Plate>,
+    );
+
+    expect(screen.queryByText('Type text, or / for other blocks')).toBeNull();
+  });
+});
+
 describe('insert points', () => {
   it('opens the slash menu in a new block without typing "/"', () => {
     const editor = createPlateEditor({

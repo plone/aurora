@@ -10,6 +10,7 @@ import {
   enterPanel,
   insertAccordion,
   insertAccordionPanel,
+  getSettingsTarget,
   isPanelOpen,
   moveCaretOutOfAccordion,
   setAllPanelsOpen,
@@ -387,6 +388,19 @@ describe('accordion editor view', () => {
       fireEvent.keyDown(first, { key: 'Tab', shiftKey: true });
     });
     expect(editor.selection?.anchor).toEqual(editor.api.end([0]));
+  });
+
+  it('selects the accordion from a press on its frame', () => {
+    const { container, editor } = renderEditor([accordion(panel('a', 'A'))]);
+
+    fireEvent.mouseDown(
+      container.querySelector('.slate-accordion > .block-inner-container')!,
+    );
+
+    expect(getSettingsTarget(editor)).toEqual({
+      type: 'accordion',
+      id: 'acc',
+    });
   });
 
   it('renders panel titles as headings', () => {

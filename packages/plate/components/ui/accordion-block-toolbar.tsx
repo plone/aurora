@@ -8,7 +8,14 @@ import {
   MoreHorizontalIcon,
   PlusIcon,
 } from 'lucide-react';
-import { ElementApi, PathApi, type Path, type TElement } from 'platejs';
+import {
+  ElementApi,
+  KEYS,
+  NodeApi,
+  PathApi,
+  type Path,
+  type TElement,
+} from 'platejs';
 import {
   useEditorRef,
   useEditorSelector,
@@ -133,13 +140,17 @@ export function InsertBlockPoint({
       )}
     >
       {/*
-        An opaque backdrop in the accordion's background keeps the line from
-        showing through the button while the button is faint.
+        While the line shows, an opaque backdrop in the accordion's background
+        keeps it from showing through the faint button. Otherwise the backdrop
+        is transparent, so it never hides the outline of a selected block; it
+        turns transparent once the line and the button have faded out.
       */}
       <span
         className={`
-          relative z-10 inline-flex rounded-full
-          bg-[var(--block-accordion-background,var(--background))]
+          relative z-10 inline-flex rounded-full transition-[background-color] delay-150 duration-0
+          group-hover/insert-block:bg-[var(--block-accordion-background,var(--background))]
+          group-hover/insert-block:delay-0
+          focus-within:bg-[var(--block-accordion-background,var(--background))] focus-within:delay-0
         `}
       >
         <Button
@@ -258,6 +269,15 @@ function InnerBlock(props: PlateElementProps) {
 
   // The panel's title names the insert points: several panels can be open.
   const titlePath = [...blockPath.slice(0, -2), 0];
+  // An empty text block holding the caret says how to choose another block.
+  const showPlaceholder =
+    selected &&
+    element.type === KEYS.p &&
+    !(element as { listStyleType?: string }).listStyleType &&
+    NodeApi.string(element) === '' &&
+    !element.children.some(
+      (child) => ElementApi.isElement(child) && child.type === KEYS.slashInput,
+    );
   const panelTitle =
     (editor.api.node(titlePath) && editor.api.string(titlePath)) ||
     t('plate.accordion.untitledPanel', { defaultValue: 'Untitled panel' });
@@ -349,6 +369,19 @@ function InnerBlock(props: PlateElementProps) {
           </div>
         )}
         {children}
+        {showPlaceholder && (
+          <span
+            contentEditable={false}
+            aria-hidden="true"
+            className={`
+              pointer-events-none absolute top-0 left-0 py-1 text-muted-foreground select-none
+            `}
+          >
+            {t('plate.accordion.textPlaceholder', {
+              defaultValue: 'Type text, or / for other blocks',
+            })}
+          </span>
+        )}
       </div>
     </div>
   );

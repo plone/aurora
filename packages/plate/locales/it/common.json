@@ -56,7 +56,9 @@
         "blockMoved": "Blocco spostato alla posizione {{position}} di {{total}}",
         "blockDuplicated": "Blocco duplicato",
         "blockDeleted": "Blocco {{type}} eliminato",
-        "blockChanged": "Blocco trasformato in {{type}}"
+        "blockChanged": "Blocco trasformato in {{type}}",
+        "allExpanded": "Tutti i pannelli espansi",
+        "allCollapsed": "Tutti i pannelli compressi"
       },
       "block": "Blocco",
       "blockActions": "Azioni del blocco",
@@ -104,7 +106,10 @@
       "panelActions": "Azioni del pannello",
       "innerImageNote": "In una fisarmonica le immagini occupano sempre tutta la larghezza del pannello, quindi dimensione e allineamento non sono disponibili.",
       "innerTeaserNote": "In una fisarmonica un teaser prende lo sfondo della fisarmonica, quindi il suo sfondo non è disponibile.",
-      "blockPosition": "Blocco {{position}} di {{total}} in “{{title}}”"
+      "blockPosition": "Blocco {{position}} di {{total}} in “{{title}}”",
+      "pageCrumb": "Pagina",
+      "pageHint": "Fai clic sulla cornice dell'accordion o sulla sua etichetta, sull'intestazione di un pannello o su un blocco per vederne qui le impostazioni.",
+      "textPlaceholder": "Scrivi del testo, o / per altri blocchi"
     },
     "undo": "Annulla",
     "undone": "Annullato"

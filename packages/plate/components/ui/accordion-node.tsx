@@ -31,6 +31,7 @@ import {
   removePanel,
   setAllPanelsOpen,
   setPanelOpen,
+  setSettingsTarget,
 } from '../editor/plugins/accordion/editor-transforms';
 import {
   getAccordionOptions,
@@ -198,6 +199,20 @@ export function AccordionElement(props: PlateElementProps<TAccordionElement>) {
   const { themes } = getAccordionOptions(editor);
   const theme = resolveAccordionTheme(themes, element.theme);
   const onKeyDown = useTabOutOfAccordion(path);
+  // A press on the accordion's frame, outside its panels, selects it. The
+  // caret stays where it is, as for the accordion's buttons.
+  const onMouseDown = (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as HTMLElement;
+    const isFrame =
+      target === event.currentTarget ||
+      target.hasAttribute('data-accordion-frame') ||
+      (target.parentElement === event.currentTarget &&
+        target.classList.contains('block-inner-container'));
+    if (isFrame) {
+      event.preventDefault();
+      setSettingsTarget(editor, { type: 'accordion', id: element.id });
+    }
+  };
 
   return (
     <PlateElement
@@ -207,7 +222,7 @@ export function AccordionElement(props: PlateElementProps<TAccordionElement>) {
         'data-exclusive': element.exclusive === false ? 'false' : 'true',
         'data-theme': theme.id,
         ...(active ? { 'data-active': 'true' } : {}),
-        ...(readOnly ? {} : { onKeyDown }),
+        ...(readOnly ? {} : { onKeyDown, onMouseDown }),
       }}
       style={
         {
@@ -221,7 +236,7 @@ export function AccordionElement(props: PlateElementProps<TAccordionElement>) {
         className={cn(
           !readOnly &&
             `
-              outline-1 outline-transparent
+              outline-1 -outline-offset-1 outline-transparent
               hover:outline-primary/30
             `,
           !readOnly && active && 'outline-primary/60 outline-dashed',
@@ -230,6 +245,7 @@ export function AccordionElement(props: PlateElementProps<TAccordionElement>) {
         {!readOnly && (
           <div
             contentEditable={false}
+            data-accordion-frame=""
             className={`
               flex min-h-8 items-center justify-between gap-2 justify-self-stretch select-none
             `}
