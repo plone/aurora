@@ -1,0 +1,1 @@
+Routes registered by add-ons get a readable id that is the same on every machine, such as `@plone/cmsui/routes/edit`, instead of their absolute file path. `getAddonRoutesConfig` also warns when two routes match the same URL. @sneridagh
