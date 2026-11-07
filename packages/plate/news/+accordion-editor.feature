@@ -1,0 +1,1 @@
+Editors can insert an accordion from the slash menu, write its panel titles, add or insert panels, and open, close, expand or collapse panels while editing. Panels open and close independently while editing, and the title and content of a panel never merge on Backspace or Delete. @Humanaice

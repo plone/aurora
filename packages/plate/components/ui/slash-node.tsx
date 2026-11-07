@@ -10,7 +10,13 @@ import { TITLE_BLOCK_TYPE } from '../editor/plugins/title';
 import {
   resolveSlashMenuGroups,
   type SlashMenuConfig,
+  type SlashMenuContainer,
 } from '../editor/plugins/slash-menu';
+import { getAvailableInnerBlocks } from '../editor/plugins/accordion/transforms';
+import {
+  ACCORDION_KEY,
+  ACCORDION_PANEL_KEY,
+} from '../editor/plugins/accordion/types';
 
 import {
   InlineCombobox,
@@ -36,12 +42,29 @@ export function SlashInputElement(
     (child) => ElementApi.isElement(child) && child.type === TITLE_BLOCK_TYPE,
   );
 
+  // Inside an accordion panel, the menu only offers what a panel can hold.
+  const inAccordion = !!editor.api.above({
+    at: props.path,
+    match: { type: ACCORDION_PANEL_KEY },
+  });
+  const container = React.useMemo<SlashMenuContainer | undefined>(
+    () =>
+      inAccordion
+        ? {
+            type: ACCORDION_KEY,
+            availableBlocks: getAvailableInnerBlocks(editor),
+          }
+        : undefined,
+    [editor, inAccordion],
+  );
+
   const groups = React.useMemo(() => {
     return resolveSlashMenuGroups(editor, menuConfig, {
+      container,
       hasTitleBlock,
       t,
     });
-  }, [editor, hasTitleBlock, menuConfig, t]);
+  }, [container, editor, hasTitleBlock, menuConfig, t]);
 
   return (
     <PlateElement {...props} as="span">

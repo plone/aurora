@@ -16,6 +16,7 @@ import {
   Heading5Icon,
   Heading6Icon,
   LightbulbIcon,
+  ListCollapseIcon,
   ListIcon,
   ListOrdered,
   PilcrowIcon,
@@ -28,6 +29,7 @@ import {
 import { KEYS, PathApi } from 'platejs';
 
 import { insertBlock } from '../transforms';
+import { ACCORDION_KEY } from './accordion/types';
 import { fallbackTranslate, type TranslateFunction } from './i18n';
 import { SuggestionPlugin } from './suggestion-kit';
 import { TITLE_BLOCK_TYPE } from './title';
@@ -51,8 +53,17 @@ export type SlashMenuGroup = {
   items: SlashMenuItem[];
 };
 
+export type SlashMenuContainer = {
+  /** The type of the container block, such as `accordion`. */
+  type: string;
+  /** The blocks the container can hold, when it limits them. */
+  availableBlocks?: string[];
+};
+
 export type SlashMenuContext = {
   hasTitleBlock: boolean;
+  /** The container block the slash menu opens in, if any. */
+  container?: SlashMenuContainer;
   t?: TranslateFunction;
 };
 
@@ -324,6 +335,24 @@ export const getDefaultSlashMenuGroups = (
 
   if (editor.plugins[AIChatPlugin.key]) {
     groups = [createAiActionsGroup(t), ...groups];
+  }
+
+  // Accordions can't be placed inside an accordion.
+  if (
+    editor.plugins[ACCORDION_KEY] &&
+    context.container?.type !== ACCORDION_KEY
+  ) {
+    groups = addGroupItem(groups, 'Advanced blocks', {
+      icon: <ListCollapseIcon />,
+      keywords: ['accordion', 'collapsible', 'faq', 'panels'],
+      label: t('plate.slashMenu.items.accordion', {
+        defaultValue: 'Accordion',
+      }),
+      value: ACCORDION_KEY,
+      onSelect: (nextEditor: PlateEditor, value: string) => {
+        insertBlock(nextEditor, value);
+      },
+    });
   }
 
   if (!context.hasTitleBlock) {

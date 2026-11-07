@@ -25,9 +25,24 @@
         "calloutDescription": "Insert a highlighted block.",
         "tableOfContents": "Table of contents",
         "threeColumns": "3 columns",
-        "title": "Title"
+        "title": "Title",
+        "accordion": "Accordion"
       },
       "noResults": "No results"
+    },
+    "accordion": {
+      "label": "Accordion",
+      "expandAll": "Expand all",
+      "collapseAll": "Collapse all",
+      "panel": "Panel",
+      "addPanelAtEnd": "Add a panel at the end",
+      "insertPanelBetween": "Insert a panel between panel {{before}} and {{after}}",
+      "untitledPanel": "Untitled panel",
+      "untitledPanelLower": "untitled panel",
+      "oneBlock": "1 block",
+      "blocks": "{{count}} blocks",
+      "expandPanel": "Expand {{title}}",
+      "collapsePanel": "Collapse {{title}}"
     }
   }
 }

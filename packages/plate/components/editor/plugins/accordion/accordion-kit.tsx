@@ -6,6 +6,7 @@ import {
   AccordionPanelElement,
   AccordionPanelTitleElement,
 } from '../../../ui/accordion-node';
+import { AccordionEditorPlugin } from './accordion-editor-plugin';
 import {
   BaseAccordionPanelContentPlugin,
   BaseAccordionPanelPlugin,
@@ -23,6 +24,7 @@ export const AccordionPanelContentPlugin = toPlatePlugin(
 );
 
 export const AccordionKit = [
+  AccordionEditorPlugin,
   AccordionPlugin.withComponent(AccordionElement),
   AccordionPanelPlugin.withComponent(AccordionPanelElement),
   AccordionPanelTitlePlugin.withComponent(AccordionPanelTitleElement),
