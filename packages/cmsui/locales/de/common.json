@@ -103,7 +103,8 @@
     },
     "blocksEditor": {
       "blocksTab": "Blöcke",
-      "contentTab": "Inhalt"
+      "contentTab": "Inhalt",
+      "modeLabel": "Editormodus"
     },
     "sidebar": {
       "label": "Seitenleiste"
@@ -205,6 +206,10 @@
         "columnActions": "Aktionen"
       }
     },
-    "saveFailed": "Speichern fehlgeschlagen"
+    "saveFailed": "Speichern fehlgeschlagen",
+    "form": {
+      "fieldsets": "Feldgruppen",
+      "fieldsetHasErrors": "Diese Feldgruppe enthält Fehler"
+    }
   }
 }

@@ -23,7 +23,7 @@ test('The edit form resolves image and boolean fields to their widgets', async (
   ).toHaveCount(1);
 
   // Boolean fields resolve by their `boolean` type.
-  await page.locator('button', { hasText: /^Settings$/ }).click();
+  await page.getByRole('tab', { name: 'Settings' }).click();
   await expect(
     page.locator('label', { hasText: 'Exclude from navigation' }),
   ).toBeVisible();

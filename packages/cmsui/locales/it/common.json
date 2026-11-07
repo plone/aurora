@@ -141,7 +141,8 @@
     },
     "blocksEditor": {
       "blocksTab": "Blocchi",
-      "contentTab": "Contenuto"
+      "contentTab": "Contenuto",
+      "modeLabel": "Modalità editor"
     },
     "sidebar": {
       "label": "Barra laterale destra"
@@ -243,6 +244,10 @@
         "columnActions": "Azioni"
       }
     },
-    "saveFailed": "Impossibile salvare"
+    "saveFailed": "Impossibile salvare",
+    "form": {
+      "fieldsets": "Gruppi di campi",
+      "fieldsetHasErrors": "Questo gruppo di campi contiene errori"
+    }
   }
 }

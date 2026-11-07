@@ -1,0 +1,1 @@
+Moved the editor's Blocks and Content switch to a segmented control next to the page title, and showed the content fieldsets as tabs that can be swiped on phones, with a dot on the tabs of fieldsets with errors. @sneridagh

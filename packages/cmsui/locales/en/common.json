@@ -151,7 +151,8 @@
     },
     "blocksEditor": {
       "blocksTab": "Blocks",
-      "contentTab": "Content"
+      "contentTab": "Content",
+      "modeLabel": "Editor mode"
     },
     "sidebar": {
       "label": "Sidebar"
@@ -271,6 +272,10 @@
         "columnActions": "Actions"
       }
     },
-    "saveFailed": "Could not save"
+    "saveFailed": "Could not save",
+    "form": {
+      "fieldsets": "Fieldsets",
+      "fieldsetHasErrors": "This fieldset has errors"
+    }
   }
 }

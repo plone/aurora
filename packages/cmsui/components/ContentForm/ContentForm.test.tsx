@@ -27,6 +27,12 @@ vi.mock('@plone/layout/components/Pluggable', () => ({
 vi.mock('@plone/icons/svg/checkbox.svg?react', () => ({ default: () => null }));
 vi.mock('@plone/icons/svg/close.svg?react', () => ({ default: () => null }));
 vi.mock('@plone/icons/svg/settings.svg?react', () => ({ default: () => null }));
+vi.mock('@plone/icons/svg/properties.svg?react', () => ({
+  default: () => null,
+}));
+vi.mock('@plone/icons/svg/thumbnails.svg?react', () => ({
+  default: () => null,
+}));
 
 vi.mock('../BlockEditor/BlocksEditor', () => ({
   default: () => <div data-testid="blocks-editor" />,

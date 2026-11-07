@@ -21,9 +21,11 @@ test('A required field left empty is shown as invalid, and the content is not sa
 
   await page.goto('/@@edit/needs-title', { waitUntil: 'networkidle' });
   await page.getByRole('tab', { name: 'Content' }).click();
-  const title = page.getByRole('textbox', { name: 'Title' });
+  const title = page.getByRole('textbox', { name: 'Title', exact: true });
   await title.fill('');
-  // Leave the Content tab: the save brings the editor back to the error.
+  // Leave the field's fieldset and the Content tab: the save brings the
+  // editor back to the error.
+  await page.getByRole('tab', { name: 'Settings' }).click();
   await page.getByRole('tab', { name: 'Blocks' }).click();
   await page.getByRole('button', { name: 'Save' }).click();
 
@@ -31,6 +33,12 @@ test('A required field left empty is shown as invalid, and the content is not sa
     'aria-selected',
     'true',
   );
+  const fieldset = page.getByRole('tab', { name: /^Default/ });
+  await expect(fieldset).toHaveAttribute('aria-selected', 'true');
+  // The fieldset's tab shows that one of its fields has an error.
+  await expect(
+    fieldset.getByRole('img', { name: 'This fieldset has errors' }),
+  ).toBeVisible();
   await expect(page.getByText('Required input is missing.')).toBeVisible();
   await expect(title).toBeFocused();
   await expect(title).toHaveAttribute('aria-invalid', 'true');
