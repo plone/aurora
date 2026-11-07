@@ -193,6 +193,9 @@ export default function install(config: ConfigType) {
     column: {
       category: 'layout',
     },
+    accordion: {
+      category: 'layout',
+    },
   };
 
   config.blocks.plateBlocksConfig = plateBlocksConfig;

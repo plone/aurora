@@ -39,6 +39,7 @@ describe('element docs', () => {
   it('documents the elements of the editor', () => {
     expect(files.flatMap(({ elements }) => elements).sort()).toEqual(
       [
+        'accordion',
         'blockquote',
         'callout',
         'code_block',
