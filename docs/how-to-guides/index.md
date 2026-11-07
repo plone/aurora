@@ -20,6 +20,7 @@ extend-vite-configuration
 access-registry
 register-and-retrieve-components
 register-and-retrieve-utilities
+show-toasts
 configure-style-fields
 couple-block-schema-fields
 validate-form-fields

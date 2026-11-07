@@ -11,7 +11,11 @@ import type { ContentsLoaderType } from '../routes/contents';
 import type { Key } from '@react-types/shared';
 import type { ArrayElement } from '@plone/types';
 import config from '@plone/registry';
-import { type ToastItem } from '@plone/layout/config/toast';
+import type {
+  ShowToastOptions,
+  ToastItem,
+  ToastKey,
+} from '@plone/layout/config/toast';
 
 type SetSelectedType = 'all' | 'none' | Set<Key>;
 
@@ -42,7 +46,7 @@ interface ContentsContext {
   setShowProperties: (s: boolean) => void;
   contentTitle: string;
   contentPath: string;
-  showToast: (c: ToastItem) => void;
+  showToast: (c: ToastItem, options?: ShowToastOptions) => ToastKey | undefined;
 }
 
 const ContentsContext = createContext<ContentsContext>({
@@ -66,7 +70,7 @@ const ContentsContext = createContext<ContentsContext>({
   setShowProperties: () => {},
   contentTitle: '',
   contentPath: '/',
-  showToast: (t: ToastItem) => {},
+  showToast: () => undefined,
 });
 
 type ContentsProviderProps = PropsWithChildren;
@@ -109,14 +113,13 @@ export function ContentsProvider(props: ContentsProviderProps) {
   const [showProperties, setShowProperties] = useState(false);
 
   //show toast
-  const showToast = (queueElement: ToastItem) => {
+  const showToast = (queueElement: ToastItem, options?: ShowToastOptions) =>
     config
       .getUtility({
         name: 'show',
         type: 'toast',
       })
-      .method(queueElement);
-  };
+      .method(queueElement, options) as ToastKey;
   const ctx = {
     selected,
     setSelected,

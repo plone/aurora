@@ -31,6 +31,20 @@ It is usually better and quicker to move your items into new locations and copy 
 
 ## Upgrading to Plone Aurora
 
+(upgrade-guide-toast-css)=
+
+### The toast styles moved into the `Toast` component
+
+```{versionremoved} 1.0.0-alpha.23
+{file}`@plone/components/src/styles/basic/Toast.css`. The toast styles are in the CSS module {file}`@plone/layout/components/Toast/Toast.module.css`, which the `Toast` component imports.
+```
+
+The toast styles are no longer part of the `@plone/components` {file}`basic.css` bundle, and you don't need to import them: they load with the `Toast` region.
+The region and its parts no longer carry the `react-aria-ToastRegion`, `react-aria-Toast`, and `react-aria-Toast-progress` class names.
+
+- If your add-on or theme imports {file}`@plone/components/src/styles/basic/Toast.css`, remove the import.
+- If your theme targets those class names, set the `--toast-bg` and `--toast-fg` custom properties instead, or pass your own `className` when you show a toast, and style that class.
+
 (upgrade-guide-block-content-css)=
 
 ### Block content is styled in `styles/content.css`

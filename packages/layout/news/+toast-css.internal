@@ -1,0 +1,1 @@
+Moved the toast styles from `@plone/components` into `Toast.module.css`, next to the `Toast` region, which imports it. @pnicolli
