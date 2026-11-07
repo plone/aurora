@@ -155,7 +155,8 @@
       "modeLabel": "Editor mode"
     },
     "sidebar": {
-      "label": "Sidebar"
+      "label": "Sidebar",
+      "close": "Close the sidebar"
     },
     "auth": {
       "username": "username",

@@ -9,7 +9,7 @@ import { Plug } from '@plone/layout/components/Pluggable';
 import config from '@plone/registry';
 import type { Content } from '@plone/types';
 import clsx from 'clsx';
-import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Key } from 'react-aria-components';
@@ -22,7 +22,7 @@ import {
   focusField,
 } from '../Form/validation';
 import { WidgetContextProvider } from '../Form/WidgetContext';
-import Sidebar, { sidebarAtom } from '../Sidebar/Sidebar';
+import Sidebar, { sidebarAtom, useToggleSidebar } from '../Sidebar/Sidebar';
 import BlocksEditor from '../BlockEditor/BlocksEditor';
 
 interface Schema extends FieldsetsSchema {
@@ -59,7 +59,8 @@ export default function ContentForm({
 }: ContentFormProps) {
   const { t } = useTranslation();
   const fetcher = useFetcher();
-  const [collapsed, setCollapsed] = useAtom(sidebarAtom);
+  const collapsed = useAtomValue(sidebarAtom);
+  const toggleSidebar = useToggleSidebar();
   const [selectedTab, setSelectedTab] = useState<Key>('blocks');
   const [selectedFieldset, setSelectedFieldset] = useState<Key>(
     () =>
@@ -198,6 +199,7 @@ export default function ContentForm({
             `
               grid grid-rows-[minmax(100vh,auto)] transition-[grid-template-columns] duration-200
               ease-linear
+              max-md:grid-cols-[minmax(0,1fr)]
             `,
             {
               'grid-cols-[minmax(0,1fr)_300px]': !collapsed,
@@ -258,7 +260,7 @@ export default function ContentForm({
             <Plug pluggable="toolbar-bottom" id="button-settings">
               <button
                 aria-label={t('cmsui.toolbar.settings')}
-                onClick={() => setCollapsed((state) => !state)}
+                onClick={toggleSidebar}
               >
                 <Settings />
               </button>

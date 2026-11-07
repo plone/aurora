@@ -145,7 +145,8 @@
       "modeLabel": "Modalità editor"
     },
     "sidebar": {
-      "label": "Barra laterale destra"
+      "label": "Barra laterale destra",
+      "close": "Chiudi la barra laterale"
     },
     "auth": {
       "username": "nome utente",
