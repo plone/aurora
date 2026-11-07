@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { TanStackDevtools } from '@tanstack/react-devtools';
 import { installFrameStyles } from './frame-styles';
+import { auroraLogo } from './logo';
 import { PloneDevtoolsPanel } from './panel/panel';
 
 const ROOT_ID = 'plone-devtools';
@@ -29,6 +30,33 @@ function seedFrameState() {
   }
 }
 
+/**
+ * The button that opens the devtools: the full Aurora mark at 48px, the
+ * smallest size it is drawn for (TanStack's own button is 56px). TanStack
+ * keeps its button around it, with dragging, positioning and its label.
+ */
+const trigger = (
+  <img
+    src={auroraLogo.full}
+    alt=""
+    width={48}
+    height={48}
+    // Explicit sizes: the app's own CSS (e.g. `img { max-width: 100% }`)
+    // would otherwise shrink it inside TanStack's unsized button.
+    style={{
+      display: 'block',
+      width: 48,
+      height: 48,
+      maxWidth: 'none',
+      flex: 'none',
+      // A drop shadow follows the drawn disc, which is slightly smaller than
+      // the image; a box shadow would leave a ring of page between them.
+      filter:
+        'drop-shadow(0 1px 2px rgba(15, 37, 51, .3)) drop-shadow(0 2px 6px rgba(15, 37, 51, .15))',
+    }}
+  />
+);
+
 /** Whether React has hydrated `<html>`: it marks the elements it hydrates. */
 const htmlHydrated = () =>
   Object.keys(document.documentElement).some((key) =>
@@ -45,6 +73,7 @@ function mount() {
   createRoot(el).render(
     <TanStackDevtools
       eventBusConfig={{ connectToServerBus: true }}
+      config={{ customTrigger: trigger }}
       plugins={[
         {
           name: 'Plone',
