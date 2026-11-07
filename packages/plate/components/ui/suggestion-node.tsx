@@ -84,6 +84,7 @@ function SuggestionLineBreakContent({
 }: {
   suggestionData: TSuggestionData;
 }) {
+  const { setOption } = useEditorPlugin(suggestionPlugin);
   const { type } = suggestionData;
   const isRemove = type === 'remove';
   const isInsert = type === 'insert';
@@ -97,9 +98,11 @@ function SuggestionLineBreakContent({
   const spanRef = React.useRef<HTMLSpanElement>(null);
 
   return (
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <span
       ref={spanRef}
       className={cn(
+        'slate-suggestion cursor-pointer',
         `
           absolute border-b-2 border-b-quanta-emerald/40 bg-quanta-emerald/10 text-justify
           text-quanta-emerald no-underline transition-colors duration-200
@@ -118,6 +121,13 @@ function SuggestionLineBreakContent({
         height: 21,
       }}
       contentEditable={false}
+      data-suggestion-id={suggestionData.id}
+      onClick={(event) => {
+        event.stopPropagation();
+        setOption('activeId', suggestionData.id);
+      }}
+      onMouseEnter={() => setOption('hoverId', suggestionData.id)}
+      onMouseLeave={() => setOption('hoverId', null)}
     >
       <CornerDownLeftIcon className="mt-0.5 size-4" />
     </span>
