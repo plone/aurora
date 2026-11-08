@@ -18,6 +18,9 @@ const getDefaultSomersaultValue = (title = ''): Value => [
   },
 ];
 
+const getSidebar = () =>
+  typeof document === 'undefined' ? null : document.getElementById('sidebar');
+
 const BlocksEditor = () => {
   // The editor only writes the blocks. It reads the form once, below, to build
   // Plate's initial value, so it does not subscribe to the form: every
@@ -63,6 +66,8 @@ const BlocksEditor = () => {
       t={t}
       language={i18n.language}
       value={stableInitialValueRef.current.value}
+      // Block settings, such as the accordion's, render in the sidebar.
+      settingsContainer={getSidebar}
       onChange={(options) => {
         const previousBlock = form.getFieldValue(somersaultPath) as
           Record<string, unknown> | undefined;

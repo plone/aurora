@@ -104,7 +104,8 @@
       "anchorTaken": "Another panel already uses this anchor. Choose another one.",
       "panelActions": "Panel actions",
       "innerImageNote": "Inside an accordion, images always use the panel's full width, so size and alignment aren't offered.",
-      "innerTeaserNote": "Inside an accordion, a teaser takes the accordion's background, so its own background isn't offered."
+      "innerTeaserNote": "Inside an accordion, a teaser takes the accordion's background, so its own background isn't offered.",
+      "blockPosition": "Block {{position}} of {{total}} in “{{title}}”"
     },
     "undo": "Undo",
     "undone": "Undone"
