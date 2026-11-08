@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@plone/quanta';
 import type { GetSiteResponse, GetSystemResponse } from '@plone/types';
 import appInfo from '@plone/registry/app-info';
+import CheckboxIcon from '@plone/icons/svg/checkbox.svg?react';
+import CopyIcon from '@plone/icons/svg/copy.svg?react';
 
 interface SiteOverviewProps {
   system: GetSystemResponse;
@@ -19,9 +21,14 @@ const Details = ({ entries }: { entries: [string, string | undefined][] }) => (
     {entries
       .filter(([, value]) => value)
       .map(([term, value]) => (
-        <div key={term} className="contents">
-          <dt className="text-quanta-pigeon">{term}</dt>
-          <dd className="truncate text-quanta-denim tabular-nums" title={value}>
+        <div key={term} className="contents items-center justify-between">
+          <dt className="overflow-hidden text-ellipsis whitespace-nowrap text-gray-500">
+            {term}
+          </dt>
+          <dd
+            className="m-[0] truncate text-right text-gray-950 tabular-nums"
+            title={value}
+          >
             {value}
           </dd>
         </div>
@@ -41,12 +48,7 @@ const SiteOverview = ({
   const [copySystemInfoStatus, setCopySystemInfoStatus] = useState<
     'idle' | 'copied' | 'failed'
   >('idle');
-  const [copyAddonsInfoStatus, setCopyAddonsInfoStatus] = useState<
-    'idle' | 'copied' | 'failed'
-  >('idle');
   const copySystemInfoTimeout =
-    useRef<ReturnType<typeof setTimeout>>(undefined);
-  const copyAddonsInfoTimeout =
     useRef<ReturnType<typeof setTimeout>>(undefined);
 
   // Only known in the browser: the server may be reached at an internal
@@ -62,7 +64,6 @@ const SiteOverview = ({
   useEffect(
     () => () => {
       clearTimeout(copySystemInfoTimeout.current);
-      clearTimeout(copyAddonsInfoTimeout.current);
     },
     [],
   );
@@ -87,15 +88,21 @@ const SiteOverview = ({
 
   const copySystemInfo = async () => {
     // The full Python version string helps when reporting a problem.
-    const text = [
-      ...versions.map(([term, value]): [string, string | undefined] =>
-        term === 'Python' ? [term, system.python_version] : [term, value],
-      ),
-      ['GenericSetup profile', system.plone_gs_metadata_version_installed],
-    ]
-      .filter(([, value]) => value)
-      .map(([term, value]) => `${term}: ${value}`)
-      .join('\n');
+    const text =
+      [
+        ...versions.map(([term, value]): [string, string | undefined] =>
+          term === 'Python' ? [term, system.python_version] : [term, value],
+        ),
+        ['GenericSetup profile', system.plone_gs_metadata_version_installed],
+      ]
+        .filter(([, value]) => value)
+        .map(([term, value]) => `${term}: ${value}`)
+        .join('\n') +
+      '\n\nAdd-ons:\n\n' +
+      appInfo.addons
+        .map(({ name, version }) => `${name}: ${version}`)
+        .join('\n');
+
     try {
       await navigator.clipboard.writeText(text);
       setCopySystemInfoStatus('copied');
@@ -105,25 +112,6 @@ const SiteOverview = ({
     clearTimeout(copySystemInfoTimeout.current);
     copySystemInfoTimeout.current = setTimeout(
       () => setCopySystemInfoStatus('idle'),
-      2000,
-    );
-  };
-
-  const copyAddonsInfo = async () => {
-    const text = appInfo.addons
-      .map(({ name, version }) => `${name}: ${version}`)
-      .join('\n');
-
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopyAddonsInfoStatus('copied');
-    } catch {
-      setCopyAddonsInfoStatus('failed');
-    }
-
-    clearTimeout(copyAddonsInfoTimeout.current);
-    copyAddonsInfoTimeout.current = setTimeout(
-      () => setCopyAddonsInfoStatus('idle'),
       2000,
     );
   };
@@ -209,6 +197,7 @@ const SiteOverview = ({
                 text-quanta-turtle
               `}
             >
+              <CheckboxIcon size="sm" className="mr-[5px]" />
               {t('cmsui.siteOverview.upToDate')}
             </span>
           )}
@@ -219,48 +208,49 @@ const SiteOverview = ({
           </p>
         )}
         <Details entries={versions} />
-        {canCopy && (
-          <Button
-            variant="neutral"
-            accent
-            className="self-start text-[13px]"
-            onPress={copySystemInfo}
-          >
-            {copySystemInfoStatus === 'copied'
-              ? t('cmsui.siteOverview.copied')
-              : copySystemInfoStatus === 'failed'
-                ? t('cmsui.siteOverview.copyFailed')
-                : t('cmsui.siteOverview.copySystemInfo')}
-          </Button>
-        )}
-      </section>
-
-      <section className={cardClassName} aria-labelledby="siteoverview-addons">
-        <div className="flex items-center justify-between gap-3">
-          <h2
-            id="siteoverview-addons"
-            className="text-[15px] leading-[22px] font-semibold text-quanta-denim"
-          >
-            {t('cmsui.siteOverview.addons')}
-          </h2>
-        </div>
-        <Details
-          entries={appInfo.addons.map((addon) => [addon.name, addon.version])}
-        />
-        {canCopy && (
-          <Button
-            variant="neutral"
-            accent
-            className="self-start text-[13px]"
-            onPress={copyAddonsInfo}
-          >
-            {copyAddonsInfoStatus === 'copied'
-              ? t('cmsui.siteOverview.copied')
-              : copyAddonsInfoStatus === 'failed'
-                ? t('cmsui.siteOverview.copyFailed')
-                : t('cmsui.siteOverview.copyAddonsInfo')}
-          </Button>
-        )}
+        <section
+          className="border-t border-t-[#e4e8ec] pt-[19px]"
+          aria-labelledby="siteoverview-addons"
+        >
+          <div className="mb-[19px] flex items-center justify-between">
+            <h2
+              id="siteoverview-addons"
+              className="text-[15px] leading-[22px] font-semibold text-quanta-denim"
+            >
+              {t('cmsui.siteOverview.addons')}
+            </h2>
+            <span
+              className={`
+                rounded-[10px] bg-[#f3f5f7] p-[1px_8px] text-[12px] font-semibold text-[#4a5b68]
+                tabular-nums
+              `}
+            >
+              {appInfo.addons.length}
+            </span>
+          </div>
+          <Details
+            entries={appInfo.addons.map((addon) => [addon.name, addon.version])}
+          />
+          {canCopy && (
+            <Button
+              onPress={copySystemInfo}
+              variant="neutral"
+              accent
+              className={`
+                mt-5 h-[36px] cursor-pointer items-center self-start rounded-[18px] border
+                border-[#c3cdd5] bg-white pr-[14px]! pl-[14px]! font-sans text-[13px]!
+                text-[#021322]
+              `}
+            >
+              <CopyIcon className="mr-[5px]" size="sm" />
+              {copySystemInfoStatus === 'copied'
+                ? t('cmsui.siteOverview.copied')
+                : copySystemInfoStatus === 'failed'
+                  ? t('cmsui.siteOverview.copyFailed')
+                  : t('cmsui.siteOverview.copySystemInfo')}
+            </Button>
+          )}
+        </section>
       </section>
     </aside>
   );
