@@ -14,9 +14,14 @@ import {
   useEditorRef,
 } from 'platejs/react';
 
+import { BlockSelectionPlugin } from '@platejs/selection/react';
+import { toast } from 'sonner';
 import { PlateEditor } from '../..';
 import { BaseBasicBlocksKit } from '../basic-blocks-base-kit';
-import { handleAccordionKeyDown } from './accordion-editor-plugin';
+import {
+  handleAccordionBlockSelectionKeyDown,
+  handleAccordionKeyDown,
+} from './accordion-editor-plugin';
 import { AccordionKit } from './accordion-kit';
 import { getAnchorPlaceholder, isAnchorTaken, slugify } from './anchor';
 import {
@@ -52,6 +57,26 @@ const plugins = [...BaseBasicBlocksKit, ...AccordionKit];
 const createEditor = (value: object[]) =>
   createPlateEditor({ plugins, value: structuredClone(value) as any });
 
+const block = (id: string, text: string) => ({
+  type: 'p',
+  id,
+  children: [{ text }],
+});
+const panelWithBlocks = (id: string, title: string, ...blocks: object[]) => ({
+  type: 'accordion_panel',
+  id,
+  startOpen: false,
+  anchor: '',
+  children: [
+    { type: 'accordion_panel_title', children: [{ text: title }] },
+    { type: 'accordion_panel_content', children: blocks },
+  ],
+});
+const createSelectableEditor = (value: object[]) =>
+  createPlateEditor({
+    plugins: [...plugins, BlockSelectionPlugin],
+    value: structuredClone(value) as any,
+  });
 const titles = (editor: any) =>
   editor.children[0].children.map(
     (item: any) => item.children[0].children[0].text,
@@ -106,6 +131,9 @@ describe('settings target', () => {
     expect(getSettingsTarget(editor)).toEqual({ type: 'accordion', id: 'acc' });
 
     expect(handleAccordionKeyDown(editor, escape)).toBe(true);
+    expect(getSettingsTarget(editor)).toEqual({ type: 'page' });
+
+    expect(handleAccordionKeyDown(editor, escape)).toBe(true);
     expect(getSettingsTarget(editor)).toBeNull();
 
     setSettingsTarget(editor, { type: 'accordion_panel', id: 'a' });
@@ -113,10 +141,77 @@ describe('settings target', () => {
     expect(getSettingsTarget(editor)).toEqual({ type: 'accordion', id: 'acc' });
   });
 
-  it('leaves Esc to the editor in a block of a panel', () => {
+  it('selects the panel with Esc from a block, without block selection', () => {
     const editor = createEditor([accordion(panel('a', 'A'))]);
     editor.tf.select(editor.api.start([0, 0, 1, 0]));
-    expect(handleAccordionKeyDown(editor, escape)).toBe(false);
+
+    expect(handleAccordionKeyDown(editor, escape)).toBe(true);
+    expect(getSettingsTarget(editor)).toEqual({
+      type: 'accordion_panel',
+      id: 'a',
+    });
+  });
+
+  it('selects a block, then its panel, with Esc', () => {
+    const editor = createSelectableEditor([
+      accordion(panelWithBlocks('a', 'A', block('one', 'One'))),
+      block('after', 'After'),
+    ]);
+    editor.tf.select(editor.api.start([0, 0, 1, 0]));
+    const blockSelection = (editor.getApi(BlockSelectionPlugin) as any)
+      .blockSelection;
+
+    // Only the block, not the whole accordion.
+    expect(handleAccordionKeyDown(editor, escape)).toBe(true);
+    expect(blockSelection.getNodes().map(([node]: any) => node.id)).toEqual([
+      'one',
+    ]);
+
+    expect(handleAccordionBlockSelectionKeyDown(editor, escape)).toBe(true);
+    expect(blockSelection.getNodes()).toHaveLength(0);
+    expect(getSettingsTarget(editor)).toEqual({
+      type: 'accordion_panel',
+      id: 'a',
+    });
+    expect(editor.selection?.anchor).toEqual(editor.api.end([0, 0, 0]));
+  });
+
+  it('deletes a selected block with Delete, with an Undo notification', () => {
+    const editor = createSelectableEditor([
+      accordion(
+        panelWithBlocks('a', 'A', block('one', 'One'), block('two', 'Two')),
+      ),
+    ]);
+    const blockSelection = (editor.getApi(BlockSelectionPlugin) as any)
+      .blockSelection;
+    blockSelection.set('one');
+
+    expect(
+      handleAccordionBlockSelectionKeyDown(editor, {
+        key: 'Delete',
+        preventDefault: () => {},
+      }),
+    ).toBe(true);
+
+    expect(
+      (editor.children[0] as any).children[0].children[1].children,
+    ).toHaveLength(1);
+    expect(toast).toHaveBeenCalledWith(
+      'Text block deleted',
+      expect.objectContaining({ action: expect.anything() }),
+    );
+  });
+
+  it('leaves a selection of several blocks to the editor', () => {
+    const editor = createSelectableEditor([
+      accordion(panelWithBlocks('a', 'A', block('one', 'One'))),
+      block('after', 'After'),
+    ]);
+    const blockSelection = (editor.getApi(BlockSelectionPlugin) as any)
+      .blockSelection;
+    blockSelection.set(['one', 'after']);
+
+    expect(handleAccordionBlockSelectionKeyDown(editor, escape)).toBe(false);
   });
 });
 
@@ -241,6 +336,144 @@ describe('settings in the host sidebar', () => {
     expect(
       await within(sidebar).findByRole('heading', { name: 'Accordion' }),
     ).toBeVisible();
+
+    sidebar.remove();
+  });
+
+  it('takes Tab through the sidebar between the accordion and the text after it', async () => {
+    const sidebar = document.createElement('aside');
+    document.body.appendChild(sidebar);
+    let editorRef: any;
+
+    render(
+      <PlateEditor
+        editorConfig={{ plugins }}
+        value={
+          [
+            accordion(panel('a', 'Hours'), panel('b', 'Prices')),
+            p('After'),
+          ] as any
+        }
+        settingsContainer={() => sidebar}
+        onChange={() => {}}
+      >
+        <Capture onEditor={(editor) => (editorRef = editor)} />
+      </PlateEditor>,
+    );
+    await act(async () => {
+      editorRef.tf.select(editorRef.api.start([0, 1, 0]));
+    });
+
+    // From the accordion's last control to the sidebar's first.
+    const addPanel = screen.getByRole('button', {
+      name: 'Add a panel at the end',
+    });
+    fireEvent.keyDown(addPanel, { key: 'Tab' });
+    const controls = Array.from(
+      sidebar.querySelectorAll<HTMLElement>('button, input'),
+    ).filter((element) => !(element as HTMLButtonElement).disabled);
+    expect(document.activeElement).toBe(controls[0]);
+
+    // Shift+Tab from the sidebar's first control goes back.
+    fireEvent.keyDown(controls[0], { key: 'Tab', shiftKey: true });
+    expect(document.activeElement).toBe(addPanel);
+
+    // Tab from the sidebar's last control goes to the text after the
+    // accordion.
+    await act(async () => {
+      fireEvent.keyDown(controls.at(-1)!, { key: 'Tab' });
+    });
+    expect(editorRef.selection.anchor).toEqual(editorRef.api.start([1]));
+
+    sidebar.remove();
+  });
+});
+
+describe('the levels around the panel settings in the host sidebar', () => {
+  const renderInSidebar = async (select: (editor: any) => void) => {
+    const sidebar = document.createElement('aside');
+    document.body.appendChild(sidebar);
+    let editorRef: any;
+    render(
+      <PlateEditor
+        editorConfig={{ plugins }}
+        value={[accordion(panel('a', 'Hours'), panel('b', 'Prices'))] as any}
+        settingsContainer={() => sidebar}
+        onChange={() => {}}
+      >
+        <Capture onEditor={(editor) => (editorRef = editor)} />
+      </PlateEditor>,
+    );
+    await act(async () => select(editorRef));
+    return { sidebar, editor: editorRef };
+  };
+
+  it('shows the place and the actions of a text block', async () => {
+    const { sidebar, editor } = await renderInSidebar((ed) =>
+      ed.tf.select(ed.api.start([0, 0, 1, 0])),
+    );
+
+    const crumbs = within(sidebar).getByRole('navigation', {
+      name: 'Selection',
+    });
+    expect(within(crumbs).getByRole('button', { name: 'Page' })).toBeVisible();
+    expect(within(crumbs).getByText('Text')).toHaveAttribute(
+      'aria-current',
+      'true',
+    );
+    expect(
+      within(sidebar).getByText('Block 1 of 1 in “Hours”'),
+    ).toBeInTheDocument();
+    expect(
+      within(sidebar).getByRole('button', { name: 'Move up' }),
+    ).toBeDisabled();
+
+    await act(async () => {
+      fireEvent.click(within(sidebar).getByRole('button', { name: 'Delete' }));
+    });
+    // The panel keeps an empty text block.
+    expect(editor.children[0].children[0].children[1].children).toEqual([
+      expect.objectContaining({ type: 'p', children: [{ text: '' }] }),
+    ]);
+
+    sidebar.remove();
+  });
+
+  it('shows the block the user moves to, even inside the chosen panel', async () => {
+    const { sidebar, editor } = await renderInSidebar((ed) =>
+      ed.tf.select(ed.api.start([0, 0, 0])),
+    );
+    // As Esc from a block of the panel does.
+    await act(async () =>
+      setSettingsTarget(editor, { type: 'accordion_panel', id: 'a' }),
+    );
+    expect(
+      within(sidebar).getByRole('heading', { name: 'Panel' }),
+    ).toBeVisible();
+
+    await act(async () => editor.tf.select(editor.api.start([0, 0, 1, 0])));
+
+    expect(getSettingsTarget(editor)).toBeNull();
+    expect(
+      within(sidebar).getByText('Block 1 of 1 in “Hours”'),
+    ).toBeInTheDocument();
+
+    sidebar.remove();
+  });
+
+  it('shows how to choose a level at the page level', async () => {
+    const { sidebar, editor } = await renderInSidebar((ed) =>
+      ed.tf.select(ed.api.start([0, 0, 1, 0])),
+    );
+    // As Esc from the accordion's settings does.
+    await act(async () => setSettingsTarget(editor, { type: 'page' }));
+
+    expect(
+      within(sidebar).getByText(
+        "Click the accordion's frame or its label, a panel header or a block to see its settings here.",
+      ),
+    ).toBeVisible();
+    expect(within(sidebar).queryByText(/^Block \d/)).toBeNull();
 
     sidebar.remove();
   });

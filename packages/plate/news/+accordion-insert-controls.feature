@@ -1,0 +1,1 @@
+The accordion's controls to add content are quieter: panels are added at the end, the "Add a block" control at the end of a panel is faint while the pointer is over the panel and fully shown while the panel holds the selection, insert points between blocks stay faint until pressed, and the add controls open the slash menu without typing "/". @Humanaice

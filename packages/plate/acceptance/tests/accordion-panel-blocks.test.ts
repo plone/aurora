@@ -51,6 +51,30 @@ test('inserts a block from an insert point', async ({ page }) => {
     .toEqual(['image', 'p', 'p']);
 });
 
+test('opens the block menu from an add control without typing "/"', async ({
+  page,
+}) => {
+  const editorHandle = await openAccordionPage(page);
+
+  await page
+    .getByRole('button', { name: 'Add a block to “Opening hours”' })
+    .click();
+  await expect(
+    page.getByRole('option', { name: 'Table', exact: true }),
+  ).toBeVisible();
+  await page.keyboard.press('Escape');
+
+  // Closing the menu leaves an empty block to type in.
+  await expect(page.getByRole('listbox')).toHaveCount(0);
+  await expect
+    .poll(async () =>
+      (await firstPanelBlocks(page, editorHandle)).map((block) =>
+        nodeText(block),
+      ),
+    )
+    .toEqual(['Monday to Friday, 9:00 to 17:00.', '', '']);
+});
+
 test('only offers the blocks a panel can hold', async ({ page }) => {
   const editorHandle = await openAccordionPage(page);
   // The empty paragraph at the end of the first panel.

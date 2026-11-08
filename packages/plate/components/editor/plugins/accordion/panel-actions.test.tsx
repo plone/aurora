@@ -7,7 +7,13 @@ import { PlateEditor } from '../..';
 import { BaseBasicBlocksKit } from '../basic-blocks-base-kit';
 import { handleAccordionKeyDown } from './accordion-editor-plugin';
 import { AccordionKit } from './accordion-kit';
-import { duplicatePanel, movePanel, removePanel } from './editor-transforms';
+import {
+  duplicatePanel,
+  getSettingsTarget,
+  movePanel,
+  removePanel,
+  setAllPanelsOpen,
+} from './editor-transforms';
 
 vi.mock('sonner', () => ({
   toast: vi.fn(),
@@ -148,7 +154,11 @@ describe('deleting panels', () => {
 
     expect(removePanel(editor, [0, 1])).toBe(true);
     expect(titles(editor)).toEqual(['A', 'C']);
-    // The caret goes to the panel before.
+    // The accordion is selected, with the caret in the panel before.
+    expect(getSettingsTarget(editor)).toEqual({
+      type: 'accordion',
+      id: 'acc',
+    });
     expect(editor.selection?.anchor).toEqual(editor.api.end([0, 0, 0]));
     await waitFor(() => expect(announcer()).toHaveTextContent('Panel deleted'));
 
@@ -161,6 +171,21 @@ describe('deleting panels', () => {
 
     expect(titles(editor)).toEqual(['A', 'B', 'C']);
     await waitFor(() => expect(announcer()).toHaveTextContent('Undone'));
+  });
+});
+
+describe('expand and collapse all', () => {
+  it('announces that every panel opened or closed', async () => {
+    const editor = createEditor([accordion(panel('a', 'A'), panel('b', 'B'))]);
+
+    setAllPanelsOpen(editor, [0], false);
+    await waitFor(() =>
+      expect(announcer()).toHaveTextContent('All panels collapsed'),
+    );
+    setAllPanelsOpen(editor, [0], true);
+    await waitFor(() =>
+      expect(announcer()).toHaveTextContent('All panels expanded'),
+    );
   });
 });
 
