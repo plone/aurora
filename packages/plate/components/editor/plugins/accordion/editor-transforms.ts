@@ -1,12 +1,20 @@
 import {
   ElementApi,
+  nanoid,
   PathApi,
   type Path,
   type SlateEditor,
   type TElement,
 } from 'platejs';
 
-import { createAccordion, createAccordionPanel } from './transforms';
+import { announce } from '../../../../lib/announce';
+import { showUndoToast } from '../../../../lib/undo-toast';
+import { getTranslation } from '../i18n';
+import {
+  createAccordion,
+  createAccordionPanel,
+  createAccordionPanelTitle,
+} from './transforms';
 import {
   ACCORDION_KEY,
   ACCORDION_PANEL_KEY,
@@ -120,6 +128,12 @@ export const insertAccordionPanel = (
   editor.tf.insertNodes(createAccordionPanel(), { at: panelPath });
   editor.tf.select(editor.api.start([...panelPath, 0]));
   editor.tf.focus();
+  announcePanel(
+    editor,
+    'panelAdded',
+    'Panel added at position {{position}} of {{total}}',
+    { position: index + 1, total: panelCount(editor, accordionPath) },
+  );
   return panelPath;
 };
 
@@ -139,4 +153,116 @@ export const enterPanel = (editor: SlateEditor, panelPath: Path) => {
   if (!getPanel(editor, panelPath)) return;
   setPanelOpen(editor, panelPath, true);
   editor.tf.select(editor.api.start([...panelPath, 1, 0]));
+};
+
+const announcePanel = (
+  editor: SlateEditor,
+  key: string,
+  defaultValue: string,
+  values: Record<string, unknown> = {},
+) => {
+  const { t } = getTranslation(editor);
+  announce(t(`plate.accordion.announce.${key}`, { defaultValue, ...values }));
+};
+
+const panelCount = (editor: SlateEditor, accordionPath: Path) =>
+  ((editor.api.node(accordionPath)?.[0] as TElement | undefined)?.children
+    .length ?? 0) as number;
+
+/**
+ * Moves a panel up (`-1`) or down (`1`) in its accordion. Returns `false` at
+ * the ends.
+ */
+export const movePanel = (
+  editor: SlateEditor,
+  panelPath: Path,
+  delta: -1 | 1,
+): boolean => {
+  if (!getPanel(editor, panelPath)) return false;
+  const accordionPath = PathApi.parent(panelPath);
+  const index = panelPath.at(-1)!;
+  const target = index + delta;
+  const total = panelCount(editor, accordionPath);
+  if (target < 0 || target >= total) return false;
+
+  editor.tf.moveNodes({ at: panelPath, to: [...accordionPath, target] });
+  announcePanel(
+    editor,
+    'panelMoved',
+    'Panel moved to position {{position}} of {{total}}',
+    { position: target + 1, total },
+  );
+  return true;
+};
+
+const withNewIds = <T>(node: T): T => {
+  if (!node || typeof node !== 'object') return node;
+  const copy: Record<string, unknown> = { ...(node as object) };
+  if (typeof copy.id === 'string') copy.id = nanoid();
+  if (Array.isArray(copy.children)) {
+    copy.children = copy.children.map((child) => withNewIds(child));
+  }
+  return copy as T;
+};
+
+/**
+ * Inserts a copy of a panel after it: its blocks get new IDs, its title gets
+ * " (copy)", its anchor is cleared and it doesn't open when the page loads.
+ * The caret goes to the end of the copy's title.
+ */
+export const duplicatePanel = (editor: SlateEditor, panelPath: Path) => {
+  const panel = getPanel(editor, panelPath);
+  if (!panel) return;
+  const { t } = getTranslation(editor);
+  const title = editor.api.string([...panelPath, 0]);
+
+  const copy = withNewIds(panel);
+  copy.anchor = '';
+  copy.startOpen = false;
+  copy.children = [
+    createAccordionPanelTitle(
+      title
+        ? t('plate.accordion.copyTitle', {
+            defaultValue: '{{title}} (copy)',
+            title,
+          })
+        : '',
+    ),
+    copy.children[1],
+  ];
+
+  const copyPath = PathApi.next(panelPath);
+  editor.tf.insertNodes(copy, { at: copyPath });
+  editor.tf.select(editor.api.end([...copyPath, 0]));
+  announcePanel(editor, 'panelDuplicated', 'Panel duplicated');
+};
+
+/**
+ * Removes a panel, unless it's the last one, and offers to undo it. The caret
+ * goes to the title of the panel before it, or after it.
+ */
+export const removePanel = (editor: SlateEditor, panelPath: Path): boolean => {
+  if (!getPanel(editor, panelPath)) return false;
+  const accordionPath = PathApi.parent(panelPath);
+  if (panelCount(editor, accordionPath) < 2) return false;
+
+  const { t } = getTranslation(editor);
+  const title = editor.api.string([...panelPath, 0]);
+  const index = panelPath.at(-1)!;
+
+  editor.tf.removeNodes({ at: panelPath });
+  const neighbour = [...accordionPath, Math.max(0, index - 1)];
+  editor.tf.select(editor.api.end([...neighbour, 0]));
+
+  showUndoToast(
+    editor,
+    t('plate.accordion.panelDeleted', {
+      defaultValue: 'Panel “{{title}}” deleted',
+      title:
+        title ||
+        t('plate.accordion.untitledPanel', { defaultValue: 'Untitled panel' }),
+    }),
+  );
+  announcePanel(editor, 'panelDeleted', 'Panel deleted');
+  return true;
 };

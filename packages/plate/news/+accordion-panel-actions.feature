@@ -1,0 +1,1 @@
+Accordion panels can be moved, duplicated and deleted from their header, and moved with Alt+Shift+↑ or ↓ in their title. Deleting a panel shows a notification with an Undo action, and changes to the panels are announced to screen readers. `PlateEditor` now renders a toaster for its notifications; pass `toaster={false}` when the host renders its own. @Humanaice
