@@ -136,6 +136,7 @@ export {
 } from 'platejs/react';
 export { BlockSelectionPlugin };
 export { getClosestPloneBlockEntry } from './plugins/plone-block-adapter';
+export { enhanceInnerBlockSchema } from './plugins/accordion/inner-block-schema';
 export { usePlateHost, type PlateHostContextValue } from './plate-host-context';
 
 export function PlateRenderer(

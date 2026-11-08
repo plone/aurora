@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test';
 
 import { expect, test } from '../../../tooling/playwright/test';
+import { createContent } from '../../../tooling/playwright/content';
 import { login } from '../../../tooling/playwright/login';
 import { createNativeBlocksPage } from '../fixtures/pages';
 
@@ -76,4 +77,67 @@ test('sets the background of its theme', async ({ page }) => {
   await expect(
     page.locator('.slate-accordion > .block-inner-container'),
   ).toHaveCSS('background-color', 'rgb(236, 235, 235)');
+});
+
+test('shows images in a panel at the panel width', async ({ page }) => {
+  await createContent(page, {
+    contentType: 'Image',
+    contentId: 'accordion-image',
+    contentTitle: 'Half Dome',
+    image: {
+      sourceFilename: 'halfdome2022.jpg',
+      filename: 'halfdome2022.jpg',
+      'content-type': 'image/jpeg',
+    },
+  });
+  const pageId = await createNativeBlocksPage(page, [], {
+    extra: [
+      {
+        type: 'accordion',
+        id: 'accordion-with-image',
+        exclusive: true,
+        theme: 'white',
+        children: [
+          {
+            type: 'accordion_panel',
+            id: 'photos',
+            startOpen: true,
+            anchor: '',
+            children: [
+              {
+                type: 'accordion_panel_title',
+                children: [{ text: 'Photos' }],
+              },
+              {
+                type: 'accordion_panel_content',
+                children: [
+                  {
+                    type: 'ploneBlock',
+                    '@type': 'image',
+                    url: '/accordion-image',
+                    alt: 'Half Dome',
+                    size: 's',
+                    align: 'left',
+                    children: [{ text: '' }],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+  await openPublishedView(page, `/${pageId}`);
+
+  const region = page.getByRole('region', { name: 'Photos' });
+  const frame = region.locator('.block-image__frame');
+  await expect(frame).toBeVisible();
+  const [frameBox, regionBox] = await Promise.all([
+    frame.boundingBox(),
+    region.boundingBox(),
+  ]);
+  // A small, left-aligned image would take a quarter of the width.
+  expect(frameBox!.width).toBeGreaterThan(regionBox!.width * 0.9);
+  await expect(frame).toHaveCSS('float', 'none');
 });
