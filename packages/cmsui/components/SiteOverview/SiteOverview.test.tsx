@@ -1,7 +1,6 @@
 import { vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import SiteOverview from './SiteOverview';
-import type { Package } from '@plone/registry/addon-registry';
 
 vi.mock('@plone/registry/app-info', () => ({
   default: { name: '@plone/aurora', version: '1.0.0-alpha.23', addons: [] },

@@ -1,17 +1,14 @@
-import { useEffect, useRef, useState, useMemo } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@plone/quanta';
 import type { GetSiteResponse, GetSystemResponse } from '@plone/types';
-import PackageJson from '../../../../apps/aurora/package.json';
-import config from '@plone/registry';
-import type { Package } from '@plone/registry/addon-registry';
+import appInfo from '@plone/registry/app-info';
 
 interface SiteOverviewProps {
   system: GetSystemResponse;
   site?: Partial<GetSiteResponse>;
   /** The address visitors reach the site at. Defaults to the browser's. */
   siteUrl?: string;
-  addons?: Package[];
 }
 
 const cardClassName =
@@ -39,7 +36,6 @@ const SiteOverview = ({
   system,
   site,
   siteUrl: siteUrlProp,
-  addons = [],
 }: SiteOverviewProps) => {
   const { t } = useTranslation();
   const [copySystemInfoStatus, setCopySystemInfoStatus] = useState<
@@ -77,7 +73,10 @@ const SiteOverview = ({
 
   const versions: [string, string | undefined][] = [
     ['Plone', system.plone_version],
-    ['Plone Aurora', PackageJson.version],
+    [
+      appInfo.name === '@plone/aurora' ? 'Plone Aurora' : appInfo.name,
+      appInfo.version,
+    ],
     ['plone.restapi', system.plone_restapi_version],
     ['Zope', system.zope_version],
     ['Python', pythonVersion],
@@ -110,20 +109,9 @@ const SiteOverview = ({
     );
   };
 
-  const finalAddons =
-    Array.isArray(addons) && addons.length > 0
-      ? addons
-      : (config.settings.addonsInfo as Package[]);
-  const addonsList: [string, string | undefined][] = useMemo(() => {
-    return finalAddons.map((addon) => [addon.name, addon.version]);
-  }, [finalAddons]);
-
   const copyAddonsInfo = async () => {
-    const text = addonsList
-      .map(
-        ([name, version]: [string, string | undefined]) =>
-          `${name}: ${version}`,
-      )
+    const text = appInfo.addons
+      .map(({ name, version }) => `${name}: ${version}`)
       .join('\n');
 
     try {
@@ -256,7 +244,9 @@ const SiteOverview = ({
             {t('cmsui.siteOverview.addons')}
           </h2>
         </div>
-        <Details entries={addonsList} />
+        <Details
+          entries={appInfo.addons.map((addon) => [addon.name, addon.version])}
+        />
         {canCopy && (
           <Button
             variant="neutral"
