@@ -39,8 +39,7 @@
       "copySystemInfo": "Systeminformationen kopieren",
       "copied": "Kopiert",
       "copyFailed": "Kopieren fehlgeschlagen",
-      "addons": "Erweiterungen",
-      "copyAddonsInfo": "Add-ons-Info kopieren"
+      "addons": "Erweiterungen"
     },
     "controlpanelDescriptions": {
       "date-and-time": "Zeitzone und erster Wochentag",

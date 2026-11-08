@@ -87,8 +87,7 @@
       "copySystemInfo": "Copy system info",
       "copied": "Copied",
       "copyFailed": "Couldn't copy",
-      "addons": "Add-ons",
-      "copyAddonsInfo": "Copy add-ons info"
+      "addons": "Add-ons"
     },
     "controlpanelDescriptions": {
       "date-and-time": "Time zone and first day of the week",

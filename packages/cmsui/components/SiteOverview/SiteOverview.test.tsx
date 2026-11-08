@@ -3,7 +3,22 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import SiteOverview from './SiteOverview';
 
 vi.mock('@plone/registry/app-info', () => ({
-  default: { name: '@plone/aurora', version: '1.0.0-alpha.23', addons: [] },
+  default: {
+    name: '@plone/aurora',
+    version: '1.0.0-alpha.23',
+    addons: [
+      { name: '@some/addon', version: '1.3.5' },
+      { name: '@some/other-addon', version: '2.2.5' },
+    ],
+  },
+}));
+
+vi.mock('@plone/icons/svg/checkbox.svg?react', () => ({
+  default: () => {},
+}));
+
+vi.mock('@plone/icons/svg/copy.svg?react', () => ({
+  default: () => {},
 }));
 
 const system = {
@@ -19,11 +34,6 @@ const system = {
   upgrade: false,
   zope_version: '6.2',
 };
-
-const addons = [
-  { name: '@some/addon', version: '1.3.5' },
-  { name: '@some/other-addon', version: '2.2.5' },
-] as Package[];
 
 describe('SiteOverview', () => {
   it('shows the site and the versions it runs on', () => {
@@ -50,6 +60,14 @@ describe('SiteOverview', () => {
     // Only the version number of Python, without its build details.
     expect(screen.getByText('3.13.15')).toBeInTheDocument();
     expect(screen.getByText('cmsui.siteOverview.upToDate')).toBeInTheDocument();
+
+    // The add-ons section is always shown because we always have add-ons.
+    expect(screen.getByText('cmsui.siteOverview.addons')).toBeInTheDocument();
+
+    expect(screen.getByText('@some/addon')).toBeInTheDocument();
+    expect(screen.getByText('1.3.5')).toBeInTheDocument();
+    expect(screen.getByText('@some/other-addon')).toBeInTheDocument();
+    expect(screen.getByText('2.2.5')).toBeInTheDocument();
   });
 
   it('says when a Plone upgrade is available', () => {
@@ -77,23 +95,6 @@ describe('SiteOverview', () => {
     );
     expect(
       await screen.findByRole('button', { name: 'cmsui.siteOverview.copied' }),
-    ).toBeInTheDocument();
-  });
-
-  it('shows custom addons', async () => {
-    render(<SiteOverview system={system} addons={addons} />);
-
-    expect(screen.getByText('cmsui.siteOverview.addons')).toBeInTheDocument();
-
-    expect(screen.getByText('@some/addon')).toBeInTheDocument();
-    expect(screen.getByText('1.3.5')).toBeInTheDocument();
-    expect(screen.getByText('@some/other-addon')).toBeInTheDocument();
-    expect(screen.getByText('2.2.5')).toBeInTheDocument();
-
-    expect(
-      screen.getByRole('button', {
-        name: 'cmsui.siteOverview.copyAddonsInfo',
-      }),
     ).toBeInTheDocument();
   });
 
