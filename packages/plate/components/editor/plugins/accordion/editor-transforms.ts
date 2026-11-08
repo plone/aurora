@@ -18,6 +18,7 @@ import {
 import {
   ACCORDION_KEY,
   ACCORDION_PANEL_KEY,
+  ACCORDION_PANEL_TITLE_KEY,
   type TAccordionPanelElement,
 } from './types';
 
@@ -35,6 +36,17 @@ export type AccordionEditorOptions = {
   closedPanels: Record<string, boolean>;
   /** Whether the user is typing in an accordion: the block toolbars hide. */
   typing: boolean;
+  /**
+   * The accordion or panel whose settings show, chosen with its Settings
+   * button, a breadcrumb or Esc. Without one, a panel's settings show while
+   * the caret is in its title.
+   */
+  settingsTarget: AccordionSettingsTarget | null;
+};
+
+export type AccordionSettingsTarget = {
+  type: typeof ACCORDION_KEY | typeof ACCORDION_PANEL_KEY;
+  id: string;
 };
 
 type EditorWithOptions = SlateEditor & {
@@ -267,4 +279,74 @@ export const removePanel = (editor: SlateEditor, panelPath: Path): boolean => {
   );
   announcePanel(editor, 'panelDeleted', 'Panel deleted');
   return true;
+};
+
+export const setSettingsTarget = (
+  editor: SlateEditor,
+  target: AccordionSettingsTarget | null,
+) => {
+  (editor as EditorWithOptions).setOption(plugin, 'settingsTarget', target);
+};
+
+export const getSettingsTarget = (
+  editor: SlateEditor,
+): AccordionSettingsTarget | null => {
+  try {
+    return (
+      (editor as EditorWithOptions).getOption(plugin, 'settingsTarget') ?? null
+    );
+  } catch {
+    return null;
+  }
+};
+
+/** Finds an accordion or a panel by its ID. */
+export const findAccordionEntry = (
+  editor: SlateEditor,
+  target: AccordionSettingsTarget,
+) =>
+  editor.api.node<TElement>({
+    at: [],
+    match: (node) =>
+      ElementApi.isElement(node) &&
+      node.type === target.type &&
+      node.id === target.id,
+  });
+
+/**
+ * The accordion or panel whose settings show: the chosen target, if it still
+ * exists, or else the panel whose title holds the caret.
+ */
+export const getSettingsEntry = (editor: SlateEditor) => {
+  const target = getSettingsTarget(editor);
+  if (target) {
+    const entry = findAccordionEntry(editor, target);
+    if (entry) return entry;
+  }
+  const title = editor.api.above({
+    match: { type: ACCORDION_PANEL_TITLE_KEY },
+  });
+  if (title) return editor.api.node<TElement>(PathApi.parent(title[1]));
+  return undefined;
+};
+
+/** Moves a panel to another position of its accordion. */
+export const reorderPanel = (
+  editor: SlateEditor,
+  accordionPath: Path,
+  from: number,
+  to: number,
+) => {
+  const total = panelCount(editor, accordionPath);
+  if (from === to || from < 0 || to < 0 || from >= total || to >= total) return;
+  editor.tf.moveNodes({
+    at: [...accordionPath, from],
+    to: [...accordionPath, to],
+  });
+  announcePanel(
+    editor,
+    'panelMoved',
+    'Panel moved to position {{position}} of {{total}}',
+    { position: to + 1, total },
+  );
 };

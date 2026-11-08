@@ -75,7 +75,34 @@
       "blockDeleted": "Blocco {{type}} eliminato",
       "blockTypes": {
         "separator": "Separatore"
-      }
+      },
+      "accordionSettings": "Impostazioni della fisarmonica",
+      "panelSettings": "Impostazioni del pannello",
+      "selection": "Selezione",
+      "panelCrumb": "Pannello “{{title}}”",
+      "untitled": "Senza titolo",
+      "panels": "Pannelli",
+      "dragToReorder": "Trascina per riordinare",
+      "opensOnLoad": "aperto al caricamento",
+      "onePanel": "1 pannello",
+      "panelCount": "{{count}} pannelli",
+      "outlineHint": "Trascina per riordinare. Seleziona un pannello per aprirlo e vederne le impostazioni.",
+      "addPanel": "Aggiungi pannello",
+      "behaviour": "Comportamento",
+      "exclusive": "Un solo pannello aperto alla volta",
+      "exclusiveHint": "Si applica alla pagina pubblicata. Durante la modifica, i pannelli si aprono e si chiudono in modo indipendente, così puoi lavorare su più pannelli insieme.",
+      "background": "Sfondo",
+      "themes": {
+        "white": "Bianco",
+        "grey": "Grigio"
+      },
+      "title": "Titolo",
+      "panelPosition": "Pannello {{position}} di {{total}} · {{blocks}}",
+      "startOpen": "Aperto al caricamento della pagina",
+      "anchor": "Àncora del link",
+      "anchorHint": "I link a #{{anchor}} aprono questo pannello e vi scorrono.",
+      "anchorTaken": "Un altro pannello usa già questa àncora. Scegline un’altra.",
+      "panelActions": "Azioni del pannello"
     },
     "undo": "Annulla",
     "undone": "Annullato"
