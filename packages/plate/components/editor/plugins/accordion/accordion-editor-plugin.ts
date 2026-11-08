@@ -12,6 +12,7 @@ import {
   movePanel,
   type AccordionEditorOptions,
 } from './editor-transforms';
+import { moveInnerBlock } from './inner-block-transforms';
 import {
   ACCORDION_PANEL_CONTENT_KEY,
   ACCORDION_PANEL_TITLE_KEY,
@@ -21,7 +22,8 @@ import {
  * Handles a key press in an accordion. Returns `true` when it handled it.
  *
  * - Enter in a panel title moves into the panel's first block.
- * - Alt+Shift+↑ and Alt+Shift+↓ in a panel title move the panel.
+ * - Alt+Shift+↑ and Alt+Shift+↓ move the panel, in a panel title, or the
+ *   block, in a block of a panel.
  * - The title and the content of a panel never merge: Backspace at the start
  *   of a title, Delete at its end, and Delete at the end of the last block of
  *   a panel do nothing, and Backspace at the start of the first block of a
@@ -74,7 +76,7 @@ export const handleAccordionKeyDown = (
     return false;
   }
 
-  if (event.key === 'Enter' || isMove) return false;
+  if (event.key === 'Enter') return false;
 
   const block = editor.api.block();
   if (!block) return false;
@@ -82,6 +84,12 @@ export const handleAccordionKeyDown = (
   const parent = editor.api.parent(blockPath);
   if (!parent || !ElementApi.isElement(parent[0])) return false;
   if (parent[0].type !== ACCORDION_PANEL_CONTENT_KEY) return false;
+
+  if (isMove) {
+    event.preventDefault();
+    moveInnerBlock(editor, blockPath, event.key === 'ArrowUp' ? -1 : 1);
+    return true;
+  }
 
   const index = blockPath.at(-1);
   if (
@@ -115,9 +123,25 @@ export const AccordionEditorPlugin = createTPlatePlugin<
   key: ACCORDION_EDITOR_KEY,
   // Runs before the plugins that merge blocks on Backspace and Delete.
   priority: 200,
-  options: { closedPanels: {} },
+  options: { closedPanels: {}, typing: false },
   handlers: {
-    onKeyDown: ({ editor, event }) =>
-      handleAccordionKeyDown(editor, event as unknown as KeyboardEvent),
+    onKeyDown: ({ editor, event, getOption, setOption }) => {
+      const key = (event as unknown as KeyboardEvent).key;
+      const typed =
+        (key.length === 1 || key === 'Backspace') &&
+        !(event as unknown as KeyboardEvent).metaKey &&
+        !(event as unknown as KeyboardEvent).ctrlKey;
+      if (
+        typed &&
+        !getOption('typing') &&
+        editor.api.above({ match: { type: ACCORDION_PANEL_CONTENT_KEY } })
+      ) {
+        setOption('typing', true);
+      }
+      return handleAccordionKeyDown(editor, event as unknown as KeyboardEvent);
+    },
+    onMouseMove: ({ getOption, setOption }) => {
+      if (getOption('typing')) setOption('typing', false);
+    },
   },
 });
