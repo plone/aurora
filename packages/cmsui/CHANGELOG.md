@@ -8,6 +8,20 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.16 (2026-11-06)
+
+### Feature
+
+- Add `@@translate` route to create a translation of a content item. The form is pre-filled with the source content, and saving creates the translation in the target language root folder, linked to the source in the same request. @nils-pzr 
+- Add the `object` and `object_list` widgets. `object_list` edits a list of objects described by a JSON schema, as Volto's widget of the same name does, with the same value. It has two layouts: `accordion`, which edits each item in place, and `table`, which shows the columns you choose and edits each item in a dialog. Items reorder by drag and drop, with the mouse, touch, or keyboard, or with their menu. The form validates the fields of each item with the item schema: a failed submit opens the first item with errors, and marks the rows of the items with errors. @sneridagh 
+- Gave the control panel forms a clear header, even spacing between fields, and their fieldsets as titled sections when there is more than one. Saving a control panel goes back to the site setup, and the toolbar shows Save before Back, as in the edit form. @sneridagh 
+- Redesigned the site setup page (`/controlpanel`): control panels are lists of rows with an icon and a short description, in the order the backend sends them, with a field to find a setting, and a sidebar shows the site details and the versions it runs on, with a button to copy them. Add-ons can add icons in `config.settings.controlPanelsIcons` and descriptions as `cmsui.controlpanelDescriptions.<id>` translations. Links to control panels Aurora does not have yet are gone. @sneridagh 
+- Used the `description`, `icon` and `group_id` that `plone.restapi` 10.2.0 sends for each control panel, when it sends them: the backend description wins over the translated one, the icon name maps to an icon in the new `config.settings.controlPanelsIconNames` before the icon by id, and the group title is translated by its id from `cmsui.controlpanelGroups.<group_id>`. @sneridagh 
+
+### Bugfix
+
+- Point the add/edit form cancel control at the content path instead of a missing @id, so Close leaves the form. @aryan7081 
+
 ## 1.0.0-alpha.15 (2026-10-30)
 
 ### Bugfix

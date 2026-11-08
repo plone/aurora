@@ -1,6 +1,16 @@
 import config from '@plone/registry';
-import type { FieldValidator } from '@plone/helpers';
+import type {
+  FieldValidationResult,
+  FieldValidator,
+  NestedFieldErrors,
+} from '@plone/helpers';
 import type { FieldSchema, ValidatorUtility } from '@plone/types';
+import {
+  resolveItemSchema,
+  type ItemSchema,
+  type ItemSchemaEnhancer,
+  type ObjectListItem,
+} from '../ObjectListWidget/objectList';
 
 type Translate = (key: string, options?: Record<string, unknown>) => string;
 
@@ -59,6 +69,89 @@ export function getFieldValidators(
   );
 }
 
+// The widgets whose value holds fields of their own, described by an item
+// schema: `object` (one object) and `object_list` (a list of objects).
+const NESTED_WIDGETS = new Set(['object', 'object_list']);
+
+/**
+ * A validator's result, as errors by path relative to its field, with `prefix`
+ * in front: the errors of an item's field, inside the list.
+ */
+const nestedErrors = (
+  prefix: string,
+  result: FieldValidationResult,
+): NestedFieldErrors => {
+  const entries: Array<[string, string | string[] | null | undefined]> =
+    result && typeof result === 'object' && !Array.isArray(result)
+      ? Object.entries(result).map(([relative, messages]) => [
+          relative && prefix ? `${prefix}.${relative}` : relative || prefix,
+          messages,
+        ])
+      : [[prefix, result]];
+  // Fields without errors are left out.
+  return Object.fromEntries(
+    entries.filter((entry): entry is [string, string | string[]] =>
+      Array.isArray(entry[1]) ? entry[1].length > 0 : !!entry[1],
+    ),
+  );
+};
+
+/**
+ * Validates the fields of the objects that an `object` or `object_list`
+ * field holds, with the validators of its item schema. Returns their errors
+ * by path relative to the field, such as `2.title`.
+ */
+function buildItemsValidator(
+  field: FieldSchema,
+  widget: string,
+  t: Translate,
+): (value: unknown) => NestedFieldErrors {
+  // The widget gets the field's schema as `schema`, and its options.
+  const schema = resolveItemSchema({ ...field, schema: field });
+  const enhancer =
+    typeof field.schemaEnhancer === 'function'
+      ? (field.schemaEnhancer as ItemSchemaEnhancer)
+      : undefined;
+  const validators = buildSchemaValidators<ObjectListItem>(schema, { t });
+  const validatorsFor = (item: ObjectListItem) =>
+    enhancer
+      ? buildSchemaValidators<ObjectListItem>(
+          enhancer({ schema, formData: item, t }) as ItemSchema,
+          { t },
+        )
+      : validators;
+
+  const validateItem = (item: ObjectListItem, prefix: string) =>
+    Object.entries(validatorsFor(item)).reduce<NestedFieldErrors>(
+      (errors, [fieldName, validate]) =>
+        Object.assign(
+          errors,
+          nestedErrors(
+            prefix ? `${prefix}.${fieldName}` : fieldName,
+            validate(item[fieldName], item),
+          ),
+        ),
+      {},
+    );
+
+  return (value) => {
+    if (widget === 'object') {
+      return value && typeof value === 'object'
+        ? validateItem(value as ObjectListItem, '')
+        : validateItem({}, '');
+    }
+    if (!Array.isArray(value)) return {};
+    return value.reduce<NestedFieldErrors>(
+      (errors, item, index) =>
+        Object.assign(
+          errors,
+          validateItem((item ?? {}) as ObjectListItem, String(index)),
+        ),
+      {},
+    );
+  };
+}
+
 /**
  * Builds the validators of a schema's fields, for `useFormStore`.
  *
@@ -66,6 +159,10 @@ export function getFieldValidators(
  * checked). A non-empty value is checked by every validator registered for
  * the field (see `getFieldValidators`). Add-ons add validators by
  * registering `validator` utilities.
+ *
+ * The fields of an `object` or `object_list` field are validated with its
+ * item schema, the same way: their errors show on the fields of each item,
+ * at paths such as `<field>.2.title`.
  */
 export function buildSchemaValidators<T>(
   schema: ValidatedSchema,
@@ -92,8 +189,15 @@ export function buildSchemaValidators<T>(
       const checkRequired =
         required.has(fieldName) && field.type !== 'boolean' && !field.readonly;
       const validators = getFieldValidators(field, fieldName, { blockType });
+      const widget =
+        ((field.widgetOptions?.frontendOptions as { widget?: string })
+          ?.widget as string | undefined) ?? field.widget;
+      const validateItems =
+        widget && NESTED_WIDGETS.has(widget) && !field.readonly
+          ? buildItemsValidator(field, widget, t)
+          : undefined;
 
-      const validate: FieldValidator<T> = (value, values) => {
+      const validateField = (value: unknown, values: T) => {
         if (isEmptyValue(field, value)) {
           return checkRequired ? t('cmsui.validation.required') : undefined;
         }
@@ -110,6 +214,13 @@ export function buildSchemaValidators<T>(
           )
           .filter((message): message is string => !!message);
       };
+
+      const validate: FieldValidator<T> = validateItems
+        ? (value, values) => ({
+            ...nestedErrors('', validateField(value, values)),
+            ...validateItems(value),
+          })
+        : validateField;
       return [fieldName, validate];
     }),
   );
@@ -150,10 +261,17 @@ export function parseServerValidationErrors(
 export const firstInvalidField = (
   schema: { fieldsets: Array<{ fields: string[] }> },
   errors: Record<string, unknown>,
-): string | undefined =>
-  schema.fieldsets
-    .flatMap((fieldset) => fieldset.fields)
-    .find((name) => name in errors) ?? Object.keys(errors)[0];
+): string | undefined => {
+  const paths = Object.keys(errors);
+  for (const name of schema.fieldsets.flatMap((fieldset) => fieldset.fields)) {
+    // The field itself, or a field inside it, such as `links.2.title`.
+    const path = paths.find(
+      (candidate) => candidate === name || candidate.startsWith(`${name}.`),
+    );
+    if (path) return path;
+  }
+  return paths[0];
+};
 
 /**
  * Focuses a field's input by its name. The field may only render after the

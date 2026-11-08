@@ -37,3 +37,12 @@ export const Disabled: Story = {
 export const WithoutVisibleLabel: Story = {
   args: { children: null, 'aria-label': 'Globally addable' },
 };
+
+export const Invalid: Story = {
+  args: {
+    isInvalid: true,
+    description:
+      "Editors can add events in any folder that doesn't restrict its contents.",
+    errorMessage: 'This setting is required.',
+  },
+};

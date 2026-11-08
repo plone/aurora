@@ -1,0 +1,1 @@
+Restyled `Switch`: a pill-shaped track that fills with sapphire when on, and a white knob with a soft shadow. The off track has no outline, and the description and error line up with the label. @sneridagh

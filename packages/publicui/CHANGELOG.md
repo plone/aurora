@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.11 (2026-11-06)
+
+### Feature
+
+- Show the toolbar "Add content" types menu in a bottom sheet on mobile viewports, like the personal tools and More menus. @sneridagh 
+
 ## 1.0.0-alpha.10 (2026-10-30)
 
 ### Feature

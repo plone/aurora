@@ -9,6 +9,7 @@ import { createAddonsStyleLoader } from '@plone/registry/create-addons-styles-lo
 import { createAddonsLocalesLoader } from '@plone/registry/create-addons-locales-loader';
 import { createBlocksDocsLoader } from '@plone/registry/create-blocks-docs-loader';
 import { createPlatePluginsLoaders } from '@plone/registry/create-plate-plugins-loader';
+import { createAppInfoLoader } from '@plone/registry/create-app-info-loader';
 import { pathToFileURL } from 'node:url';
 
 const titleCase = (w) => w.slice(0, 1).toUpperCase() + w.slice(1, w.length);
@@ -168,6 +169,10 @@ export const PloneRegistryVitePlugin = () => {
   // import these loaders.
   const platePluginsLoaders = createPlatePluginsLoaders(registry);
 
+  // The name and version of the app and of its add-ons, without any path,
+  // so that the client can show them.
+  const appInfoLoaderPath = createAppInfoLoader(registry);
+
   const [addonsThemeLoaderVariablesPath, addonsThemeLoaderMainPath] =
     createThemeAddonsLoader(registry.getCustomThemeAddons());
 
@@ -219,6 +224,10 @@ export const PloneRegistryVitePlugin = () => {
             {
               find: '@plone/registry/addons-loader',
               replacement: addonsLoaderPath,
+            },
+            {
+              find: '@plone/registry/app-info',
+              replacement: appInfoLoaderPath,
             },
             {
               find: '@plone/registry/blocks-docs',
