@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@plone/quanta';
 import type { GetSiteResponse, GetSystemResponse } from '@plone/types';
@@ -35,6 +35,58 @@ const Details = ({ entries }: { entries: [string, string | undefined][] }) => (
   </dl>
 );
 
+type CopyButtonProps = {
+  label?: string;
+  onCopyRequested?: () => string;
+};
+
+type CopyButtonStatus = 'idle' | 'copied' | 'failed';
+
+const CopyButton = ({ label, onCopyRequested }: CopyButtonProps) => {
+  const [status, setStatus] = useState<CopyButtonStatus>('idle');
+  const copyTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const { t } = useTranslation();
+
+  const doCopy = useCallback(async () => {
+    const text = onCopyRequested?.() || '';
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setStatus('copied');
+    } catch {
+      setStatus('failed');
+    }
+    clearTimeout(copyTimeout.current);
+    copyTimeout.current = setTimeout(() => setStatus('idle'), 2000);
+  }, [onCopyRequested]);
+
+  useEffect(
+    () => () => {
+      clearTimeout(copyTimeout.current);
+    },
+    [],
+  );
+
+  return (
+    <Button
+      variant="neutral"
+      accent
+      className={`
+        mt-5 h-[36px] cursor-pointer items-center self-start rounded-[18px] border border-[#c3cdd5]
+        bg-white pr-[14px]! pl-[14px]! font-sans text-[13px]! text-[#021322]
+      `}
+      onPress={doCopy}
+    >
+      <CopyIcon size="sm" className="mr-[5px]" />
+      {status === 'copied'
+        ? t('cmsui.siteOverview.copied')
+        : status === 'failed'
+          ? t('cmsui.siteOverview.copyFailed')
+          : label || ''}
+    </Button>
+  );
+};
+
 /**
  * The site and the software it runs on, beside the control panels.
  */
@@ -44,11 +96,6 @@ const SiteOverview = ({
   siteUrl: siteUrlProp,
 }: SiteOverviewProps) => {
   const { t } = useTranslation();
-  const [copySystemInfoStatus, setCopySystemInfoStatus] = useState<
-    'idle' | 'copied' | 'failed'
-  >('idle');
-  const copySystemInfoTimeout =
-    useRef<ReturnType<typeof setTimeout>>(undefined);
 
   // Only known in the browser: the server may be reached at an internal
   // address, behind a proxy, and the clipboard needs a secure origin.
@@ -60,12 +107,6 @@ const SiteOverview = ({
     setCanCopy(Boolean(navigator.clipboard));
   }, [siteUrlProp]);
 
-  useEffect(
-    () => () => {
-      clearTimeout(copySystemInfoTimeout.current);
-    },
-    [],
-  );
   const title = site?.['plone.site_title'] || 'Plone';
 
   // Python's version string carries the build details after the number.
@@ -85,7 +126,7 @@ const SiteOverview = ({
     [t('cmsui.siteOverview.debugMode'), system.debug_mode],
   ];
 
-  const copySystemInfo = async () => {
+  const copySystemInfo = () => {
     // The full Python version string helps when reporting a problem.
     const text =
       [
@@ -102,17 +143,7 @@ const SiteOverview = ({
         .map(({ name, version }) => `${name}: ${version}`)
         .join('\n');
 
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopySystemInfoStatus('copied');
-    } catch {
-      setCopySystemInfoStatus('failed');
-    }
-    clearTimeout(copySystemInfoTimeout.current);
-    copySystemInfoTimeout.current = setTimeout(
-      () => setCopySystemInfoStatus('idle'),
-      2000,
-    );
+    return text;
   };
 
   return (
@@ -231,23 +262,10 @@ const SiteOverview = ({
             entries={appInfo.addons.map((addon) => [addon.name, addon.version])}
           />
           {canCopy && (
-            <Button
-              onPress={copySystemInfo}
-              variant="neutral"
-              accent
-              className={`
-                mt-5 h-[36px] cursor-pointer items-center self-start rounded-[18px] border
-                border-[#c3cdd5] bg-white pr-[14px]! pl-[14px]! font-sans text-[13px]!
-                text-[#021322]
-              `}
-            >
-              <CopyIcon size="sm" className="mr-[5px]" />
-              {copySystemInfoStatus === 'copied'
-                ? t('cmsui.siteOverview.copied')
-                : copySystemInfoStatus === 'failed'
-                  ? t('cmsui.siteOverview.copyFailed')
-                  : t('cmsui.siteOverview.copySystemInfo')}
-            </Button>
+            <CopyButton
+              label={t('cmsui.siteOverview.copySystemInfo')}
+              onCopyRequested={copySystemInfo}
+            />
           )}
         </section>
       </section>
