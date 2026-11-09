@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@plone/quanta';
 import type { GetSiteResponse, GetSystemResponse } from '@plone/types';
 import appInfo from '@plone/registry/app-info';
-import CheckboxIcon from '@plone/icons/svg/checkbox.svg?react';
-import CopyIcon from '@plone/icons/svg/copy.svg?react';
+import { CheckboxIcon, CopyIcon } from '@plone/icons';
 
 interface SiteOverviewProps {
   system: GetSystemResponse;
@@ -242,7 +241,7 @@ const SiteOverview = ({
                 text-[#021322]
               `}
             >
-              <CopyIcon className="mr-[5px]" size="sm" />
+              <CopyIcon size="sm" className="mr-[5px]" />
               {copySystemInfoStatus === 'copied'
                 ? t('cmsui.siteOverview.copied')
                 : copySystemInfoStatus === 'failed'

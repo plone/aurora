@@ -15,19 +15,6 @@ const system = {
   zope_version: '6.2',
 };
 
-const appInfo = {
-  name: 'My Plone Website',
-  version: '1.0.1',
-  addons: [
-    { name: '@some/addon', version: '1.3.5' },
-    { name: '@some/other-addon', version: '2.2.5' },
-  ],
-};
-
-sb.mock(import('@plone/registry/app-info'), () => ({
-  default: appInfo,
-}));
-
 const meta = {
   title: 'CMSUI/SiteOverview',
   component: SiteOverview,
