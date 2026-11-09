@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@plone/quanta';
 import type { GetSiteResponse, GetSystemResponse } from '@plone/types';
@@ -112,21 +112,24 @@ const SiteOverview = ({
   // Python's version string carries the build details after the number.
   const [pythonVersion] = system.python_version?.split(' ') ?? [];
 
-  const versions: [string, string | undefined][] = [
-    ['Plone', system.plone_version],
-    [
-      appInfo.name === '@plone/aurora' ? 'Plone Aurora' : appInfo.name,
-      appInfo.version,
+  const versions: [string, string | undefined][] = useMemo(
+    () => [
+      ['Plone', system.plone_version],
+      [
+        appInfo.name === '@plone/aurora' ? 'Plone Aurora' : appInfo.name,
+        appInfo.version,
+      ],
+      ['plone.restapi', system.plone_restapi_version],
+      ['Zope', system.zope_version],
+      ['Python', pythonVersion],
+      ['CMF', system.cmf_version],
+      ['PIL', system.pil_version],
+      [t('cmsui.siteOverview.debugMode'), system.debug_mode],
     ],
-    ['plone.restapi', system.plone_restapi_version],
-    ['Zope', system.zope_version],
-    ['Python', pythonVersion],
-    ['CMF', system.cmf_version],
-    ['PIL', system.pil_version],
-    [t('cmsui.siteOverview.debugMode'), system.debug_mode],
-  ];
+    [system, pythonVersion, t],
+  );
 
-  const copySystemInfo = () => {
+  const copySystemInfo = useCallback(() => {
     // The full Python version string helps when reporting a problem.
     const text =
       [
@@ -144,7 +147,7 @@ const SiteOverview = ({
         .join('\n');
 
     return text;
-  };
+  }, [versions, system]);
 
   return (
     <aside className="siteoverview flex flex-col gap-4">
