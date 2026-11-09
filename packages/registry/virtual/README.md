@@ -14,3 +14,4 @@ Each file must:
 | ---------------------------------------------------------------- | ------------------ |
 | `@plone/registry/plate-editor`, `@plone/registry/plate-renderer` | `plate-plugins.js` |
 | `@plone/registry/blocks-docs`                                    | `blocks-docs.js`   |
+| `@plone/registry/app-info`                                       | `app-info.js`      |

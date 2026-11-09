@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@plone/quanta';
 import type { GetSiteResponse, GetSystemResponse } from '@plone/types';
-import PackageJson from '../../../../apps/aurora/package.json';
+import appInfo from '@plone/registry/app-info';
+import { CheckboxIcon, CopyIcon } from '@plone/icons';
 
 interface SiteOverviewProps {
   system: GetSystemResponse;
@@ -19,15 +20,72 @@ const Details = ({ entries }: { entries: [string, string | undefined][] }) => (
     {entries
       .filter(([, value]) => value)
       .map(([term, value]) => (
-        <div key={term} className="contents">
-          <dt className="text-quanta-pigeon">{term}</dt>
-          <dd className="truncate text-quanta-denim tabular-nums" title={value}>
+        <div key={term} className="contents items-center justify-between">
+          <dt className="overflow-hidden text-ellipsis whitespace-nowrap text-gray-500">
+            {term}
+          </dt>
+          <dd
+            className="m-[0] truncate text-right text-gray-950 tabular-nums"
+            title={value}
+          >
             {value}
           </dd>
         </div>
       ))}
   </dl>
 );
+
+type CopyButtonProps = {
+  label?: string;
+  onCopyRequested?: () => string;
+};
+
+type CopyButtonStatus = 'idle' | 'copied' | 'failed';
+
+const CopyButton = ({ label, onCopyRequested }: CopyButtonProps) => {
+  const [status, setStatus] = useState<CopyButtonStatus>('idle');
+  const copyTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const { t } = useTranslation();
+
+  const doCopy = useCallback(async () => {
+    const text = onCopyRequested?.() || '';
+
+    try {
+      await navigator.clipboard.writeText(text);
+      setStatus('copied');
+    } catch {
+      setStatus('failed');
+    }
+    clearTimeout(copyTimeout.current);
+    copyTimeout.current = setTimeout(() => setStatus('idle'), 2000);
+  }, [onCopyRequested]);
+
+  useEffect(
+    () => () => {
+      clearTimeout(copyTimeout.current);
+    },
+    [],
+  );
+
+  return (
+    <Button
+      variant="neutral"
+      accent
+      className={`
+        mt-5 h-[36px] cursor-pointer items-center self-start rounded-[18px] border border-[#c3cdd5]
+        bg-white pr-[14px]! pl-[14px]! font-sans text-[13px]! text-[#021322]
+      `}
+      onPress={doCopy}
+    >
+      <CopyIcon size="sm" className="mr-[5px]" />
+      {status === 'copied'
+        ? t('cmsui.siteOverview.copied')
+        : status === 'failed'
+          ? t('cmsui.siteOverview.copyFailed')
+          : label || ''}
+    </Button>
+  );
+};
 
 /**
  * The site and the software it runs on, beside the control panels.
@@ -38,10 +96,7 @@ const SiteOverview = ({
   siteUrl: siteUrlProp,
 }: SiteOverviewProps) => {
   const { t } = useTranslation();
-  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>(
-    'idle',
-  );
-  const copyTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+
   // Only known in the browser: the server may be reached at an internal
   // address, behind a proxy, and the clipboard needs a secure origin.
   const [siteUrl, setSiteUrl] = useState(siteUrlProp);
@@ -52,42 +107,47 @@ const SiteOverview = ({
     setCanCopy(Boolean(navigator.clipboard));
   }, [siteUrlProp]);
 
-  useEffect(() => () => clearTimeout(copyTimeout.current), []);
   const title = site?.['plone.site_title'] || 'Plone';
+
   // Python's version string carries the build details after the number.
   const [pythonVersion] = system.python_version?.split(' ') ?? [];
 
-  const versions: [string, string | undefined][] = [
-    ['Plone', system.plone_version],
-    ['Plone Aurora', PackageJson.version],
-    ['plone.restapi', system.plone_restapi_version],
-    ['Zope', system.zope_version],
-    ['Python', pythonVersion],
-    ['CMF', system.cmf_version],
-    ['PIL', system.pil_version],
-    [t('cmsui.siteOverview.debugMode'), system.debug_mode],
-  ];
+  const versions: [string, string | undefined][] = useMemo(
+    () => [
+      ['Plone', system.plone_version],
+      [
+        appInfo.name === '@plone/aurora' ? 'Plone Aurora' : appInfo.name,
+        appInfo.version,
+      ],
+      ['plone.restapi', system.plone_restapi_version],
+      ['Zope', system.zope_version],
+      ['Python', pythonVersion],
+      ['CMF', system.cmf_version],
+      ['PIL', system.pil_version],
+      [t('cmsui.siteOverview.debugMode'), system.debug_mode],
+    ],
+    [system, pythonVersion, t],
+  );
 
-  const copySystemInfo = async () => {
+  const copySystemInfo = useCallback(() => {
     // The full Python version string helps when reporting a problem.
-    const text = [
-      ...versions.map(([term, value]): [string, string | undefined] =>
-        term === 'Python' ? [term, system.python_version] : [term, value],
-      ),
-      ['GenericSetup profile', system.plone_gs_metadata_version_installed],
-    ]
-      .filter(([, value]) => value)
-      .map(([term, value]) => `${term}: ${value}`)
-      .join('\n');
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopyStatus('copied');
-    } catch {
-      setCopyStatus('failed');
-    }
-    clearTimeout(copyTimeout.current);
-    copyTimeout.current = setTimeout(() => setCopyStatus('idle'), 2000);
-  };
+    const text =
+      [
+        ...versions.map(([term, value]): [string, string | undefined] =>
+          term === 'Python' ? [term, system.python_version] : [term, value],
+        ),
+        ['GenericSetup profile', system.plone_gs_metadata_version_installed],
+      ]
+        .filter(([, value]) => value)
+        .map(([term, value]) => `${term}: ${value}`)
+        .join('\n') +
+      '\n\nAdd-ons:\n\n' +
+      appInfo.addons
+        .map(({ name, version }) => `${name}: ${version}`)
+        .join('\n');
+
+    return text;
+  }, [versions, system]);
 
   return (
     <aside className="siteoverview flex flex-col gap-4">
@@ -170,6 +230,7 @@ const SiteOverview = ({
                 text-quanta-turtle
               `}
             >
+              <CheckboxIcon size="sm" className="mr-[5px]" />
               {t('cmsui.siteOverview.upToDate')}
             </span>
           )}
@@ -180,20 +241,36 @@ const SiteOverview = ({
           </p>
         )}
         <Details entries={versions} />
-        {canCopy && (
-          <Button
-            variant="neutral"
-            accent
-            className="self-start text-[13px]"
-            onPress={copySystemInfo}
-          >
-            {copyStatus === 'copied'
-              ? t('cmsui.siteOverview.copied')
-              : copyStatus === 'failed'
-                ? t('cmsui.siteOverview.copyFailed')
-                : t('cmsui.siteOverview.copySystemInfo')}
-          </Button>
-        )}
+        <section
+          className="border-t border-t-[#e4e8ec] pt-[19px]"
+          aria-labelledby="siteoverview-addons"
+        >
+          <div className="mb-[19px] flex items-center justify-between">
+            <h2
+              id="siteoverview-addons"
+              className="text-[15px] leading-[22px] font-semibold text-quanta-denim"
+            >
+              {t('cmsui.siteOverview.addons')}
+            </h2>
+            <span
+              className={`
+                rounded-[10px] bg-[#f3f5f7] p-[1px_8px] text-[12px] font-semibold text-[#4a5b68]
+                tabular-nums
+              `}
+            >
+              {appInfo.addons.length}
+            </span>
+          </div>
+          <Details
+            entries={appInfo.addons.map((addon) => [addon.name, addon.version])}
+          />
+          {canCopy && (
+            <CopyButton
+              label={t('cmsui.siteOverview.copySystemInfo')}
+              onCopyRequested={copySystemInfo}
+            />
+          )}
+        </section>
       </section>
     </aside>
   );

@@ -38,7 +38,8 @@
       "debugMode": "Debug-Modus",
       "copySystemInfo": "Systeminformationen kopieren",
       "copied": "Kopiert",
-      "copyFailed": "Kopieren fehlgeschlagen"
+      "copyFailed": "Kopieren fehlgeschlagen",
+      "addons": "Erweiterungen"
     },
     "controlpanelDescriptions": {
       "date-and-time": "Zeitzone und erster Wochentag",

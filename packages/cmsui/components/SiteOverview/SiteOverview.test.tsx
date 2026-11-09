@@ -2,6 +2,25 @@ import { vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import SiteOverview from './SiteOverview';
 
+vi.mock('@plone/registry/app-info', () => ({
+  default: {
+    name: '@plone/aurora',
+    version: '1.0.0-alpha.23',
+    addons: [
+      { name: '@some/addon', version: '1.3.5' },
+      { name: '@some/other-addon', version: '2.2.5' },
+    ],
+  },
+}));
+
+vi.mock('@plone/icons/svg/checkbox.svg?react', () => ({
+  default: () => {},
+}));
+
+vi.mock('@plone/icons/svg/copy.svg?react', () => ({
+  default: () => {},
+}));
+
 const system = {
   '@id': 'http://localhost:8080/Plone/@system',
   cmf_version: '3.8',
@@ -35,9 +54,20 @@ describe('SiteOverview', () => {
     );
     expect(screen.getByText('6.2.2')).toBeInTheDocument();
     expect(screen.getByText('10.0.4')).toBeInTheDocument();
+    // The app's version comes from `@plone/registry/app-info`.
+    expect(screen.getByText('Plone Aurora')).toBeInTheDocument();
+    expect(screen.getByText('1.0.0-alpha.23')).toBeInTheDocument();
     // Only the version number of Python, without its build details.
     expect(screen.getByText('3.13.15')).toBeInTheDocument();
     expect(screen.getByText('cmsui.siteOverview.upToDate')).toBeInTheDocument();
+
+    // The add-ons section is always shown because we always have add-ons.
+    expect(screen.getByText('cmsui.siteOverview.addons')).toBeInTheDocument();
+
+    expect(screen.getByText('@some/addon')).toBeInTheDocument();
+    expect(screen.getByText('1.3.5')).toBeInTheDocument();
+    expect(screen.getByText('@some/other-addon')).toBeInTheDocument();
+    expect(screen.getByText('2.2.5')).toBeInTheDocument();
   });
 
   it('says when a Plone upgrade is available', () => {
