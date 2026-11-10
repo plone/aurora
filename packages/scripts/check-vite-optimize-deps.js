@@ -60,7 +60,9 @@ function toPosix(filePath) {
 }
 
 function shouldIgnoreFile(relativePath) {
-  const normalized = toPosix(relativePath);
+  // The leading slash lets the directory checks below match top-level
+  // directories, such as a package's own `.storybook/`.
+  const normalized = `/${toPosix(relativePath)}`;
 
   return (
     normalized.includes('/dist/') ||
