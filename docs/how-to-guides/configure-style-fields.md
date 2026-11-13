@@ -9,7 +9,7 @@ myst:
 
 # Configure style fields
 
-This guide explains how to configure Plone blocks (non-plate native, registry-backed) styles based on fields in the block schema in Plone Aurora.
+This guide explains how to configure Plone blocks styles based on fields in the block schema in Plone Aurora.
 It focuses on a `theme` field, because that is the common case for the new style field system.
 
 Use this model when you want a block to store a semantic ID, such as `default` or `sand`, and resolve that ID to a runtime style object later.
@@ -205,13 +205,13 @@ Do not create a separate custom field for setting block widths.
 That means:
 
 - generic style fields such as `theme` are schema-driven
-- Plate-native block widths are configuration-driven
+- Plate.js block widths are configuration-driven
 - registry-backed Plone block widths are schema-driven when they expose editor controls
 - registry-backed Plone block widths can use `defaultBlockWidth` when they only need a default value
 
 How `blockWidth` is resolved depends on where the block is rendered:
 
-- In the Plate editor, Plate-native blocks use `BlockWidthPlugin`.
+- In the Plate editor, Plate.js blocks use `BlockWidthPlugin`.
   It reads their width policy from `config.blocks.plateBlocksConfig[element.type]`.
 - In the Plate editor, registry-backed Plone blocks are adapted to `ploneBlock` nodes.
   They do not use `BlockWidthPlugin`.
@@ -330,4 +330,4 @@ For generic style-backed fields:
 
 For registry-backed Plone blocks with editor width controls, define `blockWidth` in the block schema and mark it with `styleField`.
 For registry-backed Plone blocks that need a default width without editor controls, set `defaultBlockWidth` in `config.blocks.blocksConfig`.
-For Plate-native blocks, keep using the existing `blockWidth` configuration in `plateBlocksConfig`.
+For Plate.js blocks, keep using the existing `blockWidth` configuration in `plateBlocksConfig`.
