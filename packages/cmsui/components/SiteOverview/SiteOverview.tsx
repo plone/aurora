@@ -16,7 +16,7 @@ const cardClassName =
   'flex flex-col gap-4 rounded-[10px] border border-quanta-smoke p-5';
 
 const Details = ({ entries }: { entries: [string, string | undefined][] }) => (
-  <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-[13px] leading-[18px]">
+  <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-[13px] leading-4.5">
     {entries
       .filter(([, value]) => value)
       .map(([term, value]) => (
@@ -25,7 +25,7 @@ const Details = ({ entries }: { entries: [string, string | undefined][] }) => (
             {term}
           </dt>
           <dd
-            className="m-[0] truncate text-right text-gray-950 tabular-nums"
+            className="m-0 truncate text-right text-gray-950 tabular-nums"
             title={value}
           >
             {value}
@@ -72,12 +72,12 @@ const CopyButton = ({ label, onCopyRequested }: CopyButtonProps) => {
       variant="neutral"
       accent
       className={`
-        mt-5 h-[36px] cursor-pointer items-center self-start rounded-[18px] border border-[#c3cdd5]
-        bg-white pr-[14px]! pl-[14px]! font-sans text-[13px]! text-[#021322]
+        mt-5 h-9 cursor-pointer items-center self-start rounded-[18px] border border-quanta-silver
+        bg-white pr-3.5! pl-3.5! font-sans text-[13px]! text-quanta-denim
       `}
       onPress={doCopy}
     >
-      <CopyIcon size="sm" className="mr-[5px]" />
+      <CopyIcon size="sm" className="mr-1.25" />
       {status === 'copied'
         ? t('cmsui.siteOverview.copied')
         : status === 'failed'
@@ -165,7 +165,7 @@ const SiteOverview = ({
           <div className="flex min-w-0 flex-col">
             <h2
               id="siteoverview-site"
-              className="truncate text-base leading-[22px] font-semibold text-quanta-denim"
+              className="truncate text-base leading-5.5 font-semibold text-quanta-denim"
             >
               {title}
             </h2>
@@ -175,14 +175,14 @@ const SiteOverview = ({
               <a
                 href={siteUrl}
                 className={`
-                  truncate text-[13px] leading-[18px] text-quanta-sapphire no-underline
+                  truncate text-[13px] leading-4.5 text-quanta-sapphire no-underline
                   hover:text-quanta-royal
                 `}
               >
                 {siteUrl.replace(/^https?:\/\//, '')}
               </a>
             ) : (
-              <span aria-hidden="true" className="h-[18px]" />
+              <span aria-hidden="true" className="h-4.5" />
             )}
           </div>
         </div>
@@ -211,7 +211,7 @@ const SiteOverview = ({
         <div className="flex items-center justify-between gap-3">
           <h2
             id="siteoverview-system"
-            className="text-[15px] leading-[22px] font-semibold text-quanta-denim"
+            className="text-[15px] leading-5.5 font-semibold text-quanta-denim"
           >
             {t('cmsui.siteOverview.system')}
           </h2>
@@ -230,31 +230,31 @@ const SiteOverview = ({
                 text-quanta-turtle
               `}
             >
-              <CheckboxIcon size="sm" className="mr-[5px]" />
+              <CheckboxIcon size="sm" className="mr-1.25" />
               {t('cmsui.siteOverview.upToDate')}
             </span>
           )}
         </div>
         {system.upgrade && (
-          <p className="text-[13px] leading-[18px] text-quanta-iron">
+          <p className="text-[13px] leading-4.5 text-quanta-iron">
             {t('cmsui.siteOverview.upgrade')}
           </p>
         )}
         <Details entries={versions} />
         <section
-          className="border-t border-t-[#e4e8ec] pt-[19px]"
+          className="border-t border-t-quanta-smoke pt-4.75"
           aria-labelledby="siteoverview-addons"
         >
-          <div className="mb-[19px] flex items-center justify-between">
+          <div className="mb-4.75 flex items-center justify-between">
             <h2
               id="siteoverview-addons"
-              className="text-[15px] leading-[22px] font-semibold text-quanta-denim"
+              className="text-[15px] leading-5.5 font-semibold text-quanta-denim"
             >
               {t('cmsui.siteOverview.addons')}
             </h2>
             <span
               className={`
-                rounded-[10px] bg-[#f3f5f7] p-[1px_8px] text-[12px] font-semibold text-[#4a5b68]
+                rounded-[10px] bg-quanta-snow p-[1px_8px] text-[12px] font-semibold text-quanta-iron
                 tabular-nums
               `}
             >
