@@ -32,3 +32,11 @@ export {
   BaseGridPlugin,
   type GridConfig,
 } from './grid-plugin';
+export {
+  findGridNodePath,
+  getColumnEntry,
+  getGridEntry,
+  insertGrid,
+  turnIntoGrid,
+} from './editor-transforms';
+export { GridEditorPlugin, handleGridKeyDown } from './grid-editor-plugin';

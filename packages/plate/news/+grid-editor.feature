@@ -1,0 +1,1 @@
+Added the grid to the editor: "Grid" in the slash menu, the insert menu and Turn into, columns that hold the blocks a grid allows, an empty column hint, and keyboard rules that keep columns apart: Backspace and Delete never merge columns, the arrow keys move between them, and Mod+A selects the column, then the grid. @Humanaice

@@ -9,6 +9,7 @@ import {
   BookA,
   ChevronRightIcon,
   Code2,
+  Columns2Icon,
   Columns3Icon,
   Heading2Icon,
   Heading3Icon,
@@ -30,6 +31,7 @@ import { KEYS, PathApi } from 'platejs';
 
 import { insertBlock } from '../transforms';
 import { ACCORDION_KEY } from './accordion/types';
+import { GRID_KEY } from './grid/types';
 import { getContainerSpecs } from './containers/registry';
 import { fallbackTranslate, type TranslateFunction } from './i18n';
 import { SuggestionPlugin } from './suggestion-kit';
@@ -350,6 +352,22 @@ export const getDefaultSlashMenuGroups = (
         defaultValue: 'Accordion',
       }),
       value: ACCORDION_KEY,
+      onSelect: (nextEditor: PlateEditor, value: string) => {
+        insertBlock(nextEditor, value);
+      },
+    });
+  }
+
+  // Grids can't be placed inside a grid.
+  if (
+    editor.plugins[GRID_KEY] &&
+    canInsertIn(editor, GRID_KEY, context.container)
+  ) {
+    groups = addGroupItem(groups, 'Advanced blocks', {
+      icon: <Columns2Icon />,
+      keywords: ['grid', 'columns', 'layout', 'row'],
+      label: t('plate.slashMenu.items.grid', { defaultValue: 'Grid' }),
+      value: GRID_KEY,
       onSelect: (nextEditor: PlateEditor, value: string) => {
         insertBlock(nextEditor, value);
       },
