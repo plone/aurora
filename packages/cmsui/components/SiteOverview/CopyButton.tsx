@@ -35,6 +35,8 @@ export const CopyButton = ({ label, onCopyRequested }: CopyButtonProps) => {
     [],
   );
 
+  const finalLabel = label || '';
+
   return (
     <Button
       variant="neutral"
@@ -45,12 +47,12 @@ export const CopyButton = ({ label, onCopyRequested }: CopyButtonProps) => {
       `}
       onPress={doCopy}
     >
-      <CopyIcon size="sm" className="mr-1.25" />
+      <CopyIcon size="sm" className={finalLabel.length ? 'mr-1.25' : ''} />
       {status === 'copied'
         ? t('cmsui.siteOverview.copied')
         : status === 'failed'
           ? t('cmsui.siteOverview.copyFailed')
-          : label || ''}
+          : finalLabel}
     </Button>
   );
 };

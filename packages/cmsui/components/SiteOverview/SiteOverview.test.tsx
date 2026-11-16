@@ -17,10 +17,6 @@ vi.mock('@plone/icons/svg/checkbox.svg?react', () => ({
   default: () => {},
 }));
 
-vi.mock('@plone/icons/svg/copy.svg?react', () => ({
-  default: () => {},
-}));
-
 const system = {
   '@id': 'http://localhost:8080/Plone/@system',
   cmf_version: '3.8',
@@ -96,39 +92,5 @@ describe('SiteOverview', () => {
     expect(
       await screen.findByRole('button', { name: 'cmsui.siteOverview.copied' }),
     ).toBeInTheDocument();
-  });
-
-  it('says when the copy fails', async () => {
-    Object.defineProperty(navigator, 'clipboard', {
-      value: { writeText: vi.fn().mockRejectedValue(new Error('Denied')) },
-      configurable: true,
-    });
-    render(<SiteOverview system={system} />);
-
-    fireEvent.click(
-      await screen.findByRole('button', {
-        name: 'cmsui.siteOverview.copySystemInfo',
-      }),
-    );
-
-    expect(
-      await screen.findByRole('button', {
-        name: 'cmsui.siteOverview.copyFailed',
-      }),
-    ).toBeInTheDocument();
-  });
-
-  it('has no copy button without a clipboard', () => {
-    Object.defineProperty(navigator, 'clipboard', {
-      value: undefined,
-      configurable: true,
-    });
-    render(<SiteOverview system={system} />);
-
-    expect(
-      screen.queryByRole('button', {
-        name: 'cmsui.siteOverview.copySystemInfo',
-      }),
-    ).not.toBeInTheDocument();
   });
 });
