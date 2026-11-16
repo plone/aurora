@@ -102,11 +102,13 @@ export default tseslint.config(
     },
   },
   {
-    // The accordion block works in any editor that installs @plone/plate,
-    // such as Volto, so it doesn't depend on the Aurora app packages.
-    name: 'Plate accordion - host-neutral imports',
+    // The accordion block and the container model work in any editor that
+    // installs @plone/plate, such as Volto, so they don't depend on the
+    // Aurora app packages.
+    name: 'Plate accordion and containers - host-neutral imports',
     files: [
       'packages/plate/components/editor/plugins/accordion/**/*.{ts,tsx}',
+      'packages/plate/components/editor/plugins/containers/**/*.{ts,tsx}',
       'packages/plate/components/ui/accordion-*.{ts,tsx}',
     ],
     rules: {
@@ -128,7 +130,7 @@ export default tseslint.config(
                 'react-router/*',
               ],
               message:
-                'The accordion must work in any editor that installs @plone/plate: use plugin options or @plone/plate itself instead.',
+                'This code must work in any editor that installs @plone/plate: use plugin options or @plone/plate itself instead.',
             },
           ],
         },

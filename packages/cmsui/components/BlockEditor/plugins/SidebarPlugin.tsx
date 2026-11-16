@@ -4,7 +4,7 @@ import {
   BlockSelectionPlugin,
   createPlatePlugin,
   ElementApi,
-  enhanceInnerBlockSchema,
+  getBlockConfig,
   getClosestPloneBlockEntry,
   useEditorRef,
   useEditorSelector,
@@ -16,7 +16,6 @@ import {
 } from '@plone/plate/components/ui/accordion-settings';
 import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import type { BlockConfigBase } from '@plone/types';
-import config from '@plone/registry';
 import BlockSettingsForm from '../BlockSettingsForm';
 
 type SelectedNativeBlock = {
@@ -87,9 +86,9 @@ const getSelectedNativeBlock = (editor: any): SelectedNativeBlock | null => {
   const blockType = node['@type'];
   if (typeof blockType !== 'string') return null;
 
-  const blockConfig = (
-    config.blocks.blocksConfig as unknown as Record<string, BlockConfigBase>
-  )?.[blockType];
+  // Inside a container, such as an accordion, the container's overrides
+  // apply: some settings may not be offered there.
+  const blockConfig = getBlockConfig(editor, blockType, { at: path });
   if (!blockConfig?.blockSchema) return null;
 
   const data = { ...node } as Record<string, unknown>;
@@ -133,19 +132,11 @@ export function SidebarAfterEditable() {
     [editor, selectedNativeBlock],
   );
 
-  // A block inside a container, such as an accordion, may not offer some of
-  // its settings there.
   const schema = React.useMemo(() => {
     if (!selectedNativeBlock) return undefined;
-    const { data, path, schema: blockSchema } = selectedNativeBlock;
-    return (args: Record<string, unknown>) =>
-      enhanceInnerBlockSchema(
-        editor as any,
-        path,
-        resolveSchema(blockSchema, args),
-        data['@type'],
-      );
-  }, [editor, selectedNativeBlock]);
+    const { schema: blockSchema } = selectedNativeBlock;
+    return (args: Record<string, unknown>) => resolveSchema(blockSchema, args);
+  }, [selectedNativeBlock]);
 
   const sidebar =
     typeof document === 'undefined' ? null : document.getElementById('sidebar');

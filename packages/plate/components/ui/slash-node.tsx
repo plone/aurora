@@ -12,11 +12,10 @@ import {
   type SlashMenuConfig,
   type SlashMenuContainer,
 } from '../editor/plugins/slash-menu';
-import { getAvailableInnerBlocks } from '../editor/plugins/accordion/transforms';
 import {
-  ACCORDION_KEY,
-  ACCORDION_PANEL_KEY,
-} from '../editor/plugins/accordion/types';
+  getAvailableInnerBlocks,
+  getBlockContainers,
+} from '../editor/plugins/containers';
 
 import {
   InlineCombobox,
@@ -42,21 +41,31 @@ export function SlashInputElement(
     (child) => ElementApi.isElement(child) && child.type === TITLE_BLOCK_TYPE,
   );
 
-  // Inside an accordion panel, the menu only offers what a panel can hold.
-  const inAccordion = !!editor.api.above({
-    at: props.path,
-    match: { type: ACCORDION_PANEL_KEY },
-  });
+  // Inside a container, such as an accordion panel, the menu only offers
+  // what the container can hold.
+  const containers = getBlockContainers(editor, props.path);
+  const closest = containers[0];
+  const containerKey = containers
+    .map((entry) => `${entry.spec.type}@${entry.slot[1].join('.')}`)
+    .join('|');
   const container = React.useMemo<SlashMenuContainer | undefined>(
     () =>
-      inAccordion
+      closest
         ? {
-            type: ACCORDION_KEY,
-            availableBlocks: getAvailableInnerBlocks(editor),
+            type: closest.spec.type,
+            availableBlocks: getAvailableInnerBlocks(
+              editor,
+              closest.spec,
+              containers.slice(1),
+            ),
           }
         : undefined,
-    [editor, inAccordion],
+    // The containers are read again when the menu moves to another one.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [editor, containerKey],
   );
+  const nestingNote =
+    closest && !closest.spec.nestable ? closest.spec.nestingNote?.(t) : '';
 
   // A control can open the menu without typing "/", which then isn't shown
   // or put back when the menu closes.
@@ -82,7 +91,7 @@ export function SlashInputElement(
         showTrigger={!withoutTrigger}
       >
         <InlineComboboxInput
-          {...(inAccordion ? { 'aria-describedby': noteId } : {})}
+          {...(nestingNote ? { 'aria-describedby': noteId } : {})}
         />
 
         <InlineComboboxContent>
@@ -114,14 +123,12 @@ export function SlashInputElement(
               )}
             </InlineComboboxGroup>
           ))}
-          {inAccordion && (
+          {nestingNote && (
             <p
               id={noteId}
               className="border-t px-3 py-2 text-xs text-muted-foreground"
             >
-              {t('plate.accordion.noNesting', {
-                defaultValue: "Accordions can't be placed inside an accordion.",
-              })}
+              {nestingNote}
             </p>
           )}
         </InlineComboboxContent>

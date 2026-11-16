@@ -1,4 +1,5 @@
 export * from './types';
+export { getAccordionContainerSpec } from './container';
 export {
   DEFAULT_ACCORDION_OPTIONS,
   getAccordionOptions,

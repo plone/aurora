@@ -1,5 +1,7 @@
 import type { TElement, TText } from 'platejs';
 
+import type { BlockContainerOption } from '../containers/types';
+
 export const ACCORDION_KEY = 'accordion';
 export const ACCORDION_PANEL_KEY = 'accordion_panel';
 export const ACCORDION_PANEL_TITLE_KEY = 'accordion_panel_title';
@@ -63,4 +65,6 @@ export type AccordionPluginOptions = {
     schema: any,
     context: { blockType: string; t: (key: string, options?: any) => string },
   ) => any;
+  /** The accordion as a container of blocks (see `getAccordionContainerSpec`). */
+  container?: BlockContainerOption;
 };

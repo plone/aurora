@@ -1,15 +1,10 @@
-import { PLONE_BLOCK_TYPE } from '@plone/helpers';
-import config from '@plone/registry';
-import {
-  ElementApi,
-  KEYS,
-  nanoid,
-  type Descendant,
-  type SlateEditor,
-  type TElement,
-} from 'platejs';
+import { ElementApi, nanoid, type SlateEditor, type TElement } from 'platejs';
 
-import { getAccordionOptions } from './options';
+import {
+  createEmptyParagraph,
+  getAvailableInnerBlocks as getContainerAvailableBlocks,
+} from '../containers';
+import { getAccordionContainerSpec } from './container';
 import {
   ACCORDION_KEY,
   ACCORDION_PANEL_CONTENT_KEY,
@@ -21,10 +16,7 @@ import {
   type TAccordionPanelTitleElement,
 } from './types';
 
-export const createEmptyParagraph = (): TElement => ({
-  type: KEYS.p,
-  children: [{ text: '' }],
-});
+export { createEmptyParagraph, getInnerBlockId } from '../containers';
 
 export const createAccordionPanelTitle = (
   text = '',
@@ -84,44 +76,17 @@ export const createAccordion = ({
 });
 
 /**
- * The ID a block has in the `allowedBlocks` option: the `@type` of a Plone
- * block, or the type of a Plate.js element.
- */
-export const getInnerBlockId = (node: Descendant): string | undefined => {
-  if (!ElementApi.isElement(node)) return undefined;
-  if (node.type === PLONE_BLOCK_TYPE) {
-    const blockType = (node as TElement & { '@type'?: unknown })['@type'];
-    return typeof blockType === 'string' ? blockType : undefined;
-  }
-  return node.type;
-};
-
-const isRegisteredPloneBlock = (blockType: string) => {
-  const blocksConfig = (
-    config as unknown as {
-      blocks?: { blocksConfig?: Record<string, unknown> };
-    }
-  )?.blocks?.blocksConfig;
-  return Boolean(blocksConfig?.[blockType]);
-};
-
-/**
  * The blocks a panel can hold in this editor: the allowed blocks that the
  * editor has. A Plone block is available when the editor has the Plone block
  * adapter and the block is registered.
  */
 export const getAvailableInnerBlocks = (
   editor: Pick<SlateEditor, 'getOptions' | 'plugins'>,
-): string[] => {
-  const { allowedBlocks } = getAccordionOptions(editor);
-  const hasPloneBlocks = Boolean(editor.plugins[PLONE_BLOCK_TYPE]);
-
-  return allowedBlocks.filter((id) => {
-    if (id === ACCORDION_KEY) return false;
-    if (editor.plugins[id]) return true;
-    return hasPloneBlocks && isRegisteredPloneBlock(id);
-  });
-};
+): string[] =>
+  getContainerAvailableBlocks(
+    editor,
+    getAccordionContainerSpec(editor as SlateEditor),
+  );
 
 export const isAccordionPanel = (
   node: unknown,
