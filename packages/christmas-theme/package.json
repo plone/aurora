@@ -15,7 +15,9 @@
     "react-dom": "^19.1.0"
   },
   "dependencies": {
-    "@plone/registry": "workspace:*"
+    "@plone/plate": "workspace:*",
+    "@plone/registry": "workspace:*",
+    "platejs": "^53.3.14"
   },
   "devDependencies": {
     "@plone/types": "workspace:*",

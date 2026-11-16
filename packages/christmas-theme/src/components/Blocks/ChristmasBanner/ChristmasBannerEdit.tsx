@@ -29,9 +29,7 @@ export default function ChristmasBannerEdit(props: BlockEditProps) {
   }, [data, setBlock]);
 
   const greeting =
-    data.greeting !== undefined
-      ? (data.greeting as string)
-      : DEFAULT_GREETING;
+    data.greeting !== undefined ? (data.greeting as string) : DEFAULT_GREETING;
   const message =
     data.message !== undefined ? (data.message as string) : DEFAULT_MESSAGE;
   const decorations =

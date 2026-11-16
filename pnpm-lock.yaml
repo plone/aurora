@@ -408,9 +408,15 @@ importers:
 
   packages/christmas-theme:
     dependencies:
+      '@plone/plate':
+        specifier: workspace:*
+        version: link:../plate
       '@plone/registry':
         specifier: workspace:*
         version: link:../registry
+      platejs:
+        specifier: ^53.3.14
+        version: 53.3.14(@babel/core@7.29.7(supports-color@8.1.1))(@babel/template@7.29.7)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(scheduler@0.27.0)(use-sync-external-store@1.6.0(react@19.2.0))
       react:
         specifier: ^19.2.0
         version: 19.2.0
