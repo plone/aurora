@@ -10,7 +10,6 @@ import {
   ChevronRightIcon,
   Code2,
   Columns2Icon,
-  Columns3Icon,
   Heading2Icon,
   Heading3Icon,
   Heading4Icon,
@@ -286,13 +285,6 @@ const createStaticGroups = (t: TranslateFunction): SlashMenuGroup[] => [
         }),
         value: KEYS.toc,
       },
-      {
-        icon: <Columns3Icon />,
-        label: t('plate.slashMenu.items.threeColumns', {
-          defaultValue: '3 columns',
-        }),
-        value: 'action_three_columns',
-      },
     ].map((item) => ({
       ...item,
       onSelect: (editor: PlateEditor, value: string) => {
@@ -411,7 +403,6 @@ const LIST_ITEMS = new Set<string>([KEYS.ul, KEYS.ol, KEYS.listTodo]);
 export const getSlashItemBlockId = (value: string) => {
   if (value.startsWith('block_')) return value.slice('block_'.length);
   if (LIST_ITEMS.has(value)) return KEYS.p;
-  if (value === 'action_three_columns') return KEYS.columnGroup;
   return value;
 };
 

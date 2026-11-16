@@ -121,17 +121,6 @@ export const nativeBlockSections = {
     p('Content inside the toggle.', { indent: 1 }),
   ],
 
-  columns: [
-    {
-      type: 'column_group',
-      children: [
-        { type: 'column', width: '33%', children: [p('Column one')] },
-        { type: 'column', width: '33%', children: [p('Column two')] },
-        { type: 'column', width: '33%', children: [p('Column three')] },
-      ],
-    },
-  ],
-
   toc: [
     { type: 'toc', children: [{ text: '' }] },
     { type: 'h2', children: [{ text: 'First section' }] },

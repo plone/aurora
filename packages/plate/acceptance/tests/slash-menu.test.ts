@@ -69,13 +69,6 @@ const cases: SlashCase[] = [
       expect(b.children?.[0]?.type).toBe('grid_column');
     },
   },
-  {
-    label: '3 columns',
-    expect: (b) => {
-      expect(b.type).toBe('column_group');
-      expect(b.children).toHaveLength(3);
-    },
-  },
 ];
 
 for (const { label, expect: expectBlock } of cases) {

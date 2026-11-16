@@ -5,7 +5,6 @@ import type { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
 import {
   ChevronRightIcon,
   Columns2Icon,
-  Columns3Icon,
   FileCodeIcon,
   FilmIcon,
   Heading2Icon,
@@ -146,11 +145,6 @@ const groups: Group[] = [
         icon: <TableOfContentsIcon />,
         label: 'Table of contents',
         value: KEYS.toc,
-      },
-      {
-        icon: <Columns3Icon />,
-        label: '3 columns',
-        value: 'action_three_columns',
       },
       {
         icon: <Columns2Icon />,

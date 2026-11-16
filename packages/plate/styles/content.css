@@ -576,47 +576,6 @@
 }
 
 /*
- * Columns. Each column's width is set inline on its wrapper, the
- * `block-column_group__column` part. In the editor, a toolbar anchor wraps
- * the inner container, so it's matched by the row it holds.
- */
-
-:where(.block-inner-container:has(> .block-column_group__row)) {
-  margin-bottom: calc(var(--spacing, 0.25rem) * 2);
-}
-
-:where(.block-column_group__row) {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  border-radius: 0.25rem;
-}
-
-:where(.block-column_group__column) {
-  position: relative;
-}
-
-:where(.slate-column) {
-  height: 100%;
-  padding: calc(var(--spacing, 0.25rem) * 2) calc(var(--spacing, 0.25rem) * 2) 0;
-}
-
-:where(.block-column_group__column:first-child > .slate-column) {
-  padding-left: 0;
-}
-
-:where(.block-column_group__column:last-child > .slate-column) {
-  padding-right: 0;
-}
-
-:where(.block-column__content) {
-  position: relative;
-  height: 100%;
-  padding: calc(var(--spacing, 0.25rem) * 1.5);
-  border: 1px solid transparent;
-}
-
-/*
  * Accordion. Each panel title is a heading holding a button that opens and
  * closes the panel; the open state is in the panel's `data-open`. The
  * background comes from the accordion's theme, in

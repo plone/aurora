@@ -2,7 +2,6 @@ import type { PlateEditor } from 'platejs/react';
 
 import { insertCallout } from '@platejs/callout';
 import { insertCodeBlock, toggleCodeBlock } from '@platejs/code-block';
-import { insertColumnGroup, toggleColumnGroup } from '@platejs/layout';
 import { triggerFloatingLink } from '@platejs/link/react';
 import {
   insertAudioPlaceholder,
@@ -26,8 +25,6 @@ import { GRID_KEY } from './plugins/grid/types';
 import { SuggestionPlugin } from './plugins/suggestion-kit';
 import { withBlockWidthDefaults } from './plugins/block-width-plugin';
 
-const ACTION_THREE_COLUMNS = 'action_three_columns';
-
 const insertList = (editor: PlateEditor, type: string) => {
   editor.tf.insertNodes(
     editor.api.create.block({
@@ -49,8 +46,6 @@ const insertBlockMap: Record<
   [GRID_KEY]: (editor) => {
     insertGrid(editor);
   },
-  [ACTION_THREE_COLUMNS]: (editor) =>
-    insertColumnGroup(editor, { columns: 3, select: true }),
   [KEYS.audio]: (editor) => insertAudioPlaceholder(editor, { select: true }),
   [KEYS.callout]: (editor) => insertCallout(editor, { select: true }),
   [KEYS.codeBlock]: (editor) => insertCodeBlock(editor, { select: true }),
@@ -123,7 +118,6 @@ const setBlockMap: Record<
   [KEYS.listTodo]: setList,
   [KEYS.ol]: setList,
   [KEYS.ul]: setList,
-  [ACTION_THREE_COLUMNS]: (editor) => toggleColumnGroup(editor, { columns: 3 }),
   // Wraps the selected blocks once; later entries are already inside it.
   [GRID_KEY]: (editor) => {
     turnIntoGrid(editor);

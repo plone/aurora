@@ -187,12 +187,6 @@ export default function install(config: ConfigType) {
     table: {
       category: 'common',
     },
-    column_group: {
-      category: 'layout',
-    },
-    column: {
-      category: 'layout',
-    },
     accordion: {
       category: 'layout',
     },

@@ -95,7 +95,6 @@ const turnInto = [
   { label: 'Heading 6', type: 'h6' },
   { label: 'Quote', type: 'blockquote' },
   { label: 'Code', type: 'code_block' },
-  { label: '3 columns', type: 'column_group' },
   { label: 'Grid', type: 'grid' },
 ];
 

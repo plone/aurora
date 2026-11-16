@@ -4,7 +4,7 @@ import config from '@plone/registry';
 import { createSlateEditor, createSlatePlugin, type Value } from 'platejs';
 
 import { BaseBasicBlocksKit } from '../basic-blocks-base-kit';
-import { BaseColumnKit } from '../column-base-kit';
+import { BaseGridKit } from '../grid/grid-base-kit';
 import { BaseTableKit } from '../table-base-kit';
 import { BaseAccordionKit } from './accordion-base-kit';
 import { BaseAccordionPlugin } from './accordion-plugin';
@@ -44,7 +44,7 @@ const normalize = (value: object[], plugins: any[] = []) => {
     plugins: [
       ...BaseBasicBlocksKit,
       ...BaseTableKit,
-      ...BaseColumnKit,
+      ...BaseGridKit,
       ...BaseAccordionKit,
       ...plugins,
     ],
@@ -240,14 +240,18 @@ describe('accordion normalization', () => {
     expect(children[1].id).toBe('inner');
   });
 
-  it('keeps the blocks of a container, such as columns, in the panel', () => {
+  it('keeps the blocks of a container, such as a grid, in the panel', () => {
     const editor = normalize([
       accordion(
         panel('a', 'A', {
-          type: 'column_group',
+          type: 'grid',
+          id: 'g',
+          theme: 'default',
+          gap: 'm',
+          stack: true,
           children: [
-            { type: 'column', width: '50%', children: [p('Left')] },
-            { type: 'column', width: '50%', children: [p('Right')] },
+            { type: 'grid_column', id: 'l', size: 1, children: [p('Left')] },
+            { type: 'grid_column', id: 'r', size: 1, children: [p('Right')] },
           ],
         }),
       ),

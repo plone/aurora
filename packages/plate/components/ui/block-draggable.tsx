@@ -23,7 +23,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
 import { cn } from '../../lib/utils';
 
 // Grid columns have their own grip.
-const UNDRAGGABLE_KEYS = [KEYS.column, KEYS.tr, KEYS.td, GRID_COLUMN_KEY];
+const UNDRAGGABLE_KEYS = [KEYS.tr, KEYS.td, GRID_COLUMN_KEY];
 
 export const BlockDraggable: RenderNodeWrapper = (props) => {
   const { editor, element, path } = props;
@@ -33,18 +33,6 @@ export const BlockDraggable: RenderNodeWrapper = (props) => {
 
     if (path.length === 1 && !isType(editor, element, UNDRAGGABLE_KEYS)) {
       return true;
-    }
-    if (path.length === 3 && !isType(editor, element, UNDRAGGABLE_KEYS)) {
-      const block = editor.api.some({
-        at: path,
-        match: {
-          type: editor.getType(KEYS.column),
-        },
-      });
-
-      if (block) {
-        return true;
-      }
     }
     if (path.length === 4 && !isType(editor, element, UNDRAGGABLE_KEYS)) {
       const block = editor.api.some({
