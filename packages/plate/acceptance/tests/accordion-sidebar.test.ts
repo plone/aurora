@@ -159,7 +159,7 @@ test('climbs the levels with Esc, from a block to the page', async ({
   ).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(
-    sidebar.getByText(/Click the accordion's frame or its label/),
+    sidebar.getByText(/frame or label of a block that holds other blocks/),
   ).toBeVisible();
 });
 

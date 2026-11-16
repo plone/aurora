@@ -1,5 +1,6 @@
 import type { TElement, TText } from 'platejs';
 
+import type { NodeSettingsDeclaration } from '../block-settings/types';
 import type { BlockContainerOption } from '../containers/types';
 
 export const ACCORDION_KEY = 'accordion';
@@ -67,4 +68,6 @@ export type AccordionPluginOptions = {
   ) => any;
   /** The accordion as a container of blocks (see `getAccordionContainerSpec`). */
   container?: BlockContainerOption;
+  /** The accordion as a selection level, with its settings form. */
+  settings?: NodeSettingsDeclaration;
 };
