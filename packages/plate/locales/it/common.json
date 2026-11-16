@@ -144,7 +144,37 @@
         "columnMoved": "Colonna spostata alla posizione {{position}} di {{total}}",
         "columnDuplicated": "Colonna duplicata",
         "columnDeleted": "Colonna eliminata"
-      }
+      },
+      "columnMerged": "Il contenuto della colonna {{from}} è stato spostato nella colonna {{to}}",
+      "gridDeleted": "Griglia eliminata",
+      "gapSmall": "Piccola",
+      "gapMedium": "Media",
+      "gapLarge": "Grande",
+      "columnCount": "{{count}} colonne",
+      "columns": "Colonne",
+      "removeLastColumn": "Rimuovi l'ultima colonna",
+      "addColumnAtEnd": "Aggiungi una colonna alla fine",
+      "layout": "Disposizione",
+      "layoutName": "Larghezze {{ratio}}",
+      "background": "Sfondo",
+      "themes": {
+        "default": "Predefinito",
+        "grey": "Grigio"
+      },
+      "headline": "Titolo",
+      "optional": "Facoltativo",
+      "gap": "Spaziatura",
+      "narrowWidths": "Su larghezze ridotte",
+      "stack": "Impila",
+      "keepRow": "Mantieni in riga",
+      "stackHint": "Le colonne si impilano in base alla larghezza della griglia, non dello schermo.",
+      "deleteGrid": "Elimina griglia",
+      "columnWidth": "Larghezza: {{size}} di {{parts}} parti, impostata dalla disposizione della griglia.",
+      "columnActions": "Azioni della colonna",
+      "addBefore": "Aggiungi colonna prima",
+      "addAfter": "Aggiungi colonna dopo",
+      "gridSettings": "Impostazioni della griglia",
+      "oneColumn": "1 colonna"
     }
   }
 }

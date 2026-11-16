@@ -1,16 +1,20 @@
+import type * as React from 'react';
 import type { PlateElementProps } from 'platejs/react';
 
 import clsx from 'clsx';
-import { ElementApi, KEYS, TextApi, type TElement } from 'platejs';
-import { PlateElement, useEditorSelector } from 'platejs/react';
+import { ElementApi, KEYS, PathApi, TextApi, type TElement } from 'platejs';
+import { PlateElement, useEditorRef, useEditorSelector } from 'platejs/react';
 
+import { setSettingsTarget } from '../editor/plugins/block-settings';
 import { findGridNodePath } from '../editor/plugins/grid/editor-transforms';
+import { GRID_COLUMN_KEY, GRID_KEY } from '../editor/plugins/grid/types';
 import type {
   TGridColumnElement,
   TGridElement,
 } from '../editor/plugins/grid/types';
 import { useTranslation } from '../editor/plugins/i18n';
 import { BlockInnerContainer } from './block-inner-container';
+import { useSettingsTarget } from './block-settings';
 import { GridColumnHandle, GridInsertSeam } from './grid-column-controls';
 import {
   getColumnProps,
@@ -37,6 +41,7 @@ export const isEmptyColumn = (column: TElement) =>
 
 export function GridElement(props: PlateElementProps<TGridElement>) {
   const { children, element } = props;
+  const editor = useEditorRef();
   const { t } = useTranslation();
   return (
     <PlateElement
@@ -46,6 +51,17 @@ export function GridElement(props: PlateElementProps<TGridElement>) {
         ...getGridAttributes(element),
         role: 'group',
         'aria-label': t('plate.grid.label', { defaultValue: 'Grid' }),
+        // A press on the grid's frame, a gap or the headline, rather than a
+        // column, selects the grid.
+        onMouseDown: (event: React.MouseEvent) => {
+          const target = event.target as HTMLElement;
+          if (target.closest('button')) return;
+          // The insert points sit in the gaps, inside the columns' markup.
+          const inGap = !!target.closest('[data-grid-insert-seam]');
+          if (!inGap && target.closest('.block-grid__column')) return;
+          event.preventDefault();
+          setSettingsTarget(editor, { type: GRID_KEY, id: element.id });
+        },
       }}
     >
       <BlockInnerContainer>
@@ -72,11 +88,22 @@ export function GridColumnElement(
       const path = findGridNodePath(editor as any, element);
       if (!path) return '';
       const grid = editor.api.parent(path)?.[0] as TElement | undefined;
-      return `${(path.at(-1) ?? 0) + 1}/${grid?.children.length ?? 1}`;
+      const selection = editor.selection;
+      const holdsCaret =
+        !!selection &&
+        PathApi.isAncestor(path, selection.anchor.path) &&
+        PathApi.isAncestor(path, selection.focus.path);
+      return `${(path.at(-1) ?? 0) + 1}/${grid?.children.length ?? 1}/${holdsCaret ? 1 : 0}`;
     },
     [element],
   );
-  const [position, total] = (place || '1/1').split('/');
+  const [position, total, holdsCaret] = (place || '1/1/0').split('/');
+  // The column holding the caret, or whose settings show, stands out.
+  const target = useSettingsTarget();
+  const selected =
+    target?.type === GRID_COLUMN_KEY &&
+    (target as { id?: string }).id === element.id;
+  const active = selected || (!target && holdsCaret === '1');
 
   return (
     <PlateElement
@@ -84,14 +111,20 @@ export function GridColumnElement(
       className={clsx(
         className,
         'block-grid__column',
+        // Edit mode only: a visible frame, a strip at the top for the
+        // handle, and room around the blocks.
         `
-          group/column relative rounded-md pt-8 outline-1 -outline-offset-1 outline-border
-          outline-dashed
+          group/column relative rounded-md px-3.5 pt-9 pb-3 outline-1 -outline-offset-1
+          outline-muted-foreground/45 transition-[outline-color] outline-dashed
+          hover:outline-muted-foreground/80
+          data-[active=true]:outline-2 data-[active=true]:-outline-offset-2
+          data-[active=true]:outline-primary data-[active=true]:outline-solid
         `,
       )}
       attributes={{
         ...props.attributes,
         ...column.attributes,
+        'data-active': active ? 'true' : 'false',
         role: 'group',
         'aria-label': t('plate.grid.columnOf', {
           defaultValue: 'Column {{position}} of {{total}}',
@@ -107,9 +140,7 @@ export function GridColumnElement(
         <span
           aria-hidden="true"
           contentEditable={false}
-          className={`
-            pointer-events-none absolute top-8 left-0 px-1 text-muted-foreground select-none
-          `}
+          className={`pointer-events-none absolute top-9 left-3.5 text-muted-foreground select-none`}
         >
           {t('plate.grid.emptyColumn', {
             defaultValue: 'Type / to add a block',

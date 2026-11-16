@@ -7,6 +7,7 @@ import {
   CopyIcon,
   PlusIcon,
   Trash2Icon,
+  Settings2Icon,
 } from 'lucide-react';
 import { PathApi, RangeApi } from 'platejs';
 import { useEditorRef, useEditorSelector } from 'platejs/react';
@@ -22,6 +23,14 @@ import { findGridNodePath } from '../editor/plugins/grid/editor-transforms';
 import { getGridOptions } from '../editor/plugins/grid/options';
 import type { TGridColumnElement } from '../editor/plugins/grid/types';
 import { useTranslation } from '../editor/plugins/i18n';
+import { usePlateHost } from '../editor/plate-host-context';
+import { BlockSettingsTrigger, focusSettingsFrom } from './block-settings';
+import {
+  getSettingsTarget,
+  setSettingsTarget,
+} from '../editor/plugins/block-settings';
+import { getFocusableControls } from '../../lib/focusable';
+import { GRID_COLUMN_KEY } from '../editor/plugins/grid/types';
 import { Button } from './button';
 
 /*
@@ -76,7 +85,17 @@ const keepCaret = (event: MouseEvent) => event.preventDefault();
 export function GridColumnHandle({ element }: { element: TGridColumnElement }) {
   const editor = useEditorRef();
   const { t } = useTranslation();
+  const { settingsContainer } = usePlateHost();
   const state = useColumnState(element);
+  // Without a host sidebar, the grid's settings open in a popover from here.
+  const gridId = useEditorSelector(
+    (ed) => {
+      const path = findGridNodePath(ed as any, element);
+      const grid = path ? ed.api.parent(path)?.[0] : undefined;
+      return grid ? String((grid as TElement).id ?? '') : '';
+    },
+    [element],
+  );
   if (!state || state.textSelected) return null;
 
   const { index, total, active } = state;
@@ -137,6 +156,36 @@ export function GridColumnHandle({ element }: { element: TGridColumnElement }) {
       })}
       data-active={active ? 'true' : 'false'}
       data-grid-column-handle=""
+      // A keyboard user reaching the handle selects its column, so the
+      // settings show it, and Tab from its last control goes on to them.
+      onFocus={() => {
+        const target = getSettingsTarget(editor as any);
+        if (
+          target?.type !== GRID_COLUMN_KEY ||
+          (target as any).id !== element.id
+        ) {
+          setSettingsTarget(editor as any, {
+            type: GRID_COLUMN_KEY,
+            id: element.id,
+          });
+        }
+      }}
+      onKeyDown={(event) => {
+        if (event.key !== 'Tab' || event.shiftKey || event.defaultPrevented) {
+          return;
+        }
+        const controls = getFocusableControls(event.currentTarget);
+        if (event.target !== controls.at(-1)) return;
+        if (
+          focusSettingsFrom(
+            editor,
+            settingsContainer?.(),
+            event.target as HTMLElement,
+          )
+        ) {
+          event.preventDefault();
+        }
+      }}
       className={cn(
         `
           absolute top-1 left-1/2 z-10 flex -translate-x-1/2 items-center gap-0.5 rounded-full
@@ -150,6 +199,20 @@ export function GridColumnHandle({ element }: { element: TGridColumnElement }) {
         `,
       )}
     >
+      {!settingsContainer && gridId && (
+        <BlockSettingsTrigger
+          target={{ type: 'grid', id: gridId }}
+          label={t('plate.grid.gridSettings', {
+            defaultValue: 'Grid settings',
+          })}
+          className={`
+            size-6 rounded-full
+            [&_svg]:size-3.5
+          `}
+        >
+          <Settings2Icon />
+        </BlockSettingsTrigger>
+      )}
       {actions.map((action) => (
         <Button
           key={action.key}
