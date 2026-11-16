@@ -1,7 +1,11 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import config from '@plone/registry';
-import { SOMERSAULT_KEY } from '@plone/plate/constants';
+import {
+  MAIN_REGION,
+  PLATE_TYPE,
+  SOMERSAULT_KEY,
+} from '@plone/plate/constants';
 import type { Content, ContentBase } from '@plone/types';
 import installMigrations from './migrations.server';
 import { migrateContent } from './content-migrations.server';
@@ -22,9 +26,10 @@ describe('content migrations', () => {
     const utilities = config.utilities as Partial<Record<string, unknown>>;
     delete utilities.somersaultBlockMigration;
     delete utilities.somersaultMigration;
+    delete utilities.contentMigration;
   });
 
-  it('migrates title and legacy value blocks into the somersault block', () => {
+  it('migrates title and legacy value blocks into the main region', () => {
     config.blocks = {
       blocksConfig: {},
     } as typeof config.blocks;
@@ -49,8 +54,8 @@ describe('content migrations', () => {
 
     const migrated = migrateContent(content as unknown as Content);
 
-    expect(migrated.blocks?.[SOMERSAULT_KEY]).toEqual({
-      '@type': SOMERSAULT_KEY,
+    expect(migrated.blocks?.[MAIN_REGION]).toEqual({
+      '@type': PLATE_TYPE,
       value: [
         {
           blockWidth: 'default',
@@ -100,7 +105,7 @@ describe('content migrations', () => {
 
     const migrated = migrateContent(content as unknown as Content);
     const [blockquote] = (
-      migrated.blocks?.[SOMERSAULT_KEY] as unknown as { value: any[] }
+      migrated.blocks?.[MAIN_REGION] as unknown as { value: any[] }
     ).value;
 
     expect(blockquote).toMatchObject({
@@ -122,7 +127,7 @@ describe('content migrations', () => {
     expect(blockquote.children).toHaveLength(1);
   });
 
-  it('moves native blocks into the somersault field as ploneBlock nodes', () => {
+  it('moves native blocks into the main region as ploneBlock nodes', () => {
     config.blocks = {
       blocksConfig: {
         listing: {},
@@ -197,8 +202,8 @@ describe('content migrations', () => {
 
     const migrated = migrateContent(content as unknown as Content);
 
-    expect(migrated.blocks?.[SOMERSAULT_KEY]).toEqual({
-      '@type': SOMERSAULT_KEY,
+    expect(migrated.blocks?.[MAIN_REGION]).toEqual({
+      '@type': PLATE_TYPE,
       value: [
         {
           blockWidth: 'default',
@@ -235,6 +240,91 @@ describe('content migrations', () => {
           type: PLONE_BLOCK_TYPE,
         },
       ],
+    });
+  });
+
+  describe('legacy __somersault__ block', () => {
+    const legacyValue = [
+      { type: 'title', children: [{ text: 'Stored title' }] },
+      { type: 'p', children: [{ text: 'Stored text' }] },
+    ];
+
+    it('renames it to the main region with the plate type', () => {
+      config.blocks = { blocksConfig: {} } as typeof config.blocks;
+      installMigrations();
+
+      const content: TestContent = {
+        '@id': 'http://example.com/',
+        title: 'Page title',
+        blocks: {
+          [SOMERSAULT_KEY]: {
+            '@type': SOMERSAULT_KEY,
+            value: legacyValue,
+            discussions: { d1: {} },
+          },
+          a: {
+            '@type': 'slate',
+            value: [{ type: 'p', children: [{ text: 'Legacy block' }] }],
+          },
+        },
+        blocks_layout: { items: [SOMERSAULT_KEY, 'a'] },
+      };
+
+      const migrated = migrateContent(content as unknown as Content);
+
+      expect(migrated).toBe(content);
+      expect(migrated.blocks_layout?.items).toEqual(['a']);
+      expect(migrated.blocks?.[SOMERSAULT_KEY]).toBeUndefined();
+      // The value is kept as stored, not rebuilt from the legacy blocks, and
+      // any other data of the block travels with it.
+      expect(migrated.blocks?.[MAIN_REGION]).toEqual({
+        '@type': PLATE_TYPE,
+        value: legacyValue,
+        discussions: { d1: {} },
+      });
+    });
+
+    it('keeps the main region and drops the legacy block when both exist', () => {
+      config.blocks = { blocksConfig: {} } as typeof config.blocks;
+      installMigrations();
+      const mainValue = [{ type: 'p', children: [{ text: 'New' }] }];
+
+      const content: TestContent = {
+        '@id': 'http://example.com/',
+        title: 'Page title',
+        blocks: {
+          [MAIN_REGION]: { '@type': PLATE_TYPE, value: mainValue },
+          [SOMERSAULT_KEY]: { '@type': SOMERSAULT_KEY, value: legacyValue },
+        },
+        blocks_layout: { items: [] },
+      };
+
+      const migrated = migrateContent(content as unknown as Content);
+
+      expect(migrated.blocks).toEqual({
+        [MAIN_REGION]: { '@type': PLATE_TYPE, value: mainValue },
+      });
+    });
+
+    it('is idempotent', () => {
+      config.blocks = { blocksConfig: {} } as typeof config.blocks;
+      installMigrations();
+
+      const content: TestContent = {
+        '@id': 'http://example.com/',
+        title: 'Page title',
+        blocks: {
+          [SOMERSAULT_KEY]: { '@type': SOMERSAULT_KEY, value: legacyValue },
+        },
+        blocks_layout: { items: [] },
+      };
+
+      const once = structuredClone(
+        migrateContent(content as unknown as Content),
+      );
+      const twice = migrateContent(content as unknown as Content);
+
+      expect(twice).toEqual(once);
     });
   });
 });

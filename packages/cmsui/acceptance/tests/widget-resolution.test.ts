@@ -72,8 +72,8 @@ test('The image widget browses from the edited page', async ({ page }) => {
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             { type: 'title', children: [{ text: 'Album page' }] },
             {
@@ -84,7 +84,7 @@ test('The image widget browses from the edited page', async ({ page }) => {
           ],
         },
       },
-      blocks_layout: { items: ['__somersault__'] },
+      blocks_layout: { items: [] },
     }),
   });
 

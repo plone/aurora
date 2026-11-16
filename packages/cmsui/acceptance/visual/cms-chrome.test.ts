@@ -24,7 +24,7 @@ async function createPage(page: Page, value?: Record<string, unknown>[]) {
       bodyModifier: (body) => ({
         ...body,
         blocks: {
-          __somersault__: { '@type': '__somersault__', value },
+          main: { '@type': 'plate', value },
         },
       }),
     }),

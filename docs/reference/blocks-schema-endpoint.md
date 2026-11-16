@@ -66,7 +66,7 @@ The protocol comes from the `X-Forwarded-Proto` header, when a proxy sets it, an
 ```json
 {
   "@id": "http://localhost:3000/@blocks-schema",
-  "document": "A page stores all its content in one block, `__somersault__`...",
+  "document": "A page stores all its content in one region, `main`...",
   "items": [
     {
       "@id": "http://localhost:3000/@blocks-schema/p",

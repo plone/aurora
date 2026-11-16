@@ -13,7 +13,13 @@ import {
   migrateLegacyListsInValue,
   migrateLegacyStrikethroughInValue,
 } from '@plone/plate/migrations';
+import {
+  MAIN_REGION,
+  PLATE_TYPE,
+  SOMERSAULT_KEY,
+} from '@plone/plate/constants';
 import type {
+  ContentMigrationArgs,
   SomersaultBlockMigrationArgs,
   SomersaultMigrationArgs,
 } from '../types';
@@ -52,7 +58,38 @@ const getMigratedPloneBlockWidth = (block: Record<string, unknown>) => {
   );
 };
 
+/**
+ * Renames the `__somersault__` block, stored before the page body became a
+ * region, to the `main` region with the `plate` type. The editor saves the
+ * whole `blocks` field, so a page keeps the new shape once it is edited.
+ * If the content has both, `main` wins and the legacy block is dropped.
+ *
+ * Remove at Plone 7 final, see https://github.com/plone/aurora/issues/379.
+ */
+export const migrateSomersaultRegion = ({ content }: ContentMigrationArgs) => {
+  const blocks = content.blocks as Record<string, unknown> | undefined;
+  if (!blocks || !Object.hasOwn(blocks, SOMERSAULT_KEY)) return;
+
+  const legacy = blocks[SOMERSAULT_KEY] as Record<string, unknown> | undefined;
+  delete blocks[SOMERSAULT_KEY];
+  // Regions stay out of `blocks_layout`, but some content lists the legacy
+  // block there.
+  const items = content.blocks_layout?.items;
+  if (Array.isArray(items) && items.includes(SOMERSAULT_KEY)) {
+    content.blocks_layout.items = items.filter((id) => id !== SOMERSAULT_KEY);
+  }
+  if (blocks[MAIN_REGION] || !legacy) return;
+
+  blocks[MAIN_REGION] = { ...legacy, '@type': PLATE_TYPE };
+};
+
 export default function install() {
+  config.registerUtility({
+    name: 'contentMigrationSomersaultRegion',
+    type: 'contentMigration',
+    method: migrateSomersaultRegion,
+  });
+
   config.registerUtility({
     name: 'somersaultBlockMigrationTitle',
     type: 'somersaultBlockMigration',

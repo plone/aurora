@@ -48,8 +48,8 @@ async function createImagePage(page: Page) {
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             { type: 'title', children: [{ text: 'Image content CSS' }] },
             // The floated image goes last: a centered image right after a

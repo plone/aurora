@@ -9,7 +9,7 @@ myst:
 
 # Add an editor content migration
 
-The {doc}`unified editor <../conceptual-guides/unified-editor>` stores the whole page as a single Plate value under the `__somersault__` key.
+The {doc}`unified editor <../conceptual-guides/unified-editor>` stores the whole page as a single Plate value in the `main` region of the `blocks` field.
 When content authored with the classic editor is fetched, Plone Aurora assembles and normalizes that value on the server.
 This guide shows how to extend that process with your own migrations, for example to support a custom legacy block or to normalize a legacy text shape.
 
@@ -18,13 +18,18 @@ For the architecture behind the editor and where this process runs, see {doc}`..
 For the general utility API used here, see {doc}`register-and-retrieve-utilities`.
 ```
 
-## The two migration utility types
+## The migration utility types
 
-Building the editor value is a two-phase pipeline, and there is one migration type for each phase.
+Before anything else, the `contentMigration` utilities run over the whole content, in place.
+They upgrade content stored in an older shape.
+The built-in `contentMigrationSomersaultRegion` renames the `__somersault__` block of earlier Plone Aurora versions to the `main` region.
+Add one when a future change of the stored shape needs the same treatment.
+
+Then, building the editor value is a two-phase pipeline, and there is one migration type for each phase.
 Legacy content is stored as a **map of blocks** plus a separate **layout order** (`blocks_layout.items`), but the editor needs a **single flat, ordered list of nodes**.
 `migrateContent` runs the phases strictly in order:
 
-1. **Assembly** — all `somersaultBlockMigration` utilities run first, one pass per legacy block in `blocks_layout.items` order, producing the assembled `__somersault__` value (the flat node list).
+1. **Assembly** — all `somersaultBlockMigration` utilities run first, one pass per legacy block in `blocks_layout.items` order, producing the assembled `main` value (the flat node list).
 2. **Normalization** — only then do all `somersaultMigration` utilities run, each over that **entire assembled value**.
 
 So block migrations never see the final value, and value migrations never see individual blocks — a value migration always operates on the complete list already produced by the assembly phase.
@@ -48,7 +53,7 @@ Use the phase distinction to decide:
 
 A rule of thumb: if you find yourself branching on `block['@type']`, you want a block migration. If you find yourself walking the node tree looking for a `type` or a property, you want a value migration.
 
-Both run server-side only. `migrateContent` is idempotent: if the content already has a `__somersault__` block, it is returned untouched.
+Both run server-side only. `migrateContent` is idempotent: if the content already has a `main` region, it is returned untouched.
 
 ### The default core pipeline
 

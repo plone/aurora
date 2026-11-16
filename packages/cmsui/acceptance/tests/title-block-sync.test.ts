@@ -42,8 +42,8 @@ test('Title block and metadata title stay in sync', async ({ page }) => {
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             {
               type: 'title',
@@ -101,8 +101,8 @@ test('Newly created title block is initialized from metadata title', async ({
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             {
               type: 'title',
@@ -158,8 +158,8 @@ test('Reloading edit view with no stored title block does not trigger hydration 
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             {
               type: 'title',
@@ -206,8 +206,8 @@ test('Enter on title inserts a new empty paragraph before existing next block', 
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             {
               type: 'title',
@@ -266,8 +266,8 @@ test('Empty title block keeps showing its placeholder when another block is sele
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             {
               type: 'title',

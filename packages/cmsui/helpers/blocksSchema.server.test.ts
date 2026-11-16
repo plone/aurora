@@ -46,8 +46,8 @@ const docs = [
     markdown: '---\nblock: teaser\n---\n\nLinks to one item.\n\n### Fields',
   },
   {
-    block: '__somersault__',
-    markdown: '---\nblock: __somersault__\n---\n\nOne document.',
+    block: 'plate',
+    markdown: '---\nblock: plate\n---\n\nOne document.',
   },
   {
     element: 'callout',
@@ -344,7 +344,7 @@ describe('one block', () => {
   });
 
   it('is 404 when the block is not registered', async () => {
-    for (const blockId of ['nope', '__somersault__']) {
+    for (const blockId of ['nope', 'plate']) {
       const response = await blocksSchemaResponse({
         request: request(`/@blocks-schema/${blockId}`),
         blockId,

@@ -1,16 +1,16 @@
 ---
-block: __somersault__
+block: plate
 ---
 
-A page stores all its content in one block, `__somersault__`, whose `value` is a Plate document: a list of nodes, from top to bottom. The elements and blocks described below are the nodes you can use.
+A page stores all its content in one region, `main`, whose `@type` is `plate` and whose `value` is a Plate document: a list of nodes, from top to bottom. The elements and blocks described below are the nodes you can use.
 
-Write the document in the `blocks` field of the content, under the `__somersault__` key. `blocks_layout` is not used, and other entries in `blocks` are ignored once the document exists.
+Write the document in the `blocks` field of the content, under the `main` key. `blocks_layout` is not used, and other entries in `blocks` are ignored once the document exists.
 
 ```json
 {
   "blocks": {
-    "__somersault__": {
-      "@type": "__somersault__",
+    "main": {
+      "@type": "plate",
       "value": [
         { "type": "title", "children": [{ "text": "Annual report" }] },
         { "type": "p", "children": [{ "text": "Our year in numbers." }] }

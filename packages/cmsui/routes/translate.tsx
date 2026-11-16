@@ -16,6 +16,7 @@ import {
   ploneContentContext,
 } from '@plone/aurora/app/middleware.server';
 import RenderBlocks from '@plone/layout/blocks/RenderBlocks';
+import { MAIN_REGION, PLATE_TYPE } from '@plone/plate/constants';
 import ContentForm from '../components/ContentForm/ContentForm';
 import { getServerValidationErrors } from '../components/Form/validation';
 import { getTranslationsOrThrow } from '../helpers/translations.server';
@@ -103,15 +104,15 @@ function hasVisibleNodes(nodes: unknown): boolean {
   });
 }
 
-// The middleware migrates all content to a somersault block, even empty one,
+// The middleware migrates all content to a `main` region, even empty one,
 // so block presence alone proves nothing.
 function hasVisibleSourceBlocks(source: Content): boolean {
   const blocks = (source.blocks ?? {}) as Record<
     string,
     { value?: unknown } | undefined
   >;
-  const somersault = blocks.__somersault__;
-  if (somersault) return hasVisibleNodes(somersault.value);
+  const main = blocks[MAIN_REGION];
+  if (main) return hasVisibleNodes(main.value);
   return hasBlocksData(source) && Object.keys(blocks).length > 0;
 }
 
@@ -120,7 +121,7 @@ function placeholderBlocks(blocks: Record<string, unknown>) {
   for (const [id, block] of Object.entries(blocks)) {
     const blockData = (block ?? {}) as Record<string, unknown>;
     const type = blockData['@type'] as string | undefined;
-    if (type === '__somersault__') {
+    if (type === PLATE_TYPE) {
       clean[id] = {
         ...blockData,
         value: placeholderValueNodes(blockData.value),

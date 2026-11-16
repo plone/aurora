@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { PLONE_BLOCK_TYPE } from '@plone/helpers';
-import { SOMERSAULT_KEY } from '../constants';
+import { MAIN_REGION, PLATE_TYPE } from '../constants';
 import { TITLE_BLOCK_TYPE } from '../components/editor/plugins/title-renderer';
 import markdown from './document.block.md?raw';
 
 describe('document format docs', () => {
-  it('documents the somersault block', () => {
+  it('documents the plate format', () => {
     expect(markdown).toMatch(
-      new RegExp(`^---\\nblock: ${SOMERSAULT_KEY}\\n---\\n`),
+      new RegExp(`^---\\nblock: ${PLATE_TYPE}\\n---\\n`),
     );
   });
 
@@ -17,11 +17,9 @@ describe('document format docs', () => {
     );
 
     const [document, block] = examples;
-    expect(document.blocks[SOMERSAULT_KEY]['@type']).toBe(SOMERSAULT_KEY);
+    expect(document.blocks[MAIN_REGION]['@type']).toBe(PLATE_TYPE);
     expect(Object.keys(document)).toEqual(['blocks']);
-    expect(document.blocks[SOMERSAULT_KEY].value[0].type).toBe(
-      TITLE_BLOCK_TYPE,
-    );
+    expect(document.blocks[MAIN_REGION].value[0].type).toBe(TITLE_BLOCK_TYPE);
     expect(block.type).toBe(PLONE_BLOCK_TYPE);
   });
 });

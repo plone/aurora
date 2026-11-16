@@ -19,7 +19,7 @@ test('The @blocks-schema endpoint lists the blocks with their docs', async ({
   expect(response.status()).toBe(200);
   expect(response.headers()['content-type']).toContain('application/json');
   const body = await response.json();
-  expect(body.document).toContain('__somersault__');
+  expect(body.document).toContain('`main`');
   expect(body.items).toEqual(
     expect.arrayContaining([
       expect.objectContaining({
