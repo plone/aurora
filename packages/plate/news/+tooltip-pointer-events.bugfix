@@ -1,0 +1,1 @@
+Fixed tooltips blocking clicks on their trigger while they slide in. In Firefox, a press on a block's drag grip landed on its "Drag to move" tooltip, and the editor dropped the block selection. Tooltip content now ignores pointer events. @MrTango
