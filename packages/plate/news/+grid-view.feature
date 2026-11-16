@@ -1,0 +1,1 @@
+Added the grid block's data model and published view: a grid holds 1 to 4 columns of blocks, each with a width weight, and has an optional headline, a background theme, a gap, and stacking on narrow widths. Plugin options set the most columns, the layouts, the allowed blocks, the backgrounds and the overrides for the blocks inside. @Humanaice

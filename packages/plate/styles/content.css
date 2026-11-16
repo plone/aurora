@@ -831,6 +831,77 @@
 }
 
 /*
+ * Grid. Columns sit side by side with a width weight each, in
+ * `--block-grid-column-size`, and stretch to the same height. With
+ * `data-stack='true'`, they stack when the grid itself is narrow, so it
+ * works in narrow layouts too. A background theme colors the whole grid,
+ * headline included, with inner padding.
+ */
+
+:where(.slate-grid) {
+  --block-grid-gap: var(--block-grid-gap-m, 1.5rem);
+
+  container: block-grid / inline-size;
+}
+
+:where(.slate-grid[data-gap='s']) {
+  --block-grid-gap: var(--block-grid-gap-s, 0.75rem);
+}
+
+:where(.slate-grid[data-gap='l']) {
+  --block-grid-gap: var(--block-grid-gap-l, 2.5rem);
+}
+
+:where(
+  .slate-grid[data-style-theme]:not([data-style-theme='default'])
+    > .block-inner-container
+) {
+  padding: var(--block-grid-theme-padding, calc(var(--spacing, 0.25rem) * 5));
+  border-radius: var(--block-grid-radius, var(--radius-md, 0.375rem));
+  background-color: var(--theme-color, transparent);
+  color: var(--theme-foreground-color, inherit);
+}
+
+/*
+ * The headline and the columns fill the grid, even when the block's
+ * container aligns its children to the start, as `@plone/layout`'s
+ * `justify-items` does. The headline sets its own weight, since a theme's
+ * heading styles would otherwise apply.
+ */
+:where(.block-grid__headline) {
+  margin: 0 0 calc(var(--spacing, 0.25rem) * 3);
+  font-size: var(--block-grid-headline-size, var(--text-2xl, 1.5rem));
+  font-weight: var(--block-grid-headline-weight, var(--font-weight-bold, 700));
+  justify-self: stretch;
+}
+
+:where(.block-grid__columns) {
+  display: flex;
+  align-items: stretch;
+  gap: var(--block-grid-gap);
+  justify-self: stretch;
+}
+
+:where(.block-grid__column) {
+  min-width: 0;
+  flex: var(--block-grid-column-size, 1) 1 0;
+}
+
+@container block-grid (width < 40rem) {
+  :where(.slate-grid[data-stack='true'] .block-grid__columns) {
+    flex-direction: column;
+  }
+}
+
+/*
+ * The first block of a column starts at the column's top, so the columns'
+ * first lines line up, even when one starts with a heading.
+ */
+:where(.block-grid__column [data-slate-node='element']:first-child) {
+  margin-top: 0;
+}
+
+/*
  * The content root, Plate's `slate-editor`. These rules come last, so they
  * win over the block rules above, as they did as Tailwind utilities.
  */
@@ -850,6 +921,14 @@
   .slate-editor [data-slate-node='element']:not([data-slate-inline='true'])
 ) {
   margin-inline: auto;
+}
+
+/*
+ * Grid columns fill their row, or the grid's width when they stack, so the
+ * centring margins above don't apply to them.
+ */
+:where(.slate-editor .block-grid__column) {
+  margin-inline: 0;
 }
 
 :where(.slate-editor strong) {

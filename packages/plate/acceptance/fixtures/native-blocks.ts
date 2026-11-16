@@ -188,6 +188,33 @@ export const nativeBlockSections = {
     { type: 'hr', children: [{ text: '' }] },
     p('After the separator.'),
   ],
+  grid: [
+    {
+      type: 'grid',
+      id: 'grid-fixture',
+      headline: 'Plan your visit',
+      theme: 'grey',
+      gap: 'm',
+      stack: true,
+      children: [
+        {
+          type: 'grid_column',
+          id: 'grid-visit',
+          size: 2,
+          children: [
+            { type: 'h3', children: [{ text: 'Visit us' }] },
+            p('Open Tuesday to Sunday, 10:00 to 18:00.'),
+          ],
+        },
+        {
+          type: 'grid_column',
+          id: 'grid-tours',
+          size: 1,
+          children: [p('Guided tours start every hour.')],
+        },
+      ],
+    },
+  ],
 } satisfies Record<string, Node[]>;
 
 export type NativeBlockSection = keyof typeof nativeBlockSections;
