@@ -130,7 +130,21 @@
       "columnLabel": "Column {{position}}",
       "columnPlace": "column {{position}}",
       "columnOf": "Column {{position}} of {{total}}",
-      "emptyColumn": "Type / to add a block"
+      "emptyColumn": "Type / to add a block",
+      "moveLeft": "Move left",
+      "moveRight": "Move right",
+      "duplicateColumn": "Duplicate column",
+      "duplicateFull": "The grid has its most columns",
+      "deleteColumn": "Delete column",
+      "deleteOnly": "A grid needs at least one column",
+      "insertColumn": "Insert a column at position {{position}}",
+      "columnDeleted": "Column deleted",
+      "announce": {
+        "columnAdded": "Column added at position {{position}} of {{total}}",
+        "columnMoved": "Column moved to position {{position}} of {{total}}",
+        "columnDuplicated": "Column duplicated",
+        "columnDeleted": "Column deleted"
+      }
     }
   }
 }

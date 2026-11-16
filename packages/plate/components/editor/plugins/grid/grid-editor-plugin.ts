@@ -1,6 +1,7 @@
 import { PathApi, type SlateEditor, type TElement } from 'platejs';
 import { createPlatePlugin } from 'platejs/react';
 
+import { moveColumnBy } from './column-actions';
 import { getColumnEntry, getGridEntry } from './editor-transforms';
 
 export const GRID_EDITOR_KEY = 'gridEditor';
@@ -38,6 +39,7 @@ const isWhole = (editor: SlateEditor, path: number[]) => {
  * - ArrowDown at the end of a column goes to the start of the next column,
  *   and ArrowUp at the start of a column to the end of the one before.
  * - Mod+A selects the column, then the grid, then the document.
+ * - Alt+Shift+← and → move the column that holds the caret.
  */
 export const handleGridKeyDown = (
   editor: SlateEditor,
@@ -65,6 +67,18 @@ export const handleGridKeyDown = (
       return true;
     }
     return false;
+  }
+
+  const isMove =
+    event.altKey &&
+    event.shiftKey &&
+    !event.metaKey &&
+    !event.ctrlKey &&
+    (event.key === 'ArrowLeft' || event.key === 'ArrowRight');
+  if (isMove) {
+    event.preventDefault();
+    moveColumnBy(editor, columnPath, event.key === 'ArrowLeft' ? -1 : 1);
+    return true;
   }
 
   if (event.altKey || event.metaKey || event.ctrlKey) return false;

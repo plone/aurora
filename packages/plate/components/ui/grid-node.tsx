@@ -11,6 +11,7 @@ import type {
 } from '../editor/plugins/grid/types';
 import { useTranslation } from '../editor/plugins/i18n';
 import { BlockInnerContainer } from './block-inner-container';
+import { GridColumnHandle, GridInsertSeam } from './grid-column-controls';
 import {
   getColumnProps,
   getGridAttributes,
@@ -83,7 +84,10 @@ export function GridColumnElement(
       className={clsx(
         className,
         'block-grid__column',
-        'relative rounded-md pt-8 outline-1 -outline-offset-1 outline-border outline-dashed',
+        `
+          group/column relative rounded-md pt-8 outline-1 -outline-offset-1 outline-border
+          outline-dashed
+        `,
       )}
       attributes={{
         ...props.attributes,
@@ -97,6 +101,8 @@ export function GridColumnElement(
       }}
       style={{ ...props.style, ...column.style }}
     >
+      <GridInsertSeam element={element} side="before" />
+      <GridColumnHandle element={element} />
       {isEmptyColumn(element) && (
         <span
           aria-hidden="true"
@@ -111,6 +117,7 @@ export function GridColumnElement(
         </span>
       )}
       {children}
+      <GridInsertSeam element={element} side="after" />
     </PlateElement>
   );
 }

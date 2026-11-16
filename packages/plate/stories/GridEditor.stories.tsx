@@ -88,3 +88,18 @@ export const HeadlineAndGreyBackground: Story = {
     ),
   },
 };
+
+// With 4 columns, the most by default: no insert points, and Duplicate is
+// disabled.
+export const FullGrid: Story = {
+  args: {
+    editorConfig: plateBlockEditorConfig,
+    onChange: () => {},
+    value: grid([
+      column('one', 1, [p('One')]),
+      column('two', 1, [p('Two')]),
+      column('three', 1, [p('Three')]),
+      column('four', 1, [p('Four')]),
+    ]),
+  },
+};
