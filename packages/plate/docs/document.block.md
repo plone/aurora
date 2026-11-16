@@ -27,7 +27,7 @@ Every node has `children`. An element's children are other elements or text node
 There are two kinds of nodes:
 
 - Elements, such as paragraphs, headings or tables, are nodes whose `type` is the element's ID.
-- Blocks, such as images or teasers, are nodes of type `ploneBlock`, whose `@type` is the block's ID.
+- Blocks are nodes of type `ploneBlock`, whose `@type` is the block's ID. Use only the blocks listed below.
 
 The editor adds `blockWidth` to the nodes, so you can leave it out.
 
@@ -38,13 +38,14 @@ The editor adds `blockWidth` to the nodes, so you can leave it out.
 
 ### Blocks
 
-The data of a block is in its node, next to `@type`, and its `children` is `[{ "text": "" }]`:
+The data of a block is in its node, next to `@type`, and its `children` is `[{ "text": "" }]`.
+Replace `<block ID>` with the ID of a block listed below, and `<field>` with the fields of its data:
 
 ```json
 {
   "type": "ploneBlock",
-  "@type": "teaser",
-  "href": [{ "@id": "/news/annual-report-2025" }],
+  "@type": "<block ID>",
+  "<field>": "<value>",
   "children": [{ "text": "" }]
 }
 ```
