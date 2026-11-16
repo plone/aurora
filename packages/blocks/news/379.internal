@@ -1,0 +1,1 @@
+Updated the acceptance fixtures and tests to store the page body in the `main` region with `"@type": "plate"`. @sneridagh
