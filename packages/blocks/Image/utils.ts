@@ -1,4 +1,9 @@
-import { flattenToAppURL, isInternalURL } from '@plone/helpers';
+import {
+  flattenToAppURL,
+  getBlockContainerShare,
+  isInternalURL,
+  type BlockContainerInfo,
+} from '@plone/helpers';
 import type {
   BlocksFormData,
   Brain,
@@ -67,3 +72,20 @@ export function getImageBlockHref(data: BlocksFormData): string | undefined {
 
   return url ? flattenToAppURL(url) : undefined;
 }
+
+/**
+ * The `sizes` of an image inside a container that sizes its slots, such as a
+ * grid column: the column's share of the width, or the full width where the
+ * columns stack. Outside such a container, `undefined`, and the image keeps
+ * its default.
+ */
+export const getContainerImageSizes = (
+  container: BlockContainerInfo | null | undefined,
+) => {
+  const share = getBlockContainerShare(container);
+  if (!share) return undefined;
+  const width = `${Math.ceil(share * 100)}vw`;
+  return container?.data?.stack === false
+    ? width
+    : `(max-width: 40rem) 100vw, ${width}`;
+};

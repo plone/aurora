@@ -1,6 +1,8 @@
 import type { BlockViewProps } from '@plone/types';
 import config from '@plone/registry';
 import Image from '@plone/layout/components/Image/Image';
+import { useBlockContainer } from '@plone/helpers';
+import { getContainerImageSizes } from '../Image/utils';
 
 type TeaserViewProps = BlockViewProps & {
   isEditMode?: boolean;
@@ -12,6 +14,8 @@ const asFirstItem = <T,>(value: T | T[] | undefined): T | undefined =>
 const TeaserBlockView = (props: TeaserViewProps) => {
   const { data } = props;
   const Link = config.getComponent('Link').component!;
+  // Inside a grid column, the browser picks a file for the column's width.
+  const sizes = getContainerImageSizes(useBlockContainer());
   const href = asFirstItem(data.href as any);
   const image = asFirstItem(data.preview_image as any);
   const link =
@@ -34,6 +38,7 @@ const TeaserBlockView = (props: TeaserViewProps) => {
           }
           loading="lazy"
           responsive={true}
+          sizes={sizes}
         />
       </div>
       <div className="block-teaser__content">

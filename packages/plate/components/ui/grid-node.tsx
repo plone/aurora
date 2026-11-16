@@ -19,7 +19,9 @@ import { GridColumnHandle, GridInsertSeam } from './grid-column-controls';
 import {
   getColumnProps,
   getGridAttributes,
+  GridColumnContext,
   GridHeadline,
+  GridRenderProvider,
 } from './grid-node-static';
 
 /*
@@ -70,7 +72,9 @@ export function GridElement(props: PlateElementProps<TGridElement>) {
             <GridHeadline grid={element} />
           </div>
         )}
-        <div className="block-grid__columns">{children}</div>
+        <GridRenderProvider value={element}>
+          <div className="block-grid__columns">{children}</div>
+        </GridRenderProvider>
       </BlockInnerContainer>
     </PlateElement>
   );
@@ -147,7 +151,7 @@ export function GridColumnElement(
           })}
         </span>
       )}
-      {children}
+      <GridColumnContext column={element}>{children}</GridColumnContext>
       <GridInsertSeam element={element} side="after" />
     </PlateElement>
   );

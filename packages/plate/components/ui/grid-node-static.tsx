@@ -4,6 +4,10 @@ import type { SlateElementProps } from 'platejs/static';
 
 import clsx from 'clsx';
 import { SlateElement } from 'platejs/static';
+import {
+  BlockContainerProvider,
+  type BlockContainerInfo,
+} from '@plone/helpers';
 
 import { GRID_GAPS } from '../editor/plugins/grid/options';
 import type {
@@ -46,6 +50,53 @@ export const getColumnProps = (column: TGridColumnElement) => {
   };
 };
 
+/** The grid a column is rendered in, for its container context. */
+const GridRenderContext = React.createContext<TGridElement | null>(null);
+
+export const GridRenderProvider = GridRenderContext.Provider;
+
+/**
+ * The container context of a column: the grid's data, the column's
+ * position, its width weight and the grid's total, so the blocks inside can
+ * adapt, such as an image asking for a file that fits the column.
+ */
+export const getColumnContainer = (
+  grid: TGridElement | null,
+  column: TGridColumnElement,
+): BlockContainerInfo | null => {
+  if (!grid) return null;
+  const { children, ...data } = grid;
+  const sizes = children.map((item) =>
+    typeof item.size === 'number' && item.size >= 1 ? item.size : 1,
+  );
+  return {
+    type: grid.type,
+    data,
+    index: Math.max(0, children.indexOf(column)),
+    count: children.length,
+    size: getColumnSize(column),
+    totalSize: sizes.reduce((sum, size) => sum + size, 0),
+  };
+};
+
+/** Gives the blocks of a column their container context. */
+export function GridColumnContext({
+  column,
+  children,
+}: {
+  column: TGridColumnElement;
+  children: React.ReactNode;
+}) {
+  const grid = React.useContext(GridRenderContext);
+  const value = React.useMemo(
+    () => getColumnContainer(grid, column),
+    [grid, column],
+  );
+  return (
+    <BlockContainerProvider value={value}>{children}</BlockContainerProvider>
+  );
+}
+
 export function GridHeadline({ grid }: { grid: TGridElement }) {
   if (!grid.headline) return null;
   return <h2 className="block-grid__headline">{grid.headline}</h2>;
@@ -61,7 +112,9 @@ export function GridElementStatic(props: SlateElementProps<TGridElement>) {
     >
       <BlockInnerContainer>
         <GridHeadline grid={element} />
-        <div className="block-grid__columns">{children}</div>
+        <GridRenderProvider value={element}>
+          <div className="block-grid__columns">{children}</div>
+        </GridRenderProvider>
       </BlockInnerContainer>
     </SlateElement>
   );
@@ -80,7 +133,7 @@ export function GridColumnElementStatic(
       attributes={{ ...props.attributes, ...column.attributes }}
       style={{ ...props.style, ...column.style }}
     >
-      {children}
+      <GridColumnContext column={element}>{children}</GridColumnContext>
     </SlateElement>
   );
 }
