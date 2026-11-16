@@ -6,18 +6,26 @@ import {
   PLONE_BLOCK_TYPE,
   resolveStyleFields,
   setStyleFieldValue,
+  type ResolveStyleDefinitions,
 } from '@plone/helpers';
 import config from '@plone/registry';
-import type { BlockConfigBase, BlocksFormData } from '@plone/types';
+import type {
+  BlockConfigBase,
+  BlocksFormData,
+  StyleDefinition,
+} from '@plone/types';
 import {
   createSlatePlugin,
   ElementApi,
   PathApi,
+  type Path,
   type SetNodesOptions,
   type SlateEditor,
   type TElement,
 } from 'platejs';
 import { toPlatePlugin } from 'platejs/react';
+
+import { getBlockContainer } from './containers/registry';
 
 export const STYLE_FIELDS_KEY = 'styleFields';
 const DEFAULT_BLOCK_WIDTH = 'default';
@@ -49,10 +57,96 @@ const toStyleFieldDataAttributes = (values: Record<string, string>) =>
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   !!value && typeof value === 'object' && !Array.isArray(value);
 
+/**
+ * What a native Plate.js block declares in its plugin options for style
+ * fields: its settings `schema`, whose fields marked `styleField: true` are
+ * style fields, and its own definitions for them, by field name.
+ */
+export type NativeStyleFieldOptions = {
+  /**
+   * The settings schema, or a function that returns it. The function gets
+   * `{ formData, options }`, with the plugin's options.
+   */
+  schema?: BlockConfigBase['blockSchema'];
+  /**
+   * The block's own definitions, by field name, or a function of the
+   * plugin's options that returns them, so they can follow other options.
+   */
+  styleDefinitions?:
+    | Record<string, readonly StyleDefinition[]>
+    | ((
+        options: Record<string, unknown>,
+      ) => Record<string, readonly StyleDefinition[]>);
+};
+
+type EditorWithPlugins = Pick<SlateEditor, 'plugins'>;
+
+const getNativeStyleFieldOptions = (
+  editor: EditorWithPlugins | undefined,
+  element: TElement,
+): NativeStyleFieldOptions | undefined =>
+  element.type === PLONE_BLOCK_TYPE
+    ? undefined
+    : (editor?.plugins?.[element.type]?.options as
+        NativeStyleFieldOptions | undefined);
+
+/**
+ * Resolves the definitions of a style field: a native block's own
+ * `styleDefinitions` first, then the registry's `styleFieldDefinition`
+ * utility of the same name.
+ */
+export const getStyleDefinitionResolver = (
+  editor: EditorWithPlugins | undefined,
+  element: TElement,
+): ResolveStyleDefinitions => {
+  const options = getNativeStyleFieldOptions(editor, element);
+  const own =
+    typeof options?.styleDefinitions === 'function'
+      ? options.styleDefinitions(options as Record<string, unknown>)
+      : options?.styleDefinitions;
+  if (!own) return getStyleFieldDefinitionsFromRegistry;
+  return (fieldName, args) =>
+    own[fieldName] ?? getStyleFieldDefinitionsFromRegistry(fieldName, args);
+};
+
+/** The data of the container a node is in, such as an accordion. */
+const getContainerData = (
+  editor: SlateEditor | undefined,
+  path: Path | undefined,
+): Record<string, unknown> | undefined => {
+  if (!editor || !path || path.length < 2) return undefined;
+  try {
+    return getBlockContainer(editor, path)?.container[0] as
+      Record<string, unknown> | undefined;
+  } catch {
+    return undefined;
+  }
+};
+
 const getElementStyleFieldConfigs = (
   element?: TElement | null,
+  editor?: EditorWithPlugins,
 ): Record<string, StyleFieldConfig> => {
   if (!element) return {};
+
+  const native = getNativeStyleFieldOptions(editor, element);
+  if (native?.schema) {
+    const schema = native.schema;
+    // A schema function also gets the plugin's options, so it can follow
+    // them, such as a list of themes.
+    const blockSchema =
+      typeof schema === 'function'
+        ? (args: Record<string, unknown>) =>
+            (schema as (args: Record<string, unknown>) => unknown)({
+              ...args,
+              options: native,
+            })
+        : schema;
+    return getStyleFieldsFromBlockSchema(
+      { blockSchema: blockSchema as BlockConfigBase['blockSchema'] },
+      element as unknown as BlocksFormData,
+    );
+  }
 
   if (element.type === PLONE_BLOCK_TYPE) {
     const blockType = (element as TElement & { '@type'?: unknown })['@type'];
@@ -82,8 +176,10 @@ const getElementStyleFieldConfigs = (
 
 const applyStyleFieldDefaultsToElement = <T extends TElement>(
   element: T,
+  editor?: SlateEditor,
+  path?: Path,
 ): T => {
-  const fieldConfigs = getElementStyleFieldConfigs(element);
+  const fieldConfigs = getElementStyleFieldConfigs(element, editor);
   const nextElement = { ...element } as Record<string, unknown>;
   const nextStyles = nextElement['styles'];
 
@@ -94,8 +190,8 @@ const applyStyleFieldDefaultsToElement = <T extends TElement>(
   applyStyleFieldDefaultsInData({
     data: nextElement,
     fieldConfigs,
-    container: undefined,
-    resolveDefinitions: getStyleFieldDefinitionsFromRegistry,
+    container: getContainerData(editor, path),
+    resolveDefinitions: getStyleDefinitionResolver(editor, element),
   });
 
   return nextElement as T;
@@ -113,17 +209,28 @@ const withInsertedStyleFieldDefaults = (nodes: unknown): unknown => {
   return applyStyleFieldDefaultsToElement(nodes);
 };
 
-const normalizeTopLevelStyleFields = (
+/**
+ * Applies the style field defaults to a top-level Plone block, or to a
+ * native block with a settings schema at any depth. Block width only
+ * applies at the top level.
+ */
+const normalizeStyleFields = (
   editor: SlateEditor,
   element: TElement,
   path: number[],
 ) => {
-  if (path.length !== 1 || element.type !== PLONE_BLOCK_TYPE) return false;
+  const isTopLevelPloneBlock =
+    path.length === 1 && element.type === PLONE_BLOCK_TYPE;
+  const isNativeWithSchema = !!getNativeStyleFieldOptions(editor, element)
+    ?.schema;
+  if (!isTopLevelPloneBlock && !isNativeWithSchema) return false;
 
-  const nextElement = applyStyleFieldDefaultsToElement(element) as Record<
-    string,
-    unknown
-  >;
+  const nextElement = applyStyleFieldDefaultsToElement(
+    element,
+    editor,
+    path,
+  ) as Record<string, unknown>;
+  if (path.length > 1) delete nextElement.blockWidth;
   const patch = Object.fromEntries(
     Object.entries(nextElement).filter(
       ([key, value]) =>
@@ -213,8 +320,8 @@ export const setStyleFieldOnEditor = (
 
     if (!ElementApi.isElement(node) || !editor.api.isBlock(node)) return;
 
-    const fieldConfig = getElementStyleFieldConfigs(node)[fieldName];
-    const definitions = getStyleFieldDefinitionsFromRegistry(fieldName, {
+    const fieldConfig = getElementStyleFieldConfigs(node, editor)[fieldName];
+    const definitions = getStyleDefinitionResolver(editor, node)(fieldName, {
       data: node as Record<string, unknown>,
       blockType:
         (typeof node.type === 'string' && node.type !== PLONE_BLOCK_TYPE
@@ -252,12 +359,37 @@ export const resetStyleFieldOnEditor = (
       ? blockEntry[0]
       : undefined;
   const defaultValue = block
-    ? getElementStyleFieldConfigs(block)[fieldName]?.defaultValue
+    ? getElementStyleFieldConfigs(block, editor)[fieldName]?.defaultValue
     : undefined;
 
   if (!defaultValue) return;
 
   setStyleFieldOnEditor(editor, fieldName, defaultValue, options);
+};
+
+/**
+ * The CSS custom properties and the values of an element's style fields,
+ * with the data of the container it's in.
+ */
+export const getElementStyleFields = (
+  editor: SlateEditor | undefined,
+  element: TElement,
+) => {
+  const fieldConfigs = getElementStyleFieldConfigs(element, editor);
+  if (!Object.keys(fieldConfigs).length) return { style: {}, values: {} };
+
+  let path: Path | undefined;
+  try {
+    path = editor?.api.findPath(element);
+  } catch {
+    path = undefined;
+  }
+  return resolveStyleFields({
+    data: element as Record<string, unknown>,
+    fieldConfigs,
+    container: getContainerData(editor, path),
+    resolveDefinitions: getStyleDefinitionResolver(editor, element),
+  });
 };
 
 export const BaseStyleFieldsPlugin = createSlatePlugin({
@@ -268,17 +400,15 @@ export const BaseStyleFieldsPlugin = createSlatePlugin({
   inject: {
     isBlock: true,
     nodeProps: {
-      transformProps: ({ element, props }) => {
+      transformProps: ({ editor, element, props }) => {
         if (!element || !ElementApi.isElement(element)) {
           return props;
         }
 
-        const { style, values } = resolveStyleFields({
-          data: element as Record<string, unknown>,
-          fieldConfigs: getElementStyleFieldConfigs(element),
-          container: undefined,
-          resolveDefinitions: getStyleFieldDefinitionsFromRegistry,
-        });
+        const { style, values } = getElementStyleFields(
+          editor as SlateEditor,
+          element,
+        );
 
         const dataAttributes = toStyleFieldDataAttributes(values);
 
@@ -307,16 +437,16 @@ export const BaseStyleFieldsPlugin = createSlatePlugin({
     editor.api.create.block = ((...args: any[]) =>
       withInsertedStyleFieldDefaults(createBlock(...args))) as any;
 
-    // Top-level Plone blocks always carry their style field defaults, however
-    // they got there, so the saved value is exactly what
-    // `normalizeInitialValue` produces on load.
+    // Top-level Plone blocks, and native blocks with a settings schema,
+    // always carry their style field defaults, however they got there, so
+    // the saved value is exactly what loading it produces.
     editor.normalizeNode = ((entry: any) => {
       const [node, path] = entry;
 
       if (
         ElementApi.isElement(node) &&
         PathApi.isPath(path) &&
-        normalizeTopLevelStyleFields(editor, node, path)
+        normalizeStyleFields(editor, node, path)
       ) {
         return;
       }

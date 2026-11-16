@@ -318,6 +318,50 @@ That `sand` value is resolved at runtime to:
 }
 ```
 
+## Native Plate blocks
+
+A Plate.js block, such as the grid, has no entry in `config.blocks.blocksConfig`.
+It declares its settings in its plugin options instead, so it works in any editor that installs `@plone/plate`:
+
+`schema`
+:   The block's settings schema, or a function that returns it, as for a Plone block's `blockSchema`.
+    The function also gets the plugin's options, as `options`.
+    Fields marked with `styleField` are style fields.
+
+`styleDefinitions`
+:   Optional definitions for the block's style fields, by field name, as lists of style definitions, or a function of the plugin's options that returns them.
+    They come first.
+    Without them, the registry's `styleFieldDefinition` utility of the same name provides the definitions.
+
+```ts
+const themes = [
+  { name: 'default', label: 'Default', style: {} },
+  { name: 'sand', label: 'Sand', style: { '--theme-color': 'wheat' } },
+];
+
+const CardPlugin = createSlatePlugin({
+  key: 'card',
+  node: { isElement: true },
+  options: {
+    schema: () => ({
+      title: 'Card',
+      fieldsets: [{ id: 'default', title: 'Default', fields: ['theme'] }],
+      properties: {
+        theme: { title: 'Background', default: 'default', styleField: true },
+      },
+      required: [],
+    }),
+    styleDefinitions: { theme: themes },
+  },
+});
+```
+
+The block then gets the same CSS custom properties and `data-style-*` attributes as a Plone block, in the editor and in the published view.
+Native blocks get their defaults at any depth, for example inside an accordion panel.
+A block that brings its own definitions works without any site configuration, and a site can take over later by registering a `styleFieldDefinition` utility, without changing saved content.
+
+The definitions get the data of the container the block is in, as `container`, so they can depend on it.
+
 ## Summary
 
 For generic style-backed fields:
@@ -330,4 +374,4 @@ For generic style-backed fields:
 
 For registry-backed Plone blocks with editor width controls, define `blockWidth` in the block schema and mark it with `styleField`.
 For registry-backed Plone blocks that need a default width without editor controls, set `defaultBlockWidth` in `config.blocks.blocksConfig`.
-For Plate-native blocks, keep using the existing `blockWidth` configuration in `plateBlocksConfig`.
+For Plate-native blocks, keep using the existing `blockWidth` configuration in `plateBlocksConfig`, and declare other style fields in the plugin's `schema` option.
