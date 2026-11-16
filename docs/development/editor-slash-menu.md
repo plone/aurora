@@ -114,7 +114,9 @@ Slash builders receive a `context` object:
 ```ts
 type SlashMenuContext = {
   hasTitleBlock: boolean;
-  translate?: (id: string) => string;
+  /** The container block the menu opens in, such as a grid column. */
+  container?: { type: string; availableBlocks?: string[] };
+  t?: TranslateFunction;
 };
 ```
 
@@ -123,6 +125,11 @@ This is useful when the menu depends on editor state. For example:
 - adding a title command only when no title exists
 - translating labels from registry-backed blocks
 - showing or hiding commands depending on the current editor
+
+Inside a block that holds other blocks, such as an accordion panel or a grid column, `container` names that block and lists the blocks it can hold.
+After your builders run, the menu keeps only the items that insert one of those blocks, so a custom item is filtered too.
+A container that can't be nested, such as the grid, is never offered inside itself, and the menu says why.
+The default groups offer "Accordion" and "Grid" under "Advanced blocks".
 
 The default renderer adapts the current editor i18n implementation to this narrower function shape, so slash menu builders do not need to know about `intl` objects.
 

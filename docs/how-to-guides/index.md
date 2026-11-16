@@ -39,6 +39,7 @@ icons
 configure-plate-code-block-languages
 add-plate-plugins
 configure-accordion-blocks
+configure-grid-blocks
 bind-metadata-fields-to-plate-text-blocks
 customize-toolbar
 custom-content-types
