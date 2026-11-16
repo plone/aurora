@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.12']
+        python-version: ['3.14']
     steps:
       - uses: actions/checkout@v7
 
@@ -43,11 +43,11 @@ jobs:
       - name: pip install requirements
         run: pip install -r requirements-docs.txt
 
-      - name: Check for broken links
-        run: make docs-linkcheckbroken
-
       - name: Build HTML documentation
         run: make docs-html
 
       - name: Run vale
         run: make docs-vale VALEOPTS=--no-exit
+
+      - name: Check for broken links
+        run: make docs-linkcheck
