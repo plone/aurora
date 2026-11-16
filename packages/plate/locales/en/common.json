@@ -176,7 +176,9 @@
       "gridSettings": "Grid settings",
       "oneColumn": "1 column",
       "innerImageNote": "Inside a grid, an image uses its column's width, so size and alignment aren't offered.",
-      "innerTeaserNote": "Inside a grid, a teaser takes the grid's background, so its own background isn't offered."
+      "innerTeaserNote": "Inside a grid, a teaser takes the grid's background, so its own background isn't offered.",
+      "dragColumn": "Drag to reorder column {{position}}",
+      "dragHint": "Or press Alt+Shift+Left or Right in the column."
     }
   }
 }

@@ -16,6 +16,7 @@ import { useTranslation } from '../editor/plugins/i18n';
 import { BlockInnerContainer } from './block-inner-container';
 import { useSettingsTarget } from './block-settings';
 import { GridColumnHandle, GridInsertSeam } from './grid-column-controls';
+import { GridColumnDropLine, useGridColumnDrag } from './grid-column-drag';
 import {
   getColumnProps,
   getGridAttributes,
@@ -86,6 +87,7 @@ export function GridColumnElement(
   const { children, className, element } = props;
   const { t } = useTranslation();
   const column = getColumnProps(element);
+  const { isDragging, nodeRef, handleRef } = useGridColumnDrag(element);
   // The column's place, read from the editor's value on every change.
   const place = useEditorSelector(
     (editor) => {
@@ -115,6 +117,7 @@ export function GridColumnElement(
       className={clsx(
         className,
         'block-grid__column',
+        isDragging && 'opacity-50',
         // Edit mode only: a visible frame, a strip at the top for the
         // handle, and room around the blocks.
         `
@@ -139,7 +142,8 @@ export function GridColumnElement(
       style={{ ...props.style, ...column.style }}
     >
       <GridInsertSeam element={element} side="before" />
-      <GridColumnHandle element={element} />
+      <GridColumnHandle element={element} gripRef={handleRef} />
+      <GridColumnDropLine id={element.id} />
       {isEmptyColumn(element) && (
         <span
           aria-hidden="true"
@@ -151,7 +155,9 @@ export function GridColumnElement(
           })}
         </span>
       )}
-      <GridColumnContext column={element}>{children}</GridColumnContext>
+      <div ref={nodeRef} className="h-full">
+        <GridColumnContext column={element}>{children}</GridColumnContext>
+      </div>
       <GridInsertSeam element={element} side="after" />
     </PlateElement>
   );
