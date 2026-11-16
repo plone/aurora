@@ -4,6 +4,8 @@ document_model: plone.plate
 
 A page stores all its content in one region, `main`, whose `@type` is `plate` and whose `value` is a Plate document: a list of nodes, from top to bottom. The elements and blocks described below are the nodes you can use.
 
+In the `plone.plate` document model, the page body is the `main` region, a `blocks` entry whose `@type` is `plate`. `plate` names the format of a region's value, so other document models can use `plate` regions too.
+
 Write the document in the `blocks` field of the content, under the `main` key. `blocks_layout` is not used, and other entries in `blocks` are ignored once the document exists.
 
 ```json

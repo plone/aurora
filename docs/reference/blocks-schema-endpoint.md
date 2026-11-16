@@ -57,6 +57,8 @@ The protocol comes from the `X-Forwarded-Proto` header, when a proxy sets it, an
 
 `document_model` tells how content stores its blocks, as an object with an `id` and a `version`.
 Plone Aurora stores a page as one Plate document, so its document model is `plone.plate`, version 1.
+In the `plone.plate` document model, the page body is the `main` region, a `blocks` entry whose `@type` is `plate`.
+`plate` names the format of a region's value, so other document models can use `plate` regions too.
 Volto stores the blocks of content with the `plone.blocks` document model.
 A new `version` means that the stored data changed in a way that clients of the previous version can't read.
 
