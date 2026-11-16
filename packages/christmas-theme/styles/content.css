@@ -1,0 +1,265 @@
+.app-slot,
+.content-area {
+  /* Color palette tokens */
+  --background: light-dark(#f8fcf9, #0a1612);
+  --foreground: light-dark(#132e23, #eff7f3);
+  --brand: light-dark(#c41e3a, #ff4d6d);
+  --brand-foreground: light-dark(#ffffff, #0a1612);
+  --accent: light-dark(rgb(196 30 58 / 8%), rgb(255 77 109 / 15%));
+  --muted: light-dark(#f2f6f4, #12241d);
+  --muted-foreground: light-dark(#4b6b5d, #a2c2b3);
+  --border: light-dark(rgb(19 46 35 / 15%), rgb(239 247 243 / 16%));
+  --error: light-dark(#b91c1c, #f87171);
+
+  /* Typography & geometry tokens */
+  --font-heading: 'Georgia', 'Playfair Display', 'Times New Roman', serif;
+  --font-body: 'Figtree', 'Funnel', system-ui, -apple-system, sans-serif;
+  --heading-weight: 700;
+  --radius: 16px;
+  --shadow: 0 16px 36px -18px light-dark(rgb(196 30 58 / 22%), rgb(0 0 0 / 60%));
+  --background-image:
+    radial-gradient(
+      800px circle at 15% -200px,
+      light-dark(rgb(196 30 58 / 9%), rgb(255 77 109 / 12%)) 0%,
+      transparent 75%
+    ),
+    radial-gradient(
+      900px circle at 85% -100px,
+      light-dark(rgb(17 48 36 / 8%), rgb(143 208 176 / 10%)) 0%,
+      transparent 70%
+    );
+
+  /* Layout & block spacing tokens */
+  --block-spacing: 2.25rem;
+  --block-title-spacing-after: 2.5rem;
+
+  /* Component tokens */
+  --card-background: light-dark(rgb(255 255 255 / 92%), rgb(16 34 26 / 80%));
+  --card-lift: 3px;
+  --callout-background: light-dark(#fef3c7, #24342a);
+  --callout-foreground: light-dark(#78350f, #fef3c7);
+}
+
+/* Document First Heading */
+.content-area :is(h1, .documentFirstHeading) {
+  position: relative;
+  color: light-dark(#0e241c, #f4fbf7);
+  letter-spacing: -0.015em;
+}
+
+/* Callout block */
+.slate-callout > .block-inner-container {
+  border-radius: var(--radius);
+  border-left: 5px solid var(--brand);
+  box-shadow: 0 4px 12px light-dark(rgb(196 30 58 / 8%), rgb(0 0 0 / 25%));
+}
+
+/* Blockquote */
+.slate-blockquote > .block-inner-container,
+.block-quote {
+  padding: 1.25rem 1.75rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  border-left: 4px solid light-dark(#165b42, #8fd0b0);
+  background: light-dark(rgb(22 91 66 / 5%), rgb(143 208 176 / 8%));
+  font-family: var(--font-heading);
+  font-style: italic;
+}
+
+/* Teaser block */
+.block-teaser {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.block-teaser:hover {
+  border-color: var(--brand);
+  box-shadow: var(--shadow);
+  transform: translateY(calc(var(--card-lift) * -1));
+}
+
+/* Christmas Banner block */
+.block-christmas_banner {
+  margin-block: 1.25rem;
+}
+
+.block-christmas_banner__wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.75rem;
+  border: 1px solid rgb(255 255 255 / 25%);
+  border-radius: 9999px;
+  box-shadow: 0 4px 18px light-dark(rgb(19 46 35 / 15%), rgb(0 0 0 / 40%));
+  gap: 1rem;
+  text-align: center;
+  transition: all 0.25s ease;
+}
+
+.block-christmas_banner[data-variant='evergreen']
+  .block-christmas_banner__wrapper {
+  background: linear-gradient(
+    135deg,
+    light-dark(#134e3a, #0d3828) 0%,
+    light-dark(#0a2e22, #072118) 100%
+  );
+  color: #f0fdf4;
+}
+
+.block-christmas_banner[data-variant='candy-cane']
+  .block-christmas_banner__wrapper {
+  background: linear-gradient(
+    135deg,
+    light-dark(#c41e3a, #991b1b) 0%,
+    light-dark(#991b1b, #7f1d1d) 100%
+  );
+  color: #ffffff;
+}
+
+.block-christmas_banner[data-variant='gold'] .block-christmas_banner__wrapper {
+  background: linear-gradient(
+    135deg,
+    light-dark(#d97706, #b45309) 0%,
+    light-dark(#b45309, #78350f) 100%
+  );
+  color: #fffbeb;
+}
+
+.block-christmas_banner__icon {
+  flex-shrink: 0;
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.block-christmas_banner__content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+}
+
+.block-christmas_banner__greeting {
+  color: light-dark(#fef08a, #fef9c3);
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.block-christmas_banner__message {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.block-christmas_banner__decorations {
+  flex-shrink: 0;
+  font-size: 1.2rem;
+  letter-spacing: 0.2rem;
+}
+
+/* Edit mode */
+.block-christmas_banner--edit .block-christmas_banner__content {
+  flex: 1;
+}
+
+.block-christmas_banner__greeting-inline {
+  min-width: 140px;
+  padding: 2px 6px;
+  border: none;
+  border-radius: 4px;
+  border-bottom: 1px dashed transparent;
+  background: transparent;
+  color: light-dark(#fef08a, #fef9c3);
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  outline: none;
+  text-align: right;
+  transition: all 0.2s ease;
+}
+
+.block-christmas_banner__greeting-inline:hover,
+.block-christmas_banner__greeting-inline:focus {
+  border-bottom-color: light-dark(#fef08a, #fef9c3);
+  background: rgb(0 0 0 / 18%);
+}
+
+.block-christmas_banner__message-inline {
+  min-width: 260px;
+  flex: 1;
+  padding: 2px 6px;
+  border: none;
+  border-radius: 4px;
+  border-bottom: 1px dashed transparent;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.block-christmas_banner__message-inline:hover,
+.block-christmas_banner__message-inline:focus {
+  border-bottom-color: rgb(255 255 255 / 60%);
+  background: rgb(0 0 0 / 18%);
+}
+
+.block-christmas_banner__decorations-inline {
+  width: 110px;
+  padding: 2px 4px;
+  border: none;
+  border-radius: 4px;
+  border-bottom: 1px dashed transparent;
+  background: transparent;
+  font-size: 1.15rem;
+  letter-spacing: 0.2rem;
+  outline: none;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.block-christmas_banner__decorations-inline:hover,
+.block-christmas_banner__decorations-inline:focus {
+  border-bottom-color: rgb(255 255 255 / 60%);
+  background: rgb(0 0 0 / 18%);
+}
+
+.block-christmas_banner--selected .block-christmas_banner__wrapper {
+  box-shadow:
+    0 0 0 2px var(--brand),
+    0 6px 20px rgb(0 0 0 / 35%);
+}
+
+/* Alert Plate block */
+:where(.slate-alert) {
+  margin-block: 1.5rem;
+}
+
+:where(.slate-alert .block-alert__wrapper) {
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem 1.35rem;
+  border-radius: var(--radius);
+  border-left: 4px solid var(--brand);
+  background-color: light-dark(rgb(196 30 58 / 7%), rgb(255 77 109 / 12%));
+  box-shadow: 0 2px 8px light-dark(rgb(196 30 58 / 6%), rgb(0 0 0 / 30%));
+  gap: 0.85rem;
+}
+
+:where(.slate-alert .block-alert__icon) {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+:where(.slate-alert .block-alert__content) {
+  flex: 1;
+  color: var(--foreground);
+  line-height: 1.6;
+}

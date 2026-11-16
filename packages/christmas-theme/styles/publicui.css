@@ -1,0 +1,156 @@
+/* Site Header & Navigation */
+#header {
+  position: relative;
+  border-bottom: 3px solid var(--brand);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  background-color: light-dark(rgba(255, 255, 255, 0.88), rgb(10 22 18 / 85%));
+}
+
+#header::after {
+  position: absolute;
+  right: 0;
+  bottom: -4px;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    light-dark(#d97706, #fbbf24) 50%,
+    transparent 100%
+  );
+  content: '';
+  pointer-events: none;
+}
+
+#header .site-logo {
+  transition: transform 0.2s ease;
+}
+
+#header .site-logo:hover {
+  transform: scale(1.02);
+}
+
+#header nav a {
+  border-radius: var(--radius);
+  font-weight: 500;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+#header nav a:hover,
+#header nav a[data-hovered] {
+  background-color: var(--accent);
+  color: var(--brand);
+}
+
+#header nav a[data-current] {
+  background-color: var(--brand) !important;
+  box-shadow: 0 2px 8px light-dark(rgb(196 30 58 / 25%), rgb(0 0 0 / 40%));
+  color: var(--brand-foreground) !important;
+  font-weight: 600;
+}
+
+#header button,
+#header .button-primary {
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+}
+
+#header :focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Holiday Banner Slot Component */
+.christmas-theme-banner {
+  max-width: var(--layout-container-width, 1200px);
+  padding: 0 1rem;
+  margin: 1.5rem auto 1rem auto;
+}
+
+.christmas-theme-banner__inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.5rem;
+  border: 1px solid light-dark(rgb(255 255 255 / 20%), rgb(255 255 255 / 10%));
+  border-radius: var(--radius);
+  background: linear-gradient(
+    135deg,
+    light-dark(#c41e3a, #991b1b) 0%,
+    light-dark(#991b1b, #7f1d1d) 100%
+  );
+  box-shadow: 0 4px 16px light-dark(rgb(196 30 58 / 20%), rgb(0 0 0 / 50%));
+  color: #ffffff;
+  font-size: 0.95rem;
+  gap: 0.85rem;
+  text-align: center;
+}
+
+.christmas-theme-banner__icon {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.christmas-theme-banner__text strong {
+  margin-right: 0.35rem;
+  color: light-dark(#fef08a, #fde047);
+}
+
+.christmas-theme-banner__decorations {
+  font-size: 1.15rem;
+  letter-spacing: 0.25rem;
+}
+
+@media (max-width: 640px) {
+  .christmas-theme-banner__inner {
+    flex-direction: column;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    gap: 0.4rem;
+  }
+}
+
+/* Site Footer */
+#footer {
+  position: relative;
+  border-top: 3px solid light-dark(#194532, #113023);
+  background-color: light-dark(#0c2117, #05100c);
+  --foreground: light-dark(#f4f9f6, #e2ece6);
+  padding-block: var(--space-3xl, 3rem);
+}
+
+#footer::before {
+  position: absolute;
+  top: -3px;
+  right: 0;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 5%,
+    light-dark(#d97706, #f59e0b) 50%,
+    transparent 95%
+  );
+  content: '';
+}
+
+#footer a {
+  color: light-dark(#fde68a, #fef08a);
+  text-decoration-color: light-dark(
+    rgb(253 230 138 / 40%),
+    rgb(254 240 138 / 40%)
+  );
+  transition: color 0.2s ease;
+}
+
+#footer a:hover {
+  color: light-dark(#ffffff, #ffffff);
+}
+
+#footer p,
+#footer .text-muted-foreground {
+  color: light-dark(#92b8a7, #7ea392);
+}

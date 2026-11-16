@@ -65,6 +65,7 @@
     "@plone/react-router": "workspace:*",
     "@plone/registry": "workspace:*",
     "@plone/theming": "workspace:*",
+    "@plone/christmas-theme": "workspace:*",
     "@react-router/node": "catalog:",
     "@react-router/serve": "catalog:",
     "i18next": "catalog:",
