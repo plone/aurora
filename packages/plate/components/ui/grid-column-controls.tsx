@@ -1,8 +1,9 @@
-import type { MouseEvent } from 'react';
+import { useId, type MouseEvent } from 'react';
 import type { TElement } from 'platejs';
 
 import {
   ChevronLeftIcon,
+  GripVerticalIcon,
   ChevronRightIcon,
   CopyIcon,
   PlusIcon,
@@ -82,10 +83,18 @@ const useColumnState = (element: TElement): ColumnState | undefined => {
 const keepCaret = (event: MouseEvent) => event.preventDefault();
 
 /** Move left, Move right, Duplicate and Delete for a column. */
-export function GridColumnHandle({ element }: { element: TGridColumnElement }) {
+export function GridColumnHandle({
+  element,
+  gripRef,
+}: {
+  element: TGridColumnElement;
+  /** Connects the grip to the column's drag and drop. */
+  gripRef?: (node: any) => void;
+}) {
   const editor = useEditorRef();
   const { t } = useTranslation();
   const { settingsContainer } = usePlateHost();
+  const gripHintId = useId();
   const state = useColumnState(element);
   // Without a host sidebar, the grid's settings open in a popover from here.
   const gridId = useEditorSelector(
@@ -99,6 +108,10 @@ export function GridColumnHandle({ element }: { element: TGridColumnElement }) {
   if (!state || state.textSelected) return null;
 
   const { index, total, active } = state;
+  const gripLabel = t('plate.grid.dragColumn', {
+    defaultValue: 'Drag to reorder column {{position}}',
+    position: index + 1,
+  });
   const full = total >= getGridOptions(editor).maxColumns;
   const pathOf = () => findGridNodePath(editor as any, element);
 
@@ -199,6 +212,28 @@ export function GridColumnHandle({ element }: { element: TGridColumnElement }) {
         `,
       )}
     >
+      {gripRef && (
+        <Button
+          ref={gripRef}
+          type="button"
+          variant="ghost"
+          size="icon"
+          className={`
+            size-6 cursor-grab rounded-full
+            [&_svg]:size-3.5
+          `}
+          aria-label={gripLabel}
+          aria-describedby={gripHintId}
+          title={gripLabel}
+        >
+          <GripVerticalIcon />
+        </Button>
+      )}
+      <span id={gripHintId} className="sr-only">
+        {t('plate.grid.dragHint', {
+          defaultValue: 'Or press Alt+Shift+Left or Right in the column.',
+        })}
+      </span>
       {!settingsContainer && gridId && (
         <BlockSettingsTrigger
           target={{ type: 'grid', id: gridId }}

@@ -1,6 +1,8 @@
 import * as React from 'react';
 
 import { DndPlugin, useDraggable, useDropLine } from '@platejs/dnd';
+
+import { GRID_COLUMN_KEY } from '../editor/plugins/grid/types';
 import { expandListItemsWithChildren } from '@platejs/list';
 import { BlockSelectionPlugin } from '@platejs/selection/react';
 import { GripVertical } from 'lucide-react';
@@ -20,7 +22,8 @@ import { Button } from './button';
 import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip';
 import { cn } from '../../lib/utils';
 
-const UNDRAGGABLE_KEYS = [KEYS.column, KEYS.tr, KEYS.td];
+// Grid columns have their own grip.
+const UNDRAGGABLE_KEYS = [KEYS.column, KEYS.tr, KEYS.td, GRID_COLUMN_KEY];
 
 export const BlockDraggable: RenderNodeWrapper = (props) => {
   const { editor, element, path } = props;

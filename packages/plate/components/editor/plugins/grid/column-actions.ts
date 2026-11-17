@@ -71,6 +71,26 @@ export const moveColumnBy = (
   return true;
 };
 
+/** Moves a column to another position of its grid, such as after a drop. */
+export const moveColumnTo = (
+  editor: SlateEditor,
+  gridPath: Path,
+  from: number,
+  to: number,
+): boolean => {
+  if (!moveGridColumn(editor, gridPath, from, to)) return false;
+  say(
+    editor,
+    'columnMoved',
+    'Column moved to position {{position}} of {{total}}',
+    {
+      position: to + 1,
+      total: columnCount(editor, gridPath),
+    },
+  );
+  return true;
+};
+
 /** Inserts a copy of a column after it and puts the caret in the copy. */
 export const duplicateColumn = (editor: SlateEditor, columnPath: Path) => {
   const at = duplicateGridColumn(

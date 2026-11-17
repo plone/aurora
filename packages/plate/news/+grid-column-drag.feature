@@ -1,0 +1,1 @@
+Grid columns can be reordered by dragging the grip in their handle, within their grid. Only columns are draggable: other blocks still move by cut and paste. Editors that already have `DndKit` keep their own drag handles. @Humanaice
