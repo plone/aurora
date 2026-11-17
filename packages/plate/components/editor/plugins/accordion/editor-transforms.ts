@@ -33,6 +33,8 @@ export const ACCORDION_EDITOR_KEY = 'accordionEditor';
 export type AccordionEditorOptions = {
   /** The IDs of the panels closed in the editor. */
   closedPanels: Record<string, boolean>;
+  /** Whether the user is typing in an accordion: the block toolbars hide. */
+  typing: boolean;
 };
 
 type EditorWithOptions = SlateEditor & {

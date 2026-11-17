@@ -53,7 +53,28 @@
         "panelAdded": "Pannello aggiunto alla posizione {{position}} di {{total}}",
         "panelMoved": "Pannello spostato alla posizione {{position}} di {{total}}",
         "panelDuplicated": "Pannello duplicato",
-        "panelDeleted": "Pannello eliminato"
+        "panelDeleted": "Pannello eliminato",
+        "blockMoved": "Blocco spostato alla posizione {{position}} di {{total}}",
+        "blockDuplicated": "Blocco duplicato",
+        "blockDeleted": "Blocco {{type}} eliminato",
+        "blockChanged": "Blocco trasformato in {{type}}"
+      },
+      "block": "Blocco",
+      "blockActions": "Azioni del blocco",
+      "moveUp": "Sposta in alto",
+      "moveDown": "Sposta in basso",
+      "duplicate": "Duplica",
+      "turnInto": "Trasforma in…",
+      "delete": "Elimina",
+      "moveBlockUp": "Sposta il blocco in alto",
+      "moveBlockDown": "Sposta il blocco in basso",
+      "insertBlockAtTop": "Inserisci un blocco in cima a “{{title}}”",
+      "insertBlockBetween": "Inserisci un blocco tra il blocco {{before}} e il {{after}} di “{{title}}”",
+      "addBlockToPanel": "Aggiungi un blocco a “{{title}}”",
+      "noNesting": "Una fisarmonica non può essere inserita in una fisarmonica.",
+      "blockDeleted": "Blocco {{type}} eliminato",
+      "blockTypes": {
+        "separator": "Separatore"
       }
     },
     "undo": "Annulla",
