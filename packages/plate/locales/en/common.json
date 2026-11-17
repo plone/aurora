@@ -75,7 +75,34 @@
       "blockDeleted": "{{type}} block deleted",
       "blockTypes": {
         "separator": "Separator"
-      }
+      },
+      "accordionSettings": "Accordion settings",
+      "panelSettings": "Panel settings",
+      "selection": "Selection",
+      "panelCrumb": "Panel “{{title}}”",
+      "untitled": "Untitled",
+      "panels": "Panels",
+      "dragToReorder": "Drag to reorder",
+      "opensOnLoad": "opens on load",
+      "onePanel": "1 panel",
+      "panelCount": "{{count}} panels",
+      "outlineHint": "Drag to reorder. Select a panel to open it and see its settings.",
+      "addPanel": "Add panel",
+      "behaviour": "Behaviour",
+      "exclusive": "Only one panel open at a time",
+      "exclusiveHint": "Applies to the published page. While editing, panels open and close independently so you can work on several at once.",
+      "background": "Background",
+      "themes": {
+        "white": "White",
+        "grey": "Grey"
+      },
+      "title": "Title",
+      "panelPosition": "Panel {{position}} of {{total}} · {{blocks}}",
+      "startOpen": "Open when the page loads",
+      "anchor": "Link anchor",
+      "anchorHint": "Links to #{{anchor}} open this panel and scroll to it.",
+      "anchorTaken": "Another panel already uses this anchor. Choose another one.",
+      "panelActions": "Panel actions"
     },
     "undo": "Undo",
     "undone": "Undone"
