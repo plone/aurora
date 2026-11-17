@@ -19,6 +19,8 @@ import {
   KEYS,
   PathApi,
 } from 'platejs';
+import { insertAccordion } from './plugins/accordion/editor-transforms';
+import { ACCORDION_KEY } from './plugins/accordion/types';
 import { SuggestionPlugin } from './plugins/suggestion-kit';
 import { withBlockWidthDefaults } from './plugins/block-width-plugin';
 
@@ -41,6 +43,7 @@ const insertBlockMap: Record<
   [KEYS.listTodo]: insertList,
   [KEYS.ol]: insertList,
   [KEYS.ul]: insertList,
+  [ACCORDION_KEY]: (editor) => insertAccordion(editor),
   [ACTION_THREE_COLUMNS]: (editor) =>
     insertColumnGroup(editor, { columns: 3, select: true }),
   [KEYS.audio]: (editor) => insertAudioPlaceholder(editor, { select: true }),
