@@ -31,6 +31,31 @@ It is usually better and quicker to move your items into new locations and copy 
 
 ## Upgrading to Plone Aurora
 
+(upgrade-guide-main-plate-region)=
+
+### The page body is stored in the `main` region
+
+```{versionchanged} 1.0.0-alpha.24
+These steps apply when you upgrade from Plone Aurora 1.0.0-alpha.23 or earlier to 1.0.0-alpha.24 or later.
+```
+
+The page body is now stored in the `main` entry of `blocks`, whose `@type` is `plate`, instead of the `__somersault__` block.
+Content with the old block is renamed when it is read, and keeps the new shape once it is saved.
+See {doc}`../conceptual-guides/unified-editor`.
+
+Before you deploy this version, upgrade the backend to Plone 6.2 with `plone.restapi` 10.3.0 or later.
+Plone 6.2 releases that ship an older `plone.restapi` need it pinned, for example in {file}`backend/pyproject.toml`:
+
+```toml
+dependencies = [
+    "Products.CMFPlone==6.2.2",
+    "plone.restapi>=10.3.0",
+]
+```
+
+With an older `plone.restapi`, the pages saved in the new shape drop out of `SearchableText`, get no link integrity, and the links of the blocks in them are not converted to `resolveuid` links.
+Reindexing fixes the first two, but not the links, which stay as they are until the page is saved again.
+
 (upgrade-guide-block-content-css)=
 
 ### Block content is styled in `styles/content.css`

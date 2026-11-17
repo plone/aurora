@@ -105,6 +105,7 @@ The key of a region is its name, and its `@type`, `plate`, names the format of i
 
 The `main` entry follows the same shape as any other block: it has an `@type` and a `value`.
 Regions are not listed in `blocks_layout`: a region is found by its name, and code that processes regions, such as the backend indexers, finds them by their `plate` type.
+The backend processes `plate` regions since `plone.restapi` 10.3.0.
 The `value` holds the entire Plate editor value as an ordered array of nodes:
 
 - **Plate.js text nodes** use a Plate `type` (`title`, `p`, and so on) and Slate-style `children`.

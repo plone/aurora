@@ -22,6 +22,6 @@ DOCKER_IMAGE=plone/server-dev:6.2.2
 DOCKER_IMAGE_ACCEPTANCE=plone/server-acceptance:6.2.2
 # Python packages to install on top of the backend images, like newer
 # versions of the ones they ship with.
-KGS=plone.restapi==10.2.0
+KGS=plone.restapi==10.3.0
 NODEBIN = ./node_modules/.bin
 SCRIPTSPACKAGE = ./packages/scripts
