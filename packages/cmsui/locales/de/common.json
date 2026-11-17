@@ -41,6 +41,7 @@
       "copyFailed": "Kopieren fehlgeschlagen"
     },
     "controlpanelDescriptions": {
+      "addons": "Erweiterungen installieren, aktualisieren und entfernen",
       "date-and-time": "Zeitzone und erster Wochentag",
       "language": "Sprachen der Website und Übersetzungen",
       "mail": "Server für ausgehende E-Mails und Absender",

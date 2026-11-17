@@ -89,6 +89,7 @@
       "copyFailed": "Couldn't copy"
     },
     "controlpanelDescriptions": {
+      "addons": "Install, upgrade and remove add-ons",
       "date-and-time": "Time zone and first day of the week",
       "language": "Site languages and translation setup",
       "mail": "Outgoing mail server and sender",

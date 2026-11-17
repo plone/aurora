@@ -89,6 +89,7 @@
       "copyFailed": "Impossibile copiare"
     },
     "controlpanelDescriptions": {
+      "addons": "Installare, aggiornare e rimuovere i prodotti aggiuntivi",
       "date-and-time": "Fuso orario e primo giorno della settimana",
       "language": "Lingue del sito e traduzioni",
       "mail": "Server di posta in uscita e mittente",
