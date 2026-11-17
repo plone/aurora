@@ -53,6 +53,7 @@ const key = (name: string) => {
     event: {
       key: name,
       shiftKey: false,
+      altKey: false,
       preventDefault: () => {
         prevented = true;
       },

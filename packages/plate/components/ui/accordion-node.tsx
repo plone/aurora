@@ -1,10 +1,16 @@
 import * as React from 'react';
 
-import type { Path } from 'platejs';
+import { PathApi, type Path, type TElement } from 'platejs';
 import type { PlateElementProps } from 'platejs/react';
 
-import { ChevronDownIcon, PlusIcon } from 'lucide-react';
-import { PathApi } from 'platejs';
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  ChevronDownIcon,
+  CopyIcon,
+  PlusIcon,
+  Trash2Icon,
+} from 'lucide-react';
 import {
   PlateElement,
   useEditorRef,
@@ -16,7 +22,10 @@ import {
 import { cn } from '../../lib/utils';
 import { AccordionEditorPlugin } from '../editor/plugins/accordion/accordion-editor-plugin';
 import {
+  duplicatePanel,
   insertAccordionPanel,
+  movePanel,
+  removePanel,
   setAllPanelsOpen,
   setPanelOpen,
 } from '../editor/plugins/accordion/editor-transforms';
@@ -24,9 +33,10 @@ import {
   getAccordionOptions,
   resolveAccordionTheme,
 } from '../editor/plugins/accordion/options';
-import type {
-  TAccordionElement,
-  TAccordionPanelElement,
+import {
+  ACCORDION_KEY,
+  type TAccordionElement,
+  type TAccordionPanelElement,
 } from '../editor/plugins/accordion/types';
 import { useTranslation } from '../editor/plugins/i18n';
 import { BlockInnerContainer } from './block-inner-container';
@@ -54,6 +64,63 @@ const useSelectionInside = (path: Path) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [key],
   );
+};
+
+/**
+ * The path of a node of an accordion, looked up in the editor's value.
+ * Slate's `findPath` reads maps that React updates when it renders, so right
+ * after panels move it can return their old position.
+ */
+const findAccordionNodePath = (
+  editor: { children: unknown[]; api: any },
+  element: TElement,
+): number[] | undefined => {
+  // Most accordions are top-level blocks.
+  for (let i = 0; i < editor.children.length; i += 1) {
+    const accordion = editor.children[i] as TElement;
+    if (accordion === element) return [i];
+    if (accordion?.type !== ACCORDION_KEY) continue;
+    for (let j = 0; j < accordion.children.length; j += 1) {
+      const panel = accordion.children[j] as TElement;
+      if (panel === element) return [i, j];
+      const k = panel.children?.indexOf(element as any) ?? -1;
+      if (k >= 0) return [i, j, k];
+    }
+  }
+  for (const [, path] of editor.api.nodes({
+    at: [],
+    match: (n: unknown) => n === element,
+  })) {
+    return path;
+  }
+  return undefined;
+};
+
+/**
+ * The position of a panel in its accordion, from the panel or one of its
+ * children. It's read from the editor on every change, so it stays right when
+ * other panels are added, moved or removed.
+ */
+const usePanelPosition = (element: TElement, depth: 0 | 1) => {
+  const position = useEditorSelector(
+    (editor) => {
+      const path = findAccordionNodePath(editor, element);
+      if (!path || path.length < 1 + depth) return '';
+      const panelPath = depth ? PathApi.parent(path) : path;
+      const accordion = editor.api.node(PathApi.parent(panelPath))?.[0] as
+        TElement | undefined;
+      return `${panelPath.join('.')}:${accordion?.children.length ?? 0}`;
+    },
+    [element, depth],
+  );
+  const [pathKey, total] = position.split(':');
+  const panelPath = pathKey ? pathKey.split('.').map(Number) : [];
+  return {
+    panelPath,
+    accordionPath: panelPath.slice(0, -1),
+    index: panelPath.at(-1) ?? 0,
+    total: Number(total) || 0,
+  };
 };
 
 const usePanelOpen = (panelId: string) => {
@@ -207,31 +274,26 @@ export function AccordionElement(props: PlateElementProps<TAccordionElement>) {
 export function AccordionPanelElement(
   props: PlateElementProps<TAccordionPanelElement>,
 ) {
-  const { children, element, path } = props;
+  const { children, element } = props;
   const { t } = useTranslation();
   const readOnly = useReadOnly();
   const open = usePanelOpen(element.id);
-  const accordionPath = PathApi.parent(path);
-  const accordionActive = useSelectionInside(accordionPath);
-  const index = path.at(-1) ?? 0;
-  const isLast = useEditorSelector(
-    (editor) => {
-      const accordion = editor.api.node(accordionPath)?.[0] as
-        { children?: unknown[] } | undefined;
-      return index === (accordion?.children?.length ?? 0) - 1;
-    },
-    // `accordionPath` is derived from `path`.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [path.join('.')],
+  const { accordionPath, index, panelPath, total } = usePanelPosition(
+    element,
+    0,
   );
+  const accordionActive = useSelectionInside(accordionPath);
+  const active = useSelectionInside(panelPath);
+  const isLast = index === total - 1;
 
   return (
     <PlateElement
       {...props}
-      className={cn(props.className, 'block-accordion__panel')}
+      className={cn(props.className, 'group/panel block-accordion__panel')}
       attributes={{
         ...props.attributes,
         'data-open': open ? 'true' : 'false',
+        ...(active ? { 'data-active': 'true' } : {}),
       }}
     >
       {children}
@@ -251,13 +313,100 @@ export function AccordionPanelElement(
   );
 }
 
+function PanelActions({
+  panelPath,
+  index,
+  total,
+}: {
+  panelPath: Path;
+  index: number;
+  total: number;
+}) {
+  const editor = useEditorRef();
+  const { t } = useTranslation();
+  const actions = [
+    {
+      key: 'up',
+      icon: ArrowUpIcon,
+      label: t('plate.accordion.movePanelUp', {
+        defaultValue: 'Move panel up',
+      }),
+      disabled: index === 0,
+      onClick: () => movePanel(editor, panelPath, -1),
+    },
+    {
+      key: 'down',
+      icon: ArrowDownIcon,
+      label: t('plate.accordion.movePanelDown', {
+        defaultValue: 'Move panel down',
+      }),
+      disabled: index === total - 1,
+      onClick: () => movePanel(editor, panelPath, 1),
+    },
+    {
+      key: 'duplicate',
+      icon: CopyIcon,
+      label: t('plate.accordion.duplicatePanel', {
+        defaultValue: 'Duplicate panel',
+      }),
+      disabled: false,
+      onClick: () => duplicatePanel(editor, panelPath),
+    },
+    {
+      key: 'delete',
+      icon: Trash2Icon,
+      label: t('plate.accordion.deletePanel', {
+        defaultValue: 'Delete panel',
+      }),
+      disabled: total < 2,
+      onClick: () => removePanel(editor, panelPath),
+    },
+  ];
+
+  return (
+    <span
+      contentEditable={false}
+      className={`
+        flex shrink-0 items-center opacity-0 transition-opacity select-none
+        group-focus-within/panel:opacity-100
+        group-hover/panel:opacity-100
+        group-data-[active=true]/panel:opacity-100
+      `}
+    >
+      {actions.map(({ key, icon: Icon, label, disabled, onClick }) => (
+        <Button
+          key={key}
+          type="button"
+          variant="ghost"
+          size="icon"
+          className={cn(
+            `
+              size-10 text-muted-foreground
+              hover:text-foreground
+            `,
+            key === 'delete' && 'hover:text-destructive',
+          )}
+          aria-label={label}
+          title={label}
+          disabled={disabled}
+          onMouseDown={keepSelection}
+          onClick={onClick}
+        >
+          <Icon aria-hidden="true" className="size-[18px]" />
+        </Button>
+      ))}
+    </span>
+  );
+}
+
 export function AccordionPanelTitleElement(props: PlateElementProps) {
-  const { children, editor, path } = props;
+  const { children, editor, element, path } = props;
   const { t } = useTranslation();
   const readOnly = useReadOnly();
-  const panelPath = PathApi.parent(path);
-  const panel = editor.api.node(panelPath)?.[0] as
-    TAccordionPanelElement | undefined;
+  const { index, panelPath, total } = usePanelPosition(element, 1);
+  const panel = (
+    panelPath.length > 0 ? editor.api.node(panelPath)?.[0] : undefined
+  ) as TAccordionPanelElement | undefined;
   const panelId = panel?.id ?? '';
   const open = usePanelOpen(panelId);
   const { headingLevel } = getAccordionOptions(editor);
@@ -308,6 +457,9 @@ export function AccordionPanelTitleElement(props: PlateElementProps) {
                 count: blockCount,
               })}
         </span>
+      )}
+      {!readOnly && panel && panelPath.length > 0 && (
+        <PanelActions panelPath={panelPath} index={index} total={total} />
       )}
       {!readOnly && panel && (
         <Button
