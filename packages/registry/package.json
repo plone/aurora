@@ -78,12 +78,20 @@
       "import": "./dist/addon-registry/create-plate-plugins-loader.js",
       "default": "./dist/addon-registry/create-plate-plugins-loader.cjs"
     },
+    "./create-app-info-loader": {
+      "import": "./dist/addon-registry/create-app-info-loader.js",
+      "default": "./dist/addon-registry/create-app-info-loader.cjs"
+    },
     "./vite-plugin": {
       "import": "./vite-plugin.js",
       "types": "./vite-plugin.d.ts"
     },
     "./addons-loader": {
       "types": "./vite-plugin.d.ts"
+    },
+    "./app-info": {
+      "types": "./virtual/app-info.d.ts",
+      "default": "./virtual/app-info.js"
     },
     "./blocks-docs": {
       "types": "./virtual/blocks-docs.d.ts",
