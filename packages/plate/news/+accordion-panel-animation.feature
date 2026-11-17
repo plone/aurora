@@ -1,0 +1,1 @@
+Accordion panels animate open and closed, in the published view and in the editor, unless the user prefers reduced motion. Closed panels are `hidden="until-found"` in the editor too, so find-in-page opens them. @Humanaice

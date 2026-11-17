@@ -70,6 +70,25 @@ test('does not show empty text blocks', async ({ page }) => {
   await expect(region.locator('.slate-p').nth(1)).toBeHidden();
 });
 
+test('fills the accordion with its panels, under bold titles', async ({
+  page,
+}) => {
+  const pageId = await createNativeBlocksPage(page, ['accordion']);
+  await openPublishedView(page, `/${pageId}`);
+
+  const panel = page.locator('.block-accordion__panel').first();
+  const [panelBox, accordionBox] = await Promise.all([
+    panel.boundingBox(),
+    page.locator('.slate-accordion > .block-inner-container').boundingBox(),
+  ]);
+  // The accordion's padding is on either side of its panels.
+  expect(panelBox!.width).toBeGreaterThan(accordionBox!.width * 0.9);
+  await expect(panel.locator('.block-accordion__title')).toHaveCSS(
+    'font-weight',
+    '700',
+  );
+});
+
 test('sets the background of its theme', async ({ page }) => {
   const pageId = await createNativeBlocksPage(page, ['accordion']);
   await openPublishedView(page, `/${pageId}`);

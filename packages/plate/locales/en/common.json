@@ -36,7 +36,6 @@
       "collapseAll": "Collapse all",
       "panel": "Panel",
       "addPanelAtEnd": "Add a panel at the end",
-      "insertPanelBetween": "Insert a panel between panel {{before}} and {{after}}",
       "untitledPanel": "Untitled panel",
       "untitledPanelLower": "untitled panel",
       "oneBlock": "1 block",
@@ -57,7 +56,9 @@
         "blockMoved": "Block moved to position {{position}} of {{total}}",
         "blockDuplicated": "Block duplicated",
         "blockDeleted": "{{type}} block deleted",
-        "blockChanged": "Block changed to {{type}}"
+        "blockChanged": "Block changed to {{type}}",
+        "allExpanded": "All panels expanded",
+        "allCollapsed": "All panels collapsed"
       },
       "block": "Block",
       "blockActions": "Block actions",
@@ -105,7 +106,10 @@
       "panelActions": "Panel actions",
       "innerImageNote": "Inside an accordion, images always use the panel's full width, so size and alignment aren't offered.",
       "innerTeaserNote": "Inside an accordion, a teaser takes the accordion's background, so its own background isn't offered.",
-      "blockPosition": "Block {{position}} of {{total}} in “{{title}}”"
+      "blockPosition": "Block {{position}} of {{total}} in “{{title}}”",
+      "pageCrumb": "Page",
+      "pageHint": "Click the accordion's frame or its label, a panel header or a block to see its settings here.",
+      "textPlaceholder": "Type text, or / for other blocks"
     },
     "undo": "Undo",
     "undone": "Undone"

@@ -10,6 +10,7 @@ import {
   useEditorSelector,
 } from '@plone/plate/components/editor';
 import {
+  InnerBlockSettingsActions,
   InnerBlockSettingsHeader,
   useAccordionSettingsTarget,
 } from '@plone/plate/components/ui/accordion-settings';
@@ -170,6 +171,7 @@ export function SidebarAfterEditable() {
         formData={selectedNativeBlock.data}
         onFormDataChange={onFormDataChange}
       />
+      <InnerBlockSettingsActions path={selectedNativeBlock.path} />
     </>,
     sidebar,
   );

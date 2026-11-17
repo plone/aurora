@@ -4,6 +4,7 @@ import type { Path, TElement } from 'platejs';
 
 import { GripVerticalIcon, PlusIcon } from 'lucide-react';
 import { createPortal } from 'react-dom';
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import {
   Button as AriaButton,
   DropIndicator,
@@ -19,6 +20,7 @@ import {
   usePluginOption,
 } from 'platejs/react';
 
+import { getFocusableControls } from '../../lib/focusable';
 import { cn } from '../../lib/utils';
 import { usePlateHost } from '../editor/plate-host-context';
 import { AccordionEditorPlugin } from '../editor/plugins/accordion/accordion-editor-plugin';
@@ -30,15 +32,25 @@ import {
 import {
   duplicatePanel,
   findAccordionEntry,
+  getCurrentAccordionEntry,
   getSettingsEntry,
   insertAccordionPanel,
+  moveCaretOutOfAccordion,
   movePanel,
+  PAGE_SETTINGS_TARGET,
   removePanel,
   reorderPanel,
   setPanelOpen,
   setSettingsTarget,
-  type AccordionSettingsTarget,
+  type AccordionNodeSettingsTarget,
 } from '../editor/plugins/accordion/editor-transforms';
+import {
+  getBlockLabel,
+  getInnerBlockEntry,
+  isInnerBlockPath,
+  moveInnerBlock,
+  removeInnerBlock,
+} from '../editor/plugins/accordion/inner-block-transforms';
 import { getAccordionOptions } from '../editor/plugins/accordion/options';
 import {
   ACCORDION_KEY,
@@ -70,7 +82,64 @@ const blocksLabel = (
     ? t('plate.accordion.oneBlock', { defaultValue: '1 block' })
     : t('plate.accordion.blocks', { defaultValue: '{{count}} blocks', count });
 
-/** Selection › Accordion › Panel “…”: the levels above what the settings show. */
+const crumbClass =
+  'rounded-sm px-1 py-0.5 text-primary underline-offset-2 hover:underline';
+
+/** The first level of the breadcrumbs: the page, which Esc also reaches. */
+function PageCrumb() {
+  const editor = useEditorRef();
+  const { t } = useTranslation();
+  return (
+    <>
+      <li>
+        <button
+          type="button"
+          className={crumbClass}
+          onClick={() =>
+            setSettingsTarget(editor, { type: PAGE_SETTINGS_TARGET })
+          }
+        >
+          {t('plate.accordion.pageCrumb', { defaultValue: 'Page' })}
+        </button>
+      </li>
+      <li aria-hidden="true" className="text-muted-foreground">
+        ›
+      </li>
+    </>
+  );
+}
+
+/** What the sidebar shows at the page level: how to choose a level. */
+export function PageSettingsHint() {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col gap-4">
+      <nav
+        aria-label={t('plate.accordion.selection', {
+          defaultValue: 'Selection',
+        })}
+      >
+        <ol className="flex flex-wrap items-center gap-1 text-sm">
+          <li>
+            <span aria-current="true" className="px-1 font-semibold">
+              {t('plate.accordion.pageCrumb', { defaultValue: 'Page' })}
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <p className={hintClass}>
+        {t('plate.accordion.pageHint', {
+          defaultValue:
+            "Click the accordion's frame or its label, a panel header or a block to see its settings here.",
+        })}
+      </p>
+    </div>
+  );
+}
+
+/**
+ * Page › Accordion › Panel “…”: the levels above what the settings show.
+ */
 export function AccordionBreadcrumb({
   accordion,
   panel,
@@ -89,14 +158,12 @@ export function AccordionBreadcrumb({
       aria-label={t('plate.accordion.selection', { defaultValue: 'Selection' })}
     >
       <ol className="flex flex-wrap items-center gap-1 text-sm">
+        <PageCrumb />
         <li>
           {panel ? (
             <button
               type="button"
-              className={`
-                rounded-sm px-1 py-0.5 text-primary underline-offset-2
-                hover:underline
-              `}
+              className={crumbClass}
               onClick={() =>
                 setSettingsTarget(editor, {
                   type: ACCORDION_KEY,
@@ -556,14 +623,7 @@ export function PanelSettings({
             size="sm"
             className="text-destructive"
             disabled={total < 2}
-            onClick={() => {
-              if (removePanel(editor, path)) {
-                setSettingsTarget(editor, {
-                  type: ACCORDION_KEY,
-                  id: accordion.id,
-                });
-              }
-            }}
+            onClick={() => removePanel(editor, path)}
           >
             {t('plate.accordion.delete', { defaultValue: 'Delete' })}
           </Button>
@@ -597,6 +657,7 @@ export function AccordionSettingsForm({
  * settings container. Without one, they open in popovers instead.
  */
 export function AccordionSettingsHost() {
+  const editor = useEditorRef();
   const { settingsContainer } = usePlateHost();
   // The chosen target lives in the plugin options, outside the editor value.
   const target = usePluginOption(AccordionEditorPlugin, 'settingsTarget');
@@ -607,13 +668,77 @@ export function AccordionSettingsHost() {
     [target, selection],
   );
 
-  if (!settingsContainer || !entry) return null;
+  // Tab reaches the settings from the accordion's last control. From the
+  // last control of the settings container, Tab goes back to the text after
+  // the accordion, and Shift+Tab from its first control goes back to the
+  // accordion's last control.
+  React.useEffect(() => {
+    const container = settingsContainer?.();
+    if (!container) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab' || event.defaultPrevented) return;
+      const controls = getFocusableControls(container);
+      const edge = event.shiftKey ? controls[0] : controls.at(-1);
+      if (event.target !== edge) return;
+      const accordion = getCurrentAccordionEntry(editor);
+      if (!accordion) return;
+      if (!event.shiftKey) {
+        event.preventDefault();
+        moveCaretOutOfAccordion(editor, accordion[1], 'after');
+        return;
+      }
+      const element = editor.api.toDOMNode(accordion[0]);
+      const last = element ? getFocusableControls(element).at(-1) : undefined;
+      if (last) {
+        event.preventDefault();
+        last.focus();
+      }
+    };
+    container.addEventListener('keydown', onKeyDown);
+    return () => container.removeEventListener('keydown', onKeyDown);
+  }, [editor, settingsContainer, entry]);
+
+  // A block of a panel without settings of its own, such as text, shows its
+  // place in the accordion and its actions. The host renders those of blocks
+  // with settings, such as Plone blocks, around their settings form.
+  const innerBlockKey = useEditorSelector(
+    (ed) => {
+      if (target) return '';
+      const block = getInnerBlockEntry(ed);
+      return block && block[0].type !== PLONE_BLOCK_TYPE
+        ? block[1].join('.')
+        : '';
+    },
+    [target, selection],
+  );
+
+  if (!settingsContainer) return null;
   const container = settingsContainer();
   if (!container) return null;
 
+  let content: React.ReactNode = null;
+  if (target?.type === PAGE_SETTINGS_TARGET) {
+    content = <PageSettingsHint />;
+  } else if (entry) {
+    content = <AccordionSettingsForm node={entry[0]} path={entry[1]} />;
+  } else if (innerBlockKey) {
+    const path = innerBlockKey.split('.').map(Number);
+    const block = editor.api.node(path)?.[0];
+    content = (
+      <>
+        <InnerBlockSettingsHeader
+          path={path}
+          blockLabel={getBlockLabel(editor, block)}
+        />
+        <InnerBlockSettingsActions path={path} />
+      </>
+    );
+  }
+  if (!content) return null;
+
   return createPortal(
     <div className="p-4" data-accordion-settings="">
-      <AccordionSettingsForm node={entry[0]} path={entry[1]} />
+      {content}
     </div>,
     container,
   );
@@ -631,7 +756,7 @@ export function AccordionSettingsTrigger({
   variant = 'ghost',
   size = 'icon',
 }: {
-  target: AccordionSettingsTarget;
+  target: AccordionNodeSettingsTarget;
   label: string;
   children: React.ReactNode;
   className?: string;
@@ -725,8 +850,6 @@ export function InnerBlockSettingsHeader({
     t('plate.accordion.untitledPanel', { defaultValue: 'Untitled panel' });
   const index = path.at(-1) ?? 0;
   const total = panel.children[1]?.children.length ?? 0;
-  const crumbClass =
-    'rounded-sm px-1 py-0.5 text-primary underline-offset-2 hover:underline';
 
   return (
     <div className="mb-4 flex flex-col gap-2" data-accordion-block-header="">
@@ -736,6 +859,7 @@ export function InnerBlockSettingsHeader({
         })}
       >
         <ol className="flex flex-wrap items-center gap-1 text-sm">
+          <PageCrumb />
           <li>
             <button
               type="button"
@@ -791,6 +915,64 @@ export function InnerBlockSettingsHeader({
         })}
       </p>
       {note && <p className="text-sm text-muted-foreground">{note}</p>}
+    </div>
+  );
+}
+
+/**
+ * For a block inside an accordion panel: Move up, Move down and Delete. A
+ * host renders it below the block's settings. It renders nothing for blocks
+ * outside an accordion.
+ */
+export function InnerBlockSettingsActions({ path }: { path: Path }) {
+  const editor = useEditorRef();
+  const { t } = useTranslation();
+  // Read on every change, so the buttons follow the block's position.
+  const total = useEditorSelector(
+    (ed) =>
+      isInnerBlockPath(ed, path)
+        ? ((ed.api.parent(path)?.[0] as TElement | undefined)?.children
+            .length ?? 0)
+        : 0,
+    [path.join('.')],
+  );
+  if (!total) return null;
+  const index = path.at(-1) ?? 0;
+
+  return (
+    <div className={cn(groupClass, 'mt-4')} data-accordion-block-actions="">
+      <span className={labelClass}>
+        {t('plate.accordion.blockActions', { defaultValue: 'Block actions' })}
+      </span>
+      <div className="flex flex-wrap gap-1.5">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={index === 0}
+          onClick={() => moveInnerBlock(editor, path, -1)}
+        >
+          {t('plate.accordion.moveUp', { defaultValue: 'Move up' })}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={index === total - 1}
+          onClick={() => moveInnerBlock(editor, path, 1)}
+        >
+          {t('plate.accordion.moveDown', { defaultValue: 'Move down' })}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="text-destructive"
+          onClick={() => removeInnerBlock(editor, path)}
+        >
+          {t('plate.accordion.delete', { defaultValue: 'Delete' })}
+        </Button>
+      </div>
     </div>
   );
 }

@@ -2,7 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import config from '@plone/registry';
-import { createSlatePlugin, KEYS } from 'platejs';
+import { BaseSlashPlugin } from '@platejs/slash-command';
+import { createSlatePlugin, KEYS, NodeApi } from 'platejs';
 import {
   Plate,
   PlateContent,
@@ -24,6 +25,7 @@ import { AccordionKit } from './accordion-kit';
 import {
   duplicateInnerBlock,
   getTurnIntoOptions,
+  insertInnerBlockAt,
   moveInnerBlock,
   removeInnerBlock,
   turnIntoInnerBlock,
@@ -285,7 +287,7 @@ describe('block toolbar', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows no block controls while the selection is outside the accordion', () => {
+  it('shows only the add control at the end of a panel while the selection is outside the accordion', () => {
     const editor = createEditor([
       accordion(panel('a', 'Hours', p('One'))),
       p(''),
@@ -299,7 +301,71 @@ describe('block toolbar', () => {
 
     expect(screen.queryByRole('button', { name: 'Block actions' })).toBeNull();
     expect(
-      screen.queryByRole('button', { name: 'Add a block to “Hours”' }),
+      screen.queryByRole('button', {
+        name: 'Insert a block at the top of “Hours”',
+      }),
     ).toBeNull();
+    // It's shown while the pointer is over the panel.
+    expect(
+      screen.getByRole('button', { name: 'Add a block to “Hours”' }),
+    ).toBeInTheDocument();
+  });
+});
+
+describe('text placeholder', () => {
+  it('says how to choose another block in an empty text block', () => {
+    const editor = createEditor([accordion(panel('a', 'Hours', p('')))]);
+    editor.tf.select(editor.api.start([0, 0, 1, 0]));
+    render(
+      <Plate editor={editor}>
+        <PlateContent />
+      </Plate>,
+    );
+
+    expect(
+      screen.getByText('Type text, or / for other blocks'),
+    ).toBeInTheDocument();
+  });
+
+  it('shows nothing in a text block with text', () => {
+    const editor = createEditor([accordion(panel('a', 'Hours', p('One')))]);
+    editor.tf.select(editor.api.start([0, 0, 1, 0]));
+    render(
+      <Plate editor={editor}>
+        <PlateContent />
+      </Plate>,
+    );
+
+    expect(screen.queryByText('Type text, or / for other blocks')).toBeNull();
+  });
+});
+
+describe('insert points', () => {
+  it('opens the slash menu in a new block without typing "/"', () => {
+    const editor = createPlateEditor({
+      plugins: [...BaseBasicBlocksKit, BaseSlashPlugin, ...AccordionKit],
+      value: structuredClone([accordion(panel('a', 'Hours', p('One')))]) as any,
+    });
+
+    insertInnerBlockAt(editor, [0, 0, 1], 1);
+
+    const block = blocksOf(editor)[1];
+    expect(block.type).toBe('p');
+    expect(NodeApi.string(block)).toBe('');
+    expect(block.children).toContainEqual(
+      expect.objectContaining({ type: KEYS.slashInput, withoutTrigger: true }),
+    );
+  });
+
+  it('adds an empty block in editors without the slash menu', () => {
+    const editor = createEditor([accordion(panel('a', 'Hours', p('One')))]);
+
+    insertInnerBlockAt(editor, [0, 0, 1], 0);
+
+    expect(blocksOf(editor)[0]).toMatchObject({
+      type: 'p',
+      children: [{ text: '' }],
+    });
+    expect(editor.selection?.anchor.path).toEqual([0, 0, 1, 0, 0]);
   });
 });
