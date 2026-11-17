@@ -165,7 +165,7 @@ Otherwise the menu shows its built-in links:
 | ----------- | ------------------------- | ---------------------------------------------------------- |
 | Profile     | `/@@personal-information` | always                                                     |
 | Preferences | `/@@personal-preferences` | always                                                     |
-| Site setup  | `/controlpanel`           | when the `user` category contains the `plone_setup` action |
+| Site setup  | `/@@controlpanel`         | when the `user` category contains the `plone_setup` action |
 | Log out     | `/logout`                 | always                                                     |
 
 The actions replace all of the built-in links, including Log out.
@@ -248,7 +248,7 @@ The following example adds a `personal_tools` category with the same links as th
       <property name="title"
                 i18n:translate=""
       >Site Setup</property>
-      <property name="url_expr">string:/controlpanel</property>
+      <property name="url_expr">string:/@@controlpanel</property>
       <property name="permissions">
         <element value="Plone Site Setup: Overview" />
       </property>

@@ -107,7 +107,7 @@ export function PersonalTools({ user, actions }: PersonalToolsProps) {
               </MenuItem>
               {canManageSite && (
                 <MenuItem
-                  href="/controlpanel"
+                  href="/@@controlpanel"
                   textValue={t('layout.personalTools.siteSetup', {
                     defaultValue: 'Site setup',
                   })}

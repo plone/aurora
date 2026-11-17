@@ -12,7 +12,7 @@ const row = (page: Page, title: string) =>
 test('As an anonymous visitor, I cannot open the add-ons control panel', async ({
   page,
 }) => {
-  await page.goto('/controlpanel/addons');
+  await page.goto('/@@controlpanel/addons');
 
   await expect(page).toHaveURL(/\/login/);
 });
@@ -21,18 +21,18 @@ test('As a site administrator, I can open the add-ons control panel from the sit
   page,
 }) => {
   await login(page);
-  await page.goto('/controlpanel');
+  await page.goto('/@@controlpanel');
 
   await page.getByRole('link', { name: 'Add-ons', exact: true }).click();
 
-  await expect(page).toHaveURL(/\/controlpanel\/addons$/);
+  await expect(page).toHaveURL(/\/@@controlpanel\/addons$/);
   await expect(page.locator('h1', { hasText: 'Add-ons' })).toBeVisible();
 });
 
 test('As a site administrator, I can install an add-on', async ({ page }) => {
   await login(page);
   // Wait for hydration, otherwise pressing a button does nothing.
-  await page.goto('/controlpanel/addons', { waitUntil: 'networkidle' });
+  await page.goto('/@@controlpanel/addons', { waitUntil: 'networkidle' });
 
   const title = 'Session refresh support';
   await expect(row(page, title)).toBeVisible();
@@ -54,7 +54,7 @@ test('As a site administrator, I am asked before an add-on is uninstalled', asyn
   page,
 }) => {
   await login(page);
-  await page.goto('/controlpanel/addons', { waitUntil: 'networkidle' });
+  await page.goto('/@@controlpanel/addons', { waitUntil: 'networkidle' });
 
   const title = 'Discussion Support';
   await expect(
@@ -89,7 +89,7 @@ test('As a site administrator, I am asked before an add-on is uninstalled', asyn
 
 test('As a site administrator, I can find an add-on', async ({ page }) => {
   await login(page);
-  await page.goto('/controlpanel/addons', { waitUntil: 'networkidle' });
+  await page.goto('/@@controlpanel/addons', { waitUntil: 'networkidle' });
 
   await page.getByRole('searchbox', { name: 'Find an add-on' }).fill('session');
 

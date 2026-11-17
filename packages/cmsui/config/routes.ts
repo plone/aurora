@@ -143,7 +143,7 @@ export default function install(config: ConfigType) {
       },
       {
         type: 'prefix',
-        path: 'controlpanel',
+        path: '@@controlpanel',
         children: [
           {
             type: 'index',
@@ -161,17 +161,6 @@ export default function install(config: ConfigType) {
             type: 'route',
             path: ':id',
             file: '@plone/cmsui/routes/controlpanel.tsx',
-          },
-        ],
-      },
-      {
-        type: 'prefix',
-        path: 'test-layout',
-        children: [
-          {
-            type: 'route',
-            path: '*',
-            file: '@plone/cmsui/routes/test.tsx',
           },
         ],
       },

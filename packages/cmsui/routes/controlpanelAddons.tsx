@@ -335,7 +335,7 @@ export default function AddonsControlPanel() {
   return (
     <main className="route-addons">
       <Plug pluggable="toolbar-top" id="button-back">
-        <Link aria-label="back" href="/controlpanel">
+        <Link aria-label="back" href="/@@controlpanel">
           <Back />
         </Link>
       </Plug>
@@ -348,7 +348,7 @@ export default function AddonsControlPanel() {
       >
         <header className="mb-8 flex flex-col gap-1">
           <Link
-            href="/controlpanel"
+            href="/@@controlpanel"
             className={`
               self-start text-[13px] font-medium text-quanta-sapphire no-underline
               hover:text-quanta-royal

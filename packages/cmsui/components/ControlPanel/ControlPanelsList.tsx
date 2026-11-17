@@ -139,7 +139,7 @@ export const ControlPanelsList = ({
                   {/* Named by its title, so the description doesn't make
                     the link's name long. */}
                   <Link
-                    href={`/controlpanel/${panel.id}`}
+                    href={`/@@controlpanel/${panel.id}`}
                     aria-labelledby={`${panel.domId}-title`}
                     aria-describedby={
                       panel.description
