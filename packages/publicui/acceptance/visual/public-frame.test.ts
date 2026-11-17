@@ -31,7 +31,7 @@ test('Toolbar add menu', async ({ page }) => {
   await page.goto('/chrome-page');
   await page
     .getByRole('navigation', { name: 'Toolbar' })
-    .getByRole('button')
+    .getByRole('button', { name: 'Add content' })
     .click();
   const menu = page.getByRole('menu');
   await expect(menu).toBeVisible();
