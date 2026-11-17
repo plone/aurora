@@ -715,6 +715,23 @@
 }
 
 /*
+ * Blocks inside an accordion panel follow the accordion's layout: images use
+ * the panel's full width, whatever their own size and alignment, and teasers
+ * take the accordion's background. The block's own values are set inline on
+ * the block, so the panel resets them on the block's inner parts.
+ */
+:where(.block-accordion__content .block-image__frame) {
+  --block-size: 100%;
+  --block-float: none;
+  --block-margin: 0 auto;
+  --block-float-max-size: 100%;
+}
+
+:where(.block-accordion__content .block-teaser > *) {
+  --theme-color: var(--block-accordion-background, transparent);
+}
+
+/*
  * Table of contents. Each entry is a button that scrolls to its heading, with
  * its heading level in `data-depth`.
  */

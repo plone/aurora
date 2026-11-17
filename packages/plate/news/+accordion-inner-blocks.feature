@@ -1,0 +1,1 @@
+Blocks inside an accordion follow its layout: images use the panel's full width and teasers take the accordion's background. `enhanceInnerBlockSchema` removes the settings that don't apply there from a block's schema, so a block settings form can apply it; the rules are the accordion plugin's `innerBlockSchemaEnhancer` option. @Humanaice
