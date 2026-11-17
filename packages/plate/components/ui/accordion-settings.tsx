@@ -673,3 +673,119 @@ export function AccordionSettingsTrigger({
     </Popover>
   );
 }
+
+/**
+ * The accordion or panel whose settings the user chose to see, if any. A
+ * host hides a block's own settings meanwhile, since the accordion's take
+ * their place.
+ */
+export const useAccordionSettingsTarget = () =>
+  usePluginOption(AccordionEditorPlugin, 'settingsTarget');
+
+/**
+ * For a block inside an accordion panel: the levels above it (Accordion ›
+ * Panel “…” › the block), its position in the panel, and an optional note.
+ * A host renders it above the block's settings. It renders nothing for
+ * blocks outside an accordion.
+ */
+export function InnerBlockSettingsHeader({
+  path,
+  blockLabel,
+  note,
+}: {
+  path: Path;
+  blockLabel: string;
+  note?: string;
+}) {
+  const editor = useEditorRef();
+  const { t } = useTranslation();
+  const accordionPath = path.slice(0, -3);
+  const panelPath = path.slice(0, -2);
+  const accordion = (
+    accordionPath.length > 0 ? editor.api.node(accordionPath)?.[0] : undefined
+  ) as TAccordionElement | undefined;
+  const panel = (
+    panelPath.length > 0 ? editor.api.node(panelPath)?.[0] : undefined
+  ) as TAccordionPanelElement | undefined;
+  if (
+    accordion?.type !== ACCORDION_KEY ||
+    panel?.type !== ACCORDION_PANEL_KEY
+  ) {
+    return null;
+  }
+
+  const title = editor.api.string([...panelPath, 0]);
+  const titleOrUntitled =
+    title ||
+    t('plate.accordion.untitledPanel', { defaultValue: 'Untitled panel' });
+  const index = path.at(-1) ?? 0;
+  const total = panel.children[1]?.children.length ?? 0;
+  const crumbClass =
+    'rounded-sm px-1 py-0.5 text-primary underline-offset-2 hover:underline';
+
+  return (
+    <div className="mb-4 flex flex-col gap-2" data-accordion-block-header="">
+      <nav
+        aria-label={t('plate.accordion.selection', {
+          defaultValue: 'Selection',
+        })}
+      >
+        <ol className="flex flex-wrap items-center gap-1 text-sm">
+          <li>
+            <button
+              type="button"
+              className={crumbClass}
+              onClick={() =>
+                setSettingsTarget(editor, {
+                  type: ACCORDION_KEY,
+                  id: accordion.id,
+                })
+              }
+            >
+              {t('plate.accordion.label', { defaultValue: 'Accordion' })}
+            </button>
+          </li>
+          <li aria-hidden="true" className="text-muted-foreground">
+            ›
+          </li>
+          <li>
+            <button
+              type="button"
+              className={crumbClass}
+              onClick={() =>
+                setSettingsTarget(editor, {
+                  type: ACCORDION_PANEL_KEY,
+                  id: panel.id,
+                })
+              }
+            >
+              {t('plate.accordion.panelCrumb', {
+                defaultValue: 'Panel “{{title}}”',
+                title:
+                  title ||
+                  t('plate.accordion.untitled', { defaultValue: 'Untitled' }),
+              })}
+            </button>
+          </li>
+          <li aria-hidden="true" className="text-muted-foreground">
+            ›
+          </li>
+          <li>
+            <span aria-current="true" className="px-1 font-semibold">
+              {blockLabel}
+            </span>
+          </li>
+        </ol>
+      </nav>
+      <p className={hintClass}>
+        {t('plate.accordion.blockPosition', {
+          defaultValue: 'Block {{position}} of {{total}} in “{{title}}”',
+          position: index + 1,
+          total,
+          title: titleOrUntitled,
+        })}
+      </p>
+      {note && <p className="text-sm text-muted-foreground">{note}</p>}
+    </div>
+  );
+}

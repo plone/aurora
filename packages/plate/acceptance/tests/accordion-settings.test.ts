@@ -14,7 +14,7 @@ import {
 } from '../fixtures/pages';
 
 // The settings of the accordion and its panels, opened from the accordion's
-// label and the panels' Settings buttons.
+// label and the panels' Settings buttons. In Aurora they show in the sidebar.
 
 const accordionOf = async (page: Page, editorHandle: EditorHandle) =>
   (await getValue(page, editorHandle)).find(
@@ -37,23 +37,16 @@ test('edits the accordion settings', async ({ page }) => {
   const { pageId, editorHandle } = await openAccordionPage(page);
 
   await page.getByRole('button', { name: 'Accordion settings' }).click();
-  const dialog = page.getByRole('dialog', { name: 'Accordion settings' });
-  await expect(dialog.getByText('2 panels')).toBeVisible();
+  const sidebar = page.getByRole('complementary', { name: 'Sidebar' });
+  await expect(sidebar.getByText('2 panels')).toBeVisible();
 
-  await dialog
-    .getByRole('checkbox', { name: 'Only one panel open at a time' })
-    .uncheck();
-  // The fixture's accordion is grey.
-  await dialog.getByText('White', { exact: true }).click();
-
-  // Reorders the panels from the outline with the keyboard.
-  await dialog
+  // Reorders the panels from the outline with the keyboard: Enter on a drag
+  // handle starts dragging, on the drop position between the two panels;
+  // ArrowDown moves to the position after the last panel.
+  await sidebar
     .getByRole('row', { name: '1. Opening hours' })
     .getByRole('button', { name: 'Drag to reorder' })
-    .focus();
-  // Enter starts dragging, on the drop position between the two panels;
-  // ArrowDown moves to the position after the last panel.
-  await page.keyboard.press('Enter');
+    .press('Enter');
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press('Enter');
   await expect
@@ -64,7 +57,12 @@ test('edits the accordion settings', async ({ page }) => {
     )
     .toEqual(['How to find us', 'Opening hours']);
 
-  await page.keyboard.press('Escape');
+  await sidebar
+    .getByRole('checkbox', { name: 'Only one panel open at a time' })
+    .uncheck();
+  // The fixture's accordion is grey.
+  await sidebar.getByText('White', { exact: true }).click();
+
   await savePage(page);
   const stored = (await getStoredValue(page, pageId)).find(
     (node) => node.type === 'accordion',
@@ -76,23 +74,22 @@ test('edits the panel settings', async ({ page }) => {
   const { pageId } = await openAccordionPage(page);
 
   await page.getByRole('button', { name: 'Panel settings' }).nth(1).click();
-  const dialog = page.getByRole('dialog', { name: 'Panel settings' });
-  await expect(dialog.getByText('Panel 2 of 2 · 1 block')).toBeVisible();
+  const sidebar = page.getByRole('complementary', { name: 'Sidebar' });
+  await expect(sidebar.getByText('Panel 2 of 2 · 1 block')).toBeVisible();
 
-  await dialog.getByRole('textbox', { name: 'Title' }).fill('Directions');
-  await dialog
+  await sidebar.getByRole('textbox', { name: 'Title' }).fill('Directions');
+  await sidebar
     .getByRole('checkbox', { name: 'Open when the page loads' })
     .check();
-  const anchor = dialog.getByRole('textbox', { name: 'Link anchor' });
+  const anchor = sidebar.getByRole('textbox', { name: 'Link anchor' });
   await anchor.fill('Opening Hours');
   await anchor.blur();
   // The first panel already uses this anchor.
-  await expect(dialog.getByRole('alert')).toBeVisible();
+  await expect(sidebar.getByRole('alert')).toBeVisible();
   await anchor.fill('directions');
   await anchor.blur();
-  await expect(dialog.getByRole('alert')).toHaveCount(0);
+  await expect(sidebar.getByRole('alert')).toHaveCount(0);
 
-  await page.keyboard.press('Escape');
   await savePage(page);
   const stored = (await getStoredValue(page, pageId)).find(
     (node) => node.type === 'accordion',

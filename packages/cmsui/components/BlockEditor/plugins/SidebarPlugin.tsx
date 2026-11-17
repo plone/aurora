@@ -4,9 +4,15 @@ import {
   BlockSelectionPlugin,
   createPlatePlugin,
   ElementApi,
+  enhanceInnerBlockSchema,
+  getClosestPloneBlockEntry,
   useEditorRef,
   useEditorSelector,
 } from '@plone/plate/components/editor';
+import {
+  InnerBlockSettingsHeader,
+  useAccordionSettingsTarget,
+} from '@plone/plate/components/ui/accordion-settings';
 import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import type { BlockConfigBase } from '@plone/types';
 import config from '@plone/registry';
@@ -17,6 +23,7 @@ type SelectedNativeBlock = {
   path: number[];
   data: Record<string, unknown> & { '@type': string };
   schema: BlockConfigBase['blockSchema'];
+  title: string;
 };
 
 const isPloneBlockElement = (node: unknown) =>
@@ -58,24 +65,19 @@ const getPloneBlockFromActiveElement = (
   }
 };
 
+// The Plone block that holds the selection, which may be nested, in an
+// accordion panel for example.
 const getPloneBlockFromSelection = (editor: any): [any, number[]] | null => {
-  const path = editor.selection?.anchor?.path;
-  const rootIndex = Array.isArray(path) ? path[0] : undefined;
-  if (typeof rootIndex !== 'number') return null;
-
-  const entry = editor.api.node([rootIndex]);
-  if (!entry) return null;
-
-  const [node, nodePath] = entry;
-  return isPloneBlockElement(node) ? [node, nodePath] : null;
+  if (!editor.selection) return null;
+  const entry = getClosestPloneBlockEntry(editor);
+  return entry && isPloneBlockElement(entry[0]) ? entry : null;
 };
 
 const getSelectedNativeBlock = (editor: any): SelectedNativeBlock | null => {
   const entry =
     getPloneBlockFromBlockSelection(editor) ??
     getPloneBlockFromActiveElement(editor) ??
-    getPloneBlockFromSelection(editor) ??
-    editor.api.block({ highest: true });
+    getPloneBlockFromSelection(editor);
   if (!entry) return null;
 
   const [node, path] = entry;
@@ -102,12 +104,21 @@ const getSelectedNativeBlock = (editor: any): SelectedNativeBlock | null => {
       '@type': blockType,
     },
     schema: blockConfig.blockSchema,
+    title:
+      typeof blockConfig.title === 'string' ? blockConfig.title : blockType,
   };
 };
+
+const resolveSchema = (
+  schema: BlockConfigBase['blockSchema'],
+  args: Record<string, unknown>,
+) => (typeof schema === 'function' ? (schema as any)(args) : schema);
 
 export function SidebarAfterEditable() {
   const editor = useEditorRef();
   const selectedNativeBlock = useEditorSelector(getSelectedNativeBlock, []);
+  // The accordion's or a panel's settings take the sidebar while chosen.
+  const accordionSettingsTarget = useAccordionSettingsTarget();
 
   const onFormDataChange = React.useCallback(
     (next: Record<string, unknown>) => {
@@ -121,19 +132,45 @@ export function SidebarAfterEditable() {
     [editor, selectedNativeBlock],
   );
 
+  // A block inside a container, such as an accordion, may not offer some of
+  // its settings there.
+  const schema = React.useMemo(() => {
+    if (!selectedNativeBlock) return undefined;
+    const { data, path, schema: blockSchema } = selectedNativeBlock;
+    return (args: Record<string, unknown>) =>
+      enhanceInnerBlockSchema(
+        editor as any,
+        path,
+        resolveSchema(blockSchema, args),
+        data['@type'],
+      );
+  }, [editor, selectedNativeBlock]);
+
   const sidebar =
     typeof document === 'undefined' ? null : document.getElementById('sidebar');
 
   if (!sidebar) return null;
-  if (!selectedNativeBlock) return null;
+  if (!selectedNativeBlock || !schema) return null;
+  if (accordionSettingsTarget) return null;
+
+  const note = (
+    schema({ formData: selectedNativeBlock.data }) as { description?: string }
+  )?.description;
 
   return createPortal(
-    <BlockSettingsForm
-      key={selectedNativeBlock.key}
-      schema={selectedNativeBlock.schema}
-      formData={selectedNativeBlock.data}
-      onFormDataChange={onFormDataChange}
-    />,
+    <>
+      <InnerBlockSettingsHeader
+        path={selectedNativeBlock.path}
+        blockLabel={selectedNativeBlock.title}
+        note={note}
+      />
+      <BlockSettingsForm
+        key={selectedNativeBlock.key}
+        schema={schema as unknown as BlockConfigBase['blockSchema']}
+        formData={selectedNativeBlock.data}
+        onFormDataChange={onFormDataChange}
+      />
+    </>,
     sidebar,
   );
 }
