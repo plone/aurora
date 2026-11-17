@@ -43,7 +43,7 @@ So block migrations never see the final value, and value migrations never see in
 
 Use the phase distinction to decide:
 
-- Write a **block migration** when your concern is a **whole block** — a block type that has no representation in the editor yet, or one that should map to a native Plate node instead of a wrapped block. You need the block boundary (its `@type`, `blockId`, or content metadata) to do the job.
+- Write a **block migration** when your concern is a **whole block** — a block type that has no representation in the editor yet, or one that should map to a Plate.js node instead of a wrapped block. You need the block boundary (its `@type`, `blockId`, or content metadata) to do the job.
 - Write a **value migration** when your concern is a **shape inside nodes** that should be fixed **everywhere it occurs** — a legacy mark, an inline element, an attribute — independent of which block it came from. You only need the nodes, not the blocks.
 
 A rule of thumb: if you find yourself branching on `block['@type']`, you want a block migration. If you find yourself walking the node tree looking for a `type` or a property, you want a value migration.
@@ -57,7 +57,7 @@ They run in this registration order.
 
 **Assembly** — the `somersaultBlockMigration` utilities, offered every block in `blocks_layout.items` order:
 
-1. `somersaultBlockMigrationTitle` — turns the `title` block into a native `title` node, using the content's `title` metadata as its text.
+1. `somersaultBlockMigrationTitle` — turns the `title` block into a Plate.js `title` node, using the content's `title` metadata as its text.
 2. `somersaultBlockMigrationLegacyValue` — passes through the `value` array of a legacy text block (already Slate nodes) into the editor value.
 3. `somersaultBlockMigrationUnknown` — wraps any other registered block (image, listing, teaser, custom blocks) into a `ploneBlock` node, preserving its data and computing its `blockWidth`.
 
@@ -95,7 +95,7 @@ The utility method receives:
 - `blockId` — the block's key in `blocks`.
 - `content` — the full content object, useful for reading metadata.
 
-For example, to convert a legacy `description` block into a native Plate paragraph:
+For example, to convert a legacy `description` block into a Plate.js paragraph:
 
 ```ts
 import config from '@plone/registry';
@@ -121,7 +121,7 @@ config.registerUtility({
 ```{note}
 Registered Plone blocks do not need a dedicated block migration.
 The built-in `somersaultBlockMigrationUnknown` already wraps any block present in `blocksConfig` into a `ploneBlock` node, preserving its data.
-Write a block migration only for legacy shapes that are not registered blocks, or when you need to produce a native Plate node instead of a wrapped block.
+Write a block migration only for legacy shapes that are not registered blocks, or when you need to produce a Plate.js node instead of a wrapped block.
 ```
 
 ## Add a `somersaultMigration`
