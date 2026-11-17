@@ -1,4 +1,4 @@
-import { Link } from '@plone/components';
+import config from '@plone/registry';
 
 // TODO translations
 
@@ -18,6 +18,8 @@ interface SitemapProps {
 }
 
 const renderItems = (items: SitemapItem[]) => {
+  const Link = config.getComponent('Link').component!;
+
   return (
     <ul>
       {items.map((item) => (

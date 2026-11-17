@@ -1,3 +1,5 @@
+/* The Quanta palette, used by the toolbar. */
+@import '@plone/quanta/src/styles/colors.css';
 @import '@plone/components/src/styles/basic/icons.css';
 @import '@plone/components/src/styles/basic/Link.css';
 @import '@plone/components/src/styles/basic/Breadcrumbs.css';
@@ -15,5 +17,15 @@
 
   figure img {
     width: 100%;
+  }
+
+  .sr-only {
+    position: absolute;
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }

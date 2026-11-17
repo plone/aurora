@@ -1,0 +1,63 @@
+/* Base styles */
+:root {
+  --basic-font-family: system-ui;
+  --basic-font-size: 16px;
+  background: var(--background-color);
+  font-family: var(--basic-font-family);
+  font-size: var(--basic-font-size);
+  line-height: 1.5;
+
+  /*
+   * Apps get these from @plone/theming or @plone/quanta. They're defined here
+   * because this package doesn't ship sizes or colors.
+   */
+  --quanta-icon-size: 0.25rem;
+  --quanta-sapphire: #0b78d0;
+}
+
+.sbdocs.sbdocs-content {
+  p {
+    font-size: 16px;
+  }
+}
+
+/* The `icon-*` sizes, as in @plone/theming's utilities. */
+.q.icon-2xs {
+  width: calc(var(--quanta-icon-size) * 3);
+  height: calc(var(--quanta-icon-size) * 3);
+}
+
+.q.icon-xs {
+  width: calc(var(--quanta-icon-size) * 4);
+  height: calc(var(--quanta-icon-size) * 4);
+}
+
+.q.icon-sm {
+  width: calc(var(--quanta-icon-size) * 5);
+  height: calc(var(--quanta-icon-size) * 5);
+}
+
+.q.icon-base {
+  width: calc(var(--quanta-icon-size) * 6);
+  height: calc(var(--quanta-icon-size) * 6);
+}
+
+.q.icon-lg {
+  width: calc(var(--quanta-icon-size) * 7);
+  height: calc(var(--quanta-icon-size) * 7);
+}
+
+.q.icon-xl {
+  width: calc(var(--quanta-icon-size) * 8);
+  height: calc(var(--quanta-icon-size) * 8);
+}
+
+.q.icon-2xl {
+  width: calc(var(--quanta-icon-size) * 9);
+  height: calc(var(--quanta-icon-size) * 9);
+}
+
+.q.icon-3xl {
+  width: calc(var(--quanta-icon-size) * 10);
+  height: calc(var(--quanta-icon-size) * 10);
+}

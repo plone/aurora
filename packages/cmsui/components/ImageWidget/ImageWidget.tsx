@@ -1,15 +1,18 @@
 import { useCallback, useMemo, useRef, useState, type DragEvent } from 'react';
-import { Button, DialogTrigger, Input } from '@plone/components/quanta';
-import type { TextFieldProps as QuantaTextFieldProps } from '@plone/components/quanta';
+import { Button, DialogTrigger, Input } from '@plone/quanta';
+import type { TextFieldProps as QuantaTextFieldProps } from '@plone/quanta';
 import {
+  ArrowrightIcon,
   BinIcon,
+  FolderIcon,
   ImageIcon,
-  LinkIcon,
-  NavigationIcon,
   UploadIcon,
-} from '@plone/components/Icons';
+  WorldIcon,
+} from '@plone/icons';
 import type { Brain } from '@plone/types';
 import { Description, FieldError, Label } from '../Field/Field';
+import { setByPath, useOptionalFormContext } from '@plone/helpers';
+import { useWidgetContext } from '../Form/WidgetContext';
 import { ObjectBrowserModal } from '../ObjectBrowserWidget/ObjectBrowserModal';
 import {
   ObjectBrowserProvider,
@@ -63,6 +66,12 @@ type ImageWidgetProps = BaseFormFieldProps &
   CommonImageInputProps & {
     onChange?: ImageWidgetChange;
     error?: Array<unknown>;
+    /**
+     * The details of a picked image (`image_field`, `image_scales`, `title`)
+     * to also store, in the form fields of the same name. Block schemas set
+     * it as a widget option, for example on the image block's `url` field.
+     */
+    extraFields?: Array<keyof ImageChangeExtras>;
   };
 
 type CreateContentResponse = {
@@ -133,14 +142,6 @@ function getBasePath(path: string) {
   return `/${segments.slice(0, -1).join('/')}`;
 }
 
-function getEditPathFromUrl(pathname: string) {
-  if (pathname.startsWith('/@@edit/')) {
-    return `/${pathname.replace(/^\/@@edit\//, '')}`;
-  }
-  if (pathname === '/@@edit') return '/';
-  return pathname;
-}
-
 function readFileAsDataURL(file: File) {
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader();
@@ -161,6 +162,10 @@ function parseDataUrl(dataUrl: string) {
   };
 }
 
+// The round 36px action buttons of the empty placeholder.
+const placeholderButtonClassName =
+  'flex size-9 shrink-0 items-center justify-center p-2';
+
 function ObjectBrowserButton({
   title,
   onBeforeOpen,
@@ -174,12 +179,12 @@ function ObjectBrowserButton({
     <DialogTrigger isOpen={open} onOpenChange={setOpen}>
       <Button
         aria-label={title}
-        size="L"
+        className={placeholderButtonClassName}
         type="button"
         variant="icon"
         onPress={onBeforeOpen}
       >
-        <NavigationIcon />
+        <FolderIcon className="size-5" />
       </Button>
       <ObjectBrowserModal />
     </DialogTrigger>
@@ -212,18 +217,13 @@ function ImageInputBase({
   const [uploadError, setUploadError] = useState<string>('');
   const [linkValue, setLinkValue] = useState(imageValue);
 
-  const resolvedCurrentPath = useMemo(() => {
-    const fallbackPath =
-      typeof window !== 'undefined'
-        ? getEditPathFromUrl(window.location.pathname)
-        : '/';
-    return currentPath || fallbackPath;
-  }, [currentPath]);
-
-  const resolvedUploadPath = useMemo(
-    () => uploadPath || getBasePath(resolvedCurrentPath),
-    [resolvedCurrentPath, uploadPath],
-  );
+  // Where the form is: the object browser starts there, and uploads go to
+  // its container. Explicit paths win.
+  const widgetContext = useWidgetContext();
+  const resolvedCurrentPath = currentPath || widgetContext.path;
+  const resolvedUploadPath =
+    uploadPath ||
+    (currentPath ? getBasePath(currentPath) : widgetContext.containerPath);
   const uploadAction = useMemo(
     () =>
       resolvedUploadPath === '/'
@@ -326,6 +326,8 @@ function ImageInputBase({
             typeof selectedImage.title === 'string'
               ? selectedImage.title
               : undefined,
+          image_field: selectedImage.image_field,
+          image_scales: selectedImage.image_scales ?? undefined,
         });
       }
     },
@@ -362,10 +364,16 @@ function ImageInputBase({
     );
   }
 
+  const submitLink = () => {
+    const nextValue = linkValue.trim();
+    onValueChange(nextValue || null);
+  };
+
   return (
     <div
       className={`
-        space-y-3 rounded-md border border-dashed border-quanta-azure bg-quanta-snow p-4
+        flex flex-col items-center gap-2 rounded-md bg-quanta-arctic px-4 py-6 text-center
+        ${isDragging ? 'inset-ring-3 inset-ring-quanta-cobalt' : ''}
         ${className || ''}
       `}
       onDrop={onDrop}
@@ -373,22 +381,31 @@ function ImageInputBase({
       onDragEnter={() => !restrictFileUpload && setIsDragging(true)}
       onDragLeave={() => setIsDragging(false)}
       role="group"
+      aria-label="Add an image"
     >
-      <div className="flex items-center gap-2 text-quanta-pigeon">
-        <ImageIcon />
-        <p>
-          {isDragging
-            ? 'Drop an image to upload'
-            : 'Browse the site, drop an image, or use a URL'}
-        </p>
+      <div
+        className={`
+          flex size-30 shrink-0 items-center justify-center rounded-full bg-quanta-azure
+          text-quanta-royal
+        `}
+      >
+        <ImageIcon className="size-12" />
       </div>
+      <p className="-mt-1.25 text-xl/[25px] font-bold text-quanta-iron">
+        {isDragging ? 'Drop an image to upload' : 'Add your image'}
+      </p>
 
-      <div className="flex items-center gap-2">
+      <div className="flex w-full flex-wrap items-center justify-center gap-3">
         {!hideObjectBrowserPicker && (
           <ObjectBrowserProvider
             config={{
               mode: objectBrowserMode,
-              selectedItemAttrs: ['@id', 'title'],
+              selectedItemAttrs: [
+                '@id',
+                'title',
+                'image_field',
+                'image_scales',
+              ],
               onChange: onSelectInternalImage,
               initialPath: resolvedCurrentPath,
               title: 'Pick an existing image',
@@ -410,7 +427,7 @@ function ImageInputBase({
           <>
             <Button
               aria-label="Upload an image"
-              size="L"
+              className={placeholderButtonClassName}
               type="button"
               variant="icon"
               onPress={() => {
@@ -418,7 +435,7 @@ function ImageInputBase({
                 fileInputRef.current?.click();
               }}
             >
-              <UploadIcon />
+              <UploadIcon className="size-5" />
             </Button>
             <input
               ref={fileInputRef}
@@ -433,28 +450,52 @@ function ImageInputBase({
             />
           </>
         )}
-      </div>
 
-      {!hideLinkPicker && (
-        <div className="flex items-center gap-2">
-          <div className="text-quanta-pigeon">
-            <LinkIcon />
-          </div>
-          <Input
-            value={linkValue}
-            onChange={(event) => {
-              setLinkValue(event.target.value);
-            }}
-            onKeyDown={(event) => {
-              if (event.key !== 'Enter') return;
-              event.preventDefault();
-              const nextValue = linkValue.trim();
-              onValueChange(nextValue || null);
-            }}
-            placeholder={placeholderLinkInput || 'Enter an image URL'}
-          />
-        </div>
-      )}
+        {!hideLinkPicker && (
+          <>
+            <div
+              className={`
+                flex h-9 max-w-90 min-w-0 flex-1 basis-48 items-center gap-3 rounded-md
+                bg-quanta-air pl-3 text-quanta-sapphire
+              `}
+            >
+              <WorldIcon className="size-4.5 shrink-0" />
+              <Input
+                aria-label="Image URL"
+                className={`
+                  h-full rounded-none bg-transparent px-0 py-0 font-medium
+                  placeholder:text-quanta-sapphire
+                  hover:bg-transparent
+                  focus:bg-transparent
+                  active:bg-transparent
+                `}
+                value={linkValue}
+                onChange={(event) => {
+                  setLinkValue(event.target.value);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key !== 'Enter') return;
+                  event.preventDefault();
+                  submitLink();
+                }}
+                placeholder={placeholderLinkInput || 'Type a URL…'}
+              />
+            </div>
+            <Button
+              aria-label="Use this image URL"
+              className={placeholderButtonClassName}
+              type="button"
+              variant="primary"
+              accent
+              onPress={() => {
+                if (linkValue.trim()) submitLink();
+              }}
+            >
+              <ArrowrightIcon className="size-5" />
+            </Button>
+          </>
+        )}
+      </div>
 
       {isUploading && (
         <p className="text-sm text-quanta-pigeon">Uploading image...</p>
@@ -485,8 +526,10 @@ export default function ImageWidget(props: ImageWidgetProps) {
     error,
     onChange,
     className,
+    extraFields,
     ...rest
   } = props;
+  const form = useOptionalFormContext();
 
   const fieldError =
     typeof errorMessage === 'string'
@@ -502,7 +545,19 @@ export default function ImageWidget(props: ImageWidgetProps) {
         className={className}
         value={props.value}
         currentPath={rest.currentPath}
-        onValueChange={(value, extras) => onChange?.(value, extras)}
+        onValueChange={(value, extras) => {
+          // Store the declared details of the picked image in their own
+          // fields, in one change, before the field itself.
+          if (form && extraFields?.length) {
+            form.setValues(
+              extraFields.reduce(
+                (values, field) => setByPath(values, field, extras?.[field]),
+                form.getValues(),
+              ),
+            );
+          }
+          onChange?.(value, extras);
+        }}
       />
 
       {description && <Description>{description}</Description>}

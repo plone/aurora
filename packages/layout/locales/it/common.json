@@ -1,7 +1,24 @@
 {
   "layout": {
-    "languageSwitcher": {
-      "switchTo": "Passa a {{ lang }}"
+    "slots": {
+      "headertools": {
+        "languageSwitcher": {
+          "switchTo": "Passa a {{ lang }}"
+        },
+        "actions": {
+          "logout": "Disconnetti"
+        },
+        "anonymousTools": {
+          "login": "Accedi",
+          "register": "Registrati"
+        },
+        "searchWidget": {
+          "searchSite": "Cerca nel sito"
+        }
+      },
+      "navigation": {
+        "menu": "Menu"
+      }
     },
     "contenttypes": {
       "common": {

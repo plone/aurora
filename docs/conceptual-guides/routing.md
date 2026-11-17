@@ -21,7 +21,7 @@ Routes are registered in add-ons using the `config.registerRoute()` API from `@p
 
 ## Route types
 
-Plone Aurora supports four types of routes, aligned with [React Router 7’s data route definitions](https://reactrouter.com/start/data/routing).
+Plone Aurora supports four types of routes, aligned with [React Router 8’s data route definitions](https://reactrouter.com/start/data/routing).
 
 `route`
 :   `route` is a standard route type for a specific path.

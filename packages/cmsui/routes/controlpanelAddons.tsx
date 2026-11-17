@@ -3,18 +3,17 @@ import {
   RouterContextProvider,
   useFetcher,
   useLoaderData,
-  useNavigate,
   type ActionFunctionArgs,
   type LoaderFunctionArgs,
 } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { requireAuthCookie } from '@plone/react-router';
-import { Button, Container } from '@plone/components/quanta';
+import { Button, Container, Link } from '@plone/quanta';
 import { Plug } from '@plone/layout/components/Pluggable';
 import type { Addons } from '@plone/types';
-import Back from '@plone/components/icons/arrow-left.svg?react';
-import ChevronDown from '@plone/components/icons/chevron-down.svg?react';
+import Back from '@plone/icons/svg/arrow-left.svg?react';
+import ChevronDown from '@plone/icons/svg/chevron-down.svg?react';
 
 type SiteAddon = Addons['items'][number];
 
@@ -439,7 +438,6 @@ const siteByName = (a: SiteAddon, b: SiteAddon) =>
 
 export default function AddonsControlPanel() {
   const { siteAddons } = useLoaderData<typeof loader>();
-  const navigate = useNavigate();
   const { t } = useTranslation();
 
   const [term, setTerm] = useState('');
@@ -465,16 +463,33 @@ export default function AddonsControlPanel() {
   return (
     <main className="route-addons">
       <Plug pluggable="toolbar-top" id="button-back">
-        <Button
-          aria-label="back"
-          size="L"
-          onPress={() => navigate('/controlpanel')}
-        >
-          <Back aria-hidden />
-        </Button>
+        <Link aria-label="back" href="/controlpanel">
+          <Back />
+        </Link>
       </Plug>
-      <Container width="default" className="route-controlpanel pb-16">
-        <h1 className="addons-title">{t('cmsui.paneltitles.addons')}</h1>
+      <Container
+        width="default"
+        className={`
+          route-controlpanel px-4 pt-6 pb-16
+          md:px-12 md:pt-12
+        `}
+      >
+        <header className="mb-8 flex flex-col gap-1">
+          <Link
+            href="/controlpanel"
+            className={`
+              self-start text-[13px] font-medium text-quanta-sapphire no-underline
+              hover:text-quanta-royal
+            `}
+          >
+            {t('cmsui.siteSetup')}
+          </Link>
+          <h1
+            className={`documentFirstHeading text-[28px] leading-[34px] font-bold text-quanta-denim`}
+          >
+            {t('cmsui.addons.title')}
+          </h1>
+        </header>
 
         <div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">

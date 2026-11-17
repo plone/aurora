@@ -1,5 +1,4 @@
 import type { SlotComponentProps } from '../SlotRenderer';
-import { Link } from '@plone/components';
 import clsx from 'clsx';
 import config from '@plone/registry';
 import { messages } from '../messages';
@@ -11,6 +10,7 @@ import type { RootLoader } from '@plone/aurora/app/root';
 
 const Logo = (props: SlotComponentProps) => {
   const { content } = props;
+  const Link = config.getComponent('Link').component!;
   const rootData = useRouteLoaderData<RootLoader>('root');
 
   const intl: (id: string) => string = config.getUtility({

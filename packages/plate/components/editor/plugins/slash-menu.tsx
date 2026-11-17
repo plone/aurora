@@ -13,6 +13,8 @@ import {
   Heading2Icon,
   Heading3Icon,
   Heading4Icon,
+  Heading5Icon,
+  Heading6Icon,
   LightbulbIcon,
   ListIcon,
   ListOrdered,
@@ -26,6 +28,7 @@ import {
 import { KEYS, PathApi } from 'platejs';
 
 import { insertBlock } from '../transforms';
+import { fallbackTranslate, type TranslateFunction } from './i18n';
 import { SuggestionPlugin } from './suggestion-kit';
 import { TITLE_BLOCK_TYPE } from './title';
 
@@ -41,13 +44,16 @@ export type SlashMenuItem = {
 };
 
 export type SlashMenuGroup = {
+  /** Stable key, used to match groups (e.g. in `extendGroups`). */
   group: string;
+  /** Displayed group name; defaults to `group`. */
+  label?: string;
   items: SlashMenuItem[];
 };
 
 export type SlashMenuContext = {
   hasTitleBlock: boolean;
-  translate?: (id: string) => string;
+  t?: TranslateFunction;
 };
 
 export type SlashMenuConfig = {
@@ -116,93 +122,133 @@ const addGroupItem = (
       : group,
   );
 
-const createStaticGroups = (): SlashMenuGroup[] => [
-  {
-    group: 'Actions',
-    items: [
-      {
-        focusEditor: false,
-        icon: <SparklesIcon />,
-        value: 'AI',
-        onSelect: (editor) => {
-          editor.getApi(AIChatPlugin).aiChat.show();
-        },
+// Only offered when the AI chat plugin is part of the editor preset.
+const createAiActionsGroup = (t: TranslateFunction): SlashMenuGroup => ({
+  group: 'Actions',
+  label: t('plate.slashMenu.groups.actions', { defaultValue: 'Actions' }),
+  items: [
+    {
+      focusEditor: false,
+      icon: <SparklesIcon />,
+      value: 'AI',
+      onSelect: (editor) => {
+        editor.getApi(AIChatPlugin).aiChat.show();
       },
-    ],
-  },
+    },
+  ],
+});
+
+const createStaticGroups = (t: TranslateFunction): SlashMenuGroup[] => [
   {
     group: 'Text blocks',
+    label: t('plate.slashMenu.groups.textBlocks', {
+      defaultValue: 'Text blocks',
+    }),
     items: [
       {
         icon: <PilcrowIcon />,
         keywords: ['paragraph'],
-        label: 'Text',
+        label: t('plate.slashMenu.items.text', { defaultValue: 'Text' }),
         value: KEYS.p,
       },
       {
         icon: <Heading2Icon />,
         keywords: ['subtitle', 'h2'],
-        label: 'Heading 2',
+        label: t('plate.slashMenu.items.heading2', {
+          defaultValue: 'Heading 2',
+        }),
         value: KEYS.h2,
       },
       {
         icon: <Heading3Icon />,
         keywords: ['subtitle', 'h3'],
-        label: 'Heading 3',
+        label: t('plate.slashMenu.items.heading3', {
+          defaultValue: 'Heading 3',
+        }),
         value: KEYS.h3,
       },
       {
         icon: <Heading4Icon />,
         keywords: ['subtitle', 'h4'],
-        label: 'Heading 4',
+        label: t('plate.slashMenu.items.heading4', {
+          defaultValue: 'Heading 4',
+        }),
         value: KEYS.h4,
+      },
+      {
+        icon: <Heading5Icon />,
+        keywords: ['subtitle', 'h5'],
+        label: t('plate.slashMenu.items.heading5', {
+          defaultValue: 'Heading 5',
+        }),
+        value: KEYS.h5,
+      },
+      {
+        icon: <Heading6Icon />,
+        keywords: ['subtitle', 'h6'],
+        label: t('plate.slashMenu.items.heading6', {
+          defaultValue: 'Heading 6',
+        }),
+        value: KEYS.h6,
       },
       {
         icon: <ListIcon />,
         keywords: ['unordered', 'ul', '-'],
-        label: 'Bulleted list',
+        label: t('plate.slashMenu.items.bulletedList', {
+          defaultValue: 'Bulleted list',
+        }),
         value: KEYS.ul,
       },
       {
         icon: <ListOrdered />,
         keywords: ['ordered', 'ol', '1'],
-        label: 'Numbered list',
+        label: t('plate.slashMenu.items.numberedList', {
+          defaultValue: 'Numbered list',
+        }),
         value: KEYS.ol,
       },
       {
         icon: <Square />,
         keywords: ['checklist', 'task', 'checkbox', '[]'],
-        label: 'To-do list',
+        label: t('plate.slashMenu.items.todoList', {
+          defaultValue: 'To-do list',
+        }),
         value: KEYS.listTodo,
       },
       {
         icon: <ChevronRightIcon />,
         keywords: ['collapsible', 'expandable'],
-        label: 'Toggle',
+        label: t('plate.slashMenu.items.toggle', { defaultValue: 'Toggle' }),
         value: KEYS.toggle,
       },
       {
         icon: <Code2 />,
         keywords: ['```'],
-        label: 'Code Block',
+        label: t('plate.slashMenu.items.codeBlock', {
+          defaultValue: 'Code Block',
+        }),
         value: KEYS.codeBlock,
       },
       {
         icon: <Table />,
-        label: 'Table',
+        label: t('plate.slashMenu.items.table', { defaultValue: 'Table' }),
         value: KEYS.table,
       },
       {
         icon: <Quote />,
         keywords: ['citation', 'blockquote', 'quote', '>'],
-        label: 'Blockquote',
+        label: t('plate.slashMenu.items.blockquote', {
+          defaultValue: 'Blockquote',
+        }),
         value: KEYS.blockquote,
       },
       {
-        description: 'Insert a highlighted block.',
+        description: t('plate.slashMenu.items.calloutDescription', {
+          defaultValue: 'Insert a highlighted block.',
+        }),
         icon: <LightbulbIcon />,
         keywords: ['note'],
-        label: 'Callout',
+        label: t('plate.slashMenu.items.callout', { defaultValue: 'Callout' }),
         value: KEYS.callout,
       },
     ].map((item) => ({
@@ -214,16 +260,23 @@ const createStaticGroups = (): SlashMenuGroup[] => [
   },
   {
     group: 'Advanced blocks',
+    label: t('plate.slashMenu.groups.advancedBlocks', {
+      defaultValue: 'Advanced blocks',
+    }),
     items: [
       {
         icon: <TableOfContentsIcon />,
         keywords: ['toc'],
-        label: 'Table of contents',
+        label: t('plate.slashMenu.items.tableOfContents', {
+          defaultValue: 'Table of contents',
+        }),
         value: KEYS.toc,
       },
       {
         icon: <Columns3Icon />,
-        label: '3 columns',
+        label: t('plate.slashMenu.items.threeColumns', {
+          defaultValue: '3 columns',
+        }),
         value: 'action_three_columns',
       },
     ].map((item) => ({
@@ -235,9 +288,7 @@ const createStaticGroups = (): SlashMenuGroup[] => [
   },
 ];
 
-const createRegistryBlockItems = (
-  translate?: SlashMenuContext['translate'],
-): SlashMenuItem[] => {
+const createRegistryBlockItems = (t: TranslateFunction): SlashMenuItem[] => {
   const blocksConfig = config?.blocks?.blocksConfig;
   if (!blocksConfig) return [];
 
@@ -246,9 +297,9 @@ const createRegistryBlockItems = (
       typeof block.title === 'string'
         ? block.title
         : typeof block.title?.id === 'string'
-          ? (translate?.(block.title.id) ??
-            block.title.defaultMessage ??
-            block.title.id)
+          ? t(block.title.id, {
+              defaultValue: block.title.defaultMessage ?? block.title.id,
+            })
           : String(block.title);
     const Icon = block.icon ? block.icon : Square;
 
@@ -268,13 +319,18 @@ export const getDefaultSlashMenuGroups = (
   editor: PlateEditor,
   context: SlashMenuContext,
 ): SlashMenuGroup[] => {
-  let groups = createStaticGroups();
+  const t = context.t ?? fallbackTranslate;
+  let groups = createStaticGroups(t);
+
+  if (editor.plugins[AIChatPlugin.key]) {
+    groups = [createAiActionsGroup(t), ...groups];
+  }
 
   if (!context.hasTitleBlock) {
     groups = addGroupItem(groups, 'Text blocks', {
       icon: <BookA />,
       keywords: ['title', 'page title', 'h1'],
-      label: 'Title',
+      label: t('plate.slashMenu.items.title', { defaultValue: 'Title' }),
       value: TITLE_BLOCK_TYPE,
       onSelect: (nextEditor: PlateEditor, value: string) => {
         insertBlock(nextEditor, value);
@@ -282,12 +338,13 @@ export const getDefaultSlashMenuGroups = (
     });
   }
 
-  const blocks = createRegistryBlockItems(context.translate);
+  const blocks = createRegistryBlockItems(t);
   if (blocks.length) {
     groups = [
       ...groups,
       {
         group: 'Blocks',
+        label: t('plate.slashMenu.groups.blocks', { defaultValue: 'Blocks' }),
         items: blocks,
       },
     ];

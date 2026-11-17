@@ -369,9 +369,16 @@ function withTooltip<T extends React.ElementType>(Component: T) {
         setMounted(true);
       }, []);
 
+      // Toolbar buttons are mostly icon-only: expose a string tooltip as the
+      // accessible name unless one is given explicitly.
+      const ariaLabel =
+        (props as { 'aria-label'?: string })['aria-label'] ??
+        (typeof tooltip === 'string' ? tooltip : undefined);
+
       const component = (
         <ComponentAny
           {...(props as React.ComponentPropsWithoutRef<T>)}
+          aria-label={ariaLabel}
           ref={ref as any}
         />
       );

@@ -1,1 +1,0 @@
-Renamed adapted registry-backed block nodes from `unknown` to `ploneBlock`, added the `BlockAnatomyPlugin` class contract, and made `blockWidth` a baseline `ploneBlock` style field. @sneridagh

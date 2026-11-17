@@ -1,0 +1,28 @@
+{
+  "plugins": {
+    "../scripts/prepublish.js": {}
+  },
+  "hooks": {
+    "after:bump": [
+      "uvx towncrier build --draft --yes --version ${version} > .changelog.draft && uvx towncrier build --yes --version ${version}",
+      "pnpm build:force"
+    ],
+    "after:release": "rm .changelog.draft"
+  },
+  "npm": {
+    "publish": false
+  },
+  "git": {
+    "changelog": "uvx towncrier build --draft --yes --version 0.0.0",
+    "requireUpstream": false,
+    "requireCleanWorkingDir": false,
+    "commitMessage": "Release @plone/quanta ${version}",
+    "tagName": "plone-quanta-${version}",
+    "tagAnnotation": "Release @plone/quanta ${version}"
+  },
+  "github": {
+    "release": true,
+    "releaseName": "@plone/quanta ${version}",
+    "releaseNotes": "cat .changelog.draft"
+  }
+}

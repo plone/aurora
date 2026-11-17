@@ -6,7 +6,7 @@ import {
   UNSTABLE_ToastContent as ToastContent,
   UNSTABLE_ToastRegion as ToastRegion,
 } from 'react-aria-components';
-import { CloseIcon } from '@plone/components/Icons';
+import { CloseIcon } from '@plone/icons';
 import { type ToastQueue } from '../../config/toast';
 /**
  * Props Types for the SectionWrapper component.

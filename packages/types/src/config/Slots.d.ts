@@ -13,8 +13,7 @@ export interface GetSlotArgs {
 }
 
 export type GetSlotReturn =
-  | { component: SlotComponent['component']; name: string }[]
-  | undefined;
+  { component: SlotComponent['component']; name: string }[] | undefined;
 
 export type SlotComponent = {
   component: React.ComponentType<any>;

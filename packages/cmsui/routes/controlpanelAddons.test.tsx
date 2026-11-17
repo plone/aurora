@@ -169,10 +169,10 @@ describe('Addons control panel route', () => {
       }));
 
       const svgStub = (props: any) => <svg {...props} />;
-      vi.doMock('@plone/components/icons/arrow-left.svg?react', () => ({
+      vi.doMock('@plone/icons/svg/arrow-left.svg?react', () => ({
         default: svgStub,
       }));
-      vi.doMock('@plone/components/icons/chevron-down.svg?react', () => ({
+      vi.doMock('@plone/icons/svg/chevron-down.svg?react', () => ({
         default: svgStub,
       }));
 
@@ -192,9 +192,8 @@ describe('Addons control panel route', () => {
       });
 
       const { render, screen } = await import('@testing-library/react');
-      const { default: AddonsControlPanel } = await import(
-        './controlpanelAddons'
-      );
+      const { default: AddonsControlPanel } =
+        await import('./controlpanelAddons');
 
       const result = render(<AddonsControlPanel />);
       return { screen, ...result };

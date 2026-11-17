@@ -6,11 +6,17 @@ on:
   push:
     branches: [ '*' ]
 
+# Cancel the runs of a branch or pull request that a newer push supersedes,
+# except on main, where every commit runs to completion.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   readme-link-checker:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Check links in README.md with Lychee
       id: lychee
       uses: lycheeverse/lychee-action@v2

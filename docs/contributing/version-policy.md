@@ -62,7 +62,7 @@ We recommend using the current LTS version.
 
 | Node.js | Plone Aurora         |
 | ------- | ------------- |
-| 24      | 1.0.0 (alpha) |
+| 24, 26  | 1.0.0 (alpha) |
 
 (version-policy-supported-browsers)=
 

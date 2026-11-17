@@ -14,6 +14,7 @@ This file applies only to `packages/layout` and its subdirectories.
 - **Components** (`components/`): structural UI elements (header, footer, breadcrumbs, toast).
 - **Config** (`config/`): slot definitions (`slots.ts`), toast config (`toast.ts`), and layout settings (`settings.ts`).
 - **Styles** (`styles/`): CSS for each layout section, organized by zone (`header.css`, `footer.css`, `content-area.css`, `publicui.css`).
+  - `content.css` holds the block model's spatial relationships (category widths, spacing between blocks, nested blocks). The app loads it in both the Public UI and the CMSUI editor, inside the `plone-content` cascade layer, so blocks are laid out the same in both. Follow the authoring rules in `docs/conceptual-guides/add-on-styles-loader.md`: no `@layer`, and selectors inside `:where()`.
 - Storybook is configured under `.storybook/`.
 
 ## Editing Rules

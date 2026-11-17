@@ -13,7 +13,7 @@ import {
   LinkIcon,
   VideoIcon,
   CollectionIcon,
-} from '@plone/components/Icons';
+} from '@plone/icons';
 
 export interface ContentIconMap {
   [key: string]: React.ComponentType<any>;

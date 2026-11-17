@@ -23,11 +23,13 @@ const ListingBlockView = (props: BlockViewProps) => {
 
   const renderDefault = (item: Brain) => {
     return (
-      <div key={item['@id']} className="item">
-        <ItemTitleTag>
+      <div key={item['@id']} className="block-listing__item">
+        <ItemTitleTag className="block-listing__title">
           <a href={item['@id']}>{item.title || item.id}</a>
         </ItemTitleTag>
-        {item.description && <p>{item.description}</p>}
+        {item.description && (
+          <p className="block-listing__description">{item.description}</p>
+        )}
       </div>
     );
   };
@@ -36,13 +38,19 @@ const ListingBlockView = (props: BlockViewProps) => {
     const url = getPreviewImageUrl(item);
 
     return (
-      <div key={item['@id']} className="item summary">
-        {url && <img src={url} alt=""></img>}
-        <div>
-          <ItemTitleTag>
+      <div
+        key={item['@id']}
+        className="block-listing__item"
+        data-variation="summary"
+      >
+        {url && <img className="block-listing__image" src={url} alt=""></img>}
+        <div className="block-listing__body">
+          <ItemTitleTag className="block-listing__title">
             <a href={item['@id']}>{item.title || item.id}</a>
           </ItemTitleTag>
-          {item.description && <p>{item.description}</p>}
+          {item.description && (
+            <p className="block-listing__description">{item.description}</p>
+          )}
         </div>
       </div>
     );
@@ -50,9 +58,17 @@ const ListingBlockView = (props: BlockViewProps) => {
 
   return (
     <>
-      {data.headline ? <HeadlineTag>{data.headline}</HeadlineTag> : ''}
+      {data.headline ? (
+        <HeadlineTag className="block-listing__headline">
+          {data.headline}
+        </HeadlineTag>
+      ) : (
+        ''
+      )}
       {!data.items || data.items?.length === 0 ? (
-        <div>{t('blocks.listing.no-results')}</div>
+        <div className="block-listing__empty">
+          {t('blocks.listing.no-results')}
+        </div>
       ) : (
         data.items.map((item) =>
           data.variation === 'summary'

@@ -1,17 +1,16 @@
 import {
   RouterContextProvider,
   useLoaderData,
-  useNavigate,
   type LoaderFunctionArgs,
 } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { requireAuthCookie } from '@plone/react-router';
-import { Button, Container } from '@plone/components/quanta';
+import { Container, Link } from '@plone/quanta';
 import { Plug } from '@plone/layout/components/Pluggable';
 import ControlPanelsList from '../components/ControlPanel/ControlPanelsList';
-import VersionOverview from '../components/VersionOverview/VersionOverview';
-import Back from '@plone/components/icons/arrow-left.svg?react';
+import SiteOverview from '../components/SiteOverview/SiteOverview';
+import Back from '@plone/icons/svg/arrow-left.svg?react';
 
 export async function loader({
   request,
@@ -21,34 +20,53 @@ export async function loader({
 
   const cli = context.get(ploneClientContext);
 
-  const [controlpanelsRes, sysInfoRes] = await Promise.all([
+  const [controlpanelsRes, systemRes, siteRes] = await Promise.all([
     cli.getControlpanels(),
     cli.getSystem(),
+    // The site card is optional: the control panels stay reachable
+    // without it.
+    cli.getSite().catch(() => undefined),
   ]);
   return {
     controlpanels: controlpanelsRes.data,
-    systemInformation: sysInfoRes.data,
+    system: systemRes.data,
+    site: siteRes?.data,
   };
 }
 
 export default function ControlPanels() {
-  const { controlpanels, systemInformation } = useLoaderData<typeof loader>();
-  const navigate = useNavigate();
+  const { controlpanels, system, site } = useLoaderData<typeof loader>();
   const { t } = useTranslation();
   return (
     <main>
       <Plug pluggable="toolbar-top" id="button-back">
-        <Button aria-label="back" size="L" onPress={() => navigate('/')}>
+        <Link aria-label="back" href="/">
           <Back />
-        </Button>
+        </Link>
       </Plug>
       <Container
-        width="default"
-        className="route-controlpanel cp-overview pb-16"
+        width="layout"
+        className={`
+          route-controlpanel px-4 pt-6 pb-16
+          md:px-12 md:pt-12
+        `}
       >
-        <h1 className="cp-title">{t('cmsui.controlpanel')}</h1>
-        <ControlPanelsList controlpanels={controlpanels ?? []} />
-        <VersionOverview {...systemInformation} />
+        <h1 className="documentFirstHeading mb-5 text-[28px] leading-[34px] font-bold">
+          {t('cmsui.siteSetup')}
+        </h1>
+        <div className="flex flex-wrap items-start gap-8">
+          <div className="min-w-0 flex-[999_1_520px]">
+            <ControlPanelsList controlpanels={controlpanels ?? []} />
+          </div>
+          <div
+            className={`
+              max-w-full flex-[1_1_300px]
+              lg:pt-[68px]
+            `}
+          >
+            <SiteOverview system={system} site={site} />
+          </div>
+        </div>
       </Container>
     </main>
   );

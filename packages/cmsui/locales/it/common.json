@@ -2,6 +2,20 @@
   "cmsui": {
     "add": "Aggiungi",
     "edit": "Modifica",
+    "manage_translations": {
+      "title": "Gestisci le traduzioni di \"{{title}}\"",
+      "back": "Indietro",
+      "language": "Lingua",
+      "path": "Percorso",
+      "tools": "Strumenti",
+      "no_translation": "Nessuna traduzione",
+      "link": "Collega una traduzione esistente ({{language}})",
+      "unlink": "Scollega la traduzione ({{language}})",
+      "create": "Crea la traduzione ({{language}})",
+      "linked": "Traduzione collegata",
+      "unlinked": "Traduzione scollegata",
+      "failed": "Aggiornamento della traduzione non riuscito"
+    },
     "save": "Salva",
     "cancel": "Annulla",
     "recurrence": {
@@ -53,6 +67,52 @@
       "show_more_dates": "Mostra più date"
     },
     "controlpanel": "Pannello di controllo",
+    "siteSetup": "Configurazione del sito",
+    "siteSetupSearch": {
+      "label": "Trova un'impostazione",
+      "placeholder": "Trova un'impostazione",
+      "noResults": "Nessuna impostazione corrisponde a “{{query}}”."
+    },
+    "siteOverview": {
+      "system": "Sistema",
+      "upToDate": "Aggiornato",
+      "upgradeAvailable": "Aggiornamento disponibile",
+      "upgrade": "Esegui l'aggiornamento di Plone dalla pagina di aggiornamento del backend (@@plone-upgrade).",
+      "language": "Lingua",
+      "timezone": "Fuso orario",
+      "multilingual": "Multilingua",
+      "on": "Attivo",
+      "off": "Disattivo",
+      "debugMode": "Modalità debug",
+      "copySystemInfo": "Copia informazioni di sistema",
+      "copied": "Copiato",
+      "copyFailed": "Impossibile copiare"
+    },
+    "controlpanelDescriptions": {
+      "date-and-time": "Fuso orario e primo giorno della settimana",
+      "language": "Lingue del sito e traduzioni",
+      "mail": "Server di posta in uscita e mittente",
+      "navigation": "Cosa mostra il menu principale",
+      "search": "Cosa si può trovare, e come",
+      "site": "Nome, logo e indicizzazione del sito",
+      "socialmedia": "Condivisione e account social",
+      "volto-settings": "Opzioni specifiche del frontend",
+      "dexterity-types": "Tipi, campi e workflow",
+      "content-types": "Tipi, campi e workflow",
+      "discussion": "Commenti e moderazione",
+      "editing": "Editor, blocchi e versioni",
+      "imaging": "Dimensioni e qualità delle immagini",
+      "usergroup": "Elenco membri e modalità molti utenti",
+      "security": "Registrazione, accesso e cartelle utente"
+    },
+    "controlpanelGroups": {
+      "plone-general": "Generale",
+      "plone-content": "Contenuti",
+      "plone-users": "Utenti",
+      "plone-security": "Sicurezza",
+      "plone-advanced": "Avanzate",
+      "Products": "Configurazione dei prodotti aggiuntivi"
+    },
     "objectbrowserwidget": {
       "openDialog": "Seleziona contenuti",
       "dialogTitle": "Seleziona Contenuti",
@@ -74,28 +134,13 @@
         "grid": "griglia"
       }
     },
-    "panelgroups": {
-      "general": "Generale",
-      "content": "Contenuto",
-      "security": "Sicurezza",
-      "users": "Utenti",
-      "site": "Sito",
-      "addons": "Configurazione prodotti aggiuntivi",
-      "maintenance": "Manutenzione"
-    },
-    "paneltitles": {
-      "addons": "Prodotti aggiuntivi",
-      "database": "Database",
-      "contentRules": "Regole di contenuto",
-      "undo": "Annulla operazioni",
-      "urlmanagement": "Gestione URL",
-      "relations": "Relazioni",
-      "moderatecomments": "Moderazione dei commenti",
-      "users": "Utenti",
-      "groupMembership": "Appartenenza ai gruppi",
-      "groups": "Gruppi"
+    "translate": {
+      "source": "Origine",
+      "view_source": "Visualizza il contenuto di origine",
+      "heading_new": "Traduci \"{{title}}\" in {{language}}"
     },
     "addons": {
+      "title": "Prodotti aggiuntivi",
       "installed": "Installato",
       "available": "Disponibili",
       "empty": "Nessun prodotto aggiuntivo trovato.",
@@ -124,15 +169,101 @@
     },
     "auth": {
       "username": "nome utente",
+      "usernameOrEmail": "Nome utente o email",
       "password": "password",
       "signIn": "Accedi",
       "signUp": "Registrati",
       "signInTo": "Accedi a {{site}}",
-      "forgotPassword": "Password dimenticata? <a>Richiedi una nuova password</a>",
-      "returnToHome": "Torna alla home page"
+      "forgotPassword": "Password dimenticata? <a>Richiedi una nuova password</a>.",
+      "returnToHome": "Torna alla home page",
+      "resetPassword": {
+        "requestTitle": "Reimposta la tua password",
+        "requestDescription": "Inserisci il tuo nome utente e ti invieremo un link per impostare una nuova password.",
+        "requestDescriptionWithEmail": "Inserisci il tuo nome utente o la tua email e ti invieremo un link per impostare una nuova password.",
+        "requestSubmit": "Richiedi una nuova password",
+        "requestSuccessTitle": "Controlla la tua casella di posta",
+        "requestSuccessBody": "Se esiste un account per questo nome utente, ti abbiamo inviato un messaggio con le istruzioni per reimpostare la password.",
+        "requestSuccessBodyWithEmail": "Se esiste un account per questo nome utente o email, ti abbiamo inviato un messaggio con le istruzioni per reimpostare la password.",
+        "setTitle": "Imposta una nuova password",
+        "setDescription": "Scegli una nuova password per il tuo account.",
+        "setSubmit": "Imposta nuova password",
+        "setSuccessTitle": "Password aggiornata",
+        "setSuccessBody": "La tua password è stata impostata. Ora puoi accedere con la nuova password.",
+        "setIdentifierHint": "Inserisci il nome utente che hai usato per richiedere la reimpostazione.",
+        "setIdentifierHintWithEmail": "Inserisci il nome utente o l'email che hai usato per richiedere la reimpostazione.",
+        "newPassword": "Nuova password",
+        "confirmPassword": "Conferma nuova password",
+        "passwordHint": "Usa almeno {{min}} caratteri.",
+        "errors": {
+          "identifierRequired": "Inserisci un nome utente.",
+          "usernameNoEmail": "Inserisci il tuo nome utente, non un indirizzo email.",
+          "invalidEmail": "Inserisci un indirizzo email valido.",
+          "usernameTooShort": "Il nome utente deve contenere almeno {{min}} caratteri.",
+          "usernameNoSpaces": "Il nome utente non può contenere spazi.",
+          "passwordTooShort": "La password deve contenere almeno {{min}} caratteri.",
+          "passwordsDoNotMatch": "Le password non coincidono.",
+          "passwordRejected": "La nuova password non è stata accettata: {{message}}",
+          "setFailed": "Non è stato possibile impostare la tua nuova password. Il link potrebbe essere non valido o scaduto. Richiedine uno nuovo.",
+          "serverError": "Si è verificato un errore dal nostro lato. Riprova tra qualche istante."
+        }
+      }
+    },
+    "sharing": {
+      "label": "Condivisione per «{{title}}»",
+      "description": "Puoi controllare chi può visualizzare e modificare l'elemento usando l'elenco che segue.",
+      "name": "Nome",
+      "inherit": "Eredita i permessi dai livelli superiori",
+      "inheritDescription": "Per impostazione predefinita, i permessi del contenitore di questo elemento sono ereditati. Se disattivi questa opzione, saranno validi solo i permessi di condivisione definiti esplicitamente. Nella panoramica, una freccia verde indica un valore ereditato e un globo blu indica un ruolo globale, gestito dall'amministratore del sito.",
+      "globalRole": "Ruolo globale",
+      "inheritedValue": "Valore ereditato",
+      "user": "Utente",
+      "group": "Gruppo",
+      "searchLabel": "Cerca utenti e gruppi",
+      "searchPlaceholder": "Cerca utenti e gruppi…",
+      "searchResults_one": "{{count}} voce trovata",
+      "searchResults_other": "{{count}} voci trovate"
     },
     "toolbar": {
       "settings": "Impostazioni"
-    }
+    },
+    "widgets": {
+      "select": {
+        "noValue": "Nessun valore",
+        "placeholder": "Seleziona…"
+      },
+      "array": {
+        "placeholder": "Digita per aggiungere…"
+      },
+      "file": {
+        "choose": "Scegli un file",
+        "replace": "Sostituisci il file",
+        "orDrop": "o trascinalo qui",
+        "remove": "Rimuovi {{filename}}",
+        "dropZone": "Trascina un file per {{label}}",
+        "imageOnly": "Scegli un file immagine.",
+        "readError": "Impossibile leggere il file."
+      },
+      "objectList": {
+        "item": "Elemento",
+        "add": "Aggiungi {{item}}",
+        "addButton": "Aggiungi",
+        "untitled": "{{item}} {{position}}",
+        "empty": "Nessun elemento aggiunto.",
+        "invalid": "Alcuni campi di questo elemento vanno controllati.",
+        "actions": "Azioni per {{title}}",
+        "moveUp": "Sposta su",
+        "moveDown": "Sposta giù",
+        "duplicate": "Duplica",
+        "remove": "Rimuovi",
+        "edit": "Modifica {{title}}",
+        "editTitle": "Modifica {{item}}",
+        "save": "Salva",
+        "cancel": "Annulla",
+        "removeTitle": "Rimuovere {{title}}?",
+        "removeDescription": "L'elemento viene rimosso dall'elenco. La modifica viene mantenuta quando salvi il modulo.",
+        "columnActions": "Azioni"
+      }
+    },
+    "saveFailed": "Impossibile salvare"
   }
 }

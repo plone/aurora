@@ -23,7 +23,7 @@ vi.mock('platejs/react', () => ({
   useSelectionFragmentProp: () => 'default',
 }));
 
-vi.mock('@plone/components/Icons', () => ({
+vi.mock('@plone/icons', () => ({
   WidthDefaultIcon: () => <span>default-icon</span>,
   WidthFullIcon: () => <span>full-icon</span>,
   WidthLayoutIcon: () => <span>layout-icon</span>,

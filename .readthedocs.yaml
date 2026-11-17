@@ -22,8 +22,18 @@ build:
     # This is a special exit code on Read the Docs that will cancel the build immediately.
     - |
       git fetch origin main
-      if [ "$READTHEDOCS_VERSION_TYPE" = "external" ] && git diff --quiet origin/main -- docs/ .readthedocs.yaml requirements-docs.txt \
-          packages/components/.storybook/ packages/registry/.storybook/ packages/cmsui/.storybook/ packages/layout/.storybook/;
+      if [ "$READTHEDOCS_VERSION_TYPE" = "external" ] && git diff --quiet origin/main -- \
+        docs/ \
+        packages/cmsui/.storybook/ \
+        packages/cmsui/**/*.stories.* \
+        packages/components/.storybook/ \
+        packages/components/**/*.stories.* \
+        packages/layout/.storybook/ \
+        packages/layout/**/*.stories.* \
+        packages/registry/.storybook/ \
+        packages/registry/**/*.stories.* \
+        .readthedocs.yaml \
+        requirements-docs.txt;
       then
         exit 183;
       fi

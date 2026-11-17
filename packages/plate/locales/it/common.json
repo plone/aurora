@@ -1,3 +1,33 @@
 {
-  "plate": {}
+  "plate": {
+    "slashMenu": {
+      "groups": {
+        "actions": "Azioni",
+        "textBlocks": "Blocchi di testo",
+        "advancedBlocks": "Blocchi avanzati",
+        "blocks": "Blocchi"
+      },
+      "items": {
+        "text": "Testo",
+        "heading2": "Titolo 2",
+        "heading3": "Titolo 3",
+        "heading4": "Titolo 4",
+        "heading5": "Titolo 5",
+        "heading6": "Titolo 6",
+        "bulletedList": "Elenco puntato",
+        "numberedList": "Elenco numerato",
+        "todoList": "Elenco di cose da fare",
+        "toggle": "Sezione espandibile",
+        "codeBlock": "Blocco di codice",
+        "table": "Tabella",
+        "blockquote": "Citazione",
+        "callout": "Riquadro evidenziato",
+        "calloutDescription": "Inserisci un blocco evidenziato.",
+        "tableOfContents": "Indice",
+        "threeColumns": "3 colonne",
+        "title": "Titolo"
+      },
+      "noResults": "Nessun risultato"
+    }
+  }
 }

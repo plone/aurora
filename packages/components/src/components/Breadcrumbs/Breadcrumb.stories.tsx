@@ -6,7 +6,7 @@ import {
   HomeIcon,
   MoreoptionsIcon,
   PageIcon,
-} from '../../components/icons';
+} from '@plone/icons';
 import { Button } from '../Button/Button';
 import { Menu, MenuItem, MenuTrigger } from '../Menu/Menu';
 

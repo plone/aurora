@@ -59,7 +59,7 @@ export type ReactRouterRouteEntry =
 
 export type ComponentsConfig = Record<
   string,
-  { component: React.ComponentType }
+  { component: React.ComponentType<any> }
 >;
 
 export interface ExperimentalConfig {
@@ -90,6 +90,7 @@ export {
   WidgetsConfig,
 };
 export * from './Blocks';
+export * from './Components';
 export * from './Settings';
 export * from './Slots';
 export * from './Utilities';

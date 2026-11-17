@@ -8,4 +8,5 @@ export const updateSharingDataSchema = z.object({
       type: z.string(),
     }),
   ),
+  inherit: z.boolean().optional(),
 });

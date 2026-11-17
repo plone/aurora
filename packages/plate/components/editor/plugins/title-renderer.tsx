@@ -6,10 +6,8 @@ export const TITLE_BLOCK_TYPE = 'title';
 
 function TitleRendererElement(props: PlateElementProps) {
   return (
-    <h1
-      {...props.attributes}
-      className="font-heading mt-[1.6em] pb-1 text-4xl font-bold"
-    >
+    // Styled by `.slate-title` in `styles/content.css`, as in the editor.
+    <h1 {...props.attributes} className="slate-title">
       <BlockInnerContainer>{props.children}</BlockInnerContainer>
     </h1>
   );

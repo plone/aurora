@@ -4,7 +4,7 @@
 
 # -- Path setup --------------------------------------------------------------
 
-from datetime import datetime
+import json
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -13,10 +13,8 @@ from datetime import datetime
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath("."))
-
 import os
-import json
-
+from datetime import datetime
 
 # -- Project information -----------------------------------------------------
 
@@ -30,9 +28,7 @@ year = str(now.year)
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
-with open(
-    os.path.join(os.path.abspath("."), "../package.json"), "r"
-) as package_json:
+with open(os.path.join(os.path.abspath("."), "../package.json"), "r") as package_json:
     data = package_json.read()
 
 version_from_package_json = json.loads(data)["version"]
@@ -83,6 +79,7 @@ linkcheck_ignore = [
     r"http://localhost",
     # Ignore pages that require authentication
     r"https://github.com/plone/volto/issues/new/choose",  # requires auth
+    r"https://github.com/plone/aurora/issues/new/choose",  # requires auth
     # Ignore github.com pages with anchors
     r"https://github.com/.*#.*",
     # Ignore other specific anchors
@@ -107,8 +104,7 @@ master_doc = "index"
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = [
-]
+exclude_patterns = []
 
 suppress_warnings = [
     # "toc.excluded",  # Suppress `WARNING: document isn't included in any toctree`
@@ -136,8 +132,8 @@ html_theme_options = {
             "attributes": {
                 "target": "_blank",
                 "rel": "noopener me",
-                "class": "nav-link custom-fancy-css"
-            }
+                "class": "nav-link custom-fancy-css",
+            },
         },
         {
             "name": "Mastodon",
@@ -147,8 +143,8 @@ html_theme_options = {
             "attributes": {
                 "target": "_blank",
                 "rel": "noopener me",
-                "class": "nav-link custom-fancy-css"
-            }
+                "class": "nav-link custom-fancy-css",
+            },
         },
         {
             "name": "X (formerly Twitter)",
@@ -158,8 +154,8 @@ html_theme_options = {
             "attributes": {
                 "target": "_blank",
                 "rel": "noopener me",
-                "class": "nav-link custom-fancy-css"
-            }
+                "class": "nav-link custom-fancy-css",
+            },
         },
     ],
     "logo": {
@@ -168,7 +164,7 @@ html_theme_options = {
     "navigation_with_keys": True,
     "path_to_docs": "docs",
     "repository_branch": "main",
-    "repository_url": "https://github.com/plone/volto/tree/main/packages/registry",
+    "repository_url": "https://github.com/plone/aurora/tree/main/packages/registry",
     "search_bar_text": "Search",  # TODO: Confirm usage of search_bar_text in plone-sphinx-theme
     "use_edit_page_button": True,
     "use_issues_button": True,
@@ -238,7 +234,9 @@ intersphinx_mapping = {
 
 ogp_site_url = "https://plone-registry.readthedocs.io/"
 ogp_description_length = 200
-ogp_image = "https://plone-registry.readthedocs.io/en/latest/_static/Plone_logo_square.png"
+ogp_image = (
+    "https://plone-registry.readthedocs.io/en/latest/_static/Plone_logo_square.png"
+)
 ogp_site_name = "@plone/registry Documentation"
 ogp_type = "website"
 ogp_custom_meta_tags = [

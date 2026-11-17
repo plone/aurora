@@ -15,6 +15,7 @@ This file applies only to `packages/cmsui` and its subdirectories.
 ## Package Model
 
 - **Routes** are declared in `config/routes.ts`.
+- Route paths follow the Plone conventions: views (routes that render a page) use `@@`, like `@@edit`; resource routes (data or actions for the UI) use a single `@`, like `@search` and the REST API endpoints.
 - **Widgets** (form input components) are registered in `config/widgets.ts`.
 - **Control panels** configuration lives in `config/controlpanels.ts`.
 - **Components** are organized under `components/<ComponentName>/`.
@@ -35,6 +36,8 @@ This file applies only to `packages/cmsui` and its subdirectories.
 pnpm --filter @plone/cmsui test --run
 pnpm --filter @plone/cmsui check:ts
 ```
+
+Visual regression tests for the CMS chrome (login, add and edit forms, block settings sidebar, sharing, control panels) live under `acceptance/visual/` and run with `pnpm visual-test`. They are the safety net for changes to CSS cascade layers and the Tailwind reset. Baselines are only generated in CI, through the "Update VRT Screenshots" workflow; never commit locally generated screenshots.
 
 For Storybook:
 

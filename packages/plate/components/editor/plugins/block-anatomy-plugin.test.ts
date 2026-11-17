@@ -66,6 +66,34 @@ describe('BlockAnatomyPlugin', () => {
     });
   });
 
+  it('exposes the list style type of indent-list paragraphs', () => {
+    registryBlocks.plateBlocksConfig = {
+      p: {
+        category: 'text',
+      },
+    };
+
+    const transformProps = (BaseBlockAnatomyPlugin as any).inject.nodeProps
+      .transformProps as TransformPropsFn;
+
+    expect(
+      transformProps({
+        element: {
+          type: 'p',
+          indent: 1,
+          listStyleType: 'decimal',
+          children: [{ text: 'First item' }],
+        },
+        props: {},
+      }),
+    ).toEqual({
+      className: 'block block-p category-text',
+      'data-block-type': 'p',
+      'data-block-category': 'text',
+      'data-list-style-type': 'decimal',
+    });
+  });
+
   it('injects block anatomy classes for registry-backed Plone blocks', () => {
     registryBlocks.blocksConfig = {
       image: {

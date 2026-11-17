@@ -10,7 +10,7 @@ import addonsInfo from '../.plone/registry.addonsInfo.json';
 
 const routes: RouteConfig = [
   route('ok', 'okroute.tsx', { id: 'ok' }),
-  route('reset-fetcher', 'reset-fetcher.tsx', { id: 'reset-fetcher' }),
+  route('@reset-fetcher', 'reset-fetcher.tsx', { id: 'reset-fetcher' }),
   ...getAddonRoutesConfig(
     (addonsRoutes as ReactRouterRouteEntry[]) || [],
     addonsInfo,

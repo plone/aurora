@@ -1,0 +1,1 @@
+Read the version of the app for the site overview from `@plone/registry/app-info` instead of importing the Aurora app's `package.json`, so it works in any app. @sneridagh

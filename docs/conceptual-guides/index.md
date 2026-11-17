@@ -20,8 +20,10 @@ add-on-registry
 add-on-loader
 add-on-styles-loader
 configuration-registry
+form-fields-controls-and-widgets
 add-on-driven-configuration
 cookieplone-frontend-add-on
 routing
 slots
+unified-editor
 ```

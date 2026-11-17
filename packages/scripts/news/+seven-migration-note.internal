@@ -1,0 +1,1 @@
+Documented that `seven` literal paths in the VS Code settings helper are intentional migration paths and must not be renamed to `aurora`. @sneridagh

@@ -12,6 +12,8 @@ import {
   Heading2Icon,
   Heading3Icon,
   Heading4Icon,
+  Heading5Icon,
+  Heading6Icon,
   ListIcon,
   ListOrderedIcon,
   PilcrowIcon,
@@ -55,6 +57,18 @@ export const turnIntoItems = [
     keywords: ['subtitle', 'h4'],
     label: 'Heading 4',
     value: 'h4',
+  },
+  {
+    icon: <Heading5Icon />,
+    keywords: ['subtitle', 'h5'],
+    label: 'Heading 5',
+    value: 'h5',
+  },
+  {
+    icon: <Heading6Icon />,
+    keywords: ['subtitle', 'h6'],
+    label: 'Heading 6',
+    value: 'h6',
   },
   {
     icon: <ListIcon />,

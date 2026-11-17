@@ -23,10 +23,10 @@ Plone Aurora is composed of focused packages that are assembled into `apps/auror
 | -------------------------- | ----------------------------------------------------------------------------------- |
 | App shell                  | `apps/aurora`                                                                        |
 | Public UI (visitor-facing) | `@plone/publicui`, `@plone/layout`, `@plone/blocks`                                 |
-| CMS UI (editor-facing)     | `@plone/cmsui`, `@plone/contents`, `@plone/plate`, `@plone/blocks`, `@plone/layout` |
+| CMS UI (editor-facing)     | `@plone/cmsui`, `@plone/contents`, `@plone/plate`, `@plone/blocks`, `@plone/layout`, `@plone/quanta` |
 | Shared infrastructure      | `@plone/client`, `@plone/registry`, `@plone/react-router`                           |
 | Utilities and types        | `@plone/helpers`, `@plone/types`                                                    |
-| Theming                    | `@plone/theming`, `@plone/agave`, `@plone/components`                               |
+| Theming                    | `@plone/theming`, `@plone/agave`, `@plone/components`, `@plone/quanta`, `@plone/icons` |
 | Tooling                    | `@plone/tooling`, `@plone/scripts`, `tsconfig`                                      |
 
 ### Volto (Plone 6) — reference only
@@ -55,7 +55,7 @@ Run these from the repo root when working across multiple packages or on the ful
 # Install dependencies
 pnpm install
 
-# Build all publishable packages (registry, client, components, react-router, helpers)
+# Build all publishable packages (registry, client, icons, quanta, components, react-router, helpers)
 pnpm build:deps
 
 # Lint the entire repo
@@ -72,6 +72,9 @@ pnpm stylelint:fix
 
 # Run Playwright acceptance tests
 pnpm acceptance-test
+
+# Run Playwright visual regression tests (baselines are generated in CI only)
+pnpm visual-test
 
 # Check typings
 pnpm check:ts

@@ -10,7 +10,7 @@ type LoaderData = {
 };
 
 const translations = {
-  'cmsui.paneltitles.addons': 'Add-ons',
+  'cmsui.addons.title': 'Add-ons',
   'cmsui.addons.installed': 'Installed',
   'cmsui.addons.available': 'Available',
   'cmsui.addons.empty': 'No add-ons found.',

@@ -10,7 +10,7 @@ import {
   WidthFullIcon,
   WidthLayoutIcon,
   WidthNarrowIcon,
-} from '@plone/components/Icons';
+} from '@plone/icons';
 
 import {
   BlockWidthPlugin,
@@ -62,6 +62,7 @@ export function BlockWidthToolbarButton(props: DropdownMenuProps) {
   return (
     <ToolbarSplitButton pressed={open}>
       <ToolbarSplitButtonPrimary
+        aria-label="Reset block width"
         className="data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
         onClick={() => {
           blockWidthTransforms.resetWidth();
@@ -74,7 +75,7 @@ export function BlockWidthToolbarButton(props: DropdownMenuProps) {
 
       <DropdownMenu open={open} onOpenChange={setOpen} modal={false} {...props}>
         <DropdownMenuTrigger asChild>
-          <ToolbarSplitButtonSecondary />
+          <ToolbarSplitButtonSecondary aria-label="Block width" />
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="start" alignOffset={-32}>

@@ -5,11 +5,16 @@ import type { RequestResponse } from '../types';
 
 export async function getRules(
   this: PloneClient,
+  { path = '' }: { path?: string } = {},
 ): Promise<RequestResponse<GetRulesResponse>> {
   const options: ApiRequestParams = {
     config: this.config,
     params: {},
   };
 
-  return apiRequest('get', '/@content-rules', options);
+  return apiRequest(
+    'get',
+    `${path.replace(/\/$/, '')}/@content-rules`,
+    options,
+  );
 }

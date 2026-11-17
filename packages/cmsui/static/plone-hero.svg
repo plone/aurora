@@ -1,0 +1,14 @@
+<svg viewBox="60 0 640 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="60" width="640" height="700" fill="#7CC0F8"/>
+<path d="M700 350L380 350L700 0V350Z" fill="#2597F4"/>
+<path d="M380 700H700L380 350L380 700Z" fill="#C5E3FC"/>
+<circle cx="350" cy="350" r="350" fill="#021322"/>
+<rect x="60" width="320" height="700" fill="#7CC0F8"/>
+<circle cx="220" cy="350" r="160" fill="#2597F4"/>
+<circle cx="220" cy="540" r="160" fill="white"/>
+<circle cx="540" cy="350" r="80" fill="white"/>
+<circle cx="220" cy="540" r="80" fill="#021322"/>
+<circle cx="220" cy="160" r="160" fill="white"/>
+<circle cx="220" cy="160" r="80" fill="#021322"/>
+<rect width="60" height="700" fill="white"/>
+</svg>

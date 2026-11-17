@@ -1,6 +1,6 @@
 import React from 'react';
 import type { BlockConfigBase } from '@plone/types';
-import { LinkIcon } from '@plone/components/Icons';
+import { LinkIcon } from '@plone/icons';
 import { TeaserSchema } from './schema';
 
 const TeaserBlockInfo = {

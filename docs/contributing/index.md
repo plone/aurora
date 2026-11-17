@@ -109,6 +109,7 @@ These checks are enforced automatically on every pull request, so you might as w
 Specifically:
 
 -   {doc}`./linting`
+-   {doc}`./testing`
 -   {doc}`./acceptance-tests`
 -   {doc}`./documentation`
 
@@ -121,9 +122,12 @@ Specifically:
 :maxdepth: 2
 
 acceptance-tests
+visual-regression-tests
+visual-regression-tests-ci-setup
 developing-core
 documentation
 linting
+testing
 version-policy
 language-features
 ```

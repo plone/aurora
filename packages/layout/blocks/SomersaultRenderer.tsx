@@ -13,8 +13,7 @@ type SomersaultRendererProps = {
 
 const SomersaultRenderer = ({ content }: SomersaultRendererProps) => {
   const somersaultBlock = content.blocks?.[SOMERSAULT_KEY] as
-    | { value?: Value }
-    | undefined;
+    { value?: Value } | undefined;
 
   return somersaultBlock?.value ? (
     <PlateController>

@@ -19,7 +19,7 @@ This file applies only to `packages/registry` and its subdirectories.
 
 - The registry is the single source of truth for app and add-on configuration. Keep its API **stable and well-typed**.
 - When adding new registry capabilities, export them from `src/index.ts` and add tests.
-- The Vite plugin must remain compatible with the monorepo's Vite setup. Test any plugin changes against `apps/seven`.
+- The Vite plugin must remain compatible with the monorepo's Vite setup. Test any plugin changes against `apps/aurora`.
 - Avoid introducing runtime side effects or global state outside of the registry's own initialization flow.
 
 ## Validation

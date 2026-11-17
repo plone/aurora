@@ -1,183 +1,215 @@
-import type { FunctionComponent, SVGProps } from 'react';
+import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from '@plone/components';
 import config from '@plone/registry';
-import Calendar from '@plone/components/icons/calendar.svg?react';
-import Language from '@plone/components/icons/language.svg?react';
-import Mail from '@plone/components/icons/mail.svg?react';
-import Navigation from '@plone/components/icons/navigation.svg?react';
-import World from '@plone/components/icons/world.svg?react';
-import Search from '@plone/components/icons/search.svg?react';
-import Social from '@plone/components/icons/social.svg?react';
-import ImageIcon from '@plone/components/icons/image.svg?react';
-import Code from '@plone/components/icons/code.svg?react';
-import Discussion from '@plone/components/icons/discussion.svg?react';
-import Edit from '@plone/components/icons/edit.svg?react';
-import Undo from '@plone/components/icons/undo.svg?react';
-import User from '@plone/components/icons/user.svg?react';
-import LinkIcon from '@plone/components/icons/link.svg?react';
-import Settings from '@plone/components/icons/settings.svg?react';
+import { SearchField } from '@plone/quanta';
+import type { Controlpanel } from '@plone/types';
+import ChevronRight from '@plone/icons/svg/chevron-right.svg?react';
+import { controlPanelId } from '../../helpers/controlpanels';
 
-interface ControlPanel {
-  '@id': string;
-  title: string;
-  group: string;
-  id?: string;
-}
+type ControlPanel = Pick<
+  Controlpanel,
+  '@id' | 'title' | 'group' | 'group_id' | 'description' | 'icon'
+>;
 
-type IconComponent = FunctionComponent<SVGProps<SVGSVGElement>>;
+// The icons of each group take the next Quanta color family.
+const groupTints = [
+  'bg-quanta-arctic text-quanta-royal',
+  'bg-quanta-aqua text-quanta-puya',
+  'bg-quanta-cream text-quanta-bronze',
+  'bg-quanta-ballet text-quanta-wine',
+  'bg-quanta-daiquiri text-quanta-turtle',
+];
 
-const iconFor = (id: string): IconComponent => {
-  if (/date|time|calendar/.test(id)) return Calendar;
-  if (/lang|translation|multilingual/.test(id)) return Language;
-  if (/mail|smtp|email/.test(id)) return Mail;
-  if (/nav/.test(id)) return Navigation;
-  if (/search/.test(id)) return Search;
-  if (/social/.test(id)) return Social;
-  if (/imag/.test(id)) return ImageIcon;
-  if (/markup|code|html|theme/.test(id)) return Code;
-  if (/discussion|comment|moderate/.test(id)) return Discussion;
-  if (/relation|alias|url|redirect|link/.test(id)) return LinkIcon;
-  if (/undo/.test(id)) return Undo;
-  if (/user|group|member|principal|sharing/.test(id)) return User;
-  if (/rule|editing|content|dexterity|types/.test(id)) return Edit;
-  if (/site/.test(id)) return World;
-  return Settings;
-};
-
+/**
+ * The control panels, as lists grouped like the backend groups them, with a
+ * field to find one. Add-ons add theirs to `config.settings.controlpanels`,
+ * their icons to `config.settings.controlPanelsIcons`, and their
+ * descriptions as `cmsui.controlpanelDescriptions.<id>` translations.
+ */
 export const ControlPanelsList = ({
   controlpanels,
 }: {
   controlpanels: ControlPanel[];
 }) => {
   const { t } = useTranslation();
-  const addonsControlPanels: ControlPanel[] =
-    config.settings.controlpanels || [];
-
-  const auroraControlPanels = [
-    {
-      '@id': '/addons',
-      group: t('cmsui.panelgroups.general'),
-      title: t('cmsui.paneltitles.addons'),
-    },
-    {
-      '@id': '/database',
-      group: t('cmsui.panelgroups.general'),
-      title: t('cmsui.paneltitles.database'),
-    },
-    {
-      '@id': '/rules',
-      group: t('cmsui.panelgroups.content'),
-      title: t('cmsui.paneltitles.contentRules'),
-    },
-    {
-      '@id': '/undo',
-      group: t('cmsui.panelgroups.general'),
-      title: t('cmsui.paneltitles.undo'),
-    },
-    {
-      '@id': '/aliases',
-      group: t('cmsui.panelgroups.general'),
-      title: t('cmsui.paneltitles.urlmanagement'),
-    },
-    {
-      '@id': '/relations',
-      group: t('cmsui.panelgroups.content'),
-      title: t('cmsui.paneltitles.relations'),
-    },
-    {
-      '@id': '/moderate-comments',
-      group: t('cmsui.panelgroups.content'),
-      title: t('cmsui.paneltitles.moderatecomments'),
-    },
-    {
-      '@id': '/users',
-      group: t('cmsui.panelgroups.users'),
-      title: t('cmsui.paneltitles.users'),
-    },
-    {
-      '@id': '/usergroupmembership',
-      group: t('cmsui.panelgroups.users'),
-      title: t('cmsui.paneltitles.groupMembership'),
-    },
-    {
-      '@id': '/groups',
-      group: t('cmsui.panelgroups.users'),
-      title: t('cmsui.paneltitles.groups'),
-    },
-  ];
+  const [query, setQuery] = useState('');
+  const listId = useId();
+  const Link = config.getComponent('Link').component!;
+  const {
+    controlPanelsIcons: icons = {},
+    controlPanelsIconNames: iconNames = {},
+    filterControlPanels,
+  } = config.settings;
 
   let allControlPanels = controlpanels.concat(
-    auroraControlPanels,
-    addonsControlPanels,
+    config.settings.controlpanels ?? [],
+  ) as Controlpanel[];
+  if (filterControlPanels) {
+    allControlPanels = filterControlPanels(allControlPanels);
+  }
+
+  const panels = allControlPanels.map((panel, index) => {
+    const id = controlPanelId(panel);
+    return {
+      ...panel,
+      id,
+      // Unique in the page, even when two panels end in the same id.
+      domId: `${listId}-${index}`,
+      // The backend's description and icon (plone.restapi 10.2.0 and
+      // later) win, then the ones Aurora has for the id.
+      description:
+        panel.description ||
+        t(`cmsui.controlpanelDescriptions.${id}`, { defaultValue: '' }),
+      Icon: ((panel.icon && iconNames[panel.icon]) ??
+        icons[id] ??
+        icons.default) as
+        React.ComponentType<{ className?: string }> | undefined,
+      // The group's id (plone.restapi 10.2.0 and later) gives a translated
+      // title; without it, the title the backend sends.
+      groupTitle: panel.group_id
+        ? t(`cmsui.controlpanelGroups.${panel.group_id}`, {
+            defaultValue: panel.group,
+          })
+        : panel.group || 'General',
+    };
+  });
+
+  // Groups and panels keep the order the backend sends them in: Plone
+  // orders the groups, and the panels by their translated title.
+  const groups = panels.reduce<Record<string, typeof panels>>((acc, panel) => {
+    (acc[panel.groupTitle] ??= []).push(panel);
+    return acc;
+  }, {});
+  const tints = Object.fromEntries(
+    Object.keys(groups).map((group, index) => [
+      group,
+      groupTints[index % groupTints.length],
+    ]),
   );
 
-  allControlPanels = allControlPanels.map((controlpanel) => ({
-    ...controlpanel,
-    id: controlpanel['@id'].split('/').pop() || '',
-  }));
-
-  const groupedPanels = allControlPanels.reduce(
-    (acc, panel) => {
-      const group = panel.group || 'General';
-      if (!acc[group]) {
-        acc[group] = [];
-      }
-      acc[group].push(panel);
-      return acc;
-    },
-    {} as Record<string, ControlPanel[]>,
-  );
+  const search = query.trim().toLocaleLowerCase();
+  const visibleGroups = Object.entries(groups)
+    .map(
+      ([group, items]) =>
+        [
+          group,
+          items.filter((panel) =>
+            `${panel.title} ${panel.description}`
+              .toLocaleLowerCase()
+              .includes(search),
+          ),
+        ] as const,
+    )
+    .filter(([, items]) => items.length > 0);
 
   return (
-    <div className="controlpanels-container controlpanels flex flex-col gap-10">
-      {Object.entries(groupedPanels).map(([group, panels]) => (
+    <div className="controlpanels @container flex flex-col gap-7">
+      <SearchField
+        aria-label={t('cmsui.siteSetupSearch.label')}
+        placeholder={t('cmsui.siteSetupSearch.placeholder')}
+        value={query}
+        onChange={setQuery}
+        className="max-w-[560px]"
+      />
+      {visibleGroups.map(([group, items]) => (
         <section key={group} className="controlpanels-group">
-          <h2 className="group-title cp-group-title mb-4">{group}</h2>
-          <ul
+          <h2
             className={`
-              controlpanels-list grid list-none grid-cols-2 gap-x-6 gap-y-5 p-0
-              sm:grid-cols-3
-              lg:grid-cols-4
+              mb-2.5 text-[13px] leading-5 font-semibold tracking-wide text-quanta-iron uppercase
             `}
           >
-            {panels
-              .sort((a, b) => a.title.localeCompare(b.title))
-              .map((panel) => {
-                const Icon = iconFor(panel.id || '');
-                return (
-                  <li key={panel['@id']} className="controlpanel-item">
-                    <Link
-                      href={`/controlpanel/${panel.id}`}
+            {group}
+          </h2>
+          {/* Two columns when there's room, and a single panel takes half
+            the width. The gaps between the rows show the list's background
+            as dividers. */}
+          <ul
+            className={`
+              grid gap-px overflow-hidden rounded-[10px] border border-quanta-smoke bg-quanta-smoke
+              ${items.length > 1 ? '@2xl:grid-cols-2' : '@2xl:w-1/2'}
+            `}
+          >
+            {items.map((panel) => {
+              const { Icon } = panel;
+              return (
+                <li
+                  key={panel.domId}
+                  className="controlpanel-item bg-quanta-air"
+                >
+                  {/* Named by its title, so the description doesn't make
+                    the link's name long. */}
+                  <Link
+                    href={`/controlpanel/${panel.id}`}
+                    aria-labelledby={`${panel.domId}-title`}
+                    aria-describedby={
+                      panel.description
+                        ? `${panel.domId}-description`
+                        : undefined
+                    }
+                    // An inset focus ring, since the list clips anything
+                    // outside the row, like the Link's own ring, which is
+                    // hidden. `outline-hidden` clears the outline style, so
+                    // focus sets it again. The ring is rounded like the
+                    // list's inner corners, so the ones in a corner fit.
+                    className={`
+                      flex h-full min-h-16 items-center gap-3.5 bg-quanta-air px-4 py-2.5
+                      text-quanta-denim no-underline outline-hidden
+                      hover:bg-quanta-snow
+                      focus-visible:rounded-[9px] focus-visible:outline-2
+                      focus-visible:-outline-offset-2 focus-visible:outline-quanta-cobalt
+                      focus-visible:outline-solid
+                      data-focus-visible:after:hidden
+                    `}
+                  >
+                    <span
+                      aria-hidden="true"
                       className={`
-                        controlpanel-link group flex flex-col items-center gap-2 no-underline
+                        flex size-9 shrink-0 items-center justify-center rounded-lg
+                        ${tints[group]}
                       `}
                     >
+                      {Icon && <Icon className="size-5" />}
+                    </span>
+                    <span className="flex min-w-0 flex-1 flex-col">
                       <span
-                        className={`
-                          flex aspect-square w-full items-center justify-center rounded-lg
-                          bg-quanta-snow text-quanta-iron transition
-                          group-hover:bg-white group-hover:shadow-md group-hover:ring-1
-                          group-hover:ring-border
-                        `}
-                      >
-                        <Icon aria-hidden className="size-10" />
-                      </span>
-                      <span
-                        className={`
-                          text-center text-sm text-quanta-sapphire
-                          group-hover:underline
-                        `}
+                        id={`${panel.domId}-title`}
+                        className="text-[15px] leading-[22px] font-semibold"
                       >
                         {panel.title}
                       </span>
-                    </Link>
-                  </li>
-                );
-              })}
+                      {panel.description && (
+                        <span
+                          id={`${panel.domId}-description`}
+                          className="text-[13px] leading-[18px] text-quanta-pigeon"
+                        >
+                          {panel.description}
+                        </span>
+                      )}
+                    </span>
+                    <ChevronRight className="size-[18px] shrink-0 text-quanta-dolphin" />
+                  </Link>
+                </li>
+              );
+            })}
+            {/* Fills the empty cell of an odd row, so it doesn't show the
+              divider color. */}
+            {items.length > 1 && items.length % 2 === 1 && (
+              <li
+                aria-hidden="true"
+                className={`
+                  hidden bg-quanta-air
+                  @2xl:block
+                `}
+              />
+            )}
           </ul>
         </section>
       ))}
+      {visibleGroups.length === 0 && (
+        <p role="status" className="text-sm text-quanta-iron">
+          {t('cmsui.siteSetupSearch.noResults', { query })}
+        </p>
+      )}
     </div>
   );
 };

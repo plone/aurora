@@ -1,5 +1,5 @@
 import type { SlotComponentProps } from '../SlotRenderer';
-import { Link } from '@plone/components';
+import config from '@plone/registry';
 import SectionWrapper from '../../components/SectionWrapper/SectionWrapper';
 import clsx from 'clsx';
 
@@ -8,6 +8,7 @@ import Logo from '../Logo/Logo';
 
 const Footer = (props: SlotComponentProps) => {
   const { content, location } = props;
+  const Link = config.getComponent('Link').component!;
   const siteActions = content?.['@components']?.actions?.site_actions || [];
 
   return (
