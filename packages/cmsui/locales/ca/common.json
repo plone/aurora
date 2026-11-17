@@ -1,0 +1,30 @@
+{
+  "cmsui": {
+    "controlpanelDescriptions": {
+      "addons": "Instal·la, actualitza i elimina complements"
+    },
+    "addons": {
+      "title": "Complements",
+      "description": "Instal·la, actualitza i desinstal·la els complements d'aquest lloc. Aquí només apareixen els complements que formen part de la compilació.",
+      "docsLink": "Afegir un complement nou",
+      "installed": "Instal·lats",
+      "available": "Disponibles",
+      "empty": "No s'ha trobat cap complement.",
+      "noMatches": "Cap complement no coincideix amb la cerca.",
+      "install": "Instal·la",
+      "uninstall": "Desinstal·la",
+      "upgrade": "Actualitza",
+      "upgradeAvailable": "Actualització disponible",
+      "upgradeFromTo": "Actualització {{from}} → {{to}}",
+      "actions": "Accions de {{title}}",
+      "uninstallTitle": "Voleu desinstal·lar {{title}}?",
+      "uninstallDescription": "És possible que se n'eliminin del lloc la configuració i els tipus de contingut que afegeix.",
+      "cancel": "Cancel·la",
+      "searchLabel": "Cerca un complement",
+      "searchPlaceholder": "Cerca un complement",
+      "resultsCount_one": "{{count}} complement trobat",
+      "resultsCount_other": "{{count}} complements trobats",
+      "actionError": "No ha funcionat."
+    }
+  }
+}
