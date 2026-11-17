@@ -56,10 +56,13 @@ The URL uses the block's key in `blocksConfig`, which is what the endpoint looks
 The protocol comes from the `X-Forwarded-Proto` header, when a proxy sets it, and the host from the request.
 
 `document_model` tells how content stores its blocks, as an object with an `id` and a `version`.
+Clients that write content, such as the Plone MCP server, need it to write blocks in the shape that the site reads.
+The Volto server and Plone Aurora return the same endpoint and the same block IDs, but a Volto page stores its blocks in `blocks` and `blocks_layout`, the `plone.blocks` document model, and a Plone Aurora page stores them as nodes of one Plate document.
+Without `document_model`, a client can't tell these two models apart.
+
 Plone Aurora stores a page as one Plate document, so its document model is `plone.plate`, version 1.
 In the `plone.plate` document model, the page body is the `main` region, a `blocks` entry whose `@type` is `plate`.
 `plate` names the format of a region's value, so other document models can use `plate` regions too.
-Volto stores the blocks of content with the `plone.blocks` document model.
 A new `version` means that the stored data changed in a way that clients of the previous version can't read.
 
 `kind` tells how the item is stored in the page document:
