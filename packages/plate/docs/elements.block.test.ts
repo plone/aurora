@@ -44,6 +44,7 @@ describe('element docs', () => {
         'callout',
         'code_block',
         'column_group',
+        'grid',
         'h2',
         'h3',
         'h4',
