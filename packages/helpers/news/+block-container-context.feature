@@ -1,0 +1,1 @@
+Added `useBlockContainer()`, which tells a block the container it is rendered in, such as a grid column: the container's type and data, and the column's position, width weight and the grid's total. @Humanaice

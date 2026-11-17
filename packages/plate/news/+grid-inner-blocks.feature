@@ -1,0 +1,1 @@
+Blocks inside a grid follow their column: images do not offer size or alignment and use the column's width, and teasers take the grid's background. Stored values are kept and apply again when the block moves out of the grid. The grid's `blocksConfig` option replaces these rules per block type. @Humanaice

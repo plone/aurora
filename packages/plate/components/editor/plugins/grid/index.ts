@@ -40,3 +40,4 @@ export {
   turnIntoGrid,
 } from './editor-transforms';
 export { GridEditorPlugin, handleGridKeyDown } from './grid-editor-plugin';
+export { DEFAULT_GRID_BLOCKS_CONFIG } from './inner-block-schema';

@@ -1,15 +1,19 @@
 import type { BlockViewProps } from '@plone/types';
 import Image from '@plone/layout/components/Image/Image';
 import config from '@plone/registry';
+import { useBlockContainer } from '@plone/helpers';
 import {
   getImageBlockHref,
   getImageBlockItem,
   getImageBlockSrc,
+  getContainerImageSizes,
 } from './utils';
 
 const ImageBlockView = (props: BlockViewProps) => {
   const { data } = props;
   const Link = config.getComponent('Link').component!;
+  // Inside a grid column, the browser picks a file for the column's width.
+  const sizes = getContainerImageSizes(useBlockContainer());
   if (!data.url) return null;
 
   const href = getImageBlockHref(data);
@@ -22,6 +26,7 @@ const ImageBlockView = (props: BlockViewProps) => {
       alt={(data.alt as string) || ''}
       loading="lazy"
       responsive={true}
+      sizes={sizes}
     />
   );
 

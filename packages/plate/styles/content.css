@@ -887,6 +887,27 @@
   flex: var(--block-grid-column-size, 1) 1 0;
 }
 
+/*
+ * Blocks inside a grid column follow their column: images use the column's
+ * width, whatever their own size and alignment, and teasers take the grid's
+ * background. The block's own values are set inline on the block, so the
+ * column resets them on the block's inner parts.
+ */
+:where(.slate-grid) {
+  --block-grid-background: var(--theme-color, transparent);
+}
+
+:where(.block-grid__column .block-image__frame) {
+  --block-size: 100%;
+  --block-float: none;
+  --block-margin: 0 auto;
+  --block-float-max-size: 100%;
+}
+
+:where(.block-grid__column .block-teaser > *) {
+  --theme-color: var(--block-grid-background);
+}
+
 @container block-grid (width < 40rem) {
   :where(.slate-grid[data-stack='true'] .block-grid__columns) {
     flex-direction: column;

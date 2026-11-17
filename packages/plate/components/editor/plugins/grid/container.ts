@@ -1,6 +1,7 @@
 import type { SlateEditor } from 'platejs';
 
 import type { BlockContainerSpec } from '../containers/types';
+import { DEFAULT_GRID_BLOCKS_CONFIG } from './inner-block-schema';
 import { getGridOptions } from './options';
 import { GRID_COLUMN_KEY, GRID_KEY } from './types';
 
@@ -19,7 +20,8 @@ export const getGridContainerSpec = (
     allowedBlocks: options.allowedBlocks,
     nestable: false,
     whenDisallowed: 'unwrap',
-    blocksConfig: options.blocksConfig,
+    // The project's rules replace the defaults, block type by block type.
+    blocksConfig: { ...DEFAULT_GRID_BLOCKS_CONFIG, ...options.blocksConfig },
     label: (t) => t('plate.grid.label', { defaultValue: 'Grid' }),
     nestingNote: (t) =>
       t('plate.grid.noNesting', {

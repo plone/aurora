@@ -174,7 +174,9 @@
       "addBefore": "Aggiungi colonna prima",
       "addAfter": "Aggiungi colonna dopo",
       "gridSettings": "Impostazioni della griglia",
-      "oneColumn": "1 colonna"
+      "oneColumn": "1 colonna",
+      "innerImageNote": "In una griglia, un'immagine usa la larghezza della sua colonna, quindi dimensione e allineamento non sono disponibili.",
+      "innerTeaserNote": "In una griglia, un teaser prende lo sfondo della griglia, quindi il suo sfondo non è disponibile."
     }
   }
 }
