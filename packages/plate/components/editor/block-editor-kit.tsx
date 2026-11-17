@@ -1,6 +1,7 @@
 import { type Value, TrailingBlockPlugin } from 'platejs';
 import { type TPlateEditor, useEditorRef } from 'platejs/react';
 
+import { AccordionKit } from './plugins/accordion/accordion-kit';
 // import { AIKit } from './plugins/ai-kit';
 import { AlignKit } from './plugins/align-kit';
 import { AutoformatKit } from './plugins/autoformat-kit';
@@ -54,6 +55,7 @@ export const createBlockEditorKit = ({
   ...TocKit,
   ...CalloutKit,
   ...ColumnKit,
+  ...AccordionKit,
   ...MentionKit,
 
   // Marks
