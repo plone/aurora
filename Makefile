@@ -174,11 +174,11 @@ release-notes-copy-to-docs: ## Copy release notes into documentation
 
 .PHONY: backend-docker-start
 backend-docker-start: ## Starts a Docker-based backend for development
-	docker run -it --rm --name=backend -p 8080:8080 -v volto-backend-data:/data -e SITE=Plone -e ADDONS='$(KGS)' -e SITE_DEFAULT_LANGUAGE='$(SITE_DEFAULT_LANGUAGE)' $(DOCKER_IMAGE)
+	docker run -it --rm --name=backend -p 8080:8080 -v volto-backend-data:/data -e SITE=Plone -e ADDONS='$(KGS)' -e PROFILES='$(BACKEND_PROFILES)' -e SITE_DEFAULT_LANGUAGE='$(SITE_DEFAULT_LANGUAGE)' $(DOCKER_IMAGE)
 
 .PHONY: backend-docker-start-no-cors
 backend-docker-start-no-cors: ## Starts the Docker-based backend without CORS in detached mode (daemon)
-	docker run -it --rm --name=backend -p 8080:8080 -e SITE=Plone -e ADDONS='$(KGS)' -e CORS_=true $(DOCKER_IMAGE)
+	docker run -it --rm --name=backend -p 8080:8080 -e SITE=Plone -e ADDONS='$(KGS)' -e PROFILES='$(BACKEND_PROFILES)' -e CORS_=true $(DOCKER_IMAGE)
 
 .PHONY: frontend-docker-start
 frontend-docker-start: ## Starts a Docker-based frontend for development
@@ -195,7 +195,7 @@ acceptance-frontend-dev-start: ## Start acceptance frontend in development mode,
 
 # The acceptance image starts robot-server directly, without the entrypoint
 # that installs ADDONS, so it installs $(KGS) itself first.
-ACCEPTANCE_BACKEND_ARGS=--rm -p 55001:55001 -e APPLY_PROFILES=plone.app.contenttypes:plone-content,plone.restapi:default,plone.volto:default,plone.app.discussion:default --entrypoint bash $(DOCKER_IMAGE_ACCEPTANCE) -c '$(if $(KGS),/app/bin/pip install $(KGS) && )exec /app/bin/robot-server plone.app.robotframework.testing.VOLTO_ROBOT_TESTING'
+ACCEPTANCE_BACKEND_ARGS=--rm -p 55001:55001 -e APPLY_PROFILES=plone.app.contenttypes:plone-content,plone.restapi:default,plone.volto:default,$(BACKEND_PROFILES),plone.app.discussion:default --entrypoint bash $(DOCKER_IMAGE_ACCEPTANCE) -c '$(if $(KGS),/app/bin/pip install $(KGS) && )exec /app/bin/robot-server plone.app.robotframework.testing.VOLTO_ROBOT_TESTING'
 
 .PHONY: acceptance-backend-start
 acceptance-backend-start: ## Start backend acceptance server

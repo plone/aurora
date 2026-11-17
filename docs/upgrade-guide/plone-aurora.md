@@ -56,6 +56,40 @@ dependencies = [
 With an older `plone.restapi`, the pages saved in the new shape drop out of `SearchableText`, get no link integrity, and the links of the blocks in them are not converted to `resolveuid` links.
 Reindexing fixes the first two, but not the links, which stay as they are until the page is saved again.
 
+(upgrade-guide-plone-volto-aurora-profile)=
+
+### The backend needs the `plone.volto:aurora` profile
+
+```{versionchanged} 1.0.0-alpha.24
+These steps apply when you upgrade from Plone Aurora 1.0.0-alpha.23 or earlier to 1.0.0-alpha.24 or later.
+```
+
+Since `plone.volto` 6.1.0, which Plone 6.2.3 ships, the `plone.volto:default` profile adds the `personal_tools` actions with the links of the Volto toolbar.
+The Personal tools menu of Plone Aurora shows these actions instead of its own links, so Profile and Preferences point to pages that Plone Aurora doesn't have, and Log out is missing.
+
+`plone.volto` 6.2.0 adds the `plone.volto:aurora` profile, which replaces these actions with the links of Plone Aurora.
+Pin `plone.volto` to 6.2.0 or later in your backend, next to `plone.restapi`:
+
+```toml
+dependencies = [
+    "Products.CMFPlone==6.2.3",
+    "plone.restapi>=10.3.0",
+    "plone.volto>=6.2.0",
+]
+```
+
+Then apply the profile.
+In a backend add-on, add it to the dependencies of your profile, in {file}`profiles/default/metadata.xml`, and add an upgrade step that applies it on existing sites:
+
+```xml
+<dependencies>
+  <dependency>profile-plone.volto:aurora</dependency>
+</dependencies>
+```
+
+On an existing site without an add-on, import the profile in the {guilabel}`Import` tab of `portal_setup`, in the Zope Management Interface.
+The official Docker images apply it when they create a site, if you add it to the `PROFILES` environment variable, for example `PROFILES=plone.volto:aurora`.
+
 (upgrade-guide-block-content-css)=
 
 ### Block content is styled in `styles/content.css`
