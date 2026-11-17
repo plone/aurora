@@ -7,6 +7,7 @@ import {
   type TElement,
 } from 'platejs';
 
+import { getAccordionContainerSpec } from './container';
 import { normalizeAccordionNode } from './normalize';
 import { DEFAULT_ACCORDION_OPTIONS } from './options';
 import {
@@ -32,7 +33,10 @@ export type AccordionConfig = PluginConfig<
 export const BaseAccordionPlugin = createTSlatePlugin<AccordionConfig>({
   key: ACCORDION_KEY,
   node: { isContainer: true, isElement: true },
-  options: DEFAULT_ACCORDION_OPTIONS,
+  options: {
+    ...DEFAULT_ACCORDION_OPTIONS,
+    container: getAccordionContainerSpec,
+  },
 }).overrideEditor(({ editor, tf: { normalizeNode } }) => ({
   transforms: {
     normalizeNode(entry, options) {

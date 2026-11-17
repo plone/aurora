@@ -30,6 +30,7 @@ import { KEYS, PathApi } from 'platejs';
 
 import { insertBlock } from '../transforms';
 import { ACCORDION_KEY } from './accordion/types';
+import { getContainerSpecs } from './containers/registry';
 import { fallbackTranslate, type TranslateFunction } from './i18n';
 import { SuggestionPlugin } from './suggestion-kit';
 import { TITLE_BLOCK_TYPE } from './title';
@@ -340,7 +341,7 @@ export const getDefaultSlashMenuGroups = (
   // Accordions can't be placed inside an accordion.
   if (
     editor.plugins[ACCORDION_KEY] &&
-    context.container?.type !== ACCORDION_KEY
+    canInsertIn(editor, ACCORDION_KEY, context.container)
   ) {
     groups = addGroupItem(groups, 'Advanced blocks', {
       icon: <ListCollapseIcon />,
@@ -396,18 +397,41 @@ export const getSlashItemBlockId = (value: string) => {
   return value;
 };
 
-/** Keeps the items that insert a block the container can hold. */
+/**
+ * Whether a block can be inserted in the container the menu opens in: a
+ * container that can't be nested isn't offered inside itself.
+ */
+export const canInsertIn = (
+  editor: Pick<PlateEditor, 'plugins'>,
+  blockId: string,
+  container: SlashMenuContainer | undefined,
+) =>
+  !container ||
+  blockId !== container.type ||
+  !!getContainerSpecs(editor).find((spec) => spec.type === container.type)
+    ?.nestable;
+
+/**
+ * Keeps the items that insert a block the container can hold. A container
+ * that can't be nested is never offered inside itself, even when the
+ * context doesn't list the blocks it holds.
+ */
 const filterForContainer = (
+  editor: PlateEditor,
   groups: SlashMenuGroup[],
   container: SlashMenuContainer | undefined,
 ) => {
-  const available = container?.availableBlocks;
-  if (!available) return groups;
+  if (!container) return groups;
+  const available = container.availableBlocks;
+  const keep = (blockId: string) =>
+    (!available || available.includes(blockId)) &&
+    canInsertIn(editor, blockId, container);
+
   return groups
     .map((group) => ({
       ...group,
       items: group.items.filter((item) =>
-        available.includes(getSlashItemBlockId(item.value)),
+        keep(getSlashItemBlockId(item.value)),
       ),
     }))
     .filter((group) => group.items.length > 0);
@@ -424,6 +448,7 @@ export const resolveSlashMenuGroups = (
     getDefaultSlashMenuGroups(editor, context);
 
   return filterForContainer(
+    editor,
     config?.extendGroups?.(groups, editor, context) ?? groups,
     context.container,
   );

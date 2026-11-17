@@ -18,6 +18,7 @@ import {
   getBlockWidthConfig,
   getBlockWidthOptions,
 } from '../editor/plugins/block-width-plugin';
+import { getBlockContainer } from '../editor/plugins/containers/registry';
 
 import {
   DropdownMenu,
@@ -40,7 +41,12 @@ export function BlockWidthToolbarButton(props: DropdownMenuProps) {
     setWidth: (value: string) => void;
   };
   const [open, setOpen] = React.useState(false);
-  const activeBlock = editor.api.block()?.[0];
+  const activeEntry = editor.api.block();
+  const activeBlock = activeEntry?.[0];
+  // A block inside a container, such as an accordion panel, takes the
+  // container's width.
+  const inContainer =
+    !!activeEntry && !!getBlockContainer(editor, activeEntry[1]);
   const config = getBlockWidthConfig(editor, activeBlock);
   const baseValue = config.defaultWidth ?? getDefaultBlockWidth();
   const widthOptions = React.useMemo(() => {
@@ -55,7 +61,7 @@ export function BlockWidthToolbarButton(props: DropdownMenuProps) {
     getProp: (node) => node.blockWidth,
   });
 
-  if (widthOptions.length <= 1) {
+  if (inContainer || widthOptions.length <= 1) {
     return null;
   }
 

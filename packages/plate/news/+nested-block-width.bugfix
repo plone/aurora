@@ -1,0 +1,1 @@
+Blocks inside a container, such as an accordion panel, no longer offer a block width in the toolbar, since the container sets their width. @Humanaice
