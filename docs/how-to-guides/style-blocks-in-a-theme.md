@@ -90,6 +90,7 @@ Every block exposes the same kinds of hooks.
 | Toggle | `slate-toggle` | `block-toggle__icon`. |
 | Columns | `slate-column_group`, `slate-column` | `block-column_group__row`, `block-column_group__column` (each column's wrapper), `block-column__content`. |
 | Accordion | `slate-accordion`, `slate-accordion_panel`, `slate-accordion_panel_title`, `slate-accordion_panel_content` | `block-accordion__panel` (with `data-open`), `block-accordion__heading` (the title's heading), `block-accordion__trigger` (the button that opens the panel), `block-accordion__title`, `block-accordion__icon`, `block-accordion__content` (the panel's region; its empty paragraphs have `data-empty`). The root has `data-exclusive` and `data-theme`. |
+| Grid | `slate-grid`, `slate-grid_column` | `block-grid__headline` (the optional headline, an `h2`), `block-grid__columns` (the row), `block-grid__column` (each column, with `data-size`, its width weight). The root has `data-gap` (`s`, `m`, or `l`), `data-stack`, and `data-style-theme`. |
 | Table of contents | `slate-toc` | `block-toc__item` (with `data-depth`), `block-toc__empty`, `block-toc__highlight`. |
 | Inline elements | `slate-code`, `slate-kbd`, `slate-highlight`, `slate-a`, `slate-mention` | Mentions have `data-bold`, `data-italic`, and `data-underline` for their marks. |
 
@@ -124,6 +125,8 @@ Each value falls back to the default shown when it isn't set.
 The framework sets them; don't set them in a theme.
 Likewise, `--block-accordion-background` holds the color of the accordion's background, which editors choose; the accordion's `themes` option sets the colors on offer.
 See {doc}`configure-accordion-blocks`.
+`--block-grid-column-size` holds a grid column's width weight, and `--block-grid-background` the grid's background color; the grid's `themes` option sets the backgrounds on offer.
+See {doc}`configure-grid-blocks`.
 
 ### Plate.js blocks
 
@@ -138,11 +141,27 @@ See {doc}`configure-accordion-blocks`.
 | `--block-table-border-color` | `var(--border)` | Table cell borders. |
 | `--block-callout-background` | `var(--muted)` | The callout's box, unless the callout has its own color. |
 | `--block-callout-icon-font-family` | An emoji font stack | The callout's icon. |
+| `--block-grid-gap-s`, `--block-grid-gap-m`, `--block-grid-gap-l` | `0.75rem`, `1.5rem`, `2.5rem` | The space between the columns of a grid, for each gap. |
+| `--block-grid-theme-padding` | `calc(var(--spacing) * 5)` | The inner padding of a grid with a background. |
+| `--block-grid-radius` | `var(--radius-md)` | The corners of a grid with a background. |
+| `--block-grid-headline-size` | `var(--text-2xl)` | The grid's headline. |
+| `--block-grid-headline-weight` | `var(--font-weight-bold)` | The grid's headline. |
 | `--block-accordion-radius` | `var(--radius-md)` | The accordion's corners. |
 | `--block-accordion-border-color` | `var(--border)` | The line below each panel. |
 | `--block-accordion-title-size` | `var(--text-xl)` | The panel titles. |
 | `--block-accordion-title-weight` | `var(--font-weight-bold)` | The panel titles. |
 | `--block-accordion-focus-color` | `var(--ring)` | The focus outline of the panel titles. |
+
+The columns of a grid stack when the grid is narrower than `40rem`, with a container query on the grid's own width, so they stack in narrow layouts too.
+Container queries can't read custom properties, so a theme changes that width with its own rule:
+
+```css
+@container block-grid (width < 48rem) {
+  .slate-grid[data-stack='true'] .block-grid__columns {
+    flex-direction: column;
+  }
+}
+```
 
 The code block's syntax colors are tokens too.
 Their defaults are GitHub's light theme.
