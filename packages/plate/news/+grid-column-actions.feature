@@ -1,0 +1,1 @@
+Grid columns can be added from a + in the gaps and at the edges, and moved, duplicated and deleted from a handle at the top of each column, or moved with Alt+Shift+← and →. Deleting a column shows an Undo notification, and every change is announced to screen readers. @Humanaice

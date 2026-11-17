@@ -130,7 +130,21 @@
       "columnLabel": "Colonna {{position}}",
       "columnPlace": "colonna {{position}}",
       "columnOf": "Colonna {{position}} di {{total}}",
-      "emptyColumn": "Digita / per aggiungere un blocco"
+      "emptyColumn": "Digita / per aggiungere un blocco",
+      "moveLeft": "Sposta a sinistra",
+      "moveRight": "Sposta a destra",
+      "duplicateColumn": "Duplica colonna",
+      "duplicateFull": "La griglia ha già il massimo di colonne",
+      "deleteColumn": "Elimina colonna",
+      "deleteOnly": "Una griglia deve avere almeno una colonna",
+      "insertColumn": "Inserisci una colonna alla posizione {{position}}",
+      "columnDeleted": "Colonna eliminata",
+      "announce": {
+        "columnAdded": "Colonna aggiunta alla posizione {{position}} di {{total}}",
+        "columnMoved": "Colonna spostata alla posizione {{position}} di {{total}}",
+        "columnDuplicated": "Colonna duplicata",
+        "columnDeleted": "Colonna eliminata"
+      }
     }
   }
 }

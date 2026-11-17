@@ -1,0 +1,248 @@
+import type { MouseEvent } from 'react';
+import type { TElement } from 'platejs';
+
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  CopyIcon,
+  PlusIcon,
+  Trash2Icon,
+} from 'lucide-react';
+import { PathApi, RangeApi } from 'platejs';
+import { useEditorRef, useEditorSelector } from 'platejs/react';
+
+import { cn } from '../../lib/utils';
+import {
+  addColumnAt,
+  deleteColumn,
+  duplicateColumn,
+  moveColumnBy,
+} from '../editor/plugins/grid/column-actions';
+import { findGridNodePath } from '../editor/plugins/grid/editor-transforms';
+import { getGridOptions } from '../editor/plugins/grid/options';
+import type { TGridColumnElement } from '../editor/plugins/grid/types';
+import { useTranslation } from '../editor/plugins/i18n';
+import { Button } from './button';
+
+/*
+ * The column handle, in the strip each column reserves at its top, and the
+ * insert points in the gaps between columns and at the outer edges.
+ */
+
+type ColumnState = {
+  index: number;
+  total: number;
+  /** The caret is in the column. */
+  active: boolean;
+  /** Text is selected: the formatting toolbar shows instead. */
+  textSelected: boolean;
+};
+
+/** Where a column is and what's selected, read on every change. */
+const useColumnState = (element: TElement): ColumnState | undefined => {
+  const state = useEditorSelector(
+    (editor) => {
+      const path = findGridNodePath(editor as any, element);
+      if (!path) return '';
+      const grid = editor.api.parent(path)?.[0] as TElement | undefined;
+      const selection = editor.selection;
+      const active =
+        !!selection &&
+        PathApi.isAncestor(path, selection.anchor.path) &&
+        PathApi.isAncestor(path, selection.focus.path);
+      const textSelected = !!selection && !RangeApi.isCollapsed(selection);
+      return [
+        path.at(-1) ?? 0,
+        grid?.children.length ?? 1,
+        active ? 1 : 0,
+        textSelected ? 1 : 0,
+      ].join('|');
+    },
+    [element],
+  );
+  if (!state) return undefined;
+  const [index, total, active, textSelected] = state.split('|').map(Number);
+  return {
+    index,
+    total,
+    active: active === 1,
+    textSelected: textSelected === 1,
+  };
+};
+
+const keepCaret = (event: MouseEvent) => event.preventDefault();
+
+/** Move left, Move right, Duplicate and Delete for a column. */
+export function GridColumnHandle({ element }: { element: TGridColumnElement }) {
+  const editor = useEditorRef();
+  const { t } = useTranslation();
+  const state = useColumnState(element);
+  if (!state || state.textSelected) return null;
+
+  const { index, total, active } = state;
+  const full = total >= getGridOptions(editor).maxColumns;
+  const pathOf = () => findGridNodePath(editor as any, element);
+
+  const actions = [
+    {
+      key: 'left',
+      icon: <ChevronLeftIcon />,
+      label: t('plate.grid.moveLeft', { defaultValue: 'Move left' }),
+      disabled: index === 0,
+      run: (path: number[]) => moveColumnBy(editor as any, path, -1),
+    },
+    {
+      key: 'right',
+      icon: <ChevronRightIcon />,
+      label: t('plate.grid.moveRight', { defaultValue: 'Move right' }),
+      disabled: index >= total - 1,
+      run: (path: number[]) => moveColumnBy(editor as any, path, 1),
+    },
+    {
+      key: 'duplicate',
+      icon: <CopyIcon />,
+      label: full
+        ? t('plate.grid.duplicateFull', {
+            defaultValue: 'The grid has its most columns',
+          })
+        : t('plate.grid.duplicateColumn', {
+            defaultValue: 'Duplicate column',
+          }),
+      disabled: full,
+      run: (path: number[]) => duplicateColumn(editor as any, path),
+    },
+    {
+      key: 'delete',
+      icon: <Trash2Icon />,
+      label:
+        total <= 1
+          ? t('plate.grid.deleteOnly', {
+              defaultValue: 'A grid needs at least one column',
+            })
+          : t('plate.grid.deleteColumn', { defaultValue: 'Delete column' }),
+      disabled: total <= 1,
+      danger: true,
+      run: (path: number[]) => deleteColumn(editor as any, path),
+    },
+  ];
+
+  return (
+    <div
+      contentEditable={false}
+      role="toolbar"
+      aria-label={t('plate.grid.columnOf', {
+        defaultValue: 'Column {{position}} of {{total}}',
+        position: index + 1,
+        total,
+      })}
+      data-active={active ? 'true' : 'false'}
+      data-grid-column-handle=""
+      className={cn(
+        `
+          absolute top-1 left-1/2 z-10 flex -translate-x-1/2 items-center gap-0.5 rounded-full
+          border bg-background p-0.5 shadow-sm select-none
+        `,
+        `
+          opacity-0 transition-opacity
+          group-hover/column:opacity-100
+          focus-within:opacity-100
+          data-[active=true]:opacity-100
+        `,
+      )}
+    >
+      {actions.map((action) => (
+        <Button
+          key={action.key}
+          type="button"
+          variant="ghost"
+          size="icon"
+          className={cn(
+            `
+              size-6 rounded-full
+              [&_svg]:size-3.5
+            `,
+            action.danger && 'hover:bg-destructive/10 hover:text-destructive',
+          )}
+          aria-label={action.label}
+          title={action.label}
+          disabled={action.disabled}
+          onMouseDown={keepCaret}
+          onClick={() => {
+            const path = pathOf();
+            if (path) action.run(path);
+          }}
+        >
+          {action.icon}
+        </Button>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * An insert point next to a column: in the gap before it, or at the grid's
+ * outer edge after the last column. Hovering it shows a line and a +.
+ * Pointer only: the column settings and Alt+Shift+arrows do the same from
+ * the keyboard.
+ */
+export function GridInsertSeam({
+  element,
+  side,
+}: {
+  element: TGridColumnElement;
+  side: 'before' | 'after';
+}) {
+  const editor = useEditorRef();
+  const { t } = useTranslation();
+  const state = useColumnState(element);
+  if (!state || state.total >= getGridOptions(editor).maxColumns) return null;
+  // Only the last column has an insert point after it.
+  if (side === 'after' && state.index !== state.total - 1) return null;
+
+  const position = side === 'before' ? state.index : state.index + 1;
+  const label = t('plate.grid.insertColumn', {
+    defaultValue: 'Insert a column at position {{position}}',
+    position: position + 1,
+  });
+
+  return (
+    <div
+      contentEditable={false}
+      data-grid-insert-seam={side}
+      className={cn(
+        `
+          group/seam absolute top-0 bottom-0 z-10 flex w-4 -translate-x-1/2 items-center
+          justify-center select-none
+        `,
+        side === 'before'
+          ? 'left-[calc(var(--block-grid-gap)/-2)]'
+          : 'left-[calc(100%+var(--block-grid-gap)/2)]',
+        `
+          before:absolute before:inset-y-0 before:left-1/2 before:w-0.5 before:-translate-x-1/2
+          before:bg-primary before:opacity-0
+          hover:before:opacity-40
+        `,
+      )}
+    >
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-label={label}
+        title={label}
+        onMouseDown={keepCaret}
+        onClick={() => {
+          const path = findGridNodePath(editor as any, element);
+          if (path) addColumnAt(editor as any, PathApi.parent(path), position);
+        }}
+        className={`
+          relative grid size-5 place-items-center rounded-full border border-primary bg-background
+          text-primary opacity-0 transition-opacity
+          group-hover/seam:opacity-100
+          [&_svg]:size-3
+        `}
+      >
+        <PlusIcon />
+      </button>
+    </div>
+  );
+}
