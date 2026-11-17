@@ -136,7 +136,7 @@ Plone blocks
     Without it, panels hold paragraphs, tables, and separators.
 
 Block settings
-:   A host that renders block settings in its own form runs each block's schema through `enhanceInnerBlockSchema(editor, path, schema, blockType)`, from {file}`@plone/plate/components/editor`, so blocks inside an accordion only offer the settings that apply there.
-    It can render `InnerBlockSettingsHeader`, from {file}`@plone/plate/components/ui/accordion-settings`, above the form, for the block's place in the accordion, and `InnerBlockSettingsActions` below it, for Move up, Move down and Delete.
-    It hides the block's form while `useAccordionSettingsTarget()` returns a value, since the settings of the accordion, of a panel or of the page take its place.
-    Blocks without settings of their own, such as text, get their place and actions from the accordion itself.
+:   A host that renders block settings in its own form gets each Plone block's config with `getBlockConfig(editor, type, { at: path })`, from {file}`@plone/plate/components/editor`, so blocks inside an accordion only offer the settings that apply there.
+    It can render `InnerBlockSettingsHeader`, from {file}`@plone/plate/components/ui/block-settings`, above the form, for the block's place in the accordion, and `InnerBlockSettingsActions` below it, for Move up, Move down and Delete.
+    It hides the block's form while `useSettingsTarget()`, from the same module, returns a value, since the settings of the accordion, of a panel or of the page take its place.
+    Blocks without settings of their own, such as text, get their place and actions from `@plone/plate` itself.

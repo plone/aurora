@@ -44,7 +44,7 @@ import type {
 import { findAccordionNodePath } from '../editor/plugins/accordion/find-path';
 import { usePlateHost } from '../editor/plate-host-context';
 import { InsertBlockPoint } from './accordion-block-toolbar';
-import { AccordionSettingsTrigger } from './accordion-settings';
+import { BlockSettingsTrigger } from './block-settings';
 import { useTranslation } from '../editor/plugins/i18n';
 import { BlockInnerContainer } from './block-inner-container';
 import { usePanelCollapse } from './use-panel-collapse';
@@ -250,7 +250,7 @@ export function AccordionElement(props: PlateElementProps<TAccordionElement>) {
               flex min-h-8 items-center justify-between gap-2 justify-self-stretch select-none
             `}
           >
-            <AccordionSettingsTrigger
+            <BlockSettingsTrigger
               target={{ type: 'accordion', id: element.id }}
               label={t('plate.accordion.accordionSettings', {
                 defaultValue: 'Accordion settings',
@@ -260,7 +260,7 @@ export function AccordionElement(props: PlateElementProps<TAccordionElement>) {
               className="h-7 rounded-full px-3 text-xs font-normal text-muted-foreground"
             >
               {t('plate.accordion.label', { defaultValue: 'Accordion' })}
-            </AccordionSettingsTrigger>
+            </BlockSettingsTrigger>
             {active && (
               <div className="flex gap-1.5">
                 <Button
@@ -414,7 +414,7 @@ function PanelActions({
           <Icon aria-hidden="true" className="size-[18px]" />
         </Button>
       ))}
-      <AccordionSettingsTrigger
+      <BlockSettingsTrigger
         target={{ type: 'accordion_panel', id: panelId }}
         label={t('plate.accordion.panelSettings', {
           defaultValue: 'Panel settings',
@@ -425,7 +425,7 @@ function PanelActions({
         `}
       >
         <SlidersHorizontalIcon aria-hidden="true" className="size-[18px]" />
-      </AccordionSettingsTrigger>
+      </BlockSettingsTrigger>
     </span>
   );
 }

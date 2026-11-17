@@ -10,6 +10,7 @@ import {
 import { getAccordionContainerSpec } from './container';
 import { normalizeAccordionNode } from './normalize';
 import { DEFAULT_ACCORDION_OPTIONS } from './options';
+import { accordionSettingsLevel, panelSettingsLevel } from './settings-levels';
 import {
   ACCORDION_KEY,
   ACCORDION_PANEL_CONTENT_KEY,
@@ -36,6 +37,7 @@ export const BaseAccordionPlugin = createTSlatePlugin<AccordionConfig>({
   options: {
     ...DEFAULT_ACCORDION_OPTIONS,
     container: getAccordionContainerSpec,
+    settings: accordionSettingsLevel,
   },
 }).overrideEditor(({ editor, tf: { normalizeNode } }) => ({
   transforms: {
@@ -50,6 +52,7 @@ export const BaseAccordionPlugin = createTSlatePlugin<AccordionConfig>({
 export const BaseAccordionPanelPlugin = createSlatePlugin({
   key: ACCORDION_PANEL_KEY,
   node: { isContainer: true, isElement: true, isStrictSiblings: true },
+  options: { settings: panelSettingsLevel },
 });
 
 export const BaseAccordionPanelTitlePlugin = createSlatePlugin({

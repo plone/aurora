@@ -12,8 +12,8 @@ import {
 import {
   InnerBlockSettingsActions,
   InnerBlockSettingsHeader,
-  useAccordionSettingsTarget,
-} from '@plone/plate/components/ui/accordion-settings';
+  useSettingsTarget,
+} from '@plone/plate/components/ui/block-settings';
 import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import type { BlockConfigBase } from '@plone/types';
 import BlockSettingsForm from '../BlockSettingsForm';
@@ -117,8 +117,8 @@ const resolveSchema = (
 export function SidebarAfterEditable() {
   const editor = useEditorRef();
   const selectedNativeBlock = useEditorSelector(getSelectedNativeBlock, []);
-  // The accordion's or a panel's settings take the sidebar while chosen.
-  const accordionSettingsTarget = useAccordionSettingsTarget();
+  // A chosen level's settings, such as an accordion's, take the sidebar.
+  const settingsTarget = useSettingsTarget();
 
   const onFormDataChange = React.useCallback(
     (next: Record<string, unknown>) => {
@@ -143,7 +143,7 @@ export function SidebarAfterEditable() {
 
   if (!sidebar) return null;
   if (!selectedNativeBlock || !schema) return null;
-  if (accordionSettingsTarget) return null;
+  if (settingsTarget) return null;
 
   const note = (
     schema({ formData: selectedNativeBlock.data }) as { description?: string }

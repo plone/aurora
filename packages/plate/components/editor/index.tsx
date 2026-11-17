@@ -142,6 +142,12 @@ export {
   getBlockContainer,
   type BlockContainerSpec,
 } from './plugins/containers';
+export {
+  getSettingsTarget,
+  setSettingsTarget,
+  type NodeSettingsDeclaration,
+  type SettingsTarget,
+} from './plugins/block-settings';
 export { usePlateHost, type PlateHostContextValue } from './plate-host-context';
 
 export function PlateRenderer(
