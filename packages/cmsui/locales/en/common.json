@@ -89,6 +89,7 @@
       "copyFailed": "Couldn't copy"
     },
     "controlpanelDescriptions": {
+      "addons": "Install, upgrade and remove add-ons",
       "date-and-time": "Time zone and first day of the week",
       "language": "Site languages and translation setup",
       "mail": "Outgoing mail server and sender",
@@ -148,6 +149,29 @@
       "source": "Source",
       "view_source": "View source content",
       "heading_new": "Translate \"{{title}}\" to {{language}}"
+    },
+    "addons": {
+      "title": "Add-ons",
+      "description": "Install, upgrade and uninstall the add-ons of this site. Only add-ons that are part of the build show up here.",
+      "docsLink": "Add a new add-on",
+      "installed": "Installed",
+      "available": "Available",
+      "empty": "No add-ons found.",
+      "noMatches": "No add-ons match your search.",
+      "install": "Install",
+      "uninstall": "Uninstall",
+      "upgrade": "Upgrade",
+      "upgradeAvailable": "Upgrade available",
+      "upgradeFromTo": "Upgrade {{from}} → {{to}}",
+      "actions": "Actions for {{title}}",
+      "uninstallTitle": "Uninstall {{title}}?",
+      "uninstallDescription": "Its settings and the content types it adds may be removed from the site.",
+      "cancel": "Cancel",
+      "searchLabel": "Find an add-on",
+      "searchPlaceholder": "Find an add-on",
+      "resultsCount_one": "{{count}} add-on found",
+      "resultsCount_other": "{{count}} add-ons found",
+      "actionError": "That didn't work."
     },
     "blocksEditor": {
       "blocksTab": "Blocks",

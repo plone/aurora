@@ -89,6 +89,7 @@
       "copyFailed": "Impossibile copiare"
     },
     "controlpanelDescriptions": {
+      "addons": "Installare, aggiornare e rimuovere i prodotti aggiuntivi",
       "date-and-time": "Fuso orario e primo giorno della settimana",
       "language": "Lingue del sito e traduzioni",
       "mail": "Server di posta in uscita e mittente",
@@ -138,6 +139,29 @@
       "source": "Origine",
       "view_source": "Visualizza il contenuto di origine",
       "heading_new": "Traduci \"{{title}}\" in {{language}}"
+    },
+    "addons": {
+      "title": "Prodotti aggiuntivi",
+      "description": "Installa, aggiorna e disinstalla i prodotti aggiuntivi di questo sito. Qui compaiono solo i prodotti aggiuntivi inclusi nella build.",
+      "docsLink": "Aggiungere un nuovo prodotto aggiuntivo",
+      "installed": "Installati",
+      "available": "Disponibili",
+      "empty": "Nessun prodotto aggiuntivo trovato.",
+      "noMatches": "Nessun prodotto aggiuntivo corrisponde alla ricerca.",
+      "install": "Installa",
+      "uninstall": "Disinstalla",
+      "upgrade": "Aggiorna",
+      "upgradeAvailable": "Aggiornamento disponibile",
+      "upgradeFromTo": "Aggiornamento {{from}} → {{to}}",
+      "actions": "Azioni per {{title}}",
+      "uninstallTitle": "Disinstallare {{title}}?",
+      "uninstallDescription": "Le sue impostazioni e i tipi di contenuto che aggiunge potrebbero essere rimossi dal sito.",
+      "cancel": "Annulla",
+      "searchLabel": "Trova un prodotto aggiuntivo",
+      "searchPlaceholder": "Trova un prodotto aggiuntivo",
+      "resultsCount_one": "{{count}} prodotto aggiuntivo trovato",
+      "resultsCount_other": "{{count}} prodotti aggiuntivi trovati",
+      "actionError": "Non ha funzionato."
     },
     "blocksEditor": {
       "blocksTab": "Blocchi",

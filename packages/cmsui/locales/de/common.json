@@ -41,6 +41,7 @@
       "copyFailed": "Kopieren fehlgeschlagen"
     },
     "controlpanelDescriptions": {
+      "addons": "Erweiterungen aktivieren, aktualisieren und deaktivieren",
       "date-and-time": "Zeitzone und erster Wochentag",
       "language": "Sprachen der Website und Übersetzungen",
       "mail": "Server für ausgehende E-Mails und Absender",
@@ -100,6 +101,29 @@
       "source": "Quelle",
       "view_source": "Quellinhalt ansehen",
       "heading_new": "\"{{title}}\" nach {{language}} übersetzen"
+    },
+    "addons": {
+      "title": "Erweiterungen",
+      "description": "Erweiterungen dieser Website aktivieren, aktualisieren und deaktivieren. Hier erscheinen nur Erweiterungen, die Teil des Builds sind.",
+      "docsLink": "Eine neue Erweiterung hinzufügen",
+      "installed": "Aktiviert",
+      "available": "Verfügbar",
+      "empty": "Keine Erweiterungen gefunden.",
+      "noMatches": "Keine Erweiterung passt zur Suche.",
+      "install": "Aktivieren",
+      "uninstall": "Deaktivieren",
+      "upgrade": "Aktualisieren",
+      "upgradeAvailable": "Aktualisierung verfügbar",
+      "upgradeFromTo": "Aktualisierung {{from}} → {{to}}",
+      "actions": "Aktionen für {{title}}",
+      "uninstallTitle": "{{title}} deaktivieren?",
+      "uninstallDescription": "Ihre Einstellungen und die Inhaltstypen, die sie hinzufügt, können von der Website entfernt werden.",
+      "cancel": "Abbrechen",
+      "searchLabel": "Erweiterung finden",
+      "searchPlaceholder": "Erweiterung finden",
+      "resultsCount_one": "{{count}} Erweiterung gefunden",
+      "resultsCount_other": "{{count}} Erweiterungen gefunden",
+      "actionError": "Das hat nicht funktioniert."
     },
     "blocksEditor": {
       "blocksTab": "Blöcke",

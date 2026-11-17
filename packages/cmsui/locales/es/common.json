@@ -1,0 +1,30 @@
+{
+  "cmsui": {
+    "controlpanelDescriptions": {
+      "addons": "Instala, actualiza y elimina complementos"
+    },
+    "addons": {
+      "title": "Complementos",
+      "description": "Instala, actualiza y desinstala los complementos de este sitio. Aquí solo aparecen los complementos que forman parte de la compilación.",
+      "docsLink": "Añadir un complemento nuevo",
+      "installed": "Instalados",
+      "available": "Disponibles",
+      "empty": "No se ha encontrado ningún complemento.",
+      "noMatches": "Ningún complemento coincide con la búsqueda.",
+      "install": "Instalar",
+      "uninstall": "Desinstalar",
+      "upgrade": "Actualizar",
+      "upgradeAvailable": "Actualización disponible",
+      "upgradeFromTo": "Actualización {{from}} → {{to}}",
+      "actions": "Acciones de {{title}}",
+      "uninstallTitle": "¿Desinstalar {{title}}?",
+      "uninstallDescription": "Puede que se eliminen del sitio su configuración y los tipos de contenido que añade.",
+      "cancel": "Cancelar",
+      "searchLabel": "Buscar un complemento",
+      "searchPlaceholder": "Buscar un complemento",
+      "resultsCount_one": "{{count}} complemento encontrado",
+      "resultsCount_other": "{{count}} complementos encontrados",
+      "actionError": "No ha funcionado."
+    }
+  }
+}

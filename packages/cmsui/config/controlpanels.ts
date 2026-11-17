@@ -2,6 +2,7 @@ import type { ConfigType } from '@plone/registry';
 import type { ComponentType, SVGProps } from 'react';
 import type { Controlpanel } from '@plone/types';
 import { controlPanelId } from '../helpers/controlpanels';
+import ArchiveSVG from '@plone/icons/svg/archive.svg?react';
 import CalendarSVG from '@plone/icons/svg/calendar.svg?react';
 import CodeSVG from '@plone/icons/svg/code.svg?react';
 import DiscussionSVG from '@plone/icons/svg/discussion.svg?react';
@@ -26,6 +27,7 @@ export const controlPanelsIcons: Record<
   ComponentType<SVGProps<SVGSVGElement>>
 > = {
   default: SettingsSVG,
+  addons: ArchiveSVG,
   'date-and-time': CalendarSVG,
   language: LanguageSVG,
   mail: MailSVG,
@@ -53,6 +55,16 @@ export const filterControlPanels = (controlpanels: Controlpanel[] = []) => {
       !HIDDEN_CONTROL_PANELS.includes(controlPanelId(controlpanel)),
   );
 };
+
+// Panels Aurora has that the backend does not list in `@controlpanels`.
+export const controlpanels: Controlpanel[] = [
+  {
+    '@id': '/addons',
+    group: 'General',
+    group_id: 'plone-general',
+    title: 'Add-ons',
+  },
+];
 
 export const unwantedControlPanelsFields = {
   language: ['display_flags', 'always_show_selector'],
@@ -170,6 +182,10 @@ export default function install(config: ConfigType) {
   config.settings = config.settings ?? {};
   config.settings.filterControlPanelsSchema = filterControlPanelsSchema;
   config.settings.filterControlPanels = filterControlPanels;
+  config.settings.controlpanels = [
+    ...controlpanels,
+    ...((config.settings.controlpanels as Controlpanel[] | undefined) ?? []),
+  ];
   config.settings.controlPanelsIcons = {
     ...controlPanelsIcons,
     ...(config.settings.controlPanelsIcons as typeof controlPanelsIcons),
