@@ -26,7 +26,8 @@
         "tableOfContents": "Indice",
         "threeColumns": "3 colonne",
         "title": "Titolo",
-        "accordion": "Fisarmonica"
+        "accordion": "Fisarmonica",
+        "grid": "Griglia"
       },
       "noResults": "Nessun risultato"
     },
@@ -122,6 +123,14 @@
         "blockChanged": "Blocco trasformato in {{type}}",
         "levelSelected": "{{level}} selezionato"
       }
+    },
+    "grid": {
+      "label": "Griglia",
+      "noNesting": "Non si può inserire una griglia dentro una griglia.",
+      "columnLabel": "Colonna {{position}}",
+      "columnPlace": "colonna {{position}}",
+      "columnOf": "Colonna {{position}} di {{total}}",
+      "emptyColumn": "Digita / per aggiungere un blocco"
     }
   }
 }

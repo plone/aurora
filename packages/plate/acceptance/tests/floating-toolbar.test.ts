@@ -96,6 +96,7 @@ const turnInto = [
   { label: 'Quote', type: 'blockquote' },
   { label: 'Code', type: 'code_block' },
   { label: '3 columns', type: 'column_group' },
+  { label: 'Grid', type: 'grid' },
 ];
 
 for (const { label, type } of turnInto) {

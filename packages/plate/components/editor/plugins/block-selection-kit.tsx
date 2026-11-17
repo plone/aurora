@@ -3,6 +3,7 @@ import { getPluginTypes, KEYS } from 'platejs';
 
 import { BlockSelection } from '../../ui/block-selection';
 import { handleSettingsBlockSelectionKeyDown } from './block-settings/block-settings-plugin';
+import { GRID_COLUMN_KEY } from './grid/types';
 
 export const BlockSelectionKit = [
   BlockSelectionPlugin.configure(({ editor }) => ({
@@ -18,6 +19,7 @@ export const BlockSelectionKit = [
           KEYS.column,
           KEYS.codeLine,
           KEYS.td,
+          GRID_COLUMN_KEY,
         ]).includes(element.type);
       },
     },

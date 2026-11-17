@@ -26,7 +26,8 @@
         "tableOfContents": "Table of contents",
         "threeColumns": "3 columns",
         "title": "Title",
-        "accordion": "Accordion"
+        "accordion": "Accordion",
+        "grid": "Grid"
       },
       "noResults": "No results"
     },
@@ -122,6 +123,14 @@
         "blockChanged": "Block changed to {{type}}",
         "levelSelected": "{{level}} selected"
       }
+    },
+    "grid": {
+      "label": "Grid",
+      "noNesting": "Grids can't be placed inside a grid.",
+      "columnLabel": "Column {{position}}",
+      "columnPlace": "column {{position}}",
+      "columnOf": "Column {{position}} of {{total}}",
+      "emptyColumn": "Type / to add a block"
     }
   }
 }

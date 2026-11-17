@@ -4,6 +4,7 @@ import type { DropdownMenuProps } from '@radix-ui/react-dropdown-menu';
 
 import {
   ChevronRightIcon,
+  Columns2Icon,
   Columns3Icon,
   FileCodeIcon,
   FilmIcon,
@@ -29,6 +30,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './dropdown-menu';
+import { GRID_KEY } from '../editor/plugins/grid/types';
 import { insertBlock, insertInlineElement } from '../editor/transforms';
 
 import { ToolbarButton, ToolbarMenuGroup } from './toolbar';
@@ -149,6 +151,11 @@ const groups: Group[] = [
         icon: <Columns3Icon />,
         label: '3 columns',
         value: 'action_three_columns',
+      },
+      {
+        icon: <Columns2Icon />,
+        label: 'Grid',
+        value: GRID_KEY,
       },
     ].map((item) => ({
       ...item,

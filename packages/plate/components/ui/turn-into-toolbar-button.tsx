@@ -7,6 +7,7 @@ import { DropdownMenuItemIndicator } from '@radix-ui/react-dropdown-menu';
 import {
   CheckIcon,
   ChevronRightIcon,
+  Columns2Icon,
   Columns3Icon,
   FileCodeIcon,
   Heading2Icon,
@@ -29,6 +30,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from './dropdown-menu';
+import { GRID_KEY } from '../editor/plugins/grid/types';
 import { getBlockType, setBlockType } from '../editor/transforms';
 
 import { ToolbarButton, ToolbarMenuGroup } from './toolbar';
@@ -110,6 +112,11 @@ export const turnIntoItems = [
     icon: <Columns3Icon />,
     label: '3 columns',
     value: 'action_three_columns',
+  },
+  {
+    icon: <Columns2Icon />,
+    label: 'Grid',
+    value: GRID_KEY,
   },
 ];
 

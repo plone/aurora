@@ -21,6 +21,8 @@ import {
 } from 'platejs';
 import { insertAccordion } from './plugins/accordion/editor-transforms';
 import { ACCORDION_KEY } from './plugins/accordion/types';
+import { insertGrid, turnIntoGrid } from './plugins/grid/editor-transforms';
+import { GRID_KEY } from './plugins/grid/types';
 import { SuggestionPlugin } from './plugins/suggestion-kit';
 import { withBlockWidthDefaults } from './plugins/block-width-plugin';
 
@@ -44,6 +46,9 @@ const insertBlockMap: Record<
   [KEYS.ol]: insertList,
   [KEYS.ul]: insertList,
   [ACCORDION_KEY]: (editor) => insertAccordion(editor),
+  [GRID_KEY]: (editor) => {
+    insertGrid(editor);
+  },
   [ACTION_THREE_COLUMNS]: (editor) =>
     insertColumnGroup(editor, { columns: 3, select: true }),
   [KEYS.audio]: (editor) => insertAudioPlaceholder(editor, { select: true }),
@@ -119,6 +124,10 @@ const setBlockMap: Record<
   [KEYS.ol]: setList,
   [KEYS.ul]: setList,
   [ACTION_THREE_COLUMNS]: (editor) => toggleColumnGroup(editor, { columns: 3 }),
+  // Wraps the selected blocks once; later entries are already inside it.
+  [GRID_KEY]: (editor) => {
+    turnIntoGrid(editor);
+  },
   [KEYS.codeBlock]: (editor) => toggleCodeBlock(editor),
 };
 
