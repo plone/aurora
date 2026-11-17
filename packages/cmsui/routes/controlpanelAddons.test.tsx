@@ -1,4 +1,12 @@
-import { expect, describe, it, vi, afterEach, beforeEach } from 'vitest';
+import {
+  expect,
+  describe,
+  it,
+  vi,
+  afterEach,
+  beforeAll,
+  beforeEach,
+} from 'vitest';
 import config from '@plone/registry';
 import { loader, action } from './controlpanelAddons';
 import { RouterContextProvider } from 'react-router';
@@ -150,13 +158,30 @@ describe('Addons control panel route', () => {
   });
 
   describe('AddonsControlPanel component', () => {
+    beforeAll(() => {
+      // The uninstall dialog's `ModalSheet` asks for the screen size.
+      window.matchMedia ??= vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        onchange: null,
+        dispatchEvent: vi.fn(),
+      }));
+    });
+
     const loaderData = { siteAddons: mockSiteAddons.items };
 
     afterEach(() => {
       vi.resetModules();
     });
 
+    const submit = vi.fn();
+
     const renderPanel = async (fetcherData?: unknown, data = loaderData) => {
+      submit.mockClear();
       vi.resetModules();
       document.body.innerHTML = '';
 
@@ -172,7 +197,10 @@ describe('Addons control panel route', () => {
       vi.doMock('@plone/icons/svg/arrow-left.svg?react', () => ({
         default: svgStub,
       }));
-      vi.doMock('@plone/icons/svg/chevron-down.svg?react', () => ({
+      vi.doMock('@plone/icons/svg/archive.svg?react', () => ({
+        default: svgStub,
+      }));
+      vi.doMock('@plone/icons/svg/more-options.svg?react', () => ({
         default: svgStub,
       }));
 
@@ -181,11 +209,10 @@ describe('Addons control panel route', () => {
         return {
           ...actual,
           useLoaderData: () => data,
-          useNavigate: () => vi.fn(),
           useFetcher: () => ({
             state: 'idle',
             data: fetcherData,
-            submit: vi.fn(),
+            submit,
             Form: (props: any) => <form {...props} />,
           }),
         };
@@ -203,21 +230,19 @@ describe('Addons control panel route', () => {
       const { screen } = await renderPanel();
 
       expect(
-        screen.getByRole('heading', { name: 'cmsui.addons.installed' }),
+        screen.getByRole('heading', { name: /cmsui.addons.installed/ }),
       ).toBeInTheDocument();
       expect(
-        screen.getByRole('heading', { name: 'cmsui.addons.available' }),
+        screen.getByRole('heading', { name: /cmsui.addons.available/ }),
       ).toBeInTheDocument();
 
       expect(screen.getByText('Installed Add-on')).toBeInTheDocument();
       expect(screen.getByText('Available Add-on')).toBeInTheDocument();
     });
 
-    it('filters the list as you type in the search box', async () => {
+    it('filters the list as you type in the search field', async () => {
       const { screen } = await renderPanel();
       const { fireEvent } = await import('@testing-library/react');
-
-      expect(screen.getByText('Installed Add-on')).toBeInTheDocument();
 
       fireEvent.change(screen.getByRole('searchbox'), {
         target: { value: 'Available' },
@@ -227,16 +252,103 @@ describe('Addons control panel route', () => {
       expect(screen.queryByText('Installed Add-on')).not.toBeInTheDocument();
     });
 
-    it('shows the action error alert when fetcher.data.ok is false', async () => {
+    it('installs an available add-on from its row', async () => {
+      const { screen } = await renderPanel();
+      const { fireEvent } = await import('@testing-library/react');
+
+      fireEvent.click(
+        screen.getByRole('button', { name: 'cmsui.addons.install' }),
+      );
+
+      expect(submit).toHaveBeenCalledWith(
+        { id: 'collective.available', intent: 'install' },
+        { method: 'post' },
+      );
+    });
+
+    it('asks before uninstalling an add-on', async () => {
+      const { screen } = await renderPanel();
+      const { fireEvent, within } = await import('@testing-library/react');
+
+      fireEvent.click(
+        screen.getByRole('button', { name: 'cmsui.addons.actions' }),
+      );
+      fireEvent.click(
+        screen.getByRole('menuitem', { name: 'cmsui.addons.uninstall' }),
+      );
+      expect(submit).not.toHaveBeenCalled();
+
+      const dialog = await screen.findByRole('dialog');
+      fireEvent.click(
+        within(dialog).getByRole('button', { name: 'cmsui.addons.uninstall' }),
+      );
+
+      expect(submit).toHaveBeenCalledWith(
+        { id: 'collective.installed', intent: 'uninstall' },
+        { method: 'post' },
+      );
+    });
+
+    it('shows the upgrade on the row of an installed add-on', async () => {
+      const { screen } = await renderPanel(undefined, {
+        siteAddons: [
+          {
+            ...mockSiteAddons.items[0],
+            upgrade_info: {
+              available: true,
+              installedVersion: '1000',
+              newVersion: '1001',
+            } as Record<string, unknown>,
+          },
+        ],
+      });
+      const { fireEvent } = await import('@testing-library/react');
+
+      expect(
+        screen.getByText('cmsui.addons.upgradeFromTo'),
+      ).toBeInTheDocument();
+      fireEvent.click(
+        screen.getByRole('button', { name: 'cmsui.addons.upgrade' }),
+      );
+      expect(submit).toHaveBeenCalledWith(
+        { id: 'collective.installed', intent: 'upgrade' },
+        { method: 'post' },
+      );
+    });
+
+    it('does not show the same version twice in the upgrade pill', async () => {
+      const { screen } = await renderPanel(undefined, {
+        siteAddons: [
+          {
+            ...mockSiteAddons.items[0],
+            upgrade_info: {
+              available: true,
+              installedVersion: '1100',
+              newVersion: '1100',
+            } as Record<string, unknown>,
+          },
+        ],
+      });
+
+      expect(
+        screen.getByText('cmsui.addons.upgradeAvailable'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText('cmsui.addons.upgradeFromTo'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows the error of a failed action as text', async () => {
       const { screen } = await renderPanel({ ok: false, error: 'boom' });
 
       const alerts = screen.getAllByRole('alert');
-      expect(alerts.length).toBeGreaterThan(0);
-      const actionAlert = alerts.find((alert) =>
-        alert.textContent?.includes('cmsui.addons.actionError'),
-      );
-      expect(actionAlert).toBeDefined();
-      expect(actionAlert).toHaveAttribute('title', 'boom');
+      expect(
+        alerts.some(
+          (alert) =>
+            alert.textContent?.includes('cmsui.addons.actionError') &&
+            alert.textContent?.includes('boom'),
+        ),
+      ).toBe(true);
     });
 
     it('shows the empty message when there are no add-ons', async () => {

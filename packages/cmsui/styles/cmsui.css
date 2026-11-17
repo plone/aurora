@@ -168,16 +168,3 @@
 }
 
 @import './utilities.css';
-
-.route-addons .addons-section-heading {
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 25px;
-}
-
-.route-addons .addons-search {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  border-radius: 6px;
-  background-color: var(--quanta-snow);
-}

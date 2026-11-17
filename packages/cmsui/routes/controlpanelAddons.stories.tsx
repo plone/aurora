@@ -10,21 +10,29 @@ type LoaderData = {
 };
 
 const translations = {
+  'cmsui.siteSetup': 'Site setup',
   'cmsui.addons.title': 'Add-ons',
+  'cmsui.addons.description':
+    'Install, upgrade and uninstall the add-ons of this site. Only add-ons that are part of the build show up here.',
+  'cmsui.addons.docsLink': 'Add a new add-on',
   'cmsui.addons.installed': 'Installed',
   'cmsui.addons.available': 'Available',
   'cmsui.addons.empty': 'No add-ons found.',
   'cmsui.addons.noMatches': 'No add-ons match your search.',
-  'cmsui.addons.latestVersion': 'Latest version: {{version}}',
   'cmsui.addons.install': 'Install',
   'cmsui.addons.uninstall': 'Uninstall',
   'cmsui.addons.upgrade': 'Upgrade',
-  'cmsui.addons.prev': 'Previous',
-  'cmsui.addons.next': 'Next',
-  'cmsui.addons.page': '{{current}} / {{total}}',
-  'cmsui.addons.searchPlaceholder': 'Filter add-ons…',
-  'cmsui.addons.resultsCount': '{{total}} add-ons found',
-  'cmsui.addons.actionError': 'Action failed. Please try again.',
+  'cmsui.addons.upgradeAvailable': 'Upgrade available',
+  'cmsui.addons.upgradeFromTo': 'Upgrade {{from}} → {{to}}',
+  'cmsui.addons.actions': 'Actions for {{title}}',
+  'cmsui.addons.uninstallTitle': 'Uninstall {{title}}?',
+  'cmsui.addons.uninstallDescription':
+    'Its settings and the content types it adds may be removed from the site.',
+  'cmsui.addons.cancel': 'Cancel',
+  'cmsui.addons.searchLabel': 'Find an add-on',
+  'cmsui.addons.searchPlaceholder': 'Find an add-on',
+  'cmsui.addons.actionError': "That didn't work.",
+  'cmsui.addons.resultsCount': '{{count}} add-ons found',
 } as const;
 
 const formatTranslation = (value: string, options?: Record<string, unknown>) =>
@@ -88,7 +96,11 @@ const SITE_ADDONS = [
     description: 'Build forms through the web.',
     version: '4.1.0',
     is_installed: true,
-    upgrade_info: { available: true },
+    upgrade_info: {
+      available: true,
+      installedVersion: '1000',
+      newVersion: '1001',
+    },
   },
   {
     id: 'plone.app.mosaic',
@@ -112,17 +124,19 @@ const POPULATED: LoaderData = {
   siteAddons: SITE_ADDONS,
 };
 
+const ACTION_ERROR = 'Could not install the profile.';
+
 const EMPTY: LoaderData = {
   siteAddons: [],
 };
 
-const createAddonsRouter = (data: LoaderData) =>
+const createAddonsRouter = (data: LoaderData, error?: string) =>
   createMemoryRouter(
     [
       {
         path: '/controlpanel/addons',
         loader: () => data,
-        action: async () => ({ ok: true }),
+        action: async () => (error ? { ok: false, error } : { ok: true }),
         element: (
           <I18nextProvider i18n={storyI18n as any}>
             <PluggablesProvider>
@@ -141,8 +155,8 @@ const createAddonsRouter = (data: LoaderData) =>
     { initialEntries: ['/controlpanel/addons'] },
   );
 
-function StoryAddons({ data }: { data: LoaderData }) {
-  const router = useMemo(() => createAddonsRouter(data), [data]);
+function StoryAddons({ data, error }: { data: LoaderData; error?: string }) {
+  const router = useMemo(() => createAddonsRouter(data, error), [data, error]);
   return <RouterProvider router={router} />;
 }
 
@@ -165,4 +179,9 @@ export const Default: Story = {
 
 export const Empty: Story = {
   render: () => <StoryAddons data={EMPTY} />,
+};
+
+/** Every action fails: press Install or Upgrade to see the error. */
+export const ActionError: Story = {
+  render: () => <StoryAddons data={POPULATED} error={ACTION_ERROR} />,
 };
