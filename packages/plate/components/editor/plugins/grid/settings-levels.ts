@@ -1,6 +1,8 @@
+import { PLONE_BLOCK_TYPE } from '@plone/helpers';
 import type { SlateEditor, TElement } from 'platejs';
 
 import type { NodeSettingsDeclaration } from '../block-settings/types';
+import { GRID_COLUMN_KEY } from './types';
 
 /*
  * The grid and its columns as selection levels. The editor kit adds their
@@ -32,4 +34,13 @@ export const gridColumnSettingsLevel: NodeSettingsDeclaration = {
       defaultValue: 'column {{position}}',
       position: getColumnNumber(editor, node),
     }),
+  // The caret in a block without settings of its own, such as text, shows
+  // its column. A Plone block shows its own settings instead.
+  fromSelection: (editor) => {
+    if (!editor.selection) return undefined;
+    if (editor.api.above({ match: { type: PLONE_BLOCK_TYPE } })) {
+      return undefined;
+    }
+    return editor.api.above<TElement>({ match: { type: GRID_COLUMN_KEY } });
+  },
 };

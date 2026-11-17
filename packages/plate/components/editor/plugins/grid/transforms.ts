@@ -239,8 +239,10 @@ export const applyGridLayout = (
 };
 
 /** The column weights of a grid. */
-export const getGridSizes = (grid: TGridElement) =>
-  grid.children.map((column) => column.size ?? 1);
+export const getGridSizes = (grid: TGridElement): number[] =>
+  grid.children.map((column) =>
+    typeof column.size === 'number' ? column.size : 1,
+  );
 
 /** The layouts the grid offers for its current number of columns. */
 export const getGridLayoutChoices = (editor: SlateEditor, grid: TGridElement) =>

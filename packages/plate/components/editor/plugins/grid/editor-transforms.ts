@@ -6,6 +6,7 @@ import {
   type TElement,
 } from 'platejs';
 
+import { setSettingsTarget } from '../block-settings';
 import { getBlockContainer } from '../containers';
 import { TITLE_BLOCK_TYPE } from '../title';
 import { createGrid, isGridColumnElement, isGridElement } from './transforms';
@@ -17,14 +18,18 @@ import { GRID_COLUMN_KEY, GRID_KEY } from './types';
 
 /**
  * Inserts a grid with 2 equal, empty columns after the block that holds the
- * selection, and puts the caret in its first column.
+ * selection, puts the caret in its first column, and shows its settings.
  */
 export const insertGrid = (editor: SlateEditor) => {
   const block = editor.api.block({ highest: true });
   const at = block ? PathApi.next(block[1]) : [editor.children.length];
-  editor.tf.insertNodes(createGrid(), { at });
+  const grid = createGrid();
+  editor.tf.insertNodes(grid, { at });
   editor.tf.select(editor.api.start([...at, 0, 0]));
   editor.tf.focus();
+  // A new grid shows its settings: the column count and the layout come
+  // next.
+  setSettingsTarget(editor, { type: GRID_KEY, id: grid.id });
   return at;
 };
 

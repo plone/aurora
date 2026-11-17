@@ -144,7 +144,37 @@
         "columnMoved": "Column moved to position {{position}} of {{total}}",
         "columnDuplicated": "Column duplicated",
         "columnDeleted": "Column deleted"
-      }
+      },
+      "columnMerged": "The content of column {{from}} moved to column {{to}}",
+      "gridDeleted": "Grid deleted",
+      "gapSmall": "Small",
+      "gapMedium": "Medium",
+      "gapLarge": "Large",
+      "columnCount": "{{count}} columns",
+      "columns": "Columns",
+      "removeLastColumn": "Remove the last column",
+      "addColumnAtEnd": "Add a column at the end",
+      "layout": "Layout",
+      "layoutName": "Widths {{ratio}}",
+      "background": "Background",
+      "themes": {
+        "default": "Default",
+        "grey": "Grey"
+      },
+      "headline": "Headline",
+      "optional": "Optional",
+      "gap": "Gap",
+      "narrowWidths": "On narrow widths",
+      "stack": "Stack",
+      "keepRow": "Keep in a row",
+      "stackHint": "Stacking follows the grid's own width, not the screen's.",
+      "deleteGrid": "Delete grid",
+      "columnWidth": "Width: {{size}} of {{parts}} parts, set by the grid layout.",
+      "columnActions": "Column actions",
+      "addBefore": "Add column before",
+      "addAfter": "Add column after",
+      "gridSettings": "Grid settings",
+      "oneColumn": "1 column"
     }
   }
 }
