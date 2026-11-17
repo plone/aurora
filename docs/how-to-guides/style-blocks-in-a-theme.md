@@ -88,7 +88,6 @@ Every block exposes the same kinds of hooks.
 | Table | `slate-table`, `slate-tr`, `slate-th`, `slate-td` | `block-table__scroll`, `block-table__wrapper`, `block-table__table`, `block-table__cell-content`. Cells have `data-border-top`, `-right`, `-bottom`, and `-left` for their bordered sides. |
 | Callout | `slate-callout` | `block-callout__body`, `block-callout__icon`, `block-callout__content`. |
 | Toggle | `slate-toggle` | `block-toggle__icon`. |
-| Columns | `slate-column_group`, `slate-column` | `block-column_group__row`, `block-column_group__column` (each column's wrapper), `block-column__content`. |
 | Accordion | `slate-accordion`, `slate-accordion_panel`, `slate-accordion_panel_title`, `slate-accordion_panel_content` | `block-accordion__panel` (with `data-open`), `block-accordion__heading` (the title's heading), `block-accordion__trigger` (the button that opens the panel), `block-accordion__title`, `block-accordion__icon`, `block-accordion__content` (the panel's region; its empty paragraphs have `data-empty`). The root has `data-exclusive` and `data-theme`. |
 | Grid | `slate-grid`, `slate-grid_column` | `block-grid__headline` (the optional headline, an `h2`), `block-grid__columns` (the row), `block-grid__column` (each column, with `data-size`, its width weight). The root has `data-gap` (`s`, `m`, or `l`), `data-stack`, and `data-style-theme`. |
 | Table of contents | `slate-toc` | `block-toc__item` (with `data-depth`), `block-toc__empty`, `block-toc__highlight`. |

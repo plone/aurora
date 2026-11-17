@@ -9,7 +9,7 @@ import {
 } from '../../../tooling/playwright/resets';
 import { createNativeBlocksPage, openInView } from '../fixtures/pages';
 
-// The styles of the callout, toggle, columns, grid, table of contents and the
+// The styles of the callout, toggle, grid, table of contents and the
 // content root come from `styles/content.css`. They must render the same
 // whatever reset the public theme brings. Without a reset, browsers give
 // buttons their own look and `svg` an inline display.
@@ -46,19 +46,6 @@ const OWNED: Record<string, string[]> = {
     'cursor',
   ],
   '.block-toggle__icon svg': ['display', 'width', 'height', 'vertical-align'],
-
-  '.block-inner-container:has(> .block-column_group__row)': ['margin-bottom'],
-  '.block-column_group__row': ['display', 'border-radius'],
-  '.block-column_group__column': ['position'],
-  '.block-column_group__column:first-child > .slate-column': ['padding'],
-  '.block-column_group__column:last-child > .slate-column': ['padding'],
-  '.block-column__content': [
-    'position',
-    'padding',
-    'border-top-width',
-    'border-top-style',
-    'border-top-color',
-  ],
 
   '.slate-grid': ['container-type', 'container-name'],
   '.slate-grid > .block-inner-container': [
@@ -118,7 +105,6 @@ test('the structural blocks render the same under any public theme reset', async
     'marks',
     'callout',
     'toggle',
-    'columns',
     'grid',
     'toc',
   ]);

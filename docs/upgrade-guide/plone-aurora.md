@@ -164,6 +164,21 @@ Pasted `<iframe>` elements are now dropped, and their surrounding text is kept.
 If your add-on needs these nodes, add them to your own editor configuration: `MediaKit` from {file}`@plone/plate/components/editor/plugins/media-kit` for the editor, and `BaseMediaKit` from {file}`@plone/plate/components/editor/plugins/media-base-kit` for the renderer.
 Their components keep their Tailwind styling.
 
+#### The "3 columns" block is replaced by the grid
+
+```{versionremoved} 1.0.0-alpha.24
+The "3 columns" Plate.js block: the `column_group` and `column` nodes, `ColumnKit` and `BaseColumnKit`, the `action_three_columns` items of the slash menu, the insert menu and Turn into, the `column_group` and `column` entries of `config.blocks.plateBlocksConfig`, and the `block-column_group__*` and `block-column__content` contract classes.
+```
+
+The grid block replaces it.
+It holds 1 to 4 columns of blocks, with layout presets, column actions and settings.
+See {doc}`../how-to-guides/configure-grid-blocks`.
+
+Existing `column_group` content isn't migrated.
+Its text stays, but it renders without the column layout.
+To keep the layout, insert a grid with the same number of columns, and move each column's blocks into it.
+If your add-on filters the slash menu by `action_three_columns`, filter by `grid` instead, and move theme styles for the column classes to the grid's, listed in {doc}`../how-to-guides/style-blocks-in-a-theme`.
+
 #### `EditorView` and `PlateRenderer` don't take a `variant`
 
 ```{versionremoved} 1.0.0-alpha.19

@@ -107,7 +107,6 @@ describe('slash menu in a panel', () => {
     expect(getSlashItemBlockId(KEYS.ul)).toBe('p');
     expect(getSlashItemBlockId(KEYS.listTodo)).toBe('p');
     expect(getSlashItemBlockId('block_image')).toBe('image');
-    expect(getSlashItemBlockId('action_three_columns')).toBe('column_group');
   });
 
   it('only offers the blocks a panel can hold', () => {

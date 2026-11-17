@@ -30,8 +30,6 @@ export default function (config) {
         '@plone/plate > @platejs/indent',
         '@plone/plate > @platejs/indent/react',
         '@plone/plate > @platejs/juice',
-        '@plone/plate > @platejs/layout',
-        '@plone/plate > @platejs/layout/react',
         '@plone/plate > @platejs/link',
         '@plone/plate > @platejs/link/react',
         '@plone/plate > @platejs/list',

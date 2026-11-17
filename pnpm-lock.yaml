@@ -1347,9 +1347,6 @@ importers:
       '@platejs/juice':
         specifier: ^53.0.0
         version: 53.0.0(platejs@53.3.14(@babel/core@7.29.7(supports-color@8.1.1))(@babel/template@7.29.7)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(scheduler@0.28.0)(use-sync-external-store@1.6.0(react@19.3.1)))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@platejs/layout':
-        specifier: ^53.0.0
-        version: 53.0.0(platejs@53.3.14(@babel/core@7.29.7(supports-color@8.1.1))(@babel/template@7.29.7)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(scheduler@0.28.0)(use-sync-external-store@1.6.0(react@19.3.1)))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@platejs/link':
         specifier: ^53.3.5
         version: 53.3.5(platejs@53.3.14(@babel/core@7.29.7(supports-color@8.1.1))(@babel/template@7.29.7)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(scheduler@0.28.0)(use-sync-external-store@1.6.0(react@19.3.1)))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -3442,13 +3439,6 @@ packages:
 
   '@platejs/juice@53.0.0':
     resolution: {integrity: sha512-dQDkWO8W57Atlys20No2/LVed9t8A4aCOuX8MzVP50plv+bXTR19T3uQWgvlKn6vV8Hp9E1dUfNeFModj7URsQ==}
-    peerDependencies:
-      platejs: '>=53.0.0'
-      react: ^19.2.7
-      react-dom: ^19.2.7
-
-  '@platejs/layout@53.0.0':
-    resolution: {integrity: sha512-O3fo+v7sSCnexOrmMgUauAs95Iyt5qIVEGCXAjrghXx4PaJSrpuAizDNmpYgFrcXP25GuuExnT7AOSEwRZ3HVA==}
     peerDependencies:
       platejs: '>=53.0.0'
       react: ^19.2.7
@@ -11121,13 +11111,6 @@ snapshots:
   '@platejs/juice@53.0.0(platejs@53.3.14(@babel/core@7.29.7(supports-color@8.1.1))(@babel/template@7.29.7)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(scheduler@0.28.0)(use-sync-external-store@1.6.0(react@19.3.1)))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
       juice: 11.0.3
-      platejs: 53.3.14(@babel/core@7.29.7(supports-color@8.1.1))(@babel/template@7.29.7)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(scheduler@0.28.0)(use-sync-external-store@1.6.0(react@19.3.1))
-      react: 19.3.1
-      react-compiler-runtime: 1.0.0(react@19.3.1)
-      react-dom: 19.3.1(react@19.3.1)
-
-  '@platejs/layout@53.0.0(platejs@53.3.14(@babel/core@7.29.7(supports-color@8.1.1))(@babel/template@7.29.7)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(scheduler@0.28.0)(use-sync-external-store@1.6.0(react@19.3.1)))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
-    dependencies:
       platejs: 53.3.14(@babel/core@7.29.7(supports-color@8.1.1))(@babel/template@7.29.7)(@types/react@19.2.6)(immer@10.1.3)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(scheduler@0.28.0)(use-sync-external-store@1.6.0(react@19.3.1))
       react: 19.3.1
       react-compiler-runtime: 1.0.0(react@19.3.1)

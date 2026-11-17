@@ -16,7 +16,6 @@ export const BlockSelectionKit = [
       },
       isSelectable: (element) => {
         return !getPluginTypes(editor, [
-          KEYS.column,
           KEYS.codeLine,
           KEYS.td,
           GRID_COLUMN_KEY,

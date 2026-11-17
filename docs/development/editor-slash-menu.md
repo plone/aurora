@@ -206,7 +206,7 @@ const CustomSlashKit = createSlashKit({
         group.group === 'Advanced blocks'
           ? {
               ...group,
-              items: group.items.filter((item) => item.value !== 'action_three_columns'),
+              items: group.items.filter((item) => item.value !== 'toc'),
             }
           : group,
       ),

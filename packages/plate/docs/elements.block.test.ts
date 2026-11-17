@@ -43,7 +43,6 @@ describe('element docs', () => {
         'blockquote',
         'callout',
         'code_block',
-        'column_group',
         'grid',
         'h2',
         'h3',

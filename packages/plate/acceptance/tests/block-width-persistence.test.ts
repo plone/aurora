@@ -83,7 +83,7 @@ test.describe('Native blocks', () => {
     'Table',
     'Toggle',
     'Table of contents',
-    '3 columns',
+    'Grid',
   ]) {
     test(`"${label}" from the slash menu stores its default width`, async ({
       page,

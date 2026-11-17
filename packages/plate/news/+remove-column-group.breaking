@@ -1,0 +1,1 @@
+Removed the "3 columns" block (`column_group` and `column`), its kits, its contract styles and its menu entries: the grid block replaces it. Existing column groups aren't migrated. @Humanaice

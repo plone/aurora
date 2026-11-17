@@ -609,10 +609,10 @@ describe('legacy blockquote migration helpers', () => {
   it('migrates blockquotes nested in other elements', () => {
     const value: Value = [
       {
-        type: 'column_group',
+        type: 'grid',
         children: [
           {
-            type: 'column',
+            type: 'grid_column',
             children: [
               { type: KEYS.blockquote, children: [{ text: 'nested' }] },
             ],
@@ -625,10 +625,10 @@ describe('legacy blockquote migration helpers', () => {
 
     expect(value).toEqual([
       {
-        type: 'column_group',
+        type: 'grid',
         children: [
           {
-            type: 'column',
+            type: 'grid_column',
             children: [
               {
                 type: KEYS.blockquote,
