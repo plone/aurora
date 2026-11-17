@@ -48,7 +48,7 @@ Plone 6.2 releases that ship an older `plone.restapi` need it pinned, for exampl
 
 ```toml
 dependencies = [
-    "Products.CMFPlone==6.2.2",
+    "Products.CMFPlone==6.2.3",
     "plone.restapi>=10.3.0",
 ]
 ```
