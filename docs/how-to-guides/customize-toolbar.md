@@ -140,7 +140,7 @@ This lets you change the links of these menus from the backend, without code in 
 
 ```{note}
 Since `plone.volto` 6.1.0, the `plone.volto:default` profile adds a `personal_tools` category with the links of the Volto toolbar, which don't work in Plone Aurora.
-Apply the `plone.volto:aurora` profile of `plone.volto` 6.2.0 or later, which replaces them with the links of the built-in menu, including Log out.
+Apply the `plone.volto:aurora` profile of `plone.volto` 6.2.1 or later, which replaces them with the links of the built-in menu, including Log out.
 See {ref}`upgrade-guide-plone-volto-aurora-profile`.
 ```
 

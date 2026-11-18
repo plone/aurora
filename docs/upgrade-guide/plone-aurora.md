@@ -67,14 +67,14 @@ These steps apply when you upgrade from Plone Aurora 1.0.0-alpha.23 or earlier t
 Since `plone.volto` 6.1.0, which Plone 6.2.3 ships, the `plone.volto:default` profile adds the `personal_tools` actions with the links of the Volto toolbar.
 The Personal tools menu of Plone Aurora shows these actions instead of its own links, so Profile and Preferences point to pages that Plone Aurora doesn't have, and Log out is missing.
 
-`plone.volto` 6.2.0 adds the `plone.volto:aurora` profile, which replaces these actions with the links of Plone Aurora.
-Pin `plone.volto` to 6.2.0 or later in your backend, next to `plone.restapi`:
+`plone.volto` 6.2.0 adds the `plone.volto:aurora` profile, which replaces these actions with the links of Plone Aurora, and 6.2.1 fixes its Site Setup link.
+Pin `plone.volto` to 6.2.1 or later in your backend, next to `plone.restapi`:
 
 ```toml
 dependencies = [
     "Products.CMFPlone==6.2.3",
     "plone.restapi>=10.3.0",
-    "plone.volto>=6.2.0",
+    "plone.volto>=6.2.1",
 ]
 ```
 

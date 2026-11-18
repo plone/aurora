@@ -22,7 +22,7 @@ DOCKER_IMAGE=plone/server-dev:6.2.3
 DOCKER_IMAGE_ACCEPTANCE=plone/server-acceptance:6.2.3
 # Python packages to install on top of the backend images, like newer
 # versions of the ones they ship with.
-KGS=plone.restapi==10.3.0 plone.volto==6.2.0
+KGS=plone.restapi==10.3.0 plone.volto==6.2.1
 # GenericSetup profiles to apply when the backend creates the site.
 BACKEND_PROFILES=plone.volto:aurora
 NODEBIN = ./node_modules/.bin
