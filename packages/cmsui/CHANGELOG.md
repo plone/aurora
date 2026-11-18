@@ -8,6 +8,27 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.17 (2026-11-18)
+
+### Breaking
+
+- The editor now reads and writes the page body in the `main` region, with `"@type": "plate"`, instead of the `__somersault__` block. The `@blocks-schema` document docs are now registered under `plate`. @sneridagh [#379](https://github.com/plone/aurora/issues/379)
+- Moved the site setup and control panel views from `/controlpanel` to `/@@controlpanel`, following the `@@` convention for views. Add-ons that register their own control panel route, like `controlpanel/my-settings`, must use `@@controlpanel/my-settings`. @sneridagh [#429](https://github.com/plone/aurora/issues/429)
+
+### Feature
+
+- Add a control panel to search and manage the site's add-ons at `/@@controlpanel/addons`. @redram404, @veyxos, @richardbenedikt 
+- Redesigned the empty image widget placeholder after the Quanta design: a round image badge, "Add your image" title, round browse and upload buttons, and a URL field with a submit arrow. @sneridagh 
+- The `@blocks-schema` endpoint announces the `plone.plate` document model in `document_model`, so that clients such as the Plone MCP server can tell Plate-based content from the `plone.blocks` model of Volto. It only lists the elements of that document model, and accepts a `type` query parameter for new content of that type. @sneridagh 
+
+### Bugfix
+
+- Read the version of the app for the site overview from `@plone/registry/app-info` instead of importing the Aurora app's `package.json`, so it works in any app. @sneridagh 
+
+### Internal
+
+- Removed the unused `test-layout` route. @sneridagh 
+
 ## 1.0.0-alpha.16 (2026-11-06)
 
 ### Feature

@@ -1,1 +1,0 @@
-Moved the site setup and control panel views from `/controlpanel` to `/@@controlpanel`, following the `@@` convention for views. Add-ons that register their own control panel route, like `controlpanel/my-settings`, must use `@@controlpanel/my-settings`. @sneridagh

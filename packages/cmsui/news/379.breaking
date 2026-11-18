@@ -1,1 +1,0 @@
-The editor now reads and writes the page body in the `main` region, with `"@type": "plate"`, instead of the `__somersault__` block. The `@blocks-schema` document docs are now registered under `plate`. @sneridagh
