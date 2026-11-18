@@ -37,12 +37,12 @@ The `plone.volto:aurora` profile replaces them with the links of Plone Aurora.
 When your Plone release ships an older version of `plone.volto`, pin it to 6.2.1 or later in your backend.
 
 The supported versions of Python are those of the Plone release that you use.
-See the [Plone release schedule](https://plone.org/download/release-schedule).
+See {ref}`plone:install-pip-prerequisites` in the Plone documentation, and the [Plone release schedule](https://plone.org/download/release-schedule).
 
 We recommend using the known good set (KGS) of package versions that are specified in the Plone release.
 
 ```{seealso}
-See also [Plone REST API Python and Plone compatibility](https://github.com/plone/plone.restapi#python--plone-compatibility).
+[Plone REST API Python and Plone compatibility](https://github.com/plone/plone.restapi#python--plone-compatibility), in the `plone.restapi` README, for the versions of Plone that each `plone.restapi` release supports.
 ```
 
 
