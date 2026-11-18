@@ -1,0 +1,1 @@
+Removed `Toast.css` and dropped it from the `basic.css` bundle. The toast styles moved into the `Toast` region of `@plone/layout`, as a CSS module the component imports. @pnicolli

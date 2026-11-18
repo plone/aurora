@@ -1,0 +1,1 @@
+The toast styles now load with the `Toast` region of `@plone/layout`, instead of from `cmsui.css`. @pnicolli

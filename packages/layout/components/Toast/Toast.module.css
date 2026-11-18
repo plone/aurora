@@ -1,0 +1,136 @@
+@layer components {
+  .region {
+    --toast-bg: var(--color-quanta-denim, #021322);
+    --toast-fg: var(--color-quanta-air, #fff);
+
+    position: fixed;
+
+    bottom: 8px;
+    left: 50%;
+
+    display: flex;
+    flex-direction: column-reverse;
+
+    border-radius: 8px;
+    gap: 8px;
+    outline: none;
+    transform: translateX(-50%);
+
+    &[data-focus-visible] {
+      outline: 2px solid var(--toast-bg);
+      outline-offset: 2px;
+    }
+  }
+
+  .toast {
+    /* Variants, picked by the `className` the caller passes to `show`. */
+    &:global(.error) {
+      --toast-bg: var(--color-quanta-wine, #a91c09);
+    }
+
+    &:global(.success) {
+      --toast-bg: var(--color-quanta-turtle, #256619);
+    }
+
+    &:global(.info) {
+      --toast-bg: var(--color-quanta-royal, #085696);
+    }
+
+    position: relative;
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    background: var(--toast-bg);
+    box-shadow: 0px 2px 4px 0px var(--color-quanta-snow, #f3f5f7);
+    color: var(--toast-fg);
+    gap: 16px;
+    outline: none;
+
+    &[data-focus-visible] {
+      outline: 2px solid var(--toast-fg);
+      outline-offset: -2px;
+    }
+  }
+
+  .content {
+    display: flex;
+    min-width: 0px;
+    flex: 1 1 auto;
+    flex-direction: column;
+
+    [slot='title'] {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+  }
+
+  .close {
+    display: flex;
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 auto;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    appearance: none;
+    background: none;
+    color: var(--toast-fg);
+    cursor: pointer;
+    font-size: 1rem;
+    outline: none;
+
+    &[data-focus-visible] {
+      outline: 2px solid var(--toast-fg);
+      outline-offset: -2px;
+    }
+
+    &[data-pressed] {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  .progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    animation-duration: var(--toast-duration, 6000ms);
+    animation-fill-mode: forwards;
+    animation-name: countdown;
+    animation-timing-function: linear;
+    background: rgba(255, 255, 255, 0.35);
+    transform-origin: left center;
+  }
+
+  /* Mirror React Aria, which pauses the timers on hover and focus within the
+     region. Its hover ignores touch, where `:hover` sticks after a tap. */
+  @media (hover: hover) {
+    .region:hover .progress {
+      animation-play-state: paused;
+    }
+  }
+
+  .region:focus-within .progress {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress {
+      animation: none;
+    }
+  }
+}
+
+@keyframes countdown {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}

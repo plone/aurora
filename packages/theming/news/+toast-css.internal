@@ -1,0 +1,1 @@
+Removed the commented-out `Toast.css` import from the simple theme, since the toast styles moved into the `Toast` component of `@plone/layout`. @pnicolli

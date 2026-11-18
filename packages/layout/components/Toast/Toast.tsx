@@ -7,7 +7,9 @@ import {
   UNSTABLE_ToastRegion as ToastRegion,
 } from 'react-aria-components';
 import { CloseIcon } from '@plone/icons';
+import clsx from 'clsx';
 import { type ToastQueue } from '../../config/toast';
+import styles from './Toast.module.css';
 /**
  * Props Types for the SectionWrapper component.
  * They are able to infer the props of the element type passed to the `as` prop.
@@ -20,13 +22,13 @@ type AppToastPropsType<T extends React.ElementType> = {
 const AppToast = (props: AppToastPropsType<React.ElementType>) => {
   const { queue } = props;
   return (
-    <ToastRegion queue={queue}>
+    <ToastRegion queue={queue} className={styles.region}>
       {({ toast }) => (
         <Toast
           toast={toast}
-          className={['react-aria-Toast', toast.content.className].join(' ')}
+          className={clsx(styles.toast, toast.content.className)}
         >
-          <ToastContent>
+          <ToastContent className={styles.content}>
             <Text slot="title">
               {toast.content.icon ? (
                 <span className="toast-icon">{toast.content.icon}</span>
@@ -37,9 +39,20 @@ const AppToast = (props: AppToastPropsType<React.ElementType>) => {
             </Text>
             <Text slot="description">{toast.content.description}</Text>
           </ToastContent>
-          <Button slot="close">
+          <Button slot="close" className={styles.close}>
             <CloseIcon />
           </Button>
+          {toast.timeout && toast.content.showProgress !== false ? (
+            <div
+              className={styles.progress}
+              style={
+                {
+                  '--toast-duration': `${toast.timeout}ms`,
+                } as React.CSSProperties
+              }
+              aria-hidden="true"
+            />
+          ) : null}
         </Toast>
       )}
     </ToastRegion>
