@@ -21,6 +21,15 @@ This chapter describes the versions of software that Plone Aurora supports and h
 Plone Aurora relies on [Plone core (`Products.CMFPlone`)](https://github.com/plone/Products.CMFPlone) and [Plone REST API](https://github.com/plone/plone.restapi).
 We will always support the [latest major Plone release](https://plone.org/download/releases) and the version of Plone REST API that ships with it.
 
+Plone Aurora requires Plone 6.2 or later, with `plone.restapi` 10.3.0 or later.
+`plone.restapi` 10.3.0 indexes the text of the `plate` regions that store the page, checks their links for link integrity, and converts the links of the blocks in them to `resolveuid` links.
+When your Plone release ships an older version of `plone.restapi`, pin it to 10.3.0 or later in your backend.
+
+The backend also needs `plone.volto` 6.2.1 or later, with its `plone.volto:aurora` profile applied.
+Since 6.1.0, the `plone.volto:default` profile adds the `personal_tools` actions with the links of the Volto toolbar, and the Personal tools menu of Plone Aurora shows these actions instead of its own links.
+The `plone.volto:aurora` profile replaces them with the links of Plone Aurora.
+When your Plone release ships an older version of `plone.volto`, pin it to 6.2.1 or later in your backend.
+
 The versions of Python that are supported in legacy Volto depend on the version of Plone that you use.
 
 | Plone | Python       | Volto            |

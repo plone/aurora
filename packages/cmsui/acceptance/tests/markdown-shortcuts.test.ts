@@ -32,8 +32,8 @@ async function openEmptyParagraph(page: Page) {
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             { type: 'title', children: [{ text: 'Markdown shortcuts' }] },
             { type: 'p', children: [{ text: '' }] },

@@ -1,5 +1,6 @@
 import { applySchemaEnhancer } from '@plone/helpers';
 import type { BlockConfigBase, BlocksFormData, JSONSchema } from '@plone/types';
+import { PLATE_TYPE } from '@plone/plate/constants';
 
 /**
  * A `*.block.md` file, as collected by `@plone/registry` at build time.
@@ -63,7 +64,7 @@ export type ElementDetail = {
  * The block ID whose docs describe the format of the page document, a Plate
  * value stored in one block of the content, instead of a block.
  */
-export const DOCUMENT_DOCS_ID = '__somersault__';
+export const DOCUMENT_DOCS_ID = PLATE_TYPE;
 
 const SCHEMA_ERROR = 'The schema for this block could not be resolved.';
 
@@ -202,7 +203,7 @@ function getDocsFile(
 
 /**
  * The docs of the page document format, from the `*.block.md` file that
- * names `__somersault__`.
+ * names `plate`.
  */
 export function getDocumentDocs(docsFiles: BlockDocsFile[]): string {
   return getDocsFile(docsFiles, DOCUMENT_DOCS_ID).trim();

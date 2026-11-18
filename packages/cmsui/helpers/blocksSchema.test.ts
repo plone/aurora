@@ -117,7 +117,7 @@ describe('docs', () => {
       'Lists items.\nMatching a query.\n\n### Fields\n\nUp to {{maxItems}}.',
     ),
     docs('listing', 'Shows a summary.', 'summary'),
-    docs('__somersault__', 'The page document.'),
+    docs('plate', 'The page document.'),
   ];
 
   it('strips the frontmatter and fills the placeholders', () => {

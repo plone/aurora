@@ -35,8 +35,8 @@ async function setupImageBlockPage(
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             {
               type: 'title',
@@ -59,7 +59,7 @@ async function setupImageBlockPage(
         },
       },
       blocks_layout: {
-        items: ['__somersault__'],
+        items: [],
       },
     }),
   });

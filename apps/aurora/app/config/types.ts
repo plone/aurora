@@ -29,6 +29,9 @@ declare module '@plone/types' {
     // is the `@`-prefixed segment, for example `@blocks-schema`. Resources
     // without a content path are regular resource routes.
     contentResource: (args: ContentResourceArgs) => Promise<Response>;
+    // A `contentMigration` utility upgrades content stored in an older shape,
+    // in place, before the editor value is built. See `migrateContent`.
+    contentMigration: (args: ContentMigrationArgs) => void;
     somersaultBlockMigration: (
       args: SomersaultBlockMigrationArgs,
     ) => SomersaultMigrationArgs['value'];
@@ -53,6 +56,10 @@ export interface ContentResourceArgs {
   path: string;
   /** What follows the resource name, if anything, without leading slash. */
   subpath?: string;
+}
+
+export interface ContentMigrationArgs {
+  content: Content;
 }
 
 export interface SomersaultMigrationArgs {

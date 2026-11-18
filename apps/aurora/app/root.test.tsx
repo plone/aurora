@@ -217,8 +217,8 @@ it('should place the migrated title block in the legacy block order', async () =
   });
 
   expect(somersaultMigration).toHaveBeenCalledTimes(1);
-  expect(result.data.content.blocks.__somersault__).toEqual({
-    '@type': '__somersault__',
+  expect(result.data.content.blocks.main).toEqual({
+    '@type': 'plate',
     value: [
       {
         type: 'p',
@@ -236,7 +236,7 @@ it('should place the migrated title block in the legacy block order', async () =
   });
 });
 
-it('should skip somersault migration when the somersault block already exists', async () => {
+it('should skip somersault migration when the main region already exists', async () => {
   const existingSomersaultValue = [
     {
       type: 'title',
@@ -247,8 +247,8 @@ it('should skip somersault migration when the somersault block already exists', 
     '@id': 'http://example.com/',
     title: 'Page title',
     blocks: {
-      __somersault__: {
-        '@type': '__somersault__',
+      main: {
+        '@type': 'plate',
         value: existingSomersaultValue,
       },
       a: {
@@ -285,8 +285,8 @@ it('should skip somersault migration when the somersault block already exists', 
   });
 
   expect(somersaultMigration).not.toHaveBeenCalled();
-  expect(result.data.content.blocks.__somersault__).toEqual({
-    '@type': '__somersault__',
+  expect(result.data.content.blocks.main).toEqual({
+    '@type': 'plate',
     value: existingSomersaultValue,
   });
 });

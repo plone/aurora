@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { PlateEditor, type Value } from '@plone/plate/components/editor';
 import plateBlockSomersaultConfig from '@plone/plate/config/presets/somersault-editor';
 import { TITLE_BLOCK_TYPE } from '@plone/plate/components/editor/plugins/title';
-import { SOMERSAULT_KEY } from '@plone/plate/constants';
+import { MAIN_REGION, PLATE_TYPE } from '@plone/plate/constants';
 import { useFormContext } from '@plone/helpers';
 
 const getDefaultSomersaultValue = (title = ''): Value => [
@@ -24,7 +24,7 @@ const BlocksEditor = () => {
   // keystroke in Plate changes the blocks, and a subscription would re-render
   // the editor host each time.
   const form = useFormContext();
-  const somersaultPath = `blocks.${SOMERSAULT_KEY}`;
+  const somersaultPath = `blocks.${MAIN_REGION}`;
   const location = useLocation();
   // Plate's i18n contract follows react-i18next, so `t` is passed as is.
   // Plate re-renders its translated UI when the language changes.
@@ -68,7 +68,7 @@ const BlocksEditor = () => {
           Record<string, unknown> | undefined;
         form.setFieldValue(somersaultPath, {
           ...(previousBlock ?? {}),
-          '@type': SOMERSAULT_KEY,
+          '@type': PLATE_TYPE,
           value: options.value as unknown as Value[],
         });
       }}

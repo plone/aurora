@@ -135,8 +135,8 @@ If it throws or doesn't return a string, the endpoint uses the file's documentat
 
 ## The document format
 
-A page stores its content as one Plate document, in the `__somersault__` block.
-Its format is documented in {file}`packages/plate/docs/document.block.md`, a file whose frontmatter names `__somersault__`.
+A page stores its content as one Plate document, in the `main` region, whose `@type` is `plate`.
+Its format is documented in {file}`packages/plate/docs/document.block.md`, a file whose frontmatter names `plate`.
 The endpoint returns it as the `document` of the list of blocks, not as a block.
 
 ```{note}

@@ -138,6 +138,12 @@ Both categories are optional.
 When the backend doesn't provide one, or provides it empty, the menu falls back to its built-in links.
 This lets you change the links of these menus from the backend, without code in the frontend.
 
+```{note}
+Since `plone.volto` 6.1.0, the `plone.volto:default` profile adds a `personal_tools` category with the links of the Volto toolbar, which don't work in Plone Aurora.
+Apply the `plone.volto:aurora` profile of `plone.volto` 6.2.1 or later, which replaces them with the links of the built-in menu, including Log out.
+See {ref}`upgrade-guide-plone-volto-aurora-profile`.
+```
+
 ### How the menus get the actions
 
 Plone Aurora expands `actions` in the content request by default, as described in {doc}`add-content-expanders`.

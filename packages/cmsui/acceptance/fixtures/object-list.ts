@@ -57,8 +57,8 @@ export async function openObjectListBlock(
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             { type: 'title', children: [{ text: 'Object list page' }] },
             { type: 'p', children: [{ text: 'Text before the block' }] },
@@ -72,7 +72,7 @@ export async function openObjectListBlock(
           ],
         },
       },
-      blocks_layout: { items: ['__somersault__'] },
+      blocks_layout: { items: [] },
     }),
   });
   await page.goto(`/@@edit/${PAGE_ID}`);
@@ -102,5 +102,5 @@ export async function saveAndReadBlock(page: Page): Promise<Item> {
       headers: { Accept: 'application/json', Authorization: AUTH },
     })
   ).json();
-  return content.blocks.__somersault__.value[BLOCK_INDEX];
+  return content.blocks.main.value[BLOCK_INDEX];
 }

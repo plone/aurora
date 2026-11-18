@@ -14,7 +14,7 @@ This document explains the architecture behind that editor, how content is store
 
 ```{warning}
 The unified editor is under active development.
-The internal names and data shapes described here (including the `__somersault__` key) may still change before Plone Aurora reaches a stable release.
+The internal names and data shapes described here may still change before Plone Aurora reaches a stable release.
 ```
 
 ## Motivation
@@ -71,13 +71,15 @@ Add-on authors keep writing blocks against the standard Plone block API and sche
 
 ## Data model
 
-The unified content is stored inside the standard `blocks` mapping, under a single fixed key, `__somersault__` (`Somersault` is the internal codename for the unified editor).
+The unified content is stored inside the standard `blocks` mapping, as a _region_.
+The page body is the `main` region.
+The key of a region is its name, and its `@type`, `plate`, names the format of its value.
 
 ```json
 {
   "blocks": {
-    "__somersault__": {
-      "@type": "__somersault__",
+    "main": {
+      "@type": "plate",
       "value": [
         {
           "type": "title",
@@ -101,7 +103,9 @@ The unified content is stored inside the standard `blocks` mapping, under a sing
 }
 ```
 
-The `__somersault__` entry follows the same shape as any other block: it has an `@type` and a `value`.
+The `main` entry follows the same shape as any other block: it has an `@type` and a `value`.
+Regions are not listed in `blocks_layout`: a region is found by its name, and code that processes regions, such as the backend indexers, finds them by their `plate` type.
+The backend processes `plate` regions since `plone.restapi` 10.3.0.
 The `value` holds the entire Plate editor value as an ordered array of nodes:
 
 - **Plate.js text nodes** use a Plate `type` (`title`, `p`, and so on) and Slate-style `children`.
@@ -114,15 +118,16 @@ The original PLIP proposal used a placeholder `type` of `"unknown"`; the impleme
 
 ## Where content is normalized
 
-Plone content authored with the classic editor does not yet contain a `__somersault__` key, so Plone Aurora builds it.
+Plone content authored with the classic editor does not yet contain a `main` region, so Plone Aurora builds it.
 Normalization is a **server-side concern**: the app assembles and normalizes the unified value once, on the server, and hands the editor and renderer already-migrated data.
 
 This runs in the request middleware ([`app/middleware.server.ts`](https://github.com/plone/aurora/blob/main/apps/aurora/app/middleware.server.ts)), which calls `migrateContent` on every fetched content object.
 The process is:
 
-1. **Skip if already migrated.** If the content already has a `__somersault__` block, it is returned untouched. This keeps the operation idempotent and lets migrated and legacy content coexist during the transition.
-2. **Assemble the value.** The blocks are read in the order given by `blocks_layout.items`, and each block is converted into one or more Plate nodes by a chain of registered `somersaultBlockMigration` utilities — for example mapping a `title` block to the metadata title, passing through legacy Slate `value` arrays, and wrapping any registered block into a `ploneBlock` node.
-3. **Normalize the whole value.** A chain of `somersaultMigration` utilities then runs over the assembled value to convert legacy Slate shapes to Plate standards: bold, italic, strikethrough, links, lists, and block widths.
+1. **Upgrade older shapes.** The registered `contentMigration` utilities run over the whole content. The built-in `contentMigrationSomersaultRegion` renames the `__somersault__` block, the shape stored by earlier versions of Plone Aurora, to the `main` region with the `plate` type. The editor saves the whole `blocks` field, so a page keeps the new shape once it is edited.
+2. **Skip if already migrated.** If the content already has a `main` region, it is returned untouched. This keeps the operation idempotent and lets migrated and legacy content coexist during the transition.
+3. **Assemble the value.** The blocks are read in the order given by `blocks_layout.items`, and each block is converted into one or more Plate nodes by a chain of registered `somersaultBlockMigration` utilities — for example mapping a `title` block to the metadata title, passing through legacy Slate `value` arrays, and wrapping any registered block into a `ploneBlock` node.
+4. **Normalize the whole value.** A chain of `somersaultMigration` utilities then runs over the assembled value to convert legacy Slate shapes to Plate standards: bold, italic, strikethrough, links, lists, and block widths.
 
 The individual conversions are pure helpers exported from `@plone/plate/migrations`, so the same logic can run in an upgrade step or a one-time content transformation rather than only at request time.
 
@@ -137,11 +142,11 @@ Two presets back the unified editor:
 `somersault-editor`
 :   The editing configuration used in the CMS UI.
     It includes the block editor kit, the `title` block, the Plone block adapter, and the keyboard plugin.
-    It is consumed by `@plone/cmsui` to power the `add` and `edit` routes through its `BlocksEditor` component, which reads and writes the `__somersault__` block.
+    It is consumed by `@plone/cmsui` to power the `add` and `edit` routes through its `BlocksEditor` component, which reads and writes the `main` region.
 
 `somersault-renderer`
 :   A read-only configuration used to display content.
-    It is consumed by `@plone/layout` through its `SomersaultRenderer` component, which renders the `__somersault__` value for the public view.
+    It is consumed by `@plone/layout` through its `SomersaultRenderer` component, which renders the `main` region for the public view.
 
 The `title` node is kept in sync with the content's `title` metadata field, so editing the title in the document and editing it as metadata stay consistent.
 
@@ -151,7 +156,7 @@ The design preserves the existing block contract:
 
 - Block schemas and their `edit`/`view` components remain unchanged.
 - Slate and Plate share the same underlying data model, so legacy text requires only structural transformation, not a semantic rewrite.
-- The migration is additive: the `__somersault__` key is derived from the existing blocks while the original data stays in place, so the change is transparent to add-ons.
+- The migration is additive: the `main` region is derived from the existing blocks while the original data stays in place, so the change is transparent to add-ons.
 
 ```{seealso}
 For the full rationale, the migration strategy, and the roadmap, see the PLIP [Unified Block Editor in Plone 7 using Plate.js](https://github.com/plone/aurora/issues/50).

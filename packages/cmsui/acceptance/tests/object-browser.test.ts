@@ -38,15 +38,15 @@ test('The object browser lists a folder and its breadcrumbs', async ({
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             { type: 'title', children: [{ text: PAGE_TITLE }] },
             { type: 'p', children: [{ text: 'Hello world!' }] },
           ],
         },
       },
-      blocks_layout: { items: ['__somersault__'] },
+      blocks_layout: { items: [] },
     }),
   });
 

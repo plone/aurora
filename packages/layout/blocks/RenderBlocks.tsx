@@ -1,7 +1,7 @@
 import { Fragment, lazy } from 'react';
 import { hasBlocksData } from '@plone/helpers';
 import type { Content } from '@plone/types';
-import { SOMERSAULT_KEY } from '@plone/plate/constants';
+import { MAIN_REGION } from '@plone/plate/constants';
 const SomersaultRenderer = lazy(() => import('./SomersaultRenderer'));
 
 export type RenderBlocksProps = {
@@ -21,7 +21,7 @@ const RenderBlocks = (props: RenderBlocksProps) => {
   const CustomTag = props.as || Fragment;
   const shouldRenderSomersault = Object.hasOwn(
     content.blocks ?? {},
-    SOMERSAULT_KEY,
+    MAIN_REGION,
   );
 
   if (shouldRenderSomersault) {

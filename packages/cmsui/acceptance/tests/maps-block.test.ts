@@ -24,8 +24,8 @@ async function createMapsEditPage(
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             {
               type: 'title',
@@ -49,7 +49,7 @@ async function createMapsEditPage(
         },
       },
       blocks_layout: {
-        items: ['__somersault__'],
+        items: [],
       },
     }),
   });
@@ -68,8 +68,8 @@ async function createMapsViewPage(page: Parameters<typeof test>[0]['page']) {
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             {
               type: 'title',
@@ -94,7 +94,7 @@ async function createMapsViewPage(page: Parameters<typeof test>[0]['page']) {
         },
       },
       blocks_layout: {
-        items: ['__somersault__'],
+        items: [],
       },
     }),
   });
