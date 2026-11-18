@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.5 (2026-11-18)
+
+### Feature
+
+- Restyled `Switch`: a pill-shaped track that fills with sapphire when on, and a white knob with a soft shadow. The off track has no outline, and the description and error line up with the label. @sneridagh 
+
 ## 1.0.0-alpha.4 (2026-11-06)
 
 ### Feature
