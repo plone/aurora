@@ -8,6 +8,13 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.27 (2026-11-18)
+
+### Feature
+
+- Added the `MAIN_REGION` and `PLATE_TYPE` constants and deprecated `SOMERSAULT_KEY`. The document format docs now describe the `main` region. @sneridagh [#379](https://github.com/plone/aurora/issues/379)
+- Added the `document_model` frontmatter to the docs of the Plate elements, and made the docs of the page document the docs of the `plone.plate` document model. @sneridagh 
+
 ## 1.0.0-alpha.26 (2026-10-29)
 
 ### Feature
