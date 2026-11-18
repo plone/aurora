@@ -8,6 +8,16 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.19 (2026-11-18)
+
+### Breaking
+
+- `RenderBlocks` and `SomersaultRenderer` now render the `main` region instead of the `__somersault__` block. @sneridagh [#379](https://github.com/plone/aurora/issues/379)
+
+### Bugfix
+
+- The Site setup link of the Personal tools menu points to `/@@controlpanel`. @sneridagh [#429](https://github.com/plone/aurora/issues/429)
+
 ## 1.0.0-alpha.18 (2026-11-06)
 
 ### Feature

@@ -1,1 +1,0 @@
-`RenderBlocks` and `SomersaultRenderer` now render the `main` region instead of the `__somersault__` block. @sneridagh
