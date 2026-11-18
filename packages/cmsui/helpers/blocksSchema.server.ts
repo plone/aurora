@@ -11,7 +11,8 @@ import {
   blockToMarkdown,
   buildFullDetail,
   buildSummaryItem,
-  DOCUMENT_DOCS_ID,
+  DOCUMENT_BLOCK_ID,
+  DOCUMENT_MODEL,
   elementSummary,
   getDocumentDocs,
   getElements,
@@ -191,7 +192,9 @@ const BACKEND_ERRORS: Record<number, string> = {
  * documented element of the page document and every registered block, and
  * `/@blocks-schema/<blockId>` one of them. With a
  * content `path` (`/<path>/@blocks-schema`), the list only has the blocks the
- * block chooser offers when editing that content.
+ * block chooser offers when editing that content. `?type=<type>` asks for
+ * new content of that type instead: in a content path, the blocks offered to
+ * it in that container.
  */
 export async function blocksSchemaResponse({
   request,
@@ -215,8 +218,13 @@ export async function blocksSchemaResponse({
   );
   const markdown = wantsMarkdown(request);
   const endpointURL = getEndpointURL(request);
+  const type = new URL(request.url).searchParams.get('type') || undefined;
+  // The links keep the content type, so they keep its blocks. Aurora has a
+  // single document model, so the type doesn't change it.
+  const query = type ? `?type=${encodeURIComponent(type)}` : '';
   // Links use the registry key, which is what the detail route looks up.
-  const itemURL = (key: string) => `${endpointURL}/${encodeURIComponent(key)}`;
+  const itemURL = (key: string) =>
+    `${endpointURL}/${encodeURIComponent(key)}${query}`;
 
   let auth: Auth;
   try {
@@ -243,6 +251,8 @@ export async function blocksSchemaResponse({
         markdown,
       );
     }
+    // For content of a type that doesn't exist yet, in this container.
+    if (type) context.contentType = type;
   }
 
   const describe = (
@@ -280,7 +290,7 @@ export async function blocksSchemaResponse({
         { headers },
       );
     }
-    if (!blockConfig || blockId === DOCUMENT_DOCS_ID) {
+    if (!blockConfig || blockId === DOCUMENT_BLOCK_ID) {
       return errorResponse(
         404,
         'Not Found',
@@ -298,7 +308,9 @@ export async function blocksSchemaResponse({
 
   const blocks = Object.entries(blocksConfig)
     // Entries that aren't blocks, like the page document, are left out.
-    .filter(([key, blockConfig]) => key !== DOCUMENT_DOCS_ID && blockConfig?.id)
+    .filter(
+      ([key, blockConfig]) => key !== DOCUMENT_BLOCK_ID && blockConfig?.id,
+    )
     .filter(
       ([, blockConfig]) => !context || !isRestrictedIn(blockConfig, context),
     )
@@ -317,7 +329,8 @@ export async function blocksSchemaResponse({
   }
   return Response.json(
     {
-      '@id': endpointURL,
+      '@id': `${endpointURL}${query}`,
+      document_model: DOCUMENT_MODEL,
       ...(documentDocs ? { document: documentDocs } : {}),
       items,
       items_total: items.length,
