@@ -8,6 +8,13 @@
 
 <!-- towncrier release notes start -->
 
+## 4.0.0-alpha.8 (2026-11-18)
+
+### Feature
+
+- Added the `@plone/registry/app-info` virtual module, with the name and version of the app and of its add-ons, without file system paths, so client code can show them. @sneridagh 
+- The block docs loader collects the `document_model` of element docs, keeps an element of the same name in each document model, and collects the docs of document models, files whose frontmatter only has `document_model`. @sneridagh 
+
 ## 4.0.0-alpha.7 (2026-10-29)
 
 ### Feature
