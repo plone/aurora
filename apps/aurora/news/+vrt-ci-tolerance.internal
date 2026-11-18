@@ -1,1 +1,0 @@
-Allowed up to 10 different pixels in the visual regression screenshots in CI, so anti-aliasing noise no longer fails the nightly run. @sneridagh
