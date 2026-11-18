@@ -1,1 +1,0 @@
-Fixed the "Toolbar add menu" visual test, which pressed the only toolbar button and stopped finding it once the toolbar got its More and Personal tools menus. @sneridagh
