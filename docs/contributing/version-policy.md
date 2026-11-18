@@ -50,8 +50,8 @@ We recommend using the known good set (KGS) of package versions that are specifi
 
 ### Nick
 
-With a Nick backend, Plone Aurora requires Nick 3.0.1 or later.
-Nick 3.0.1 reads the `plate` regions that store the page: it builds the Markdown of a page from its `main` region, the text for `SearchableText` from all its `plate` regions, and its block types from the blocks in them.
+With a Nick backend, Plone Aurora requires Nick 3.1.0 or later.
+Nick 3.1.0 reads the `plate` regions that store the page: it builds the Markdown of a page from its `main` region, the text for `SearchableText` from all its `plate` regions, and its block types from the blocks in them.
 Older versions of Nick only read the `__somersault__` block that Plone Aurora used before.
 
 
