@@ -56,6 +56,9 @@ dependencies = [
 With an older `plone.restapi`, the pages saved in the new shape drop out of `SearchableText`, get no link integrity, and the links of the blocks in them are not converted to `resolveuid` links.
 Reindexing fixes the first two, but not the links, which stay as they are until the page is saved again.
 
+With a Nick backend, upgrade it to Nick 3.0.1 or later before you deploy this version.
+Older versions of Nick only read the `__somersault__` block, so they miss the Markdown, the `SearchableText` and the block types of the pages saved in the new shape.
+
 (upgrade-guide-plone-volto-aurora-profile)=
 
 ### The backend needs the `plone.volto:aurora` profile
