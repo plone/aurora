@@ -116,7 +116,7 @@ test('Sharing form', async ({ page }) => {
 
 test('Control panels overview', async ({ page }) => {
   await login(page);
-  await page.goto('/controlpanel');
+  await page.goto('/@@controlpanel');
   await expect(page.getByRole('heading', { name: 'Site setup' })).toBeVisible();
   await settle(page);
 

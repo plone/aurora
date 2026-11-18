@@ -61,7 +61,7 @@ function callLoader(client: any, url: string) {
     request,
     params: {},
     context: makeContext(client),
-    unstable_pattern: '/controlpanel/addons',
+    unstable_pattern: '/@@controlpanel/addons',
     unstable_url: new URL(request.url),
   } as any);
 }
@@ -81,7 +81,7 @@ describe('Addons control panel route', () => {
       const client = makeClient();
       const result = await callLoader(
         client,
-        'http://example.com/controlpanel/addons',
+        'http://example.com/@@controlpanel/addons',
       );
 
       expect(client.getAddons).toHaveBeenCalledOnce();
@@ -92,7 +92,7 @@ describe('Addons control panel route', () => {
   describe('action', () => {
     const runAction = (client: any, intent: string, id = 'collective.foo') => {
       const body = new URLSearchParams({ id, intent });
-      const request = new Request('http://example.com/controlpanel/addons', {
+      const request = new Request('http://example.com/@@controlpanel/addons', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: body.toString(),
@@ -101,7 +101,7 @@ describe('Addons control panel route', () => {
         request,
         params: {},
         context: makeContext(client),
-        unstable_pattern: '/controlpanel/addons',
+        unstable_pattern: '/@@controlpanel/addons',
         unstable_url: new URL(request.url),
       } as any);
     };

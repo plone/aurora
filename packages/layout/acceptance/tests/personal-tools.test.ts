@@ -131,9 +131,9 @@ test('personal tools are hidden while editing but available in control panels', 
   await expect(toolbar.getByRole('button', { name: 'Save' })).toBeVisible();
   await expect(personalTools).toHaveCount(0);
 
-  await page.goto('/controlpanel', { waitUntil: 'networkidle' });
+  await page.goto('/@@controlpanel', { waitUntil: 'networkidle' });
   await expect(personalTools).toBeVisible();
-  await page.goto('/controlpanel/site', { waitUntil: 'networkidle' });
+  await page.goto('/@@controlpanel/site', { waitUntil: 'networkidle' });
   await expect(personalTools).toBeVisible();
 });
 
@@ -142,7 +142,7 @@ test('personal tools use a dismissible mobile sheet and a desktop popover', asyn
 }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await login(page);
-  await page.goto('/controlpanel', { waitUntil: 'networkidle' });
+  await page.goto('/@@controlpanel', { waitUntil: 'networkidle' });
   const button = page
     .getByRole('navigation', { name: 'Toolbar' })
     .getByRole('button', { name: 'Personal tools' });

@@ -52,11 +52,11 @@ test('A required control panel field left empty is shown as invalid', async ({
   await login(page);
   const posts: string[] = [];
   page.on('request', (request) => {
-    if (isSave('POST')(request) && request.url().includes('/controlpanel/'))
+    if (isSave('POST')(request) && request.url().includes('/@@controlpanel/'))
       posts.push(request.url());
   });
 
-  await page.goto('/controlpanel/site', { waitUntil: 'networkidle' });
+  await page.goto('/@@controlpanel/site', { waitUntil: 'networkidle' });
   const siteTitle = page.getByRole('textbox', { name: 'Site title' });
   await siteTitle.fill('');
   await page.getByLabel('Save').click();

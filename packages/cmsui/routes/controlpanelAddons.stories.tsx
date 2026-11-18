@@ -134,7 +134,7 @@ const createAddonsRouter = (data: LoaderData, error?: string) =>
   createMemoryRouter(
     [
       {
-        path: '/controlpanel/addons',
+        path: '/@@controlpanel/addons',
         loader: () => data,
         action: async () => (error ? { ok: false, error } : { ok: true }),
         element: (
@@ -148,11 +148,11 @@ const createAddonsRouter = (data: LoaderData, error?: string) =>
         ),
       },
       {
-        path: '/controlpanel',
+        path: '/@@controlpanel',
         element: <div>Control panels</div>,
       },
     ],
-    { initialEntries: ['/controlpanel/addons'] },
+    { initialEntries: ['/@@controlpanel/addons'] },
   );
 
 function StoryAddons({ data, error }: { data: LoaderData; error?: string }) {

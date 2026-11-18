@@ -12,7 +12,7 @@ myst:
 # Add a control panel
 
 A control panel is a page where site administrators change a group of site-wide settings.
-Plone Aurora lists every control panel on its site setup page, at {file}`/controlpanel`, and shows each one at {file}`/controlpanel/<id>`.
+Plone Aurora lists every control panel on its site setup page, at {file}`/@@controlpanel`, and shows each one at {file}`/@@controlpanel/<id>`.
 
 This guide shows how to add a control panel from your add-on, how to give it an icon and a description on the site setup page, and how to replace its form with a page of your own.
 
@@ -129,7 +129,7 @@ The name of the adapter is the id of the control panel in its address.
 ```
 
 After you install or upgrade the add-on, `GET @controlpanels` lists the new control panel, and Plone Aurora shows it on the site setup page, in the group of its configlet.
-It opens at {file}`/controlpanel/my-settings`.
+It opens at {file}`/@@controlpanel/my-settings`.
 
 ## Show it on the site setup page
 
@@ -239,7 +239,7 @@ config.settings.filterControlPanels = (controlpanels) =>
 
 Some control panels need more than a form of settings, like the content types control panel.
 To render your own page for a control panel, register a route for its path in the configuration of your add-on.
-A route for {file}`controlpanel/my-settings` takes precedence over the generic {file}`controlpanel/:id` route.
+A route for {file}`@@controlpanel/my-settings` takes precedence over the generic {file}`@@controlpanel/:id` route.
 
 Render it inside the layout of `@plone/cmsui`, so it gets the toolbar, and give the layout route an `id` of its own, since `@plone/cmsui` already registers that layout.
 
@@ -251,7 +251,7 @@ config.registerRoute({
   children: [
     {
       type: 'route',
-      path: 'controlpanel/my-settings',
+      path: '@@controlpanel/my-settings',
       file: '@my-addon/routes/MySettings.tsx',
     },
   ],

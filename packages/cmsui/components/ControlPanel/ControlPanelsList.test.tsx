@@ -14,19 +14,19 @@ describe('ControlPanelsList', () => {
   const mockControlPanels = [
     {
       '@id': 'http://localhost:8080/Plone/@controlpanels/mail',
-      href: '/controlpanel/mail',
+      href: '/@@controlpanel/mail',
       title: 'Mail',
       group: 'General',
     },
     {
       '@id': 'http://localhost:8080/Plone/@controlpanels/security',
-      href: '/controlpanel/security',
+      href: '/@@controlpanel/security',
       title: 'Security',
       group: 'Security',
     },
     {
       '@id': 'http://localhost:8080/Plone/@controlpanels/content',
-      href: '/controlpanel/content',
+      href: '/@@controlpanel/content',
       title: 'Content Settings',
       group: 'Content',
     },
@@ -98,7 +98,7 @@ describe('ControlPanelsList', () => {
       .closest('section')!;
     expect(
       within(content).getByRole('link', { name: 'My add-on' }),
-    ).toHaveAttribute('href', '/controlpanel/my-addon');
+    ).toHaveAttribute('href', '/@@controlpanel/my-addon');
     config.settings.controlpanels = [];
   });
 

@@ -13,7 +13,7 @@ describe('PersonalTools', () => {
     expect(await screen.findByText('Jane Smith')).toBeInTheDocument();
     expect(
       screen.getByRole('menuitem', { name: 'Site setup' }),
-    ).toHaveAttribute('href', '/controlpanel');
+    ).toHaveAttribute('href', '/@@controlpanel');
     expect(screen.getByRole('menuitem', { name: 'Log out' })).toHaveAttribute(
       'href',
       '/logout',
