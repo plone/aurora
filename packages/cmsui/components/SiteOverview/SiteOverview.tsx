@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { GetSiteResponse, GetSystemResponse } from '@plone/types';
 import appInfo from '@plone/registry/app-info';
 import { CheckboxIcon } from '@plone/icons';
-import CopyButton from './CopyButton';
+import CopyButton from '../CopyButton/CopyButton';
 
 interface SiteOverviewProps {
   system: GetSystemResponse;
