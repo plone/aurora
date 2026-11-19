@@ -4,7 +4,7 @@ import { Button } from '@plone/quanta';
 import { CopyIcon } from '@plone/icons';
 
 export type CopyButtonProps = {
-  label?: string;
+  label: string;
   onCopyRequested?: () => string;
 };
 
@@ -35,8 +35,6 @@ export const CopyButton = ({ label, onCopyRequested }: CopyButtonProps) => {
     [],
   );
 
-  const finalLabel = label || '';
-
   return (
     <Button
       variant="neutral"
@@ -48,12 +46,12 @@ export const CopyButton = ({ label, onCopyRequested }: CopyButtonProps) => {
       onPress={doCopy}
       aria-label={label}
     >
-      <CopyIcon size="sm" className={finalLabel.length ? 'mr-1.25' : ''} />
+      <CopyIcon size="sm" className={'mr-1.25'} />
       {status === 'copied'
         ? t('cmsui.siteOverview.copied')
         : status === 'failed'
           ? t('cmsui.siteOverview.copyFailed')
-          : finalLabel}
+          : label}
     </Button>
   );
 };
