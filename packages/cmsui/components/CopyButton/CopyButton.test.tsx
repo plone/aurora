@@ -21,7 +21,7 @@ describe('CopyButton', () => {
   it('has proper label after success', async () => {
     prepareWriteText();
 
-    render(<CopyButton />);
+    render(<CopyButton label="Click me" />);
 
     const btn = screen.getByRole('button');
     fireEvent.click(btn);
@@ -35,7 +35,7 @@ describe('CopyButton', () => {
   it('has proper label after failure', async () => {
     prepareWriteText({ succeeds: false });
 
-    render(<CopyButton />);
+    render(<CopyButton label="Click me" />);
 
     const btn = screen.getByRole('button');
     fireEvent.click(btn);
@@ -49,20 +49,7 @@ describe('CopyButton', () => {
     );
   });
 
-  it('renders and works as expected with the clipboard (no props)', () => {
-    const writeText = prepareWriteText();
-
-    const { container } = render(<CopyButton />);
-
-    expect(container.firstChild).toMatchSnapshot();
-
-    fireEvent.click(screen.getByRole('button'));
-
-    expect(writeText).toHaveBeenCalledTimes(1);
-    expect(writeText).toHaveBeenCalledWith('');
-  });
-
-  it('renders and works as expected with the clipboard (with label)', () => {
+  it('renders and works as expected with the clipboard', () => {
     const writeText = prepareWriteText();
 
     const { container } = render(<CopyButton label="Click me" />);
@@ -75,7 +62,7 @@ describe('CopyButton', () => {
     expect(writeText).toHaveBeenCalledWith('');
   });
 
-  it('renders and works as expected with the clipboard (with label and handler)', () => {
+  it('renders and works as expected with the clipboard (with handler)', () => {
     const writeText = prepareWriteText();
 
     const { container } = render(

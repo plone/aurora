@@ -21,6 +21,9 @@ const Wrapper = ({ onCopyRequested, label }: CopyButtonProps) => {
 
 const meta = {
   title: 'CMSUI/SiteOverview/CopyButton',
+  args: {
+    label: 'Click me!',
+  },
   component: Wrapper,
 } satisfies Meta<typeof CopyButton>;
 
@@ -38,15 +41,6 @@ export const WithLabel: Story = {
 
 export const WithCallback: Story = {
   args: {
-    onCopyRequested: () => {
-      return 'Thanks.';
-    },
-  },
-};
-
-export const WithLabelAndCallback: Story = {
-  args: {
-    label: 'Click me!',
     onCopyRequested: () => {
       return 'Thanks.';
     },
