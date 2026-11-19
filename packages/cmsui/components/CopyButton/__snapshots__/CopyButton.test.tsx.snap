@@ -1,44 +1,12 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`CopyButton > renders and works as expected with the clipboard (no props) 1`] = `
-<button
-  class="outline-quanta-cobalt forced-colors:outline-[Highlight] px-3 py-1.5 text-center text-base font-medium transition hover:shadow-sm focus:shadow-sm active:shadow-md has-[svg]:rounded-full has-[svg]:p-1.5 has-[svg]:text-xs has-[svg]:text-quanta-iron outline-0 hover:bg-quanta-smoke focus:bg-quanta-smoke active:bg-quanta-silver pressed:bg-quanta-smoke mt-5 h-9 cursor-pointer items-center self-start rounded-[18px] border border-quanta-silver bg-white pr-3.5! pl-3.5! font-sans text-[13px]! text-quanta-denim"
-  data-rac=""
-  data-react-aria-pressable="true"
-  id="react-aria-_r_4_"
-  tabindex="0"
-  type="button"
->
-  <svg
-    aria-hidden="true"
-    class="q icon icon-sm"
-    focusable="false"
-    height="24"
-    role="img"
-    style="fill: currentcolor;"
-    viewBox="0 0 24 24"
-    width="24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M15 4V7H18V16H17V18H20V6L16.25 2H8V5H10V4H15Z"
-    />
-    <path
-      clip-rule="evenodd"
-      d="M16 10L12.25 6H4V22H16V10ZM11 8H6V20H14V11H11V8Z"
-      fill-rule="evenodd"
-    />
-  </svg>
-</button>
-`;
-
-exports[`CopyButton > renders and works as expected with the clipboard (with label and handler) 1`] = `
+exports[`CopyButton > renders and works as expected with the clipboard (with handler) 1`] = `
 <button
   aria-label="Click me"
   class="outline-quanta-cobalt forced-colors:outline-[Highlight] px-3 py-1.5 text-center text-base font-medium transition hover:shadow-sm focus:shadow-sm active:shadow-md has-[svg]:rounded-full has-[svg]:p-1.5 has-[svg]:text-xs has-[svg]:text-quanta-iron outline-0 hover:bg-quanta-smoke focus:bg-quanta-smoke active:bg-quanta-silver pressed:bg-quanta-smoke mt-5 h-9 cursor-pointer items-center self-start rounded-[18px] border border-quanta-silver bg-white pr-3.5! pl-3.5! font-sans text-[13px]! text-quanta-denim"
   data-rac=""
   data-react-aria-pressable="true"
-  id="react-aria-_r_8_"
+  id="react-aria-_r_6_"
   tabindex="0"
   type="button"
 >
@@ -66,13 +34,13 @@ exports[`CopyButton > renders and works as expected with the clipboard (with lab
 </button>
 `;
 
-exports[`CopyButton > renders and works as expected with the clipboard (with label) 1`] = `
+exports[`CopyButton > renders and works as expected with the clipboard 1`] = `
 <button
   aria-label="Click me"
   class="outline-quanta-cobalt forced-colors:outline-[Highlight] px-3 py-1.5 text-center text-base font-medium transition hover:shadow-sm focus:shadow-sm active:shadow-md has-[svg]:rounded-full has-[svg]:p-1.5 has-[svg]:text-xs has-[svg]:text-quanta-iron outline-0 hover:bg-quanta-smoke focus:bg-quanta-smoke active:bg-quanta-silver pressed:bg-quanta-smoke mt-5 h-9 cursor-pointer items-center self-start rounded-[18px] border border-quanta-silver bg-white pr-3.5! pl-3.5! font-sans text-[13px]! text-quanta-denim"
   data-rac=""
   data-react-aria-pressable="true"
-  id="react-aria-_r_6_"
+  id="react-aria-_r_4_"
   tabindex="0"
   type="button"
 >
