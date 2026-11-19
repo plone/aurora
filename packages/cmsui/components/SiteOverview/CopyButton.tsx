@@ -46,6 +46,7 @@ export const CopyButton = ({ label, onCopyRequested }: CopyButtonProps) => {
         bg-white pr-3.5! pl-3.5! font-sans text-[13px]! text-quanta-denim
       `}
       onPress={doCopy}
+      aria-label={label}
     >
       <CopyIcon size="sm" className={finalLabel.length ? 'mr-1.25' : ''} />
       {status === 'copied'

@@ -13,7 +13,7 @@ function prepareWriteText({ succeeds = true } = {}) {
   return writeText;
 }
 
-describe('CopyButton', async () => {
+describe('CopyButton', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -49,7 +49,7 @@ describe('CopyButton', async () => {
     );
   });
 
-  it('renders and works as expected with the clipboard (no props)', async () => {
+  it('renders and works as expected with the clipboard (no props)', () => {
     const writeText = prepareWriteText();
 
     const { container } = render(<CopyButton />);
@@ -62,7 +62,7 @@ describe('CopyButton', async () => {
     expect(writeText).toHaveBeenCalledWith('');
   });
 
-  it('renders and works as expected with the clipboard (with label)', async () => {
+  it('renders and works as expected with the clipboard (with label)', () => {
     const writeText = prepareWriteText();
 
     const { container } = render(<CopyButton label="Click me" />);
@@ -75,7 +75,7 @@ describe('CopyButton', async () => {
     expect(writeText).toHaveBeenCalledWith('');
   });
 
-  it('renders and works as expected with the clipboard (with label and handler)', async () => {
+  it('renders and works as expected with the clipboard (with label and handler)', () => {
     const writeText = prepareWriteText();
 
     const { container } = render(

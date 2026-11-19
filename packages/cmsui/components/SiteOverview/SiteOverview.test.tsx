@@ -2,6 +2,10 @@ import { vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import SiteOverview from './SiteOverview';
 
+vi.mock('@plone/icons/svg/checkbox.svg?react', () => ({
+  default: () => {},
+}));
+
 vi.mock('@plone/registry/app-info', () => ({
   default: {
     name: '@plone/aurora',
@@ -74,7 +78,7 @@ describe('SiteOverview', () => {
     ).toBeInTheDocument();
   });
 
-  it('copies the system information', async () => {
+  it('copies the system information with addons', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, 'clipboard', {
       value: { writeText },
@@ -89,8 +93,27 @@ describe('SiteOverview', () => {
     expect(writeText).toHaveBeenCalledWith(
       expect.stringContaining('Python: 3.13.15 (main'),
     );
-    expect(
-      await screen.findByRole('button', { name: 'cmsui.siteOverview.copied' }),
-    ).toBeInTheDocument();
+    expect(await screen.findByRole('button')).toBeInTheDocument();
+  });
+
+  it('copies the system information with no addons', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText },
+      configurable: true,
+    });
+    render(<SiteOverview system={system} addons={[]} />);
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'cmsui.siteOverview.copySystemInfo' }),
+    );
+
+    expect(writeText).toHaveBeenCalledWith(
+      expect.stringContaining('Python: 3.13.15 (main'),
+    );
+    expect(writeText).toHaveBeenCalledWith(
+      expect.not.stringContaining('Addons:'),
+    );
+    expect(await screen.findByRole('button')).toBeInTheDocument();
   });
 });
