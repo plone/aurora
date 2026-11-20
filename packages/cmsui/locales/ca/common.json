@@ -25,6 +25,25 @@
       "resultsCount_one": "{{count}} complement trobat",
       "resultsCount_other": "{{count}} complements trobats",
       "actionError": "No ha funcionat."
+    },
+    "upgrade": {
+      "title": "Actualitza el lloc Plone",
+      "description": "Executa els passos d'actualització de la configuració del lloc després d'actualitzar Plone.",
+      "docsLink": "Llegeix la guia d'actualització",
+      "versions": "Versions de la configuració",
+      "upToDate": "El teu lloc està actualitzat.",
+      "outdated": "La configuració del lloc està desactualitzada i cal actualitzar-la.",
+      "instanceVersion": "Configuració activa",
+      "fsVersion": "Darrera configuració disponible",
+      "steps": "Passos d'actualització",
+      "stepsDescription": "S'executaran aquests passos d'actualització. Alguns actualitzen el catàleg o la configuració de seguretat, cosa que pot trigar molt en llocs grans.",
+      "backup": "Assegura't de tenir una còpia de seguretat del lloc abans d'actualitzar-lo.",
+      "dryRun": "Simulació",
+      "run": "Actualitza",
+      "report": "Informe d'actualització",
+      "done": "L'actualització ha acabat. El teu lloc està actualitzat.",
+      "dryRunDone": "Simulació acabada. No s'ha desat cap canvi.",
+      "error": "L'actualització ha fallat."
     }
   }
 }

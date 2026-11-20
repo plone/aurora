@@ -1,9 +1,11 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from '@plone/quanta';
 import type { GetSiteResponse, GetSystemResponse } from '@plone/types';
 import appInfo from '@plone/registry/app-info';
 import { CheckboxIcon } from '@plone/icons';
 import CopyButton from '../CopyButton/CopyButton';
+import ArrowRight from '@plone/icons/svg/arrow-right.svg?react';
 
 interface SiteOverviewProps {
   system: GetSystemResponse;
@@ -16,8 +18,7 @@ interface SiteOverviewProps {
   siteUrl?: string;
 }
 
-const cardClassName =
-  'flex flex-col gap-4 rounded-[10px] border border-quanta-smoke p-5';
+const cardClassName = 'flex flex-col gap-4 rounded-[10px] border p-5';
 
 const Details = ({ entries }: { entries: [string, string | undefined][] }) => (
   <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-[13px] leading-4.5">
@@ -112,7 +113,13 @@ const SiteOverview = ({
 
   return (
     <aside className="siteoverview flex flex-col gap-4">
-      <section className={cardClassName} aria-labelledby="siteoverview-site">
+      <section
+        className={`
+          ${cardClassName}
+          border-quanta-smoke
+        `}
+        aria-labelledby="siteoverview-site"
+      >
         <div className="flex items-center gap-3">
           <span
             aria-hidden="true"
@@ -168,22 +175,56 @@ const SiteOverview = ({
         />
       </section>
 
-      <section className={cardClassName} aria-labelledby="siteoverview-system">
-        <div className="flex items-center justify-between gap-3">
+      {/* A pending upgrade marks the whole card, without making it bigger:
+        the ring doubles the border outside the layout. The card clips its
+        header strip to its rounded corners. */}
+      <section
+        className={
+          system.upgrade
+            ? `
+              ${cardClassName}
+              overflow-hidden border-quanta-lemon ring-1 ring-quanta-lemon
+            `
+            : `
+              ${cardClassName}
+              border-quanta-smoke
+            `
+        }
+        aria-labelledby="siteoverview-system"
+      >
+        {/* With a pending upgrade, the header turns into a yellow strip
+          that leads to the upgrade page. */}
+        <div
+          className={
+            system.upgrade
+              ? `
+                -mx-5 -mt-5 flex items-center justify-between gap-3 rounded-t-[9px] bg-quanta-cream
+                px-5 py-3
+              `
+              : 'flex items-center justify-between gap-3'
+          }
+        >
           <h2
             id="siteoverview-system"
-            className="text-[15px] leading-5.5 font-semibold text-quanta-denim"
+            className={`
+              text-[15px] leading-5.5 font-semibold
+              ${system.upgrade ? 'text-quanta-bronze' : 'text-quanta-denim'}
+            `}
           >
             {t('cmsui.siteOverview.system')}
           </h2>
           {system.upgrade ? (
-            <span
+            <Link
+              href="/@@controlpanel/plone-upgrade"
               className={`
-                rounded-full bg-quanta-cream px-2.5 py-0.5 text-xs font-semibold text-quanta-bronze
+                inline-flex items-center gap-1 text-[13px] font-semibold text-quanta-bronze
+                underline
+                hover:text-quanta-denim
               `}
             >
-              {t('cmsui.siteOverview.upgradeAvailable')}
-            </span>
+              {t('cmsui.siteOverview.runUpgrade')}
+              <ArrowRight aria-hidden="true" className="size-4" />
+            </Link>
           ) : (
             <span
               className={`

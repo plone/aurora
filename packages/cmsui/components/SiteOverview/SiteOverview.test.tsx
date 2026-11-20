@@ -6,6 +6,10 @@ vi.mock('@plone/icons/svg/checkbox.svg?react', () => ({
   default: () => {},
 }));
 
+vi.mock('@plone/icons/svg/arrow-right.svg?react', () => ({
+  default: (props: object) => <svg {...props} />,
+}));
+
 vi.mock('@plone/registry/app-info', () => ({
   default: {
     name: '@plone/aurora',
@@ -73,9 +77,11 @@ describe('SiteOverview', () => {
   it('says when a Plone upgrade is available', () => {
     render(<SiteOverview system={{ ...system, upgrade: true }} />);
 
+    expect(screen.getByText('cmsui.siteOverview.upgrade')).toBeInTheDocument();
+    // The upgrade runs in the app's own upgrade control panel.
     expect(
-      screen.getByText('cmsui.siteOverview.upgradeAvailable'),
-    ).toBeInTheDocument();
+      screen.getByRole('link', { name: 'cmsui.siteOverview.runUpgrade' }),
+    ).toHaveAttribute('href', '/@@controlpanel/plone-upgrade');
   });
 
   it('copies the system information with addons', async () => {
