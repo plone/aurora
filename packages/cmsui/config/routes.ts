@@ -159,6 +159,11 @@ export default function install(config: ConfigType) {
           },
           {
             type: 'route',
+            path: 'plone-upgrade',
+            file: '@plone/cmsui/routes/controlpanelUpgrade.tsx',
+          },
+          {
+            type: 'route',
             path: ':id',
             file: '@plone/cmsui/routes/controlpanel.tsx',
           },
