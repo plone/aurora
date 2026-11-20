@@ -93,7 +93,12 @@ describe('SiteOverview', () => {
     expect(writeText).toHaveBeenCalledWith(
       expect.stringContaining('Python: 3.13.15 (main'),
     );
-    expect(await screen.findByRole('button')).toBeInTheDocument();
+    expect(writeText).toHaveBeenCalledWith(
+      expect.stringContaining('Add-ons:\n\n@some/addon: 1.3.5'),
+    );
+    expect(
+      await screen.findByRole('button', { name: 'cmsui.siteOverview.copied' }),
+    ).toBeInTheDocument();
   });
 
   it('copies the system information with no addons', async () => {
@@ -112,8 +117,10 @@ describe('SiteOverview', () => {
       expect.stringContaining('Python: 3.13.15 (main'),
     );
     expect(writeText).toHaveBeenCalledWith(
-      expect.not.stringContaining('Addons:'),
+      expect.not.stringContaining('Add-ons:'),
     );
-    expect(await screen.findByRole('button')).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', { name: 'cmsui.siteOverview.copied' }),
+    ).toBeInTheDocument();
   });
 });
