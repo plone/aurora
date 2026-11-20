@@ -3,19 +3,20 @@
 // package and of the Quanta components it renders. Then every rule is scoped
 // to `.plone-controlpanels`, without adding to its specificity, and the
 // cascade layers are removed.
-import { execFileSync } from 'node:child_process';
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+// The package only has `exports`, which the import plugin can't resolve.
+// eslint-disable-next-line import/no-unresolved
+import tailwindcss from '@tailwindcss/postcss';
 import postcss from 'postcss';
 
 const SCOPE = ':where(.plone-controlpanels)';
 const INPUT = 'src/styles/controlpanels.css';
 const OUTPUT = 'dist/controlpanels.css';
-const COMPILED = 'dist/controlpanels.compiled.css';
 
 mkdirSync('dist', { recursive: true });
-execFileSync('tailwindcss', ['-i', INPUT, '-o', COMPILED, '--minify'], {
-  stdio: 'inherit',
-});
+const compiled = await postcss([
+  tailwindcss({ optimize: { minify: true } }),
+]).process(readFileSync(INPUT, 'utf8'), { from: INPUT });
 
 // The document's root and body are the scope itself.
 const ROOT = /^(:root|:host|html|body)\b/;
@@ -23,7 +24,7 @@ const ROOT = /^(:root|:host|html|body)\b/;
 const scope = (selector) =>
   ROOT.test(selector) ? selector.replace(ROOT, SCOPE) : `${SCOPE} ${selector}`;
 
-const root = postcss.parse(readFileSync(COMPILED, 'utf8'));
+const root = postcss.parse(compiled.css);
 root.walkAtRules('layer', (rule) => {
   if (rule.nodes) rule.replaceWith(rule.nodes);
   else rule.remove();
@@ -38,5 +39,4 @@ root.walkRules((rule) => {
   rule.selectors = rule.selectors.map(scope);
 });
 writeFileSync(OUTPUT, root.toString());
-rmSync(COMPILED);
 console.log(`Wrote ${OUTPUT}`);
