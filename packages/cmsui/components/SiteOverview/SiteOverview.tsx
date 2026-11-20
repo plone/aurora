@@ -1,11 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@plone/quanta';
 import type { GetSiteResponse, GetSystemResponse } from '@plone/types';
 import appInfo from '@plone/registry/app-info';
+import { CheckboxIcon } from '@plone/icons';
+import CopyButton from '../CopyButton/CopyButton';
 
 interface SiteOverviewProps {
   system: GetSystemResponse;
+  addons?: {
+    name: string;
+    version: string;
+  }[];
   site?: Partial<GetSiteResponse>;
   /** The address visitors reach the site at. Defaults to the browser's. */
   siteUrl?: string;
@@ -15,13 +20,18 @@ const cardClassName =
   'flex flex-col gap-4 rounded-[10px] border border-quanta-smoke p-5';
 
 const Details = ({ entries }: { entries: [string, string | undefined][] }) => (
-  <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-[13px] leading-[18px]">
+  <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-[13px] leading-4.5">
     {entries
       .filter(([, value]) => value)
       .map(([term, value]) => (
         <div key={term} className="contents">
-          <dt className="text-quanta-pigeon">{term}</dt>
-          <dd className="truncate text-quanta-denim tabular-nums" title={value}>
+          <dt className="overflow-hidden text-ellipsis whitespace-nowrap text-quanta-pigeon">
+            {term}
+          </dt>
+          <dd
+            className="m-0 truncate text-right text-quanta-denim tabular-nums"
+            title={value}
+          >
             {value}
           </dd>
         </div>
@@ -34,14 +44,12 @@ const Details = ({ entries }: { entries: [string, string | undefined][] }) => (
  */
 const SiteOverview = ({
   system,
+  addons,
   site,
   siteUrl: siteUrlProp,
 }: SiteOverviewProps) => {
   const { t } = useTranslation();
-  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'failed'>(
-    'idle',
-  );
-  const copyTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+
   // Only known in the browser: the server may be reached at an internal
   // address, behind a proxy, and the clipboard needs a secure origin.
   const [siteUrl, setSiteUrl] = useState(siteUrlProp);
@@ -52,28 +60,33 @@ const SiteOverview = ({
     setCanCopy(Boolean(navigator.clipboard));
   }, [siteUrlProp]);
 
-  useEffect(() => () => clearTimeout(copyTimeout.current), []);
+  addons = addons || appInfo.addons;
+
   const title = site?.['plone.site_title'] || 'Plone';
+
   // Python's version string carries the build details after the number.
   const [pythonVersion] = system.python_version?.split(' ') ?? [];
 
-  const versions: [string, string | undefined][] = [
-    ['Plone', system.plone_version],
-    [
-      appInfo.name === '@plone/aurora' ? 'Plone Aurora' : appInfo.name,
-      appInfo.version,
+  const versions: [string, string | undefined][] = useMemo(
+    () => [
+      ['Plone', system.plone_version],
+      [
+        appInfo.name === '@plone/aurora' ? 'Plone Aurora' : appInfo.name,
+        appInfo.version,
+      ],
+      ['plone.restapi', system.plone_restapi_version],
+      ['Zope', system.zope_version],
+      ['Python', pythonVersion],
+      ['CMF', system.cmf_version],
+      ['PIL', system.pil_version],
+      [t('cmsui.siteOverview.debugMode'), system.debug_mode],
     ],
-    ['plone.restapi', system.plone_restapi_version],
-    ['Zope', system.zope_version],
-    ['Python', pythonVersion],
-    ['CMF', system.cmf_version],
-    ['PIL', system.pil_version],
-    [t('cmsui.siteOverview.debugMode'), system.debug_mode],
-  ];
+    [system, pythonVersion, t],
+  );
 
-  const copySystemInfo = async () => {
+  const copySystemInfo = useCallback(() => {
     // The full Python version string helps when reporting a problem.
-    const text = [
+    let text = [
       ...versions.map(([term, value]): [string, string | undefined] =>
         term === 'Python' ? [term, system.python_version] : [term, value],
       ),
@@ -82,15 +95,20 @@ const SiteOverview = ({
       .filter(([, value]) => value)
       .map(([term, value]) => `${term}: ${value}`)
       .join('\n');
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopyStatus('copied');
-    } catch {
-      setCopyStatus('failed');
+
+    if (addons.length > 0) {
+      text +=
+        '\n\nAdd-ons:\n\n' +
+        addons.map(({ name, version }) => `${name}: ${version}`).join('\n');
     }
-    clearTimeout(copyTimeout.current);
-    copyTimeout.current = setTimeout(() => setCopyStatus('idle'), 2000);
-  };
+
+    return text;
+  }, [
+    versions,
+    system.plone_gs_metadata_version_installed,
+    system.python_version,
+    addons,
+  ]);
 
   return (
     <aside className="siteoverview flex flex-col gap-4">
@@ -108,7 +126,7 @@ const SiteOverview = ({
           <div className="flex min-w-0 flex-col">
             <h2
               id="siteoverview-site"
-              className="truncate text-base leading-[22px] font-semibold text-quanta-denim"
+              className="truncate text-base leading-5.5 font-semibold text-quanta-denim"
             >
               {title}
             </h2>
@@ -118,14 +136,14 @@ const SiteOverview = ({
               <a
                 href={siteUrl}
                 className={`
-                  truncate text-[13px] leading-[18px] text-quanta-sapphire no-underline
+                  truncate text-[13px] leading-4.5 text-quanta-sapphire no-underline
                   hover:text-quanta-royal
                 `}
               >
                 {siteUrl.replace(/^https?:\/\//, '')}
               </a>
             ) : (
-              <span aria-hidden="true" className="h-[18px]" />
+              <span aria-hidden="true" className="h-4.5" />
             )}
           </div>
         </div>
@@ -154,7 +172,7 @@ const SiteOverview = ({
         <div className="flex items-center justify-between gap-3">
           <h2
             id="siteoverview-system"
-            className="text-[15px] leading-[22px] font-semibold text-quanta-denim"
+            className="text-[15px] leading-5.5 font-semibold text-quanta-denim"
           >
             {t('cmsui.siteOverview.system')}
           </h2>
@@ -173,30 +191,47 @@ const SiteOverview = ({
                 text-quanta-turtle
               `}
             >
+              <CheckboxIcon size="sm" className="mr-1.25" />
               {t('cmsui.siteOverview.upToDate')}
             </span>
           )}
         </div>
         {system.upgrade && (
-          <p className="text-[13px] leading-[18px] text-quanta-iron">
+          <p className="text-[13px] leading-4.5 text-quanta-iron">
             {t('cmsui.siteOverview.upgrade')}
           </p>
         )}
         <Details entries={versions} />
-        {canCopy && (
-          <Button
-            variant="neutral"
-            accent
-            className="self-start text-[13px]"
-            onPress={copySystemInfo}
-          >
-            {copyStatus === 'copied'
-              ? t('cmsui.siteOverview.copied')
-              : copyStatus === 'failed'
-                ? t('cmsui.siteOverview.copyFailed')
-                : t('cmsui.siteOverview.copySystemInfo')}
-          </Button>
-        )}
+        <section
+          className="border-t border-t-quanta-smoke pt-4.75"
+          aria-labelledby="siteoverview-addons"
+        >
+          <div className="mb-4.75 flex items-center justify-between">
+            <h2
+              id="siteoverview-addons"
+              className="text-[15px] leading-5.5 font-semibold text-quanta-denim"
+            >
+              {t('cmsui.siteOverview.addons')}
+            </h2>
+            <span
+              className={`
+                rounded-[10px] bg-quanta-snow p-[1px_8px] text-[12px] font-semibold text-quanta-iron
+                tabular-nums
+              `}
+            >
+              {addons.length}
+            </span>
+          </div>
+          <Details
+            entries={addons.map((addon) => [addon.name, addon.version])}
+          />
+          {canCopy && (
+            <CopyButton
+              label={t('cmsui.siteOverview.copySystemInfo')}
+              onCopyRequested={copySystemInfo}
+            />
+          )}
+        </section>
       </section>
     </aside>
   );

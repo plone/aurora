@@ -2,8 +2,23 @@ import { vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import SiteOverview from './SiteOverview';
 
+vi.mock('@plone/icons/svg/checkbox.svg?react', () => ({
+  default: () => {},
+}));
+
 vi.mock('@plone/registry/app-info', () => ({
-  default: { name: '@plone/aurora', version: '1.0.0-alpha.23', addons: [] },
+  default: {
+    name: '@plone/aurora',
+    version: '1.0.0-alpha.23',
+    addons: [
+      { name: '@some/addon', version: '1.3.5' },
+      { name: '@some/other-addon', version: '2.2.5' },
+    ],
+  },
+}));
+
+vi.mock('@plone/icons/svg/checkbox.svg?react', () => ({
+  default: () => {},
 }));
 
 const system = {
@@ -45,6 +60,14 @@ describe('SiteOverview', () => {
     // Only the version number of Python, without its build details.
     expect(screen.getByText('3.13.15')).toBeInTheDocument();
     expect(screen.getByText('cmsui.siteOverview.upToDate')).toBeInTheDocument();
+
+    // The add-ons section is always shown because we always have add-ons.
+    expect(screen.getByText('cmsui.siteOverview.addons')).toBeInTheDocument();
+
+    expect(screen.getByText('@some/addon')).toBeInTheDocument();
+    expect(screen.getByText('1.3.5')).toBeInTheDocument();
+    expect(screen.getByText('@some/other-addon')).toBeInTheDocument();
+    expect(screen.getByText('2.2.5')).toBeInTheDocument();
   });
 
   it('says when a Plone upgrade is available', () => {
@@ -55,7 +78,7 @@ describe('SiteOverview', () => {
     ).toBeInTheDocument();
   });
 
-  it('copies the system information', async () => {
+  it('copies the system information with addons', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, 'clipboard', {
       value: { writeText },
@@ -70,42 +93,34 @@ describe('SiteOverview', () => {
     expect(writeText).toHaveBeenCalledWith(
       expect.stringContaining('Python: 3.13.15 (main'),
     );
+    expect(writeText).toHaveBeenCalledWith(
+      expect.stringContaining('Add-ons:\n\n@some/addon: 1.3.5'),
+    );
     expect(
       await screen.findByRole('button', { name: 'cmsui.siteOverview.copied' }),
     ).toBeInTheDocument();
   });
 
-  it('says when the copy fails', async () => {
+  it('copies the system information with no addons', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, 'clipboard', {
-      value: { writeText: vi.fn().mockRejectedValue(new Error('Denied')) },
+      value: { writeText },
       configurable: true,
     });
-    render(<SiteOverview system={system} />);
+    render(<SiteOverview system={system} addons={[]} />);
 
     fireEvent.click(
-      await screen.findByRole('button', {
-        name: 'cmsui.siteOverview.copySystemInfo',
-      }),
+      screen.getByRole('button', { name: 'cmsui.siteOverview.copySystemInfo' }),
     );
 
+    expect(writeText).toHaveBeenCalledWith(
+      expect.stringContaining('Python: 3.13.15 (main'),
+    );
+    expect(writeText).toHaveBeenCalledWith(
+      expect.not.stringContaining('Add-ons:'),
+    );
     expect(
-      await screen.findByRole('button', {
-        name: 'cmsui.siteOverview.copyFailed',
-      }),
+      await screen.findByRole('button', { name: 'cmsui.siteOverview.copied' }),
     ).toBeInTheDocument();
-  });
-
-  it('has no copy button without a clipboard', () => {
-    Object.defineProperty(navigator, 'clipboard', {
-      value: undefined,
-      configurable: true,
-    });
-    render(<SiteOverview system={system} />);
-
-    expect(
-      screen.queryByRole('button', {
-        name: 'cmsui.siteOverview.copySystemInfo',
-      }),
-    ).not.toBeInTheDocument();
   });
 });

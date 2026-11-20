@@ -86,7 +86,8 @@
       "debugMode": "Modalità debug",
       "copySystemInfo": "Copia informazioni di sistema",
       "copied": "Copiato",
-      "copyFailed": "Impossibile copiare"
+      "copyFailed": "Impossibile copiare",
+      "addons": "Componenti aggiuntivi"
     },
     "controlpanelDescriptions": {
       "addons": "Installare, aggiornare e rimuovere i prodotti aggiuntivi",
