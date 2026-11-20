@@ -6,6 +6,7 @@ import { Container, Link } from '@plone/quanta';
 import toastStylesheet from '@plone/components/src/styles/basic/Toast.css?url';
 import Back from '@plone/icons/svg/arrow-left.svg?react';
 import ContentTypesProviders from '../components/ContentTypes/ContentTypesProviders';
+import { CONTENT_TYPES_PATH } from '../helpers/contentTypesPath';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: toastStylesheet },
@@ -17,20 +18,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 /**
- * The content types control panel, `/controlpanel/content-types`. The
+ * The content types control panel, `/@@controlpanel/content-types`. The
  * screens come from `@plone/controlpanels`, which also runs in Volto.
  */
 export default function ContentTypes() {
   return (
     <main>
       <Plug pluggable="toolbar-top" id="button-back">
-        <Link aria-label="back" href="/controlpanel">
+        <Link aria-label="back" href="/@@controlpanel">
           <Back />
         </Link>
       </Plug>
       <Container width="default" className="route-controlpanel py-6">
         <ContentTypesProviders>
-          <ContentTypesList />
+          <ContentTypesList basePath={CONTENT_TYPES_PATH} />
         </ContentTypesProviders>
       </Container>
     </main>

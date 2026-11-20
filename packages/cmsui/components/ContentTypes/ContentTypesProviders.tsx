@@ -8,7 +8,6 @@ import {
   type Notify,
   type Translate,
 } from '@plone/controlpanels';
-import Toast from '@plone/layout/components/Toast/Toast';
 import config from '@plone/registry';
 import { createAuroraDriver } from './auroraDriver';
 
@@ -54,9 +53,6 @@ export default function ContentTypesProviders({
       <ContentTypesDriverProvider driver={driver}>
         {children}
       </ContentTypesDriverProvider>
-      <Toast
-        queue={config.getUtility({ name: 'queue', type: 'toast' }).method()}
-      />
     </ControlPanelsProvider>
   );
 }

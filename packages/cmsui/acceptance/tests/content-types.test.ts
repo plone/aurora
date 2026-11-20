@@ -1,7 +1,7 @@
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
 
-const LIST = '/controlpanel/content-types';
+const LIST = '/@@controlpanel/content-types';
 
 test('As an anonymous visitor, I cannot open the content types control panel', async ({
   page,
@@ -39,7 +39,7 @@ test.describe('The content types control panel', () => {
     await page.getByRole('rowheader', { name: /^Event/ }).click();
 
     await expect(page).toHaveURL(
-      /\/controlpanel\/content-types\/Event\/settings$/,
+      /\/@@controlpanel\/content-types\/Event\/settings$/,
     );
     await expect(page.getByRole('heading', { name: 'Event' })).toBeVisible();
   });
@@ -61,7 +61,7 @@ test.describe('The content types control panel', () => {
     await dialog.getByRole('button', { name: 'Create and add fields' }).click();
 
     await expect(page).toHaveURL(
-      /\/controlpanel\/content-types\/meeting_minutes\/fields$/,
+      /\/@@controlpanel\/content-types\/meeting_minutes\/fields$/,
     );
     await expect(page.getByText('Meeting minutes created')).toBeVisible();
 
@@ -110,12 +110,12 @@ test.describe('The content types control panel', () => {
   });
 
   test('redirects the Volto control panel URLs', async ({ page }) => {
-    await page.goto('/controlpanel/dexterity-types');
-    await expect(page).toHaveURL(/\/controlpanel\/content-types$/);
+    await page.goto('/@@controlpanel/dexterity-types');
+    await expect(page).toHaveURL(/\/@@controlpanel\/content-types$/);
 
-    await page.goto('/controlpanel/dexterity-types/Event/schema');
+    await page.goto('/@@controlpanel/dexterity-types/Event/schema');
     await expect(page).toHaveURL(
-      /\/controlpanel\/content-types\/Event\/fields$/,
+      /\/@@controlpanel\/content-types\/Event\/fields$/,
     );
   });
 });

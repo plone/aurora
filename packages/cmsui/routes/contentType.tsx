@@ -2,12 +2,12 @@ import type { LinksFunction, LoaderFunctionArgs } from 'react-router';
 import { useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { requireAuthCookie } from '@plone/react-router';
-import { CONTENT_TYPES_BASE_PATH } from '@plone/controlpanels';
 import { Plug } from '@plone/layout/components/Pluggable';
 import { Container, Link } from '@plone/quanta';
 import toastStylesheet from '@plone/components/src/styles/basic/Toast.css?url';
 import Back from '@plone/icons/svg/arrow-left.svg?react';
 import ContentTypesProviders from '../components/ContentTypes/ContentTypesProviders';
+import { CONTENT_TYPES_PATH } from '../helpers/contentTypesPath';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: toastStylesheet },
@@ -19,7 +19,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 /**
- * A content type's page, `/controlpanel/content-types/{type}/{tab}`. Its
+ * A content type's page, `/@@controlpanel/content-types/{type}/{tab}`. Its
  * tabs come in the next phases of #269; for now it names the type and links
  * back to the list.
  */
@@ -29,7 +29,7 @@ export default function ContentType() {
   return (
     <main>
       <Plug pluggable="toolbar-top" id="button-back">
-        <Link aria-label="back" href={CONTENT_TYPES_BASE_PATH}>
+        <Link aria-label="back" href={CONTENT_TYPES_PATH}>
           <Back />
         </Link>
       </Plug>
