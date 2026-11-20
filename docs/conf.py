@@ -117,7 +117,6 @@ master_doc = "index"
 exclude_patterns = [
     "_inc/*",
     "news/*",  # may be used in future in docs/release-notes/index.md
-    "spelling_wordlist.txt",
 ]
 
 suppress_warnings = [
