@@ -222,8 +222,8 @@ nick-shared-test-start: ## Build and start the isolated Nick acceptance backend
 	docker compose -p aurora-nick-fixture -f acceptance/nick-addon/compose.yml up -d --build --wait
 
 .PHONY: nick-shared-test-frontend
-nick-shared-test-frontend: ## Start the frontend against the isolated Nick test backend
-	pnpm --filter @plone/aurora build && PLONE_API_PATH=http://localhost:$${NICK_ACCEPTANCE_PORT:-55002} pnpm --filter @plone/aurora start:prod
+nick-shared-test-frontend: ## Start the frontend against the isolated Nick test backend, with the test add-on
+	PLONE_TEST_ADDON=1 pnpm --filter @plone/aurora build && PLONE_API_PATH=http://localhost:$${NICK_ACCEPTANCE_PORT:-55002} pnpm --filter @plone/aurora start:prod
 
 .PHONY: nick-shared-test-stop
 nick-shared-test-stop: ## Remove the isolated Nick test backend and its disposable data

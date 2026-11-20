@@ -4,16 +4,17 @@ import { expect } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
 import { waitForPlateEditorReady } from '../../../tooling/playwright/plate';
+import {
+  acceptanceApiURL,
+  acceptanceAuthorization,
+} from '../../../tooling/playwright/backend';
 
 // The `objectListTest` block comes from `@plone/test-addon`, which the app
 // loads when it's built with `PLONE_TEST_ADDON=1`, as the acceptance Makefile
 // targets do. Its settings have an accordion field (`actions`) and a table
 // field (`links`).
 
-export const API =
-  process.env.API_PATH ||
-  `http://${process.env.BACKEND_HOST || '127.0.0.1'}:55001/${process.env.SITE_ID || 'plone'}`;
-const AUTH = `Basic ${Buffer.from('admin:secret').toString('base64')}`;
+export const API = acceptanceApiURL();
 
 export const PAGE_ID = 'object-list-page';
 // The block is the third node: [title, p (before), block, p (after)].
@@ -99,7 +100,15 @@ export async function saveAndReadBlock(page: Page): Promise<Item> {
 
   const content = await (
     await page.request.get(`${API}/${PAGE_ID}`, {
-      headers: { Accept: 'application/json', Authorization: AUTH },
+      headers: {
+        Accept: 'application/json',
+        Authorization: await acceptanceAuthorization(
+          page.request,
+          API,
+          'admin',
+          'secret',
+        ),
+      },
     })
   ).json();
   return content.blocks.main.value[BLOCK_INDEX];
