@@ -66,6 +66,11 @@ export type RouteInfo = {
   hasLoader?: boolean;
   hasAction?: boolean;
   hasMiddleware?: boolean;
+  /**
+   * The names of the route's middleware functions, in the order they run.
+   * An empty string stands for an anonymous function.
+   */
+  middleware?: string[];
 };
 
 export type BufferedEvent =
