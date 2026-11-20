@@ -14,7 +14,7 @@ services:
       - data:/var/lib/postgresql
 
   nick:
-    image: plone/nick:3.0.0
+    image: plone/nick:3.1.0
     environment:
       DB_HOST: db
       DB_USER: nick

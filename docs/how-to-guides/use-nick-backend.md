@@ -30,7 +30,7 @@ make nick-start
 The first startup pulls the images, creates the database and blob volumes, and installs Nick's default profile.
 The command waits for both services to become healthy.
 Nick's API is available at <http://localhost:8080>, and the default profile provides the administrator account `admin` with password `admin`.
-The stack uses `plone/nick:3.0.0`, exposes the API on port `8080`, and keeps its data in Docker volumes between starts.
+The stack uses `plone/nick:3.1.0`, exposes the API on port `8080`, and keeps its data in Docker volumes between starts.
 
 ```{warning}
 The Compose stack's administrator credentials and secret are intended for local development and testing only.
