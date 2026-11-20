@@ -19,15 +19,15 @@ The package manager is **pnpm**. Do not use `npm` or `yarn`.
 Every package except `volto` and `volto-slate` belongs to the **Plone Aurora** stack, an API-first, React-based frontend for Plone RESTAPI contract (`plone.restapi`).
 Plone Aurora is composed of focused packages that are assembled into `apps/aurora`:
 
-| Layer                      | Packages                                                                            |
-| -------------------------- | ----------------------------------------------------------------------------------- |
-| App shell                  | `apps/aurora`                                                                        |
-| Public UI (visitor-facing) | `@plone/publicui`, `@plone/layout`, `@plone/blocks`                                 |
+| Layer                      | Packages                                                                                             |
+| -------------------------- | ---------------------------------------------------------------------------------------------------- |
+| App shell                  | `apps/aurora`                                                                                        |
+| Public UI (visitor-facing) | `@plone/publicui`, `@plone/layout`, `@plone/blocks`                                                  |
 | CMS UI (editor-facing)     | `@plone/cmsui`, `@plone/contents`, `@plone/plate`, `@plone/blocks`, `@plone/layout`, `@plone/quanta` |
-| Shared infrastructure      | `@plone/client`, `@plone/registry`, `@plone/react-router`                           |
-| Utilities and types        | `@plone/helpers`, `@plone/types`                                                    |
-| Theming                    | `@plone/theming`, `@plone/agave`, `@plone/components`, `@plone/quanta`, `@plone/icons` |
-| Tooling                    | `@plone/tooling`, `@plone/scripts`, `tsconfig`                                      |
+| Shared infrastructure      | `@plone/client`, `@plone/registry`, `@plone/react-router`                                            |
+| Utilities and types        | `@plone/helpers`, `@plone/types`                                                                     |
+| Theming                    | `@plone/theming`, `@plone/agave`, `@plone/components`, `@plone/quanta`, `@plone/icons`               |
+| Tooling                    | `@plone/tooling`, `@plone/scripts`, `@plone/devtools`, `tsconfig`                                    |
 
 ### Volto (Plone 6) — reference only
 

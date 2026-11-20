@@ -1,0 +1,92 @@
+{
+  "name": "@plone/devtools",
+  "description": "Development tools for Plone Aurora: routes, loader data and network introspection, as a TanStack Devtools plugin",
+  "maintainers": [
+    {
+      "name": "Plone Foundation",
+      "url": "https://plone.org"
+    }
+  ],
+  "funding": "https://github.com/sponsors/plone",
+  "license": "MIT",
+  "version": "1.0.0-alpha.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/plone/aurora.git"
+  },
+  "bugs": {
+    "url": "https://github.com/plone/aurora/issues"
+  },
+  "homepage": "https://plone.org",
+  "keywords": [
+    "aurora",
+    "plone",
+    "plone6",
+    "react",
+    "react-router",
+    "devtools"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./vite": {
+      "import": "./dist/vite.js",
+      "default": "./dist/vite.cjs"
+    },
+    "./server": {
+      "import": "./dist/server.js",
+      "default": "./dist/server.cjs"
+    },
+    "./client": {
+      "import": "./dist/client.js",
+      "default": "./dist/client.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "build:force": "tsup",
+    "dev": "tsup --watch",
+    "check:ts": "tsc --project tsconfig.json",
+    "test": "vitest",
+    "dry-release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --dry-run",
+    "release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it",
+    "release-major-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it major --preRelease=alpha",
+    "release-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --preRelease=alpha",
+    "prettier:fix": "prettier --write '**/*.{js,jsx,ts,tsx}'",
+    "lint:fix": "eslint --max-warnings=0 './**/*.{js,jsx,ts,tsx}' --fix --no-error-on-unmatched-pattern",
+    "format": "pnpm prettier:fix && pnpm lint:fix"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router": "^7.15.0 || ^8.0.0",
+    "vite": "^6.0.0 || ^7.0.0 || ^8.0.0"
+  },
+  "dependencies": {
+    "@tanstack/devtools-event-client": "0.5.1",
+    "@tanstack/devtools-vite": "0.8.6",
+    "@tanstack/react-devtools": "0.10.14"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-router": "catalog:",
+    "release-it": "catalog:",
+    "tsconfig": "workspace:*",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vitest": "catalog:"
+  }
+}
