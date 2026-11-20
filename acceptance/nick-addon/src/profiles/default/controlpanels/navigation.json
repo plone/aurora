@@ -1,0 +1,13 @@
+{
+  "id": "navigation",
+  "data": {
+    "displayed_types": [
+      "Image",
+      "File",
+      "News Item",
+      "Folder",
+      "Document",
+      "Event"
+    ]
+  }
+}
