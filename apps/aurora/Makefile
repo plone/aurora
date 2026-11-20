@@ -68,11 +68,11 @@ build-deps: ../../packages/registry/dist ../../packages/components/dist ../../pa
 .PHONY: storybook-start
 storybook-start: ## Start Storybook server on port 6006
 	@echo "$(GREEN)==> Start Storybook$(RESET)"
-	pnpm run storybook
+	pnpm start-storybook
 
 .PHONY: storybook-build
 storybook-build: build-deps ## Build Storybook
-	pnpm build-storybook -o ../../docs/_build/html/storybook
+	pnpm build-storybook
 
 ##### Release (it runs the one inside)
 
