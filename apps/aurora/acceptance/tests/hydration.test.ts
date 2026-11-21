@@ -47,6 +47,7 @@ async function setupImageBlockPage(page: Page) {
           ],
         },
       },
+      blocks_layout: { items: ['__somersault__'] },
     }),
   });
 }

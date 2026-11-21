@@ -1,0 +1,9 @@
+{
+  "purge": false,
+  "roles": [
+    { "id": "Contributor", "title": "Can add", "permissions": [] },
+    { "id": "Editor", "title": "Can edit", "permissions": [] },
+    { "id": "Reader", "title": "Can view", "permissions": [] },
+    { "id": "Reviewer", "title": "Can review", "permissions": [] }
+  ]
+}

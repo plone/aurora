@@ -40,6 +40,7 @@ async function openEmptyParagraph(page: Page) {
           ],
         },
       },
+      blocks_layout: { items: ['__somersault__'] },
     }),
   });
 

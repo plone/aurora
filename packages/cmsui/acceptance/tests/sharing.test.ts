@@ -1,6 +1,11 @@
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
+import {
+  acceptanceApiURL,
+  acceptanceAuthorization,
+  acceptanceManagerRole,
+} from '../../../tooling/playwright/backend';
 
 test('As an anonymous visitor, I cannot open the sharing page', async ({
   page,
@@ -80,21 +85,25 @@ test('As an editor, I can grant a role to a group', async ({ page }) => {
 });
 
 test('As an editor, I cannot change my own roles', async ({ page }) => {
-  const hostname = process.env.BACKEND_HOST || '127.0.0.1';
-  const siteId = process.env.SITE_ID || 'plone';
-  const apiURL = process.env.API_PATH || `http://${hostname}:55001/${siteId}`;
+  const apiURL = acceptanceApiURL();
 
   // Add a portal user via the REST API (no tooling helper for users yet)
   const userResponse = await page.request.post(`${apiURL}/@users`, {
     headers: {
       Accept: 'application/json',
-      Authorization: `Basic ${Buffer.from('admin:secret').toString('base64')}`,
+      Authorization: await acceptanceAuthorization(
+        page.request,
+        apiURL,
+        'admin',
+        'secret',
+      ),
     },
     data: {
       username: 'some_test_user',
+      fullname: 'some_test_user',
       email: 'some_test_user@example.com',
       password: 'some_secret_password',
-      roles: ['Manager'],
+      roles: [acceptanceManagerRole()],
     },
   });
   expect(userResponse.ok()).toBeTruthy();
