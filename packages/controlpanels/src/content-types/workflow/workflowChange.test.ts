@@ -40,7 +40,9 @@ describe('workflowChange', () => {
 
   it('compares who sees the items before and after', () => {
     const [group] = preview.groups;
-    const rows = mappingRows(group, preview.workflow, workflows, {
+    // Drivers may send the states in another order.
+    const reversed = { ...group, states: [...group.states].reverse() };
+    const rows = mappingRows(reversed, preview.workflow, workflows, {
       published: 'internally_published',
     });
     expect(rows.map((row) => [row.id, row.target?.id, row.change])).toEqual([

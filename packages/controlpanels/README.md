@@ -76,6 +76,18 @@ A state id means the same state in every workflow that has it, so `published` ch
 </ContentTypesDriverProvider>
 ```
 
+In Plone Aurora, set them in your add-on's configuration, and Aurora passes them on:
+
+```ts
+export default function install(config: ConfigType) {
+  config.settings.workflowStateColors = {
+    ...config.settings.workflowStateColors,
+    in_print: 'teal',
+  };
+  return config;
+}
+```
+
 Components get a state's color with `useStateColor()`, and code outside React with `stateColor(state, stateColors)`.
 
 ## Development
