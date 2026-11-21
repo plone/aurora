@@ -25,19 +25,24 @@ export interface DexterityTypesItem {
   count?: number;
 }
 
-/** The site root's type id, which can't be deleted or added anywhere. */
+/**
+ * The site root's type id in Plone, which can't be deleted or added
+ * anywhere. Other backends name it differently, such as Nick's `Site`: see
+ * `ContentTypesBackend.siteType`.
+ */
 export const SITE_TYPE = 'Plone Site';
 
 /** Turns an item of the dexterity types listing into a list row. */
 export function toContentTypeSummary(
   item: DexterityTypesItem,
+  siteType: string = SITE_TYPE,
 ): ContentTypeSummary {
   return {
     id: item.id,
     title: item.title,
     description: item.description || undefined,
     kind:
-      item.id === SITE_TYPE
+      item.id === siteType
         ? 'site'
         : item.meta_type && item.meta_type !== 'Dexterity FTI'
           ? 'other'
@@ -106,6 +111,7 @@ export function toBehaviors(response: DexterityTypeResponse): BehaviorInfo[] {
 export function toContentTypeSettings(
   id: string,
   response: DexterityTypeResponse,
+  siteType: string = SITE_TYPE,
 ): ContentTypeSettings {
   const { data, schema } = response;
   // The form only has the contents fields for folderish types.
@@ -122,7 +128,7 @@ export function toContentTypeSettings(
     id,
     title: data.title ?? response.title,
     description: data.description ?? '',
-    kind: id === SITE_TYPE ? 'site' : 'dexterity',
+    kind: id === siteType ? 'site' : 'dexterity',
     folderish,
     ...(folderish && { allowedContents }),
     // A map of behavior names, unordered: plone.restapi#2061 makes it a list.

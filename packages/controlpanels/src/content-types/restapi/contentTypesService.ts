@@ -22,6 +22,8 @@ export interface ContentTypesBackend {
   contentTypes: boolean;
   behaviors: boolean;
   workflows: boolean;
+  /** The site root's type id: `Plone Site` (the default) in Plone, `Site` in Nick. */
+  siteType?: string;
 }
 
 /** The driver's capabilities on a backend. */
@@ -84,8 +86,8 @@ export interface ContentTypeResponse {
 const isDexterity = (response: ContentTypeResponse) =>
   response.schema.fieldsets.some((fieldset) => fieldset.id === 'behaviors');
 
-const kindOf = (response: ContentTypeResponse) =>
-  response.id === SITE_TYPE
+const kindOf = (response: ContentTypeResponse, siteType: string) =>
+  response.id === siteType
     ? 'site'
     : isDexterity(response)
       ? 'dexterity'
@@ -101,13 +103,16 @@ const workflowOf = (response: ContentTypeResponse) =>
   };
 
 /** Turns an item of `GET @content-types` into a list row. */
-export function toSummary(response: ContentTypeResponse): ContentTypeSummary {
+export function toSummary(
+  response: ContentTypeResponse,
+  siteType: string = SITE_TYPE,
+): ContentTypeSummary {
   const { data } = response;
   return {
     id: response.id,
     title: data.title || response.title,
     description: data.description || undefined,
-    kind: kindOf(response),
+    kind: kindOf(response, siteType),
     count: response.content_count ?? 0,
     globalAllow: data.global_allow,
     workflow: workflowOf(response),
@@ -116,7 +121,10 @@ export function toSummary(response: ContentTypeResponse): ContentTypeSummary {
 }
 
 /** Turns `GET @content-types/{type}` into the control panel's settings. */
-export function toSettings(response: ContentTypeResponse): ContentTypeSettings {
+export function toSettings(
+  response: ContentTypeResponse,
+  siteType: string = SITE_TYPE,
+): ContentTypeSettings {
   const { data } = response;
   const folderish = response.folderish ?? true;
   const mode = tokenOf(data.allowed_content_types_mode) ?? 'all';
@@ -131,7 +139,7 @@ export function toSettings(response: ContentTypeResponse): ContentTypeSettings {
     id: response.id,
     title: data.title || response.title,
     description: data.description ?? '',
-    kind: kindOf(response),
+    kind: kindOf(response, siteType),
     folderish,
     ...(folderish && { allowedContents }),
     globalAllow: data.global_allow,

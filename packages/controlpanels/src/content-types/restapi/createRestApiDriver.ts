@@ -20,6 +20,7 @@ import {
 } from './contentTypesService';
 import {
   errorMessage,
+  SITE_TYPE,
   toBehaviors,
   toContentTypeSettings,
   toContentTypeSummary,
@@ -55,28 +56,35 @@ const exists = (request: RestApiRequest, path: string) =>
   );
 
 /**
- * Which of the services of plone/plone.restapi#2061 the backend has. `clear`
- * is false when an answer was unclear (e.g. the user may not see it), so it
- * shouldn't be kept.
+ * Which of the services of plone/plone.restapi#2061 the backend has, and the
+ * type of its site root. `clear` is false when an answer was unclear (e.g.
+ * the user may not see it), so it shouldn't be kept.
  */
 export async function detectRestApi(
   request: RestApiRequest,
 ): Promise<{ backend: ContentTypesBackend; clear: boolean }> {
+  // Plone's site root is a `Plone Site`, and Nick's a `Site`. Asking for that
+  // type is a small request, and works on both.
+  const site = await request<{ '@type'?: string }>('get', '/').catch(
+    () => null,
+  );
+  const siteType = site?.['@type'] || SITE_TYPE;
   const answers = await Promise.all([
-    exists(request, '/@content-types/Plone%20Site'),
+    exists(request, `/@content-types/${encodeURIComponent(siteType)}`),
     exists(request, '/@behaviors'),
     exists(request, '/@workflows'),
   ]);
   const [contentTypes, behaviors, workflows] = answers.map(Boolean);
   return {
     backend: {
+      siteType,
       contentTypes,
       // The ordered behaviors and the preview come with `@behaviors`, on top
       // of `@content-types`.
       behaviors: contentTypes && behaviors,
       workflows: contentTypes && workflows,
     },
-    clear: !answers.includes(null),
+    clear: site !== null && !answers.includes(null),
   };
 }
 
@@ -112,6 +120,7 @@ export function createRestApiDriver(
       );
     });
   const jobs = new Map<string, WorkflowChangeJob>();
+  const siteType = backend.siteType ?? SITE_TYPE;
 
   const dexterityType = (id: string) =>
     request<DexterityTypeResponse>('get', dexterityPath(id));
@@ -167,19 +176,22 @@ export function createRestApiDriver(
           'get',
           '/@content-types',
         );
-        return items.map(toSummary);
+        return items.map((item) => toSummary(item, siteType));
       }
       const { items } = await request<{ items: DexterityTypesItem[] }>(
         'get',
         '/@controlpanels/dexterity-types',
       );
-      return items.map(toContentTypeSummary);
+      return items.map((item) => toContentTypeSummary(item, siteType));
     },
 
     getType: async (id) =>
       backend.contentTypes
-        ? toSettings(await request<ContentTypeResponse>('get', typePath(id)))
-        : toContentTypeSettings(id, await dexterityType(id)),
+        ? toSettings(
+            await request<ContentTypeResponse>('get', typePath(id)),
+            siteType,
+          )
+        : toContentTypeSettings(id, await dexterityType(id), siteType),
 
     createType: async ({ title, id, description, copyFrom }) => {
       if (backend.contentTypes) {
@@ -187,6 +199,7 @@ export function createRestApiDriver(
           await request<ContentTypeResponse>('post', '/@content-types', {
             data: { title, id, description, copy_from: copyFrom },
           }),
+          siteType,
         );
       }
       if (copyFrom) throw new Error('Copying types is not supported yet');
@@ -197,13 +210,16 @@ export function createRestApiDriver(
       }>('post', '/@controlpanels/dexterity-types', {
         data: { title, id, description },
       });
-      return toContentTypeSummary({
-        '@id': created['@id'],
-        id: id ?? String(created['@id']).split('/').pop() ?? '',
-        title: created.title ?? title,
-        description: created.description,
-        count: 0,
-      });
+      return toContentTypeSummary(
+        {
+          '@id': created['@id'],
+          id: id ?? String(created['@id']).split('/').pop() ?? '',
+          title: created.title ?? title,
+          description: created.description,
+          count: 0,
+        },
+        siteType,
+      );
     },
 
     updateType: async (id, changes) => {

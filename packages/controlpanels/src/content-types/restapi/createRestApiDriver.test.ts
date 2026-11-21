@@ -39,13 +39,41 @@ const overview = {
 describe('detectRestApi', () => {
   it('tells which services the backend has', async () => {
     const request = fakeRequest({
+      'get /': { '@type': 'Plone Site' },
       'get /@content-types/Plone%20Site': {},
       'get /@workflows': {},
     });
     expect(await detectRestApi(request)).toEqual({
-      backend: { contentTypes: true, behaviors: false, workflows: true },
+      backend: {
+        siteType: 'Plone Site',
+        contentTypes: true,
+        behaviors: false,
+        workflows: true,
+      },
       clear: true,
     });
+  });
+
+  it("finds @content-types under the site's own type, such as Nick's", async () => {
+    const request = fakeRequest({
+      'get /': { '@type': 'Site' },
+      'get /@content-types/Site': {},
+      'get /@behaviors': {},
+      'get /@workflows': {},
+    });
+    expect(await detectRestApi(request)).toEqual({
+      backend: { siteType: 'Site', ...ALL },
+      clear: true,
+    });
+  });
+
+  it("doesn't keep the answer without the site's type", async () => {
+    const request = fakeRequest({
+      'get /@content-types/Plone%20Site': {},
+    });
+    const { backend, clear } = await detectRestApi(request);
+    expect(backend.siteType).toBe('Plone Site');
+    expect(clear).toBe(false);
   });
 
   it("doesn't trust an answer it can't tell", async () => {
@@ -57,6 +85,41 @@ describe('detectRestApi', () => {
 });
 
 describe('createRestApiDriver', () => {
+  it("marks the backend's site type as the site", async () => {
+    const item = (id: string) => ({
+      '@id': id,
+      id,
+      title: id,
+      content_count: 1,
+      data: { title: id },
+      schema: { fieldsets: [{ id: 'behaviors', fields: [] }] },
+    });
+    const request = fakeRequest({
+      'get /@content-types': { items: [item('Site'), item('Plone Site')] },
+      'get /@controlpanels/dexterity-types': {
+        items: [
+          { '@id': 'Site', id: 'Site', title: 'Site' },
+          { '@id': 'Page', id: 'Page', title: 'Page' },
+        ],
+      },
+    });
+    const kinds = async (backend: typeof ALL) =>
+      (
+        await createRestApiDriver(request, {
+          ...backend,
+          siteType: 'Site',
+        }).listTypes()
+      ).map((type) => [type.id, type.kind]);
+    expect(await kinds(ALL)).toEqual([
+      ['Site', 'site'],
+      ['Plone Site', 'dexterity'],
+    ]);
+    expect(await kinds(NONE)).toEqual([
+      ['Site', 'site'],
+      ['Page', 'dexterity'],
+    ]);
+  });
+
   it('lists types from @content-types when the backend has it', async () => {
     const request = fakeRequest({
       'get /@content-types': {
