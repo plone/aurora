@@ -75,6 +75,19 @@ export function WorkflowTab({
         {workflow?.description && (
           <p className="text-sm text-quanta-pigeon">{workflow.description}</p>
         )}
+        {assignment.chain && assignment.chain.length > 1 && (
+          <p className="text-sm text-quanta-iron">
+            {t(messages.otherWorkflows, {
+              workflows: assignment.chain
+                .slice(1)
+                .map(
+                  (id) =>
+                    workflows.find((entry) => entry.id === id)?.title ?? id,
+                )
+                .join(', '),
+            })}
+          </p>
+        )}
         {workflow ? (
           <ul
             aria-label={t(messages.workflowStates)}

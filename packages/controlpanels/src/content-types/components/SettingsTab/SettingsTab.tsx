@@ -186,7 +186,7 @@ export function SettingsTab({ type, types }: SettingsTabProps) {
   const missing =
     !capabilities.globalAllow ||
     !capabilities.searchable ||
-    !capabilities.defaultPage ||
+    !capabilities.inNavigation ||
     !capabilities.allowDiscussion ||
     !capabilities.versioning;
 
@@ -203,7 +203,7 @@ export function SettingsTab({ type, types }: SettingsTabProps) {
         </Section>
       )}
       {type.folderish && <ContentsSection types={types} />}
-      {(capabilities.searchable || capabilities.defaultPage) && (
+      {(capabilities.searchable || capabilities.inNavigation) && (
         <Section title={t(messages.visibility)}>
           {capabilities.searchable && (
             <SettingSwitch
@@ -212,11 +212,11 @@ export function SettingsTab({ type, types }: SettingsTabProps) {
               description={t(messages.searchableHelp)}
             />
           )}
-          {capabilities.defaultPage && (
+          {capabilities.inNavigation && (
             <SettingSwitch
-              path="defaultPage"
-              label={t(messages.defaultPage)}
-              description={t(messages.defaultPageHelp)}
+              path="inNavigation"
+              label={t(messages.inNavigation)}
+              description={t(messages.inNavigationHelp)}
             />
           )}
         </Section>

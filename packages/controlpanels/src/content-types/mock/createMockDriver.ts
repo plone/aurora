@@ -55,7 +55,7 @@ export function createMockDriver(
   const capabilities: ContentTypesCapabilities = {
     globalAllow: true,
     searchable: true,
-    defaultPage: true,
+    inNavigation: true,
     allowDiscussion: true,
     versioning: true,
     behaviorOrder: true,
@@ -134,7 +134,7 @@ export function createMockDriver(
     const result: ContentTypeSettings = { ...type };
     if (!capabilities.globalAllow) delete result.globalAllow;
     if (!capabilities.searchable) delete result.searchable;
-    if (!capabilities.defaultPage) delete result.defaultPage;
+    if (!capabilities.inNavigation) delete result.inNavigation;
     if (!capabilities.allowDiscussion) delete result.allowDiscussion;
     if (!capabilities.versioning) delete result.versioning;
     if (capabilities.workflows) result.workflow = assignment(type.id);
@@ -250,7 +250,7 @@ export function createMockDriver(
             allowedContents: { mode: 'all' },
             globalAllow: data.siteDefaults.globalAllow,
             searchable: true,
-            defaultPage: false,
+            inNavigation: false,
             allowDiscussion: false,
             versioning: data.siteDefaults.versioning,
             behaviors: ['plone.dublincore', 'plone.namefromtitle'],

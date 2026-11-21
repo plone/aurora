@@ -42,6 +42,28 @@ async function openAndChoose(name: RegExp) {
 }
 
 describe('WorkflowTab', () => {
+  it('mentions the other workflows of a chain', async () => {
+    const base = createMockDriver();
+    const driver = {
+      ...base,
+      getType: async (id: string) => {
+        const type = await base.getType(id);
+        return {
+          ...type,
+          workflow: {
+            workflow: 'simple_publication_workflow',
+            chain: ['simple_publication_workflow', 'intranet_workflow'],
+            followsDefault: false,
+          },
+        };
+      },
+    };
+    renderWorkflow(driver);
+    expect(
+      await screen.findByText(/Its chain also has Intranet/),
+    ).toHaveTextContent('Changing the workflow replaces the whole chain.');
+  });
+
   it('shows the states of the current workflow', async () => {
     renderWorkflow();
     const states = await screen.findByRole('list', { name: 'States' });
