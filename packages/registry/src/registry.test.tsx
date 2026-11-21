@@ -1,5 +1,5 @@
 import React from 'react';
-import config from './index';
+import config, { routeId } from './index';
 import { describe, expect, it, afterEach, beforeEach } from 'vitest';
 import type { WidgetsConfig } from '@plone/types';
 
@@ -1293,6 +1293,7 @@ describe('Utilities registry', () => {
 describe('Routes registry', () => {
   afterEach(() => {
     config.set('routes', []);
+    config.set('routeOverrides', {});
   });
 
   it('registers a simple route', () => {
@@ -1555,5 +1556,169 @@ describe('Widgets registry: getWidget', () => {
   it('does not match a key registered in another category', () => {
     expect(config.getWidget('title', 'widget')).toBeUndefined();
     expect(config.getWidget('special', 'id')).toBeUndefined();
+  });
+});
+
+describe('routeId', () => {
+  it('is the explicit id when there is one', () => {
+    expect(
+      routeId({
+        type: 'route',
+        path: 'edit',
+        file: '@plone/cmsui/routes/edit.tsx',
+        options: { id: 'edit' },
+      }),
+    ).toBe('edit');
+  });
+
+  it('is the file as registered, without its extension', () => {
+    expect(
+      routeId({
+        type: 'route',
+        path: 'x',
+        file: '@plone/cmsui/routes/edit.tsx',
+      }),
+    ).toBe('@plone/cmsui/routes/edit');
+    expect(routeId({ type: 'index', file: './home.tsx' })).toBe('home');
+    expect(
+      routeId({ type: 'layout', file: 'my-addon/layout.jsx', children: [] }),
+    ).toBe('my-addon/layout');
+  });
+
+  it('is undefined for a prefix, which only groups routes', () => {
+    expect(
+      routeId({ type: 'prefix', path: '@@edit', children: [] }),
+    ).toBeUndefined();
+  });
+});
+
+describe('Overriding and removing routes', () => {
+  const install = () =>
+    config.registerRoute({
+      type: 'layout',
+      file: '@plone/cmsui/routes/layout.tsx',
+      children: [
+        {
+          type: 'prefix',
+          path: 'login',
+          children: [
+            { type: 'route', path: '*', file: '@plone/cmsui/routes/login.tsx' },
+          ],
+        },
+        {
+          type: 'route',
+          path: '@@sharing/*',
+          file: '@plone/cmsui/routes/sharing.tsx',
+        },
+      ],
+    });
+
+  beforeEach(() => {
+    config.set('routes', []);
+    config.set('routeOverrides', {});
+    install();
+  });
+
+  afterEach(() => {
+    config.set('routes', []);
+    config.set('routeOverrides', {});
+  });
+
+  it('replaces the file of a nested route, which keeps its id', () => {
+    config.overrideRoute('@plone/cmsui/routes/login', {
+      file: 'my-project/routes/login.tsx',
+    });
+
+    const login = (config.routes as any)[0].children[0].children[0];
+    expect(login).toEqual({
+      type: 'route',
+      path: '*',
+      file: 'my-project/routes/login.tsx',
+      options: { id: '@plone/cmsui/routes/login' },
+    });
+  });
+
+  it('keeps the registered routes as they were', () => {
+    config.overrideRoute('@plone/cmsui/routes/login', {
+      file: 'my-project/routes/login.tsx',
+    });
+
+    expect(JSON.stringify(config.get('routes'))).not.toContain('my-project');
+  });
+
+  it('merges the changes of repeated overrides', () => {
+    config.overrideRoute('@plone/cmsui/routes/sharing', {
+      file: 'my-project/routes/sharing.tsx',
+    });
+    config.overrideRoute('@plone/cmsui/routes/sharing', {
+      options: { caseSensitive: true },
+    });
+
+    expect((config.routes as any)[0].children[1]).toEqual({
+      type: 'route',
+      path: '@@sharing/*',
+      file: 'my-project/routes/sharing.tsx',
+      options: { id: '@plone/cmsui/routes/sharing', caseSensitive: true },
+    });
+  });
+
+  it('replaces the children of a layout', () => {
+    config.overrideRoute('@plone/cmsui/routes/layout', {
+      children: [
+        { type: 'route', path: 'about', file: 'my-project/about.tsx' },
+      ],
+    });
+
+    expect((config.routes as any)[0].children).toEqual([
+      { type: 'route', path: 'about', file: 'my-project/about.tsx' },
+    ]);
+  });
+
+  it('removes a route', () => {
+    config.removeRoute('@plone/cmsui/routes/sharing');
+
+    const children = (config.routes as any)[0].children;
+    expect(children).toHaveLength(1);
+    expect(JSON.stringify(children)).not.toContain('sharing');
+  });
+
+  it('removes a route with its children', () => {
+    config.removeRoute('@plone/cmsui/routes/layout');
+
+    expect(config.routes).toEqual([]);
+  });
+
+  it('throws for an id that is not registered', () => {
+    expect(() =>
+      config.overrideRoute('@plone/cmsui/routes/nope', { file: 'x.tsx' }),
+    ).toThrow('No route with the id "@plone/cmsui/routes/nope" is registered.');
+    expect(() => config.removeRoute('@plone/cmsui/routes/nope')).toThrow(
+      'No route with the id "@plone/cmsui/routes/nope" is registered.',
+    );
+  });
+
+  it('throws when overriding a removed route', () => {
+    config.removeRoute('@plone/cmsui/routes/sharing');
+
+    expect(() =>
+      config.overrideRoute('@plone/cmsui/routes/sharing', { file: 'x.tsx' }),
+    ).toThrow('The route "@plone/cmsui/routes/sharing" was removed');
+  });
+
+  it('gives the same routes when the configuration is applied twice', () => {
+    const project = () => {
+      config.overrideRoute('@plone/cmsui/routes/login', {
+        file: 'my-project/routes/login.tsx',
+      });
+      config.removeRoute('@plone/cmsui/routes/sharing');
+    };
+    project();
+    const once = JSON.stringify(config.routes);
+
+    // As HMR does in development: every add-on, then the project, again.
+    install();
+    project();
+
+    expect(JSON.stringify(config.routes)).toBe(once);
   });
 });

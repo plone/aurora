@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { RouterContextProvider } from 'react-router';
 import {
   cookie,
@@ -26,7 +26,7 @@ describe('getAddonRoutesConfig', () => {
       },
     ];
     expect(getAddonRoutesConfig(routesConfig, addonsInfo)).toEqual([
-      { children: undefined, file: './login.tsx', path: '/login' },
+      { children: undefined, file: './login.tsx', path: '/login', id: 'login' },
     ]);
   });
 
@@ -43,6 +43,7 @@ describe('getAddonRoutesConfig', () => {
         children: undefined,
         file: '/my/path/to/plone/components/login.tsx',
         path: '/login',
+        id: '@plone/components/login',
       },
     ]);
   });
@@ -87,11 +88,13 @@ describe('getAddonRoutesConfig', () => {
       {
         file: './login.tsx',
         path: '/login',
+        id: 'login',
         children: [
           {
             children: undefined,
             file: './login/ok.tsx',
             path: '/login/ok',
+            id: 'login/ok',
           },
         ],
       },
@@ -122,13 +125,128 @@ describe('getAddonRoutesConfig', () => {
         path: 'edit',
         file: './index.tsx',
         index: true,
+        id: 'index',
       },
       {
         children: undefined,
         path: 'edit/*',
         file: './edit.tsx',
+        id: 'edit',
       },
     ]);
+  });
+});
+
+describe('getAddonRoutesConfig: add-ons and ids', () => {
+  const addonsInfo = [
+    { name: '@plone/cmsui', modulePath: '/repo/packages/cmsui' },
+    { name: '@plone/cmsui-extra', modulePath: '/repo/packages/cmsui-extra' },
+  ];
+
+  it('resolves a file of an add-on whose name starts like another one', () => {
+    const [entry] = getAddonRoutesConfig(
+      [
+        {
+          type: 'route',
+          path: 'extra',
+          file: '@plone/cmsui-extra/routes/extra.tsx',
+        },
+      ],
+      addonsInfo,
+    );
+    expect(entry.file).toBe('/repo/packages/cmsui-extra/routes/extra.tsx');
+    expect(entry.id).toBe('@plone/cmsui-extra/routes/extra');
+  });
+
+  it('gives layouts and index routes their registry id', () => {
+    const [layoutEntry] = getAddonRoutesConfig(
+      [
+        {
+          type: 'layout',
+          file: '@plone/cmsui/routes/layout.tsx',
+          children: [{ type: 'index', file: '@plone/cmsui/routes/home.tsx' }],
+        },
+      ],
+      addonsInfo,
+    );
+    expect(layoutEntry.id).toBe('@plone/cmsui/routes/layout');
+    expect(layoutEntry.children?.[0].id).toBe('@plone/cmsui/routes/home');
+  });
+
+  it('keeps an explicit id', () => {
+    const [entry] = getAddonRoutesConfig(
+      [
+        {
+          type: 'index',
+          file: '@plone/cmsui/routes/home.tsx',
+          options: { id: 'home' },
+        },
+      ],
+      addonsInfo,
+    );
+    expect(entry.id).toBe('home');
+  });
+
+  it('does not change the routes it is given', () => {
+    const routes: Array<ReactRouterRouteEntry> = [
+      { type: 'route', path: 'edit', file: '@plone/cmsui/routes/edit.tsx' },
+    ];
+    const before = JSON.stringify(routes);
+    getAddonRoutesConfig(routes, addonsInfo);
+    expect(JSON.stringify(routes)).toBe(before);
+  });
+
+  it('warns when two routes match the same URL', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    getAddonRoutesConfig(
+      [
+        { type: 'route', path: 'login', file: '@plone/cmsui/routes/login.tsx' },
+        {
+          type: 'layout',
+          file: '@plone/cmsui-extra/routes/layout.tsx',
+          children: [
+            {
+              type: 'route',
+              path: 'login',
+              file: '@plone/cmsui-extra/routes/login.tsx',
+            },
+          ],
+        },
+      ],
+      addonsInfo,
+    );
+    expect(warn).toHaveBeenCalledWith(
+      '[@plone/react-router] The routes "@plone/cmsui/routes/login" and "@plone/cmsui-extra/routes/login" both match /login.',
+    );
+    warn.mockRestore();
+  });
+
+  it('does not warn about an index route and its parent', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    getAddonRoutesConfig(
+      [
+        {
+          type: 'prefix',
+          path: 'passwordreset',
+          children: [
+            {
+              type: 'index',
+              file: '@plone/cmsui/routes/reset.tsx',
+              options: { id: 'a' },
+            },
+            {
+              type: 'route',
+              path: ':token',
+              file: '@plone/cmsui/routes/reset.tsx',
+              options: { id: 'b' },
+            },
+          ],
+        },
+      ],
+      addonsInfo,
+    );
+    expect(warn).not.toHaveBeenCalled();
+    warn.mockRestore();
   });
 });
 
