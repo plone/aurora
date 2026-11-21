@@ -9,7 +9,7 @@ myst:
 
 (volto-index-label)=
 
-# Plone Aurora (@plone/aurora)
+# Plone Aurora (`@plone/aurora`)
 
 Plone Aurora is a fast, elegant, and intuitive React-based frontend for [Plone](https://plone.org) and `plone.restapi` compatible backends.
 

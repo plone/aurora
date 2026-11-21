@@ -40,7 +40,6 @@ Pastanaga
 Plate
 Plone
 plone.restapi
-plone/\w+
 [pP]luggab(les?|ility)
 pnpm
 preloading

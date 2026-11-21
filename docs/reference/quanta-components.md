@@ -15,7 +15,7 @@ myst:
 Its components are built on [React Aria Components](https://react-aria.adobe.com/) (RAC), and styled with Tailwind.
 
 This page lists every Quanta component, and how it relates to React Aria's official Tailwind starter.
-It's the inventory for aligning Quanta with React Aria 1.22, tracked in [plone/aurora#275](https://github.com/plone/aurora/issues/275).
+It's the inventory for aligning Quanta with React Aria 1.22, tracked in [`plone/aurora#275`](https://github.com/plone/aurora/issues/275).
 While that work is in progress, the {guilabel}`Changes needed` column says what each component still needs.
 
 ## The reference: React Aria's Tailwind starter
