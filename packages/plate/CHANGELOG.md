@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.28 (2026-11-21)
+
+### Internal
+
+- Documented in `AGENTS.md` that the package also runs in Volto, and how to keep it working there. @sneridagh 
+
 ## 1.0.0-alpha.27 (2026-11-18)
 
 ### Feature
