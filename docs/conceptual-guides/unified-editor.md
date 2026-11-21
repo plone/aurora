@@ -120,9 +120,14 @@ Normalization is a **server-side concern**: the app assembles and normalizes the
 This runs in the request middleware ([`app/middleware.server.ts`](https://github.com/plone/aurora/blob/main/apps/aurora/app/middleware.server.ts)), which calls `migrateContent` on every fetched content object.
 The process is:
 
-1. **Skip if already migrated.** If the content already has a `__somersault__` block, it is returned untouched. This keeps the operation idempotent and lets migrated and legacy content coexist during the transition.
-2. **Assemble the value.** The blocks are read in the order given by `blocks_layout.items`, and each block is converted into one or more Plate nodes by a chain of registered `somersaultBlockMigration` utilities—for example mapping a `title` block to the metadata title, passing through legacy Slate `value` arrays, and wrapping any registered block into a `ploneBlock` node.
-3. **Normalize the whole value.** A chain of `somersaultMigration` utilities then runs over the assembled value to convert legacy Slate shapes to Plate standards: bold, italic, strikethrough, links, lists, and block widths.
+1.  **Skip if already migrated.**
+    If the content already has a `__somersault__` block, it is returned untouched.
+    This keeps the operation idempotent and lets migrated and legacy content coexist during the transition.
+2.  **Assemble the value.**
+    The blocks are read in the order given by `blocks_layout.items`, and each block is converted into one or more Plate nodes by a chain of registered `somersaultBlockMigration` utilities.
+    Examples include mapping a `title` block to the metadata title, passing through legacy Slate `value` arrays, and wrapping any registered block into a `ploneBlock` node.
+3.  **Normalize the whole value.**
+    A chain of `somersaultMigration` utilities then runs over the assembled value to convert legacy Slate shapes to Plate standards: bold, italic, strikethrough, links, lists, and block widths.
 
 The individual conversions are pure helpers exported from `@plone/plate/migrations`, so the same logic can run in an upgrade step or a one-time content transformation rather than only at request time.
 
