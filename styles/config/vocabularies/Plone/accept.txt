@@ -25,7 +25,6 @@ Enum
 ESLint
 [eE]xpanders?
 focusable
-Frontmatter
 gettext
 Hostname
 iCalendar

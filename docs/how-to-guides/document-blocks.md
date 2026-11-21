@@ -18,7 +18,7 @@ See {doc}`../reference/blocks-schema-endpoint`.
 ## Write the documentation of a block
 
 Write it in a Markdown file next to the block, with a name that ends in `.block.md`, such as {file}`docs.block.md`.
-Its Frontmatter names the block by its ID.
+Its front matter names the block by its ID.
 
 ````markdown
 ---
@@ -68,7 +68,7 @@ Follow these conventions, so the documentation reads well in every format.
 
 ## Document a variation
 
-To document a variation, add another file with the `variation` in its Frontmatter.
+To document a variation, add another file with the `variation` in its front matter.
 
 ```markdown
 ---
@@ -82,7 +82,7 @@ Shows the title, description and image of each item.
 ## Document an element
 
 The native elements of the page document, such as paragraphs, headings, or tables, are not blocks of `blocksConfig`, but the endpoint lists them too, so that a client knows every node it can use to build a page.
-Document an element with `element` in the Frontmatter, set to the node `type`, a `title`, and the `document_model` that the element belongs to.
+Document an element with `element` in the front matter, set to the node `type`, a `title`, and the `document_model` that the element belongs to.
 The elements of the Plate document of a page belong to `plone.plate`.
 One file can document several elements that work the same way, separated by commas.
 
@@ -143,7 +143,7 @@ If it throws or doesn't return a string, the endpoint uses the file's documentat
 
 A page stores its content as one Plate document, in the `main` region, whose `@type` is `plate`.
 This is the `plone.plate` document model.
-Its format is documented in {file}`packages/plate/docs/document.block.md`, a file whose Frontmatter only has the `document_model`, with neither `block` nor `element`.
+Its format is documented in {file}`packages/plate/docs/document.block.md`, a file whose front matter only has the `document_model`, with neither `block` nor `element`.
 
 ```markdown
 ---
@@ -154,7 +154,7 @@ A page stores all its content in one region, `main`...
 ```
 
 The endpoint returns it as the `document` of the list of blocks, next to `document_model`, not as a block.
-A file with neither `block`, `element`, nor `document_model` in its Frontmatter is ignored, with a warning.
+A file with neither `block`, `element`, nor `document_model` in its front matter is ignored, with a warning.
 
 ```{note}
 The documentation is in English and is not translated.
