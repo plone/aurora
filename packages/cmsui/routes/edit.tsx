@@ -14,6 +14,7 @@ import {
   ploneContentContext,
 } from '@plone/aurora/app/middleware.server';
 import ContentForm from '../components/ContentForm/ContentForm';
+import { breadcrumbTrail } from '../components/ContentForm/EditorBreadcrumbs';
 import { getServerValidationErrors } from '../components/Form/validation';
 
 export async function loader({
@@ -68,7 +69,10 @@ export default function Edit() {
       content={content}
       path={content['@id']}
       schema={schema}
-      heading={`${content.title} - ${t('cmsui.edit')}`}
+      breadcrumbs={breadcrumbTrail(
+        content['@components']?.breadcrumbs,
+        t('cmsui.editor.home'),
+      )}
       submitMethod="patch"
     />
   );
