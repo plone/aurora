@@ -9,4 +9,4 @@ sphinx-reredirects
 sphinxcontrib-video
 sphinxcontrib-youtube
 sphinxext-opengraph
-vale
+vale>=3.23.0 # for https://docs.vale.sh/formats/sphinx
