@@ -115,8 +115,19 @@ export interface TypeSchema {
   layouts?: string[];
 }
 
-/** The behavior name the schema editor uses for fields added to the type. */
+/**
+ * The behavior of the fields and fieldsets added to the type itself, rather
+ * than by a behavior. plone.restapi appends a suffix to it on fields, so
+ * compare with `isCustomField` and `isCustomFieldset`.
+ */
 export const CUSTOM_FIELD_BEHAVIOR = 'plone.dexterity.schema.generated';
+
+/** A kind of field that can be added to a type, e.g. "Text line (String)". */
+export interface FieldType {
+  /** What `SchemaField.factory` holds for fields of this kind. */
+  id: string;
+  title: string;
+}
 
 /** A behavior that can be enabled on a type. */
 export interface BehaviorInfo {

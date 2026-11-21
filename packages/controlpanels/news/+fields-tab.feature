@@ -1,0 +1,1 @@
+Add the Fields tab to a content type's page: every field of the edit form by fieldset, with the fields from behaviors locked, a side sheet to edit the type's own fields, dialogs to add fields and fieldsets, and reordering by drag and drop or with the keyboard. Drivers now list the field types and have a `fieldsetOrder` capability. @sneridagh

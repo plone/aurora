@@ -5,6 +5,7 @@ import type {
   ContentTypeChanges,
   ContentTypeSettings,
   ContentTypeSummary,
+  FieldType,
   NewContentType,
   SiteDefaults,
   StateColor,
@@ -39,6 +40,8 @@ export interface ContentTypesCapabilities {
   behaviorDetails: boolean;
   /** `previewSchema` is available. */
   schemaPreview: boolean;
+  /** Saving a schema can change the order of its fieldsets. */
+  fieldsetOrder: boolean;
   /** `listWorkflows` and `getWorkflowAssignments` are available. */
   workflows: boolean;
   /** `previewWorkflowChange`, `changeWorkflow` and `getWorkflowChangeJob` are available. */
@@ -68,8 +71,15 @@ export interface ContentTypesDriver {
   updateType(id: string, changes: ContentTypeChanges): Promise<void>;
   deleteType(id: string): Promise<void>;
 
+  /** A type's fieldsets and fields, including the ones its behaviors add. */
   getSchema(id: string): Promise<TypeSchema>;
+  /**
+   * Replaces the type's own fields and fieldsets: adds, changes, moves and
+   * deletes them. Fields and fieldsets from behaviors are left as they are.
+   */
   saveSchema(id: string, schema: TypeSchema): Promise<void>;
+  /** The kinds of fields that can be added to a type. */
+  listFieldTypes(): Promise<FieldType[]>;
   /** The schema a type would have with these behaviors, in this order. */
   previewSchema?(id: string, behaviors: string[]): Promise<TypeSchema>;
 
@@ -100,6 +110,7 @@ export const NO_CAPABILITIES: ContentTypesCapabilities = {
   behaviorOrder: false,
   behaviorDetails: false,
   schemaPreview: false,
+  fieldsetOrder: false,
   workflows: false,
   workflowChange: false,
   siteDefaults: false,

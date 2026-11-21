@@ -1,4 +1,8 @@
-import { changedSettings, toEditableSettings } from './editableSettings';
+import {
+  changedSchema,
+  changedSettings,
+  toEditableSettings,
+} from './editableSettings';
 import { mockData } from './mock/fixtures';
 
 const event = mockData.types.find((type) => type.id === 'Event')!;
@@ -37,5 +41,21 @@ describe('changedSettings', () => {
       }),
     ).toEqual({ description: 'Happenings', allowedContents: { mode: 'all' } });
     expect(changedSettings(saved, { ...saved })).toEqual({});
+  });
+});
+
+describe('changedSchema', () => {
+  const schema = mockData.schemas.Event;
+
+  it('is set only when the schema changed', () => {
+    const saved = toEditableSettings(event, schema);
+    expect(changedSettings(saved, { ...saved, schema: { ...schema } })).toEqual(
+      {},
+    );
+    expect(changedSchema(saved, { ...saved, schema: { ...schema } })).toBe(
+      undefined,
+    );
+    const edited = { ...schema, required: [...schema.required, 'location'] };
+    expect(changedSchema(saved, { ...saved, schema: edited })).toBe(edited);
   });
 });
