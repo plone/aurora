@@ -666,6 +666,9 @@ importers:
       '@plone/components':
         specifier: workspace:*
         version: link:../components
+      '@plone/controlpanels':
+        specifier: workspace:*
+        version: link:../controlpanels
       '@plone/helpers':
         specifier: workspace:*
         version: link:../helpers
@@ -1038,6 +1041,12 @@ importers:
 
   packages/controlpanels:
     dependencies:
+      '@plone/icons':
+        specifier: workspace:*
+        version: link:../icons
+      '@plone/quanta':
+        specifier: workspace:*
+        version: link:../quanta
       react:
         specifier: ^19.2.7
         version: 19.3.1
@@ -1048,9 +1057,6 @@ importers:
         specifier: ^19.2.7
         version: 19.3.1(react@19.3.1)
     devDependencies:
-      '@plone/quanta':
-        specifier: workspace:*
-        version: link:../quanta
       '@plone/theming':
         specifier: workspace:*
         version: link:../theming

@@ -55,10 +55,11 @@
     }
   },
   "dependencies": {
+    "@plone/icons": "workspace:*",
+    "@plone/quanta": "workspace:*",
     "react-aria-components": "catalog:"
   },
   "devDependencies": {
-    "@plone/quanta": "workspace:*",
     "@plone/theming": "workspace:*",
     "@storybook/addon-docs": "^10.4.0",
     "@storybook/react-vite": "^10.4.0",
