@@ -104,8 +104,8 @@ The unified content is stored inside the standard `blocks` mapping, under a sing
 The `__somersault__` entry follows the same shape as any other block: it has an `@type` and a `value`.
 The `value` holds the entire Plate editor value as an ordered array of nodes:
 
-* **Native text nodes** use a Plate `type` (`title`, `p` etc.) and Slate-style `children`.
-* **Wrapped Plone blocks** use `type: "ploneBlock"`, carry the original block data verbatim (`@type` and all its fields), add a computed `blockWidth`, and include an empty `children` array because the node is a void element.
+-   Native text nodes use a Plate `type`, such as `title` or `p`, and Slate-style `children`.
+-   Wrapped Plone blocks use `type: "ploneBlock"`, carry the original block data verbatim (`@type` and all its fields), add a computed `blockWidth`, and include an empty `children` array because the node is a void element.
 
 ```{note}
 The wrapped-block node uses `type: "ploneBlock"`.

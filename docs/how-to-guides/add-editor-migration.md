@@ -30,8 +30,8 @@ Legacy content is stored as a **map of blocks** plus a separate **layout order**
 So block migrations never see the final value, and value migrations never see individual blocks—a value migration always operates on the complete list already produced by the assembly phase.
 
 `somersaultBlockMigration`—the **assembly** phase
-:   Answers the question: _"given this stored block, what node or nodes should appear in the editor, and where?"_
-    It runs once per legacy block, in `blocks_layout.items` order, and works at the **block boundary**: it receives one block (with its `blockId` and the full `content`) and returns the Plate node or nodes that the block becomes.
+:   Answers the question: _"given this stored block, what nodes should appear in the editor, and where?"_
+    It runs once per legacy block, in `blocks_layout.items` order, and works at the **block boundary**: it receives one block (with its `blockId` and the full `content`) and returns the Plate nodes that the block becomes.
     This is where the block map turns into an ordered node list.
 
 `somersaultMigration`—the **normalization** phase
@@ -43,8 +43,10 @@ So block migrations never see the final value, and value migrations never see in
 
 Use the phase distinction to decide:
 
-- Write a **block migration** when your concern is a **whole block**—a block type that has no representation in the editor yet, or one that should map to a native Plate node instead of a wrapped block. You need the block boundary (its `@type`, `blockId`, or content metadata) to do the job.
-- Write a **value migration** when your concern is a **shape inside nodes** that should be fixed **everywhere it occurs**—a legacy mark, an inline element, an attribute—independent of which block it came from. You only need the nodes, not the blocks.
+-   Write a **block migration** when your concern is a **whole block**—a block type that has no representation in the editor yet, or one that should map to a native Plate node instead of a wrapped block.
+    You need the block boundary (its `@type`, `blockId`, or content metadata) to do the job.
+-   Write a **value migration** when your concern is a **shape inside nodes** that should be fixed **everywhere it occurs**—a legacy mark, an inline element, an attribute—independent of which block it came from.
+    You only need the nodes, not the blocks.
 
 A rule of thumb: if you find yourself branching on `block['@type']`, you want a block migration. If you find yourself walking the node tree looking for a `type` or a property, you want a value migration.
 
