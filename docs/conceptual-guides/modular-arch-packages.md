@@ -124,6 +124,9 @@ The add-on packages are:
 `@plone/contents`
 :   Browse and manage content.
 
+`@plone/controlpanels`
+:   Control panel screens that run in both Plone Aurora and Volto, such as the content types control panel.
+
 ## Development utility packages
 
 These packages are used today to develop Plone Aurora core.

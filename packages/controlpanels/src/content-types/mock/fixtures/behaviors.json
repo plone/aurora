@@ -1,0 +1,424 @@
+[
+  {
+    "name": "plone.allowdiscussion",
+    "title": "Allow discussion",
+    "description": "Allow discussion on this item",
+    "fieldsets": [
+      {
+        "id": "settings",
+        "title": "Settings",
+        "fields": ["allow_discussion"]
+      }
+    ]
+  },
+  {
+    "name": "plone.basic",
+    "title": "Basic metadata",
+    "description": "Adds title and description fields.",
+    "fieldsets": [
+      {
+        "id": "default",
+        "title": "Default",
+        "fields": ["title", "description"]
+      }
+    ]
+  },
+  {
+    "name": "volto.blocks",
+    "title": "Blocks",
+    "description": "Enables Volto Blocks support",
+    "fieldsets": [
+      {
+        "id": "layout",
+        "title": "Layout",
+        "fields": ["blocks", "blocks_layout"]
+      }
+    ]
+  },
+  {
+    "name": "volto.blocks.editable.layout",
+    "title": "Blocks (Editable Layout)",
+    "description": "Enables Volto Blocks (editable layout) support",
+    "fieldsets": []
+  },
+  {
+    "name": "plone.categorization",
+    "title": "Categorization",
+    "description": "Adds keywords and language fields.",
+    "fieldsets": [
+      {
+        "id": "categorization",
+        "title": "Categorization",
+        "fields": ["subjects", "language"]
+      }
+    ]
+  },
+  {
+    "name": "plone.collection",
+    "title": "Collection",
+    "description": "Adds collection behavior",
+    "fieldsets": [
+      {
+        "id": "default",
+        "title": "Default",
+        "fields": [
+          "query",
+          "sort_on",
+          "sort_reversed",
+          "limit",
+          "item_count",
+          "customViewFields"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "plone.publication",
+    "title": "Date range",
+    "description": "Adds effective date and expiration date fields.",
+    "fieldsets": [
+      {
+        "id": "dates",
+        "title": "Dates",
+        "fields": ["effective", "expires"]
+      }
+    ]
+  },
+  {
+    "name": "plone.dublincore",
+    "title": "Dublin Core metadata",
+    "description": "Adds standard metadata fields (equals Basic metadata + Categorization + Effective range + Ownership)",
+    "fieldsets": [
+      {
+        "id": "default",
+        "title": "Default",
+        "fields": ["title", "description"]
+      },
+      {
+        "id": "categorization",
+        "title": "Categorization",
+        "fields": ["subjects", "language"]
+      },
+      {
+        "id": "dates",
+        "title": "Dates",
+        "fields": ["effective", "expires"]
+      },
+      {
+        "id": "ownership",
+        "title": "Ownership",
+        "fields": ["creators", "contributors", "rights"]
+      }
+    ]
+  },
+  {
+    "name": "plone.eventattendees",
+    "title": "Event Attendees",
+    "description": "Attendees extension for Events.",
+    "fieldsets": [
+      {
+        "id": "default",
+        "title": "Default",
+        "fields": ["attendees"]
+      }
+    ]
+  },
+  {
+    "name": "plone.eventbasic",
+    "title": "Event Basic",
+    "description": "Basic Event schema.",
+    "fieldsets": [
+      {
+        "id": "default",
+        "title": "Default",
+        "fields": ["start", "end", "whole_day", "open_end", "sync_uid"]
+      }
+    ]
+  },
+  {
+    "name": "plone.eventcontact",
+    "title": "Event Contact",
+    "description": "Contact extension for Events.",
+    "fieldsets": [
+      {
+        "id": "default",
+        "title": "Default",
+        "fields": [
+          "contact_name",
+          "contact_email",
+          "contact_phone",
+          "event_url"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "plone.eventlocation",
+    "title": "Event Location",
+    "description": "Location extension for Events.",
+    "fieldsets": [
+      {
+        "id": "default",
+        "title": "Default",
+        "fields": ["location"]
+      }
+    ]
+  },
+  {
+    "name": "plone.eventrecurrence",
+    "title": "Event Recurrence",
+    "description": "Recurrence extension for Events.",
+    "fieldsets": [
+      {
+        "id": "default",
+        "title": "Default",
+        "fields": ["recurrence"]
+      }
+    ]
+  },
+  {
+    "name": "plone.excludefromnavigation",
+    "title": "Exclude From navigation",
+    "description": "Allow items to be excluded from navigation",
+    "fieldsets": [
+      {
+        "id": "settings",
+        "title": "Settings",
+        "fields": ["exclude_from_nav"]
+      }
+    ]
+  },
+  {
+    "name": "plone.constraintypes",
+    "title": "Folder Addable Constrains",
+    "description": "Restrict the content types that can be added to folderish content",
+    "fieldsets": []
+  },
+  {
+    "name": "plone.textindexer",
+    "title": "Full-Text Indexing",
+    "description": "Enables the enhanced full-text indexing for a content type ('plone.textindexer'). If a field is marked 'searchable', its content gets added to the 'SearchableText' index in the catalog.",
+    "fieldsets": []
+  },
+  {
+    "name": "volto.head_title",
+    "title": "Head title field",
+    "description": "Deprecated (use volto.kicker instead)",
+    "fieldsets": [
+      {
+        "id": "default",
+        "title": "Default",
+        "fields": ["head_title"]
+      }
+    ]
+  },
+  {
+    "name": "volto.kicker",
+    "title": "Kicker field",
+    "description": "Adds kicker field (text to be shown above the headline)",
+    "fieldsets": []
+  },
+  {
+    "name": "plone.leadimage",
+    "title": "Lead Image",
+    "description": "Adds image and image caption fields",
+    "fieldsets": [
+      {
+        "id": "default",
+        "title": "Default",
+        "fields": ["image", "image_caption"]
+      }
+    ]
+  },
+  {
+    "name": "plone.locking",
+    "title": "Locking",
+    "description": "Locking support for dexterity",
+    "fieldsets": []
+  },
+  {
+    "name": "plone.translatable",
+    "title": "Multilingual Support",
+    "description": "Make this content type multilingual aware",
+    "fieldsets": []
+  },
+  {
+    "name": "plone.namefromfilename",
+    "title": "Name from file name",
+    "description": "Automatically generate short URL name for content based on its primary field file name",
+    "fieldsets": []
+  },
+  {
+    "name": "plone.namefromtitle",
+    "title": "Name from title",
+    "description": "Automatically generate short URL name for content based on its initial title",
+    "fieldsets": []
+  },
+  {
+    "name": "plone.navigationroot",
+    "title": "Navigation root",
+    "description": "Make all items of this type a navigation root",
+    "fieldsets": []
+  },
+  {
+    "name": "volto.navtitle",
+    "title": "Navigation title",
+    "description": "Navigation title used in sections, menus and doormats",
+    "fieldsets": [
+      {
+        "id": "settings",
+        "title": "Settings",
+        "fields": ["nav_title"]
+      }
+    ]
+  },
+  {
+    "name": "plone.nextpreviousenabled",
+    "title": "Next previous navigation",
+    "description": "Enable next previous navigation for all items of this type",
+    "fieldsets": []
+  },
+  {
+    "name": "plone.nextprevioustoggle",
+    "title": "Next previous navigation toggle",
+    "description": "Allow items to have next previous navigation enabled",
+    "fieldsets": [
+      {
+        "id": "settings",
+        "title": "Settings",
+        "fields": ["nextPreviousEnabled"]
+      }
+    ]
+  },
+  {
+    "name": "plone.ownership",
+    "title": "Ownership",
+    "description": "Adds creator, contributor, and rights fields.",
+    "fieldsets": [
+      {
+        "id": "ownership",
+        "title": "Ownership",
+        "fields": ["creators", "contributors", "rights"]
+      }
+    ]
+  },
+  {
+    "name": "volto.preview_image",
+    "title": "Preview Image",
+    "description": "Preview image for listings",
+    "fieldsets": [
+      {
+        "id": "preview_image",
+        "title": "Preview image",
+        "fields": ["preview_image", "preview_caption"]
+      }
+    ]
+  },
+  {
+    "name": "volto.preview_image_link",
+    "title": "Preview Image Link",
+    "description": "Preview image for listings based on links",
+    "fieldsets": [
+      {
+        "id": "preview_image",
+        "title": "Preview image",
+        "fields": ["preview_image_link", "preview_caption_link"]
+      }
+    ]
+  },
+  {
+    "name": "plone.relateditems",
+    "title": "Related items",
+    "description": "Adds the ability to assign related items",
+    "fieldsets": [
+      {
+        "id": "categorization",
+        "title": "Categorization",
+        "fields": ["relatedItems"]
+      }
+    ]
+  },
+  {
+    "name": "plone.richtext",
+    "title": "RichText",
+    "description": "Adds richtext behavior",
+    "fieldsets": [
+      {
+        "id": "default",
+        "title": "Default",
+        "fields": ["text"]
+      }
+    ]
+  },
+  {
+    "name": "plone.shortname",
+    "title": "Short name",
+    "description": "Gives the ability to rename an item from its edit form.",
+    "fieldsets": [
+      {
+        "id": "settings",
+        "title": "Settings",
+        "fields": ["id"]
+      }
+    ]
+  },
+  {
+    "name": "plone.tableofcontents",
+    "title": "Table of contents",
+    "description": "Adds a table of contents",
+    "fieldsets": [
+      {
+        "id": "settings",
+        "title": "Settings",
+        "fields": ["table_of_contents"]
+      }
+    ]
+  },
+  {
+    "name": "plone.thumb_icon",
+    "title": "Thumbs and icon handling",
+    "description": "Options to suppress thumbs and/or icons and to override thumb size in listings, tables etc.",
+    "fieldsets": [
+      {
+        "id": "settings",
+        "title": "Settings",
+        "fields": [
+          "thumb_scale_list",
+          "thumb_scale_table",
+          "thumb_scale_summary",
+          "suppress_icons",
+          "suppress_thumbs"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "plone.versioning",
+    "title": "Versioning",
+    "description": "Versioning support with CMFEditions",
+    "fieldsets": [
+      {
+        "id": "default",
+        "title": "Default",
+        "fields": ["changeNote"]
+      },
+      {
+        "id": "settings",
+        "title": "Settings",
+        "fields": ["versioning_enabled"]
+      }
+    ]
+  },
+  {
+    "name": "collective.sponsors",
+    "title": "Sponsors",
+    "description": "Adds the sponsors of an item and their logos.",
+    "fieldsets": [
+      {
+        "id": "sponsors",
+        "title": "Sponsors",
+        "fields": ["sponsors", "sponsor_logos"]
+      }
+    ]
+  }
+]
