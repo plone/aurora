@@ -20,7 +20,7 @@ The internal names and data shapes described here (including the `__somersault__
 ## Motivation
 
 In Volto, the editing surface is split across two different models.
-Each text-based block instantiates its own [Slate](https://docs.slatejs.org/) editor, while non-text blocks (image, listing, custom blocks etc.) live outside Slate and are managed by the block engine.
+Each text-based block instantiates its own [Slate](https://docs.slatejs.org/) editor, while non-text blocks—including image, listing, and custom blocks—live outside Slate and are managed by the block engine.
 This split has structural costs: two mental models and rendering pipelines, selection state that is hard to coordinate across blocks, awkward keyboard navigation between blocks, and a per-instance performance overhead in large documents.
 
 Plone Aurora unifies both models into one editor tree.
