@@ -191,6 +191,9 @@ catalogs:
     '@react-types/shared':
       specifier: ^3.37.0
       version: 3.37.0
+    '@tailwindcss/postcss':
+      specifier: 4.2.2
+      version: 4.2.2
     '@tailwindcss/vite':
       specifier: ^4.2.2
       version: 4.2.2
@@ -1056,6 +1059,9 @@ importers:
       react:
         specifier: ^19.2.7
         version: 19.3.1
+      react-aria:
+        specifier: 'catalog:'
+        version: 3.53.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react-aria-components:
         specifier: 'catalog:'
         version: 1.22.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -1072,6 +1078,9 @@ importers:
       '@storybook/react-vite':
         specifier: ^10.4.0
         version: 10.4.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rollup@4.52.5)(storybook@10.4.0(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@10.4.1)(@types/react@19.2.6)(prettier@3.9.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@5.9.2)(vite@8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))
+      '@tailwindcss/postcss':
+        specifier: 'catalog:'
+        version: 4.2.2
       '@tailwindcss/vite':
         specifier: 'catalog:'
         version: 4.2.2(vite@8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))
@@ -1096,6 +1105,9 @@ importers:
       jsdom:
         specifier: ^28.1.0
         version: 28.1.0(supports-color@8.1.1)
+      postcss:
+        specifier: ^8.5.9
+        version: 8.5.9
       release-it:
         specifier: 'catalog:'
         version: 19.0.5(@types/node@26.6.5)(magicast@0.3.5)(supports-color@8.1.1)
@@ -2289,6 +2301,10 @@ packages:
     engines: {node: '>=22'}
     peerDependencies:
       react: ^19.2.7
+
+  '@alloc/quick-lru@5.3.0':
+    resolution: {integrity: sha512-U4+70Pc5ZS9osnCBCE5Jha/ciHM+Yp+CNMNC/7HvYbNRk1Ldd+f7qO65W5qfhu/TCv+/ozljlXXe9Nj8419DMA==}
+    engines: {node: '>=10'}
 
   '@andrewbranch/untar.js@1.0.3':
     resolution: {integrity: sha512-Jh15/qVmrLGhkKJBdXlK1+9tY4lZruYjsgkDFj08ZmDiWVBLJcqkok7Z0/R0In+i1rScBpJlSvrTS2Lm41Pbnw==}
@@ -4721,6 +4737,9 @@ packages:
   '@tailwindcss/oxide@4.2.2':
     resolution: {integrity: sha512-qEUA07+E5kehxYp9BVMpq9E8vnJuBHfJEC0vPC5e7iL/hw7HR61aDKoVoKzrG+QKp56vhNZe4qwkRmMC0zDLvg==}
     engines: {node: '>= 20'}
+
+  '@tailwindcss/postcss@4.2.2':
+    resolution: {integrity: sha512-n4goKQbW8RVXIbNKRB/45LzyUqN451deQK0nzIeauVEqjlI49slUlgKYJM2QyUzap/PcpnS7kzSUmPb1sCRvYQ==}
 
   '@tailwindcss/vite@4.2.2':
     resolution: {integrity: sha512-mEiF5HO1QqCLXoNEfXVA1Tzo+cYsrqV7w9Juj2wdUFyW07JRenqMG225MvPwr3ZD9N1bFQj46X7r33iHxLUW0w==}
@@ -10007,6 +10026,8 @@ snapshots:
     transitivePeerDependencies:
       - zod
 
+  '@alloc/quick-lru@5.3.0': {}
+
   '@andrewbranch/untar.js@1.0.3': {}
 
   '@arethetypeswrong/cli@0.16.4':
@@ -12351,6 +12372,14 @@ snapshots:
       '@tailwindcss/oxide-wasm32-wasi': 4.2.2
       '@tailwindcss/oxide-win32-arm64-msvc': 4.2.2
       '@tailwindcss/oxide-win32-x64-msvc': 4.2.2
+
+  '@tailwindcss/postcss@4.2.2':
+    dependencies:
+      '@alloc/quick-lru': 5.3.0
+      '@tailwindcss/node': 4.2.2
+      '@tailwindcss/oxide': 4.2.2
+      postcss: 8.5.9
+      tailwindcss: 4.2.2
 
   '@tailwindcss/vite@4.2.2(vite@8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))':
     dependencies:
