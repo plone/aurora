@@ -6,11 +6,14 @@ import {
 } from 'react-router';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { requireAuthCookie } from '@plone/react-router';
-import type { NewContentType } from '@plone/controlpanels';
+import type { ContentTypeChanges, NewContentType } from '@plone/controlpanels';
 import {
+  type DexterityTypeResponse,
   type DexterityTypesItem,
   errorMessage,
+  toContentTypeSettings,
   toContentTypeSummary,
+  toDexterityTypePatch,
 } from '../../helpers/contentTypes';
 
 const json = (body: unknown, status = 200) =>
@@ -25,7 +28,8 @@ const failure = (error: unknown, fallback: string) =>
 /**
  * The content types control panel's data, for the Aurora driver.
  *
- * `GET /@content-types` lists the types. Until plone.restapi has
+ * `GET /@content-types` lists the types, `GET /@content-types/{type}` returns
+ * one type's settings. Until plone.restapi has
  * `@content-types` (plone/plone.restapi#2061), this reads and writes
  * `@controlpanels/dexterity-types` and translates its payloads.
  */
@@ -35,9 +39,25 @@ export async function loader({
   context,
 }: LoaderFunctionArgs<RouterContextProvider>) {
   await requireAuthCookie(request);
-  if (params['*']) return json({ message: 'Not found' }, 404);
-
   const cli = context.get(ploneClientContext);
+  const type = params['*'];
+
+  if (type) {
+    try {
+      const { data: response } = await cli.getControlpanel({
+        id: `dexterity-types/${type}`,
+      });
+      return json(
+        toContentTypeSettings(
+          type,
+          response as unknown as DexterityTypeResponse,
+        ),
+      );
+    } catch (error) {
+      return failure(error, "The type couldn't be loaded");
+    }
+  }
+
   try {
     const { data: listing } = await cli.getControlpanel({
       id: 'dexterity-types',
@@ -51,7 +71,8 @@ export async function loader({
 
 /**
  * `POST /@content-types` creates a type from `{ title, id?, description? }`.
- * `DELETE /@content-types/{type}` deletes one.
+ * `PATCH /@content-types/{type}` changes its settings, and
+ * `DELETE /@content-types/{type}` deletes it.
  */
 export async function action({
   params,
@@ -89,6 +110,23 @@ export async function action({
       );
     } catch (error) {
       return failure(error, "The type couldn't be created");
+    }
+  }
+
+  if (request.method === 'PATCH' && type) {
+    const changes = (await request.json()) as ContentTypeChanges;
+    const patch = toDexterityTypePatch(changes);
+    if (!Object.keys(patch).length) {
+      return json({ message: 'Nothing to change that can be saved' }, 400);
+    }
+    try {
+      await cli.updateControlpanel({
+        path: `dexterity-types/${type}`,
+        data: patch,
+      });
+      return json({ id: type });
+    } catch (error) {
+      return failure(error, "The type couldn't be saved");
     }
   }
 

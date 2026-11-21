@@ -1,5 +1,6 @@
 import {
   NO_CAPABILITIES,
+  type ContentTypeSettings,
   type ContentTypeSummary,
   type ContentTypesDriver,
 } from '@plone/controlpanels';
@@ -30,8 +31,9 @@ const notYet = (what: string) => () =>
  * server.
  *
  * Today's plone.restapi only lists, creates and deletes types, so every
- * capability is off. They turn on as plone/plone.restapi#2061 lands. The
- * type page methods come with the type page (#269, phase 3 and on).
+ * capability is off: a type's settings are its name, description and what it
+ * can contain. They turn on as plone/plone.restapi#2061 lands. Schemas and
+ * behaviors come with their tabs (#269, phases 4 and 5).
  */
 export function createAuroraDriver(): ContentTypesDriver {
   return {
@@ -51,8 +53,17 @@ export function createAuroraDriver(): ContentTypesDriver {
       await request(`${API}/${encodeURIComponent(id)}`, { method: 'DELETE' });
     },
 
-    getType: notYet('Reading a type'),
-    updateType: notYet('Changing a type'),
+    getType: (id) =>
+      request<ContentTypeSettings>(`${API}/${encodeURIComponent(id)}`),
+
+    updateType: async (id, changes) => {
+      await request(`${API}/${encodeURIComponent(id)}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(changes),
+      });
+    },
+
     getSchema: notYet('Reading a schema'),
     saveSchema: notYet('Saving a schema'),
     listBehaviors: notYet('Listing behaviors'),

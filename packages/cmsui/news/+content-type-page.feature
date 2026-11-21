@@ -1,0 +1,1 @@
+Add the content type page to the content types control panel, with its Settings tab: name, description and what can be added inside. Moving between its tabs keeps unsaved changes; leaving asks first. @sneridagh
