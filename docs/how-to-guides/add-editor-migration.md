@@ -93,9 +93,14 @@ It must return an array—return `[]` for blocks it does not handle, since every
 
 The utility method receives:
 
-- `block`—the block's data (`Record<string, unknown>`), including its `@type`.
-- `blockId`—the block's key in `blocks`.
-- `content`—the full content object, useful for reading metadata.
+`block`
+: the block's data (`Record<string, unknown>`), including its `@type`.
+
+`blockId`
+: the block's key in `blocks`.
+
+`content`
+: the full content object, useful for reading metadata.
 
 For example, to convert a legacy `description` block into a native Plate paragraph:
 
