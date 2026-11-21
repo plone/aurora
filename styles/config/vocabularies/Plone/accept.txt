@@ -34,7 +34,6 @@ middlewares?
 [mM]onorepo
 [mM]ultiline
 namespace
-Netlify
 npm
 nvm
 Pastanaga
