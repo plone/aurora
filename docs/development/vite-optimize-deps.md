@@ -119,9 +119,9 @@ Those use plain names without the `>` syntax because Vite resolves them directly
 // apps/aurora/vite.config.ts
 optimizeDeps: {
   include: [
-    // App-level dependency—plain name works
+    // App-level dep — plain name works
     'some-app-dep',
-    // Non-add-on workspace package dependency — requires "pkg > dep" syntax
+    // Non-add-on workspace package dep — requires "pkg > dep" syntax
     '@plone/components > react-aria-components',
     '@plone/icons > tailwind-variants',
     '@plone/quanta > react-aria-components',
