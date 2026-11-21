@@ -15,7 +15,7 @@ import {
 import { useContentTypesDriver } from '../../driver';
 import { messages } from '../../messages';
 import type {
-  ContentTypeSettings,
+  ContentTypeSummary,
   WorkflowChangePreview,
   WorkflowChangeRequest,
   WorkflowInfo,
@@ -35,9 +35,13 @@ import { StateBadge, VISIBILITY_LABELS } from './StateBadge';
 export interface ChangeWorkflowDialogProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  type: ContentTypeSettings;
-  /** The number of items of the type. */
-  count: number;
+  /**
+   * The types to change, with their workflow and item count. With
+   * `siteDefault`, every type: the ones that follow the default change.
+   */
+  types: ContentTypeSummary[];
+  /** Change the site default, and with it the types that follow it. */
+  siteDefault?: boolean;
   workflows: WorkflowInfo[];
   /** The site default workflow, `null` when there is none. */
   defaultWorkflow: string | null;
@@ -53,15 +57,16 @@ const POLL_INTERVAL = 250;
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
- * Changes a type's workflow in three steps: choose the new workflow, choose
- * the new state of the items in each current state, and review what changes
- * before anything does. Suggestions keep who can see each item.
+ * Changes the workflow of some types, or the site default, in three steps:
+ * choose the new workflow, choose the new state of the items in each current
+ * state (one table per current workflow), and review what changes before
+ * anything does. Suggestions keep who can see each item.
  */
 export function ChangeWorkflowDialog({
   isOpen,
   onOpenChange,
-  type,
-  count,
+  types,
+  siteDefault = false,
   workflows,
   defaultWorkflow,
   onChanged,
@@ -78,9 +83,9 @@ export function ChangeWorkflowDialog({
   >({});
   const [progress, setProgress] = useState(0);
   const [runError, setRunError] = useState<string>();
-  // The type's workflow when the dialog opened: the page loads the type again
-  // after the change, while the dialog is still closing.
-  const [from, setFrom] = useState(type.workflow);
+  // The types and the default when the dialog opened: the page loads them
+  // again after the change, while the dialog is still closing.
+  const [from, setFrom] = useState({ types, defaultWorkflow });
 
   useEffect(() => {
     if (!isOpen) return;
@@ -91,38 +96,70 @@ export function ChangeWorkflowDialog({
     setStateMap({});
     setProgress(0);
     setRunError(undefined);
-    setFrom(type.workflow);
+    setFrom({ types, defaultWorkflow });
     // Only when the dialog opens.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
 
-  const assignment = from ?? {
-    workflow: null,
-    followsDefault: false,
-  };
-  const current = workflows.find((entry) => entry.id === assignment.workflow);
   const titleOf = (id: string | null) =>
     id === null
       ? t(messages.noWorkflow)
       : (workflows.find((entry) => entry.id === id)?.title ?? id);
   const itemsLabel = (n: number) =>
     n === 1 ? t(messages.oneItem) : t(messages.items, { count: n });
+  const assignmentOf = (type: ContentTypeSummary) =>
+    type.workflow ?? { workflow: null, followsDefault: false };
+
+  const affected = siteDefault
+    ? from.types.filter((type) => type.workflow?.followsDefault)
+    : from.types;
+  const [single] = affected.length === 1 ? affected : [];
+  const typeTitles = affected.map((type) => type.title).join(', ');
+  const count = affected.reduce((sum, type) => sum + type.count, 0);
+  // What changes, in the title and the sentences: a type, some types, or the
+  // site default.
+  const subject = siteDefault
+    ? t(messages.siteDefaultWorkflow)
+    : (single?.title ?? t(messages.typesCount, { count: affected.length }));
+  // The first type's, when several share no workflow: it only picks which
+  // workflows to offer.
+  const current = siteDefault
+    ? from.defaultWorkflow
+    : affected[0]
+      ? assignmentOf(affected[0]).workflow
+      : null;
+  const currentInfo = workflows.find((entry) => entry.id === current);
 
   // Workflows meant for comments are only offered for comments, and the
   // other way around.
   const scope =
-    current?.scope ?? (type.kind === 'other' ? 'comments' : 'content');
+    currentInfo?.scope ??
+    (!siteDefault && affected.every((type) => type.kind === 'other')
+      ? 'comments'
+      : 'content');
   const offered = workflows.filter((entry) => entry.scope === scope);
   const hidden = workflows.length - offered.length;
-  const currentChoice = assignment.followsDefault
-    ? FOLLOW_DEFAULT
-    : (assignment.workflow ?? NO_WORKFLOW);
+  const currentChoice = siteDefault
+    ? (from.defaultWorkflow ?? NO_WORKFLOW)
+    : single
+      ? assignmentOf(single).followsDefault
+        ? FOLLOW_DEFAULT
+        : (assignmentOf(single).workflow ?? NO_WORKFLOW)
+      : undefined;
+  const options = [
+    ...(!siteDefault && defaultWorkflow !== null ? [FOLLOW_DEFAULT] : []),
+    ...offered.map((entry) => entry.id),
+    NO_WORKFLOW,
+  ];
   const target = choice ? chosenWorkflow(choice, defaultWorkflow) : undefined;
-  const request = (): WorkflowChangeRequest => ({
-    types: [type.id],
-    workflow: target ?? null,
-    followDefault: choice === FOLLOW_DEFAULT || undefined,
-  });
+  const request = (): WorkflowChangeRequest =>
+    siteDefault
+      ? { siteDefault: true, workflow: target ?? null }
+      : {
+          types: affected.map((type) => type.id),
+          workflow: target ?? null,
+          followDefault: choice === FOLLOW_DEFAULT || undefined,
+        };
 
   const toMapping = async () => {
     setStep(2);
@@ -152,10 +189,17 @@ export function ChangeWorkflowDialog({
       }
       if (job.status === 'failed') throw new Error(job.error);
       notify({
-        title: t(messages.workflowChanged, {
-          title: type.title,
-          workflow: titleOf(target ?? null),
-        }),
+        title: siteDefault
+          ? t(messages.siteDefaultChanged, {
+              workflow: titleOf(target ?? null),
+            })
+          : t(
+              single ? messages.workflowChanged : messages.workflowChangedMany,
+              {
+                title: subject,
+                workflow: titleOf(target ?? null),
+              },
+            ),
         description: t(messages.workflowChangedItems, {
           items: itemsLabel(job.changed),
         }),
@@ -171,16 +215,19 @@ export function ChangeWorkflowDialog({
 
   const visibility = (row: MappingRow) =>
     t(VISIBILITY_LABELS[row.state?.visibility ?? 'unknown']);
-  const rows = preview
-    ? preview.groups.flatMap((group) =>
-        mappingRows(
-          group,
-          preview.workflow,
-          workflows,
-          stateMap[group.workflow ?? ''] ?? {},
-        ).map((row) => ({ group: group.workflow ?? '', row })),
-      )
-    : [];
+  const tables = (preview?.groups ?? []).map((group) => ({
+    key: group.workflow ?? '',
+    group,
+    rows: mappingRows(
+      group,
+      preview!.workflow,
+      workflows,
+      stateMap[group.workflow ?? ''] ?? {},
+    ),
+  }));
+  const rows = tables.flatMap(({ key, rows }) =>
+    rows.map((row) => ({ group: key, row })),
+  );
   const targetInfo = workflows.find((entry) => entry.id === target);
   const lessVisible = rows.some(({ row }) => row.count > 0 && row.change < 0);
   const moved = preview ? changedItems(preview) : 0;
@@ -200,15 +247,24 @@ export function ChangeWorkflowDialog({
       <Dialog className="mx-auto flex max-h-[90vh] w-full flex-col gap-4 p-8">
         <div className="flex flex-col gap-1">
           <Heading slot="title" className="text-xl font-semibold">
-            {t(messages.changeWorkflowTitle, { title: type.title })}
+            {siteDefault
+              ? t(messages.changeDefaultWorkflowTitle)
+              : t(messages.changeWorkflowTitle, { title: subject })}
           </Heading>
           <p className="text-sm text-quanta-pigeon">
-            {t(messages.changeWorkflowSubtitle, {
-              items: itemsLabel(count),
-              workflow: assignment.followsDefault
-                ? `${titleOf(assignment.workflow)} (${t(messages.siteDefault)})`
-                : titleOf(assignment.workflow),
-            })}
+            {siteDefault
+              ? t(messages.changeDefaultWorkflowSubtitle, {
+                  workflow: titleOf(current ?? null),
+                  types: typeTitles || t(messages.noTypes),
+                })
+              : single
+                ? t(messages.changeWorkflowSubtitle, {
+                    items: itemsLabel(count),
+                    workflow: assignmentOf(single).followsDefault
+                      ? `${titleOf(current ?? null)} (${t(messages.siteDefault)})`
+                      : titleOf(current ?? null),
+                  })
+                : `${itemsLabel(count)} · ${typeTitles}`}
           </p>
         </div>
 
@@ -262,11 +318,7 @@ export function ChangeWorkflowDialog({
                 onChange={setChoice}
                 className="flex flex-col gap-2"
               >
-                {[
-                  ...(defaultWorkflow !== null ? [FOLLOW_DEFAULT] : []),
-                  ...offered.map((entry) => entry.id),
-                  NO_WORKFLOW,
-                ].map((option) => {
+                {options.map((option) => {
                   const id = chosenWorkflow(option, defaultWorkflow);
                   const info = workflows.find((entry) => entry.id === id);
                   const isCurrent = option === currentChoice;
@@ -371,129 +423,162 @@ export function ChangeWorkflowDialog({
                           workflow: t(messages.noWorkflow),
                         })}
                   </p>
-                  <ul
-                    aria-label={t(messages.stepMap)}
-                    className={`
-                      flex flex-col divide-y divide-quanta-smoke rounded-lg border
-                      border-quanta-smoke
-                    `}
-                  >
-                    {rows.map(({ group, row }) => {
-                      const title =
-                        row.state?.title ?? t(messages.withoutState);
-                      return (
-                        <li
-                          key={`${group}/${row.id}`}
-                          className={`
-                            grid items-start gap-3 p-3 text-sm
-                            sm:grid-cols-[minmax(0,1fr)_1.5rem_minmax(0,1.2fr)]
-                            ${row.count ? '' : 'bg-quanta-snow text-quanta-pigeon'}
-                          `}
-                        >
-                          <span className="flex flex-col gap-1">
-                            <strong className="font-semibold">{title}</strong>
-                            <span className="text-xs">{visibility(row)}</span>
-                            <span className="text-xs text-quanta-pigeon">
-                              {row.count
-                                ? itemsLabel(row.count)
-                                : t(messages.noItemsInState)}
-                            </span>
-                          </span>
-                          <span
-                            aria-hidden
-                            className={`
-                              hidden pt-2 text-center font-mono text-quanta-pigeon
-                              sm:block
-                            `}
-                          >
-                            →
-                          </span>
-                          {targetInfo ? (
-                            <span className="flex flex-col items-start gap-1">
-                              <Select
-                                aria-label={t(messages.newStateFor, {
-                                  state: title,
-                                })}
-                                selectedKey={row.target?.id ?? null}
-                                onSelectionChange={(key) =>
-                                  key &&
-                                  setStateMap((map) => ({
-                                    ...map,
-                                    [group]: {
-                                      ...map[group],
-                                      [row.id]: String(key),
-                                    },
-                                  }))
-                                }
-                                items={targetInfo.states.map((state) => ({
-                                  value: state.id,
-                                  label: t(messages.stateOption, {
-                                    state: state.title,
-                                    visibility: t(
-                                      VISIBILITY_LABELS[state.visibility],
-                                    ).toLowerCase(),
-                                  }),
-                                }))}
-                                className="w-full"
-                              />
-                              {row.count > 0 && row.target && (
-                                <span
-                                  className={`
-                                    rounded-full px-2 py-0.5 text-xs
-                                    ${
-                                      row.change < 0
-                                        ? 'bg-quanta-cream text-quanta-bronze'
-                                        : row.change > 0
-                                          ? 'bg-quanta-ballet text-quanta-wine'
-                                          : 'bg-quanta-daiquiri text-quanta-turtle'
-                                    }
-                                  `}
-                                >
-                                  {row.change < 0
-                                    ? t(messages.lessVisible, {
-                                        visibility: t(
-                                          VISIBILITY_LABELS[
-                                            row.target.visibility
-                                          ],
-                                        ).toLowerCase(),
-                                      })
-                                    : row.change > 0
-                                      ? t(messages.moreVisible, {
-                                          visibility: t(
-                                            VISIBILITY_LABELS[
-                                              row.target.visibility
-                                            ],
-                                          ).toLowerCase(),
-                                        })
-                                      : t(messages.sameVisibility)}
+                  {tables.map(({ key: group, group: entry, rows }) => (
+                    <section
+                      key={group}
+                      aria-label={
+                        tables.length > 1
+                          ? t(messages.mapGroup, {
+                              workflow: titleOf(entry.workflow),
+                            })
+                          : undefined
+                      }
+                      className="flex flex-col gap-2"
+                    >
+                      {tables.length > 1 && (
+                        <h3 className="text-sm font-semibold">
+                          {t(messages.mapGroupTitle, {
+                            workflow: titleOf(entry.workflow),
+                            types: entry.types
+                              .map(
+                                (id) =>
+                                  affected.find((type) => type.id === id)
+                                    ?.title ?? id,
+                              )
+                              .join(', '),
+                          })}
+                        </h3>
+                      )}
+                      <ul
+                        aria-label={t(messages.stepMap)}
+                        className={`
+                          flex flex-col divide-y divide-quanta-smoke rounded-lg border
+                          border-quanta-smoke
+                        `}
+                      >
+                        {rows.map((row) => {
+                          const title =
+                            row.state?.title ?? t(messages.withoutState);
+                          return (
+                            <li
+                              key={`${group}/${row.id}`}
+                              className={`
+                                grid items-start gap-3 p-3 text-sm
+                                sm:grid-cols-[minmax(0,1fr)_1.5rem_minmax(0,1.2fr)]
+                                ${row.count ? '' : 'bg-quanta-snow text-quanta-pigeon'}
+                              `}
+                            >
+                              <span className="flex flex-col gap-1">
+                                <strong className="font-semibold">
+                                  {title}
+                                </strong>
+                                <span className="text-xs">
+                                  {visibility(row)}
                                 </span>
-                              )}
-                              {row.target?.id === row.suggested && (
-                                <span
-                                  className={`
-                                    font-mono text-xs tracking-wide text-quanta-sapphire uppercase
-                                  `}
-                                >
-                                  {t(messages.suggested)}
+                                <span className="text-xs text-quanta-pigeon">
+                                  {row.count
+                                    ? itemsLabel(row.count)
+                                    : t(messages.noItemsInState)}
                                 </span>
-                              )}
-                            </span>
-                          ) : (
-                            row.count > 0 && (
+                              </span>
                               <span
+                                aria-hidden
                                 className={`
-                                  self-center rounded-full bg-quanta-cream px-2 py-0.5 text-xs
-                                  text-quanta-bronze
+                                  hidden pt-2 text-center font-mono text-quanta-pigeon
+                                  sm:block
                                 `}
                               >
-                                {t(messages.dependsOnFolder)}
+                                →
                               </span>
-                            )
-                          )}
-                        </li>
-                      );
-                    })}
-                  </ul>
+                              {targetInfo ? (
+                                <span className="flex flex-col items-start gap-1">
+                                  <Select
+                                    aria-label={t(messages.newStateFor, {
+                                      state: title,
+                                    })}
+                                    selectedKey={row.target?.id ?? null}
+                                    onSelectionChange={(key) =>
+                                      key &&
+                                      setStateMap((map) => ({
+                                        ...map,
+                                        [group]: {
+                                          ...map[group],
+                                          [row.id]: String(key),
+                                        },
+                                      }))
+                                    }
+                                    items={targetInfo.states.map((state) => ({
+                                      value: state.id,
+                                      label: t(messages.stateOption, {
+                                        state: state.title,
+                                        visibility: t(
+                                          VISIBILITY_LABELS[state.visibility],
+                                        ).toLowerCase(),
+                                      }),
+                                    }))}
+                                    className="w-full"
+                                  />
+                                  {row.count > 0 && row.target && (
+                                    <span
+                                      className={`
+                                        rounded-full px-2 py-0.5 text-xs
+                                        ${
+                                          row.change < 0
+                                            ? 'bg-quanta-cream text-quanta-bronze'
+                                            : row.change > 0
+                                              ? 'bg-quanta-ballet text-quanta-wine'
+                                              : 'bg-quanta-daiquiri text-quanta-turtle'
+                                        }
+                                      `}
+                                    >
+                                      {row.change < 0
+                                        ? t(messages.lessVisible, {
+                                            visibility: t(
+                                              VISIBILITY_LABELS[
+                                                row.target.visibility
+                                              ],
+                                            ).toLowerCase(),
+                                          })
+                                        : row.change > 0
+                                          ? t(messages.moreVisible, {
+                                              visibility: t(
+                                                VISIBILITY_LABELS[
+                                                  row.target.visibility
+                                                ],
+                                              ).toLowerCase(),
+                                            })
+                                          : t(messages.sameVisibility)}
+                                    </span>
+                                  )}
+                                  {row.target?.id === row.suggested && (
+                                    <span
+                                      className={`
+                                        font-mono text-xs tracking-wide text-quanta-sapphire
+                                        uppercase
+                                      `}
+                                    >
+                                      {t(messages.suggested)}
+                                    </span>
+                                  )}
+                                </span>
+                              ) : (
+                                row.count > 0 && (
+                                  <span
+                                    className={`
+                                      self-center rounded-full bg-quanta-cream px-2 py-0.5 text-xs
+                                      text-quanta-bronze
+                                    `}
+                                  >
+                                    {t(messages.dependsOnFolder)}
+                                  </span>
+                                )
+                              )}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </section>
+                  ))}
                   {lessVisible && (
                     <div
                       role="status"
@@ -514,16 +599,27 @@ export function ChangeWorkflowDialog({
           {(step === 3 || step === 'run') && preview && (
             <div className="flex flex-col gap-3 text-sm">
               <p>
-                {choice === FOLLOW_DEFAULT
-                  ? t(messages.reviewFollowDefault, {
-                      title: type.title,
+                {siteDefault
+                  ? t(messages.reviewSiteDefault, {
                       workflow: titleOf(target ?? null),
+                      current: titleOf(current ?? null),
+                      types: typeTitles || t(messages.noTypes),
                     })
-                  : t(messages.reviewIntro, {
-                      title: type.title,
-                      workflow: titleOf(target ?? null),
-                      current: titleOf(assignment.workflow),
-                    })}
+                  : choice === FOLLOW_DEFAULT
+                    ? t(messages.reviewFollowDefault, {
+                        title: subject,
+                        workflow: titleOf(target ?? null),
+                      })
+                    : single
+                      ? t(messages.reviewIntro, {
+                          title: subject,
+                          workflow: titleOf(target ?? null),
+                          current: titleOf(current ?? null),
+                        })
+                      : t(messages.reviewIntroMany, {
+                          workflow: titleOf(target ?? null),
+                          types: typeTitles,
+                        })}
               </p>
               <ul className="flex list-disc flex-col gap-2 pl-5">
                 {rows
@@ -581,7 +677,7 @@ export function ChangeWorkflowDialog({
               </p>
               {runError !== undefined && (
                 <div role="alert" className="text-quanta-candy">
-                  {t(messages.workflowChangeError, { title: type.title })}{' '}
+                  {t(messages.workflowChangeError, { title: subject })}{' '}
                   {runError}
                 </div>
               )}
