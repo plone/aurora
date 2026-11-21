@@ -317,6 +317,9 @@ importers:
       '@plone/contents':
         specifier: workspace:*
         version: link:../../packages/contents
+      '@plone/controlpanels':
+        specifier: workspace:*
+        version: link:../../packages/controlpanels
       '@plone/helpers':
         specifier: workspace:*
         version: link:../../packages/helpers

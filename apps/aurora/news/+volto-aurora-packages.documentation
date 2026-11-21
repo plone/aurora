@@ -1,0 +1,1 @@
+Added the conceptual guide "Packages for Volto and Plone Aurora", on how `@plone/plate` and `@plone/controlpanels` run in both apps: no framework imports, a provider and a driver, translations, styles, building and the registry as a peer dependency. @sneridagh

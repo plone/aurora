@@ -4,10 +4,8 @@ import { useTranslation } from 'react-i18next';
 import {
   ContentTypesDriverProvider,
   ControlPanelsProvider,
-  interpolate,
   type ContentTypesCapabilities,
   type Notify,
-  type Translate,
   type UseBlocker,
 } from '@plone/controlpanels';
 import config from '@plone/registry';
@@ -48,17 +46,6 @@ export default function ContentTypesProviders({
     [key],
   );
 
-  // The package's messages use single-brace placeholders (`{count}`), like
-  // react-intl, so they're filled in after i18next looks the message up.
-  const translate = useCallback<Translate>(
-    (message, values) =>
-      interpolate(
-        t(message.id, { defaultValue: message.defaultMessage }),
-        values,
-      ),
-    [t],
-  );
-
   const notify = useCallback<Notify>(({ title, description, variant }) => {
     config.getUtility({ name: 'show', type: 'toast' }).method({
       title,
@@ -70,7 +57,7 @@ export default function ContentTypesProviders({
   return (
     <ControlPanelsProvider
       navigate={navigate}
-      translate={translate}
+      t={t}
       notify={notify}
       useBlocker={useRouterBlocker}
     >

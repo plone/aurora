@@ -13,11 +13,18 @@ export type {
   UseBlocker,
 } from './provider/ControlPanelsProvider';
 export {
-  defaultTranslate,
   defineMessages,
+  fallbackTranslate,
   interpolate,
+  translationFromIntl,
 } from './provider/messages';
-export type { Message, MessageValues, Translate } from './provider/messages';
+export type {
+  Message,
+  MessageValues,
+  Translate,
+  TranslateFunction,
+  TranslateOptions,
+} from './provider/messages';
 
 export {
   ContentTypesDriverProvider,
@@ -105,3 +112,11 @@ export {
   detectRestApi,
   type RestApiRequest,
 } from './content-types/restapi/createRestApiDriver';
+
+/**
+ * As a Plone Aurora add-on, the package brings its translations
+ * (`src/locales`), and no configuration.
+ */
+export default function applyConfig<T>(config: T): T {
+  return config;
+}

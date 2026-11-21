@@ -8,6 +8,7 @@ This file applies only to `packages/plate` and its subdirectories.
 - It will eventually **replace `@plone/volto-slate`** in the Plone Aurora context.
 - It is consumed by `@plone/cmsui` to power the `add` and `edit` routes, and uses Edit components from `@plone/blocks` for individual block types.
 - Block migration utilities live under `migrations/`.
+- **It also runs in Volto,** through the volto-plate add-on. Follow `docs/conceptual-guides/packages-for-volto-and-aurora.md`: no framework imports, translations through the `t` and `language` props, catalogs in `locales/`.
 
 > [!WARNING]
 > This package is experimental. Breaking changes may occur without notice.

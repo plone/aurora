@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import { RouterProvider } from 'react-aria-components';
-import { defaultTranslate } from './messages';
-import type { Translate } from './messages';
+import { fallbackTranslate, toTranslate } from './messages';
+import type { Translate, TranslateFunction } from './messages';
 
 export interface Notification {
   title: string;
@@ -40,8 +40,12 @@ export interface ControlPanelsProviderProps {
   navigate?: (path: string) => void;
   /** Turns a path into the `href` a link renders, e.g. to add a base path. */
   useHref?: (path: string) => string;
-  /** Translates the package's messages. Shows the default text when missing. */
-  translate?: Translate;
+  /**
+   * Translates the package's messages: react-i18next's `t`, or an adapter
+   * with the same shape, like `translationFromIntl`. Shows the English text
+   * when missing.
+   */
+  t?: TranslateFunction;
   /** Shows notifications. Does nothing when missing. */
   notify?: Notify;
   /**
@@ -73,7 +77,7 @@ const assignLocation = (path: string) => {
 };
 
 const ControlPanelsContext = createContext<ControlPanelsContextValue>({
-  translate: defaultTranslate,
+  translate: toTranslate(fallbackTranslate),
   notify: noop,
   navigate: assignLocation,
   useBlocker: neverBlock,
@@ -87,18 +91,18 @@ export function ControlPanelsProvider({
   children,
   navigate,
   useHref,
-  translate = defaultTranslate,
+  t = fallbackTranslate,
   notify = noop,
   useBlocker = neverBlock,
 }: ControlPanelsProviderProps) {
   const value = useMemo(
     () => ({
-      translate,
+      translate: toTranslate(t),
       notify,
       navigate: navigate ?? assignLocation,
       useBlocker,
     }),
-    [translate, notify, navigate, useBlocker],
+    [t, notify, navigate, useBlocker],
   );
   const content = (
     <ControlPanelsContext.Provider value={value}>
