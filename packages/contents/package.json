@@ -54,7 +54,6 @@
   "dependencies": {
     "@plone/client": "workspace:*",
     "@plone/cmsui": "workspace:*",
-    "@plone/components": "workspace:*",
     "@plone/icons": "workspace:*",
     "@plone/helpers": "workspace:*",
     "@plone/layout": "workspace:*",

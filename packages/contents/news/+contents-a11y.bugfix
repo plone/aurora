@@ -1,0 +1,1 @@
+Fixed the screen reader results count, and gave items without a workflow state a "No workflow state" label for screen readers. @sneridagh

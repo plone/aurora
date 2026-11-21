@@ -32,19 +32,20 @@ import {
 } from '@plone/aurora/app/middleware.server';
 import { PersonalTools } from '@plone/layout/components/Toolbar/PersonalTools/PersonalTools';
 import { MoreMenu } from '@plone/layout/components/Toolbar/MoreMenu/MoreMenu';
+import { ContentTypesMenu } from '@plone/layout/components/Toolbar/ContentTypesMenu/ContentTypesMenu';
+import { getMoreMenuData } from '@plone/layout/helpers/moreMenu';
 import type { RootLoader } from '@plone/aurora/app/root';
 import { FolderIcon } from '@plone/icons';
 import Pencil from '@plone/icons/svg/pencil.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
-import { shouldShowToolbar } from '@plone/layout/helpers';
+import { canViewContents, shouldShowToolbar } from '@plone/layout/helpers';
 import { Plug, PluggablesProvider } from '@plone/layout/components/Pluggable';
 import clsx from 'clsx';
 import config from '@plone/registry';
 
 import styles from '@plone/layout/slots/App/App.module.css';
 import stylesheet from '@plone/aurora/.plone/publicui.css?url';
-import { ContentTypesMenu } from '../components/Toolbar/ContentTypesMenu';
 
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
   matches,
@@ -94,27 +95,11 @@ export async function loader({
   const content = context.get(ploneContentContext);
   const user = context.get(ploneUserContext);
   const multilingual = !!context.get(ploneSiteContext)?.features?.multilingual;
-  const canEdit = shouldShowToolbar(content);
   const cli = context.get(ploneClientContext);
-  const [workflowResult, typeResult] =
-    canEdit && (content['@type'] as string) !== 'Plone Site'
-      ? await Promise.all([
-          cli.getWorkflow({ path: content['@id'] }).catch(() => null),
-          cli.getType({ type: content['@type'] }).catch(() => null),
-        ])
-      : [null, null];
-  const workflow = workflowResult?.data as unknown as
-    | {
-        state?: { id: string; title: string };
-        transitions?: { '@id': string; title: string }[];
-      }
-    | undefined;
-  const layouts = (typeResult?.data.layouts ?? []).filter(
-    (layout) => layout in config.views.layoutViews,
-  );
+  const moreData = await getMoreMenuData(cli, content);
   return {
     content,
-    moreData: { workflow, layouts },
+    moreData,
     multilingual,
     user: user && {
       id: user.id,
@@ -202,27 +187,32 @@ export default function Index() {
                     <Pencil />
                   </Link>
                 </Plug>
-                <Plug
-                  pluggable="toolbar-top"
-                  id="button-contents"
-                  // @ts-expect-error this is currently typed as never[]
-                  dependencies={[location.pathname]}
-                >
-                  <Link
-                    className="secondary"
-                    aria-label="Contents"
-                    href={`/@@contents${location.pathname.replace(/^\/$/, '')}`}
+                {canViewContents(content) && (
+                  <Plug
+                    pluggable="toolbar-top"
+                    id="button-contents"
+                    // @ts-expect-error this is currently typed as never[]
+                    dependencies={[location.pathname]}
                   >
-                    <FolderIcon />
-                  </Link>
-                </Plug>
+                    <Link
+                      className="secondary"
+                      aria-label="Contents"
+                      href={`/@@contents${location.pathname.replace(/^\/$/, '')}`}
+                    >
+                      <FolderIcon />
+                    </Link>
+                  </Plug>
+                )}
                 <Plug
                   pluggable="toolbar-top"
                   id="button-add"
                   // @ts-expect-error this is currently typed as never[]
                   dependencies={[location.pathname]}
                 >
-                  <ContentTypesMenu content={content} />
+                  <ContentTypesMenu
+                    content={content}
+                    path={location.pathname}
+                  />
                 </Plug>
                 <Plug
                   pluggable="toolbar-top"

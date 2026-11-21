@@ -46,6 +46,7 @@ const menuItemStyles = tv({
     text-sm leading-6 no-underline forced-color-adjust-none select-none
     [-webkit-tap-highlight-color:transparent]
     last:border-b-0
+    data-focus-visible:z-20
     selected:pr-1
     [&[href]]:cursor-pointer
   `,
