@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.12 (2026-11-21)
+
+### Feature
+
+- Add `updateTypeSchema`, which replaces the fields and fieldsets of a type with `PUT /@types/{type}`. @sneridagh 
+
 ## 2.0.0-alpha.11 (2026-11-06)
 
 ### Bugfix
