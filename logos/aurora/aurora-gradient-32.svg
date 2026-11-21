@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Aurora">
+<defs>
+<clipPath id="f32c"><circle cx="16" cy="16" r="16"/></clipPath>
+<linearGradient id="f32s" x1="0" y1="0" x2="0" y2="16" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#262b74"/><stop offset=".45" stop-color="#6e3c96"/>
+<stop offset=".78" stop-color="#e0607a"/><stop offset="1" stop-color="#f9a35e"/></linearGradient>
+<radialGradient id="f32g" cx="16" cy="16" r="11" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#ffe2aa" stop-opacity=".95"/><stop offset="1" stop-color="#ffb070" stop-opacity="0"/></radialGradient>
+<linearGradient id="f32w" x1="0" y1="16" x2="0" y2="32" gradientUnits="userSpaceOnUse">
+<stop offset="0" stop-color="#232965"/><stop offset="1" stop-color="#0e1434"/></linearGradient>
+</defs>
+<g clip-path="url(#f32c)">
+<rect width="32" height="16" fill="url(#f32s)"/>
+<rect width="32" height="16" fill="url(#f32g)"/>
+<rect y="16" width="32" height="16" fill="url(#f32w)"/>
+<rect y="15" width="32" height="1" fill="#ffd59a"/>
+<rect x="7" y="18" width="18" height="1" fill="#f8a862"/>
+<rect x="10" y="21" width="12" height="1" fill="#f8a862" opacity=".75"/>
+<rect x="13" y="24" width="6" height="1" fill="#f8a862" opacity=".5"/>
+</g>
+</svg>
