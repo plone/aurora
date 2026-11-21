@@ -1,1 +1,0 @@
-Add `config.settings.behaviorMetadata`, which describes behaviors to the content types control panel: their group, the behaviors they include, their alternatives, and whether they're deprecated. @sneridagh
