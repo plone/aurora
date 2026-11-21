@@ -9,18 +9,18 @@ myst:
 
 # Vite dependency pre-bundling
 
-This guide shows you how to declare third-party dependencies for pre-bundling so Vite resolves more of them at startup instead of discovering them lazily during dev.
+This guide shows you how to declare third-party dependencies for pre-bundling so Vite resolves more of them at startup instead of discovering them lazily during development.
 
 Aurora runs in a pnpm monorepo.
 Vite treats workspace packages as source files and does not scan them upfront for their third-party dependencies.
 Instead, it discovers them the first time a page imports them, triggering a re-bundle and a browser reload.
-In a large project, this causes several reload cycles and noticeably slows down the first page load in dev mode.
+In a large project, this causes several reload cycles and noticeably slows down the first page load in development mode.
 
 The fix is to declare those third-party dependencies in `optimizeDeps.include`.
 Aurora uses two places for these declarations depending on whether the package is a registered add-on.
 
 ```{important}
-Only declare a package as a registered add-on if it configures the application — registering slots, routes, or components into the Aurora framework.
+Only declare a package as a registered add-on if it configures the application—registering slots, routes, or components into the Aurora framework.
 Pure libraries such as component kits and utility packages must not be add-ons.
 Registering them as add-ons causes the addon system to generate unnecessary loaders and blurs the boundary between framework participants and libraries.
 If your package is a library, add its entries to `vite.config.ts` in the app that uses it.
@@ -29,9 +29,9 @@ If your package is a library, add its entries to `vite.config.ts` in the app tha
 ## Registered add-ons: `vite.extend.js`
 
 Any package that is a registered Aurora add-on can ship a `vite.extend.js` file in its root.
-`PloneRegistryVitePlugin` picks these up automatically and merges them into the Vite config at startup — no changes to the app are needed.
+`PloneRegistryVitePlugin` picks these up automatically and merges them into the Vite configuration at startup—no changes to the app are needed.
 
-The file must export a default function that receives the current config and returns a modified copy:
+The file must export a default function that receives the current configuration and returns a modified copy:
 
 ```js
 // packages/my-addon/vite.extend.js
@@ -57,16 +57,16 @@ export default function (config) {
 Add a `"pkg > dep"` entry for every direct dependency of your add-on that is not itself a workspace package.
 You do not need entries for:
 
-- Other Aurora add-ons or workspace packages — Vite excludes them from
+- Other Aurora add-ons or workspace packages—Vite excludes them from
   optimization automatically because it treats them as source files.
-- Dev dependencies.
+- Development dependencies.
 - Peer dependencies that the host app provides.
 
 If a dependency exports subpaths you use (for example `some-lib/react` or `some-lib/client`), add a separate entry for each subpath.
 Vite does not discover subpath exports automatically from the main entry.
 
 If a dependency is only used in server-side code (for example `*.server.*` files), add it to `ssr.optimizeDeps.include` instead of `optimizeDeps.include` so it isn't pre-bundled for the browser.
-Declaring it in `ssr.optimizeDeps.include` alone is not always enough — Vite's client-side dependency scanner can still pick it up through re-exports.
+Declaring it in `ssr.optimizeDeps.include` alone is not always enough—Vite's client-side dependency scanner can still pick it up through re-exports.
 If that happens, also add it to the top-level `optimizeDeps.exclude` in `apps/aurora/vite.config.ts` so it's explicitly kept out of the client bundle.
 
 To keep the lists from drifting, run:
@@ -86,7 +86,7 @@ Run it when:
   `some-lib/react`
 - you move an import between browser-only and server-only code and may need to
   switch between `optimizeDeps.include` and `ssr.optimizeDeps.include`
-- you touch one of the existing optimize-deps config files and want to verify
+- you touch one of the existing optimize-deps configuration files and want to verify
   the list before opening a PR
 
 Recommended workflow:
@@ -107,9 +107,9 @@ Recommended workflow:
 | `@plone/layout` | `packages/layout/vite.extend.js` |
 | `@plone/cmsui` | `packages/cmsui/vite.extend.js` |
 
-## Non-add-on workspace packages and app deps: `vite.config.ts`
+## Non-add-on workspace packages and app dependencies: `vite.config.ts`
 
-Packages that are not registered add-ons — currently `@plone/components`, `@plone/icons`, `@plone/quanta`, and `@plone/helpers` — cannot use `vite.extend.js` because `PloneRegistryVitePlugin` never loads their files.
+Packages that are not registered add-ons—currently `@plone/components`, `@plone/icons`, `@plone/quanta`, and `@plone/helpers`—cannot use `vite.extend.js` because `PloneRegistryVitePlugin` never loads their files.
 List their dependencies directly in `apps/aurora/vite.config.ts` under `optimizeDeps.include`.
 
 The same rule applies to packages that are direct dependencies of the app itself (listed in `apps/aurora/package.json`).

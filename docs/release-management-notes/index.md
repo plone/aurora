@@ -56,7 +56,7 @@ This is because Plone Aurora projects rely on the DOM of the stable version for 
 The removal of any property or tag is also considered a breaking change.
 This especially includes `className` props that would cause existing CSS to fail.
 
-The addition of DOM elements is also considered a breaking change, because it could result in delivering unstyled or uncustomized content in a Plone Aurora project.
+The addition of DOM elements is also considered a breaking change, because it could result in delivering content that is not styled or not customized in a Plone Aurora project.
 
 ```{note}
 It is not considered a breaking change when the change to the DOM is the addition or introduction of a property, such as the addition of a class name to a component or tag.

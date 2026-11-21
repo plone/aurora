@@ -15,7 +15,7 @@ myst:
 Its components are built on [React Aria Components](https://react-aria.adobe.com/) (RAC), and styled with Tailwind.
 
 This page lists every Quanta component, and how it relates to React Aria's official Tailwind starter.
-It's the inventory for aligning Quanta with React Aria 1.22, tracked in [plone/aurora#275](https://github.com/plone/aurora/issues/275).
+It's the inventory for aligning Quanta with React Aria 1.22, tracked in [`plone/aurora#275`](https://github.com/plone/aurora/issues/275).
 While that work is in progress, the {guilabel}`Changes needed` column says what each component still needs.
 
 ## The reference: React Aria's Tailwind starter
@@ -115,7 +115,7 @@ Quanta keeps the RAC `*Field` parts as the reference for hand-written forms.
 | `Popover` | `Popover.tsx` | `aligned` | |
 | `Dialog`, `Heading` | `Dialog.tsx` | `aligned` | |
 | `DialogTrigger` | none | extra | Re-exported from RAC. Used by `cmsui` (ImageWidget, ObjectBrowserTrigger). |
-| `Modal` | `Modal.tsx` | `aligned` | At most 600 px wide (or 90% of the viewport). To change it, set the `--modal-max-width` custom property in its `className`, for example `className="[--modal-max-width:360px]"`. Also merges a `className`. |
+| `Modal` | `Modal.tsx` | `aligned` | At most 600 pixels wide (or 90% of the viewport). To change it, set the `--modal-max-width` custom property in its `className`, for example `className="[--modal-max-width:360px]"`. Also merges a `className`. |
 | `Tooltip` | `Tooltip.tsx` | `aligned` | |
 | `Sheet` | `Sheet.tsx` | `aligned` | A full-height side panel on the left or right, flush with the edge. See {ref}`quanta-side-panel-label`. |
 

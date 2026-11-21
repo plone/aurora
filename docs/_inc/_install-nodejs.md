@@ -11,7 +11,7 @@
     node -v
     ```
 
-3.  Install and enable the latest {term}`corepack` so that it uses the package manager version pinned by Plone Aurora.
+3.  Install and enable the latest {term}`Corepack` so that it uses the package manager version pinned by Plone Aurora.
 
     ```shell
     npm install --global corepack@latest

@@ -75,7 +75,7 @@ The block settings form re-evaluates the schema on every change, so these update
 - `actions` limits the values a `choices`/`actions` widget offers.
 - `value` makes the widget controlled, so a value coerced by a side effect is reflected immediately.
 
-## Example: coupling alignment with width and size
+## Example: Coupling alignment with width and size
 
 Suppose a block should, when floated (left or right), fix its block width to `default` and drop the large size, then release both controls when centered again.
 You could express that coupling like this:
@@ -137,7 +137,7 @@ export function BlockSchema({
 
 The two mechanisms work together:
 
-- `align.onChangeSideEffects` **writes** the coupled values (`blockWidth: 'default'`, and a large `size` coerced to medium) so the stored data — and therefore the rendered block — stays consistent.
+- `align.onChangeSideEffects` **writes** the coupled values (`blockWidth: 'default'`, and a large `size` coerced to medium) so the stored data—and therefore the rendered block—stays consistent.
 - The reactive `blockWidth.isDisabled`, `size.actions` and the controlled `value`s **present** that state in the editor: the width control is disabled, the large size is not offered, and the coerced values are shown.
 
 Switching back to `center` returns an empty object from `onChangeSideEffects`, and the reactive schema re-enables the width control and re-offers the large size.

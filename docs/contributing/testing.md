@@ -89,7 +89,7 @@ pnpm test src/components/theme/Image
 
 (testing-plone-client-label)=
 
-## Testing @plone/client
+## Testing `@plone/client`
 
 Unlike the other packages, the {program}`@plone/client` package requires a running Plone backend to run its tests, since its tests exercise real HTTP requests against a Plone site.
 

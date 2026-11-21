@@ -194,7 +194,7 @@ This stores the selected value under:
 }
 ```
 
-Use this only when you need compatibility with an existing data shape (eg. Plone Volto's legacy blocks).
+Use this only when you need compatibility with an existing data shape (for example, Plone Volto's legacy blocks).
 For new Plone Aurora code, flat fields such as `theme` are the preferred default.
 
 ## Why `blockWidth` is different

@@ -9,7 +9,7 @@ myst:
 
 (create-package-label)=
 
-# Create a package: frontend add-on only
+# Create a package: Frontend add-on only
 
 This chapter describes how you can create a package with only a frontend add-on using {term}`Cookieplone`.
 Cookieplone is the recommended way to create a package as an add-on for Plone that uses the Plone Aurora frontend.
@@ -77,7 +77,7 @@ Each question offers a sensible default that you can accept by pressing {kbd}`En
 | Prompt | Description | Example |
 | --- | --- | --- |
 | `Add-on Title` | Human-readable name for the add-on. | `Plone Aurora Add-on` |
-| `Frontend Add-on Name` | Short slug used as the NPM package name and output folder. | `plone-aurora-add-on` |
+| `Frontend Add-on Name` | Short slug used as the npm package name and output folder. | `plone-aurora-add-on` |
 | `Project Slug` | URL-friendly identifier used as the repository name. | `plone-aurora-add-on` |
 | `Description` | Short summary of the add-on, used in package metadata and the `README`. | `A new add-on for Plone Aurora.` |
 | `Author` | Name of the add-on author or organization. | `Plone Community` |

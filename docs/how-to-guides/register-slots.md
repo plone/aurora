@@ -214,7 +214,7 @@ It accepts the following parameters.
 `exact`
 :   Boolean.
     Optional.
-    If `true`, then the match will be exact, else matches "begins with", for the given string from `path`.
+    If `true`, then the match will be exact, else matches "begins with," for the given string from `path`.
 
 
 ##### `ContentTypeCondition`

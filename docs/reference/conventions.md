@@ -72,7 +72,7 @@ We also include a basic "baseline" CSS to give you a common starting point.
 These styles are very simple ("vanilla") and easy to override with your own styles.
 You can also use these in Volto projects by installing the `@plone/components` package.
 
-Check out the Storybook for this package at [@plone/components Storybook](https://plone-components.readthedocs.io/latest/?path=/docs/introduction--docs).
+Check out the Storybook for this package at [`@plone/components` Storybook](https://plone-components.readthedocs.io/latest/?path=/docs/introduction--docs).
 
 ## `@plone/quanta` package
 
@@ -82,14 +82,14 @@ The Quanta components are meant for themes that also use Tailwind CSS, like the 
 They're also used in the CMSUI, which is based on Tailwind CSS.
 This package never depends on `@plone/components`; it only depends on `@plone/icons`.
 
-Check out the Storybook for this package at [@plone/quanta Storybook](https://plone-quanta.readthedocs.io/).
+Check out the Storybook for this package at [`@plone/quanta` Storybook](https://plone-quanta.readthedocs.io/).
 
 ## `@plone/icons` package
 
 This package owns the Quanta icon set: the raw SVGs, a React component per icon, the `Icon` wrapper component, the `*.svg?react` type declarations, and the SVGR Vite plugin used to transform SVGs into React components at build time.
 It has no dependency on any other Plone package.
 
-Check out the Storybook for this package at [@plone/icons Storybook](https://plone-icons.readthedocs.io/).
+Check out the Storybook for this package at [`@plone/icons` Storybook](https://plone-icons.readthedocs.io/).
 
 ## `@plone/layout` package
 
@@ -98,7 +98,7 @@ This package holds the structural components of the Plone 7 frontend, such as `H
 These components handle the overall layout and structure of the app.
 When adding new structural components, add them as slots so they can be easily customized.
 
-You can see the Storybook for this package at [@plone/layout Storybook](https://plone-layout.readthedocs.io/en/latest/?path=/story/app--default).
+You can see the Storybook for this package at [`@plone/layout` Storybook](https://plone-layout.readthedocs.io/en/latest/?path=/story/app--default).
 
 This package needs to support all kinds of theming systems, so avoid using CSS framework-specific classes (like Tailwind CSS or Bootstrap) in these components.
 That means all components here should be free of Tailwind or any other CSS framework.

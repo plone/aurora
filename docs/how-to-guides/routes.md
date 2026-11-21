@@ -58,7 +58,7 @@ See the {ref}`route-registration-api-reference` for the complete API reference.
 :   An optional array of child routes.
     It is an array of route definitions that can be nested within the parent route.
 
-### `route` – standard route
+### `route`–standard route
 
 Use the route type `route` to define a route for a specific path.
 The following code example will create a `/login` route that renders the component from `@plone/cmsui/routes/login.tsx`.
@@ -76,7 +76,7 @@ config.registerRoute({
 });
 ```
 
-### `layout` – layout with children
+### `layout`–layout with children
 
 Use the route type `layout` to define shared page layouts for a set of routes.
 The following code example will create two routes—`/home` and `/settings`—both of which will be rendered inside the layout component from `@my-addon/routes/layouts/DashboardLayout.tsx`.
@@ -101,7 +101,7 @@ config.registerRoute({
 });
 ```
 
-### `index` – default route in a context
+### `index`–default route in a context
 
 The `index` route type is rendered when no sub-route is matched.
 It must be nested as a child inside a parent route type of `layout` or `prefix`.
@@ -131,7 +131,7 @@ config.registerRoute({
 });
 ```
 
-### `prefix` – structural grouping without layout
+### `prefix`–structural grouping without layout
 
 Use the type `prefix` to group routes under a common path prefix without introducing a layout component.
 
