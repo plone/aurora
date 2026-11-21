@@ -7,15 +7,11 @@ import {
   type ContentTypesDriver,
   type FieldType,
   type TypeSchema,
+  type WorkflowAssignments,
   type WorkflowChangeJob,
-  type WorkflowChangeRequest,
+  type WorkflowChangePreview,
   type WorkflowInfo,
 } from '@plone/controlpanels';
-import {
-  toWorkflowChangeBody,
-  toWorkflowChangeGroups,
-  type WorkflowDryRunResponse,
-} from '../../helpers/contentTypesApi';
 
 /** Where the driver's resource routes live (see `routes/api/contentTypes.tsx`). */
 const API = '/@content-types';
@@ -34,60 +30,26 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return body as T;
 }
 
-const json = (body: unknown): RequestInit => ({
-  method: 'POST',
+const send = (method: string, body: unknown): RequestInit => ({
+  method,
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify(body),
 });
 
 /**
  * The content types control panel's driver in Aurora. It calls Aurora's
- * `@content-types` resource routes, which talk to plone.restapi on the
- * server.
+ * `@content-types` resource routes, which run `@plone/controlpanels`'
+ * plone.restapi driver on the server, with the user's credentials.
  *
- * The capabilities depend on the backend (see `contentTypesBackend`). With
- * today's plone.restapi, every capability is off: a type's settings are its
- * name, description and what it can contain, and behaviors are an unordered
- * on/off map. With `@content-types`, `@behaviors` and `@workflows`
- * (plone/plone.restapi#2061) the settings, the behavior order and preview,
- * copying and workflows turn on. Schemas use `@types` either way, which
- * can't reorder fieldsets.
- *
- * plone.restapi changes workflows one type at a time, while the request
- * waits, so a change is a finished job once it answers.
+ * The capabilities depend on the backend (see `contentTypesBackend`), and
+ * the route loaders pass them.
  */
 export function createAuroraDriver(
   capabilities: ContentTypesCapabilities = NO_CAPABILITIES,
 ): ContentTypesDriver {
   const typePath = (id: string) => `${API}/${encodeURIComponent(id)}`;
-  let workflows:
-    Promise<{ default: string | null; workflows: WorkflowInfo[] }> | undefined;
-  const loadWorkflows = () => {
-    workflows ??= request(`${API}/@workflows`);
-    // Ask again next time when it failed.
-    workflows.catch(() => (workflows = undefined));
-    return workflows;
-  };
+  // Workflow changes finish while the request waits, so the job is known.
   const jobs = new Map<string, WorkflowChangeJob>();
-  const dryRun = (type: string, change: WorkflowChangeRequest) =>
-    request<WorkflowDryRunResponse>(
-      `${typePath(type)}/workflow`,
-      json(toWorkflowChangeBody(change, null, true)),
-    );
-  // The site default, and with it the types that follow it.
-  const changeDefault = (
-    change: WorkflowChangeRequest,
-    current: string | null,
-    dryRun: boolean,
-  ) =>
-    request<WorkflowDryRunResponse & { types: string[]; changed: number }>(
-      `${API}/@workflows`,
-      json({
-        default: change.workflow,
-        state_map: change.stateMap?.[current ?? ''] ?? {},
-        dry_run: dryRun,
-      }),
-    );
 
   const driver: ContentTypesDriver = {
     capabilities,
@@ -95,42 +57,23 @@ export function createAuroraDriver(
     listTypes: async () =>
       (await request<{ items: ContentTypeSummary[] }>(API)).items,
 
-    createType: (type) =>
-      request<ContentTypeSummary>(API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(type),
-      }),
+    createType: (type) => request<ContentTypeSummary>(API, send('POST', type)),
 
     deleteType: async (id) => {
-      await request(`${API}/${encodeURIComponent(id)}`, { method: 'DELETE' });
+      await request(typePath(id), { method: 'DELETE' });
     },
 
-    getType: (id) =>
-      request<ContentTypeSettings>(`${API}/${encodeURIComponent(id)}`),
+    getType: (id) => request<ContentTypeSettings>(typePath(id)),
 
     updateType: async (id, changes) => {
-      await request(`${API}/${encodeURIComponent(id)}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(changes),
-      });
+      await request(typePath(id), send('PATCH', changes));
     },
 
-    getSchema: (id) =>
-      request<TypeSchema>(`${API}/${encodeURIComponent(id)}/schema`),
+    getSchema: (id) => request<TypeSchema>(`${typePath(id)}/schema`),
 
     saveSchema: async (id, schema) => {
-      await request(`${API}/${encodeURIComponent(id)}/schema`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(schema),
-      });
+      await request(`${typePath(id)}/schema`, send('PUT', schema));
     },
-
-    listFieldTypes: () => request<FieldType[]>(`${API}/@field-types`),
-
-    listBehaviors: () => request<BehaviorInfo[]>(`${API}/@behaviors`),
 
     previewSchema: (id, behaviors) =>
       request<TypeSchema>(
@@ -139,75 +82,26 @@ export function createAuroraDriver(
         })}`,
       ),
 
-    listWorkflows: async () => (await loadWorkflows()).workflows,
+    listFieldTypes: () => request<FieldType[]>(`${API}/@field-types`),
 
-    getWorkflowAssignments: async () => {
-      const [{ default: fallback }, types] = await Promise.all([
-        loadWorkflows(),
-        driver.listTypes(),
-      ]);
-      return {
-        default: fallback,
-        types: Object.fromEntries(
-          types.flatMap((type) =>
-            type.workflow ? [[type.id, type.workflow]] : [],
-          ),
-        ),
-      };
-    },
+    listBehaviors: () => request<BehaviorInfo[]>(`${API}/@behaviors`),
 
-    previewWorkflowChange: async (change) => {
-      if (change.siteDefault) {
-        const response = await changeDefault(change, null, true);
-        return {
-          workflow: response.workflow,
-          groups: toWorkflowChangeGroups(
-            response.types.length
-              ? [{ type: response.types[0], response }]
-              : [],
-          ).map((group) => ({ ...group, types: response.types })),
-          unaffected: response.unaffected,
-        };
-      }
-      const types = change.types ?? [];
-      const runs = await Promise.all(
-        types.map(async (type) => ({
-          type,
-          response: await dryRun(type, change),
-        })),
-      );
-      return {
-        workflow: runs[0]?.response.workflow ?? change.workflow,
-        groups: toWorkflowChangeGroups(runs),
-        unaffected: runs.reduce(
-          (sum, { response }) => sum + response.unaffected,
-          0,
-        ),
-      };
-    },
+    listWorkflows: () => request<WorkflowInfo[]>(`${API}/@workflows`),
+
+    getWorkflowAssignments: () =>
+      request<WorkflowAssignments>(`${API}/@workflow-assignments`),
+
+    previewWorkflowChange: (change) =>
+      request<WorkflowChangePreview>(
+        `${API}/@workflow-changes?preview`,
+        send('POST', change),
+      ),
 
     changeWorkflow: async (change) => {
-      let changed = 0;
-      if (change.siteDefault) {
-        const { current } = await changeDefault(change, null, true);
-        changed = (await changeDefault(change, current, false)).changed ?? 0;
-      }
-      // One type at a time, as the backend changes them.
-      for (const type of change.siteDefault ? [] : (change.types ?? [])) {
-        const { current } = await dryRun(type, change);
-        const result = await request<{ changed: number }>(
-          `${typePath(type)}/workflow`,
-          json(toWorkflowChangeBody(change, current, false)),
-        );
-        changed += result.changed ?? 0;
-      }
-      workflows = undefined;
-      const job: WorkflowChangeJob = {
-        id: `change-${jobs.size + 1}`,
-        status: 'done',
-        progress: 1,
-        changed,
-      };
+      const job = await request<WorkflowChangeJob>(
+        `${API}/@workflow-changes`,
+        send('POST', change),
+      );
       jobs.set(job.id, job);
       return job;
     },

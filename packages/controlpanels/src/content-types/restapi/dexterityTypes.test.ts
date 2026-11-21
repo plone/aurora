@@ -6,7 +6,7 @@ import {
   toBehaviors,
   toFieldTypes,
   toTypeSchemaPut,
-} from './contentTypes';
+} from './dexterityTypes';
 
 describe('toContentTypeSummary', () => {
   it('turns a dexterity types item into a list row', () => {

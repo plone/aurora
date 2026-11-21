@@ -1,17 +1,16 @@
-import {
-  NO_CAPABILITIES,
-  type AllowedContents,
-  type ContentTypeChanges,
-  type ContentTypeSettings,
-  type ContentTypeSummary,
-  type ContentTypesCapabilities,
-  type StateVisibility,
-  type VersioningPolicy,
-  type WorkflowChangeGroup,
-  type WorkflowChangeRequest,
-  type WorkflowInfo,
-} from '@plone/controlpanels';
-import { SITE_TYPE } from './contentTypes';
+import { NO_CAPABILITIES, type ContentTypesCapabilities } from '../driver';
+import type {
+  AllowedContents,
+  ContentTypeChanges,
+  ContentTypeSettings,
+  ContentTypeSummary,
+  StateVisibility,
+  VersioningPolicy,
+  WorkflowChangeGroup,
+  WorkflowChangeRequest,
+  WorkflowInfo,
+} from '../types';
+import { SITE_TYPE } from './dexterityTypes';
 
 // plone.restapi's `@content-types`, `@behaviors` and `@workflows`
 // (plone/plone.restapi#2061) describe types, behaviors and workflows in their
