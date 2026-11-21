@@ -64,7 +64,10 @@ export default function ContentTypesProviders({
       notify={notify}
       useBlocker={useRouterBlocker}
     >
-      <ContentTypesDriverProvider driver={driver}>
+      <ContentTypesDriverProvider
+        driver={driver}
+        behaviorMetadata={config.settings.behaviorMetadata}
+      >
         {children}
       </ContentTypesDriverProvider>
     </ControlPanelsProvider>

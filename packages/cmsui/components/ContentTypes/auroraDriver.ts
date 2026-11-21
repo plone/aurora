@@ -2,6 +2,7 @@ import {
   NO_CAPABILITIES,
   type ContentTypeSettings,
   type ContentTypeSummary,
+  type BehaviorInfo,
   type ContentTypesDriver,
   type FieldType,
   type TypeSchema,
@@ -24,9 +25,6 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return body as T;
 }
 
-const notYet = (what: string) => () =>
-  Promise.reject(new Error(`${what} isn't supported yet`));
-
 /**
  * The content types control panel's driver in Aurora. It calls Aurora's
  * `@content-types` resource routes, which talk to plone.restapi on the
@@ -35,8 +33,8 @@ const notYet = (what: string) => () =>
  * Today's plone.restapi only lists, creates and deletes types, so every
  * capability is off: a type's settings are its name, description and what it
  * can contain. They turn on as plone/plone.restapi#2061 lands. Schemas use
- * `@types`, which can't reorder fieldsets. Behaviors come with their tab
- * (#269, phase 5).
+ * `@types`, which can't reorder fieldsets. Behaviors are an unordered on/off
+ * map, without the fields they add.
  */
 export function createAuroraDriver(): ContentTypesDriver {
   return {
@@ -80,6 +78,6 @@ export function createAuroraDriver(): ContentTypesDriver {
 
     listFieldTypes: () => request<FieldType[]>(`${API}/@field-types`),
 
-    listBehaviors: notYet('Listing behaviors'),
+    listBehaviors: () => request<BehaviorInfo[]>(`${API}/@behaviors`),
   };
 }

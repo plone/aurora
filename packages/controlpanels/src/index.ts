@@ -22,6 +22,7 @@ export type { Message, MessageValues, Translate } from './provider/messages';
 export {
   ContentTypesDriverProvider,
   NO_CAPABILITIES,
+  useBehaviorMetadata,
   useContentTypesDriver,
   useStateColor,
 } from './content-types/driver';
@@ -70,6 +71,14 @@ export type { AddFieldDialogProps } from './content-types/components/FieldsTab/A
 export { AddFieldsetDialog } from './content-types/components/FieldsTab/AddFieldsetDialog';
 export type { AddFieldsetDialogProps } from './content-types/components/FieldsTab/AddFieldsetDialog';
 export * from './content-types/schemaEditing';
+export * from './content-types/behaviorEditing';
+export * from './content-types/behaviorMetadata';
+export { BehaviorsTab } from './content-types/components/BehaviorsTab/BehaviorsTab';
+export type { BehaviorsTabProps } from './content-types/components/BehaviorsTab/BehaviorsTab';
+export { AddBehaviorsDialog } from './content-types/components/BehaviorsTab/AddBehaviorsDialog';
+export type { AddBehaviorsDialogProps } from './content-types/components/BehaviorsTab/AddBehaviorsDialog';
+export { FormPreview } from './content-types/components/BehaviorsTab/FormPreview';
+export type { FormPreviewProps } from './content-types/components/BehaviorsTab/FormPreview';
 export {
   changedSchema,
   changedSettings,

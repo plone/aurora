@@ -1,6 +1,7 @@
 import {
   isCustomField,
   type AllowedContents,
+  type BehaviorInfo,
   type ContentTypeChanges,
   type ContentTypeSettings,
   type ContentTypeSummary,
@@ -79,6 +80,27 @@ export interface DexterityTypeResponse {
   };
 }
 
+/** The names of the behaviors in a type's overview form. */
+const behaviorNames = (response: DexterityTypeResponse) =>
+  response.schema.fieldsets.find((fieldset) => fieldset.id === 'behaviors')
+    ?.fields ?? [];
+
+/**
+ * The behaviors a site has, from any type's overview form. It only has
+ * their titles and descriptions: not the fields they add.
+ */
+export function toBehaviors(response: DexterityTypeResponse): BehaviorInfo[] {
+  return behaviorNames(response).map((name) => {
+    const field = response.schema.properties[name] as
+      { title?: string; description?: string } | undefined;
+    return {
+      name,
+      title: field?.title ?? name,
+      description: field?.description,
+    };
+  });
+}
+
 /** Turns a type's overview form into the control panel's settings. */
 export function toContentTypeSettings(
   id: string,
@@ -87,9 +109,6 @@ export function toContentTypeSettings(
   const { data, schema } = response;
   // The form only has the contents fields for folderish types.
   const folderish = 'filter_content_types' in schema.properties;
-  const behaviorFields =
-    schema.fieldsets.find((fieldset) => fieldset.id === 'behaviors')?.fields ??
-    [];
   const allowed = data.allowed_content_types ?? [];
   const filter = data.filter_content_types;
   const allowedContents: AllowedContents =
@@ -106,15 +125,24 @@ export function toContentTypeSettings(
     folderish,
     ...(folderish && { allowedContents }),
     // A map of behavior names, unordered: plone.restapi#2061 makes it a list.
-    behaviors: behaviorFields.filter((name) => data[name] === true),
+    behaviors: behaviorNames(response).filter((name) => data[name] === true),
   };
 }
 
-/** Turns changed settings into a patch of the type's overview form. */
+/**
+ * Turns changed settings into a patch of the type's overview form. Changed
+ * behaviors need the names of all of them, to turn the others off.
+ */
 export function toDexterityTypePatch(
   changes: ContentTypeChanges,
+  allBehaviors: string[] = [],
 ): Record<string, unknown> {
   const patch: Record<string, unknown> = {};
+  if (changes.behaviors) {
+    for (const name of new Set([...allBehaviors, ...changes.behaviors])) {
+      patch[name] = changes.behaviors.includes(name);
+    }
+  }
   if (changes.title !== undefined) patch.title = changes.title;
   if (changes.description !== undefined) {
     patch.description = changes.description;
