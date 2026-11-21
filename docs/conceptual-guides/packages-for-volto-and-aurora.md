@@ -10,7 +10,7 @@ myst:
 # Packages for Volto and Plone Aurora
 
 Some packages are meant to run unchanged in both Plone Aurora and Volto.
-`@plone/plate`, the editor, works in Volto through the volto-plate add-on.
+`@plone/plate`, the editor, works in Volto through the `volto-plate` add-on.
 `@plone/controlpanels`, the content types control panel, works in Volto core.
 
 The two apps differ in almost everything a UI touches: routing, translations, data fetching, styles and build.
@@ -79,7 +79,7 @@ Both packages follow the same contract, which is react-i18next's.
 The registry then merges its catalogs into the app's, and i18next loads them.
 
 **In Volto,** the messages go into Volto's gettext catalogs.
-volto-plate's {file}`scripts/plate-i18n.mjs` shows how: it generates a `defineMessages` file with every key of the package, so Volto's i18n extraction adds them to the {file}`.po` files, and fills their empty translations from the package's JSON catalogs.
+`volto-plate`'s {file}`scripts/plate-i18n.mjs` shows how: it generates a `defineMessages` file with every key of the package, so Volto's i18n extraction adds them to the {file}`.po` files, and fills their empty translations from the package's JSON catalogs.
 
 ## Styles
 
@@ -102,6 +102,6 @@ Volto's webpack has to compile them too, and their source dependencies, such as 
 ## Dependencies on the registry
 
 `@plone/registry` keeps the app's configuration in its module, so an app must have a single copy.
-A package that uses it lists it as a peer dependency only, with a range that covers both apps (`^3.0.0 || ^4.0.0-alpha.0`: Volto is on 3, Aurora on 4), and as a workspace devDependency for its own tests.
+A package that uses it lists it as a peer dependency only, with a range that covers both apps (`^3.0.0 || ^4.0.0-alpha.0`: Volto is on 3, Aurora on 4), and as a workspace `devDependency` for its own tests.
 As a regular dependency, an app on another version would get a second copy for the package, which would read an empty configuration.
 React is a peer dependency too, for React 16.8 to 19.

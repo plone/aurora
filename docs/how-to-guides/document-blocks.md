@@ -154,7 +154,7 @@ A page stores all its content in one region, `main`...
 ```
 
 The endpoint returns it as the `document` of the list of blocks, next to `document_model`, not as a block.
-A file with neither `block`, `element`, nor `document_model` in its frontmatter is ignored, with a warning.
+A file with neither `block`, `element`, nor `document_model` in its Frontmatter is ignored, with a warning.
 
 ```{note}
 The documentation is in English and is not translated.

@@ -1,3 +1,4 @@
+affordances
 Ansible
 APIs
 architected
@@ -5,6 +6,7 @@ architected
 augmentable
 [Bb]ackend
 backport(ed|ing)?
+Blicca
 [Bb]lockquotes?
 [bB]oolean
 breakpoints?
@@ -16,6 +18,7 @@ bundlers?
 CMFPlone
 CMSUI
 CommonJS
+configlet
 Cookieplone
 Corepack
 Enum
@@ -23,6 +26,7 @@ ESLint
 [eE]xpanders?
 focusable
 Frontmatter
+gettext
 Hostname
 iCalendar
 IDEs
@@ -65,6 +69,7 @@ SVGs?
 syntaxes
 toctree
 transpile[dr]{0,1}
+unlayered
 unregister(ing)?
 uv
 [vV]alidators?

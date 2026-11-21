@@ -10,7 +10,7 @@ myst:
 # Add Tailwind CSS to your add-on
 
 This guide will walk you through the steps to integrate Tailwind CSS into your add-on.
-It assumes you have already set up a basic add-on structure using the {term}`cookieplone` generator.
+It assumes you have already set up a basic add-on structure using the {term}`Cookieplone` generator.
 If you don't have an add-on scaffold, follow {doc}`../get-started/create-package` before you continue.
 
 ## Install Tailwind CSS

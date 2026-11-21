@@ -20,7 +20,7 @@ The fix is to declare those third-party dependencies in `optimizeDeps.include`.
 Aurora uses two places for these declarations depending on whether the package is a registered add-on.
 
 ```{important}
-Only declare a package as a registered add-on if it configures the application — registering slots, routes, or components into the Aurora framework.
+Only declare a package as a registered add-on if it configures the application—registering slots, routes, or components into the Aurora framework.
 Pure libraries such as component kits and utility packages must not be add-ons.
 Registering them as add-ons causes the addon system to generate unnecessary loaders and blurs the boundary between framework participants and libraries.
 If your package is a library, add its entries to `vite.config.ts` in the app that uses it.

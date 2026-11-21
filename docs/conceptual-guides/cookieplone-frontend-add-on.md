@@ -9,7 +9,7 @@ myst:
 
 # Frontend add-on anatomy
 
-This chapter explains the anatomy of a frontend add-on in Plone Aurora that was created with {term}`cookieplone`.
+This chapter explains the anatomy of a frontend add-on in Plone Aurora that was created with {term}`Cookieplone`.
 
 ## Root folder structure
 

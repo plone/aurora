@@ -26,7 +26,7 @@ The complete code of this tutorial is in the GitHub repository [`collective/auro
 
 ## Prerequisites
 
-- A Plone Aurora add-on scaffolded with {term}`cookieplone`
+- A Plone Aurora add-on scaffolded with {term}`Cookieplone`
 - {term}`pnpm` installed and configured for the workspace
 - Basic familiarity with TypeScript and React Router code in a Plone Aurora project
 
