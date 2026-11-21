@@ -38,7 +38,7 @@ If you already know HTML forms or relational databases, the following comparison
 
 | Concept | Similar to | But in Plone Aurora |
 | --- | --- | --- |
-| Field | A column in a relational table, plus the value being edited | It also carries form state: validation errors, required, touched etc. |
+| Field | A column in a relational table, plus the value being edited | It also carries form state: validation errors, required, touched, and other states. |
 | Control | An [HTML form control](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Basic_native_form_controls), such as `<input type="checkbox">` | Usually a component of a design system, such as a Quanta or React Aria component, which renders the HTML control. |
 | Widget | A complex input, such as a date range picker | **Every** field gets a widget, even a simple one. A widget can be as small as a text input or as large as an image picker. |
 | Adapter | Glue code | A widget whose only job is to translate between the widget contract and a control's API. |
