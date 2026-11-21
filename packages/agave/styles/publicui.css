@@ -77,6 +77,17 @@
   /* Blocks */
   .content-area {
     @apply text-base leading-6 font-thin;
+
+    /* The somersault page body (.content-area > .slate-editor)
+       carries none of the .block/.section width classes the inset rules above
+       match, so it rendered flush to the screen edge on phones while the
+       chrome got its inset. Same inline inset, under the outermost threshold;
+       the query resolves against the .content-area container. */
+    @container (max-width: calc(1440px + 2rem)) {
+      & > .slate-editor {
+        padding-inline: calc(var(--spacing) * 6);
+      }
+    }
     .block {
       /* Title block */
       &.block-title {

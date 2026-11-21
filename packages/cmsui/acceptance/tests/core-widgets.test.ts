@@ -97,7 +97,7 @@ test('A control panel shows the terms of its lists, and saves them', async ({
   request,
 }) => {
   await login(page);
-  await page.goto('/controlpanel/navigation', { waitUntil: 'networkidle' });
+  await page.goto('/@@controlpanel/navigation', { waitUntil: 'networkidle' });
 
   // The content API sends the terms of a vocabulary with their titles.
   await expect(page.getByRole('row', { name: 'Page' })).toBeVisible();
@@ -105,7 +105,7 @@ test('A control panel shows the terms of its lists, and saves them', async ({
   const saved = page.waitForResponse(
     (response) =>
       response.request().method() === 'POST' &&
-      response.url().includes('/controlpanel/navigation'),
+      response.url().includes('/@@controlpanel/navigation'),
   );
   await page.getByLabel('Save').click();
   await saved;
@@ -121,7 +121,7 @@ test('A control panel saves its numbers as numbers, and hides passwords', async 
   request,
 }) => {
   await login(page);
-  await page.goto('/controlpanel/mail', { waitUntil: 'networkidle' });
+  await page.goto('/@@controlpanel/mail', { waitUntil: 'networkidle' });
 
   const port = page.getByRole('textbox', { name: 'SMTP port' });
   await expect(port).toHaveValue('25');
@@ -137,7 +137,7 @@ test('A control panel saves its numbers as numbers, and hides passwords', async 
   const saved = page.waitForResponse(
     (response) =>
       response.request().method() === 'POST' &&
-      response.url().includes('/controlpanel/mail'),
+      response.url().includes('/@@controlpanel/mail'),
   );
   await page.getByLabel('Save').click();
   await saved;

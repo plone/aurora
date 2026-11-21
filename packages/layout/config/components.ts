@@ -11,6 +11,7 @@ import {
   Menu,
   MenuItem,
   MenuTrigger,
+  Pagination,
   type BreadcrumbsProps,
   type ContainerProps,
 } from '@plone/components';
@@ -35,6 +36,7 @@ declare module '@plone/types' {
       <T extends object>(props: MenuItemProps<T>) => ReactNode
     >;
     MenuTrigger: ComponentProps<typeof MenuTrigger>;
+    Pagination: ComponentProps<typeof Pagination>;
   }
 }
 
@@ -47,6 +49,7 @@ export default function install(config: ConfigType) {
   config.registerComponent({ name: 'Menu', component: Menu });
   config.registerComponent({ name: 'MenuItem', component: MenuItem });
   config.registerComponent({ name: 'MenuTrigger', component: MenuTrigger });
+  config.registerComponent({ name: 'Pagination', component: Pagination });
 
   return config;
 }

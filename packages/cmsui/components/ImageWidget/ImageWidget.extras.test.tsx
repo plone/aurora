@@ -15,7 +15,7 @@ const blockData = {
 };
 
 const enterUrl = (url: string) => {
-  const input = screen.getByPlaceholderText('Enter an image URL');
+  const input = screen.getByPlaceholderText('Type a URL…');
   fireEvent.change(input, { target: { value: url } });
   fireEvent.keyDown(input, { key: 'Enter' });
 };

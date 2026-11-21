@@ -1,48 +1,83 @@
 import { useTranslation } from 'react-i18next';
 import {
   data,
-  Form,
+  redirect,
   RouterContextProvider,
   useLoaderData,
+  useLocation,
+  useNavigation,
   type LoaderFunctionArgs,
 } from 'react-router';
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
-import { Container, Input } from '@plone/quanta';
+import { flattenToAppURL } from '@plone/helpers';
+import { Container } from '@plone/quanta';
+import { SearchForm } from '../components/SearchResults/SearchForm';
+import { SearchResults } from '../components/SearchResults/SearchResults';
+import { SearchPagination } from '../components/SearchResults/SearchPagination';
+import { sortToQuery } from '../components/SearchResults/SearchSort';
 
 export const handle = {
   bodyClass: 'search-route',
 };
 
+const PAGE_SIZE = 25;
+
 export async function loader({
   request,
-  params,
   context,
 }: LoaderFunctionArgs<RouterContextProvider>) {
   const cli = context.get(ploneClientContext);
 
-  const path = `/${params['*'] || ''}`;
   const url = new URL(request.url);
-  const query = url.searchParams.get('SearchableText') || '';
+  const query = (url.searchParams.get('SearchableText') || '').trim();
+  const requestedStart = Math.max(
+    0,
+    Number(url.searchParams.get('b_start')) || 0,
+  );
+  // Snap to a page boundary so pagination never yields overlapping pages.
+  const bStart = Math.floor(requestedStart / PAGE_SIZE) * PAGE_SIZE;
+  const path = url.searchParams.get('path')?.replace(/\/+$/, '');
+  const root = path?.startsWith('/') ? path : null;
 
+  let results;
   try {
-    const results = await cli.search({
+    results = await cli.search({
       query: {
-        SearchableText: query ? `${query}*` : '',
-        path: {
-          query: path || '/',
-        },
+        // An empty SearchableText with use_site_search_settings returns a bare
+        // list instead of a batch, so omit it to search everything.
+        ...(query ? { SearchableText: `${query}*` } : {}),
+        use_site_search_settings: 1,
+        ...(root ? { path: { query: root } } : {}),
+        b_start: bStart,
+        b_size: PAGE_SIZE,
+        ...sortToQuery(url.searchParams.get('sort')),
       },
     });
-
-    return {
-      search: results.data.items,
-      params: query,
-    };
   } catch (error: any) {
     throw data('Search failed', {
       status: typeof error.status === 'number' ? error.status : 500,
     });
   }
+
+  const total = results.data.items_total ?? 0;
+
+  if (total > 0 && bStart >= total) {
+    const lastStart = Math.floor((total - 1) / PAGE_SIZE) * PAGE_SIZE;
+    if (lastStart > 0) {
+      url.searchParams.set('b_start', String(lastStart));
+    } else {
+      url.searchParams.delete('b_start');
+    }
+    throw redirect(`${url.pathname}?${url.searchParams.toString()}`);
+  }
+
+  return {
+    search: flattenToAppURL(results.data.items ?? []),
+    total,
+    params: query,
+    bStart,
+    bSize: PAGE_SIZE,
+  };
 }
 
 export const meta = () => {
@@ -51,61 +86,28 @@ export const meta = () => {
 
 export default function SearchRoute() {
   const { t } = useTranslation();
-  const { search, params } = useLoaderData<typeof loader>();
+  const { search, total, params, bStart, bSize } =
+    useLoaderData<typeof loader>();
+
+  const navigation = useNavigation();
+  const location = useLocation();
+  const isLoading =
+    navigation.state === 'loading' &&
+    navigation.location?.pathname === location.pathname;
 
   return (
     <div className="content-area">
       <Container width="default" className="route-search">
-        <h1 className="documentFirstHeading">
-          {params
-            ? `${t('publicui.search.title')} "${params}"`
-            : t('publicui.search.results')}
-        </h1>
-        <Form>
-          <Input
-            type="search"
-            id="search"
-            name="SearchableText"
-            placeholder={t('publicui.search.placeholder')}
-          />
-          {/* <Icon name={zoomSVG} size="18px" /> */}
-        </Form>
-        {/*  */}
-        {/* <Search items={sitemapnavigation.items} /> */}
-        {search?.length > 0 ? (
-          search.map((item) => (
-            <article className="tileItem" key={item['@id']}>
-              <h2 className="tileHeadline">
-                {/* <UniversalLink
-                        item={item}
-                        className="summary url"
-                        title={item['@type']}
-                      > */}
-                {item.title}
-                {/* </UniversalLink> */}
-              </h2>
-              {item.description && (
-                <div className="tileBody">
-                  <span className="description">{item.description}</span>
-                </div>
-              )}
-              <div className="tileFooter">
-                Read more
-                {/* <UniversalLink item={item}>
-                        <FormattedMessage
-                          id="Read More…"
-                          defaultMessage="Read More…"
-                        />
-                      </UniversalLink> */}
-              </div>
-              <div className="visualClear" />
-            </article>
-          ))
-        ) : (
-          <div>
-            <p className="noResults">{t('publicui.search.noResults')}</p>
-          </div>
-        )}
+        <h1 className="documentFirstHeading">{t('publicui.search.heading')}</h1>
+        <SearchForm />
+        <SearchResults
+          items={search}
+          total={total}
+          query={params}
+          bStart={bStart}
+          loading={isLoading}
+        />
+        <SearchPagination total={total} bStart={bStart} bSize={bSize} />
       </Container>
     </div>
   );

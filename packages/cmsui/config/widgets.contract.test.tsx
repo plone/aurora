@@ -19,6 +19,9 @@ import {
   PasswordWidget,
   UrlWidget,
 } from '../components/InputWidgets/InputWidgets';
+import { ObjectWidget } from '../components/ObjectWidget/ObjectWidget';
+import { ObjectListWidget } from '../components/ObjectListWidget/ObjectListWidget';
+import type { ObjectListItem } from '../components/ObjectListWidget/objectList';
 
 // Every core widget runs the contract tests.
 
@@ -193,3 +196,30 @@ describeWidgetContract('UrlWidget', UrlWidget, {
     expected: 'https://plone.org/news',
   },
 });
+
+// A list or an object has no required state of its own: the form validates
+// it (`minItems`, or the required fields of the object).
+const noRequiredState =
+  'A group of fields has no required state: the form validates it.';
+
+describeWidgetContract<ObjectListItem | null>('ObjectWidget', ObjectWidget, {
+  value: { title: 'Plone' },
+  skip: { required: noRequiredState },
+});
+
+describeWidgetContract<ObjectListItem[] | null>(
+  'ObjectListWidget',
+  ObjectListWidget,
+  {
+    value: [{ '@id': 'a', title: 'Sitemap' }],
+    props: {
+      schema: {
+        title: 'Action',
+        fieldsets: [{ id: 'default', title: 'Default', fields: ['title'] }],
+        properties: { title: { title: 'Title' } },
+        required: [],
+      } as never,
+    },
+    skip: { required: noRequiredState },
+  },
+);

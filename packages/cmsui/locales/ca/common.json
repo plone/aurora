@@ -1,0 +1,49 @@
+{
+  "cmsui": {
+    "controlpanelDescriptions": {
+      "addons": "Instal·la, actualitza i elimina complements"
+    },
+    "addons": {
+      "title": "Complements",
+      "description": "Instal·la, actualitza i desinstal·la els complements d'aquest lloc. Aquí només apareixen els complements que formen part de la compilació.",
+      "docsLink": "Afegir un complement nou",
+      "installed": "Instal·lats",
+      "available": "Disponibles",
+      "empty": "No s'ha trobat cap complement.",
+      "noMatches": "Cap complement no coincideix amb la cerca.",
+      "install": "Instal·la",
+      "uninstall": "Desinstal·la",
+      "upgrade": "Actualitza",
+      "upgradeAvailable": "Actualització disponible",
+      "upgradeFromTo": "Actualització {{from}} → {{to}}",
+      "actions": "Accions de {{title}}",
+      "uninstallTitle": "Voleu desinstal·lar {{title}}?",
+      "uninstallDescription": "És possible que se n'eliminin del lloc la configuració i els tipus de contingut que afegeix.",
+      "cancel": "Cancel·la",
+      "searchLabel": "Cerca un complement",
+      "searchPlaceholder": "Cerca un complement",
+      "resultsCount_one": "{{count}} complement trobat",
+      "resultsCount_other": "{{count}} complements trobats",
+      "actionError": "No ha funcionat."
+    },
+    "upgrade": {
+      "title": "Actualitza el lloc Plone",
+      "description": "Executa els passos d'actualització de la configuració del lloc després d'actualitzar Plone.",
+      "docsLink": "Llegeix la guia d'actualització",
+      "versions": "Versions de la configuració",
+      "upToDate": "El teu lloc està actualitzat.",
+      "outdated": "La configuració del lloc està desactualitzada i cal actualitzar-la.",
+      "instanceVersion": "Configuració activa",
+      "fsVersion": "Darrera configuració disponible",
+      "steps": "Passos d'actualització",
+      "stepsDescription": "S'executaran aquests passos d'actualització. Alguns actualitzen el catàleg o la configuració de seguretat, cosa que pot trigar molt en llocs grans.",
+      "backup": "Assegura't de tenir una còpia de seguretat del lloc abans d'actualitzar-lo.",
+      "dryRun": "Simulació",
+      "run": "Actualitza",
+      "report": "Informe d'actualització",
+      "done": "L'actualització ha acabat. El teu lloc està actualitzat.",
+      "dryRunDone": "Simulació acabada. No s'ha desat cap canvi.",
+      "error": "L'actualització ha fallat."
+    }
+  }
+}

@@ -51,8 +51,8 @@ async function createImagePage(page: Page) {
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             { type: 'title', children: [{ text: 'Image block' }] },
             image({ align: 'left', size: 'm', blockWidth: 'default' }),

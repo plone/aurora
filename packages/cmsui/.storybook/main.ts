@@ -1,5 +1,6 @@
 import type { StorybookConfig } from '@storybook/react-vite';
 import { mergeConfig } from 'vite';
+import { PloneSVGRVitePlugin } from '@plone/icons/vite-plugin-svgr';
 
 const config: StorybookConfig = {
   // For some reason the property does not allow negation
@@ -24,6 +25,7 @@ const config: StorybookConfig = {
   },
   async viteFinal(config) {
     return mergeConfig(config, {
+      plugins: [PloneSVGRVitePlugin()],
       resolve: {
         tsconfigPaths: true,
       },

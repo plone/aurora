@@ -1,0 +1,49 @@
+{
+  "cmsui": {
+    "controlpanelDescriptions": {
+      "addons": "Instale, atualize e remova complementos"
+    },
+    "addons": {
+      "title": "Complementos",
+      "description": "Instale, atualize e desinstale os complementos deste site. Aqui aparecem apenas os complementos que fazem parte da build.",
+      "docsLink": "Adicionar um novo complemento",
+      "installed": "Instalados",
+      "available": "Disponíveis",
+      "empty": "Nenhum complemento encontrado.",
+      "noMatches": "Nenhum complemento corresponde à sua busca.",
+      "install": "Instalar",
+      "uninstall": "Desinstalar",
+      "upgrade": "Atualizar",
+      "upgradeAvailable": "Atualização disponível",
+      "upgradeFromTo": "Atualização {{from}} → {{to}}",
+      "actions": "Ações de {{title}}",
+      "uninstallTitle": "Desinstalar {{title}}?",
+      "uninstallDescription": "As configurações dele e os tipos de conteúdo que ele adiciona podem ser removidos do site.",
+      "cancel": "Cancelar",
+      "searchLabel": "Encontrar um complemento",
+      "searchPlaceholder": "Encontrar um complemento",
+      "resultsCount_one": "{{count}} complemento encontrado",
+      "resultsCount_other": "{{count}} complementos encontrados",
+      "actionError": "Não funcionou."
+    },
+    "upgrade": {
+      "title": "Atualizar o site Plone",
+      "description": "Execute os passos de atualização da configuração do site depois de atualizar o Plone.",
+      "docsLink": "Leia o guia de atualização",
+      "versions": "Versões da configuração",
+      "upToDate": "Seu site está atualizado.",
+      "outdated": "A configuração do site está desatualizada e precisa ser atualizada.",
+      "instanceVersion": "Configuração ativa",
+      "fsVersion": "Última configuração disponível",
+      "steps": "Passos de atualização",
+      "stepsDescription": "Estes passos de atualização serão executados. Alguns atualizam o catálogo ou as configurações de segurança, o que pode demorar em sites grandes.",
+      "backup": "Certifique-se de ter um backup do site antes de atualizá-lo.",
+      "dryRun": "Simulação",
+      "run": "Atualizar",
+      "report": "Relatório de atualização",
+      "done": "A atualização terminou. Seu site está atualizado.",
+      "dryRunDone": "Simulação concluída. Nenhuma alteração foi salva.",
+      "error": "A atualização falhou."
+    }
+  }
+}

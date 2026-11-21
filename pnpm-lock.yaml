@@ -179,10 +179,10 @@ catalogs:
     '@react-router/dev':
       specifier: 8.5.0
       version: 8.5.0
-    '@react-router/node':
+    '@react-router/express':
       specifier: 8.5.0
       version: 8.5.0
-    '@react-router/serve':
+    '@react-router/node':
       specifier: 8.5.0
       version: 8.5.0
     '@react-spectrum/utils':
@@ -191,6 +191,9 @@ catalogs:
     '@react-types/shared':
       specifier: ^3.37.0
       version: 3.37.0
+    '@tailwindcss/postcss':
+      specifier: 4.2.2
+      version: 4.2.2
     '@tailwindcss/vite':
       specifier: ^4.2.2
       version: 4.2.2
@@ -314,6 +317,9 @@ importers:
       '@plone/contents':
         specifier: workspace:*
         version: link:../../packages/contents
+      '@plone/controlpanels':
+        specifier: workspace:*
+        version: link:../../packages/controlpanels
       '@plone/helpers':
         specifier: workspace:*
         version: link:../../packages/helpers
@@ -341,12 +347,18 @@ importers:
       '@plone/theming':
         specifier: workspace:*
         version: link:../../packages/theming
+      '@react-router/express':
+        specifier: 'catalog:'
+        version: 8.5.0(express@5.2.1(supports-color@8.1.1))(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@5.9.2)
       '@react-router/node':
         specifier: 'catalog:'
         version: 8.5.0(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@5.9.2)
-      '@react-router/serve':
-        specifier: 'catalog:'
-        version: 8.5.0(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@5.9.2)
+      compression:
+        specifier: ^1.8.1
+        version: 1.8.1(supports-color@8.1.1)
+      express:
+        specifier: ^5.2.1
+        version: 5.2.1(supports-color@8.1.1)
       i18next:
         specifier: 'catalog:'
         version: 26.3.6(typescript@5.9.2)
@@ -365,6 +377,9 @@ importers:
       jwt-decode:
         specifier: ^4.0.0
         version: 4.0.0
+      morgan:
+        specifier: ^1.10.1
+        version: 1.10.1(supports-color@8.1.1)
       react:
         specifier: ^19.2.7
         version: 19.3.1
@@ -387,6 +402,9 @@ importers:
       '@babel/preset-typescript':
         specifier: ^7.27.1
         version: 7.28.5(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
+      '@plone/test-addon':
+        specifier: workspace:*
+        version: link:../../packages/test-addon
       '@plone/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -654,6 +672,9 @@ importers:
       '@plone/components':
         specifier: workspace:*
         version: link:../components
+      '@plone/controlpanels':
+        specifier: workspace:*
+        version: link:../controlpanels
       '@plone/helpers':
         specifier: workspace:*
         version: link:../helpers
@@ -1023,6 +1044,100 @@ importers:
       vitest-axe:
         specifier: ^0.1.0
         version: 0.1.0(vitest@4.1.4)
+
+  packages/controlpanels:
+    dependencies:
+      '@plone/helpers':
+        specifier: workspace:*
+        version: link:../helpers
+      '@plone/icons':
+        specifier: workspace:*
+        version: link:../icons
+      '@plone/quanta':
+        specifier: workspace:*
+        version: link:../quanta
+      jotai:
+        specifier: ^2.12.5
+        version: 2.15.0(@babel/core@7.29.7(supports-color@8.1.1))(@babel/template@7.29.7)(@types/react@19.2.6)(react@19.3.1)
+      react:
+        specifier: ^19.2.7
+        version: 19.3.1
+      react-aria:
+        specifier: 'catalog:'
+        version: 3.53.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react-aria-components:
+        specifier: 'catalog:'
+        version: 1.22.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react-dom:
+        specifier: ^19.2.7
+        version: 19.3.1(react@19.3.1)
+    devDependencies:
+      '@plone/theming':
+        specifier: workspace:*
+        version: link:../theming
+      '@storybook/addon-docs':
+        specifier: ^10.4.0
+        version: 10.4.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(rollup@4.52.5)(storybook@10.4.0(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@10.4.1)(@types/react@19.2.6)(prettier@3.9.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(vite@8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))
+      '@storybook/react-vite':
+        specifier: ^10.4.0
+        version: 10.4.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(rollup@4.52.5)(storybook@10.4.0(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@10.4.1)(@types/react@19.2.6)(prettier@3.9.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@5.9.2)(vite@8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))
+      '@tailwindcss/postcss':
+        specifier: 'catalog:'
+        version: 4.2.2
+      '@tailwindcss/vite':
+        specifier: 'catalog:'
+        version: 4.2.2(vite@8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))
+      '@testing-library/jest-dom':
+        specifier: 'catalog:'
+        version: 6.9.1
+      '@testing-library/react':
+        specifier: 'catalog:'
+        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.6.5
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.6
+      '@types/react-dom':
+        specifier: 'catalog:'
+        version: 19.2.3(@types/react@19.2.6)
+      '@vitejs/plugin-react':
+        specifier: 'catalog:'
+        version: 6.0.1(babel-plugin-react-compiler@1.0.0)(vite@8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))
+      jsdom:
+        specifier: ^28.1.0
+        version: 28.1.0(supports-color@8.1.1)
+      postcss:
+        specifier: ^8.5.9
+        version: 8.5.9
+      release-it:
+        specifier: 'catalog:'
+        version: 19.0.5(@types/node@26.6.5)(magicast@0.3.5)(supports-color@8.1.1)
+      storybook:
+        specifier: ^10.4.0
+        version: 10.4.0(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@10.4.1)(@types/react@19.2.6)(prettier@3.9.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      tailwindcss:
+        specifier: 'catalog:'
+        version: 4.2.2
+      tailwindcss-animate:
+        specifier: ^1.0.7
+        version: 1.0.7(tailwindcss@4.2.2)
+      tailwindcss-react-aria-components:
+        specifier: 'catalog:'
+        version: 2.2.0(tailwindcss@4.2.2)
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.2
+      vite:
+        specifier: 'catalog:'
+        version: 8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1)
+      vitest:
+        specifier: 'catalog:'
+        version: 4.1.4(@opentelemetry/api@1.9.0)(@types/node@26.6.5)(@vitest/coverage-v8@4.1.4)(jsdom@28.1.0(supports-color@8.1.1))(vite@8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))
 
   packages/helpers:
     dependencies:
@@ -1706,6 +1821,9 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.2.2)
+      usehooks-ts:
+        specifier: ^3.1.1
+        version: 3.1.1(react@19.3.1)
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: ^0.16.4
@@ -1939,6 +2057,28 @@ importers:
         specifier: 'catalog:'
         version: 5.9.2
 
+  packages/test-addon:
+    dependencies:
+      '@plone/registry':
+        specifier: workspace:*
+        version: link:../registry
+      react:
+        specifier: ^19.2.7
+        version: 19.3.1
+    devDependencies:
+      '@plone/types':
+        specifier: workspace:*
+        version: link:../types
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.6
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.2
+
   packages/theming:
     dependencies:
       '@plone/components':
@@ -2164,6 +2304,10 @@ packages:
     engines: {node: '>=22'}
     peerDependencies:
       react: ^19.2.7
+
+  '@alloc/quick-lru@5.3.0':
+    resolution: {integrity: sha512-U4+70Pc5ZS9osnCBCE5Jha/ciHM+Yp+CNMNC/7HvYbNRk1Ldd+f7qO65W5qfhu/TCv+/ozljlXXe9Nj8419DMA==}
+    engines: {node: '>=10'}
 
   '@andrewbranch/untar.js@1.0.3':
     resolution: {integrity: sha512-Jh15/qVmrLGhkKJBdXlK1+9tY4lZruYjsgkDFj08ZmDiWVBLJcqkok7Z0/R0In+i1rScBpJlSvrTS2Lm41Pbnw==}
@@ -4596,6 +4740,9 @@ packages:
   '@tailwindcss/oxide@4.2.2':
     resolution: {integrity: sha512-qEUA07+E5kehxYp9BVMpq9E8vnJuBHfJEC0vPC5e7iL/hw7HR61aDKoVoKzrG+QKp56vhNZe4qwkRmMC0zDLvg==}
     engines: {node: '>= 20'}
+
+  '@tailwindcss/postcss@4.2.2':
+    resolution: {integrity: sha512-n4goKQbW8RVXIbNKRB/45LzyUqN451deQK0nzIeauVEqjlI49slUlgKYJM2QyUzap/PcpnS7kzSUmPb1sCRvYQ==}
 
   '@tailwindcss/vite@4.2.2':
     resolution: {integrity: sha512-mEiF5HO1QqCLXoNEfXVA1Tzo+cYsrqV7w9Juj2wdUFyW07JRenqMG225MvPwr3ZD9N1bFQj46X7r33iHxLUW0w==}
@@ -9882,6 +10029,8 @@ snapshots:
     transitivePeerDependencies:
       - zod
 
+  '@alloc/quick-lru@5.3.0': {}
+
   '@andrewbranch/untar.js@1.0.3': {}
 
   '@arethetypeswrong/cli@0.16.4':
@@ -11763,6 +11912,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
       - typescript
+    optional: true
 
   '@react-spectrum/utils@3.13.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
@@ -12225,6 +12375,14 @@ snapshots:
       '@tailwindcss/oxide-wasm32-wasi': 4.2.2
       '@tailwindcss/oxide-win32-arm64-msvc': 4.2.2
       '@tailwindcss/oxide-win32-x64-msvc': 4.2.2
+
+  '@tailwindcss/postcss@4.2.2':
+    dependencies:
+      '@alloc/quick-lru': 5.3.0
+      '@tailwindcss/node': 4.2.2
+      '@tailwindcss/oxide': 4.2.2
+      postcss: 8.5.9
+      tailwindcss: 4.2.2
 
   '@tailwindcss/vite@4.2.2(vite@8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))':
     dependencies:
@@ -13042,7 +13200,8 @@ snapshots:
       node-releases: 2.0.37
       update-browserslist-db: 1.2.3(browserslist@4.28.2)
 
-  buffer-from@1.1.2: {}
+  buffer-from@1.1.2:
+    optional: true
 
   bundle-name@4.1.0:
     dependencies:
@@ -17121,6 +17280,7 @@ snapshots:
     dependencies:
       buffer-from: 1.1.2
       source-map: 0.6.1
+    optional: true
 
   source-map@0.6.1: {}
 

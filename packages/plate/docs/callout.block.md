@@ -1,6 +1,7 @@
 ---
 element: callout
 title: Callout
+document_model: plone.plate
 ---
 
 A highlighted box with an icon, to draw attention to a note, a tip or a warning. Its children are text nodes and inline elements.

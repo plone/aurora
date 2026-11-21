@@ -153,7 +153,7 @@ The packages are released in dependency order, so each package is released after
 1.  `@plone/types`
 2.  Core packages: `@plone/client`, `@plone/components`, and `@plone/registry`
 3.  Utilities packages: `@plone/helpers` and `@plone/react-router`
-4.  Add-on packages: `@plone/plate`, `@plone/blocks`, `@plone/layout`, `@plone/theming`, `@plone/agave`, `@plone/cmsui`, `@plone/publicui`, and `@plone/contents`
+4.  Add-on packages: `@plone/plate`, `@plone/blocks`, `@plone/layout`, `@plone/theming`, `@plone/agave`, `@plone/cmsui`, `@plone/publicui`, `@plone/contents`, and `@plone/controlpanels`
 5.  The application: `@plone/aurora`
 
 This order is defined in `RELEASE_GROUPS` in {file}`packages/scripts/preleaser.js`.

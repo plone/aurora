@@ -94,7 +94,11 @@ export default function Index() {
   const showToolbar = shouldShowToolbar(content);
 
   return (
-    <html lang={contentLanguage || locale || 'en'} dir={i18n.dir()}>
+    <html
+      lang={contentLanguage || locale || 'en'}
+      data-locale={locale}
+      dir={i18n.dir()}
+    >
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

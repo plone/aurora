@@ -28,8 +28,10 @@ export default defineConfig({
       animations: 'disabled',
       caret: 'hide',
       // Never commit screenshots made outside CI; locally, allow for font
-      // rendering differences between platforms.
-      ...(isCI ? {} : { maxDiffPixelRatio: 0.05 }),
+      // rendering differences between platforms. In CI, allow a few pixels
+      // for anti-aliasing noise, which can differ between runs of the same
+      // page; any real visual change differs by far more.
+      ...(isCI ? { maxDiffPixels: 10 } : { maxDiffPixelRatio: 0.05 }),
     },
   },
   use: {

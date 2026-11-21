@@ -8,6 +8,72 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.18 (2026-11-21)
+
+### Feature
+
+- Made a list of all the installed Aurora add-ons below the version information in the control panel, respecting the proposed UI design. @silviubogan [#366](https://github.com/plone/aurora/issues/366)
+- Add the Behaviors tab to the content types control panel. It reads and saves a type's behaviors through `@controlpanels/dexterity-types`, and takes the behavior metadata of add-ons from `config.settings.behaviorMetadata`. @sneridagh 
+- Add the Fields tab to the content types control panel, which reads and saves a type's schema through `@types`. @sneridagh 
+- Add the content type page to the content types control panel, with its Settings tab: name, description and what can be added inside. Moving between its tabs keeps unsaved changes; leaving asks first. @sneridagh 
+- Add the content types control panel at `/@@controlpanel/content-types`: list, add and delete types. The old `/@@controlpanel/dexterity-types` URLs redirect to it. @sneridagh 
+- Added the Plone upgrade control panel at `@@controlpanel/plone-upgrade`, which runs the site upgrade through the `@upgrade` endpoint, and linked it from a highlighted System card in the site setup. @sneridagh 
+- Change the site default workflow in the content types control panel through `POST @workflows`, when the backend has it. @sneridagh 
+- The content types control panel shows workflow states in the colors of `config.settings.workflowStateColors`. @sneridagh 
+- Use `@content-types`, `@behaviors` and `@workflows` in the content types control panel when the backend has them (plone/plone.restapi#2061), and today's endpoints otherwise. With them, a type's settings include where it can be added, visibility, comments and versioning, behaviors keep their order and preview the edit form, types can be copied, and the Workflow tab shows and changes a type's workflow. The control panel's routes ask the backend which services it has, at most once a minute. @sneridagh 
+
+### Internal
+
+- The content types control panel passes react-i18next's `t` to `@plone/controlpanels`, which now uses i18next's placeholders. @sneridagh 
+- The content types control panel's resource routes call `@plone/controlpanels`' plone.restapi driver on the server, instead of translating plone.restapi's payloads themselves. @sneridagh 
+
+## 1.0.0-alpha.17 (2026-11-18)
+
+### Breaking
+
+- The editor now reads and writes the page body in the `main` region, with `"@type": "plate"`, instead of the `__somersault__` block. The `@blocks-schema` document docs are now registered under `plate`. @sneridagh [#379](https://github.com/plone/aurora/issues/379)
+- Moved the site setup and control panel views from `/controlpanel` to `/@@controlpanel`, following the `@@` convention for views. Add-ons that register their own control panel route, like `controlpanel/my-settings`, must use `@@controlpanel/my-settings`. @sneridagh [#429](https://github.com/plone/aurora/issues/429)
+
+### Feature
+
+- Add a control panel to search and manage the site's add-ons at `/@@controlpanel/addons`. @redram404, @veyxos, @richardbenedikt 
+- Redesigned the empty image widget placeholder after the Quanta design: a round image badge, "Add your image" title, round browse and upload buttons, and a URL field with a submit arrow. @sneridagh 
+- The `@blocks-schema` endpoint announces the `plone.plate` document model in `document_model`, so that clients such as the Plone MCP server can tell Plate-based content from the `plone.blocks` model of Volto. It only lists the elements of that document model, and accepts a `type` query parameter for new content of that type. @sneridagh 
+
+### Bugfix
+
+- Read the version of the app for the site overview from `@plone/registry/app-info` instead of importing the Aurora app's `package.json`, so it works in any app. @sneridagh 
+
+### Internal
+
+- Removed the unused `test-layout` route. @sneridagh 
+
+## 1.0.0-alpha.16 (2026-11-06)
+
+### Feature
+
+- Add `@@translate` route to create a translation of a content item. The form is pre-filled with the source content, and saving creates the translation in the target language root folder, linked to the source in the same request. @nils-pzr 
+- Add the `object` and `object_list` widgets. `object_list` edits a list of objects described by a JSON schema, as Volto's widget of the same name does, with the same value. It has two layouts: `accordion`, which edits each item in place, and `table`, which shows the columns you choose and edits each item in a dialog. Items reorder by drag and drop, with the mouse, touch, or keyboard, or with their menu. The form validates the fields of each item with the item schema: a failed submit opens the first item with errors, and marks the rows of the items with errors. @sneridagh 
+- Gave the control panel forms a clear header, even spacing between fields, and their fieldsets as titled sections when there is more than one. Saving a control panel goes back to the site setup, and the toolbar shows Save before Back, as in the edit form. @sneridagh 
+- Redesigned the site setup page (`/controlpanel`): control panels are lists of rows with an icon and a short description, in the order the backend sends them, with a field to find a setting, and a sidebar shows the site details and the versions it runs on, with a button to copy them. Add-ons can add icons in `config.settings.controlPanelsIcons` and descriptions as `cmsui.controlpanelDescriptions.<id>` translations. Links to control panels Aurora does not have yet are gone. @sneridagh 
+- Used the `description`, `icon` and `group_id` that `plone.restapi` 10.2.0 sends for each control panel, when it sends them: the backend description wins over the translated one, the icon name maps to an icon in the new `config.settings.controlPanelsIconNames` before the icon by id, and the group title is translated by its id from `cmsui.controlpanelGroups.<group_id>`. @sneridagh 
+
+### Bugfix
+
+- Point the add/edit form cancel control at the content path instead of a missing @id, so Close leaves the form. @aryan7081 
+
+## 1.0.0-alpha.15 (2026-10-30)
+
+### Bugfix
+
+- Added `data-locale` with the interface language to `<html>`, so the client starts in the language the server detected. @sneridagh [#354](https://github.com/plone/aurora/issues/354)
+
+## 1.0.0-alpha.14 (2026-10-30)
+
+### Feature
+
+- Added the password reset flow at `/passwordreset`, the URL Plone's reset email links to: request a reset link, then set a new password with the token. @InteraktivPreuss [#48](https://github.com/plone/aurora/issues/48)
+
 ## 1.0.0-alpha.13 (2026-10-29)
 
 ### Breaking

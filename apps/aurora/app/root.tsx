@@ -1,5 +1,5 @@
 import { useEffect, type PropsWithChildren } from 'react';
-import { data, isRouteErrorResponse } from 'react-router';
+import { data, isRouteErrorResponse, useRouteLoaderData } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { i18nextMiddleware, getLocale } from './i18next.server';
 import type { Route } from './+types/root';
@@ -21,8 +21,10 @@ import {
 import { getClearAuthCookieHeader } from '@plone/react-router';
 
 export const middleware = [
-  i18nextMiddleware,
+  // Install the configuration first: the i18next middleware reads the
+  // supported languages from it.
   installServerMiddleware,
+  i18nextMiddleware,
   PloneClientMiddleware,
   otherResources,
   getAPIResourceWithAuth,
@@ -118,11 +120,10 @@ export const handle = {
   i18n: 'common',
 };
 
-export function Layout({
-  children,
-  loaderData,
-}: PropsWithChildren<Route.ComponentProps>) {
-  // loaderData can be undefined in case of an error
+export function Layout({ children }: PropsWithChildren) {
+  // React Router doesn't pass the loader data to `Layout`, and it can be
+  // undefined in case of an error
+  const loaderData = useRouteLoaderData<RootLoader>('root');
   const locale = loaderData?.locale || 'en';
 
   // Sync the i18n instance's language to the locale detected by the loader,

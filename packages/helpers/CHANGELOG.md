@@ -8,6 +8,18 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.12 (2026-11-06)
+
+### Feature
+
+- A form validator can report the errors of the fields inside its field, such as the fields of the items of a list, by returning them by relative path. The form state has a `submitCount`, the number of submit attempts. @sneridagh 
+
+## 2.0.0-alpha.11 (2026-10-30)
+
+### Bugfix
+
+- `@plone/registry` is a peer dependency only, for registry 3 and 4, so apps such as Volto use their own registry instead of getting a second copy, whose configuration helpers would read. Apps must depend on `@plone/registry` themselves, as Plone Aurora and Volto already do. @sneridagh 
+
 ## 2.0.0-alpha.10 (2026-10-29)
 
 ### Feature

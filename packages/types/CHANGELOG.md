@@ -8,6 +8,24 @@
 
 <!-- towncrier release notes start -->
 
+## 3.0.0-alpha.11 (2026-11-21)
+
+### Feature
+
+- Add `config.settings.behaviorMetadata`, which describes behaviors to the content types control panel: their group, the behaviors they include, their alternatives, and whether they're deprecated. @sneridagh 
+- Add `config.settings.workflowStateColors`, the colors the content types control panel shows workflow states with, by state id. @sneridagh 
+
+## 3.0.0-alpha.10 (2026-11-06)
+
+### Feature
+
+- Added the `description`, `icon` and `group_id` fields of `plone.restapi` 10.2.0 to `Controlpanel`, and the `controlPanelsIconNames` setting. @sneridagh 
+- Typed `config.settings.filterControlPanels` as a function and added `plone_restapi_version` and `plone.distribution` to `GetSystemResponse`. @sneridagh 
+
+### Internal
+
+- Use bundler moduleResolution instead of deprecated node10. @aryan7081 
+
 ## 3.0.0-alpha.9 (2026-10-29)
 
 ### Feature

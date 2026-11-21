@@ -7,49 +7,52 @@ myst:
     "keywords": "Plone Aurora, Plone, frontend, React, Release, Version, Semantic"
 ---
 
-(volto-versioning-policy)=
+(version-policy)=
 
 # Version policy
 
 This chapter describes the versions of software that Plone Aurora supports and how Plone Aurora communicates its releases through its branch policy.
 
 
-(version-policy-plone-python-and-plone-rest-api-compatibility)=
+(version-policy-backend-compatibility)=
 
-## Plone, Python, and Plone REST API compatibility
+## Backend compatibility
 
-Plone Aurora relies on [Plone core (`Products.CMFPlone`)](https://github.com/plone/Products.CMFPlone) and [Plone REST API](https://github.com/plone/plone.restapi).
+Plone Aurora works with a backend that implements the [Plone REST API](https://github.com/plone/plone.restapi): [Plone (`Products.CMFPlone`)](https://github.com/plone/Products.CMFPlone) with `plone.restapi`, or [Nick](https://github.com/plone/nick).
+
+
+(version-policy-plone)=
+
+### Plone
+
 We will always support the [latest major Plone release](https://plone.org/download/releases) and the version of Plone REST API that ships with it.
 
-The versions of Python that are supported in legacy Volto depend on the version of Plone that you use.
+Plone Aurora requires Plone 6.2 or later, with `plone.restapi` 10.3.0 or later.
+`plone.restapi` 10.3.0 indexes the text of the `plate` regions that store the page, checks their links for link integrity, and converts the links of the blocks in them to `resolveuid` links.
+When your Plone release ships an older version of `plone.restapi`, pin it to 10.3.0 or later in your backend.
 
-| Plone | Python       | Volto            |
-| ----- | ------------ | ---------------- |
-| 6.1   | 3.10-3.13    | 18.0.0           |
-| 6.0   | 3.9-3.13     | 16.0.0 or 17.0.0 |
-| 5.2   | 2.7, 3.8     | 15.0.0           |
+The backend also needs `plone.volto` 6.2.1 or later, with its `plone.volto:aurora` profile applied.
+Since 6.1.0, the `plone.volto:default` profile adds the `personal_tools` actions with the links of the Volto toolbar, and the Personal tools menu of Plone Aurora shows these actions instead of its own links.
+The `plone.volto:aurora` profile replaces them with the links of Plone Aurora.
+When your Plone release ships an older version of `plone.volto`, pin it to 6.2.1 or later in your backend.
 
-For Plone 6.0.x, Python 3.12 is officially supported since Plone 6.0.10.
-Python 3.13 is officially supported since 6.0.14.
-Python 3.8 support was dropped in 6.0.14.
+The supported versions of Python are those of the Plone release that you use.
+See {ref}`plone:install-pip-prerequisites` in the Plone documentation, and the [Plone release schedule](https://plone.org/download/release-schedule).
 
-On Plone 6, we recommend using the known good set (KGS) of package versions that are specified in the Plone release.
-
-On Plone 5, Volto is currently tested with the following packages pinned to specific versions, and we recommend using the same versions, which are:
-
--   `plone.restapi` 9.2.0
--   `plone.rest` 3.0.1
--   `plone.volto` 4.1.0
-
-For the Plone 5 series, the [latest released version of Plone 5](https://plone.org/download/releases) is recommended.
-
-Volto should work on older Plone versions as well, since Plone REST API supports Plone back to version 4.3 (including Archetypes).
-
-We do not support or test Plone versions that were released before Volto existed.
+We recommend using the known good set (KGS) of package versions that are specified in the Plone release.
 
 ```{seealso}
-See also [Plone REST API Python and Plone compatibility](https://github.com/plone/plone.restapi#python--plone-compatibility).
+[Plone REST API Python and Plone compatibility](https://github.com/plone/plone.restapi#python--plone-compatibility), in the `plone.restapi` README, for the versions of Plone that each `plone.restapi` release supports.
 ```
+
+
+(version-policy-nick)=
+
+### Nick
+
+With a Nick backend, Plone Aurora requires Nick 3.1.0 or later.
+Nick 3.1.0 reads the `plate` regions that store the page: it builds the Markdown of a page from its `main` region, the text for `SearchableText` from all its `plate` regions, and its block types from the blocks in them.
+Older versions of Nick only read the `__somersault__` block that Plone Aurora used before.
 
 
 (version-policy-node-js)=
@@ -68,7 +71,7 @@ We recommend using the current LTS version.
 
 ## Supported web browsers
 
-```{include} ../_inc/_install-browser-reqs-volto.md
+```{include} ../_inc/_install-browser-reqs.md
 ```
 
 
@@ -78,7 +81,7 @@ We recommend using the current LTS version.
 ```
 
 
-(volto-versioning-policy-semantic-versioning-label)=
+(version-policy-semantic-versioning-label)=
 
 ### Semantic Versioning
 

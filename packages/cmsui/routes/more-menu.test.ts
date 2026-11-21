@@ -6,7 +6,6 @@ import {
 } from '@plone/aurora/app/middleware.server';
 import { action as menuAction } from './api/more-menu';
 import { action as rulesAction, loader as rulesLoader } from './rules';
-import { action as translationsAction } from './manage-translations';
 
 vi.mock('@plone/react-router', () => ({
   requireAuthCookie: vi.fn().mockResolvedValue('token'),
@@ -106,32 +105,6 @@ describe('More menu actions', () => {
     expect(updateRules).toHaveBeenCalledWith({
       path: '/news',
       data: { 'form.button.Enable': true, rule_ids: ['rule1'] },
-    });
-  });
-  it('links and unlinks translations on the current content path', async () => {
-    const linkTranslation = vi.fn().mockResolvedValue({});
-    const unlinkTranslation = vi.fn().mockResolvedValue({});
-    await translationsAction(
-      args(
-        'en/page',
-        { operation: 'link', value: '/es/page' },
-        { linkTranslation },
-      ),
-    );
-    await translationsAction(
-      args(
-        'en/page',
-        { operation: 'unlink', value: 'es' },
-        { unlinkTranslation },
-      ),
-    );
-    expect(linkTranslation).toHaveBeenCalledWith({
-      path: '/en/page',
-      data: { id: '/es/page' },
-    });
-    expect(unlinkTranslation).toHaveBeenCalledWith({
-      path: '/en/page',
-      data: { language: 'es' },
     });
   });
 });

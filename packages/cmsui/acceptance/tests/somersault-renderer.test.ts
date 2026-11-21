@@ -12,6 +12,8 @@ async function setupSomersaultPage(page: Parameters<typeof test>[0]['page']) {
     transition: 'publish',
     bodyModifier: (body) => ({
       ...body,
+      // Stored in the legacy `__somersault__` shape on purpose: Aurora renames
+      // it to the `main` region when the content is read.
       blocks: {
         __somersault__: {
           '@type': '__somersault__',
@@ -39,7 +41,7 @@ async function setupSomersaultPage(page: Parameters<typeof test>[0]['page']) {
         },
       },
       blocks_layout: {
-        items: ['__somersault__'],
+        items: [],
       },
     }),
   });

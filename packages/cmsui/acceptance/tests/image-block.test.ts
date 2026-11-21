@@ -35,8 +35,8 @@ async function setupImageBlockPage(
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             {
               type: 'title',
@@ -59,7 +59,7 @@ async function setupImageBlockPage(
         },
       },
       blocks_layout: {
-        items: ['__somersault__'],
+        items: [],
       },
     }),
   });
@@ -80,10 +80,10 @@ test('Image block can select a pre-uploaded local image URL', async ({
     .getByRole('button', { name: 'Settings' })
     .click();
 
-  await page.getByText('Browse the site, drop an image, or use a URL').click();
+  await page.getByText('Add your image').click();
   await expect(page.locator('#sidebar form')).toHaveCount(1);
 
-  const urlInput = page.getByPlaceholder('Enter an image URL');
+  const urlInput = page.getByPlaceholder('Type a URL…');
   await urlInput.fill(`/${imageId}`);
   await urlInput.press('Enter');
 
@@ -102,10 +102,10 @@ test('Image block selection, arrows, enter, and sidebar lifecycle', async ({
     .locator('#toolbar')
     .getByRole('button', { name: 'Settings' })
     .click();
-  await page.getByText('Browse the site, drop an image, or use a URL').click();
+  await page.getByText('Add your image').click();
   await expect(page.locator('#sidebar form')).toHaveCount(1);
 
-  const urlInput = page.getByPlaceholder('Enter an image URL');
+  const urlInput = page.getByPlaceholder('Type a URL…');
   await urlInput.fill(`/${imageId}`);
   await urlInput.press('Enter');
   const image = page.locator(`img[src*="/${imageId}/@@images/image"]`).first();
@@ -148,10 +148,10 @@ test('Image block saves alt text in block data', async ({ page }) => {
     .getByRole('button', { name: 'Settings' })
     .click();
 
-  await page.getByText('Browse the site, drop an image, or use a URL').click();
+  await page.getByText('Add your image').click();
   await expect(page.locator('#sidebar form')).toHaveCount(1);
 
-  const urlInput = page.getByPlaceholder('Enter an image URL');
+  const urlInput = page.getByPlaceholder('Type a URL…');
   await urlInput.fill(`/${imageId}`);
   await urlInput.press('Enter');
 
@@ -196,7 +196,7 @@ test('Image block can upload an image using the upload button', async ({
     .getByRole('button', { name: 'Settings' })
     .click();
 
-  await page.getByText('Browse the site, drop an image, or use a URL').click();
+  await page.getByText('Add your image').click();
   await expect(page.locator('#sidebar form')).toHaveCount(1);
 
   await page

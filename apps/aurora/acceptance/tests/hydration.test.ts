@@ -29,8 +29,8 @@ async function setupImageBlockPage(page: Page) {
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             { type: 'title', children: [{ text: 'Hydration page' }] },
             { type: 'p', children: [{ text: 'Text before image' }] },

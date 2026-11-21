@@ -174,11 +174,11 @@ release-notes-copy-to-docs: ## Copy release notes into documentation
 
 .PHONY: backend-docker-start
 backend-docker-start: ## Starts a Docker-based backend for development
-	docker run -it --rm --name=backend -p 8080:8080 -v volto-backend-data:/data -e SITE=Plone -e ADDONS='$(KGS)' -e SITE_DEFAULT_LANGUAGE='$(SITE_DEFAULT_LANGUAGE)' $(DOCKER_IMAGE)
+	docker run -it --rm --name=backend -p 8080:8080 -v volto-backend-data:/data -e SITE=Plone -e ADDONS='$(KGS)' -e PROFILES='$(BACKEND_PROFILES)' -e SITE_DEFAULT_LANGUAGE='$(SITE_DEFAULT_LANGUAGE)' $(DOCKER_IMAGE)
 
 .PHONY: backend-docker-start-no-cors
 backend-docker-start-no-cors: ## Starts the Docker-based backend without CORS in detached mode (daemon)
-	docker run -it --rm --name=backend -p 8080:8080 -e SITE=Plone -e ADDONS='$(KGS)' -e CORS_=true $(DOCKER_IMAGE)
+	docker run -it --rm --name=backend -p 8080:8080 -e SITE=Plone -e ADDONS='$(KGS)' -e PROFILES='$(BACKEND_PROFILES)' -e CORS_=true $(DOCKER_IMAGE)
 
 .PHONY: frontend-docker-start
 frontend-docker-start: ## Starts a Docker-based frontend for development
@@ -188,22 +188,26 @@ frontend-docker-start: ## Starts a Docker-based frontend for development
 ######### Dev mode Acceptance tests
 
 .PHONY: acceptance-frontend-dev-start
-acceptance-frontend-dev-start: ## Start acceptance frontend in development mode
-	PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start
+acceptance-frontend-dev-start: ## Start acceptance frontend in development mode, with the test add-on
+	PLONE_TEST_ADDON=1 PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start
 
 ######### Plone Aurora Acceptance tests
 
+# The acceptance image starts robot-server directly, without the entrypoint
+# that installs ADDONS, so it installs $(KGS) itself first.
+ACCEPTANCE_BACKEND_ARGS=--rm -p 55001:55001 -e APPLY_PROFILES=plone.app.contenttypes:plone-content,plone.restapi:default,plone.volto:default,$(BACKEND_PROFILES),plone.app.discussion:default --entrypoint bash $(DOCKER_IMAGE_ACCEPTANCE) -c '$(if $(KGS),/app/bin/pip install $(KGS) && )exec /app/bin/robot-server plone.app.robotframework.testing.VOLTO_ROBOT_TESTING'
+
 .PHONY: acceptance-backend-start
 acceptance-backend-start: ## Start backend acceptance server
-	docker run -it --rm -p 55001:55001 -e APPLY_PROFILES=plone.app.contenttypes:plone-content,plone.restapi:default,plone.volto:default,plone.app.discussion:default $(DOCKER_IMAGE_ACCEPTANCE)
+	docker run -it $(ACCEPTANCE_BACKEND_ARGS)
 
 .PHONY: ci-acceptance-backend-start
 ci-acceptance-backend-start: ## Start backend acceptance server in headless mode for CI
-	docker run -i --rm -p 55001:55001 -e APPLY_PROFILES=plone.app.contenttypes:plone-content,plone.restapi:default,plone.volto:default,plone.app.discussion:default $(DOCKER_IMAGE_ACCEPTANCE)
+	docker run -i $(ACCEPTANCE_BACKEND_ARGS)
 
 .PHONY: acceptance-frontend-prod-start
-acceptance-frontend-prod-start: ## Start acceptance frontend in production mode
-	pnpm --filter @plone/aurora build && PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start:prod
+acceptance-frontend-prod-start: ## Start acceptance frontend in production mode, with the test add-on
+	PLONE_TEST_ADDON=1 pnpm --filter @plone/aurora build && PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start:prod
 
 .PHONY: acceptance-test
 acceptance-test: ## Start Cypress in interactive mode

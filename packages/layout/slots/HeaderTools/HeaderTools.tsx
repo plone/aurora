@@ -14,24 +14,27 @@ const HeaderTools = (props: SlotComponentProps) => {
 
   return (
     <>
-      {isAuthenticated ? (
+      {/* Below 48rem these move into the navigation panel (header.css). */}
+      <div className="header-tools-collapsible">
+        {isAuthenticated ? (
+          <SlotRenderer
+            name="authenticatedTools"
+            content={content}
+            location={location}
+          />
+        ) : (
+          <SlotRenderer
+            name="anonymousTools"
+            content={content}
+            location={location}
+          />
+        )}
         <SlotRenderer
-          name="authenticatedTools"
+          name="languageSwitcher"
           content={content}
           location={location}
         />
-      ) : (
-        <SlotRenderer
-          name="anonymousTools"
-          content={content}
-          location={location}
-        />
-      )}
-      <SlotRenderer
-        name="languageSwitcher"
-        content={content}
-        location={location}
-      />
+      </div>
       <SlotRenderer name="searchWidget" content={content} location={location} />
     </>
   );

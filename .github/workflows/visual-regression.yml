@@ -7,6 +7,11 @@ name: Visual Regression Tests
 # contributors aren't blocked by screenshot diffs. It can also be started by
 # hand on any branch (e.g. before merging styling work). Read-only: baselines
 # are only updated through the "Update VRT Screenshots" workflow.
+#
+# When a nightly run (or a manual run on main) fails, the "Report nightly
+# result" job opens an issue labeled "vrt-nightly", or comments on the open
+# one, so the whole team sees it. When such a run passes again, it closes the
+# issue.
 on:
   schedule:
     - cron: '0 3 * * *'
@@ -63,13 +68,15 @@ jobs:
       - name: Run the app visual regression tests
         env:
           PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report/app
-        run: pnpm visual-test --project=chromium --output=playwright/results-visual/app --reporter=list,html
+          PLAYWRIGHT_JSON_OUTPUT_FILE: playwright-report/app.json
+        run: pnpm visual-test --project=chromium --output=playwright/results-visual/app --reporter=list,html,json
 
       - name: Run the Quanta visual regression tests
         if: ${{ !cancelled() }}
         env:
           PLAYWRIGHT_HTML_OUTPUT_DIR: playwright-report/quanta
-        run: pnpm visual-test --project=quanta --output=playwright/results-visual/quanta --reporter=list,html
+          PLAYWRIGHT_JSON_OUTPUT_FILE: playwright-report/quanta.json
+        run: pnpm visual-test --project=quanta --output=playwright/results-visual/quanta --reporter=list,html,json
 
       - uses: actions/upload-artifact@v7
         if: failure()
@@ -79,3 +86,86 @@ jobs:
             playwright/results-visual/
             playwright-report/
           retention-days: 15
+
+  # Makes the nightly result visible to the team: GitHub only emails a failed
+  # scheduled run to whoever last changed the cron line. Runs started by hand
+  # on other branches don't report.
+  report:
+    name: Report nightly result
+    needs: visual-regression
+    if: ${{ !cancelled() && (github.event_name == 'schedule' || github.ref == 'refs/heads/main') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      LABEL: vrt-nightly
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - name: Download the test results
+        if: needs.visual-regression.result == 'failure'
+        # The artifact is missing when the run failed before the tests ran.
+        continue-on-error: true
+        uses: actions/download-artifact@v8
+        with:
+          name: visual-regression-results
+          path: results
+
+      - name: Open or update the failure issue
+        if: needs.visual-regression.result == 'failure'
+        run: |
+          gh label create "$LABEL" --force --color D93F0B \
+            --description "The nightly visual regression tests are failing"
+
+          # A spec is "ok": false when it still failed after its retries.
+          failing=""
+          for report in results/playwright-report/app.json results/playwright-report/quanta.json; do
+            [ -f "$report" ] || continue
+            failing+=$(jq -r '.. | objects | select(has("specs")) | .specs[]
+              | select(.ok == false) | "- `\(.file)` › \(.title)"' "$report")
+            failing+=$'\n'
+          done
+          failing=$(printf '%s' "$failing" | sed '/^$/d')
+          count=$(printf '%s' "$failing" | grep -c . || true)
+          if [ "$count" -gt 100 ]; then
+            failing="$(printf '%s\n' "$failing" | head -n 100)"$'\n'"- … and $((count - 100)) more"
+          fi
+          if [ "$count" -eq 0 ]; then
+            failing="No failing tests were found in the results: the run probably failed before or outside the tests. See the run log."
+          else
+            failing="Failing tests ($count):"$'\n\n'"$failing"
+          fi
+
+          {
+            echo "The nightly visual regression tests failed on $(date -u +%Y-%m-%d)."
+            echo
+            echo "Run: $RUN_URL"
+            echo
+            echo "Screenshots, diffs and HTML reports are in the \`visual-regression-results\` artifact of [the run]($RUN_URL#artifacts)."
+            echo
+            echo "$failing"
+          } > body.md
+
+          issue=$(gh issue list --label "$LABEL" --state open --limit 1 --json number --jq '.[0].number // empty')
+          if [ -n "$issue" ]; then
+            gh issue comment "$issue" --body-file body.md
+          else
+            {
+              cat body.md
+              echo
+              echo "The \"Visual Regression Tests\" workflow comments here on every failing nightly run, and closes this issue when the tests pass again. To update the baselines, run the \"Update VRT Screenshots\" workflow."
+            } > issue.md
+            gh issue create --title "Nightly visual regression tests are failing" \
+              --label "$LABEL" --body-file issue.md
+          fi
+
+      - name: Close the failure issue
+        if: needs.visual-regression.result == 'success'
+        run: |
+          issue=$(gh issue list --label "$LABEL" --state open --limit 1 --json number --jq '.[0].number // empty')
+          if [ -n "$issue" ]; then
+            gh issue close "$issue" \
+              --comment "The nightly visual regression tests pass again on $(date -u +%Y-%m-%d): $RUN_URL"
+          fi

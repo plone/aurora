@@ -1,8 +1,9 @@
 import Backend from 'i18next-fs-backend/cjs';
 import { fileURLToPath } from 'node:url';
+import type { RouterContextProvider } from 'react-router';
 import { initReactI18next } from 'react-i18next';
 import { createI18nextMiddleware } from 'remix-i18next';
-import i18n from './i18n'; // your i18n configuration file
+import { getI18nOptions } from './i18n'; // your i18n configuration file
 import { localeCookie } from '@plone/react-router';
 
 // The add-on locales are generated into `public/locales`, which the build copies
@@ -18,24 +19,44 @@ const localesPath = fileURLToPath(
   ),
 );
 
-export const [i18nextMiddleware, getLocale, getInstance] =
-  createI18nextMiddleware({
-    detection: {
-      supportedLanguages: i18n.supportedLngs,
-      fallbackLanguage: i18n.fallbackLng as string,
-      cookie: localeCookie,
-    },
-    // This is the configuration for i18next used
-    // when translating messages server-side only
-    i18next: {
-      ...i18n,
-      fallbackLng: i18n.fallbackLng as string,
-      ns: i18n.defaultNS,
-      backend: {
-        loadPath: `${localesPath}{{lng}}/{{ns}}.json`,
+let i18next: createI18nextMiddleware.ReturnType | undefined;
+
+// Build the middleware on the first request, not at module load: the project
+// and its add-ons set the supported languages after this module is imported,
+// in the server configuration that the root middleware installs first.
+function getI18next() {
+  if (!i18next) {
+    const i18n = getI18nOptions();
+    i18next = createI18nextMiddleware({
+      detection: {
+        supportedLanguages: i18n.supportedLngs,
+        fallbackLanguage: i18n.fallbackLng,
+        cookie: localeCookie,
       },
-    },
-    // The i18next plugins the middleware's instance uses.
-    // Tip: You could pass `resources` to the `i18next` configuration and avoid a backend here
-    plugins: [Backend, initReactI18next],
-  });
+      // This is the configuration for i18next used
+      // when translating messages server-side only
+      i18next: {
+        ...i18n,
+        ns: i18n.defaultNS,
+        backend: {
+          loadPath: `${localesPath}{{lng}}/{{ns}}.json`,
+        },
+      },
+      // The i18next plugins the middleware's instance uses.
+      // Tip: You could pass `resources` to the `i18next` configuration and avoid a backend here
+      plugins: [Backend, initReactI18next],
+    });
+  }
+  return i18next;
+}
+
+export const i18nextMiddleware: createI18nextMiddleware.ReturnType[0] = (
+  args,
+  next,
+) => getI18next()[0](args, next);
+
+export const getLocale = (context: Readonly<RouterContextProvider>) =>
+  getI18next()[1](context);
+
+export const getInstance = (context: Readonly<RouterContextProvider>) =>
+  getI18next()[2](context);

@@ -15,6 +15,9 @@
         "searchWidget": {
           "searchSite": "Cerca nel sito"
         }
+      },
+      "navigation": {
+        "menu": "Menu"
       }
     },
     "contenttypes": {

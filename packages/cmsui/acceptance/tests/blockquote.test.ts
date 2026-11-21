@@ -37,8 +37,8 @@ async function createBlockquotePage(
           }
         : {
             blocks: {
-              __somersault__: {
-                '@type': '__somersault__',
+              main: {
+                '@type': 'plate',
                 value: [
                   { type: 'title', children: [{ text: 'Blockquote page' }] },
                   blockquote,
