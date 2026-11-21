@@ -42,6 +42,7 @@ import { useDriverData } from '../../useDriverData';
 import { BehaviorsTab } from '../BehaviorsTab/BehaviorsTab';
 import { FieldsTab } from '../FieldsTab/FieldsTab';
 import { SettingsTab } from '../SettingsTab/SettingsTab';
+import { WorkflowTab } from '../WorkflowTab/WorkflowTab';
 
 export interface ContentTypePageProps {
   /** The type's short name. */
@@ -200,6 +201,8 @@ interface TypeData {
   schema?: TypeSchema;
   types: ContentTypeSummary[];
   workflows: WorkflowInfo[];
+  /** The site default workflow. */
+  defaultWorkflow: string | null;
   behaviors: BehaviorInfo[];
 }
 
@@ -208,11 +211,13 @@ function TypeEditor({
   tab,
   basePath,
   onSaved,
+  onWorkflowChanged,
 }: {
   data: TypeData;
   tab: ContentTypeTab;
   basePath: string;
   onSaved: (saved: Pick<TypeData, 'type' | 'schema'>) => void;
+  onWorkflowChanged: () => void;
 }) {
   const t = useTranslate();
   const notify = useNotify();
@@ -325,6 +330,15 @@ function TypeEditor({
           <TabPanel id="settings" className="pt-6">
             <SettingsTab type={type} types={types} />
           </TabPanel>
+          <TabPanel id="workflow" className="pt-6">
+            <WorkflowTab
+              type={type}
+              count={summary?.count ?? 0}
+              workflows={data.workflows}
+              defaultWorkflow={data.defaultWorkflow}
+              onChanged={onWorkflowChanged}
+            />
+          </TabPanel>
           <TabPanel id="fields" className="pt-6">
             {data.schema ? (
               <FieldsTab behaviors={data.behaviors} />
@@ -349,18 +363,13 @@ function TypeEditor({
               />
             )}
           </TabPanel>
-          {TABS.filter(
-            ([id]) =>
-              id !== 'settings' && id !== 'fields' && id !== 'behaviors',
-          ).map(([id]) => (
-            <TabPanel key={id} id={id} className="pt-6">
-              <p className="text-sm text-quanta-pigeon">
-                {type.kind === 'other'
-                  ? t(messages.notADexterityType, { title: type.title })
-                  : t(messages.comingLater)}
-              </p>
-            </TabPanel>
-          ))}
+          <TabPanel id="layout" className="pt-6">
+            <p className="text-sm text-quanta-pigeon">
+              {type.kind === 'other'
+                ? t(messages.notADexterityType, { title: type.title })
+                : t(messages.comingLater)}
+            </p>
+          </TabPanel>
         </Tabs>
 
         <SaveBar form={form} isSaving={isSaving} onSave={onSave} />
@@ -389,18 +398,28 @@ export function ContentTypePage({
   const { capabilities } = driver;
 
   const load = useCallback(async (): Promise<TypeData> => {
-    const [type, types, workflows, behaviors] = await Promise.all([
+    const [type, types, workflows, assignments, behaviors] = await Promise.all([
       driver.getType(id),
       driver.listTypes(),
       capabilities.workflows && driver.listWorkflows
         ? driver.listWorkflows()
         : Promise.resolve([]),
+      capabilities.workflows && driver.getWorkflowAssignments
+        ? driver.getWorkflowAssignments()
+        : Promise.resolve(undefined),
       // Only names the behaviors of locked fields, so it may fail.
       driver.listBehaviors().catch(() => []),
     ]);
     const schema =
       type.kind === 'other' ? undefined : await driver.getSchema(id);
-    return { type, schema, types, workflows, behaviors };
+    return {
+      type,
+      schema,
+      types,
+      workflows,
+      defaultWorkflow: assignments?.default ?? null,
+      behaviors,
+    };
   }, [driver, capabilities, id]);
   const { data, error, isLoading, reload, setData } = useDriverData(load);
 
@@ -426,6 +445,7 @@ export function ContentTypePage({
       onSaved={(saved) =>
         setData((current) => current && { ...current, ...saved })
       }
+      onWorkflowChanged={() => void reload()}
     />
   );
 }

@@ -91,6 +91,37 @@ export const BehaviorsBasicBackend: Story = {
   },
 };
 
+/**
+ * The type's workflow, with its states and who sees items in each. "Change
+ * workflow…" opens the three-step dialog: pick Intranet/Extranet, see the
+ * suggested state for the 2 published pages, and pick a less visible one to
+ * see the warning.
+ */
+export const Workflow: Story = {
+  args: { id: 'Document', tab: 'workflow' },
+};
+
+/** A type without a workflow. */
+export const WorkflowNone: Story = {
+  args: { id: 'File', tab: 'workflow' },
+};
+
+/** A backend that tells the workflow, but can't change it yet. */
+export const WorkflowReadOnly: Story = {
+  args: { id: 'Document', tab: 'workflow' },
+  parameters: {
+    driver: { mock: { capabilities: { workflowChange: false } } },
+  },
+};
+
+/** What plone.restapi supports today: nothing about workflows. */
+export const WorkflowBasicBackend: Story = {
+  args: { id: 'Document', tab: 'workflow' },
+  parameters: {
+    driver: { basicBackend: true },
+  },
+};
+
 /** A tab that comes in a later phase. */
 export const OtherTab: Story = {
   args: { tab: 'layout' },
