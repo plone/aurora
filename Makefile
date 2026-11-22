@@ -163,6 +163,17 @@ packages/react-router/dist: $(shell find packages/react-router/src -type f)
 .PHONY: build-deps
 build-deps: packages/registry/dist packages/icons/dist packages/quanta/dist packages/components/dist packages/client/dist packages/react-router/dist packages/helpers/dist  ## Build dependencies
 
+## Storybook
+
+.PHONY: storybook-start
+storybook-start: ## Start Storybook server on port 6006
+	@echo "$(GREEN)==> Start Storybook$(RESET)"
+	pnpm start-storybook
+
+.PHONY: storybook-build
+storybook-build: build-deps ## Build Storybook
+	pnpm build-storybook
+
 ##### Release
 
 .PHONY: release-notes-copy-to-docs
