@@ -8,6 +8,16 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.19 (2026-11-22)
+
+### Feature
+
+- Reworked the editor's header: a breadcrumb trail ending with the edited item, and a segmented Blocks and Metadata switch. The Metadata view shows the title as it is typed, and its fieldsets as tabs that can be swiped on phones, with a dot on the tabs of fieldsets with errors. @sneridagh 
+
+### Bugfix
+
+- Fixed the editor's sidebar on phones: it starts closed, and opens with the toolbar's settings button as a panel over the bottom of the page, which a swipe down, its handle or Escape closes. A collapsed sidebar no longer leaves a strip on the right. @sneridagh 
+
 ## 1.0.0-alpha.18 (2026-11-21)
 
 ### Feature
