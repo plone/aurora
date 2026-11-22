@@ -87,7 +87,7 @@ function DirtyDot({
   if (!dirty) return null;
   return (
     <span
-      className="ml-1.5 inline-block size-2 rounded-full bg-quanta-gold"
+      className="size-1.5 shrink-0 rounded-full bg-quanta-gold"
       role="img"
       aria-label={t(messages.unsavedChanges)}
     />

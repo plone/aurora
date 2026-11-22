@@ -12,8 +12,12 @@ import {
   type RouterContextProvider,
 } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+import {
+  ploneClientContext,
+  ploneContentContext,
+} from '@plone/aurora/app/middleware.server';
 import ContentForm from '../components/ContentForm/ContentForm';
+import { breadcrumbTrail } from '../components/ContentForm/EditorBreadcrumbs';
 import { getServerValidationErrors } from '../components/Form/validation';
 
 export async function loader({
@@ -33,8 +37,11 @@ export async function loader({
   }
 
   const { data: schema } = await cli.getType({ type: query.type });
+  // The container's trail: the new item goes at its end.
+  const container = context.get(ploneContentContext);
+  const breadcrumbs = container?.['@components']?.breadcrumbs;
 
-  return data(flattenToAppURL({ schema, type: query.type }));
+  return data(flattenToAppURL({ schema, type: query.type, breadcrumbs }));
 }
 
 export async function action({
@@ -68,7 +75,7 @@ export async function action({
 }
 
 export default function Add() {
-  const { schema, type } = useLoaderData<typeof loader>();
+  const { schema, type, breadcrumbs } = useLoaderData<typeof loader>();
   const { t } = useTranslation();
   const location = useLocation();
   const params = useParams();
@@ -88,7 +95,10 @@ export default function Add() {
       content={emptyContent}
       path={`/${params['*'] || ''}`}
       schema={schema}
-      heading={`${t('cmsui.add')} ${schema.title}`}
+      breadcrumbs={[
+        ...breadcrumbTrail(breadcrumbs, t('cmsui.editor.home')),
+        { '@id': '', title: t('cmsui.editor.newItem', { type: schema.title }) },
+      ]}
       submitMethod="post"
     />
   );

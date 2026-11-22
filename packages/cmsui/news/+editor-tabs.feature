@@ -1,0 +1,1 @@
+Reworked the editor's header: a breadcrumb trail ending with the edited item, and a segmented Blocks and Metadata switch. The Metadata view shows the title as it is typed, and its fieldsets as tabs that can be swiped on phones, with a dot on the tabs of fieldsets with errors. @sneridagh

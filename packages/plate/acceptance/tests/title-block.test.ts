@@ -42,7 +42,7 @@ async function expectRestoredTitle(
     .toBe(text);
 
   // The restored title block drives the page title.
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
   await expect(page.locator('input[name="title"]').first()).toHaveValue(text);
 }
 

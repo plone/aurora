@@ -54,6 +54,7 @@ export * from './components/Sheet/Sheet';
 export * from './components/Spinner/Spinner';
 export * from './components/Switch/Switch';
 export * from './components/Tabs/Tabs';
+export * from './components/Tabs/TabPanelCarousel';
 export * from './components/GridList/GridList';
 export * from './components/Table/Table';
 export * from './components/TagGroup/TagGroup';
