@@ -591,8 +591,9 @@
       position: static;
     }
   }
-  @container header (max-width: 860px) {
-    /* the navigation moves to its own row below the logo */
+  @container header (48rem < width <= 860px) {
+    /* the navigation moves to its own row below the logo; at 48rem and
+       below, `@plone/layout` collapses it into the menu toggle instead */
     #header .header-logo-nav-tools-wrapper > .section-inner-container {
       grid-template-columns: auto minmax(0, 1fr);
       padding-block: var(--space-xs);
@@ -614,6 +615,13 @@
     }
     #header .searchwidget input {
       width: calc(var(--space) * 6);
+    }
+  }
+  @container header (max-width: 48rem) {
+    /* the navigation is the menu toggle, which hugs the tools, as in
+       `@plone/layout`, also when the navigation is centred */
+    #header .header-logo-nav-tools-wrapper > .section-inner-container {
+      grid-template-columns: minmax(0, auto) minmax(min-content, 1fr) auto;
     }
   }
   @container header (max-width: 640px) {
