@@ -30,11 +30,6 @@
 /* Title */
 
 :where(.slate-title) {
-  --block-spacing-after: var(
-    --block-title-spacing-after,
-    calc(var(--spacing, 0.25rem) * 8)
-  );
-
   font-size: var(--text-4xl, 2.25rem);
   font-weight: var(--font-weight-bold, 700);
   line-height: var(--text-4xl--line-height, calc(2.5 / 2.25));
@@ -81,6 +76,15 @@
   --block-spacing-after: var(
     --block-h6-spacing-before,
     var(--block-h4-spacing-before, calc(var(--spacing, 0.25rem) * 6))
+  );
+}
+
+/* The title keeps its own gap, also before a heading. After the heading
+   rules, because the editor's title is a `.block` too. */
+:where(.slate-title) {
+  --block-spacing-after: var(
+    --block-title-spacing-after,
+    calc(var(--spacing, 0.25rem) * 8)
   );
 }
 

@@ -502,7 +502,9 @@
   --block-h4-spacing-before: calc(var(--font-size-lg) * 1.5);
   --block-h5-spacing-before: calc(var(--font-size-md) * 1.5);
   --block-h6-spacing-before: calc(var(--font-size) * 1.5);
-  --block-title-spacing-after: 1em;
+  /* a step of the scale, not `em`: the title's size follows the viewport,
+     and the editor's content is narrower than the page's */
+  --block-title-spacing-after: var(--space-2xl);
   /* Floated images keep room for the wrapping content (framework default). */
   --block-float-max-size: 66%;
   --block-separator-color: var(--border);
