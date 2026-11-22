@@ -20,3 +20,28 @@ it('Breadcrumbs basic a11y test', async () => {
 
   expect(results).toHaveNoViolations();
 });
+
+it('Breadcrumbs with navigation landmark test', async () => {
+  const { container } = render(
+    <Breadcrumbs
+      withNavigationLandmark
+      navigationLandmarkProps={{ 'aria-label': 'my breadcrumbs' }}
+      items={[
+        { '@id': '/', title: 'Home' },
+        { '@id': '/folder', title: 'Folder' },
+        { '@id': '/folder/page', title: 'Page' },
+      ]}
+    />,
+  );
+
+  const results = await axe(container);
+
+  expect(results).toHaveNoViolations();
+
+  expect(container.firstChild).not.toBeNull();
+
+  const root = container.firstChild as HTMLElement;
+  expect(root.nodeName).toEqual('NAV');
+  expect(root.getAttribute('role')).toEqual('navigation');
+  expect(root.getAttribute('aria-label')).toEqual('my breadcrumbs');
+});
