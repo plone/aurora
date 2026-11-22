@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.26 (2026-11-22)
+
+### Documentation
+
+- Documented the Quanta tabs: the `segmented` look of `TabList` and the swipeable `TabPanelCarousel`. @sneridagh 
+
 ## 1.0.0-alpha.25 (2026-11-21)
 
 ### Feature
