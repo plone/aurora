@@ -50,19 +50,6 @@ make help
 Else you can open `Makefile` to see other build formats.
 
 
-#### Warnings from `make docs-*` commands
-
-When running any of the documentation Make commands, you may safely ignore warnings such as the following:
-
-```console
-/system-file-to-path/volto/docs/source/news/5294.breaking: WARNING: document isn't included in any toctree
-```
-
-These warnings only check each of the changelog entries for valid MyST syntax.
-We do not want to include them in the documentation through a toctree entry, because the release process copies them into the {doc}`../release-notes/index` and deletes them.
-Thus it is safe to ignore warnings of this specific type, but you should heed all others.
-
-
 #### `docs-html`
 
 `docs-html` is the HTML version of the documentation.
