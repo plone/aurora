@@ -8,6 +8,34 @@
 
 <!-- towncrier release notes start -->
 
+## 4.0.0-alpha.8 (2026-11-18)
+
+### Feature
+
+- Added the `@plone/registry/app-info` virtual module, with the name and version of the app and of its add-ons, without file system paths, so client code can show them. @sneridagh 
+- The block docs loader collects the `document_model` of element docs, keeps an element of the same name in each document model, and collects the docs of document models, files whose frontmatter only has `document_model`. @sneridagh 
+
+## 4.0.0-alpha.7 (2026-10-29)
+
+### Feature
+
+- Added `createBlocksDocsLoader`, which collects the `*.block.md` docs of the add-ons' blocks and page elements, and the server-only `@plone/registry/blocks-docs` module that the Vite plugin generates from them. @sneridagh 
+- Added an optional `category` argument to `getWidget`, which looks the key up only in that widget category. @sneridagh 
+- Added the `@plone/registry/plate-editor` and `@plone/registry/plate-renderer` loaders, which collect the `config/plate-editor` and `config/plate-renderer` modules of the add-ons, in add-on order, for the page editor and renderer. @sneridagh 
+- The default widget is typed with the props the app declares in `WidgetPropsMap`. @sneridagh 
+- `getComponent` returns components typed with the props declared in `ComponentsPropsMap`, and `registerComponent` rejects components that require props the declared ones do not get. @pnicolli 
+- `registerComponent` accepts components with required props, matching the `ComponentType<any>` returned by `getComponent`. @pnicolli 
+- `registerWidget` registers the choices widget with `key: 'choices'`, and registers a widget component with keys of its own, such as `displayName`, as a widget instead of a map of widgets. @sneridagh 
+
+### Bugfix
+
+- Fixed `getUtilities` and `getUtility` so a dependency set matches exactly: a lookup for `{ widget: 'url' }` no longer returns utilities registered for `{ widget: 'url_list' }`, and dependency keys can be passed in any order. @sneridagh 
+- Register a route only once: `registerRoute` now skips a route that is identical to one already registered, so applying a configuration again no longer duplicates `config.routes`. @sneridagh 
+
+### Internal
+
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+
 ## 4.0.0-alpha.5 (2026-10-06)
 
 ### Feature

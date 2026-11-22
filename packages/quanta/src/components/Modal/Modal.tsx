@@ -1,4 +1,5 @@
 import React from 'react';
+import { composeRenderProps } from 'react-aria-components';
 import {
   ModalOverlay,
   type ModalOverlayProps,
@@ -22,8 +23,9 @@ const overlayStyles = tv({
 
 const modalStyles = tv({
   base: `
-    max-h-[calc(var(--visual-viewport-height)*.9)] w-full max-w-[90vw] rounded-md bg-quanta-air
-    bg-clip-padding text-left align-middle text-quanta-space shadow-xl
+    max-h-[calc(var(--visual-viewport-height)*.9)] w-full
+    max-w-[min(90vw,var(--modal-max-width,600px))] rounded-md bg-quanta-air bg-clip-padding
+    text-left align-middle text-quanta-space shadow-xl
     dark:border-white/10 dark:bg-neutral-800/70 dark:text-neutral-300 dark:backdrop-blur-2xl
     dark:backdrop-saturate-200
     forced-colors:bg-[Canvas]
@@ -47,7 +49,14 @@ export function Modal(props: ModalOverlayProps) {
           justify-center
         `}
       >
-        <RACModal {...props} className={modalStyles} />
+        <RACModal
+          {...props}
+          className={composeRenderProps(
+            props.className,
+            (className, renderProps) =>
+              modalStyles({ ...renderProps, className }),
+          )}
+        />
       </div>
     </ModalOverlay>
   );

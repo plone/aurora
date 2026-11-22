@@ -9,7 +9,7 @@ vi.mock('react-router', () => ({
 }));
 
 vi.mock('@plone/quanta', () => ({
-  Button: ({ children, onPress, ...props }: any) => (
+  Button: ({ children, onPress, accent: _accent, ...props }: any) => (
     <button onClick={onPress} {...props}>
       {children}
     </button>
@@ -19,11 +19,12 @@ vi.mock('@plone/quanta', () => ({
 }));
 
 vi.mock('@plone/icons', () => ({
+  ArrowrightIcon: () => <span>arrow</span>,
   BinIcon: () => <span>bin</span>,
+  FolderIcon: () => <span>folder</span>,
   ImageIcon: () => <span>image</span>,
-  LinkIcon: () => <span>link</span>,
-  NavigationIcon: () => <span>nav</span>,
   UploadIcon: () => <span>upload</span>,
+  WorldIcon: () => <span>world</span>,
 }));
 
 vi.mock('../Field/Field', () => ({
@@ -216,11 +217,28 @@ describe('ImageInput', () => {
       />,
     );
 
-    const input = screen.getByPlaceholderText('Enter an image URL');
+    const input = screen.getByPlaceholderText('Type a URL…');
     fireEvent.change(input, { target: { value: '  /new-image ' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 
     expect(onChange).toHaveBeenCalledWith('image', '/new-image', undefined);
+  });
+
+  it('submits the url with the arrow button', () => {
+    const onChange = vi.fn();
+    render(
+      <ImageInput id="image" onChange={onChange} hideObjectBrowserPicker />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Use this image URL' }));
+    expect(onChange).not.toHaveBeenCalled();
+
+    fireEvent.change(screen.getByPlaceholderText('Type a URL…'), {
+      target: { value: ' /arrow-image ' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Use this image URL' }));
+
+    expect(onChange).toHaveBeenCalledWith('image', '/arrow-image', undefined);
   });
 
   it('uses defaultValue when value is undefined', () => {

@@ -52,6 +52,10 @@ describe('Get Relations', () => {
       `http://localhost:55001/plone/@relations?relation=${relation}`,
     );
     expect(result.data.relations?.[relation]?.items_total).toBe(1);
+    const byTarget = await cli.getRelations({
+      target: relationsData.items[0].target,
+    });
+    expect(byTarget.data.relations?.[relation]?.items_total).toBe(1);
   });
 
   test('Successful - source', async () => {

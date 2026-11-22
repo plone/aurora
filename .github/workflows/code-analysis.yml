@@ -2,7 +2,7 @@ name: Code Analysis Check
 on: [push, pull_request]
 
 env:
-  node-version: 24.x
+  node-version: 26.x
 
 # Cancel the runs of a branch or pull request that a newer push supersedes,
 # except on main, where every commit runs to completion.

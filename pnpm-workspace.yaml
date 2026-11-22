@@ -14,9 +14,15 @@ publicHoistPattern:
   - '*playwright*'
 
 overrides:
-  react: ^19.2.0
-  react-dom: ^19.2.0
+  react: ^19.2.7
+  react-dom: ^19.2.7
   jotai: ^2.12.5
+
+# Deduplicate compatible dependency versions on every install (pnpm 12.6+).
+autoDedupe: true
+
+# Drop `minimumReleaseAgeExclude` entries once they are old enough.
+minimumReleaseAgeExcludePrune: true
 
 allowBuilds:
   '@swc/core': true

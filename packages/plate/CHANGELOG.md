@@ -8,6 +8,36 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.28 (2026-11-21)
+
+### Internal
+
+- Documented in `AGENTS.md` that the package also runs in Volto, and how to keep it working there. @sneridagh 
+
+## 1.0.0-alpha.27 (2026-11-18)
+
+### Feature
+
+- Added the `MAIN_REGION` and `PLATE_TYPE` constants and deprecated `SOMERSAULT_KEY`. The document format docs now describe the `main` region. @sneridagh [#379](https://github.com/plone/aurora/issues/379)
+- Added the `document_model` frontmatter to the docs of the Plate elements, and made the docs of the page document the docs of the `plone.plate` document model. @sneridagh 
+
+## 1.0.0-alpha.26 (2026-10-29)
+
+### Feature
+
+- Added `config/plate-editor` and `config/plate-renderer` add-on modules, which add Plate plugins, slash menu items and floating toolbar buttons to the page editor and renderer without shadowing the presets. @sneridagh 
+- Added the docs of the page document format and of its native elements, such as paragraphs, headings, tables and callouts, for the `@blocks-schema` endpoint. @sneridagh 
+- The link nodes render the `Link` component from the component registry with `config.getComponent`, so add-ons can override it. `@plone/components` is no longer a peer or dev dependency. @pnicolli 
+
+### Bugfix
+
+- Fixed the default block width not being stored for every top-level block, so a saved page loads unchanged and version diffs no longer show width changes nobody made. @sneridagh 
+
+### Internal
+
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+- The metadata title binding reads and writes the title through the form it is rendered in (`useOptionalFormContext`), instead of the `formAtom` registry utility. @sneridagh 
+
 ## 1.0.0-alpha.25 (2026-10-06)
 
 ### Breaking

@@ -1,7 +1,9 @@
 import { defineConfig } from 'vitest/config';
+import { PloneSVGRVitePlugin } from '@plone/icons/vite-plugin-svgr';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  plugins: [PloneSVGRVitePlugin()],
   test: {
     globals: true,
     environment: 'jsdom',

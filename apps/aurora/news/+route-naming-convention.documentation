@@ -1,1 +1,0 @@
-Documented the route naming convention, `@@` for views and a single `@` for resource routes, and that the root middleware does not load the content for resource routes. @sneridagh

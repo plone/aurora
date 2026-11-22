@@ -1,1 +1,0 @@
-Restyled the overlays after the Quanta design: popovers have a 6 px radius and a light shadow, dropdown rows are 36 px with denim text and a snow hover, menus have sapphire 48 px rows separated by smoke lines, the `Modal` has the dolphin backdrop, `Accordion` uses Quanta colors with 60 px rows, and tags are white pills with a silver outline. @sneridagh

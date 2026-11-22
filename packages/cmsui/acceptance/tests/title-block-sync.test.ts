@@ -42,8 +42,8 @@ test('Title block and metadata title stay in sync', async ({ page }) => {
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             {
               type: 'title',
@@ -62,7 +62,7 @@ test('Title block and metadata title stay in sync', async ({ page }) => {
   await page.goto('/@@edit/title-sync-page');
   await waitForPlateEditorReady(page);
 
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
   const metadataTitleInput = page.locator('input[name="title"]').first();
   await metadataTitleInput.fill('Metadata updated title');
 
@@ -84,7 +84,7 @@ test('Title block and metadata title stay in sync', async ({ page }) => {
 
   await expectTitleNodeText(page, editorHandle, 'Editor updated title');
 
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
   await expect(metadataTitleInput).toHaveValue('Editor updated title');
 });
 
@@ -101,8 +101,8 @@ test('Newly created title block is initialized from metadata title', async ({
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             {
               type: 'title',
@@ -123,7 +123,7 @@ test('Newly created title block is initialized from metadata title', async ({
   let editorHandle = await getEditorHandle(page);
   await expectTitleNodeText(page, editorHandle, 'Initial title');
 
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
   const metadataTitleInput = page.locator('input[name="title"]').first();
   await metadataTitleInput.fill('Seeded metadata title');
 
@@ -158,8 +158,8 @@ test('Reloading edit view with no stored title block does not trigger hydration 
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             {
               type: 'title',
@@ -206,8 +206,8 @@ test('Enter on title inserts a new empty paragraph before existing next block', 
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             {
               type: 'title',
@@ -266,8 +266,8 @@ test('Empty title block keeps showing its placeholder when another block is sele
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             {
               type: 'title',

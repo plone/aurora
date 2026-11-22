@@ -8,6 +8,27 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.20 (2026-11-18)
+
+### Internal
+
+- Updated the acceptance fixtures and tests to store the page body in the `main` region with `"@type": "plate"`. @sneridagh [#379](https://github.com/plone/aurora/pull/379)
+
+## 1.0.0-alpha.19 (2026-10-29)
+
+### Feature
+
+- Added `*.block.md` docs for the image, video, teaser, listing and maps blocks. @sneridagh 
+- The `@plone/components` components are rendered from the component registry with `config.getComponent`, so add-ons can override them. @pnicolli 
+
+### Bugfix
+
+- The image block stores the field and scales of an image picked in its settings sidebar, as its own picker does. @sneridagh 
+
+### Internal
+
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+
 ## 1.0.0-alpha.18 (2026-10-06)
 
 ### Breaking

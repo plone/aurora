@@ -7,6 +7,7 @@ import { Link, Button } from '@plone/quanta';
 import MoreOptionsSVG from '@plone/icons/svg/more-options.svg?react';
 import { ItemActionsPopover } from '../ItemActionsPopover/ItemActionsPopover';
 import ReviewState from '../ReviewState';
+import { isDateSet, isExpired, isScheduled } from '../../helpers/dates';
 
 interface Props {
   item: Brain;
@@ -64,14 +65,12 @@ export function ContentsCell({
           className="me-4 shrink-0 text-quanta-pigeon"
         />
         {item.title}
-        {item.ExpirationDate !== 'None' &&
-          new Date(item.ExpirationDate).getTime() < new Date().getTime() && (
-            <span className="expired">{t('contents.item.expired')}</span>
-          )}
-        {item.EffectiveDate !== 'None' &&
-          new Date(item.EffectiveDate).getTime() > new Date().getTime() && (
-            <span className="future">{t('contents.item.scheduled')}</span>
-          )}
+        {isExpired(item.ExpirationDate) && (
+          <span className="expired">{t('contents.item.expired')}</span>
+        )}
+        {isScheduled(item.EffectiveDate) && (
+          <span className="future">{t('contents.item.scheduled')}</span>
+        )}
       </Link>
     );
   } else if (column === '_actions') {
@@ -144,7 +143,7 @@ export function ContentsCell({
       }
     } else if (indexes.values[column].type === 'date') {
       const dateString = item[column];
-      if (typeof dateString === 'string' && dateString !== 'None') {
+      if (isDateSet(dateString)) {
         const date = new Date(dateString);
 
         return (

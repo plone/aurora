@@ -6,6 +6,16 @@ export default function install(config: ConfigType) {
     file: '@plone/cmsui/routes/layout.tsx',
     children: [
       {
+        type: 'route',
+        path: '@@personal-information',
+        file: '@plone/cmsui/routes/personal-information.tsx',
+      },
+      {
+        type: 'route',
+        path: '@@personal-preferences',
+        file: '@plone/cmsui/routes/personal-preferences.tsx',
+      },
+      {
         type: 'prefix',
         path: 'login',
         children: [
@@ -24,6 +34,23 @@ export default function install(config: ConfigType) {
             type: 'route',
             path: '*',
             file: '@plone/cmsui/routes/auth/logout.tsx',
+          },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: 'passwordreset',
+        children: [
+          {
+            type: 'index',
+            file: '@plone/cmsui/routes/auth/reset-password.tsx',
+            options: { id: 'passwordreset-index' },
+          },
+          {
+            type: 'route',
+            path: ':token',
+            file: '@plone/cmsui/routes/auth/reset-password.tsx',
+            options: { id: 'passwordreset-token' },
           },
         ],
       },
@@ -51,6 +78,17 @@ export default function install(config: ConfigType) {
       },
       {
         type: 'prefix',
+        path: '@@translate',
+        children: [
+          {
+            type: 'route',
+            path: '*',
+            file: '@plone/cmsui/routes/translate.tsx',
+          },
+        ],
+      },
+      {
+        type: 'prefix',
         path: '@@sharing',
         children: [
           {
@@ -62,7 +100,50 @@ export default function install(config: ConfigType) {
       },
       {
         type: 'prefix',
-        path: 'controlpanel',
+        path: '@@history',
+        children: [
+          { type: 'route', path: '*', file: '@plone/cmsui/routes/history.tsx' },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@aliases',
+        children: [
+          { type: 'route', path: '*', file: '@plone/cmsui/routes/aliases.tsx' },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@links-to-item',
+        children: [
+          {
+            type: 'route',
+            path: '*',
+            file: '@plone/cmsui/routes/links-to-item.tsx',
+          },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@rules',
+        children: [
+          { type: 'route', path: '*', file: '@plone/cmsui/routes/rules.tsx' },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@manage-translations',
+        children: [
+          {
+            type: 'route',
+            path: '*',
+            file: '@plone/cmsui/routes/manage-translations.tsx',
+          },
+        ],
+      },
+      {
+        type: 'prefix',
+        path: '@@controlpanel',
         children: [
           {
             type: 'index',
@@ -72,20 +153,44 @@ export default function install(config: ConfigType) {
             },
           },
           {
+            type: 'prefix',
+            path: 'content-types',
+            children: [
+              {
+                type: 'index',
+                file: '@plone/cmsui/routes/contentTypes.tsx',
+                options: {
+                  id: 'content-types-controlpanel',
+                },
+              },
+              {
+                // No splat: the root content middleware would fetch it as
+                // content. Without one, it loads the site root.
+                type: 'route',
+                path: ':type/:tab?',
+                file: '@plone/cmsui/routes/contentType.tsx',
+              },
+            ],
+          },
+          {
+            type: 'route',
+            path: 'dexterity-types/:type?/:page?',
+            file: '@plone/cmsui/routes/dexterityTypesRedirect.tsx',
+          },
+          {
+            type: 'route',
+            path: 'addons',
+            file: '@plone/cmsui/routes/controlpanelAddons.tsx',
+          },
+          {
+            type: 'route',
+            path: 'plone-upgrade',
+            file: '@plone/cmsui/routes/controlpanelUpgrade.tsx',
+          },
+          {
             type: 'route',
             path: ':id',
             file: '@plone/cmsui/routes/controlpanel.tsx',
-          },
-        ],
-      },
-      {
-        type: 'prefix',
-        path: 'test-layout',
-        children: [
-          {
-            type: 'route',
-            path: '*',
-            file: '@plone/cmsui/routes/test.tsx',
           },
         ],
       },
@@ -137,6 +242,11 @@ export default function install(config: ConfigType) {
     ],
   });
   config.registerRoute({
+    type: 'route',
+    path: '@more-menu',
+    file: '@plone/cmsui/routes/api/more-menu.tsx',
+  });
+  config.registerRoute({
     type: 'prefix',
     path: '@vocabulary',
     children: [
@@ -155,6 +265,17 @@ export default function install(config: ConfigType) {
         type: 'route',
         path: '*',
         file: '@plone/cmsui/routes/querystringSearch.tsx',
+      },
+    ],
+  });
+  config.registerRoute({
+    type: 'prefix',
+    path: '@content-types',
+    children: [
+      {
+        type: 'route',
+        path: '*',
+        file: '@plone/cmsui/routes/api/contentTypes.tsx',
       },
     ],
   });

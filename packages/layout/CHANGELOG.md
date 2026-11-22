@@ -8,6 +8,65 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.19 (2026-11-18)
+
+### Breaking
+
+- `RenderBlocks` and `SomersaultRenderer` now render the `main` region instead of the `__somersault__` block. @sneridagh [#379](https://github.com/plone/aurora/issues/379)
+
+### Bugfix
+
+- The Site setup link of the Personal tools menu points to `/@@controlpanel`. @sneridagh [#429](https://github.com/plone/aurora/issues/429)
+
+## 1.0.0-alpha.18 (2026-11-06)
+
+### Feature
+
+- Below 48rem the header navigation collapses into a menu toggle, which opens the items as a full-width panel under the header. @mpalomaki 
+- On phones the header row keeps only the logo, the navigation toggle and the search icon: the login or user tools and the language switcher move into the navigation panel. @sneridagh 
+- Show the language icon on the "Manage translations" item of the toolbar More menu. @pnicolli 
+
+### Bugfix
+
+- Skip image scale flattening when `scales` or `download` is missing so Image views do not crash, and render no image for one without a `download` URL. @aryan7081 
+
+## 1.0.0-alpha.17 (2026-10-30)
+
+### Feature
+
+- Registered the `Pagination` component from `@plone/components` in the component registry. @pnicolli 
+
+### Bugfix
+
+- Fixed the "Search site" label staying English in German, because of a wrongly cased key in the German catalog. @sneridagh [#354](https://github.com/plone/aurora/issues/354)
+
+## 1.0.0-alpha.16 (2026-10-30)
+
+### Internal
+
+- Fixed a flaky `MoreMenu` test: it waits for the menu to take the focus before opening the State submenu, which closed when the focus arrived later. @sneridagh 
+
+## 1.0.0-alpha.15 (2026-10-29)
+
+### Feature
+
+- Add a toolbar More menu with workflow, appearance, content management actions and backend-configurable links. @sneridagh 
+- Add a toolbar personal tools menu with profile, preferences, site setup, logout and configurable actions. @sneridagh 
+- Declared the props of the components registered from `@plone/components` in `ComponentsPropsMap`, so `getComponent` returns them typed, and the type checker rejects overrides that do not take their props. @pnicolli 
+- Registered the `@plone/components` components used by Plone Aurora in the registry, so they can be retrieved and overridden with `config.getComponent`. @pnicolli 
+- The LanguageSwitcher links each language to the current page in that language, and to the language root only when the page has no translation in it. Reported by @mpalomaki. @sneridagh 
+- The `@plone/components` components are rendered from the component registry with `config.getComponent`, so add-ons can override them. @pnicolli 
+- With more than three languages, the LanguageSwitcher is a dropdown menu, as a longer row of links does not fit the header. Up to three, it stays a row of links. Sites change the threshold with `config.settings.languageSwitcherMenuThreshold`. `Menu` is now registered in the component registry. @mpalomaki 
+
+### Bugfix
+
+- The LanguageSwitcher highlights the language of the page being read, taken from the first segment of the URL, instead of always the site's default language, and marks it with `aria-current`. @mpalomaki 
+
+### Internal
+
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+- The public UI styles import the Quanta palette from `@plone/quanta`, instead of getting it from `@plone/components`' basic theme. @pnicolli 
+
 ## 1.0.0-alpha.14 (2026-10-06)
 
 ### Feature

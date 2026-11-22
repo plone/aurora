@@ -1,6 +1,7 @@
 ---
 element: toggle
 title: Toggle
+document_model: plone.plate
 ---
 
 A collapsible section. The toggle node holds only its heading text. Its content is the nodes that follow it with a higher `indent` than the toggle: set `indent` to `1` on each of them, or one more than the toggle's own `indent`.

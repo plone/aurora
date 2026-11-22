@@ -1,1 +1,0 @@
-Components use Quanta's palette instead of Tailwind's generic grays, blues, reds, greens and yellows. Most colors shift by a few shades. The most visible change is the selected day in the `Calendar`, now Quanta's sapphire. @sneridagh

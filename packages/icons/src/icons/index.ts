@@ -62,6 +62,7 @@ export { MandatoryIcon } from './MandatoryIcon';
 export { MapIcon } from './MapIcon';
 export { MenuIcon } from './MenuIcon';
 export { MergedIcon } from './MergedIcon';
+export { MixerIcon } from './MixerIcon';
 export { MoreoptionsIcon } from './MoreoptionsIcon';
 export { NavigationIcon } from './NavigationIcon';
 export { NewsIcon } from './NewsIcon';

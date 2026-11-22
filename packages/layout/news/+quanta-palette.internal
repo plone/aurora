@@ -1,1 +1,0 @@
-The public UI styles import the Quanta palette from `@plone/quanta`, instead of getting it from `@plone/components`' basic theme. @pnicolli

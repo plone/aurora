@@ -1,1 +1,0 @@
-The date widgets convert Plone's ISO strings to the date values of the Quanta date controls, with the new helpers in `helpers/dates`. Removed the `minValue` prop from the recurrence interval and day of the month fields, which had no effect. @sneridagh

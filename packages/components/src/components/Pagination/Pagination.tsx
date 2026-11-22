@@ -1,18 +1,31 @@
 import React, { useRef } from 'react';
 import { VisuallyHidden } from 'react-aria';
 import { ArrowleftIcon, ArrowrightIcon } from '@plone/icons';
+import { Link } from 'react-aria-components';
+import clsx from 'clsx';
 import { Button } from '../Button/Button';
 
 export type PaginationProps = {
   totalPages: number;
+  /** The current page, starting from 0. */
   currentPage: number;
-  onPageChange: (page: number) => void;
+  /** Called with the page to go to, starting from 0. */
+  onPageChange?: (page: number) => void;
+  /**
+   * Returns the address of a page, starting from 0. When set, the pages render
+   * as links instead of buttons, so they work without JavaScript and crawlers
+   * can follow them.
+   */
+  getPageHref?: (page: number) => string;
 
   ariaLabel?: string;
   prevLabel?: string;
   nextLabel?: string;
+  /** Shows `prevLabel` and `nextLabel` next to the arrows. */
+  showPrevNextLabels?: boolean;
   currentLabel?: string;
   pageLabel?: string;
+  className?: string;
   buttonComponent?: React.ElementType;
   // --- props to change page size. Not implemented yet.---
   // pageSize: number;
@@ -30,6 +43,9 @@ export const Pagination = ({
   nextLabel = 'Next page',
   currentLabel = 'Current page',
   pageLabel = 'Page',
+  getPageHref,
+  showPrevNextLabels = false,
+  className,
   buttonComponent: ButtonComponent = Button,
   // pageSize,
   // pageSizes,
@@ -39,6 +55,7 @@ export const Pagination = ({
 
   type PageType = {
     type: string;
+    label?: string;
     value?: number;
     text?: string;
     icon?: any;
@@ -54,6 +71,7 @@ export const Pagination = ({
     type: 'prev-next',
     value: currentPage - 1,
     icon: <ArrowleftIcon />,
+    label: prevLabel,
     className: 'previous-page',
     disabled: currentPage == 0,
     ariaLabel: prevLabel,
@@ -138,6 +156,7 @@ export const Pagination = ({
     type: 'prev-next',
     value: currentPage + 1,
     icon: <ArrowrightIcon />,
+    label: nextLabel,
     className: 'next-page',
     disabled: currentPage == totalPages - 1,
     ariaLabel: nextLabel,
@@ -145,38 +164,117 @@ export const Pagination = ({
 
   //TODO: handle change pagesize
 
-  return totalPages > 1 ? (
-    <nav aria-label={ariaLabel} ref={ref} className="pagination">
-      {pages.map((page, i) => {
-        const buttonAttributes = {
-          className: page.className
-            ? `react-aria-Button ${page.className}`
-            : undefined,
-          isDisabled: page.disabled,
-          'aria-label':
-            page.ariaLabel ??
-            (page.type === 'page' ? `${pageLabel} ${page.text}` : undefined),
-        };
+  const renderContent = (page: PageType) =>
+    page.icon ? (
+      showPrevNextLabels ? (
+        page.className === 'previous-page' ? (
+          <>
+            {page.icon}
+            {page.label}
+          </>
+        ) : (
+          <>
+            {page.label}
+            {page.icon}
+          </>
+        )
+      ) : (
+        page.icon
+      )
+    ) : (
+      page.text
+    );
 
-        return (
-          <ButtonComponent
-            {...buttonAttributes}
-            key={`${i}${page.value}`}
-            onClick={
-              page.value !== undefined
-                ? () => {
-                    onPageChange(page.value ?? 0);
-                  }
-                : undefined
-            }
-          >
-            {page.type === 'prev-next' && (
-              <VisuallyHidden>{currentPage}</VisuallyHidden>
-            )}
-            {page.icon ? page.icon : page.text}
-          </ButtonComponent>
-        );
-      })}
+  const renderLink = (page: PageType, i: number) => {
+    const key = `${i}${page.value}`;
+    const classes = clsx('pagination-item', page.className);
+    // The ellipses, the disabled arrows and the current page aren't links.
+    if (page.type === 'other-items') {
+      return (
+        <span key={key} className={clsx(classes, 'ellipsis')} aria-hidden>
+          …
+        </span>
+      );
+    }
+    if (page.disabled) {
+      return (
+        <span key={key} className={clsx(classes, 'disabled')} aria-hidden>
+          {renderContent(page)}
+        </span>
+      );
+    }
+    if (page.className === 'active') {
+      return (
+        <span key={key} className={classes} aria-current="page">
+          {page.text}
+        </span>
+      );
+    }
+    return (
+      <Link
+        key={key}
+        className={clsx('react-aria-Link', classes)}
+        href={getPageHref!(page.value ?? 0)}
+        rel={
+          page.className === 'previous-page'
+            ? 'prev'
+            : page.className === 'next-page'
+              ? 'next'
+              : undefined
+        }
+        aria-label={
+          page.type === 'page'
+            ? `${pageLabel} ${page.text}`
+            : showPrevNextLabels
+              ? undefined
+              : page.ariaLabel
+        }
+      >
+        {renderContent(page)}
+      </Link>
+    );
+  };
+
+  return totalPages > 1 ? (
+    <nav
+      aria-label={ariaLabel}
+      ref={ref}
+      className={clsx('pagination', className)}
+    >
+      {getPageHref
+        ? pages.map(renderLink)
+        : pages.map((page, i) => {
+            const buttonAttributes = {
+              className: page.className
+                ? clsx('react-aria-Button', page.className)
+                : undefined,
+              isDisabled: page.disabled,
+              'aria-label':
+                page.ariaLabel ??
+                (page.type === 'page'
+                  ? `${pageLabel} ${page.text}`
+                  : undefined),
+            };
+
+            return (
+              <ButtonComponent
+                {...buttonAttributes}
+                key={`${i}${page.value}`}
+                onClick={
+                  page.value !== undefined
+                    ? () => {
+                        onPageChange?.(page.value ?? 0);
+                      }
+                    : undefined
+                }
+              >
+                {page.type === 'prev-next' && (
+                  <VisuallyHidden>{currentPage}</VisuallyHidden>
+                )}
+                {renderContent(page)}
+              </ButtonComponent>
+            );
+          })}
     </nav>
   ) : (
     <></>

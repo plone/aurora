@@ -56,7 +56,7 @@ Plone Volto supports TypeScript, but much of its core remains JavaScript.
 
 Plone Aurora uses standards-based CSS for styling.
 Modern CSS has evolved quickly, and features like custom properties cover many use cases that previously required preprocessors.
-Although Vite can compile SASS, LESS, and other syntaxes, Plone Aurora favors plain CSS to keep the pipeline simple.
+Although Vite can compile Sass, LESS, and other syntaxes, Plone Aurora favors plain CSS to keep the pipeline simple.
 
 ## Tailwind CSS
 

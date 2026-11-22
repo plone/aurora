@@ -8,6 +8,117 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.25 (2026-11-21)
+
+### Feature
+
+- Aurora registers `@plone/controlpanels` as an add-on, so its translations load. @sneridagh 
+
+### Documentation
+
+- Documented the new `@plone/controlpanels` package in the package overview and the release order. @sneridagh [#269](https://github.com/plone/aurora/issues/269)
+- Added the conceptual guide "Packages for Volto and Plone Aurora", on how `@plone/plate` and `@plone/controlpanels` run in both apps: no framework imports, a provider and a driver, translations, styles, building and the registry as a peer dependency. @sneridagh 
+
+## 1.0.0-alpha.24 (2026-11-18)
+
+### Breaking
+
+- The page body is now stored in the `main` region of `blocks`, with `"@type": "plate"`, instead of the `__somersault__` block. Content with the old block is renamed when it is read, through the new `contentMigration` utility type, and keeps the new shape once it is saved. The backend must run Plone 6.2 with `plone.restapi` 10.3.0 or later before deploying this version, so that `plate` regions are indexed, checked for link integrity, and get `resolveuid` links. It also needs `plone.volto` 6.2.1 or later with the `plone.volto:aurora` profile applied, so that the Personal tools menu gets the links of Plone Aurora instead of those of the Volto toolbar. With a Nick backend, upgrade to Nick 3.1.0 or later first, which reads the `main` region. See the upgrade guide. @sneridagh [#379](https://github.com/plone/aurora/issues/379)
+
+### Internal
+
+- Allowed up to 10 different pixels in the visual regression screenshots in CI, so anti-aliasing noise no longer fails the nightly run. @sneridagh 
+
+### Documentation
+
+- Say Plate.js blocks instead of Plate-native blocks in the docs. @silviubogan [#231](https://github.com/plone/aurora/issues/231)
+- Updated the control panel and toolbar how-to guides for the `/@@controlpanel` path. @sneridagh [#429](https://github.com/plone/aurora/issues/429)
+- Document the Nick 3.1.0 requirement, and remove the Volto versions, Python support and branch policy from the version policy and the system requirements. @sneridagh 
+- Documented the `personal_tools` and `more_menu` actions for the Personal tools and More toolbar menus. @sneridagh 
+- Documented the document model of the `@blocks-schema` endpoint, the `document_model` frontmatter of element docs and of the document model docs, and the `type` query parameter. @sneridagh 
+
+## 1.0.0-alpha.23 (2026-11-06)
+
+### Internal
+
+- Added `usehooks-ts`, a new dependency of `@plone/quanta`, to the Vite `optimizeDeps` list. @sneridagh 
+- Installed `plone.restapi` 10.2.0 in the development and acceptance backends, through `KGS` in `variables.mk`, which the acceptance backend now installs too. @sneridagh 
+- Load the private `@plone/test-addon` add-on when the `PLONE_TEST_ADDON` environment variable is set, as the acceptance `make` targets do. It registers blocks and fields that only the acceptance and visual regression tests use. @sneridagh 
+
+### Documentation
+
+- Added the how-to guide "Add a control panel": the backend parts, the icon and description on the site setup page, hiding a control panel, and replacing its form with a page of your own. @sneridagh 
+
+## 1.0.0-alpha.22 (2026-10-30)
+
+### Breaking
+
+- `REACT_ROUTER_ALLOWED_ACTION_ORIGINS` is now read when the production server starts, not when building. Set it in the environment of the running server. @sneridagh 
+
+### Bugfix
+
+- Fixed the interface language staying English when the project supports more languages: the i18next middleware and the client now read `config.settings.supportedLanguages` after the configuration is applied, and the client starts in the language the server detected. `app/i18n` now exports `getI18nOptions()` instead of a default options object. @sneridagh [#354](https://github.com/plone/aurora/issues/354)
+- Run the production server (`pnpm start:prod`) with an Aurora server that trusts the `X-Forwarded-*` headers of proxies on private networks, instead of `react-router-serve`. Behind a proxy that terminates TLS, React Router saw the request as `http` while the browser sends an `https` origin, so every action, login included, failed with a 400. It now works for every host the site is served on, without configuration. Set `TRUST_PROXY` to change which proxies are trusted. @sneridagh 
+
+## 1.0.0-alpha.21 (2026-10-30)
+
+### Feature
+
+- The hosts allowed as action origins can be set from the environment when building (`REACT_ROUTER_ALLOWED_ACTION_ORIGINS`, comma separated, with `*`/`**` wildcards). Behind a proxy that terminates TLS, React Router sees the request as `http` while the browser sends an `https` origin, so every action, login included, failed with a 400. @sneridagh 
+
+## 1.0.0-alpha.20 (2026-10-29)
+
+### Feature
+
+- A visitor who is not signed in and opens private content is sent to the login page with the page as `return_url`, as in Volto, instead of a bare 401 page. An expired sign-in does the same and clears the cookie. Signed-in users without permission still see the 401 page. @mpalomaki 
+- Added `config.settings.apiExpanders`, so add-ons can add expandable components to the main content request, optionally for signed-in users only. @sneridagh 
+- Added the `clientEndpoints` utility type, so add-ons can add custom endpoint methods to the request Plone client. @sneridagh 
+- Added the `contentResource` utility type and its middleware, which answers resources below a content path, like `/<path>/@blocks-schema`. @sneridagh 
+- On a multilingual site a request for the site root is redirected to the default language root — a full load and a client-side navigation alike — as Plone's language switcher view and Volto's `MultilingualRedirector` do. The root stays reachable through its contents view. @mpalomaki 
+- The build directory can be set from the environment (`REACT_ROUTER_BUILD_DIR`), so a deployment can build aside into a versioned directory and swap a symlink rather than overwrite the directory the running server serves — `react-router build` removes its build directory first. The default `build` is unchanged. @mpalomaki 
+- The content request expands the page's `translations` by default, for the LanguageSwitcher. A site without `plone.app.multilingual` ignores it. @sneridagh 
+- The root middleware no longer loads the Plone content, site and user for resource routes, whose path has a segment that starts with a single `@` (`@search`, `@@contents/@delete`), nor for the `/ok` health check, which saves three backend requests per call. The `reset-fetcher` route is renamed to `@reset-fetcher`. @sneridagh 
+
+### Bugfix
+
+- Apply the server configuration once per process instead of on every request, which made `config.routes` and the slot components grow without bound. @sneridagh 
+- Serve user portraits to browser image requests and persist the preferred interface language. @sneridagh 
+
+### Internal
+
+- Pre-bundled `jotai/vanilla` for `@plone/helpers`, which its form layer imports. @sneridagh 
+- Removed the `@plone/components > react-aria-components/DropZone` Vite pre-bundling entry, since `@plone/components` no longer has a `DropZone`. @pnicolli 
+- Updated React Aria Components to 1.22, and moved all React Aria packages and `tailwindcss-react-aria-components` into the pnpm catalog. @sneridagh 
+- Upgraded pnpm to 12, and enabled `autoDedupe` and `minimumReleaseAgeExcludePrune`. @sneridagh 
+- Upgraded to Node.js 26 in CI, and to React Router 8.5.0 and React 19.3. @sneridagh 
+
+### Documentation
+
+- Added the "Form fields, controls, widgets, and adapters" conceptual guide, with a diagram, worked examples and a glossary. @sneridagh [#97](https://github.com/plone/aurora/issues/97)
+- Solved a few Vale issues, by replacing failing regular expressions with functional ones, and corrected spelling of "Sass" in narrative docs. @silviubogan [#297](https://github.com/plone/aurora/issues/297)
+- Added Node.js 26 to the supported Node.js versions. @sneridagh 
+- Added a "Forms and widgets" section to the upgrade guide: the widget contract, the new form engine, validators, and the renamed Quanta pickers. @sneridagh 
+- Added the "Add custom endpoints to the Plone client" how-to guide. @sneridagh 
+- Added the "Add expanders to the content request" how-to guide. @sneridagh 
+- Added the "Core widgets" reference: what each widget is registered for, the value it reads and writes, and its widget options, such as the image widget's `extraFields`. @sneridagh 
+- Added the "Validate form fields" how-to: default validators, registering validators by format, type, widget, behavior or block, overriding them, writing them, translating their messages, and invariants. Updated the block schema side effects how-to to the current block settings form. @sneridagh 
+- Added the Quanta components reference, with how each component relates to React Aria's Tailwind starter. @sneridagh 
+- Added the upgrade guide entry for the Quanta `Sheet`. @sneridagh 
+- Added the upgrade guide entry for the Quanta palette removed from `@plone/components`' basic CSS. @pnicolli 
+- Added the upgrade guide entry for the components removed from `@plone/components`, and linked the `@plone/icons` Storybook. @pnicolli 
+- Added the upgrade guide for Quanta's `MultiSelect`. @sneridagh 
+- Added the upgrade guide for the Quanta collections. @sneridagh 
+- Added the upgrade guide for the Quanta fields, which follow React Aria's Tailwind starter. @sneridagh 
+- Added the upgrade guide for the Quanta navigation components. @sneridagh 
+- Documented form validation and how to register validators. @sneridagh 
+- Documented how to add Plate plugins from an add-on. @sneridagh 
+- Documented how to write block docs, the `@blocks-schema` endpoint, and how to answer a resource below a content path with a `contentResource` utility. @sneridagh 
+- Documented how widgets read the form and where it is, and the widget context upgrade step. @sneridagh 
+- Documented testing widgets against the contract, and the compile-time check of registered widgets. @sneridagh 
+- Documented the new core widgets, the choices widget in the widget lookup order, and the file and image fields in the upgrade guide. @sneridagh 
+- Documented the route naming convention, `@@` for views and a single `@` for resource routes, and that the root middleware does not load the content for resource routes. @sneridagh 
+- Updated the metadata text binding reference for the form context. @sneridagh 
+
 ## 1.0.0-alpha.19 (2026-10-06)
 
 ### Documentation

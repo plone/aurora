@@ -1,0 +1,49 @@
+{
+  "cmsui": {
+    "controlpanelDescriptions": {
+      "addons": "Instala, actualiza y elimina complementos"
+    },
+    "addons": {
+      "title": "Complementos",
+      "description": "Instala, actualiza y desinstala los complementos de este sitio. Aquí solo aparecen los complementos que forman parte de la compilación.",
+      "docsLink": "Añadir un complemento nuevo",
+      "installed": "Instalados",
+      "available": "Disponibles",
+      "empty": "No se ha encontrado ningún complemento.",
+      "noMatches": "Ningún complemento coincide con la búsqueda.",
+      "install": "Instalar",
+      "uninstall": "Desinstalar",
+      "upgrade": "Actualizar",
+      "upgradeAvailable": "Actualización disponible",
+      "upgradeFromTo": "Actualización {{from}} → {{to}}",
+      "actions": "Acciones de {{title}}",
+      "uninstallTitle": "¿Desinstalar {{title}}?",
+      "uninstallDescription": "Puede que se eliminen del sitio su configuración y los tipos de contenido que añade.",
+      "cancel": "Cancelar",
+      "searchLabel": "Buscar un complemento",
+      "searchPlaceholder": "Buscar un complemento",
+      "resultsCount_one": "{{count}} complemento encontrado",
+      "resultsCount_other": "{{count}} complementos encontrados",
+      "actionError": "No ha funcionado."
+    },
+    "upgrade": {
+      "title": "Actualizar el sitio Plone",
+      "description": "Ejecuta los pasos de actualización de la configuración del sitio después de actualizar Plone.",
+      "docsLink": "Lee la guía de actualización",
+      "versions": "Versiones de la configuración",
+      "upToDate": "Tu sitio está actualizado.",
+      "outdated": "La configuración del sitio está desactualizada y necesita actualizarse.",
+      "instanceVersion": "Configuración activa",
+      "fsVersion": "Última configuración disponible",
+      "steps": "Pasos de actualización",
+      "stepsDescription": "Se ejecutarán estos pasos de actualización. Algunos actualizan el catálogo o la configuración de seguridad, lo que puede tardar mucho en sitios grandes.",
+      "backup": "Asegúrate de tener una copia de seguridad del sitio antes de actualizarlo.",
+      "dryRun": "Simulación",
+      "run": "Actualizar",
+      "report": "Informe de actualización",
+      "done": "La actualización terminó. Tu sitio está actualizado.",
+      "dryRunDone": "Simulación terminada. No se guardó ningún cambio.",
+      "error": "La actualización falló."
+    }
+  }
+}

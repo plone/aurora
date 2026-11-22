@@ -8,6 +8,130 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.18 (2026-11-21)
+
+### Feature
+
+- Made a list of all the installed Aurora add-ons below the version information in the control panel, respecting the proposed UI design. @silviubogan [#366](https://github.com/plone/aurora/issues/366)
+- Add the Behaviors tab to the content types control panel. It reads and saves a type's behaviors through `@controlpanels/dexterity-types`, and takes the behavior metadata of add-ons from `config.settings.behaviorMetadata`. @sneridagh 
+- Add the Fields tab to the content types control panel, which reads and saves a type's schema through `@types`. @sneridagh 
+- Add the content type page to the content types control panel, with its Settings tab: name, description and what can be added inside. Moving between its tabs keeps unsaved changes; leaving asks first. @sneridagh 
+- Add the content types control panel at `/@@controlpanel/content-types`: list, add and delete types. The old `/@@controlpanel/dexterity-types` URLs redirect to it. @sneridagh 
+- Added the Plone upgrade control panel at `@@controlpanel/plone-upgrade`, which runs the site upgrade through the `@upgrade` endpoint, and linked it from a highlighted System card in the site setup. @sneridagh 
+- Change the site default workflow in the content types control panel through `POST @workflows`, when the backend has it. @sneridagh 
+- The content types control panel shows workflow states in the colors of `config.settings.workflowStateColors`. @sneridagh 
+- Use `@content-types`, `@behaviors` and `@workflows` in the content types control panel when the backend has them (plone/plone.restapi#2061), and today's endpoints otherwise. With them, a type's settings include where it can be added, visibility, comments and versioning, behaviors keep their order and preview the edit form, types can be copied, and the Workflow tab shows and changes a type's workflow. The control panel's routes ask the backend which services it has, at most once a minute. @sneridagh 
+
+### Internal
+
+- The content types control panel passes react-i18next's `t` to `@plone/controlpanels`, which now uses i18next's placeholders. @sneridagh 
+- The content types control panel's resource routes call `@plone/controlpanels`' plone.restapi driver on the server, instead of translating plone.restapi's payloads themselves. @sneridagh 
+
+## 1.0.0-alpha.17 (2026-11-18)
+
+### Breaking
+
+- The editor now reads and writes the page body in the `main` region, with `"@type": "plate"`, instead of the `__somersault__` block. The `@blocks-schema` document docs are now registered under `plate`. @sneridagh [#379](https://github.com/plone/aurora/issues/379)
+- Moved the site setup and control panel views from `/controlpanel` to `/@@controlpanel`, following the `@@` convention for views. Add-ons that register their own control panel route, like `controlpanel/my-settings`, must use `@@controlpanel/my-settings`. @sneridagh [#429](https://github.com/plone/aurora/issues/429)
+
+### Feature
+
+- Add a control panel to search and manage the site's add-ons at `/@@controlpanel/addons`. @redram404, @veyxos, @richardbenedikt 
+- Redesigned the empty image widget placeholder after the Quanta design: a round image badge, "Add your image" title, round browse and upload buttons, and a URL field with a submit arrow. @sneridagh 
+- The `@blocks-schema` endpoint announces the `plone.plate` document model in `document_model`, so that clients such as the Plone MCP server can tell Plate-based content from the `plone.blocks` model of Volto. It only lists the elements of that document model, and accepts a `type` query parameter for new content of that type. @sneridagh 
+
+### Bugfix
+
+- Read the version of the app for the site overview from `@plone/registry/app-info` instead of importing the Aurora app's `package.json`, so it works in any app. @sneridagh 
+
+### Internal
+
+- Removed the unused `test-layout` route. @sneridagh 
+
+## 1.0.0-alpha.16 (2026-11-06)
+
+### Feature
+
+- Add `@@translate` route to create a translation of a content item. The form is pre-filled with the source content, and saving creates the translation in the target language root folder, linked to the source in the same request. @nils-pzr 
+- Add the `object` and `object_list` widgets. `object_list` edits a list of objects described by a JSON schema, as Volto's widget of the same name does, with the same value. It has two layouts: `accordion`, which edits each item in place, and `table`, which shows the columns you choose and edits each item in a dialog. Items reorder by drag and drop, with the mouse, touch, or keyboard, or with their menu. The form validates the fields of each item with the item schema: a failed submit opens the first item with errors, and marks the rows of the items with errors. @sneridagh 
+- Gave the control panel forms a clear header, even spacing between fields, and their fieldsets as titled sections when there is more than one. Saving a control panel goes back to the site setup, and the toolbar shows Save before Back, as in the edit form. @sneridagh 
+- Redesigned the site setup page (`/controlpanel`): control panels are lists of rows with an icon and a short description, in the order the backend sends them, with a field to find a setting, and a sidebar shows the site details and the versions it runs on, with a button to copy them. Add-ons can add icons in `config.settings.controlPanelsIcons` and descriptions as `cmsui.controlpanelDescriptions.<id>` translations. Links to control panels Aurora does not have yet are gone. @sneridagh 
+- Used the `description`, `icon` and `group_id` that `plone.restapi` 10.2.0 sends for each control panel, when it sends them: the backend description wins over the translated one, the icon name maps to an icon in the new `config.settings.controlPanelsIconNames` before the icon by id, and the group title is translated by its id from `cmsui.controlpanelGroups.<group_id>`. @sneridagh 
+
+### Bugfix
+
+- Point the add/edit form cancel control at the content path instead of a missing @id, so Close leaves the form. @aryan7081 
+
+## 1.0.0-alpha.15 (2026-10-30)
+
+### Bugfix
+
+- Added `data-locale` with the interface language to `<html>`, so the client starts in the language the server detected. @sneridagh [#354](https://github.com/plone/aurora/issues/354)
+
+## 1.0.0-alpha.14 (2026-10-30)
+
+### Feature
+
+- Added the password reset flow at `/passwordreset`, the URL Plone's reset email links to: request a reset link, then set a new password with the token. @InteraktivPreuss [#48](https://github.com/plone/aurora/issues/48)
+
+## 1.0.0-alpha.13 (2026-10-29)
+
+### Breaking
+
+- All schema-driven forms render their fields through the new `SchemaFieldsets` component and the `field.SchemaField` field component (`field.Quanta` is kept as a deprecated alias). Widgets now receive the widget contract built from the field schema: `invalid` and a joined `errorMessage` instead of `error`, the schema `default` as `defaultValue` instead of the current value, the raw schema as `schema`, and no forced placeholder. Schema keys the form understands, such as `type`, `title` and `factory`, are no longer passed as widget props; any other schema key is still passed as a widget option. @sneridagh 
+- The content form, the control panels and the block settings now keep their values in a form store from `@plone/helpers` (`useFormStore`, `FormProvider`) instead of TanStack Form plus a Jotai atom. Removed `useAppForm`, the `formAtom` registry utility and `routes/atoms` (`formAtom`, `blockAtomFamily`, `useFormFieldValue`): read and write the current form with `useFormContext`, `useFieldValue` and `useSetFieldValue` from `@plone/helpers` instead. The settings sidebar toggle and the sidebar now share the same state. @sneridagh 
+
+### Feature
+
+- Passed `onBlur`, normalized validation errors (`errors` and `errorMessage`) and the caller's `label` to form widgets, and typed `BooleanWidget` with the shared `FormWidgetProps`. @sneridagh [#97](https://github.com/plone/aurora/issues/97)
+- Add content history, URL management, links and references, rules, and translation management routes for the toolbar More menu. @sneridagh 
+- Add personal information and language preference pages and show personal tools outside content editing. @sneridagh 
+- Added the `@blocks-schema` endpoint, which describes the elements and blocks to build a page with, with their docs, variations and schemas, as JSON or Markdown, for authenticated users and agents. @sneridagh 
+- Added the `TextareaWidget` (registered for `textarea`, e.g. the summary), `DateWidget` (registered for `date`, an ISO date string) and the `align`, `size` and `width` widget adapters around the Quanta pickers. All of them follow the widget contract, and show the required and invalid state. @sneridagh 
+- Added the core widgets for the fields with choices or a vocabulary (`SelectWidget`, now the choices widget), lists (`ArrayWidget`), numbers (`NumberWidget`), files (`FileWidget`), email addresses, passwords, and URLs, and the `@vocabulary` resource route that loads the terms of a vocabulary. A widget registered for a vocabulary now takes precedence over the choices widget. @sneridagh 
+- Control panels can now be saved. @sneridagh 
+- Schema-driven forms validate their fields. Required fields must not be empty, and the validators registered as `validator` utilities run on the fields they match (by `fieldType`, `widget`, `format`, `behaviorName` + `fieldName`, or `blockType` + `fieldName`), so add-ons can plug in their own. Ported the Volto validators (lengths, patterns, email, URL, numbers, list sizes, unique items, event date range). An invalid save shows the errors on their fields and focuses the first one; validation errors returned by the server are shown on their fields too. The default widget and the date and time widget are now adapters (`TextWidget`, `DateTimeWidget`) that show the required and invalid state. @sneridagh 
+- The `@plone/components` components are rendered from the component registry with `config.getComponent`, so add-ons can override them. @pnicolli 
+- The `@search`, `@breadcrumbs`, `@objectBrowserWidget`, `@queryStringOptions` and `@createContent` resource routes no longer get the content loaded by the root middleware, so each object browser navigation makes two backend requests instead of five. @sneridagh 
+- The widget registry checks registered widgets against the widget contract at compile time (`@plone/cmsui` declares `FormWidgetProps` in `WidgetPropsMap`). Added the `describeWidgetContract` test helper (`@plone/cmsui/testing/widgetContract`), which every core widget runs. `ObjectBrowserWidget` is typed with the widget contract. @sneridagh 
+- Widgets learn where the form is from the new `useWidgetContext` (`mode`, `path`, `containerPath`), provided by the content form, the control panels and, through the content form, the block settings, instead of reading the edit route's data or the URL. The object browser follows its field's value, the recurrence widget reads its own `value`, and the image widget can store the picked image's details in sibling fields with the `extraFields` widget option. The object browser listing returns no items, instead of an error page, for a path the API rejects. @sneridagh 
+
+### Bugfix
+
+- Fixed the add form of an Image (and of any type with an image field) crashing on its Content tab: the image widget guessed its location from the URL, and asked the object browser for `/@@add`. @sneridagh [#163](https://github.com/plone/aurora/issues/163)
+- Fixed control panels looping forever or showing stale values when opening a second panel, by giving each form its own store and remounting the add and edit forms per item. @sneridagh [#244](https://github.com/plone/aurora/issues/244)
+- Cleared the `ObjectBrowserWidgetBody` focus timeout when the component unmounts. @sneridagh 
+- Fixed boolean fields not showing their label and value by adding a `BooleanWidget` adapter for the Quanta `Checkbox`. @sneridagh 
+- Fixed the back and save toolbar buttons in the control panel routes, which did nothing when pressed. @sneridagh 
+- Fixed the block editor re-rendering on every keystroke, and made the link toolbar and the recurrence widget subscribe only to the form fields they read. @sneridagh 
+- Fixed the file and image fields, such as the image of an Image or the lead image of a News Item: they now upload the file with `FileWidget`, instead of storing an image URL that the content API cannot save. @sneridagh 
+- Fixed the login form so you can sign in again after a failed attempt without reloading the page. @sneridagh 
+- Fixed the object browser failing for a folder that does not exist: it now shows an empty listing. @sneridagh 
+- Fixed the recurrence modal crashing the edit form when the event ends on days 1 to 9 of a month, because the default "until" date was not a valid ISO date. @sneridagh 
+- Fixed widget resolution: each lookup step now only searches its own category, and an unknown `widget` name no longer stops the lookup before choices, vocabulary, factory and type. @sneridagh 
+- Registered the `@querystringSearch` route, so the Querystring widget results preview no longer gets a 404. @sneridagh 
+- The login action returns the editor to the page the login link was pressed on (the `return_url` the header's login link sends) instead of always to the site root. A `return_url` that is not a path on this site falls back to the site root. @mpalomaki 
+- The query string widget's "Reverse order" toggle uses Quanta's `Switch`, instead of the one from `@plone/components`. @sneridagh 
+
+### Internal
+
+- Moved the `SidebarPlugin` and `LinkKit` editor plugins to `config/plate-editor.ts`, so they reach the page editor through the add-on modules loader. @sneridagh 
+- Moved the recurrence modal's form to the form store from `@plone/helpers`, and removed the `@tanstack/react-form` dependency. @sneridagh 
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+- The CMS UI Storybook translates the components' texts in English, instead of showing the translation keys. @sneridagh 
+- The CMS UI layout links the `/@layers.css` stylesheet, and the object browser resets its fetcher through `/@reset-fetcher`, following the resource route naming convention. @sneridagh 
+- The CMS UI styles import the Quanta palette from `@plone/quanta`, instead of getting it from `@plone/components`' basic theme. @pnicolli 
+- The content form uses the composition API of Quanta's `Tabs`. @sneridagh 
+- The date widgets convert Plone's ISO strings to the date values of the Quanta date controls, with the new helpers in `helpers/dates`. Removed the `minValue` prop from the recurrence interval and day of the month fields, which had no effect. @sneridagh 
+- The object browser's modal uses React Aria Components' `Modal` directly, instead of the one from `@plone/components`. @pnicolli 
+- Updated React Aria Components to 1.22, and moved all React Aria packages and `tailwindcss-react-aria-components` into the pnpm catalog. @sneridagh 
+- Wait for hydration in the sharing acceptance tests that toggle a checkbox, so they no longer fail against the dev frontend. @sneridagh 
+- `ArrayWidget` uses Quanta's `MultiSelect`. @sneridagh 
+
+### Documentation
+
+- Documented how to convert Plone's ISO dates and date-times to React Aria date values and back, with the date helpers. @sneridagh 
+
 ## 1.0.0-alpha.12 (2026-10-06)
 
 ### Breaking

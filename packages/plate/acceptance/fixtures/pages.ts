@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test';
 
 import { createContent } from '../../../tooling/playwright/content';
 import { waitForPlateEditorReady } from '../../../tooling/playwright/plate';
-import { SOMERSAULT_KEY } from '../../constants';
+import { MAIN_REGION, PLATE_TYPE } from '../../constants';
 import { nativeBlockSections, type NativeBlockSection } from './native-blocks';
 
 type CreatePageOptions = {
@@ -44,8 +44,8 @@ export async function createNativeBlocksPage(
       ...body,
       // Aurora only reads the somersault block; `blocks_layout` isn't used.
       blocks: {
-        [SOMERSAULT_KEY]: {
-          '@type': SOMERSAULT_KEY,
+        [MAIN_REGION]: {
+          '@type': PLATE_TYPE,
           value: [
             ...(withTitle
               ? [{ type: 'title', children: [{ text: title }] }]
@@ -97,5 +97,5 @@ export async function getStoredValue(page: Page, pageId: string) {
   });
   const content = await response.json();
 
-  return content.blocks[SOMERSAULT_KEY].value as Record<string, unknown>[];
+  return content.blocks[MAIN_REGION].value as Record<string, unknown>[];
 }

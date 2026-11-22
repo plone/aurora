@@ -8,6 +8,48 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.6 (2026-11-06)
+
+### Feature
+
+- The contents view's modals use Quanta's `ModalSheet`, so on mobile they open as a bottom sheet that can be swiped away. @sneridagh 
+
+### Bugfix
+
+- The folder contents modals no longer span the whole screen on desktop. They follow the Figma widths: 600 px for the forms, 360 px for the delete confirmation and 660 px for the upload. @sneridagh 
+
+## 1.0.0-alpha.5 (2026-10-30)
+
+### Bugfix
+
+- Added `data-locale` with the interface language to `<html>`, so the client starts in the language the server detected. @sneridagh [#354](https://github.com/plone/aurora/issues/354)
+
+## 1.0.0-alpha.4 (2026-10-29)
+
+### Breaking
+
+- Renamed the Contents view resource routes from `/@@contents/@@<action>` to `/@@contents/@<action>` (`delete`, `upload`, `rename`, `workflow`, `tags`, `properties`, `order` and `paste`): resources use a single `@`, like the REST API endpoints, and views use `@@`. Update any code that calls the old URLs. @sneridagh 
+
+### Feature
+
+- The Contents view resource routes (`@@contents/@delete`, `@upload`, `@rename`, `@workflow`, `@tags`, `@properties`, `@order` and `@paste`) no longer get the content loaded by the root middleware. @sneridagh 
+- The `@plone/components` components are rendered from the component registry with `config.getComponent`, so add-ons can override them. @pnicolli 
+- The page size of the Contents view can be set with `config.settings.contentsPageSize`. It defaults to 10, as before. @sneridagh 
+
+### Bugfix
+
+- The Contents view no longer marks every item as expired or scheduled when the backend sends `null` for an unset expiration or effective date, as `plone/nick` does. Reported by @mpalomaki. @sneridagh 
+
+### Internal
+
+- Removed the test, spec, and story `exclude` entries from `tsconfig.json` that never matched any file, documenting that `check:ts` type-checks them. @sneridagh 
+- The contents modals import `Heading` from `@plone/quanta`. @sneridagh 
+- The contents table uses Quanta's `Pagination`, instead of the one from `@plone/components`. @pnicolli 
+- The contents view's popovers use Quanta's `Popover`, `Dialog` and `Checkbox`, and the item actions use React Aria Components' `Button`, instead of the ones from `@plone/components`. @pnicolli 
+- The properties modal converts the effective and expiration dates for the Quanta date controls. @sneridagh 
+- The upload modal uses Quanta's `Text`, which replaces `DropZoneText`. @sneridagh 
+- Updated React Aria Components to 1.22, and moved all React Aria packages and `tailwindcss-react-aria-components` into the pnpm catalog. @sneridagh 
+
 ## 1.0.0-alpha.3 (2026-10-03)
 
 ### Internal

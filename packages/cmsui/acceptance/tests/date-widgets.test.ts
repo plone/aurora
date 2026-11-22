@@ -29,7 +29,7 @@ test('A date-time field shows local time and saves UTC', async ({
   });
 
   await page.goto('/@@edit/dated-event', { waitUntil: 'networkidle' });
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
 
   // 10:00 UTC is 12:00 in Madrid, in summer time.
   const start = page.getByRole('group', { name: 'Event Starts' });

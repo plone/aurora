@@ -61,8 +61,8 @@ export async function createPloneBlocksPage(page: Page) {
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             { type: 'title', children: [{ text: 'Plone blocks' }] },
             p('An image block.'),
@@ -125,7 +125,7 @@ export async function createPloneBlocksPage(page: Page) {
           ],
         },
       },
-      blocks_layout: { items: ['__somersault__'] },
+      blocks_layout: { items: [] },
     }),
   });
 

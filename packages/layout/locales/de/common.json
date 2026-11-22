@@ -12,9 +12,12 @@
           "login": "Anmelden",
           "register": "Registrieren"
         },
-        "searchwidget": {
+        "searchWidget": {
           "searchSite": "Seite durchsuchen"
         }
+      },
+      "navigation": {
+        "menu": "Menü"
       }
     },
     "contenttypes": {

@@ -18,6 +18,12 @@ afterEach(async () => {
 });
 
 describe('Get Rules', () => {
+  test('fetches rules for a content path', async () => {
+    const result = await cli.getRules({ path: '/' });
+    expect(result.data['content-rules'].assigned_rules).toEqual(
+      expect.any(Array),
+    );
+  });
   test.skip('Successful', async () => {
     const randomId = uuid();
     const ruleId = `get-rule${randomId}`;

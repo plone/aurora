@@ -94,7 +94,11 @@ export default function Index() {
   const showToolbar = shouldShowToolbar(content);
 
   return (
-    <html lang={contentLanguage || locale || 'en'} dir={i18n.dir()}>
+    <html
+      lang={contentLanguage || locale || 'en'}
+      data-locale={locale}
+      dir={i18n.dir()}
+    >
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -110,7 +114,8 @@ export default function Index() {
             {showToolbar && <Toolbar />}
             <div
               className={clsx({
-                'ml-(--plone-toolbar-width)': showToolbar,
+                'ml-(--plone-toolbar-width) max-md:ml-0 max-md:pb-[calc(64px+env(safe-area-inset-bottom,0px))]':
+                  showToolbar,
               })}
             >
               <Outlet />

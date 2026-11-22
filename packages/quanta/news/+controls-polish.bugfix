@@ -1,1 +1,0 @@
-Fixed the read-only style of `TextField` and `TextAreaField`, which never applied, and the invalid style of `Checkbox`, which used a color that doesn't exist. @sneridagh

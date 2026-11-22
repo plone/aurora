@@ -58,7 +58,7 @@ jobs:
       - name: Set up Node.js environment
         uses: ./.github/actions/acceptance_tests_node_env_setup
         with:
-          node-version: 24.x
+          node-version: 26.x
 
       # The Quanta component screenshots run against the static Storybook,
       # which the visual config serves itself.

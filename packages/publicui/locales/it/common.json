@@ -2,10 +2,31 @@
   "publicui": {
     "sitemap": "Mappa del sito",
     "search": {
-      "title":"Risultati della ricerca per",
-      "results": "Risultati della ricerca",
-      "placeholder": "Scrivi qui...",
-      "noResults": "Nessun risultato"
+      "placeholder": "Cerca nel sito…",
+      "noResults": "Nessun risultato",
+      "heading": "Cerca",
+      "pagination": "Pagine dei risultati di ricerca",
+      "previous": "Precedente",
+      "next": "Successiva",
+      "resultsLabel": "Risultati della ricerca",
+      "loading": "Ricerca in corso…",
+      "sort": {
+        "label": "Ordina per",
+        "relevance": "Rilevanza",
+        "date": "Data",
+        "title": "Titolo"
+      },
+      "resultCountFor_one": "{{count}} risultato per “{{query}}”",
+      "resultCountFor_other": "{{count}} risultati per “{{query}}”",
+      "showing": "visualizzati {{start}}-{{end}}",
+      "noResultsFor": "Nessun risultato per “{{query}}”",
+      "nothingFound": "Nessun risultato trovato",
+      "noResultsHint": "Prova un termine diverso o controlla l’ortografia.",
+      "inputLabel": "Termini di ricerca",
+      "submit": "Cerca",
+      "resultCount_one": "{{count}} risultato",
+      "resultCount_other": "{{count}} risultati",
+      "pageLabel": "Pagina"
     },
     "toolbar": {
       "edit": "Modifica",

@@ -6,7 +6,10 @@ const addons = [
   '@plone/cmsui',
   '@plone/publicui',
   '@plone/contents',
+  '@plone/controlpanels',
   '@plone/agave',
+  // Blocks and fields for the acceptance and visual regression tests only.
+  ...(process.env.PLONE_TEST_ADDON ? ['@plone/test-addon'] : []),
 ];
 const theme = '';
 

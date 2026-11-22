@@ -1,1 +1,0 @@
-Typed the focused atom helpers with `Path` and `PathValue` instead of TanStack Form types, and removed the `@tanstack/react-form` dev dependency. @sneridagh

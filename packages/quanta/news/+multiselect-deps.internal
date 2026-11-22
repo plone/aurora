@@ -1,1 +1,0 @@
-Removed the `react-aria` dependency, and moved `react-stately` to the development dependencies, since only a story uses it. @sneridagh

@@ -44,12 +44,13 @@ export function ObjectBrowserWidgetBody() {
   const gridListRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (currentPath && !loading && items?.length && gridListRef.current) {
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         const gridList = gridListRef.current?.querySelector('[role="row"]');
         if (gridList instanceof HTMLElement) {
           gridList.focus();
         }
       }, 400);
+      return () => clearTimeout(timeout);
     }
   }, [currentPath, loading, items]);
 

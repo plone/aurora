@@ -49,8 +49,16 @@ export const ContentTypesMenu = ({ content }: ContentTypesMenuProps) => {
   };
 
   return (
-    <ToolbarMenu icon={<Add />} styles={contentTypesMenuStyles}>
-      <Menu className="menu-contenttypes-add">
+    <ToolbarMenu
+      mobileSheet
+      icon={<Add />}
+      triggerLabel={t('publicui.toolbar.addContent')}
+      styles={contentTypesMenuStyles}
+    >
+      <Menu
+        className="menu-contenttypes-add"
+        aria-label={t('publicui.toolbar.addContent')}
+      >
         <MenuSection className="most-used">
           <Header>{t('publicui.toolbar.addContent')}</Header>
           {highlightedTypes.length > 0 &&

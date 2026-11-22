@@ -20,7 +20,7 @@ const sheetStyles = tv({
   // along the z-axis. `box-content`: React Aria adds padding beyond the screen
   // edge (`overscrollPadding`), which mustn't eat the sheet's own size.
   base: `
-    z-[1] box-content
+    group/sheet-panel z-[1] box-content
     [transform:perspective(1000px)]
     overflow-clip border-quanta-smoke bg-quanta-air text-quanta-space shadow-2xl outline-hidden
     will-change-transform
@@ -79,9 +79,14 @@ export interface SheetProps extends Omit<SheetOverlayProps, 'children'> {
 export function Sheet({ children, overscrollPadding, ...props }: SheetProps) {
   const { snapPoints } = props;
   return (
+    // `z-20`, like `Modal`'s overlay, so it covers fixed and sticky page
+    // chrome, such as the CMS toolbar.
     <SheetOverlay
       {...props}
-      className={composeTailwindRenderProps(props.className, 'group/sheet')}
+      className={composeTailwindRenderProps(
+        props.className,
+        'group/sheet z-20',
+      )}
     >
       {/* The backdrop fades in as the sheet slides in. With snap points, it
           stays hidden until the sheet is dragged past the last one. */}
@@ -100,6 +105,49 @@ export function Sheet({ children, overscrollPadding, ...props }: SheetProps) {
         stackAnimation="sheet-scale-back"
         className={({ position }) => sheetStyles({ position })}
       >
+        {/* A centered sheet reads as a modal, so it shows no handle. */}
+        {!props.preventDismissal && (
+          <div
+            aria-hidden="true"
+            data-sheet-handle=""
+            className={`
+              pointer-events-none absolute z-10 rounded-md bg-quanta-silver transition-opacity
+              group-data-[has-descendants]/sheet-panel:opacity-0
+              group-data-[position=center]/sheet-panel:hidden
+              group-data-[swipe-direction=bottom]/sheet-panel:top-3
+              group-data-[swipe-direction=bottom]/sheet-panel:left-1/2
+              group-data-[swipe-direction=bottom]/sheet-panel:h-1.5
+              group-data-[swipe-direction=bottom]/sheet-panel:w-20
+              group-data-[swipe-direction=bottom]/sheet-panel:-translate-x-1/2
+              group-data-[swipe-direction=horizontal]/sheet-panel:top-1/2
+              group-data-[swipe-direction=horizontal]/sheet-panel:right-3
+              group-data-[swipe-direction=horizontal]/sheet-panel:h-20
+              group-data-[swipe-direction=horizontal]/sheet-panel:w-1.5
+              group-data-[swipe-direction=horizontal]/sheet-panel:-translate-y-1/2
+              group-data-[swipe-direction=left]/sheet-panel:top-1/2
+              group-data-[swipe-direction=left]/sheet-panel:right-3
+              group-data-[swipe-direction=left]/sheet-panel:h-20
+              group-data-[swipe-direction=left]/sheet-panel:w-1.5
+              group-data-[swipe-direction=left]/sheet-panel:-translate-y-1/2
+              group-data-[swipe-direction=right]/sheet-panel:top-1/2
+              group-data-[swipe-direction=right]/sheet-panel:left-3
+              group-data-[swipe-direction=right]/sheet-panel:h-20
+              group-data-[swipe-direction=right]/sheet-panel:w-1.5
+              group-data-[swipe-direction=right]/sheet-panel:-translate-y-1/2
+              group-data-[swipe-direction=top]/sheet-panel:bottom-3
+              group-data-[swipe-direction=top]/sheet-panel:left-1/2
+              group-data-[swipe-direction=top]/sheet-panel:h-1.5
+              group-data-[swipe-direction=top]/sheet-panel:w-20
+              group-data-[swipe-direction=top]/sheet-panel:-translate-x-1/2
+              group-data-[swipe-direction=vertical]/sheet-panel:top-3
+              group-data-[swipe-direction=vertical]/sheet-panel:left-1/2
+              group-data-[swipe-direction=vertical]/sheet-panel:h-1.5
+              group-data-[swipe-direction=vertical]/sheet-panel:w-20
+              group-data-[swipe-direction=vertical]/sheet-panel:-translate-x-1/2
+              forced-colors:bg-[CanvasText]
+            `}
+          />
+        )}
         <SheetContent className={contentStyles()}>{children}</SheetContent>
       </RACSheet>
     </SheetOverlay>

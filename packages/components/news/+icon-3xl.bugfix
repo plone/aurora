@@ -1,1 +1,0 @@
-Fixed the `3xl` icon size in the basic CSS, which used the `icon3xl` class instead of `icon-3xl`. @pnicolli

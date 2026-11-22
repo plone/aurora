@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { RouterContextProvider } from 'react-router';
 import {
   cookie,
+  localeCookie,
   getAddonRoutesConfig,
   getReturnUrl,
   redirectIfLoggedInLoader,
@@ -286,5 +287,17 @@ describe('redirectIfLoggedInLoader', () => {
         new Request('http://example.com/login?return_url=/sv'),
       ),
     ).toBe('NOT REDIRECTED');
+  });
+});
+
+describe('localeCookie', () => {
+  it('persists the language with the same settings used by the preferences page', async () => {
+    const header = await localeCookie.serialize('en');
+    expect(header).toContain('aurora_language=');
+    expect(header).toContain('Path=/');
+    expect(header).toContain('Max-Age=31536000');
+    expect(header).toContain('HttpOnly');
+    expect(header).toContain('SameSite=Lax');
+    expect(await localeCookie.parse(header)).toBe('en');
   });
 });

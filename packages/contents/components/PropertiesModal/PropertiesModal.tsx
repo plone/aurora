@@ -6,10 +6,9 @@ import {
   Button,
   Checkbox,
   DateTimePicker,
-  Dialog,
   Heading,
   Input,
-  Modal,
+  ModalSheet,
 } from '@plone/quanta';
 import { ArrowrightIcon, CloseIcon, PropertiesIcon } from '@plone/icons';
 import { type ToastItem } from '@plone/layout/config/toast';
@@ -151,106 +150,97 @@ export default function PropertiesModal() {
   };
 
   return (
-    <Modal
-      isDismissable
-      isOpen={showProperties}
-      onOpenChange={setShowProperties}
-    >
-      <Dialog className="mx-auto w-full p-8">
-        <div className="mb-10 flex items-center justify-between">
-          <Heading
-            slot="title"
-            className="react-aria-Heading text-xl font-bold"
-          >
-            {t('contents.modal_properties.title')}
-          </Heading>
-          <RACButton
-            onPress={close}
-            aria-label={t('contents.modal.close')}
+    <ModalSheet isOpen={showProperties} onOpenChange={setShowProperties}>
+      <div className="mb-10 flex items-center justify-between">
+        <Heading slot="title" className="react-aria-Heading text-xl font-bold">
+          {t('contents.modal_properties.title')}
+        </Heading>
+        <RACButton
+          onPress={close}
+          aria-label={t('contents.modal.close')}
+          className={`
+            cursor-pointer text-quanta-space
+            hover:text-quanta-sapphire
+            [&_svg]:size-5
+          `}
+        >
+          <CloseIcon />
+        </RACButton>
+      </div>
+      <div className="mx-auto grid max-w-sm gap-4">
+        <DateTimePicker
+          label={t('contents.modal_properties.effective')}
+          value={isoDateTimeToDateValue(values.effective)}
+          granularity="minute"
+          description={mixedPlaceholder('effective')}
+          onChange={(v) => setField('effective', dateValueToIsoDateTime(v))}
+          className={dateFieldClasses}
+        />
+        <DateTimePicker
+          label={t('contents.modal_properties.expires')}
+          value={isoDateTimeToDateValue(values.expires)}
+          granularity="minute"
+          description={mixedPlaceholder('expires')}
+          onChange={(v) => setField('expires', dateValueToIsoDateTime(v))}
+          className={dateFieldClasses}
+        />
+        <Field label={t('contents.modal_properties.rights')}>
+          <TextArea
+            value={values.rights ?? ''}
+            placeholder={mixedPlaceholder('rights')}
+            onChange={(e) => setField('rights', e.target.value)}
+            aria-label={t('contents.modal_properties.rights')}
             className={`
-              cursor-pointer text-quanta-space
-              hover:text-quanta-sapphire
-              [&_svg]:size-5
+              min-h-28 w-full rounded-lg bg-quanta-snow p-3 text-sm text-quanta-space
+              outline-quanta-cobalt
+              placeholder:text-quanta-pigeon
+              hover:bg-quanta-smoke
+              focus:bg-quanta-air
             `}
-          >
-            <CloseIcon />
-          </RACButton>
-        </div>
-        <div className="mx-auto grid max-w-sm gap-4">
-          <DateTimePicker
-            label={t('contents.modal_properties.effective')}
-            value={isoDateTimeToDateValue(values.effective)}
-            granularity="minute"
-            description={mixedPlaceholder('effective')}
-            onChange={(v) => setField('effective', dateValueToIsoDateTime(v))}
-            className={dateFieldClasses}
           />
-          <DateTimePicker
-            label={t('contents.modal_properties.expires')}
-            value={isoDateTimeToDateValue(values.expires)}
-            granularity="minute"
-            description={mixedPlaceholder('expires')}
-            onChange={(v) => setField('expires', dateValueToIsoDateTime(v))}
-            className={dateFieldClasses}
+        </Field>
+        <Field label={t('contents.modal_properties.creators')}>
+          <Input
+            type="text"
+            value={values.creators ?? ''}
+            placeholder={
+              mixedPlaceholder('creators') ??
+              t('contents.modal_properties.creators_hint')
+            }
+            onChange={(e) => setField('creators', e.target.value)}
+            className="h-11 w-full rounded-lg px-3"
           />
-          <Field label={t('contents.modal_properties.rights')}>
-            <TextArea
-              value={values.rights ?? ''}
-              placeholder={mixedPlaceholder('rights')}
-              onChange={(e) => setField('rights', e.target.value)}
-              aria-label={t('contents.modal_properties.rights')}
-              className={`
-                min-h-28 w-full rounded-lg bg-quanta-snow p-3 text-sm text-quanta-space
-                outline-quanta-cobalt
-                placeholder:text-quanta-pigeon
-                hover:bg-quanta-smoke
-                focus:bg-quanta-air
-              `}
-            />
-          </Field>
-          <Field label={t('contents.modal_properties.creators')}>
-            <Input
-              type="text"
-              value={values.creators ?? ''}
-              placeholder={
-                mixedPlaceholder('creators') ??
-                t('contents.modal_properties.creators_hint')
-              }
-              onChange={(e) => setField('creators', e.target.value)}
-              className="h-11 w-full rounded-lg px-3"
-            />
-          </Field>
-          <Checkbox
-            className="text-sm text-quanta-space"
-            isSelected={!!values.exclude_from_nav}
-            onChange={(checked) => setField('exclude_from_nav', checked)}
-          >
-            <span className="relative top-px leading-5">
-              {t('contents.modal_properties.exclude_from_nav')}
-              {initial.exclude_from_nav.mixed && (
-                <span className="text-quanta-graphite">
-                  {' '}
-                  ({t('contents.modal_properties.mixed')})
-                </span>
-              )}
-            </span>
-          </Checkbox>
+        </Field>
+        <Checkbox
+          className="text-sm text-quanta-space"
+          isSelected={!!values.exclude_from_nav}
+          onChange={(checked) => setField('exclude_from_nav', checked)}
+        >
+          <span className="relative top-px leading-5">
+            {t('contents.modal_properties.exclude_from_nav')}
+            {initial.exclude_from_nav.mixed && (
+              <span className="text-quanta-graphite">
+                {' '}
+                ({t('contents.modal_properties.mixed')})
+              </span>
+            )}
+          </span>
+        </Checkbox>
 
-          <div className="mt-6 flex justify-end">
-            <Button
-              onPress={confirm}
-              aria-label={t('contents.modal_properties.confirm')}
-              variant="primary"
-              accent={true}
-              size="L"
-              isDisabled={fetcher.state !== 'idle' || !dataFetcher.data}
-            >
-              <ArrowrightIcon />
-            </Button>
-          </div>
+        <div className="mt-6 flex justify-end">
+          <Button
+            onPress={confirm}
+            aria-label={t('contents.modal_properties.confirm')}
+            variant="primary"
+            accent={true}
+            size="L"
+            isDisabled={fetcher.state !== 'idle' || !dataFetcher.data}
+          >
+            <ArrowrightIcon />
+          </Button>
         </div>
-      </Dialog>
-    </Modal>
+      </div>
+    </ModalSheet>
   );
 }
 

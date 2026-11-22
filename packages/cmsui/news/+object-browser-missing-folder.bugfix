@@ -1,1 +1,0 @@
-Fixed the object browser failing for a folder that does not exist: it now shows an empty listing. @sneridagh

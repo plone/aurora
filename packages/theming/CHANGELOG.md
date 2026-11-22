@@ -8,6 +8,13 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.10 (2026-10-29)
+
+### Internal
+
+- The simple theme no longer imports the CSS of the components removed from `@plone/components`. @pnicolli 
+- Updated the cascade layer comment for the `layers.css` route, now `@layers.css`. @sneridagh 
+
 ## 1.0.0-alpha.9 (2026-10-06)
 
 ### Feature

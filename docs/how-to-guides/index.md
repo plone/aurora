@@ -23,6 +23,7 @@ register-and-retrieve-utilities
 configure-style-fields
 couple-block-schema-fields
 validate-form-fields
+add-a-control-panel
 work-with-dates-in-widgets
 add-editor-migration
 register-slots
@@ -40,5 +41,8 @@ add-plate-plugins
 bind-metadata-fields-to-plate-text-blocks
 customize-toolbar
 custom-content-types
+translate-content
+manage-translations
 manage-folder-contents-in-bulk
+deploy-behind-a-reverse-proxy
 ```
