@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.29 (2026-11-22)
+
+### Internal
+
+- Updated an acceptance test for the editor's Content tab, which is now Metadata. @sneridagh 
+
 ## 1.0.0-alpha.28 (2026-11-21)
 
 ### Internal
