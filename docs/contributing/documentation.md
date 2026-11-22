@@ -134,14 +134,17 @@ Storybook provides a sandbox to build, test, and document these visual elements 
 
 Components include widgets, blocks, and basic and structural items.
 When you develop a component, we encourage you to create or update its [Plone Aurora Storybook](https://6.docs.plone.org/storybook/) entry.
-As an example of how to do that, you can copy the existing Storybook entry for the `RichTextWidget` component.
+As an example of how to do that, you can copy the existing Storybook entry for the `TextWidget` component.
 
--   https://github.com/plone/volto/blob/main/packages/volto/src/components/theme/Widgets/RichTextWidget.stories.jsx#L3
--   https://github.com/plone/volto/blob/main/packages/volto/src/components/theme/Widgets/RichTextWidget.jsx
+-   https://github.com/plone/aurora/blob/main/packages/cmsui/components/TextWidget/TextWidget.stories.tsx
+-   https://github.com/plone/aurora/blob/main/packages/cmsui/components/TextWidget/TextWidget.tsx
 
-To build the Plone Aurora Storybook locally and test your entry, run the following command from the repository root.
+To test your entry locally, start or build the Plone Aurora Storybook of the package directory in which the entry lies.
+To do so, in the directory of that package, run the following command.
 
 ```shell
+make storybook-start
+# or
 make storybook-build
 ```
 
