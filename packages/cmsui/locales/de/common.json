@@ -152,7 +152,8 @@
       "modeLabel": "Editormodus"
     },
     "sidebar": {
-      "label": "Seitenleiste"
+      "label": "Seitenleiste",
+      "close": "Seitenleiste schließen"
     },
     "auth": {
       "username": "Benutzername",
