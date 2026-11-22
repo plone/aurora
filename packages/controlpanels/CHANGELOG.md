@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.2 (2026-11-22)
+
+### Feature
+
+- The unsaved-changes dot of the content type tabs matches the error dot of the editor's fieldset tabs, and the new Quanta tabs space it. @sneridagh 
+
 ## 1.0.0-alpha.1 (2026-11-21)
 
 ### Feature
