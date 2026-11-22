@@ -8,6 +8,14 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.6 (2026-11-22)
+
+### Feature
+
+- Added `TabPanelCarousel`, which lets tab panels be swiped on narrow touch screens, or dragged there with a mouse, with the selected tab following along. @sneridagh 
+- Restyle the Quanta `Menu`: menu items no longer have a border between them, and show a rounded highlight on hover and focus instead. @sneridagh 
+- Restyled the `Tabs` with a sliding selection indicator, and added a `segmented` look for `TabList` with its `variant` prop. @sneridagh 
+
 ## 1.0.0-alpha.5 (2026-11-18)
 
 ### Feature
