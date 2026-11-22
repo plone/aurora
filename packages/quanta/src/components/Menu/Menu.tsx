@@ -30,7 +30,7 @@ export function Menu<T>(props: MenuProps<T>) {
       className={composeTailwindRenderProps(
         props.className,
         `
-          max-h-[inherit] overflow-auto px-4.5 py-1.5 font-sans outline-hidden
+          max-h-[inherit] overflow-auto p-1 font-sans outline-hidden
           [clip-path:inset(0_0_0_0_round_.375rem)]
           empty:pb-2 empty:text-center
         `,
@@ -42,10 +42,9 @@ export function Menu<T>(props: MenuProps<T>) {
 const menuItemStyles = tv({
   extend: focusRing,
   base: `
-    group relative flex cursor-default items-center gap-3 border-b border-quanta-smoke px-3 py-3
-    text-sm leading-6 no-underline forced-color-adjust-none select-none
+    group relative flex cursor-default items-center gap-3 rounded-sm px-3 py-1.5 text-sm leading-6
+    no-underline forced-color-adjust-none select-none
     [-webkit-tap-highlight-color:transparent]
-    last:border-b-0
     selected:pr-1
     [&[href]]:cursor-pointer
   `,
@@ -128,7 +127,7 @@ export function MenuSeparator(props: SeparatorProps) {
       {...props}
       className={twMerge(
         `
-          my-1.5 border-b border-quanta-smoke
+          -mx-1 my-1 border-b border-quanta-smoke
           dark:border-neutral-700
         `,
         props.className,
@@ -153,8 +152,8 @@ export function MenuSection<T>({
       {...props}
       className={twMerge(
         `
-          after:block after:h-[5px] after:content-['']
-          first:-mt-[5px]
+          after:block after:h-1 after:content-['']
+          first:-mt-1
           last:after:hidden
         `,
         props.className,
@@ -163,7 +162,7 @@ export function MenuSection<T>({
       {title && (
         <Header
           className={`
-            sticky -top-[5px] z-10 truncate bg-quanta-air px-3 pt-1.5 pb-0.5 text-xs leading-[18px]
+            sticky -top-1 z-10 truncate bg-quanta-air px-3 pt-1.5 pb-0.5 text-xs leading-[18px]
             text-quanta-pigeon
             dark:bg-neutral-700/60 dark:text-neutral-300
           `}
