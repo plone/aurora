@@ -208,6 +208,7 @@ The room before a heading is the gap after the block that precedes it.
 - A table cell's own background color is set inline as `--block-table-cell-background` instead of `--cellBackground`.
 - The inner container stretches its content by default: `--justify-items` falls back to `stretch` instead of `start`.
 - The room on both sides of the page and around the content are `@plone/layout` tokens: `--gutter` and `--content-spacing`.
+- `@plone/plate` itself no longer spaces or centres the blocks, and no longer sets their width. An app that loads its {file}`content.css` without `@plone/layout`'s, such as Volto with volto-plate, must space the blocks and set their width in its own theme.
 - Views and routes without blocks render their page title with the title block's markup, `h1.documentFirstHeading.slate-title` with an inner container, so it's styled like the title of a page with blocks.
 - `@plone/theming` no longer styles `h2` and `.documentFirstHeading`, and its tokens are in the `theme` cascade layer, so a theme overrides them from any layer.
   `--color-brand` follows the new `--brand` token, the site's brand color, and `--accent` stays a subtle hover fill.
