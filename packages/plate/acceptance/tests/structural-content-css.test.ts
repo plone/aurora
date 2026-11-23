@@ -82,6 +82,9 @@ const OWNED: Record<string, string[]> = {
   ],
   '.block-toc__item[data-depth="2"]': ['padding-left'],
   '.block-toc__item[data-depth="3"]': ['padding-left'],
+  '.block-toc__item[data-depth="4"]': ['padding-left'],
+  '.block-toc__item[data-depth="5"]': ['padding-left'],
+  '.block-toc__item[data-depth="6"]': ['padding-left'],
 };
 
 /** The properties the content root's own rule sets. */
