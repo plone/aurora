@@ -8,6 +8,13 @@
 
 <!-- towncrier release notes start -->
 
+## 3.0.0-alpha.11 (2026-11-21)
+
+### Feature
+
+- Add `config.settings.behaviorMetadata`, which describes behaviors to the content types control panel: their group, the behaviors they include, their alternatives, and whether they're deprecated. @sneridagh 
+- Add `config.settings.workflowStateColors`, the colors the content types control panel shows workflow states with, by state id. @sneridagh 
+
 ## 3.0.0-alpha.10 (2026-11-06)
 
 ### Feature

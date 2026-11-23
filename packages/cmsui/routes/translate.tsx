@@ -8,7 +8,7 @@ import {
 } from 'react-router';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { flattenToAppURL, hasBlocksData } from '@plone/helpers';
+import { flattenToAppURL, hasBlocksData, langmap } from '@plone/helpers';
 import { requireAuthCookie } from '@plone/react-router';
 import type { Content } from '@plone/types';
 import {
@@ -18,6 +18,7 @@ import {
 import RenderBlocks from '@plone/layout/blocks/RenderBlocks';
 import { MAIN_REGION, PLATE_TYPE } from '@plone/plate/constants';
 import ContentForm from '../components/ContentForm/ContentForm';
+import { breadcrumbTrail } from '../components/ContentForm/EditorBreadcrumbs';
 import { getServerValidationErrors } from '../components/Form/validation';
 import { getTranslationsOrThrow } from '../helpers/translations.server';
 
@@ -200,6 +201,9 @@ export async function loader({
     throw redirect(`/@@edit${flattenToAppURL(existing['@id'])}`);
   }
 
+  // The trail of the language root the translation is added to.
+  const { data: breadcrumbs } = await cli.getBreadcrumbs({ path: targetRoot });
+
   const initial = {
     '@type': source['@type'],
     title: '',
@@ -214,6 +218,7 @@ export async function loader({
       initial,
       targetLanguage,
       targetRoot,
+      breadcrumbs,
     }),
   );
 }
@@ -271,7 +276,7 @@ export async function action({
 }
 
 export default function Translate() {
-  const { source, schema, initial, targetLanguage, targetRoot } =
+  const { source, schema, initial, targetLanguage, targetRoot, breadcrumbs } =
     useLoaderData<typeof loader>();
   const { t } = useTranslation();
 
@@ -342,10 +347,21 @@ export default function Translate() {
           </dl>
         ),
       }}
-      heading={t('cmsui.translate.heading_new', {
-        title: source.title,
-        language: targetLanguage,
-      })}
+      breadcrumbs={[
+        ...breadcrumbTrail(breadcrumbs, t('cmsui.editor.home')),
+        { '@id': '', title: t('cmsui.editor.newItem', { type: schema.title }) },
+      ]}
+      badge={
+        <span
+          className={`
+            rounded-full bg-quanta-arctic px-2.5 py-0.5 text-xs font-medium text-quanta-royal
+          `}
+        >
+          {t('cmsui.translate.translatingTo', {
+            language: langmap[targetLanguage]?.nativeName ?? targetLanguage,
+          })}
+        </span>
+      }
       submitMethod="post"
     />
   );

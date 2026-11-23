@@ -8,6 +8,35 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.19 (2026-11-22)
+
+### Feature
+
+- Reworked the editor's header: a breadcrumb trail ending with the edited item, and a segmented Blocks and Metadata switch. The Metadata view shows the title as it is typed, and its fieldsets as tabs that can be swiped on phones, with a dot on the tabs of fieldsets with errors. @sneridagh 
+
+### Bugfix
+
+- Fixed the editor's sidebar on phones: it starts closed, and opens with the toolbar's settings button as a panel over the bottom of the page, which a swipe down, its handle or Escape closes. A collapsed sidebar no longer leaves a strip on the right. @sneridagh 
+
+## 1.0.0-alpha.18 (2026-11-21)
+
+### Feature
+
+- Made a list of all the installed Aurora add-ons below the version information in the control panel, respecting the proposed UI design. @silviubogan [#366](https://github.com/plone/aurora/issues/366)
+- Add the Behaviors tab to the content types control panel. It reads and saves a type's behaviors through `@controlpanels/dexterity-types`, and takes the behavior metadata of add-ons from `config.settings.behaviorMetadata`. @sneridagh 
+- Add the Fields tab to the content types control panel, which reads and saves a type's schema through `@types`. @sneridagh 
+- Add the content type page to the content types control panel, with its Settings tab: name, description and what can be added inside. Moving between its tabs keeps unsaved changes; leaving asks first. @sneridagh 
+- Add the content types control panel at `/@@controlpanel/content-types`: list, add and delete types. The old `/@@controlpanel/dexterity-types` URLs redirect to it. @sneridagh 
+- Added the Plone upgrade control panel at `@@controlpanel/plone-upgrade`, which runs the site upgrade through the `@upgrade` endpoint, and linked it from a highlighted System card in the site setup. @sneridagh 
+- Change the site default workflow in the content types control panel through `POST @workflows`, when the backend has it. @sneridagh 
+- The content types control panel shows workflow states in the colors of `config.settings.workflowStateColors`. @sneridagh 
+- Use `@content-types`, `@behaviors` and `@workflows` in the content types control panel when the backend has them (plone/plone.restapi#2061), and today's endpoints otherwise. With them, a type's settings include where it can be added, visibility, comments and versioning, behaviors keep their order and preview the edit form, types can be copied, and the Workflow tab shows and changes a type's workflow. The control panel's routes ask the backend which services it has, at most once a minute. @sneridagh 
+
+### Internal
+
+- The content types control panel passes react-i18next's `t` to `@plone/controlpanels`, which now uses i18next's placeholders. @sneridagh 
+- The content types control panel's resource routes call `@plone/controlpanels`' plone.restapi driver on the server, instead of translating plone.restapi's payloads themselves. @sneridagh 
+
 ## 1.0.0-alpha.17 (2026-11-18)
 
 ### Breaking

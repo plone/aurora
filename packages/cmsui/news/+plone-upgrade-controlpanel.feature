@@ -1,1 +1,0 @@
-Added the Plone upgrade control panel at `@@controlpanel/plone-upgrade`, which runs the site upgrade through the `@upgrade` endpoint, and linked it from a highlighted System card in the site setup. @sneridagh

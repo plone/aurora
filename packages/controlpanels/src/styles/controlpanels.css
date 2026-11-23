@@ -1,0 +1,27 @@
+/*
+ * The stylesheet for apps without Tailwind, such as Volto. `build-css.mjs`
+ * compiles it to `dist/controlpanels.css`, scoped to `.plone-controlpanels`
+ * (`ControlPanelsScope`) so it styles the screens and nothing else, and
+ * without cascade layers so the app's own CSS can't win over it.
+ *
+ * Aurora doesn't use it: its Tailwind setup scans this package's source.
+ */
+@import 'tailwindcss/theme.css';
+@import 'tailwindcss/preflight.css';
+@import 'tailwindcss/utilities.css';
+@import '@plone/theming/styles/colors.css';
+/* Quanta's styles, without `main.css`, which sets the page's font. */
+@import '@plone/quanta/src/styles/colors.css';
+@import '@plone/quanta/src/styles/theme.css';
+@import '@plone/quanta/src/styles/Popover.css';
+@import '@plone/quanta/src/styles/Sheet.css';
+@import '@plone/quanta/src/styles/Table.css';
+@import '@plone/quanta/src/styles/Tooltip.css';
+@import '@plone/icons/icons.css';
+
+@plugin 'tailwindcss-react-aria-components';
+@plugin 'tailwindcss-animate';
+
+@source '..';
+@source '../../node_modules/@plone/quanta/src';
+@source '../../node_modules/@plone/icons/src';

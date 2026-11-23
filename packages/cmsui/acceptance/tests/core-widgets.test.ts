@@ -31,8 +31,8 @@ test('The tags of a page are added as tokens and saved as a list', async ({
   });
 
   await page.goto('/@@edit/tagged-page', { waitUntil: 'networkidle' });
-  await page.getByRole('tab', { name: 'Content' }).click();
-  await page.locator('button', { hasText: /^Categorization$/ }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
+  await page.getByRole('tab', { name: 'Categorization' }).click();
 
   const tags = page.getByRole('combobox', { name: 'Tags' });
   await tags.fill('aurora');
@@ -64,16 +64,16 @@ test('A field with a vocabulary or choices is a select', async ({
   });
 
   await page.goto('/@@edit/select-page', { waitUntil: 'networkidle' });
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
 
   // The language's options come from its vocabulary.
-  await page.locator('button', { hasText: /^Categorization$/ }).click();
+  await page.getByRole('tab', { name: 'Categorization' }).click();
   await page.getByRole('button', { name: /Language/ }).click();
   await page.getByRole('option', { name: 'English' }).click();
 
   // Allow discussion has its choices in the schema. The content API sends
   // its value as a boolean.
-  await page.locator('button', { hasText: /^Settings$/ }).click();
+  await page.getByRole('tab', { name: 'Settings' }).click();
   const allowDiscussion = page.getByRole('button', {
     name: /Allow discussion/,
   });
@@ -171,7 +171,7 @@ test('Adding a file uploads the chosen file', async ({ page, request }) => {
   });
 
   await page.goto('/@@add/downloads?type=File', { waitUntil: 'networkidle' });
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
   await page.getByLabel('Title').fill('Report');
   await page.getByLabel('File', { exact: true }).setInputFiles({
     name: 'report.txt',
@@ -210,7 +210,7 @@ test('Adding an image uploads the chosen image, and shows a preview', async ({
   // The add form used to crash here (#163), and then offered to pick an
   // image URL, which the image field of an Image can't store.
   await page.goto('/@@add/gallery?type=Image', { waitUntil: 'networkidle' });
-  await page.getByRole('tab', { name: 'Content' }).click();
+  await page.getByRole('tab', { name: 'Metadata' }).click();
   await page.getByLabel('Title').fill('Pixel');
   await page.getByLabel('Image', { exact: true }).setInputFiles({
     name: 'pixel.png',

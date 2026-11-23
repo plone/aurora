@@ -120,6 +120,32 @@ export interface SettingsConfig {
   controlPanelsIconNames: IconType;
   filterControlPanels: (controlpanels: Controlpanel[]) => Controlpanel[];
   filterControlPanelsSchema: (schema: Controlpanel) => ControlPanelSchema;
+  /**
+   * What the content types control panel knows about behaviors beyond what
+   * the backend says, by behavior name. Merged over its defaults for the core
+   * behaviors. See `BehaviorMetadata` in `@plone/controlpanels`.
+   */
+  behaviorMetadata?: Record<
+    string,
+    {
+      group?: string;
+      includes?: string[];
+      alternatives?: string[];
+      deprecated?: boolean;
+      replacement?: string;
+      addsFields?: boolean;
+      aliases?: string[];
+    }
+  >;
+  /**
+   * The colors the content types control panel shows workflow states with,
+   * by state id, over its defaults. A color is a Quanta color family. See
+   * "Workflow state colors" in the README of `@plone/controlpanels`.
+   */
+  workflowStateColors?: Record<
+    string,
+    'gray' | 'blue' | 'teal' | 'green' | 'yellow' | 'red'
+  >;
   externalRoutes: {
     match?: string | { path: string; exact: boolean; strict: boolean };
   }[];

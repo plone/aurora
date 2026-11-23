@@ -8,6 +8,23 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.26 (2026-11-22)
+
+### Documentation
+
+- Documented the Quanta tabs: the `segmented` look of `TabList` and the swipeable `TabPanelCarousel`. @sneridagh 
+
+## 1.0.0-alpha.25 (2026-11-21)
+
+### Feature
+
+- Aurora registers `@plone/controlpanels` as an add-on, so its translations load. @sneridagh 
+
+### Documentation
+
+- Documented the new `@plone/controlpanels` package in the package overview and the release order. @sneridagh [#269](https://github.com/plone/aurora/issues/269)
+- Added the conceptual guide "Packages for Volto and Plone Aurora", on how `@plone/plate` and `@plone/controlpanels` run in both apps: no framework imports, a provider and a driver, translations, styles, building and the registry as a peer dependency. @sneridagh 
+
 ## 1.0.0-alpha.24 (2026-11-18)
 
 ### Breaking
