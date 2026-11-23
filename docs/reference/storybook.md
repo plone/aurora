@@ -9,4 +9,4 @@ myst:
 
 # Storybook
 
-See {doc}`/storybook`.
+See <https://plone-storybook.readthedocs.io/>.
