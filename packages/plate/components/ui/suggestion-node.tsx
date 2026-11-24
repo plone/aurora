@@ -97,29 +97,25 @@ function SuggestionLineBreakContent({
   const spanRef = React.useRef<HTMLSpanElement>(null);
 
   return (
-    <span
-      ref={spanRef}
-      className={cn(
-        `
-          absolute border-b-2 border-b-quanta-emerald/40 bg-quanta-emerald/10 text-justify
-          text-quanta-emerald no-underline transition-colors duration-200
-        `,
-        isInsert &&
-          (isActive || isHover) &&
-          'border-b-quanta-emerald/60 bg-quanta-emerald/20',
-        isRemove &&
-          'border-b-0 bg-quanta-rose/15 text-quanta-rose line-through',
-        isRemove &&
-          (isActive || isHover) &&
-          'bg-quanta-rose/25 text-quanta-rose no-underline',
-      )}
-      style={{
-        bottom: 4.5,
-        height: 21,
-      }}
-      contentEditable={false}
-    >
-      <CornerDownLeftIcon className="mt-0.5 size-4" />
+    <span ref={spanRef} className="absolute" contentEditable={false}>
+      <span
+        className={cn(
+          `
+            border-b-2 border-b-quanta-emerald/40 bg-quanta-emerald/10 text-justify
+            text-quanta-emerald no-underline transition-colors duration-200
+          `,
+          isInsert &&
+            (isActive || isHover) &&
+            'border-b-quanta-emerald/60 bg-quanta-emerald/20',
+          isRemove &&
+            'border-b-0 bg-quanta-rose/15 text-quanta-rose line-through',
+          isRemove &&
+            (isActive || isHover) &&
+            'bg-quanta-rose/25 text-quanta-rose no-underline',
+        )}
+      >
+        <CornerDownLeftIcon className="inline-block size-4 align-[-0.125em]" />
+      </span>
     </span>
   );
 }
