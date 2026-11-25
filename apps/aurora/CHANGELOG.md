@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.27 (2026-11-25)
+
+### Feature
+
+- Added the Plone devtools (`@plone/devtools`) to the development server. Set `PLONE_DEVTOOLS=false` to turn them off; production builds never include them. @sneridagh [#381](https://github.com/plone/aurora/issues/381)
+
 ## 1.0.0-alpha.26 (2026-11-22)
 
 ### Documentation
