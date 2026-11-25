@@ -1,0 +1,1 @@
+Fixed the cursor landing in the last column after inserting three columns block; it now starts in the first column. @Tishasoumya-02
