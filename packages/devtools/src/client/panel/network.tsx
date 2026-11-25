@@ -41,7 +41,16 @@ const apiPath = (c: BackendCall) =>
   pathOf(c.url).replace(/^.*\+\+api\+\+/, '') || '/';
 
 type Row =
-  | { type: 'handler'; t: Timing; label: string; level: 2 }
+  | {
+      type: 'handler';
+      t: Timing;
+      /** The middleware's function name, or `#n` when it has none. */
+      name?: string;
+      route: string;
+      /** It awaits `next()`, so its time includes what runs after it. */
+      wraps: boolean;
+      level: 2;
+    }
   | { type: 'call'; c: BackendCall; level: 2 | 3 };
 
 export function buildRows(
@@ -89,8 +98,23 @@ export function buildRows(
       h.end - h.start < 1
     )
       continue;
-    const label = `${h.kind === 'middleware' ? `#${n} ` : ''}${routeLabel(routes, h.routeId)}`;
-    rows.push({ type: 'handler', t: h, label, level: 2 });
+    // Middleware run one after the other, so the nth run of a route's
+    // middleware is the nth function of its `middleware` array.
+    const name =
+      h.kind === 'middleware'
+        ? routes.get(h.routeId ?? '')?.middleware?.[n - 1] || `#${n}`
+        : undefined;
+    const wraps =
+      h.kind === 'middleware' &&
+      handlers.some((o) => o !== h && o.start >= h.start && o.end <= h.end);
+    rows.push({
+      type: 'handler',
+      t: h,
+      name,
+      route: routeLabel(routes, h.routeId),
+      wraps,
+      level: 2,
+    });
     for (const c of own) rows.push({ type: 'call', c, level: 3 });
   }
   for (const c of reqCalls.filter((x) => !owner.has(x.id))) {
@@ -252,15 +276,31 @@ function Waterfall({
           row.type === 'handler' ? (
             <Frag key={row.t.id}>
               <span className="lbl" title={row.t.routeId}>
-                <span className="kind">{row.t.kind}</span>
-                <span className="t mono">{row.label}</span>
+                {row.name ? (
+                  <span className="name mono">{row.name}</span>
+                ) : (
+                  <span className="kind">{row.t.kind}</span>
+                )}
+                <span className="t mono pdt-muted">{row.route}</span>
+                {row.wraps && (
+                  <abbr
+                    className="pdt-wraps"
+                    title="Awaits next(): its time includes the middleware and loaders that run after it"
+                  >
+                    wraps
+                  </abbr>
+                )}
               </span>
               <Bar
                 from={req.start}
                 to={req.end}
                 start={row.t.start}
                 end={row.t.end}
-                cls={row.t.status === 'error' ? 'c-error' : `c-${row.t.kind}`}
+                cls={
+                  row.t.status === 'error'
+                    ? 'c-error'
+                    : `c-${row.t.kind}${row.wraps ? ' wraps' : ''}`
+                }
               />
               <span className="dur">{fmtMs(row.t.start, row.t.end)}</span>
             </Frag>

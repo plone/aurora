@@ -60,6 +60,18 @@ export function addonOf(file: string, addons: AddonInfo[]) {
 }
 
 /**
+ * The names of a route's middleware, in the order they run. Named function
+ * declarations and `const name = (...) => ...` both carry their name; an
+ * anonymous function gives an empty string.
+ */
+export function middlewareNames(middleware: unknown): string[] | undefined {
+  if (!Array.isArray(middleware)) return undefined;
+  return middleware.map((fn) =>
+    typeof fn === 'function' && typeof fn.name === 'string' ? fn.name : '',
+  );
+}
+
+/**
  * Combines the server build (real ids, tree, handlers) with the route config
  * (files) and the add-on registry (owners) into what the panel shows.
  */
@@ -90,6 +102,7 @@ export function buildRouteInfos(options: {
       hasLoader: typeof r.module.loader === 'function',
       hasAction: typeof r.module.action === 'function',
       hasMiddleware: Array.isArray(r.module.middleware),
+      middleware: middlewareNames(r.module.middleware),
     };
   });
 }
