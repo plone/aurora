@@ -8,6 +8,16 @@
 
 <!-- towncrier release notes start -->
 
+## 4.0.0-alpha.9 (2026-11-25)
+
+### Feature
+
+- Added `config.overrideRoute` and `config.removeRoute`, to change or remove a registered route by its id, and `routeId`, which gives a route without an explicit id its file as registered, without its extension, as its id. @sneridagh [#386](https://github.com/plone/aurora/issues/386)
+
+### Documentation
+
+- Documented route ids, and how to override and remove routes. @sneridagh [#386](https://github.com/plone/aurora/issues/386)
+
 ## 4.0.0-alpha.8 (2026-11-18)
 
 ### Feature
