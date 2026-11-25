@@ -41,8 +41,15 @@ const insertBlockMap: Record<
   [KEYS.listTodo]: insertList,
   [KEYS.ol]: insertList,
   [KEYS.ul]: insertList,
-  [ACTION_THREE_COLUMNS]: (editor) =>
-    insertColumnGroup(editor, { columns: 3, select: true }),
+  // `insertColumnGroup({ select: true })` resolves the column from the current
+  // selection, which lands in the last column. Select the first one instead.
+  [ACTION_THREE_COLUMNS]: (editor) => {
+    const block = editor.api.block();
+    if (!block) return;
+    const at = PathApi.next(block[1]);
+    insertColumnGroup(editor, { at, columns: 3 });
+    editor.tf.select(editor.api.start(at.concat([0]))!);
+  },
   [KEYS.audio]: (editor) => insertAudioPlaceholder(editor, { select: true }),
   [KEYS.callout]: (editor) => insertCallout(editor, { select: true }),
   [KEYS.codeBlock]: (editor) => insertCodeBlock(editor, { select: true }),
