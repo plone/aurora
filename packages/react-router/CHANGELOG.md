@@ -8,6 +8,16 @@
 
 <!-- towncrier release notes start -->
 
+## 2.0.0-alpha.9 (2026-11-25)
+
+### Feature
+
+- Routes registered by add-ons get a readable id that is the same on every machine, such as `@plone/cmsui/routes/edit`, instead of their absolute file path. `getAddonRoutesConfig` also warns when two routes match the same URL. @sneridagh [#386](https://github.com/plone/aurora/issues/386)
+
+### Bugfix
+
+- Fixed `getAddonRoutesConfig` resolving a file of `@plone/cmsui-extra` to the folder of `@plone/cmsui`, and changing the routes passed to it. @sneridagh [#386](https://github.com/plone/aurora/issues/386)
+
 ## 2.0.0-alpha.8 (2026-10-29)
 
 ### Bugfix
