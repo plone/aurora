@@ -1,0 +1,1 @@
+Added `@plone/devtools`, a TanStack Devtools plugin for Plone Aurora that shows the active route segments with their loader data, the server requests with their middleware, loader and action timings and the backend calls they made (with redacted request and response bodies), and every route with the add-on that contributed it. @sneridagh
