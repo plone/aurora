@@ -1,0 +1,1 @@
+Added `config.overrideRoute` and `config.removeRoute`, to change or remove a registered route by its id, and `routeId`, which gives a route without an explicit id its file as registered, without its extension, as its id. @sneridagh

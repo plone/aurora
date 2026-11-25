@@ -65,6 +65,7 @@
     }
   },
   "dependencies": {
+    "@plone/registry": "workspace:*",
     "react-router": "catalog:"
   },
   "devDependencies": {
