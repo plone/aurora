@@ -29,7 +29,7 @@ You can try a Plone Aurora online demo at [https://aurora.demo.plone.org/](https
 
 ## Try It
 
-[![Try your own Plone Aurora site](https://img.shields.io/badge/Try%20It-Plone%20in%20a%20Box-0083be)](https://collective.github.io/plone-in-a-box/try/aurora/), in about 10 minutes. 
+[Try your own Plone Aurora site](https://collective.github.io/plone-in-a-box/try/aurora/), in about 10 minutes. 
 It runs on a cloud server in your own account, set up by Plone in a Box. 
 A small server costs a few cents an hour, paid to the cloud provider; delete it when you're done, which deletes the site too.
 
