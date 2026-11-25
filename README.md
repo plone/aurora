@@ -3,7 +3,7 @@
 [![Unit Tests](https://github.com/plone/aurora/actions/workflows/unit.yml/badge.svg?branch=main)](https://github.com/plone/aurora/actions/workflows/unit.yml)
 [![Acceptance Tests](https://github.com/plone/aurora/actions/workflows/acceptance.yml/badge.svg?branch=main)](https://github.com/plone/aurora/actions/workflows/acceptance.yml)
 [![Build Status Docs](https://github.com/plone/aurora/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/plone/aurora/actions)
-
+[![Try It in Plone in a Box](https://img.shields.io/badge/Try%20It-Plone%20in%20a%20Box-0083be)](https://collective.github.io/plone-in-a-box/try/aurora/)
 
 ## Introduction
 
@@ -27,6 +27,11 @@ Plone Aurora is the successor and natural evolution to the Plone Volto frontend.
 
 You can try a Plone Aurora online demo at [https://aurora.demo.plone.org/](https://aurora.demo.plone.org/).
 
+## Try It
+
+[![Try your own Plone Aurora site](https://img.shields.io/badge/Try%20It-Plone%20in%20a%20Box-0083be)](https://collective.github.io/plone-in-a-box/try/aurora/), in about 10 minutes. 
+It runs on a cloud server in your own account, set up by Plone in a Box. 
+A small server costs a few cents an hour, paid to the cloud provider; delete it when you're done, which deletes the site too.
 
 ## Monorepo structure
 
