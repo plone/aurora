@@ -31,6 +31,47 @@ It is usually better and quicker to move your items into new locations and copy 
 
 ## Upgrading to Plone Aurora
 
+(upgrade-guide-build-plone-devtools)=
+
+### Build `@plone/devtools` in `build-deps`
+
+```{versionchanged} 1.0.0-alpha.27
+These steps apply when you upgrade a project or an add-on from Plone Aurora 1.0.0-alpha.26 or earlier to 1.0.0-alpha.27 or later.
+```
+
+```{versionadded} 1.0.0-alpha.27
+The `@plone/devtools` package.
+```
+
+The Plone Aurora app now loads the Plone devtools in its development server, from the new `@plone/devtools` package.
+Its {file}`vite.config.ts` imports the package's Vite plugin, which is only available once the package is built.
+Without that build, both `make start` and `make build` fail with an `ERR_MODULE_NOT_FOUND` error when Vite loads its configuration, because the production build loads the same configuration.
+Production builds do not include the devtools.
+
+The Cookieplone templates are updated to match this release, so the recommended way to upgrade an existing project or add-on is to run the generator again over it and review the differences.
+Alternatively, add a target for the package to the {file}`Makefile` of your project or add-on, and add it to `build-deps`.
+
+```diff
+ core/packages/react-router/dist: $(shell find core/packages/react-router/src -type f)
+ 	pnpm --filter @plone/react-router build
+ 
++core/packages/devtools/dist: $(shell find core/packages/devtools/src -type f)
++	pnpm --filter @plone/devtools build
++
+ .PHONY: build-deps
+-build-deps: core/packages/registry/dist core/packages/icons/dist core/packages/quanta/dist core/packages/components/dist core/packages/client/dist core/packages/react-router/dist core/packages/helpers/dist ## Build dependencies
++build-deps: core/packages/registry/dist core/packages/icons/dist core/packages/quanta/dist core/packages/components/dist core/packages/client/dist core/packages/react-router/dist core/packages/helpers/dist core/packages/devtools/dist ## Build dependencies
+```
+
+Do the same in the `build:deps` script of the root {file}`package.json`.
+
+```diff
+-    "build:deps": "pnpm --filter @plone/registry --filter @plone/icons --filter @plone/quanta --filter @plone/components build",
++    "build:deps": "pnpm --filter @plone/registry --filter @plone/icons --filter @plone/quanta --filter @plone/components --filter @plone/devtools build",
+```
+
+To turn the devtools off in the development server, for example for acceptance tests, set the environment variable `PLONE_DEVTOOLS=false`.
+
 (upgrade-guide-main-plate-region)=
 
 ### The page body is stored in the `main` region
