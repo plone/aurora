@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.3 (2026-11-25)
+
+### Bugfix
+
+- Find `@content-types` and the site's own type on backends whose site root isn't a `Plone Site`, such as Nick's `Site`: `detectRestApi` reads the site root's type, and `ContentTypesBackend` has it as `siteType`. @sneridagh 
+
 ## 1.0.0-alpha.2 (2026-11-22)
 
 ### Feature
