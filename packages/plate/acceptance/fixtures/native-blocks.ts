@@ -23,6 +23,10 @@ export const nativeBlockSections = {
     p('Paragraph below the third level heading.'),
     { type: 'h4', children: [{ text: 'Heading four' }] },
     p('Paragraph below the fourth level heading.'),
+    { type: 'h5', children: [{ text: 'Heading five' }] },
+    p('Paragraph below the fifth level heading.'),
+    { type: 'h6', children: [{ text: 'Heading six' }] },
+    p('Paragraph below the sixth level heading.'),
   ],
 
   marks: [
