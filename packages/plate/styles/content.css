@@ -703,7 +703,7 @@
  * win over the block rules above, as they did as Tailwind utilities.
  */
 
-:where(.slate-editor) {
+:where(.slate-editor[data-slate-editor]) {
   position: relative;
   overflow: hidden;
   width: 100%;
@@ -715,11 +715,12 @@
 }
 
 :where(
-  .slate-editor [data-slate-node='element']:not([data-slate-inline='true'])
+  .slate-editor[data-slate-editor]
+    [data-slate-node='element']:not([data-slate-inline='true'])
 ) {
   margin-inline: auto;
 }
 
-:where(.slate-editor strong) {
+:where(.slate-editor[data-slate-editor] strong) {
   font-weight: var(--font-weight-bold, 700);
 }
