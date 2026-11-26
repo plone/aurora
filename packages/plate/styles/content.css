@@ -669,6 +669,18 @@
   padding-left: 50px;
 }
 
+:where(.block-toc__item[data-depth='4']) {
+  padding-left: 74px;
+}
+
+:where(.block-toc__item[data-depth='5']) {
+  padding-left: 98px;
+}
+
+:where(.block-toc__item[data-depth='6']) {
+  padding-left: 122px;
+}
+
 @media (hover: hover) {
   :where(.block-toc__item:hover) {
     background-color: var(--accent);
