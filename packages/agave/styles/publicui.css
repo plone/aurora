@@ -1,4 +1,6 @@
 @import '@plone/theming/styles/tailwind.css';
+/* TEMPORARY: the Xmas skin, unlayered; remove with the file */
+@import './xmas.css';
 
 /* ══════════════════════════════════════════════════════════════════════
    AGAVE — default theme for the Plone Aurora Public UI

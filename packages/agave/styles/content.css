@@ -75,7 +75,7 @@
     #111416
   ); /* page background — a plain colour */
   --foreground: light-dark(#16191a, #eceeef); /* page text */
-  --brand: light-dark(#1f6763, #8fd0c6); /* brand: links, current item, focus */
+  --brand: light-dark(#1e7671, #8fd0c6); /* brand: links, current item, focus */
   --brand-foreground: light-dark(#ffffff, #111416); /* text on a brand fill */
   --header-background: var(
     --background
@@ -313,13 +313,20 @@
   --heading-tracking: -0.03em;
   /* block tokens: glass cards and quote, a callout tinted with the
      gradient's bloom colour */
-  --card-background: light-dark(rgb(255 255 255 / 72%), rgb(22 34 36 / 60%));
+  --card-background: light-dark(
+    color-mix(in srgb, var(--background) 72%, transparent),
+    color-mix(
+      in srgb,
+      color-mix(in srgb, var(--brand) 8.5%, var(--background)) 60%,
+      transparent
+    )
+  );
   --card-shadow: 0 1px 2px light-dark(rgb(15 26 28 / 4%), rgb(0 0 0 / 20%));
   --card-lift: calc(var(--space-3xs) * 0.5);
   --card-image-rule: none;
   --callout-background: color-mix(
     in oklab,
-    light-dark(#99d0db, #175663) 30%,
+    light-dark(#99d0db, #134a55) 24%,
     var(--background)
   );
   --callout-foreground: color-mix(
@@ -327,19 +334,25 @@
     var(--foreground) 78%,
     var(--background)
   );
-  --quote-background: light-dark(rgb(255 255 255 / 55%), rgb(12 22 24 / 50%));
+  --quote-background: light-dark(
+    color-mix(in srgb, var(--background) 55%, transparent),
+    color-mix(in srgb, var(--background) 50%, transparent)
+  );
   --quote-image: radial-gradient(
-    110% 620px at 50% -240px,
-    light-dark(rgb(153 208 219 / 62%), rgb(23 86 99 / 62%)) 0%,
-    light-dark(rgb(153 208 219 / 32%), rgb(23 86 99 / 28%)) 42%,
-    transparent 78%
+    200% 180% at -25% -35%,
+    light-dark(rgb(153 208 219 / 34%), rgb(19 74 85 / 34%)) 0%,
+    light-dark(rgb(153 208 219 / 21%), rgb(19 74 85 / 18%)) 48%,
+    transparent 86%
   );
   /* colours */
   --background: light-dark(#ffffff, #0b1314);
   --foreground: light-dark(#0f1a1c, #e8f0ef);
   --brand: light-dark(#1f6763, #8fd0c6);
   --brand-foreground: light-dark(#ffffff, #0b1314);
-  --header-background: light-dark(rgb(255 255 255 / 55%), rgb(12 22 24 / 50%));
+  --header-background: light-dark(
+    color-mix(in srgb, var(--background) 55%, transparent),
+    color-mix(in srgb, var(--background) 50%, transparent)
+  );
   --header-foreground: var(--foreground);
   --footer-background: transparent;
   --footer-foreground: var(--foreground);
@@ -347,16 +360,16 @@
   --background-image:
     radial-gradient(
       130% 1300px at 25% -560px,
-      light-dark(#99d0db, #175663) 0%,
-      light-dark(rgb(153 208 219 / 62%), rgb(23 86 99 / 52%)) 40%,
-      light-dark(rgb(153 208 219 / 36%), rgb(23 86 99 / 30%)) 55%,
-      light-dark(rgb(153 208 219 / 14%), rgb(23 86 99 / 12%)) 70%,
+      light-dark(#99d0db, #134a55) 0%,
+      light-dark(rgb(153 208 219 / 62%), rgb(19 74 85 / 52%)) 40%,
+      light-dark(rgb(153 208 219 / 36%), rgb(19 74 85 / 30%)) 55%,
+      light-dark(rgb(153 208 219 / 14%), rgb(19 74 85 / 12%)) 70%,
       transparent 86%
     ),
     radial-gradient(
-      100% 680px at 50% calc(100% + 200px),
-      light-dark(#99d0db, #175663) 0%,
-      light-dark(rgb(153 208 219 / 50%), rgb(23 86 99 / 45%)) 45%,
+      100% 680px at 50% calc(100% + 120px),
+      light-dark(rgb(153 208 219 / 68%), rgb(19 74 85 / 68%)) 0%,
+      light-dark(rgb(153 208 219 / 34%), rgb(19 74 85 / 30%)) 45%,
       transparent 80%
     );
   --shadow: 0 22px 44px -24px light-dark(rgb(30 60 62 / 38%), rgb(0 0 0 / 70%));
@@ -364,7 +377,7 @@
 
 /* ─── NIEVE · monochrome, square, editorial ────────────────────────── */
 /* An example of another skin, switched off: uncomment it and set
-   data-skin="nieve" on <html> to apply it.
+   data-skin="nieve" on <html> to apply it. */
 
 [data-skin='nieve'] :is(.app-slot, .content-area) {
   --font-body:
@@ -386,29 +399,36 @@
   --label-transform: uppercase;
   --section-rule: var(--border-width) solid var(--foreground);
   --callout-rule: var(--ring-width) solid var(--brand);
+  --callout-background: light-dark(
+    color-mix(in oklab, #446256 6%, var(--background)),
+    color-mix(in oklab, #a2bdb2 11%, var(--background))
+  );
+  --quote-background: light-dark(
+    rgb(255 255 255 / 35%),
+    rgb(255 255 255 / 2.5%)
+  );
+  --quote-image: none;
+  /* cards: a white lift on the off-white page; dark keeps Default's lift */
+  --card-background: light-dark(
+    rgb(255 255 255 / 72%),
+    color-mix(
+      in srgb,
+      color-mix(in srgb, var(--brand) 8.5%, var(--background)) 60%,
+      transparent
+    )
+  );
   --background: light-dark(#f4f5f5, #0e1011);
   --foreground: light-dark(#111416, #eceeef);
   --brand: light-dark(#46605d, #a3bab7);
   --brand-foreground: light-dark(#ffffff, #0e1011);
-  --header-background: light-dark(rgb(244 245 245 / 62%), rgb(14 16 17 / 62%));
+  --header-background: color-mix(in srgb, var(--background) 62%, transparent);
   --header-foreground: var(--foreground);
   --footer-background: transparent;
   --footer-foreground: var(--foreground);
   --error: light-dark(#b42318, #f97066);
-  --background-image:
-    radial-gradient(
-      60% 700px at 100% 0%,
-      light-dark(#e0e5e7, #1c2123) 0%,
-      transparent 70%
-    ),
-    radial-gradient(
-      50% 600px at 0% 25%,
-      light-dark(rgb(224 229 231 / 50%), rgb(28 33 35 / 60%)) 0%,
-      transparent 70%
-    );
+  --background-image: none;
   --shadow: 0 18px 40px -26px light-dark(rgb(17 20 22 / 35%), rgb(0 0 0 / 80%));
 }
-*/
 
 /* The content's text follows the skin in both interfaces */
 .content-area {
@@ -481,6 +501,12 @@
   text-decoration-color: currentColor;
   text-decoration-thickness: var(--underline-thickness);
   text-underline-offset: var(--underline-offset);
+}
+/* a link in text takes the text's size and the link colour above
+   (@plone/components sets its own) */
+.content-area .slate-a .react-aria-Link {
+  color: inherit;
+  font-size: inherit;
 }
 .content-area .slate-callout .slate-a {
   color: inherit;

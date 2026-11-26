@@ -156,6 +156,7 @@ export default function Index() {
       lang={contentLanguage || locale || 'en'}
       data-locale={locale}
       dir={i18n.dir()}
+      data-mode
     >
       <head>
         <meta charSet="utf-8" />
