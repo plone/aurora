@@ -1,0 +1,1 @@
+Mask the version numbers in the control panels overview visual test, so a release doesn't break its baseline. @sneridagh
