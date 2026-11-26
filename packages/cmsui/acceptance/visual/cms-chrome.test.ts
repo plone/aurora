@@ -120,5 +120,10 @@ test('Control panels overview', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Site setup' })).toBeVisible();
   await settle(page);
 
-  await expect(page).toHaveScreenshot('controlpanels.png');
+  await expect(page).toHaveScreenshot('controlpanels.png', {
+    // The site overview lists the live versions of Plone, Aurora, the REST
+    // API and every add-on, which change with each release. Mask the values,
+    // which fill their grid column, so the mask doesn't change size with them.
+    mask: [page.locator('.siteoverview dd')],
+  });
 });
