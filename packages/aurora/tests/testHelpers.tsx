@@ -4,7 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import React from 'react';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
 
-import { getI18nOptions } from '../app/i18n';
+import { getI18nOptions } from '../src/app/i18n';
 
 /**
  * Use this function to render a component with the i18next provider

@@ -13,6 +13,9 @@ Routes in Aurora come from many add-ons. The devtools read them through the app'
 
 ## Setup
 
+A Plone Aurora app that uses the `@plone/aurora` framework has the devtools already: `PloneAuroraVitePlugin()` adds the Vite plugin, and the framework's entries load the rest.
+This section is for an app that sets them up itself.
+
 The package has three entry points, one for each runtime.
 
 `vite.config.ts`:

@@ -157,6 +157,50 @@ export default {
 +    "build": "react-router build",
 ```
 
+The framework also has the runtime of an app, which was in the app's {file}`app` folder: the root route, the entries, the middleware, the i18n setup, the configuration, and the production server.
+An app's files re-export them.
+
+```{code-block} ts
+:caption: app/root.tsx
+
+export { handle, Layout, ErrorBoundary } from '@plone/aurora/app/root';
+export { middleware, loader } from '@plone/aurora/app/root.server';
+```
+
+```{code-block} ts
+:caption: app/entry.client.tsx
+
+import '@plone/aurora/app/entry.client';
+```
+
+```{code-block} ts
+:caption: app/entry.server.tsx
+
+export {
+  default,
+  streamTimeout,
+  instrumentations,
+} from '@plone/aurora/app/entry.server';
+```
+
+```{code-block} ts
+:caption: app/routes.ts
+
+import type { RouteConfig } from '@react-router/dev/routes';
+import { auroraRoutes } from '@plone/aurora/routes';
+import { getAddonRoutesConfig } from '@plone/react-router/routes';
+
+export default [
+  ...auroraRoutes(),
+  ...getAddonRoutesConfig(),
+] satisfies RouteConfig;
+```
+
+The production server is the `plone-aurora-serve` command of `@plone/aurora`, or `import '@plone/aurora/server'` in the app's {file}`server.js`, so `node server.js build/server/index.js` keeps working.
+
+Add-ons that still import the request contexts from `@plone/aurora/app/middleware.server` keep working, because the framework exports that module.
+Import them from `@plone/react-router/context` instead, as described in {ref}`upgrade-guide-no-imports-from-the-app`.
+
 `@plone/registry` no longer generates {file}`.plone/vite.loader.js`: its Vite plugin applies the add-ons' `vite.extend` files itself.
 Remove the `applyAddonViteConfiguration` import from your app's {file}`vite.config.ts`, and return the config directly.
 A `vite.extend` file can no longer add or remove plugins, because Vite resolves the plugins before it runs the plugins' `config` hooks: add plugins in the app's {file}`vite.config.ts`.

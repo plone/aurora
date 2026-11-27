@@ -1,5 +1,5 @@
 import { jwtDecode } from 'jwt-decode';
-import { data, redirect } from 'react-router';
+import { data, redirect, type MiddlewareFunction } from 'react-router';
 import { flattenToAppURL } from '@plone/helpers';
 import {
   clearAuthOnResponse,
@@ -15,7 +15,6 @@ import {
 } from '@plone/react-router/context';
 import config from '@plone/registry';
 import type PloneClient from '@plone/client';
-import type { Route } from './+types/root';
 import installServer from './config/server.server';
 import { migrateContent } from './config/server/content-migrations.server';
 
@@ -110,7 +109,7 @@ export function routeSkipsContent(pattern: string) {
 // HMR, which resets the flag and applies the new configuration.
 let serverConfigInstalled = false;
 
-export const installServerMiddleware: Route.MiddlewareFunction = async (
+export const installServerMiddleware: MiddlewareFunction<Response> = async (
   { request, context },
   next,
 ) => {
@@ -119,7 +118,7 @@ export const installServerMiddleware: Route.MiddlewareFunction = async (
   serverConfigInstalled = true;
 };
 
-export const PloneClientMiddleware: Route.MiddlewareFunction = async (
+export const PloneClientMiddleware: MiddlewareFunction<Response> = async (
   { request, context },
   next,
 ) => {
@@ -135,7 +134,7 @@ export const PloneClientMiddleware: Route.MiddlewareFunction = async (
   context.set(ploneClientContext, cli);
 };
 
-export const otherResources: Route.MiddlewareFunction = async (
+export const otherResources: MiddlewareFunction<Response> = async (
   { request, params, context },
   next,
 ) => {
@@ -159,7 +158,7 @@ export const otherResources: Route.MiddlewareFunction = async (
   }
 };
 
-export const getAPIResourceWithAuth: Route.MiddlewareFunction = async (
+export const getAPIResourceWithAuth: MiddlewareFunction<Response> = async (
   { request, params },
   next,
 ) => {
@@ -245,7 +244,7 @@ export function matchContentResource(path: string) {
  * resource. React Router can't match a route below a splat, so they are
  * handled here, before the content of the path is fetched.
  */
-export const contentResourceMiddleware: Route.MiddlewareFunction = async ({
+export const contentResourceMiddleware: MiddlewareFunction<Response> = async ({
   request,
   params,
 }) => {
@@ -287,7 +286,7 @@ export function getContentExpand(path: string, authenticated: boolean) {
   return expand;
 }
 
-export const fetchPloneContent: Route.MiddlewareFunction = async (
+export const fetchPloneContent: MiddlewareFunction<Response> = async (
   { request, params, context, pattern, url },
   next,
 ) => {
@@ -407,7 +406,7 @@ export const fetchPloneContent: Route.MiddlewareFunction = async (
   }
 };
 
-export const linkMiddleware: Route.MiddlewareFunction = async (
+export const linkMiddleware: MiddlewareFunction<Response> = async (
   { context, pattern },
   next,
 ) => {

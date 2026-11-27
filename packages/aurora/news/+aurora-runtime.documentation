@@ -1,0 +1,1 @@
+Documented where the request middleware, the editor migrations, and the app's entries now live in `@plone/aurora`, and how an app re-exports them. @sneridagh

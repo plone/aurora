@@ -1,4 +1,5 @@
 import Backend from 'i18next-fs-backend/cjs';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { RouterContextProvider } from 'react-router';
 import { initReactI18next } from 'react-i18next';
@@ -7,18 +8,18 @@ import { getI18nOptions } from './i18n'; // your i18n configuration file
 import { localeCookie } from '@plone/react-router';
 import { ploneLocaleContext } from '@plone/react-router/context';
 
-// The add-on locales are generated into `public/locales`, which the build copies
-// to `build/client/locales`. Resolve them relative to this module, not the
-// working directory: in development it is `app/i18next.server.ts`, in
-// production the server bundle `build/server/index.js`. If the server can't
-// load them, it renders the raw message keys, the client renders the
-// translations, and React discards the server-rendered DOM on hydration.
-const localesPath = fileURLToPath(
-  new URL(
-    import.meta.env.PROD ? '../client/locales/' : '../public/locales/',
-    import.meta.url,
-  ),
-);
+// The add-on locales are generated into the app's `public/locales`, which the
+// build copies to `build/client/locales`. In production, resolve them relative
+// to the server bundle `build/server/index.js`, so the server finds them from
+// any working directory. In development, this module is in `@plone/aurora`,
+// and the app is the working directory. If the server can't load them, it
+// renders the raw message keys, the client renders the translations, and React
+// discards the server-rendered DOM on hydration.
+function getLocalesPath() {
+  return import.meta.env.PROD
+    ? fileURLToPath(new URL('../client/locales/', import.meta.url))
+    : path.join(process.cwd(), 'public', 'locales') + path.sep;
+}
 
 let i18next: createI18nextMiddleware.ReturnType | undefined;
 
@@ -40,7 +41,7 @@ function getI18next() {
         ...i18n,
         ns: i18n.defaultNS,
         backend: {
-          loadPath: `${localesPath}{{lng}}/{{ns}}.json`,
+          loadPath: `${getLocalesPath()}{{lng}}/{{ns}}.json`,
         },
       },
       // The i18next plugins the middleware's instance uses.

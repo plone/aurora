@@ -57,7 +57,7 @@ Both run server-side only. `migrateContent` is idempotent: if the content alread
 
 ### The default core pipeline
 
-The migrations Plone Aurora registers by default (in [`migrations.server.ts`](https://github.com/plone/aurora/blob/main/apps/aurora/app/config/server/migrations.server.ts)) are a good illustration of the two phases.
+The migrations Plone Aurora registers by default (in [`migrations.server.ts`](https://github.com/plone/aurora/blob/main/packages/aurora/src/app/config/server/migrations.server.ts) of `@plone/aurora`) are a good illustration of the two phases.
 They run in this registration order.
 
 **Assembly** — the `somersaultBlockMigration` utilities, offered every block in `blocks_layout.items` order:
@@ -84,7 +84,7 @@ Your own migrations are appended to these chains, so by default they run after t
 ## Where to register migrations
 
 Migrations are registered from server-side configuration.
-The built-in ones live in [`app/config/server/migrations.server.ts`](https://github.com/plone/aurora/blob/main/apps/aurora/app/config/server/migrations.server.ts), which is installed from `app/config/server.server.ts`.
+The built-in ones live in [`src/app/config/server/migrations.server.ts`](https://github.com/plone/aurora/blob/main/packages/aurora/src/app/config/server/migrations.server.ts) of `@plone/aurora`, which is installed from `src/app/config/server.server.ts`.
 You can add your own there, if you are working in Plone Aurora core, or register them from an add-on's server-side configuration.
 
 Because utilities registered later under the same `name` override earlier ones, an add-on can also replace a built-in migration by reusing its `name`.

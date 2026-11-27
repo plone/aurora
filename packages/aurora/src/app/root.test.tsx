@@ -1,8 +1,9 @@
 import { expect, describe, it, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { createRoutesStub, RouterContextProvider } from 'react-router';
+import { createRoutesStub, data, RouterContextProvider } from 'react-router';
 import config from '@plone/registry';
-import { Layout, ErrorBoundary, loader } from './root';
+import { Layout, ErrorBoundary } from './root';
+import { loader } from './root.server';
 import {
   ploneClientContext,
   ploneClearAuthCookieContext,
@@ -10,7 +11,7 @@ import {
   ploneSiteContext,
 } from './middleware.server';
 import { migrateContent } from './config/server/content-migrations.server';
-import { renderWithI18n } from '../tests/testHelpers';
+import { renderWithI18n } from '../../tests/testHelpers';
 
 vi.mock('./i18next.server', () => ({
   i18nextMiddleware: vi.fn(),
@@ -163,10 +164,38 @@ describe('Layout', () => {
 });
 
 describe('ErrorBoundary', () => {
-  it('should render the error message', async () => {
-    const error = new Error('Test error');
-    render(<ErrorBoundary error={error} params={{}} />);
-    expect(screen.getByText('Test error')).toBeInTheDocument();
+  // The app re-exports it from its `root.tsx`, so React Router doesn't pass it
+  // the error as a prop: it has to read it from the route.
+  const renderRouteError = (thrown: unknown) => {
+    const Stub = createRoutesStub([
+      {
+        path: '/',
+        loader() {
+          throw thrown;
+        },
+        Component: () => null,
+        ErrorBoundary,
+      },
+    ]);
+    render(<Stub />);
+  };
+
+  it('renders the message of an error', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {});
+    renderRouteError(new Error('Test error'));
+
+    expect(await screen.findByText('Test error')).toBeInTheDocument();
+  });
+
+  it('renders the status of an error response', async () => {
+    renderRouteError(data('Content Not Found', { status: 500 }));
+
+    expect(await screen.findByText('500')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'The server encountered an internal error. Did you start the backend?',
+      ),
+    ).toBeInTheDocument();
   });
 });
 

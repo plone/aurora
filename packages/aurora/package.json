@@ -30,13 +30,24 @@
     "access": "public"
   },
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "./src/app/entry.client.tsx",
+    "./server.js"
+  ],
   "files": [
     "dist",
+    "src/app",
+    "server.js",
     "README.md"
   ],
   "exports": {
     "./package.json": "./package.json",
+    "./app/root": "./src/app/root.tsx",
+    "./app/root.server": "./src/app/root.server.ts",
+    "./app/entry.client": "./src/app/entry.client.tsx",
+    "./app/entry.server": "./src/app/entry.server.tsx",
+    "./app/middleware.server": "./src/app/middleware.server.ts",
+    "./app/i18next.server": "./src/app/i18next.server.ts",
     "./preset": {
       "types": "./dist/preset.d.ts",
       "import": "./dist/preset.js"
@@ -54,7 +65,12 @@
     "./vite": {
       "types": "./dist/vite.d.ts",
       "import": "./dist/vite.js"
-    }
+    },
+    "./routes": {
+      "types": "./dist/routes.d.ts",
+      "import": "./dist/routes.js"
+    },
+    "./server": "./server.js"
   },
   "scripts": {
     "build": "tsup",
@@ -68,22 +84,51 @@
   },
   "peerDependencies": {
     "@react-router/dev": "^8.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router": "^8.0.0",
     "vite": "^8.0.0"
   },
   "dependencies": {
     "@babel/core": "^7.28.5",
     "@babel/preset-typescript": "^7.27.1",
+    "@plone/client": "workspace:*",
     "@plone/devtools": "workspace:*",
+    "@plone/helpers": "workspace:*",
     "@plone/icons": "workspace:*",
+    "@plone/plate": "workspace:*",
+    "@plone/react-router": "workspace:*",
     "@plone/registry": "workspace:*",
+    "@plone/types": "workspace:*",
+    "@react-router/express": "catalog:",
+    "@react-router/node": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "babel-plugin-react-compiler": "1.0.0",
+    "compression": "^1.8.1",
+    "express": "^5.2.1",
+    "i18next": "catalog:",
+    "i18next-browser-languagedetector": "^8.0.4",
+    "i18next-fs-backend": "^2.6.0",
+    "i18next-http-backend": "^3.0.2",
+    "isbot": "^5.1.27",
+    "jwt-decode": "^4.0.0",
+    "morgan": "^1.10.1",
+    "react-i18next": "catalog:",
+    "remix-i18next": "^8.0.0",
     "vite-plugin-babel": "1.7.3",
     "vite-plugin-devtools-json": "^1.0.0"
   },
   "devDependencies": {
     "@react-router/dev": "catalog:",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
     "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitest/coverage-v8": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "react-router": "catalog:",
     "release-it": "catalog:",
     "tsconfig": "workspace:*",
     "tsup": "catalog:",
@@ -93,5 +138,8 @@
   },
   "engines": {
     "node": ">=22.22.0"
+  },
+  "bin": {
+    "plone-aurora-serve": "./server.js"
   }
 }
