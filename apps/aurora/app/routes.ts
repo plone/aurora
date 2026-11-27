@@ -1,7 +1,7 @@
 import type { RouteConfig } from '@react-router/dev/routes';
 import type { ReactRouterRouteEntry } from '@plone/types';
 import { route } from '@react-router/dev/routes';
-import { getAddonRoutesConfig } from '@plone/react-router';
+import { getAddonRoutesConfig } from '@plone/react-router/routes';
 
 // eslint-disable-next-line import/no-unresolved
 import addonsRoutes from '../.plone/registry.routes.json';

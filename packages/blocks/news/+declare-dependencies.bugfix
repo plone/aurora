@@ -1,0 +1,1 @@
+Declared `@plone/helpers` and `@plone/layout` as dependencies: the blocks import them at runtime, but they were only dev dependencies. @sneridagh

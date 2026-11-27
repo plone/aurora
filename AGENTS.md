@@ -78,6 +78,9 @@ pnpm visual-test
 
 # Check typings
 pnpm check:ts
+
+# Check the packed packages with publint (build them first: make build-deps)
+pnpm check:packages
 ```
 
 ## General Conventions
@@ -87,6 +90,7 @@ pnpm check:ts
 - **Vite** is the bundler for application code; **tsup** is used for library packages.
 - Keep changes **package-local** unless there is a clear cross-cutting reason.
 - When adding a new package dependency, check whether it already exists in a sibling package or the workspace root before adding it.
+- Declare every import in the `package.json` of its package: the `import/no-extraneous-dependencies` lint rule enforces it. An undeclared import often resolves in the monorepo anyway, but fails in an app that installs the package from npm.
 - Do not commit secrets, credentials, or environment-specific values.
 
 ## Packages for Volto and Plone Aurora

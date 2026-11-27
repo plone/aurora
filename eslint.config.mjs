@@ -169,6 +169,46 @@ export default tseslint.config(
     },
   },
   {
+    // Every import must be declared in the `package.json` of its package. In
+    // the monorepo, an undeclared import often resolves anyway, because pnpm
+    // links the workspace packages and hoists some dependencies, but it fails
+    // in an app that installs the package from npm. Test, story and build
+    // files may use dev dependencies. The acceptance tests use the tools of
+    // the repository root, and are never published.
+    name: 'Packages - declared dependencies',
+    files: ['{apps,packages}/**/*.{js,jsx,mjs,ts,tsx}'],
+    ignores: ['**/acceptance/**'],
+    rules: {
+      'import/no-extraneous-dependencies': [
+        'error',
+        {
+          devDependencies: [
+            '**/*.test.{js,jsx,ts,tsx}',
+            '**/*.stories.{js,jsx,ts,tsx}',
+            '**/stories/**',
+            '**/*.config.{js,mjs,cjs,ts}',
+            '**/setupTesting.ts',
+            '**/tests/**',
+            '**/testing/**',
+            '**/__tests__/**',
+            '**/.storybook/**',
+            'packages/client/src/utils/test.ts',
+            'packages/controlpanels/build-css.mjs',
+            // The release and audit scripts of this repository.
+            'packages/scripts/prepublish.js',
+            'packages/scripts/check-vite-optimize-deps.js',
+            // A private package: the Playwright helpers of this repository.
+            'packages/tooling/**',
+            // Evaluated by React Router at build time only.
+            'apps/aurora/app/routes.ts',
+          ],
+          peerDependencies: true,
+          optionalDependencies: true,
+        },
+      ],
+    },
+  },
+  {
     // A package can't know which app it runs in, so it must not import from the
     // app. The request contexts and `getPloneClientClass` are in
     // `@plone/react-router`, the root loader data type in `@plone/types`, and

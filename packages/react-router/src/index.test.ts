@@ -3,10 +3,10 @@ import { RouterContextProvider } from 'react-router';
 import {
   cookie,
   localeCookie,
-  getAddonRoutesConfig,
   getReturnUrl,
   redirectIfLoggedInLoader,
 } from './index';
+import { getAddonRoutesConfig } from './routes';
 import type { ReactRouterRouteEntry } from '@plone/types';
 
 describe('getAddonRoutesConfig', () => {

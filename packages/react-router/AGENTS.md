@@ -12,7 +12,9 @@ This file applies only to `packages/react-router` and its subdirectories.
 
 ## Package Model
 
-- `src/index.ts` is the primary entry point — it exports the Plone-flavored router hooks and Vite config helpers.
+- `src/index.ts` is the main entry point, for runtime code: the cookies, the auth helpers, and `getPloneClientClass`.
+- `src/context.ts` (`@plone/react-router/context`) has the request contexts. It has no Node.js imports, so route modules can import it.
+- `src/routes.ts` (`@plone/react-router/routes`) has `getAddonRoutesConfig`, which the app's `routes.ts` runs at build time. It's the only module that imports `@react-router/dev`, an optional peer dependency, and `node:path`. Keep both out of the other entries.
 - Compiled with **tsup**.
 
 ## Editing Rules

@@ -83,8 +83,8 @@
       "default": "./dist/addon-registry/create-app-info-loader.cjs"
     },
     "./vite-plugin": {
-      "import": "./vite-plugin.js",
-      "types": "./vite-plugin.d.ts"
+      "types": "./vite-plugin.d.ts",
+      "import": "./vite-plugin.js"
     },
     "./addons-loader": {
       "types": "./vite-plugin.d.ts"
@@ -130,10 +130,14 @@
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
+    "vite": "^8.0.0"
   },
   "peerDependenciesMeta": {
     "react-dom": {
+      "optional": true
+    },
+    "vite": {
       "optional": true
     }
   },

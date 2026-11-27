@@ -70,6 +70,24 @@ jobs:
       - name: Main ESlint check
         run: pnpm lint
 
+  packages:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    name: Package contents
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Node.js environment
+        uses: ./.github/actions/node_env_setup
+        with:
+          node-version: ${{ env.node-version }}
+
+      # The control panels publish their compiled CSS, which build-deps doesn't build.
+      - name: Build the control panels CSS
+        run: pnpm --filter @plone/controlpanels build:css
+
+      - name: Check the packed packages with publint
+        run: pnpm check:packages
+
   vite-optimize-deps:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: Vite optimizeDeps audit

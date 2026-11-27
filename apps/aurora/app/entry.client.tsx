@@ -15,6 +15,7 @@ async function hydrate() {
   // The Plone devtools, in development only (see `@plone/devtools/vite`).
   let instrumentations: ClientInstrumentation[] | undefined;
   if (import.meta.env.DEV && import.meta.env.PLONE_DEVTOOLS) {
+    // eslint-disable-next-line import/no-extraneous-dependencies -- development only, removed from production builds
     const devtools = await import('@plone/devtools/client');
     // Mounts outside the app's tree, once React has hydrated `<html>`.
     devtools.mountPloneDevtools();

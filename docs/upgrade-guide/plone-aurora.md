@@ -90,6 +90,28 @@ If your add-on reads data that a `rootLoaderData` utility adds, declare it with 
 Add `@plone/react-router` to the `dependencies` of your add-on, and `@plone/types` to its `devDependencies`, if they are not there yet.
 If its {file}`tsconfig.json` maps `@plone/aurora/*` to the app, or includes the app's {file}`.react-router/types`, remove those entries.
 
+(upgrade-guide-react-router-routes)=
+
+### `getAddonRoutesConfig` moved to `@plone/react-router/routes`
+
+```{versionchanged} 1.0.0-alpha.28
+These steps apply when you upgrade from Plone Aurora 1.0.0-alpha.27 or earlier to 1.0.0-alpha.28 or later.
+```
+
+`getAddonRoutesConfig` builds the React Router route config from the registered routes, at build time.
+It uses `@react-router/dev` and `node:path`, so it moved out of the main entry of `@plone/react-router`, which is runtime code, to its own `@plone/react-router/routes` entry.
+Before, the main entry included a copy of the route helpers of `@react-router/dev`.
+
+If your app's {file}`app/routes.ts` imports `getAddonRoutesConfig`, change the import.
+
+```diff
+-import { getAddonRoutesConfig } from '@plone/react-router';
++import { getAddonRoutesConfig } from '@plone/react-router/routes';
+```
+
+`@react-router/dev` is now an optional peer dependency of `@plone/react-router`.
+A React Router app already has it among its `devDependencies`.
+
 (upgrade-guide-build-plone-devtools)=
 
 ### Build `@plone/devtools` in `build-deps`

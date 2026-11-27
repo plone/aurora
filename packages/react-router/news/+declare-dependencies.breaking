@@ -1,0 +1,1 @@
+Moved `getAddonRoutesConfig` to the new `@plone/react-router/routes` entry, and made `@react-router/dev` an optional peer dependency. The main entry no longer includes a copy of the route helpers of `@react-router/dev`, nor imports `node:path`. Import `getAddonRoutesConfig` from `@plone/react-router/routes` in your app's `routes.ts`. @sneridagh
