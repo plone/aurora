@@ -23,6 +23,9 @@ function ploneAuroraConfig(): Plugin {
         // Server-only deps that Vite would otherwise still pick up for the
         // client bundle — keep in sync with ssr.optimizeDeps.include below
         exclude: [
+          // Ships the source of the app's root, entries and middleware, like
+          // the add-ons: Vite compiles it with the app instead.
+          '@plone/aurora',
           'i18next-fs-backend',
           'i18next-fs-backend/cjs',
           'remix-i18next',
@@ -66,6 +69,7 @@ function ploneAuroraConfig(): Plugin {
       },
       ssr: {
         optimizeDeps: {
+          exclude: ['@plone/aurora'],
           include: ['i18next-fs-backend/cjs', 'isbot', 'remix-i18next'],
         },
       },

@@ -24,7 +24,7 @@
     "lint": "make build-deps && pnpm --filter @plone/aurora-dev exec init-loaders && eslint --max-warnings=0 '{apps,packages}/**/*.{js,jsx,ts,tsx}'",
     "check:packages": "pnpm -r --filter='!plone-frontend' --filter='!@plone/test-addon' --filter='!@plone/tooling' --filter='!tsconfig' exec publint --pack pnpm --strict",
     "lint:fix": "make build-deps && pnpm --filter @plone/aurora-dev exec init-loaders && eslint --max-warnings=0 '{apps,packages}/**/*.{js,jsx,ts,tsx}' --fix",
-    "test": "pnpm --filter @plone/aurora-dev run test",
+    "test": "pnpm --filter @plone/aurora run test",
     "test:all": "pnpm test:ci",
     "test:ci": "pnpm --filter @plone/* --filter \"!@plone/scripts\" --filter \"!@plone/theming\" run test --run",
     "check:vite-optimize-deps": "node packages/scripts/check-vite-optimize-deps.js",

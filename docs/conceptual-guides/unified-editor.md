@@ -121,7 +121,7 @@ The original PLIP proposal used a placeholder `type` of `"unknown"`; the impleme
 Plone content authored with the classic editor does not yet contain a `main` region, so Plone Aurora builds it.
 Normalization is a **server-side concern**: the app assembles and normalizes the unified value once, on the server, and hands the editor and renderer already-migrated data.
 
-This runs in the request middleware ([`app/middleware.server.ts`](https://github.com/plone/aurora/blob/main/apps/aurora/app/middleware.server.ts)), which calls `migrateContent` on every fetched content object.
+This runs in the request middleware of `@plone/aurora` ([`src/app/middleware.server.ts`](https://github.com/plone/aurora/blob/main/packages/aurora/src/app/middleware.server.ts)), which calls `migrateContent` on every fetched content object.
 The process is:
 
 1. **Upgrade older shapes.** The registered `contentMigration` utilities run over the whole content. The built-in `contentMigrationSomersaultRegion` renames the `__somersault__` block, the shape stored by earlier versions of Plone Aurora, to the `main` region with the `plate` type. The editor saves the whole `blocks` field, so a page keeps the new shape once it is edited.

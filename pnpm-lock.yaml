@@ -305,6 +305,9 @@ importers:
       '@plone/agave':
         specifier: workspace:*
         version: link:../../packages/agave
+      '@plone/aurora':
+        specifier: workspace:*
+        version: link:../../packages/aurora
       '@plone/blocks':
         specifier: workspace:*
         version: link:../../packages/blocks
@@ -399,9 +402,6 @@ importers:
         specifier: ^8.0.0
         version: 8.0.0(i18next@26.3.6(typescript@5.9.2))(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
     devDependencies:
-      '@plone/aurora':
-        specifier: workspace:*
-        version: link:../../packages/aurora
       '@plone/devtools':
         specifier: workspace:*
         version: link:../../packages/devtools
@@ -414,12 +414,6 @@ importers:
       '@react-router/dev':
         specifier: 'catalog:'
         version: 8.5.0(@react-router/serve@8.5.0(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@5.9.2))(babel-plugin-macros@3.1.0)(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@5.9.2)(vite@8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))
-      '@testing-library/jest-dom':
-        specifier: ^6.6.3
-        version: 6.9.1
-      '@testing-library/react':
-        specifier: ^16.2.0
-        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@types/node':
         specifier: 'catalog:'
         version: 26.6.5
@@ -429,9 +423,6 @@ importers:
       '@types/react-dom':
         specifier: 'catalog:'
         version: 19.2.3(@types/react@19.2.6)
-      '@vitest/coverage-v8':
-        specifier: 'catalog:'
-        version: 4.1.4(vitest@4.1.4)
       rollup-plugin-visualizer:
         specifier: ^7.0.1
         version: 7.0.1(rolldown@1.0.0-rc.15)(rollup@4.52.5)
@@ -441,9 +432,6 @@ importers:
       vite:
         specifier: 'catalog:'
         version: 8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1)
-      vitest:
-        specifier: 'catalog:'
-        version: 4.1.4(@opentelemetry/api@1.9.0)(@types/node@26.6.5)(@vitest/coverage-v8@4.1.4)(jsdom@28.1.0(supports-color@8.1.1))(vite@8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))
 
   packages/agave:
     dependencies:
@@ -505,21 +493,75 @@ importers:
       '@babel/preset-typescript':
         specifier: ^7.27.1
         version: 7.28.5(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
+      '@plone/client':
+        specifier: workspace:*
+        version: link:../client
       '@plone/devtools':
         specifier: workspace:*
         version: link:../devtools
+      '@plone/helpers':
+        specifier: workspace:*
+        version: link:../helpers
       '@plone/icons':
         specifier: workspace:*
         version: link:../icons
+      '@plone/plate':
+        specifier: workspace:*
+        version: link:../plate
+      '@plone/react-router':
+        specifier: workspace:*
+        version: link:../react-router
       '@plone/registry':
         specifier: workspace:*
         version: link:../registry
+      '@plone/types':
+        specifier: workspace:*
+        version: link:../types
+      '@react-router/express':
+        specifier: 'catalog:'
+        version: 8.5.0(express@5.2.1(supports-color@8.1.1))(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@5.9.2)
+      '@react-router/node':
+        specifier: 'catalog:'
+        version: 8.5.0(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@5.9.2)
       '@tailwindcss/vite':
         specifier: 'catalog:'
         version: 4.2.2(vite@8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))
       babel-plugin-react-compiler:
         specifier: 1.0.0
         version: 1.0.0
+      compression:
+        specifier: ^1.8.1
+        version: 1.8.1(supports-color@8.1.1)
+      express:
+        specifier: ^5.2.1
+        version: 5.2.1(supports-color@8.1.1)
+      i18next:
+        specifier: 'catalog:'
+        version: 26.3.6(typescript@5.9.2)
+      i18next-browser-languagedetector:
+        specifier: ^8.0.4
+        version: 8.2.0
+      i18next-fs-backend:
+        specifier: ^2.6.0
+        version: 2.6.0
+      i18next-http-backend:
+        specifier: ^3.0.2
+        version: 3.0.2
+      isbot:
+        specifier: ^5.1.27
+        version: 5.2.1
+      jwt-decode:
+        specifier: ^4.0.0
+        version: 4.0.0
+      morgan:
+        specifier: ^1.10.1
+        version: 1.10.1(supports-color@8.1.1)
+      react-i18next:
+        specifier: 'catalog:'
+        version: 15.7.3(i18next@26.3.6(typescript@5.9.2))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.2)
+      remix-i18next:
+        specifier: ^8.0.0
+        version: 8.0.0(i18next@26.3.6(typescript@5.9.2))(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
       vite-plugin-babel:
         specifier: 1.7.3
         version: 1.7.3(@babel/core@7.29.7(supports-color@8.1.1))(vite@8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))
@@ -530,9 +572,33 @@ importers:
       '@react-router/dev':
         specifier: 'catalog:'
         version: 8.5.0(@react-router/serve@8.5.0(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@5.9.2))(babel-plugin-macros@3.1.0)(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@5.9.2)(vite@8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))
+      '@testing-library/jest-dom':
+        specifier: ^6.6.3
+        version: 6.9.1
+      '@testing-library/react':
+        specifier: ^16.2.0
+        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@types/node':
         specifier: 'catalog:'
         version: 26.6.5
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.6
+      '@types/react-dom':
+        specifier: 'catalog:'
+        version: 19.2.3(@types/react@19.2.6)
+      '@vitest/coverage-v8':
+        specifier: 'catalog:'
+        version: 4.1.4(vitest@4.1.4)
+      react:
+        specifier: ^19.2.7
+        version: 19.3.1
+      react-dom:
+        specifier: ^19.2.7
+        version: 19.3.1(react@19.3.1)
+      react-router:
+        specifier: 'catalog:'
+        version: 8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       release-it:
         specifier: 'catalog:'
         version: 19.0.5(@types/node@26.6.5)(magicast@0.3.5)(supports-color@8.1.1)
