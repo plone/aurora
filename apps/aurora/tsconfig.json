@@ -25,7 +25,6 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "~/*": ["./app/*"],
-      "@plone/aurora/*": ["./*"],
       "@plone/plate/*": ["../../packages/plate/src/*"]
     },
     "noEmit": true,

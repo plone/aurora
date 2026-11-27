@@ -29,7 +29,10 @@ export default function extendViteConfig(config, context) {
 }
 ```
 
-If your function does not return a `config` object, Plone Aurora raises an error during loader generation.
+If your function does not return a `config` object, Plone Aurora raises an error when Vite starts.
+
+The Plone registry Vite plugin applies the `vite.extend` files of the add-ons, in add-on order, when Vite resolves the app's configuration.
+By then, Vite has already resolved the plugins, so a `vite.extend` file can't add or remove plugins: add plugins in the app's {file}`vite.config.ts` instead.
 
 ## Update the Vite configuration
 

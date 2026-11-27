@@ -1,0 +1,1 @@
+Changed the `prereleaser` group of `@plone/aurora` to "Framework", and the `optimizeDeps` audit to read `packages/aurora/src/vite.ts`. @sneridagh

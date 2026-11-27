@@ -245,7 +245,7 @@ It also means when you run a pnpm command from inside a workspace, it will apply
 You can also use the pnpm `--filter` feature from the repository root to apply to only the specified workspaces, as shown in the following examples.
 
 ```shell
-pnpm --filter @plone/aurora start
+pnpm --filter @plone/aurora-dev start
 ```
 
 The above command when run from the repository root will start Plone Aurora.

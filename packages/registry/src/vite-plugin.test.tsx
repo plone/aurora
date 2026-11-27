@@ -1,5 +1,9 @@
-import { describe, expect, it } from 'vitest';
-import { relativeToAbsoluteImportPlugin, stylesAliases } from '../vite-plugin';
+import { describe, expect, it, vi } from 'vitest';
+import {
+  applyViteExtenders,
+  relativeToAbsoluteImportPlugin,
+  stylesAliases,
+} from '../vite-plugin';
 
 describe('relativeToAbsoluteImportPlugin', () => {
   let plugin: any;
@@ -108,5 +112,79 @@ describe('stylesAliases', () => {
     expect(resolve('@plone/cmsui/styles/cmsui.css')).toBe(
       '@plone/cmsui/styles/cmsui.css',
     );
+  });
+});
+
+describe('applyViteExtenders', () => {
+  const env = { command: 'build', mode: 'production', isSsrBuild: true };
+  const loaderOf =
+    (extenders: Record<string, unknown>) => async (file: string) =>
+      extenders[file];
+
+  it('applies the extenders in order, with the context of the run', async () => {
+    const config: Record<string, any> = { optimizeDeps: { include: ['a'] } };
+    const contexts: unknown[] = [];
+    const extend = (entry: string) => (current: any, context: unknown) => {
+      contexts.push(context);
+      return {
+        ...current,
+        optimizeDeps: { include: [...current.optimizeDeps.include, entry] },
+      };
+    };
+
+    await applyViteExtenders(
+      config,
+      env,
+      ['first', 'second'],
+      loaderOf({ first: extend('b'), second: extend('c') }),
+    );
+
+    expect(config.optimizeDeps.include).toEqual(['a', 'b', 'c']);
+    expect(contexts).toEqual([
+      { command: 'build', mode: 'production', isSsrBuild: true },
+      { command: 'build', mode: 'production', isSsrBuild: true },
+    ]);
+  });
+
+  it('changes the config in place, removing what an extender left out', async () => {
+    const config: Record<string, any> = { define: { A: 1 }, server: {} };
+
+    const result = await applyViteExtenders(
+      config,
+      env,
+      ['drop-define'],
+      loaderOf({ 'drop-define': () => ({ server: {} }) }),
+    );
+
+    expect(result).toBe(config);
+    expect(config).toEqual({ server: {} });
+  });
+
+  it('fails when an extender returns nothing', async () => {
+    await expect(
+      applyViteExtenders({}, env, ['broken'], loaderOf({ broken: () => {} })),
+    ).rejects.toThrow("broken doesn't return the config");
+  });
+
+  it('fails when a file exports no function', async () => {
+    await expect(
+      applyViteExtenders({}, env, ['empty'], loaderOf({ empty: undefined })),
+    ).rejects.toThrow('empty must export a function');
+  });
+
+  it('warns that it cannot change the plugins', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    await applyViteExtenders(
+      { plugins: [] },
+      env,
+      ['plugins'],
+      loaderOf({ plugins: (current: any) => ({ ...current, plugins: [{}] }) }),
+    );
+
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('changed the plugins'),
+    );
+    warn.mockRestore();
   });
 });

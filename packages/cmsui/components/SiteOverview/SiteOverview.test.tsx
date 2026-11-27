@@ -10,16 +10,17 @@ vi.mock('@plone/icons/svg/arrow-right.svg?react', () => ({
   default: (props: object) => <svg {...props} />,
 }));
 
-vi.mock('@plone/registry/app-info', () => ({
-  default: {
-    name: '@plone/aurora',
-    version: '1.0.0-alpha.23',
-    addons: [
-      { name: '@some/addon', version: '1.3.5' },
-      { name: '@some/other-addon', version: '2.2.5' },
-    ],
-  },
+const appInfo = vi.hoisted(() => ({
+  name: '@plone/aurora-dev',
+  version: '1.0.0-alpha.23',
+  aurora: '1.0.0-alpha.23' as string | undefined,
+  addons: [
+    { name: '@some/addon', version: '1.3.5' },
+    { name: '@some/other-addon', version: '2.2.5' },
+  ],
 }));
+
+vi.mock('@plone/registry/app-info', () => ({ default: appInfo }));
 
 vi.mock('@plone/icons/svg/checkbox.svg?react', () => ({
   default: () => {},
@@ -58,9 +59,11 @@ describe('SiteOverview', () => {
     );
     expect(screen.getByText('6.2.2')).toBeInTheDocument();
     expect(screen.getByText('10.0.4')).toBeInTheDocument();
-    // The app's version comes from `@plone/registry/app-info`.
+    // Aurora's version comes from `@plone/registry/app-info`.
     expect(screen.getByText('Plone Aurora')).toBeInTheDocument();
     expect(screen.getByText('1.0.0-alpha.23')).toBeInTheDocument();
+    // The app that develops Aurora isn't listed on its own.
+    expect(screen.queryByText('@plone/aurora-dev')).not.toBeInTheDocument();
     // Only the version number of Python, without its build details.
     expect(screen.getByText('3.13.15')).toBeInTheDocument();
     expect(screen.getByText('cmsui.siteOverview.upToDate')).toBeInTheDocument();
@@ -128,5 +131,29 @@ describe('SiteOverview', () => {
     expect(
       await screen.findByRole('button', { name: 'cmsui.siteOverview.copied' }),
     ).toBeInTheDocument();
+  });
+
+  it("shows a project's app next to the Aurora version it uses", () => {
+    const original = { ...appInfo };
+    Object.assign(appInfo, {
+      name: 'my-project',
+      version: '2.0.0',
+      aurora: '1.0.0-alpha.28',
+    });
+
+    render(
+      <SiteOverview
+        system={system}
+        site={{ 'plone.site_title': 'My site', 'plone.portal_timezone': 'UTC' }}
+        siteUrl="https://example.com"
+      />,
+    );
+
+    expect(screen.getByText('Plone Aurora')).toBeInTheDocument();
+    expect(screen.getByText('1.0.0-alpha.28')).toBeInTheDocument();
+    expect(screen.getByText('my-project')).toBeInTheDocument();
+    expect(screen.getByText('2.0.0')).toBeInTheDocument();
+
+    Object.assign(appInfo, original);
   });
 });

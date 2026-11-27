@@ -23,11 +23,12 @@ jobs:
           node-version: ${{ env.node-version }}
 
       - name: Aurora app TypeScript check
-        run: pnpm --filter @plone/aurora exec init-loaders && pnpm --filter @plone/aurora run typecheck
+        run: pnpm --filter @plone/aurora-dev exec init-loaders && pnpm --filter @plone/aurora-dev run typecheck
 
       - name: Package TypeScript checks
         run: |
           pnpm --filter @plone/types run check:ts
+          pnpm --filter @plone/aurora run check:ts
           pnpm --filter @plone/client run check:ts
           pnpm --filter @plone/components run check:ts
           pnpm --filter @plone/icons run check:ts

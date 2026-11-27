@@ -75,8 +75,3 @@ storybook-build: build-deps ## Build Storybook
 	pnpm build-storybook -o ../../docs/_build/html/storybook
 
 ##### Release (it runs the one inside)
-
-.PHONY: release-notes-copy-to-docs
-release-notes-copy-to-docs: ## Copy release notes into documentation
-	cp CHANGELOG.md ../../docs/source/release-notes/index.md
-	git add ../../docs/source/release-notes/index.md

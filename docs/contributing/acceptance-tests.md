@@ -87,7 +87,7 @@ It's restricted, so it doesn't show in the block chooser: the tests in {file}`pa
 To run the app with the test add-on yourself:
 
 ```shell
-PLONE_TEST_ADDON=1 PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start
+PLONE_TEST_ADDON=1 PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora-dev start
 ```
 
 

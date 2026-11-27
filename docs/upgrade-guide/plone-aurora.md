@@ -90,6 +90,53 @@ If your add-on reads data that a `rootLoaderData` utility adds, declare it with 
 Add `@plone/react-router` to the `dependencies` of your add-on, and `@plone/types` to its `devDependencies`, if they are not there yet.
 If its {file}`tsconfig.json` maps `@plone/aurora/*` to the app, or includes the app's {file}`.react-router/types`, remove those entries.
 
+(upgrade-guide-aurora-framework-package)=
+
+### `@plone/aurora` is the framework, and the core app is `@plone/aurora-dev`
+
+```{versionchanged} 1.0.0-alpha.28
+These steps apply when you upgrade from Plone Aurora 1.0.0-alpha.27 or earlier to 1.0.0-alpha.28 or later.
+```
+
+`@plone/aurora` is now the Plone Aurora framework, in {file}`packages/aurora` of the Plone Aurora repository: what an app installs to build on Plone Aurora.
+The app that develops Plone Aurora in {file}`apps/aurora` is now `@plone/aurora-dev`, which is private and never published.
+The `@plone/aurora` package continues the version history and the git tags of the app.
+
+The framework has the following entries.
+
+`@plone/aurora/vite`
+: `PloneAuroraVitePlugin()`, the Vite plugins and configuration that the app's {file}`vite.config.ts` had: the Plone registry, Tailwind, the React Compiler, SVG imports, the Plone devtools, and the `optimizeDeps` lists.
+
+`@plone/aurora/registry.config`
+: The official add-ons, which an app or an add-on repository extends in its {file}`registry.config.ts`.
+  `@plone/aurora/registry-publicui.config` has the add-ons of the public UI only.
+
+If your add-on repository runs the core app of a checkout, as the Cookieplone templates do, change the app's package name in its {file}`Makefile` and scripts.
+
+```diff
+-pnpm --filter @plone/aurora start
++pnpm --filter @plone/aurora-dev start
+```
+
+The `import { addons } from '@plone/aurora/registry.config'` in your {file}`registry.config.ts` keeps working: it now imports the list from the framework.
+Run `make build-deps` after updating the checkout, because the core app now needs the built `@plone/aurora` package.
+
+If you maintain your own app, use the framework in its {file}`vite.config.ts`, before React Router's plugin, instead of the plugins and the configuration it had.
+
+```ts
+import { reactRouter } from '@react-router/dev/vite';
+import { PloneAuroraVitePlugin } from '@plone/aurora/vite';
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  plugins: [PloneAuroraVitePlugin(), reactRouter()],
+});
+```
+
+`@plone/registry` no longer generates {file}`.plone/vite.loader.js`: its Vite plugin applies the add-ons' `vite.extend` files itself.
+Remove the `applyAddonViteConfiguration` import from your app's {file}`vite.config.ts`, and return the config directly.
+A `vite.extend` file can no longer add or remove plugins, because Vite resolves the plugins before it runs the plugins' `config` hooks: add plugins in the app's {file}`vite.config.ts`.
+
 (upgrade-guide-react-router-routes)=
 
 ### `getAddonRoutesConfig` moved to `@plone/react-router/routes`

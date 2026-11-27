@@ -86,9 +86,6 @@ export default tseslint.config(
           alwaysTryTypes: true,
           noWarnOnMultipleProjects: true,
         },
-        alias: {
-          map: [['@plone/aurora', './apps/aurora']],
-        },
         node: true,
       },
     },
@@ -215,17 +212,25 @@ export default tseslint.config(
     // the app's stylesheets in `@plone/registry/styles/*`.
     // The control panels rule below repeats these patterns: in a flat config,
     // a later `no-restricted-imports` replaces this one for its files.
+    // `@plone/aurora` is the framework now: it builds on the packages, so they
+    // must not import it either.
     name: 'Packages - no imports from the app',
     files: ['packages/**/*.{js,jsx,ts,tsx}'],
+    ignores: ['packages/aurora/**'],
     rules: {
       'no-restricted-imports': [
         'error',
         {
           patterns: [
             {
-              group: ['@plone/aurora', '@plone/aurora/*'],
+              group: [
+                '@plone/aurora',
+                '@plone/aurora/*',
+                '@plone/aurora-dev',
+                '@plone/aurora-dev/*',
+              ],
               message:
-                'Packages must not import from the app: see the "Packages - no imports from the app" rule in eslint.config.mjs for where each export lives.',
+                'Packages must not import from the app or from the @plone/aurora framework: see the "Packages - no imports from the app" rule in eslint.config.mjs for where each export lives.',
             },
           ],
         },
@@ -264,9 +269,14 @@ export default tseslint.config(
                 '@plone/controlpanels must run in Aurora and Volto: get this through the provider or a driver.',
             },
             {
-              group: ['@plone/aurora', '@plone/aurora/*'],
+              group: [
+                '@plone/aurora',
+                '@plone/aurora/*',
+                '@plone/aurora-dev',
+                '@plone/aurora-dev/*',
+              ],
               message:
-                'Packages must not import from the app: see the "Packages - no imports from the app" rule in eslint.config.mjs for where each export lives.',
+                'Packages must not import from the app or from the @plone/aurora framework: see the "Packages - no imports from the app" rule in eslint.config.mjs for where each export lives.',
             },
           ],
         },

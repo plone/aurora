@@ -37,4 +37,4 @@ pnpm --filter @plone/devtools check:ts
 pnpm --filter @plone/devtools build
 ```
 
-After a change, check the panel in a running app (`pnpm --filter @plone/aurora start`), and check that a production build (`pnpm --filter @plone/aurora build`) contains no `PloneDevtools` or `tanstack` strings.
+After a change, check the panel in a running app (`pnpm --filter @plone/aurora-dev start`), and check that a production build (`pnpm --filter @plone/aurora-dev build`) contains no `PloneDevtools` or `tanstack` strings.

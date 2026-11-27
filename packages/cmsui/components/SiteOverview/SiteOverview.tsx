@@ -20,6 +20,10 @@ interface SiteOverviewProps {
 
 const cardClassName = 'flex flex-col gap-4 rounded-[10px] border p-5';
 
+// The apps that are Plone Aurora itself: the framework package, as the app was
+// named before, and the app that develops it. Their version is Aurora's.
+const AURORA_APPS = ['@plone/aurora', '@plone/aurora-dev'];
+
 const Details = ({ entries }: { entries: [string, string | undefined][] }) => (
   <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-[13px] leading-4.5">
     {entries
@@ -68,13 +72,21 @@ const SiteOverview = ({
   // Python's version string carries the build details after the number.
   const [pythonVersion] = system.python_version?.split(' ') ?? [];
 
+  // The Plone Aurora framework the app is built on. Before the framework was
+  // its own package, the app itself was `@plone/aurora`.
+  const isAuroraApp = AURORA_APPS.includes(appInfo.name);
+  const auroraVersion =
+    appInfo.aurora ??
+    (appInfo.name === '@plone/aurora' ? appInfo.version : undefined);
+
   const versions: [string, string | undefined][] = useMemo(
     () => [
       ['Plone', system.plone_version],
-      [
-        appInfo.name === '@plone/aurora' ? 'Plone Aurora' : appInfo.name,
-        appInfo.version,
-      ],
+      ['Plone Aurora', auroraVersion],
+      // A project's own app, but not the app that develops Plone Aurora
+      ...(isAuroraApp
+        ? []
+        : [[appInfo.name, appInfo.version] as [string, string]]),
       ['plone.restapi', system.plone_restapi_version],
       ['Zope', system.zope_version],
       ['Python', pythonVersion],
@@ -82,7 +94,7 @@ const SiteOverview = ({
       ['PIL', system.pil_version],
       [t('cmsui.siteOverview.debugMode'), system.debug_mode],
     ],
-    [system, pythonVersion, t],
+    [system, pythonVersion, t, auroraVersion, isAuroraApp],
   );
 
   const copySystemInfo = useCallback(() => {

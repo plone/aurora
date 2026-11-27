@@ -8,7 +8,7 @@ It's private, and never published.
 The app loads it only when the `PLONE_TEST_ADDON` environment variable is set when the app is built or started:
 
 ```shell
-PLONE_TEST_ADDON=1 pnpm --filter @plone/aurora start:prod
+PLONE_TEST_ADDON=1 pnpm --filter @plone/aurora-dev start:prod
 ```
 
 ## What it registers

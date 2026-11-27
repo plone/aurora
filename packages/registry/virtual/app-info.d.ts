@@ -6,6 +6,8 @@
 export type AppInfo = {
   name: string;
   version: string;
+  /** The version of the `@plone/aurora` framework the app uses, if any. */
+  aurora?: string;
   addons: Array<{ name: string; version: string }>;
 };
 

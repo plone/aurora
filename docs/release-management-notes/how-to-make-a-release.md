@@ -11,7 +11,8 @@ myst:
 
 # How to make a Plone Aurora release
 
-This page describes how maintainers release the Plone Aurora packages and the `@plone/aurora` application.
+This page describes how maintainers release the Plone Aurora packages, including the `@plone/aurora` framework.
+The app in {file}`apps/aurora`, `@plone/aurora-dev`, is only for developing Plone Aurora, and is never released.
 
 The release process uses the following tools.
 
@@ -144,8 +145,8 @@ Add-on packages (level 3)
  3. @plone/plate (packages/plate) - 3 news fragments
  4. @plone/cmsui (packages/cmsui) - 1 news fragment
 
-Application
- 5. @plone/aurora (apps/aurora) - 1 news fragment
+Framework
+ 5. @plone/aurora (packages/aurora) - 1 news fragment
 ```
 
 The packages are released in dependency order, so each package is released after the packages it depends on.
@@ -154,7 +155,7 @@ The packages are released in dependency order, so each package is released after
 2.  Core packages: `@plone/client`, `@plone/components`, and `@plone/registry`
 3.  Utilities packages: `@plone/helpers` and `@plone/react-router`
 4.  Add-on packages: `@plone/plate`, `@plone/blocks`, `@plone/layout`, `@plone/theming`, `@plone/agave`, `@plone/cmsui`, `@plone/publicui`, `@plone/contents`, and `@plone/controlpanels`
-5.  The application: `@plone/aurora`
+5.  The framework: `@plone/aurora`
 
 This order is defined in `RELEASE_GROUPS` in {file}`packages/scripts/preleaser.js`.
 If you add a new releasable package, add it to the right group in that list.
@@ -189,7 +190,7 @@ This starts `release-it` for that package, which does the following steps, askin
 6.  Creates the GitHub release, with the change log of this version as release notes.
 7.  Publishes the package to npm.
 
-For the `@plone/aurora` application, `release-it` also sets the `latest` npm distribution tag on the new version.
+For the `@plone/aurora` framework, `release-it` also sets the `latest` npm distribution tag on the new version.
 
 If a release fails, the script stops.
 Fix the problem, then run `pnpm prereleaser --release` again.
@@ -233,7 +234,7 @@ pnpm --filter <package> release-major-alpha
 ```
 
 ```{note}
-The `@plone/aurora` application only has the `release` and `release-alpha` scripts.
+The `@plone/aurora` framework only has the `release`, `release-alpha` and `dry-release` scripts.
 ```
 
 For example, to make a dry run of the release of `@plone/client`, use the following command.

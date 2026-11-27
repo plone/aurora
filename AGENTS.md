@@ -7,7 +7,8 @@ Each package also has its own `AGENTS.md` with more specific guidance — always
 
 This is a **pnpm monorepo** (`pnpm-workspace.yaml`) containing:
 
-- `apps/aurora` — the main Plone Aurora application
+- `apps/aurora` — `@plone/aurora-dev`, the private app for developing Plone Aurora itself, never published
+- `packages/aurora` — `@plone/aurora`, the framework that Plone Aurora apps install
 - `packages/*` — shared libraries that make up the Plone Aurora stack and tooling
 
 The package manager is **pnpm**. Do not use `npm` or `yarn`.
@@ -17,11 +18,12 @@ The package manager is **pnpm**. Do not use `npm` or `yarn`.
 ### Plone Aurora — the active stack
 
 Every package except `volto` and `volto-slate` belongs to the **Plone Aurora** stack, an API-first, React-based frontend for Plone RESTAPI contract (`plone.restapi`).
-Plone Aurora is composed of focused packages that are assembled into `apps/aurora`:
+Plone Aurora is composed of focused packages that the `@plone/aurora` framework assembles, and that `apps/aurora` runs:
 
 | Layer                      | Packages                                                                                                                     |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| App shell                  | `apps/aurora`                                                                                                                |
+| Framework                  | `@plone/aurora`                                                                                                              |
+| App shell                  | `apps/aurora` (`@plone/aurora-dev`)                                                                                          |
 | Public UI (visitor-facing) | `@plone/publicui`, `@plone/layout`, `@plone/blocks`                                                                          |
 | CMS UI (editor-facing)     | `@plone/cmsui`, `@plone/contents`, `@plone/controlpanels`, `@plone/plate`, `@plone/blocks`, `@plone/layout`, `@plone/quanta` |
 | Shared infrastructure      | `@plone/client`, `@plone/registry`, `@plone/react-router`                                                                    |
