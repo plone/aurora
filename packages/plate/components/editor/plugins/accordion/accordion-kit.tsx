@@ -6,6 +6,7 @@ import {
   AccordionPanelElement,
   AccordionPanelTitleElement,
 } from '../../../ui/accordion-node';
+import { AccordionInnerBlockWrapper } from '../../../ui/accordion-block-toolbar';
 import { AccordionEditorPlugin } from './accordion-editor-plugin';
 import {
   BaseAccordionPanelContentPlugin,
@@ -24,7 +25,9 @@ export const AccordionPanelContentPlugin = toPlatePlugin(
 );
 
 export const AccordionKit = [
-  AccordionEditorPlugin,
+  AccordionEditorPlugin.configure({
+    render: { aboveNodes: AccordionInnerBlockWrapper },
+  }),
   AccordionPlugin.withComponent(AccordionElement),
   AccordionPanelPlugin.withComponent(AccordionPanelElement),
   AccordionPanelTitlePlugin.withComponent(AccordionPanelTitleElement),

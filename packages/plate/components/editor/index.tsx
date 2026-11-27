@@ -122,6 +122,7 @@ export {
   useEditorSelector,
 } from 'platejs/react';
 export { BlockSelectionPlugin };
+export { getClosestPloneBlockEntry } from './plugins/plone-block-adapter';
 
 export function PlateRenderer(
   props: Omit<

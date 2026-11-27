@@ -33,11 +33,12 @@ import {
   getAccordionOptions,
   resolveAccordionTheme,
 } from '../editor/plugins/accordion/options';
-import {
-  ACCORDION_KEY,
-  type TAccordionElement,
-  type TAccordionPanelElement,
+import type {
+  TAccordionElement,
+  TAccordionPanelElement,
 } from '../editor/plugins/accordion/types';
+import { findAccordionNodePath } from '../editor/plugins/accordion/find-path';
+import { InsertBlockPoint } from './accordion-block-toolbar';
 import { useTranslation } from '../editor/plugins/i18n';
 import { BlockInnerContainer } from './block-inner-container';
 import { Button } from './button';
@@ -64,36 +65,6 @@ const useSelectionInside = (path: Path) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [key],
   );
-};
-
-/**
- * The path of a node of an accordion, looked up in the editor's value.
- * Slate's `findPath` reads maps that React updates when it renders, so right
- * after panels move it can return their old position.
- */
-const findAccordionNodePath = (
-  editor: { children: unknown[]; api: any },
-  element: TElement,
-): number[] | undefined => {
-  // Most accordions are top-level blocks.
-  for (let i = 0; i < editor.children.length; i += 1) {
-    const accordion = editor.children[i] as TElement;
-    if (accordion === element) return [i];
-    if (accordion?.type !== ACCORDION_KEY) continue;
-    for (let j = 0; j < accordion.children.length; j += 1) {
-      const panel = accordion.children[j] as TElement;
-      if (panel === element) return [i, j];
-      const k = panel.children?.indexOf(element as any) ?? -1;
-      if (k >= 0) return [i, j, k];
-    }
-  }
-  for (const [, path] of editor.api.nodes({
-    at: [],
-    match: (n: unknown) => n === element,
-  })) {
-    return path;
-  }
-  return undefined;
 };
 
 /**
@@ -501,12 +472,18 @@ export function AccordionPanelTitleElement(props: PlateElementProps) {
 }
 
 export function AccordionPanelContentElement(props: PlateElementProps) {
-  const { editor, path } = props;
-  const panelPath = PathApi.parent(path);
-  const panel = editor.api.node(panelPath)?.[0] as
-    TAccordionPanelElement | undefined;
+  const { editor, element } = props;
+  const { t } = useTranslation();
+  const readOnly = useReadOnly();
+  const { panelPath, accordionPath } = usePanelPosition(element, 1);
+  const panel = (
+    panelPath.length > 0 ? editor.api.node(panelPath)?.[0] : undefined
+  ) as TAccordionPanelElement | undefined;
   const panelId = panel?.id ?? '';
   const open = usePanelOpen(panelId);
+  const accordionActive = useSelectionInside(accordionPath);
+  const title =
+    panelPath.length > 0 ? editor.api.string([...panelPath, 0]) : '';
 
   return (
     <PlateElement
@@ -519,6 +496,25 @@ export function AccordionPanelContentElement(props: PlateElementProps) {
       }}
     >
       {props.children}
+      {!readOnly && open && panelPath.length > 0 && (
+        <InsertBlockPoint
+          contentPath={[...panelPath, 1]}
+          index={element.children.length}
+          visible={accordionActive}
+          className={`
+            h-9
+            [&>button]:opacity-100
+          `}
+          label={t('plate.accordion.addBlockToPanel', {
+            defaultValue: 'Add a block to “{{title}}”',
+            title:
+              title ||
+              t('plate.accordion.untitledPanel', {
+                defaultValue: 'Untitled panel',
+              }),
+          })}
+        />
+      )}
     </PlateElement>
   );
 }

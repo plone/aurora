@@ -382,6 +382,37 @@ export const getDefaultSlashMenuGroups = (
   return groups;
 };
 
+const LIST_ITEMS = new Set<string>([KEYS.ul, KEYS.ol, KEYS.listTodo]);
+
+/**
+ * The block an item inserts, as containers list the blocks they can hold:
+ * the `@type` of a Plone block, `p` for lists (paragraphs with a list style),
+ * or the Plate.js element type.
+ */
+export const getSlashItemBlockId = (value: string) => {
+  if (value.startsWith('block_')) return value.slice('block_'.length);
+  if (LIST_ITEMS.has(value)) return KEYS.p;
+  if (value === 'action_three_columns') return KEYS.columnGroup;
+  return value;
+};
+
+/** Keeps the items that insert a block the container can hold. */
+const filterForContainer = (
+  groups: SlashMenuGroup[],
+  container: SlashMenuContainer | undefined,
+) => {
+  const available = container?.availableBlocks;
+  if (!available) return groups;
+  return groups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) =>
+        available.includes(getSlashItemBlockId(item.value)),
+      ),
+    }))
+    .filter((group) => group.items.length > 0);
+};
+
 export const resolveSlashMenuGroups = (
   editor: PlateEditor,
   config: SlashMenuConfig | undefined,
@@ -392,5 +423,8 @@ export const resolveSlashMenuGroups = (
     config?.groups ??
     getDefaultSlashMenuGroups(editor, context);
 
-  return config?.extendGroups?.(groups, editor, context) ?? groups;
+  return filterForContainer(
+    config?.extendGroups?.(groups, editor, context) ?? groups,
+    context.container,
+  );
 };

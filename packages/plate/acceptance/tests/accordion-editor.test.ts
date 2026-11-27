@@ -141,7 +141,7 @@ test('does not offer an accordion inside an accordion', async ({ page }) => {
   await page.keyboard.type('/');
 
   await expect(
-    page.getByRole('option', { name: 'Heading 2', exact: true }),
+    page.getByRole('option', { name: 'Text', exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole('option', { name: 'Accordion', exact: true }),
