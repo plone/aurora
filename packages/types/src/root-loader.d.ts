@@ -29,3 +29,18 @@ export interface RootLoaderData {
   /** Whether a user is logged in. */
   isAuthenticated: boolean;
 }
+
+/**
+ * The type of the app's root loader, for the React Router types that take a
+ * loader function instead of its data, such as `MetaFunction`:
+ *
+ * ```ts
+ * export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
+ *   matches,
+ * }) => {
+ *   const root = matches.find((match) => match.id === 'root')?.loaderData;
+ *   // ...
+ * };
+ * ```
+ */
+export type RootLoader = () => Promise<RootLoaderData>;
