@@ -55,4 +55,12 @@ export type AccordionPluginOptions = {
   themes: AccordionTheme[];
   /** The heading level of the panel titles in the published view. */
   headingLevel: AccordionHeadingLevel;
+  /**
+   * Adapts the settings schema of the blocks inside an accordion. It
+   * replaces the default rules (see `defaultInnerBlockSchemaEnhancer`).
+   */
+  innerBlockSchemaEnhancer?: (
+    schema: any,
+    context: { blockType: string; t: (key: string, options?: any) => string },
+  ) => any;
 };

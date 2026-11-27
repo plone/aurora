@@ -17,3 +17,10 @@ export {
   BaseAccordionPlugin,
   type AccordionConfig,
 } from './accordion-plugin';
+export {
+  defaultInnerBlockSchemaEnhancer,
+  enhanceInnerBlockSchema,
+  withoutFields,
+  type BlockSettingsSchema,
+  type InnerBlockSchemaEnhancer,
+} from './inner-block-schema';
