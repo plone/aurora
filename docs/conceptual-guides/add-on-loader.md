@@ -37,9 +37,10 @@ export default function loadConfig(config: ConfigType) {
 }
 ```
 
-This loader is a JavaScript file and it is placed in the root of your application.
-By default, it's called {file}`registry.loader.js`.
-`@plone/registry` will create or overwrite {file}`registry.loader.js` in the root of your app whenever you run the bundler.
+This loader is a JavaScript file, and it is placed in the {file}`.plone` folder of your application.
+It's called {file}`registry.loader.js`.
+`@plone/registry` creates or overwrites {file}`.plone/registry.loader.js` whenever you run the bundler.
+The app imports it as `@plone/registry/addons-loader`, which the Plone registry Vite plugin resolves to this file.
 
 ```{important}
 The file {file}`registry.loader.js` is generated and maintained by `@plone/registry`.
@@ -60,9 +61,10 @@ The server-side configuration loader is optional.
 If your add-on does not need to load any server-side configuration, you can omit this file.
 ```
 
-This loader is a JavaScript file and it is placed in the root of your application.
-By default, it's called {file}`registry.loader.server.js`.
-`@plone/registry` will create or overwrite {file}`registry.loader.server.js` in the root of your app whenever you run the bundler.
+This loader is a JavaScript file, and it is placed in the {file}`.plone` folder of your application.
+It's called {file}`registry.loader.server.js`.
+`@plone/registry` creates or overwrites {file}`.plone/registry.loader.server.js` whenever you run the bundler.
+The app's server code imports it as `@plone/registry/addons-loader-server`, which the Plone registry Vite plugin resolves to this file.
 
 ```{important}
 The file {file}`registry.loader.server.js` is generated and maintained by `@plone/registry`.

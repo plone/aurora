@@ -1,5 +1,3 @@
-import { ConfigType } from './dist';
-
 export function stylesAliases(
   ploneDir: string,
 ): Array<{ find: RegExp; replacement: string }>;
@@ -22,9 +20,3 @@ export function PloneRegistryVitePlugin(): {
     };
   };
 };
-
-declare module '@plone/registry/addons-loader' {
-  export default function applyAddonConfiguration(
-    config: ConfigType,
-  ): ConfigType;
-}

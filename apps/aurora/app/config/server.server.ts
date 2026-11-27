@@ -3,10 +3,8 @@
  */
 import config from '@plone/registry';
 import PloneClient from '@plone/client';
-// eslint-disable-next-line import/no-unresolved
-import applyAddonConfiguration from '../../.plone/registry.loader';
-// eslint-disable-next-line import/no-unresolved
-import applyServerAddonConfiguration from '../../.plone/registry.loader.server';
+import applyAddonConfiguration from '@plone/registry/addons-loader';
+import applyServerAddonConfiguration from '@plone/registry/addons-loader-server';
 
 import type { ContentExpander, ListingBlockFormData } from '@plone/types';
 import type { LoaderUtilityArgs } from './types';

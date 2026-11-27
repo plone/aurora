@@ -1,0 +1,1 @@
+Changed the app to import its add-on loaders from `@plone/registry/addons-loader` and `@plone/registry/addons-loader-server`, and its add-on routes through `getAddonRoutesConfig()`, instead of importing its `.plone` folder. @sneridagh
