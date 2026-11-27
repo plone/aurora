@@ -8,6 +8,7 @@ This file applies only to `packages/aurora` and its subdirectories.
 - It doesn't run on its own. The app in `apps/aurora` (`@plone/aurora-dev`, private) runs it in this repository, and projects run it in their own app.
 - It's being built up in steps, see plone/aurora#452. Today it has:
   - `@plone/aurora/vite`: `PloneAuroraVitePlugin()`, the Vite plugins and configuration of an app. It goes before React Router's plugin in the app's `vite.config.ts`.
+  - `@plone/aurora/preset`: `ploneAurora()`, the React Router preset of an app, in its `react-router.config.ts`. It generates the Plone registry files, including the add-ons' routes, before React Router evaluates `routes.ts`, so `react-router dev`, `build` and `typegen` work without `init-loaders`.
   - `@plone/aurora/registry.config` and `@plone/aurora/registry-publicui.config`: the official add-ons, which an app's `registry.config.ts` extends.
 
 ## Package Model

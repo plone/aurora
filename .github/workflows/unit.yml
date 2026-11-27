@@ -19,6 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         name:
+          - '@plone/aurora'
           # - '@plone/blocks'
           - '@plone/cmsui'
           - '@plone/components'

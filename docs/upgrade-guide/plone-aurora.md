@@ -107,6 +107,10 @@ The framework has the following entries.
 `@plone/aurora/vite`
 : `PloneAuroraVitePlugin()`, the Vite plugins and configuration that the app's {file}`vite.config.ts` had: the Plone registry, Tailwind, the React Compiler, SVG imports, the Plone devtools, and the `optimizeDeps` lists.
 
+`@plone/aurora/preset`
+: `ploneAurora()`, the React Router preset of an app.
+  Before React Router evaluates the app's {file}`routes.ts`, it generates the files of the Plone registry in the app's {file}`.plone` folder, including the routes that the add-ons register.
+
 `@plone/aurora/registry.config`
 : The official add-ons, which an app or an add-on repository extends in its {file}`registry.config.ts`.
   `@plone/aurora/registry-publicui.config` has the add-ons of the public UI only.
@@ -131,6 +135,26 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [PloneAuroraVitePlugin(), reactRouter()],
 });
+```
+
+Add the preset to the app's {file}`react-router.config.ts`, and remove `init-loaders` from the scripts that run `react-router dev`, `react-router build` or `react-router typegen`.
+Keep it before the unit tests, which don't run React Router.
+
+```ts
+import type { Config } from '@react-router/dev/config';
+import { ploneAurora } from '@plone/aurora/preset';
+
+export default {
+  ssr: true,
+  presets: [ploneAurora()],
+} satisfies Config;
+```
+
+```diff
+-    "dev": "pnpm exec init-loaders && react-router dev",
+-    "build": "pnpm exec init-loaders && react-router build",
++    "dev": "react-router dev",
++    "build": "react-router build",
 ```
 
 `@plone/registry` no longer generates {file}`.plone/vite.loader.js`: its Vite plugin applies the add-ons' `vite.extend` files itself.

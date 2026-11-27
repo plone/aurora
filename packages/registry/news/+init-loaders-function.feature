@@ -1,0 +1,1 @@
+Added `@plone/registry/init-loaders`, with `initPloneRegistryLoaders()`, which the `init-loaders` command runs. It no longer opens an HMR WebSocket, and evaluating the add-ons twice in one process doesn't repeat their routes. @sneridagh

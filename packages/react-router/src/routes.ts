@@ -40,7 +40,7 @@ function readGenerated<T>(file: string): T {
   const filePath = path.join(process.cwd(), '.plone', file);
   if (!fs.existsSync(filePath)) {
     throw new Error(
-      `${filePath} doesn't exist. Run \`init-loaders\` of \`@plone/registry\` before React Router.`,
+      `${filePath} doesn't exist. Add the \`ploneAurora()\` preset of \`@plone/aurora/preset\` to the app's \`react-router.config.ts\`, or run \`init-loaders\` of \`@plone/registry\` before React Router.`,
     );
   }
   return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
