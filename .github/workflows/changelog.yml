@@ -30,8 +30,10 @@ jobs:
         id: filter
         with:
           filters: |
+            # The app's changes go to the framework's changelog.
             aurora:
               - 'apps/aurora/**'
+              - 'packages/aurora/**'
             client:
               - 'packages/client/**'
             registry:
@@ -67,7 +69,7 @@ jobs:
         if: steps.filter.outputs.aurora == 'true'
         run: |
           git fetch --no-tags origin main
-          towncrier check --compare-with origin/main --dir apps/aurora
+          towncrier check --compare-with origin/main --dir packages/aurora
         env:
           BASE_BRANCH: ${{ github.base_ref }}
 

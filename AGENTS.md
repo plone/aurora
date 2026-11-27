@@ -83,6 +83,9 @@ pnpm check:ts
 
 # Check the packed packages with publint (build them first: make build-deps)
 pnpm check:packages
+
+# Build and serve apps/aurora outside the workspace, with the packed packages
+pnpm check:thin-app
 ```
 
 ## General Conventions
@@ -93,6 +96,7 @@ pnpm check:packages
 - Keep changes **package-local** unless there is a clear cross-cutting reason.
 - When adding a new package dependency, check whether it already exists in a sibling package or the workspace root before adding it.
 - Declare every import in the `package.json` of its package: the `import/no-extraneous-dependencies` lint rule enforces it. An undeclared import often resolves in the monorepo anyway, but fails in an app that installs the package from npm.
+- A package whose components use Tailwind classes declares `tailwindcss` in its `dependencies`, or as an optional peer dependency if it also ships compiled CSS. `@plone/registry` then adds it to the Tailwind sources. Never write `@source` paths into `node_modules`: they only work in the workspace. `pnpm check:thin-app` fails on classes that a build outside the workspace misses.
 - Do not commit secrets, credentials, or environment-specific values.
 
 ## Packages for Volto and Plone Aurora
@@ -103,7 +107,7 @@ Before changing one, or creating a new one, read `docs/conceptual-guides/package
 - No framework imports: no `react-router`, i18n library, `@plone/client`, `@plone/cmsui`, `@plone/components` or Volto modules. Enforce it with a lint rule and a test.
 - App services (navigation, translations, notifications, navigation blocking) come from a provider; backend data from a driver with capability flags.
 - Translations: the app passes an i18next-shaped `t`, messages use `{{placeholder}}`s, and the catalogs ship in `locales/<language>/common.json`. Aurora loads them with the registered add-on; Volto adapts react-intl and keeps the messages in its catalogs.
-- Styles: Aurora compiles Tailwind from the source; Volto loads compiled CSS, scoped with `:where()` and without cascade layers.
+- Styles: Aurora compiles Tailwind from the source, found through an optional `tailwindcss` peer dependency; Volto loads compiled CSS, scoped with `:where()` and without cascade layers.
 - `@plone/registry` is a peer dependency only (`^3.0.0 || ^4.0.0-alpha.0`), so each app keeps a single registry.
 
 ## Editing Rules

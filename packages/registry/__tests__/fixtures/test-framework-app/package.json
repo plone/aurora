@@ -1,0 +1,7 @@
+{
+  "name": "test-framework-app",
+  "type": "module",
+  "dependencies": {
+    "my-framework": "*"
+  }
+}

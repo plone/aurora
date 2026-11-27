@@ -1,0 +1,1 @@
+Reduced `apps/aurora` to the thin app, which depends on `@plone/aurora` only, and added `pnpm check:thin-app` and a CI job that build and serve it outside the workspace, with the packed packages. The changelog check of `@plone/aurora` now looks in `packages/aurora`. @sneridagh

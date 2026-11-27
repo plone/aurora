@@ -1,6 +1,5 @@
 import type { RouteConfig } from '@react-router/dev/routes';
-import { auroraRoutes } from '@plone/aurora/routes';
-import { getAddonRoutesConfig } from '@plone/react-router/routes';
+import { auroraRoutes, getAddonRoutesConfig } from '@plone/aurora/routes';
 
 export default [
   // The routes of Plone Aurora itself

@@ -1,0 +1,1 @@
+Added `check-thin-app.js`, which builds and serves `apps/aurora` outside the workspace, with the packed packages. @sneridagh

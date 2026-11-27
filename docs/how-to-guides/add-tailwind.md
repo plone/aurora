@@ -16,9 +16,13 @@ If you don't have an add-on scaffold, follow {doc}`../get-started/create-package
 ## Install Tailwind CSS
 
 Install Tailwind CSS in your add-on by running the following command from the root of your project.
+
 ```shell
 pnpm --filter <add-on-name> add tailwindcss
 ```
+
+This adds `tailwindcss` to the add-on's `dependencies`.
+Keep it there, not in `devDependencies`: it tells `@plone/registry` that Tailwind must scan your add-on.
 
 ## Create `styles/publicui.css` file
 
@@ -54,3 +58,12 @@ export default MyComponent;
 ```
 
 You can add new styles to the {file}`publicui.css` file as needed, extend Tailwind's utilities, or customize the existing CSS properties to fit your design requirements.
+
+## How Tailwind finds your classes
+
+The {file}`styles/publicui.css` file makes `@plone/registry` add your add-on to the Tailwind sources of the Public UI, even when it's empty.
+If your add-on has components for the CMSUI, also create a {file}`styles/cmsui.css` file.
+
+The registry also adds the dependencies of your add-on that use Tailwind, such as `@plone/quanta`.
+So don't add `@source` entries with paths into {file}`node_modules` to your stylesheets: these paths only work with the layout of the packages in your workspace, and break in an app that installs your add-on from npm.
+{ref}`tailwind-sources` explains how the registry finds them.

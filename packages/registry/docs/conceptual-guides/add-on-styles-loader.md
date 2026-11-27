@@ -24,6 +24,7 @@ This file is also a CSS file containing the styles that you want your app to loa
 
 `@plone/registry` has a helper utility `createAddonsStyleLoader` which generates an add-ons loader file.
 That file contains the aggregated files from all the registered add-ons, keeping the order in which they were defined.
+It imports each add-on's stylesheet by the path where the registry found the add-on, so it works for an add-on that the app doesn't depend on itself, and for tools that read it outside the bundler, such as the Tailwind plugin of ESLint.
 
 This loader is also a `.css` file and is placed in the {file}`.plone` directory in the root of your application.
 By default, it's called {file}`publicui.css` for the Public UI and {file}`cmsui.css` for the CMSUI.
@@ -57,3 +58,17 @@ If you use a Vite-powered framework, use the `@plone/registry` Vite plugin.
 If you use a non-Vite framework, you will have to build your own integration.
 You can take the implementation of the Vite plugin as reference.
 ```
+
+## Tailwind sources
+
+Tailwind generates only the classes it finds in the files it scans.
+It doesn't scan the packages in {file}`node_modules`, so the loader adds a `@source` entry for each add-on with a stylesheet that uses Tailwind.
+It also adds one for each dependency of that add-on that uses Tailwind, and for their own dependencies that use Tailwind, such as a component library that the add-on's components use.
+
+A package uses Tailwind when it has `tailwindcss` in its `dependencies` or in its `peerDependencies`.
+A package that also ships compiled CSS, for apps that don't use Tailwind, declares it as an optional peer dependency.
+Tailwind's own packages and plugins, whose names start with `tailwind` or `@tailwindcss/`, are not scanned.
+
+The loader writes the real path of each package, as the registry resolves it from the add-on's folder.
+It works wherever the package manager installs them, in a workspace or in {file}`node_modules`.
+Don't add `@source` entries with paths into {file}`node_modules` to your stylesheets: they depend on how the packages were installed.

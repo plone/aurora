@@ -5,7 +5,6 @@ node_modules
 .env
 .react-router
 .plone
-/packages/
 public/locales/
 /stats*
 var/

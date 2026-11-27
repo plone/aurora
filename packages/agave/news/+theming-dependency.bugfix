@@ -1,0 +1,1 @@
+Declared the `@plone/theming` dependency, whose stylesheet the Public UI styles import. @sneridagh

@@ -1,0 +1,1 @@
+Made the registry resolve an add-on that the app doesn't depend on through the app's dependencies, so a framework package can bring its add-ons, and made the generated stylesheets import the add-ons' stylesheets by the path the registry resolved. @sneridagh

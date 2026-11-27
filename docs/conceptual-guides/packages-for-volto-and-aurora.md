@@ -83,7 +83,17 @@ volto-plate's {file}`scripts/plate-i18n.mjs` shows how: it generates a `defineMe
 
 ## Styles
 
-Plone Aurora's Tailwind setup scans the package's source, so Aurora needs nothing else.
+Plone Aurora's Tailwind setup scans the package's source.
+For the registry to add it to the scanned sources, the package declares `tailwindcss` as an optional peer dependency, which Volto doesn't install:
+
+```json
+"peerDependencies": {
+  "tailwindcss": "^4.0.0"
+},
+"peerDependenciesMeta": {
+  "tailwindcss": { "optional": true }
+}
+```
 
 Volto has no Tailwind, so the package ships compiled CSS for it.
 `@plone/controlpanels` builds {file}`dist/controlpanels.css` with the Tailwind CLI, then a PostCSS step:

@@ -8,10 +8,9 @@
     "**/.client/**/*.tsx",
     ".react-router/types/**/*"
   ],
-  "exclude": ["packages/*"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "types": ["@react-router/node", "vite/client", "@plone/icons/svg"],
+    "types": ["vite/client"],
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
@@ -24,8 +23,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "~/*": ["./app/*"],
-      "@plone/plate/*": ["../../packages/plate/src/*"]
+      "~/*": ["./app/*"]
     },
     "noEmit": true,
     "rootDirs": [".", "./.react-router/types"],
