@@ -3,8 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { langmap } from '@plone/helpers';
 import { ChevrondownIcon } from '@plone/icons';
 import config from '@plone/registry';
-import type { RootLoader } from '@plone/aurora/app/root';
-import type { GetTranslationResponse } from '@plone/types';
+import type { GetTranslationResponse, RootLoaderData } from '@plone/types';
 
 import styles from './LanguageSwitcher.module.css';
 import { useLocation, useRouteLoaderData } from 'react-router';
@@ -56,7 +55,7 @@ const LanguageSwitcher = (props: LanguageSelectorProps) => {
   const Menu = config.getComponent('Menu').component!;
   const MenuItem = config.getComponent('MenuItem').component!;
   const MenuTrigger = config.getComponent('MenuTrigger').component!;
-  const rootData = useRouteLoaderData<RootLoader>('root');
+  const rootData = useRouteLoaderData<RootLoaderData>('root');
   if (!rootData) {
     return null;
   }

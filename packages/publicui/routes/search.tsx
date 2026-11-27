@@ -8,7 +8,7 @@ import {
   useNavigation,
   type LoaderFunctionArgs,
 } from 'react-router';
-import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+import { ploneClientContext } from '@plone/react-router/context';
 import { flattenToAppURL } from '@plone/helpers';
 import { Container } from '@plone/quanta';
 import { SearchForm } from '../components/SearchResults/SearchForm';

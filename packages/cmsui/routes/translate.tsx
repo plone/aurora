@@ -14,7 +14,7 @@ import type { Content } from '@plone/types';
 import {
   ploneClientContext,
   ploneContentContext,
-} from '@plone/aurora/app/middleware.server';
+} from '@plone/react-router/context';
 import RenderBlocks from '@plone/layout/blocks/RenderBlocks';
 import { MAIN_REGION, PLATE_TYPE } from '@plone/plate/constants';
 import ContentForm from '../components/ContentForm/ContentForm';

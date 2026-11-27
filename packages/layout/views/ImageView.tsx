@@ -1,6 +1,6 @@
 import config from '@plone/registry';
 import { useRouteLoaderData } from 'react-router';
-import type { RootLoader } from '@plone/aurora/app/root';
+import type { RootLoaderData } from '@plone/types';
 import { useTranslation } from 'react-i18next';
 import prettybytes from 'pretty-bytes';
 import Image from '../components/Image/Image';
@@ -9,7 +9,7 @@ export default function ImageView() {
   const { t } = useTranslation();
   const Container = config.getComponent('Container').component!;
   const Link = config.getComponent('Link').component!;
-  const rootData = useRouteLoaderData<RootLoader>('root');
+  const rootData = useRouteLoaderData<RootLoaderData>('root');
 
   if (!rootData) {
     return null;

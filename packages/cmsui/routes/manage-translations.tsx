@@ -16,7 +16,7 @@ import config from '@plone/registry';
 import {
   ploneClientContext,
   ploneContentContext,
-} from '@plone/aurora/app/middleware.server';
+} from '@plone/react-router/context';
 import { Plug } from '@plone/layout/components/Pluggable';
 import { type ToastItem } from '@plone/layout/config/toast';
 import {

@@ -23,16 +23,16 @@ import {
   Link,
   RouterProvider as RACRouterProvider,
 } from 'react-aria-components';
-import { getLocale } from '@plone/aurora/app/i18next.server';
 import {
+  ploneLocaleContext,
   ploneContentContext,
   ploneClientContext,
   ploneSiteContext,
   ploneUserContext,
-} from '@plone/aurora/app/middleware.server';
+} from '@plone/react-router/context';
+import type { RootLoader } from '@plone/types';
 import { PersonalTools } from '@plone/layout/components/Toolbar/PersonalTools/PersonalTools';
 import { MoreMenu } from '@plone/layout/components/Toolbar/MoreMenu/MoreMenu';
-import type { RootLoader } from '@plone/aurora/app/root';
 import { FolderIcon } from '@plone/icons';
 import Pencil from '@plone/icons/svg/pencil.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
@@ -43,7 +43,7 @@ import clsx from 'clsx';
 import config from '@plone/registry';
 
 import styles from '@plone/layout/slots/App/App.module.css';
-import stylesheet from '@plone/aurora/.plone/publicui.css?url';
+import stylesheet from '@plone/registry/styles/publicui.css?url';
 import { ContentTypesMenu } from '../components/Toolbar/ContentTypesMenu';
 
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
@@ -90,7 +90,7 @@ export const links: LinksFunction = () => [
 export async function loader({
   context,
 }: LoaderFunctionArgs<RouterContextProvider>) {
-  const locale = getLocale(context);
+  const locale = context.get(ploneLocaleContext);
   const content = context.get(ploneContentContext);
   const user = context.get(ploneUserContext);
   const multilingual = !!context.get(ploneSiteContext)?.features?.multilingual;

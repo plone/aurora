@@ -11,7 +11,7 @@ import { requireAuthCookie } from '@plone/react-router';
 import {
   ploneClientContext,
   ploneUserContext,
-} from '@plone/aurora/app/middleware.server';
+} from '@plone/react-router/context';
 import { FormProvider, useFormStore } from '@plone/helpers';
 import { Container, Link } from '@plone/quanta';
 import { useTranslation } from 'react-i18next';

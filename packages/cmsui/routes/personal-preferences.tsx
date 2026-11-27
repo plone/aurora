@@ -9,7 +9,7 @@ import {
   RouterContextProvider,
 } from 'react-router';
 import { localeCookie, requireAuthCookie } from '@plone/react-router';
-import { getLocale } from '@plone/aurora/app/i18next.server';
+import { ploneLocaleContext } from '@plone/react-router/context';
 import config from '@plone/registry';
 import { Container, Link } from '@plone/quanta';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +20,7 @@ export async function loader({
 }: LoaderFunctionArgs<RouterContextProvider>) {
   await requireAuthCookie(request);
   return {
-    locale: getLocale(context),
+    locale: context.get(ploneLocaleContext),
     languages: config.settings.supportedLanguages as string[],
   };
 }

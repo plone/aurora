@@ -3,8 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 import blocksDocs from '@plone/registry/blocks-docs';
 import config from '@plone/registry';
 import { flattenToAppURL, isBlockRestricted } from '@plone/helpers';
-import { getAuthFromRequest } from '@plone/react-router';
-import { getPloneClientClass } from '@plone/aurora/app/middleware.server';
+import { getAuthFromRequest, getPloneClientClass } from '@plone/react-router';
 import type { BlockConfigBase, Content, User } from '@plone/types';
 import {
   blocksToMarkdown,

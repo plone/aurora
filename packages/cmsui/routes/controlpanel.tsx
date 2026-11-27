@@ -11,7 +11,7 @@ import {
 } from 'react-router';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+import { ploneClientContext } from '@plone/react-router/context';
 import { requireAuthCookie } from '@plone/react-router';
 import { FormProvider, useFormStore } from '@plone/helpers';
 import type { Controlpanel } from '@plone/types';

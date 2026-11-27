@@ -1,5 +1,5 @@
 import { useRouteLoaderData } from 'react-router';
-import type { RootLoader } from '@plone/aurora/app/root';
+import type { RootLoaderData } from '@plone/types';
 import config from '@plone/registry';
 import { Link } from '@plone/quanta';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +7,7 @@ import { isInternalURL } from '@plone/helpers';
 import clsx from 'clsx';
 
 export default function LinkView() {
-  const rootData = useRouteLoaderData<RootLoader>('root');
+  const rootData = useRouteLoaderData<RootLoaderData>('root');
   const { t } = useTranslation();
   const Container = config.getComponent('Container').component!;
 

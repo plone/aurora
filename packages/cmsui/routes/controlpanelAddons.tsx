@@ -8,7 +8,7 @@ import {
 } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Button as AriaButton } from 'react-aria-components';
-import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+import { ploneClientContext } from '@plone/react-router/context';
 import { requireAuthCookie } from '@plone/react-router';
 import {
   Button,

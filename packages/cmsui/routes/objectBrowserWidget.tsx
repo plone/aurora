@@ -3,7 +3,7 @@ import {
   RouterContextProvider,
   type LoaderFunctionArgs,
 } from 'react-router';
-import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+import { ploneClientContext } from '@plone/react-router/context';
 import { flattenToAppURL } from '@plone/helpers';
 
 function emptyOnClientError<T>(empty: T) {

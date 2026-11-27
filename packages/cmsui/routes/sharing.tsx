@@ -10,7 +10,7 @@ import {
   ploneClientContext,
   ploneContentContext,
   ploneUserContext,
-} from '@plone/aurora/app/middleware.server';
+} from '@plone/react-router/context';
 import { useTranslation } from 'react-i18next';
 import { Container, Link } from '@plone/quanta';
 import { CloseIcon } from '@plone/icons';

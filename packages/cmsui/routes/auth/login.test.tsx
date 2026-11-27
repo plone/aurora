@@ -6,7 +6,7 @@ import {
   ploneClientContext,
   ploneContentContext,
   ploneSiteContext,
-} from '@plone/aurora/app/middleware.server';
+} from '@plone/react-router/context';
 import { action, loader } from './login';
 
 vi.mock('jwt-decode', () => ({

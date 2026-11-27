@@ -1,0 +1,1 @@
+Added a lint rule that forbids importing `@plone/aurora` from the packages. @sneridagh

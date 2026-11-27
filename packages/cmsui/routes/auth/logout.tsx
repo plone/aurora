@@ -3,7 +3,7 @@ import {
   getAuthFromRequest,
   redirectWithClearedCookie,
 } from '@plone/react-router';
-// import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+// import { ploneClientContext } from '@plone/react-router/context';
 
 export async function loader({
   request,

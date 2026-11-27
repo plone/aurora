@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import {
   ploneClientContext,
   ploneContentContext,
-} from '@plone/aurora/app/middleware.server';
+} from '@plone/react-router/context';
 import ContentForm from '../components/ContentForm/ContentForm';
 import { breadcrumbTrail } from '../components/ContentForm/EditorBreadcrumbs';
 import { getServerValidationErrors } from '../components/Form/validation';

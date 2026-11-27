@@ -7,7 +7,7 @@ import {
   type LoaderFunctionArgs,
 } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+import { ploneClientContext } from '@plone/react-router/context';
 import { requireAuthCookie } from '@plone/react-router';
 import { Button, Checkbox, Container, Link } from '@plone/quanta';
 import { Plug } from '@plone/layout/components/Pluggable';

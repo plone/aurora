@@ -31,6 +31,65 @@ It is usually better and quicker to move your items into new locations and copy 
 
 ## Upgrading to Plone Aurora
 
+(upgrade-guide-no-imports-from-the-app)=
+
+### Add-ons don't import from the app
+
+```{versionchanged} 1.0.0-alpha.28
+These steps apply when you upgrade an add-on from Plone Aurora 1.0.0-alpha.27 or earlier to 1.0.0-alpha.28 or later.
+```
+
+```{deprecated} 1.0.0-alpha.28
+Importing from `@plone/aurora/app/*` and `@plone/aurora/.plone/*` in an add-on.
+```
+
+An add-on can't know which app it runs in, so it must not import from the app.
+Those imports only resolved inside the Plone Aurora monorepo, through the `@plone/aurora/*` paths of each package's {file}`tsconfig.json`.
+Everything they provided now comes from packages, and the core packages no longer import from the app.
+
+The app still exports the request contexts and `getPloneClientClass` from {file}`app/middleware.server.ts`, so your add-on keeps working for now.
+These exports will be removed in a later release.
+Change the imports of your add-on as follows.
+
+| Import from the app | Replacement |
+| --- | --- |
+| `ploneClientContext`, `ploneContentContext`, `ploneSiteContext`, `ploneUserContext`, `ploneClearAuthCookieContext` from `@plone/aurora/app/middleware.server` | The same names from `@plone/react-router/context` |
+| `getPloneClientClass` from `@plone/aurora/app/middleware.server` | `getPloneClientClass` from `@plone/react-router` |
+| `getLocale(context)` from `@plone/aurora/app/i18next.server` | `context.get(ploneLocaleContext)`, with `ploneLocaleContext` from `@plone/react-router/context` |
+| `RootLoader` from `@plone/aurora/app/root`, in `useRouteLoaderData` | `RootLoaderData` from `@plone/types` |
+| `RootLoader` from `@plone/aurora/app/root`, in `MetaFunction` | `RootLoader` from `@plone/types` |
+| `@plone/aurora/.plone/cmsui.css?url` | `@plone/registry/styles/cmsui.css?url` |
+| `@plone/aurora/.plone/publicui.css?url` | `@plone/registry/styles/publicui.css?url` |
+
+For example:
+
+```diff
+-import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+-import { getLocale } from '@plone/aurora/app/i18next.server';
+-import type { RootLoader } from '@plone/aurora/app/root';
++import {
++  ploneClientContext,
++  ploneLocaleContext,
++} from '@plone/react-router/context';
++import type { RootLoaderData } from '@plone/types';
+
+ export async function loader({ context }: Route.LoaderArgs) {
+   const cli = context.get(ploneClientContext);
+-  const locale = getLocale(context);
++  const locale = context.get(ploneLocaleContext);
+   // ...
+ }
+
+-const rootData = useRouteLoaderData<RootLoader>('root');
++const rootData = useRouteLoaderData<RootLoaderData>('root');
+```
+
+`RootLoaderData` only declares the data that the app's root loader returns itself.
+If your add-on reads data that a `rootLoaderData` utility adds, declare it with module augmentation, as described in {doc}`../how-to-guides/fetch-additional-data-root-loader`.
+
+Add `@plone/react-router` to the `dependencies` of your add-on, and `@plone/types` to its `devDependencies`, if they are not there yet.
+If its {file}`tsconfig.json` maps `@plone/aurora/*` to the app, or includes the app's {file}`.react-router/types`, remove those entries.
+
 (upgrade-guide-build-plone-devtools)=
 
 ### Build `@plone/devtools` in `build-deps`

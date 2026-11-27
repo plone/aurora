@@ -2,7 +2,7 @@ import { expect, describe, it, vi, afterEach } from 'vitest';
 import config from '@plone/registry';
 import { loader } from './search';
 import { RouterContextProvider } from 'react-router';
-import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+import { ploneClientContext } from '@plone/react-router/context';
 
 describe('loader', () => {
   afterEach(() => {

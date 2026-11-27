@@ -1,10 +1,10 @@
 import { hasBlocksData } from '@plone/helpers';
 import { useRouteLoaderData } from 'react-router';
-import type { RootLoader } from '@plone/aurora/app/root';
+import type { RootLoaderData } from '@plone/types';
 import RenderBlocks from '../blocks/RenderBlocks';
 
 export default function DefaultView() {
-  const rootData = useRouteLoaderData<RootLoader>('root');
+  const rootData = useRouteLoaderData<RootLoaderData>('root');
 
   if (!rootData) {
     return null;

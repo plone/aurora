@@ -6,12 +6,12 @@ import { messages } from '../messages';
 import styles from './Logo.module.css';
 import LogoImage from './Logo.svg';
 import { useRouteLoaderData } from 'react-router';
-import type { RootLoader } from '@plone/aurora/app/root';
+import type { RootLoaderData } from '@plone/types';
 
 const Logo = (props: SlotComponentProps) => {
   const { content } = props;
   const Link = config.getComponent('Link').component!;
-  const rootData = useRouteLoaderData<RootLoader>('root');
+  const rootData = useRouteLoaderData<RootLoaderData>('root');
 
   const intl: (id: string) => string = config.getUtility({
     name: 'translation',

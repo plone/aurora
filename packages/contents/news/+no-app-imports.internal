@@ -1,0 +1,1 @@
+Replaced the imports from the app with `@plone/react-router/context`, `@plone/react-router`, `@plone/types` and `@plone/registry/styles/*`, so the package no longer depends on being inside the Plone Aurora monorepo. @sneridagh

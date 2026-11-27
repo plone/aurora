@@ -6,9 +6,9 @@ import type {
   Content,
   RelatedItem,
   Brain,
+  RootLoaderData,
 } from '@plone/types';
 import { useRouteLoaderData } from 'react-router';
-import type { RootLoader } from '@plone/aurora/app/root';
 
 function removeObjectIdFromURL(basePath: string, scale: string) {
   return scale.replace(`${basePath}/`, '');
@@ -63,7 +63,7 @@ export default function Image(props: ImageProps) {
     ...imageProps
   } = props;
 
-  const siteData = useRouteLoaderData<RootLoader>('root')?.site;
+  const siteData = useRouteLoaderData<RootLoaderData>('root')?.site;
   const siteImageScales = siteData?.['plone.allowed_sizes'] || [];
 
   if (!item && !src) return null;

@@ -1,20 +1,15 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { RouterContextProvider } from 'react-router';
 import { loader } from './layout';
-import { ploneContentContext } from '@plone/aurora/app/middleware.server';
-
-vi.mock('@plone/aurora/app/i18next.server', () => ({
-  i18nextMiddleware: vi.fn(),
-  getLocale: vi.fn().mockReturnValue('en'),
-}));
+import {
+  ploneContentContext,
+  ploneLocaleContext,
+} from '@plone/react-router/context';
 
 describe('Contents layout loader', () => {
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
   it('reads content from middleware context and returns locale', async () => {
     const context = new RouterContextProvider();
+    context.set(ploneLocaleContext, 'en');
     context.set(ploneContentContext, {
       '@id': '/plone/news',
       title: 'News',
@@ -39,7 +34,6 @@ describe('Contents layout loader', () => {
         title: 'News',
         language: { token: 'en' },
       },
-      path: '/news',
     });
   });
 });

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useRouteLoaderData } from 'react-router';
 import { Button } from 'react-aria-components';
 import { MenuIcon } from '@plone/icons';
-import type { RootLoader } from '@plone/aurora/app/root';
+import type { RootLoaderData } from '@plone/types';
 import SlotRenderer, { type SlotComponentProps } from '../SlotRenderer';
 import config from '@plone/registry';
 import styles from './Navigation.module.css';
@@ -17,7 +17,7 @@ type NavItem = {
 const Navigation = (props: SlotComponentProps) => {
   const { content, location } = props;
   const { t } = useTranslation();
-  const rootData = useRouteLoaderData<RootLoader>('root');
+  const rootData = useRouteLoaderData<RootLoaderData>('root');
   const { pathname } = useLocation();
   const Link = config.getComponent('Link').component!;
   const navItems = content?.['@components']?.navigation?.items || [];
