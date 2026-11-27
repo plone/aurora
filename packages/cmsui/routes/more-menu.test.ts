@@ -3,7 +3,7 @@ import { RouterContextProvider } from 'react-router';
 import {
   ploneClientContext,
   ploneContentContext,
-} from '@plone/aurora/app/middleware.server';
+} from '@plone/react-router/context';
 import { action as menuAction } from './api/more-menu';
 import { action as rulesAction, loader as rulesLoader } from './rules';
 

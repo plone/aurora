@@ -10,7 +10,7 @@ import {
 import config from '@plone/registry';
 import { loader, action } from './controlpanelAddons';
 import { RouterContextProvider } from 'react-router';
-import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+import { ploneClientContext } from '@plone/react-router/context';
 
 vi.mock('@plone/react-router', () => ({
   requireAuthCookie: vi.fn().mockResolvedValue('fake-token'),

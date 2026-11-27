@@ -5,7 +5,7 @@ import { RouterContextProvider } from 'react-router';
 import {
   ploneClientContext,
   ploneContentContext,
-} from '@plone/aurora/app/middleware.server';
+} from '@plone/react-router/context';
 
 vi.mock('@plone/react-router', () => ({
   requireAuthCookie: vi.fn().mockResolvedValue('fake-token'),

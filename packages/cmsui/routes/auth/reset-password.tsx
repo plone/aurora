@@ -14,14 +14,14 @@ import {
 import {
   ploneClientContext,
   ploneContentContext,
-} from '@plone/aurora/app/middleware.server';
+} from '@plone/react-router/context';
+import type { RootLoader } from '@plone/types';
 import { redirectIfLoggedInLoader } from '@plone/react-router';
 import { TextField, Link, Button } from '@plone/quanta';
 import CloseSVG from '@plone/icons/svg/close.svg?react';
 import ArrowRightSVG from '@plone/icons/svg/arrow-right.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import { useTranslation } from 'react-i18next';
-import type { RootLoader } from '@plone/aurora/app/root';
 
 export async function loader(args: LoaderFunctionArgs<RouterContextProvider>) {
   await redirectIfLoggedInLoader(args);

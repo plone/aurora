@@ -8,7 +8,7 @@ import { flattenToAppURL } from '@plone/helpers';
 import {
   ploneClientContext,
   ploneContentContext,
-} from '@plone/aurora/app/middleware.server';
+} from '@plone/react-router/context';
 import { Container, Link } from '@plone/quanta';
 import { useTranslation } from 'react-i18next';
 

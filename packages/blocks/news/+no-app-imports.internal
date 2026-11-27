@@ -1,0 +1,1 @@
+Removed the paths to the app from the TypeScript configuration, and the app type generation from `check:ts`. @sneridagh

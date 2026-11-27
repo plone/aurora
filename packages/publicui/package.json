@@ -38,7 +38,7 @@
   ],
   "scripts": {
     "test": "vitest",
-    "check:ts": "pnpm --filter @plone/aurora run typegen && tsc --project tsconfig.json",
+    "check:ts": "tsc --project tsconfig.json",
     "dry-release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --dry-run",
     "release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it",
     "release-major-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it major --preRelease=alpha",
@@ -62,6 +62,7 @@
     "@plone/blocks": "workspace:*",
     "@plone/layout": "workspace:*",
     "@plone/quanta": "workspace:*",
+    "@plone/react-router": "workspace:*",
     "@plone/registry": "workspace:*",
     "@plone/theming": "workspace:*",
     "@plone/components": "workspace:*",

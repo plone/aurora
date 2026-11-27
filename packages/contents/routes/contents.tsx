@@ -24,7 +24,7 @@ import type { TableIndexes } from '../types';
 import {
   ploneClientContext,
   ploneContentContext,
-} from '@plone/aurora/app/middleware.server';
+} from '@plone/react-router/context';
 
 // This is needed because to prevent circular import loops
 export type ContentsLoaderType = typeof loader;

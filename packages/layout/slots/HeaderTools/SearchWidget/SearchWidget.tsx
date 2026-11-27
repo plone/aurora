@@ -2,7 +2,7 @@ import { Form, Input, Label, TextField } from 'react-aria-components';
 import type { SlotComponentProps } from '../../SlotRenderer';
 import { useTranslation } from 'react-i18next';
 import { useRouteLoaderData } from 'react-router';
-import type { RootLoader } from '@plone/aurora/app/root';
+import type { RootLoaderData } from '@plone/types';
 import config from '@plone/registry';
 import Search from '@plone/icons/svg/search.svg?react';
 import styles from './SearchWidget.module.css';
@@ -13,7 +13,7 @@ const SearchWidget = (props: SlotComponentProps) => {
 
   const { t } = useTranslation();
   const Button = config.getComponent('Button').component!;
-  const site = useRouteLoaderData<RootLoader>('root')?.site;
+  const site = useRouteLoaderData<RootLoaderData>('root')?.site;
   const languages: string[] = site?.features?.multilingual
     ? site['plone.available_languages'] || []
     : [];

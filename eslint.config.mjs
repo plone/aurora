@@ -169,6 +169,30 @@ export default tseslint.config(
     },
   },
   {
+    // A package can't know which app it runs in, so it must not import from the
+    // app. The request contexts and `getPloneClientClass` are in
+    // `@plone/react-router`, the root loader data type in `@plone/types`, and
+    // the app's stylesheets in `@plone/registry/styles/*`.
+    // The control panels rule below repeats these patterns: in a flat config,
+    // a later `no-restricted-imports` replaces this one for its files.
+    name: 'Packages - no imports from the app',
+    files: ['packages/**/*.{js,jsx,ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@plone/aurora', '@plone/aurora/*'],
+              message:
+                'Packages must not import from the app: see the "Packages - no imports from the app" rule in eslint.config.mjs for where each export lives.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
     // The screens run in Aurora and in Volto: framework specifics come in
     // through the provider and the drivers (see packages/controlpanels/AGENTS.md).
     name: 'Control panels - framework-agnostic imports',
@@ -198,6 +222,11 @@ export default tseslint.config(
               ],
               message:
                 '@plone/controlpanels must run in Aurora and Volto: get this through the provider or a driver.',
+            },
+            {
+              group: ['@plone/aurora', '@plone/aurora/*'],
+              message:
+                'Packages must not import from the app: see the "Packages - no imports from the app" rule in eslint.config.mjs for where each export lives.',
             },
           ],
         },

@@ -1,0 +1,1 @@
+Replaced the `RootLoader` imports from the app with `RootLoaderData` from `@plone/types`, so the package no longer depends on being inside the Plone Aurora monorepo. @sneridagh

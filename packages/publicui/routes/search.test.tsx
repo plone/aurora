@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { RouterContextProvider } from 'react-router';
 import config from '@plone/registry';
-import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+import { ploneClientContext } from '@plone/react-router/context';
 import { loader } from './search';
 
 const makeArgs = (

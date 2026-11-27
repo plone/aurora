@@ -5,7 +5,7 @@ import {
   type LoaderFunctionArgs,
 } from 'react-router';
 import { requireAuthCookie } from '@plone/react-router';
-import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+import { ploneClientContext } from '@plone/react-router/context';
 import { HandleCatchedError } from '../helpers/Errors';
 import { settleItems } from '../helpers/batch';
 import { commonTransitions, type Transition } from '../helpers/workflow';

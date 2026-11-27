@@ -1,20 +1,5 @@
 {
   "extends": "tsconfig/react-library.json",
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.d.ts",
-    "../../apps/aurora/.react-router/types/**/*"
-  ],
-  "exclude": ["node_modules", "build", "public", "coverage"],
-  "compilerOptions": {
-    "rootDirs": [
-      ".",
-      "../../apps/aurora/app",
-      "../../apps/aurora/.react-router/types/app"
-    ],
-    "paths": {
-      "@plone/aurora/*": ["../../apps/aurora/*"]
-    }
-  }
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
+  "exclude": ["node_modules", "build", "public", "coverage"]
 }

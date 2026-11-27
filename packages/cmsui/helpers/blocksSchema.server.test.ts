@@ -13,7 +13,8 @@ const getUser = vi.fn();
 const getContent = vi.fn();
 const initialize = vi.fn(() => ({ getUser, getContent }));
 
-vi.mock('@plone/aurora/app/middleware.server', () => ({
+vi.mock('@plone/react-router', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@plone/react-router')>()),
   getPloneClientClass: () => ({ initialize }),
 }));
 

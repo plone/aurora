@@ -4,7 +4,7 @@ import {
   RouterContextProvider,
   type LoaderFunctionArgs,
 } from 'react-router';
-import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+import { ploneClientContext } from '@plone/react-router/context';
 import Sitemap from '@plone/layout/components/Sitemap/Sitemap';
 import { Container } from '@plone/quanta';
 import type { NavigationResponse } from '@plone/types';

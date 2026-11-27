@@ -14,7 +14,8 @@ import {
   ploneClientContext,
   ploneContentContext,
   ploneSiteContext,
-} from '@plone/aurora/app/middleware.server';
+} from '@plone/react-router/context';
+import type { RootLoader } from '@plone/types';
 import {
   getReturnUrl,
   redirectIfLoggedInLoader,
@@ -24,7 +25,6 @@ import { TextField, Link } from '@plone/quanta';
 import CloseSVG from '@plone/icons/svg/close.svg?react';
 import SlotRenderer from '@plone/layout/slots/SlotRenderer';
 import { Trans, useTranslation } from 'react-i18next';
-import type { RootLoader } from '@plone/aurora/app/root';
 
 export async function loader(props: LoaderFunctionArgs<RouterContextProvider>) {
   const { context } = props;

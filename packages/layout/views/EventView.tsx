@@ -1,13 +1,13 @@
 import { hasBlocksData } from '@plone/helpers';
 import { useRouteLoaderData } from 'react-router';
-import type { RootLoader } from '@plone/aurora/app/root';
+import type { RootLoaderData } from '@plone/types';
 import RenderBlocks from '../blocks/RenderBlocks';
 import EventDetails from '../components/EventDetails/EventDetails';
 import config from '@plone/registry';
 import styles from './EventView.module.css';
 
 export default function EventView() {
-  const rootData = useRouteLoaderData<RootLoader>('root');
+  const rootData = useRouteLoaderData<RootLoaderData>('root');
   const Container = config.getComponent('Container').component!;
 
   if (!rootData || rootData.content['@type'] !== 'Event') {

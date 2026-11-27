@@ -15,19 +15,19 @@ import {
 import { useTranslation } from 'react-i18next';
 import { RouterProvider as RACRouterProvider } from 'react-aria-components';
 import { clsx } from 'clsx';
-import { getLocale } from '@plone/aurora/app/i18next.server';
-import type { RootLoader } from '@plone/aurora/app/root';
+import {
+  ploneLocaleContext,
+  ploneContentContext,
+  ploneUserContext,
+} from '@plone/react-router/context';
+import type { RootLoader } from '@plone/types';
 import { Plug, PluggablesProvider } from '@plone/layout/components/Pluggable';
 import Toast from '@plone/layout/components/Toast/Toast';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
 import { shouldShowToolbar } from '@plone/layout/helpers';
 import config from '@plone/registry';
 
-import stylesheet from '@plone/aurora/.plone/cmsui.css?url';
-import {
-  ploneContentContext,
-  ploneUserContext,
-} from '@plone/aurora/app/middleware.server';
+import stylesheet from '@plone/registry/styles/cmsui.css?url';
 import { PersonalTools } from '@plone/layout/components/Toolbar/PersonalTools/PersonalTools';
 
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
@@ -75,7 +75,7 @@ export async function loader({
   context,
 }: LoaderFunctionArgs<RouterContextProvider>) {
   const content = context.get(ploneContentContext);
-  const locale = getLocale(context);
+  const locale = context.get(ploneLocaleContext);
   const user = context.get(ploneUserContext);
   return {
     locale,
