@@ -1,0 +1,1 @@
+Added `InnerBlockSettingsHeader`, which shows a block's place in an accordion above its settings, and `useAccordionSettingsTarget`, for hosts that render block settings in their own sidebar. @Humanaice
