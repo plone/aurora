@@ -38,6 +38,7 @@
     "bin",
     "README.md",
     "vite-plugin.*",
+    "init-loaders.*",
     "virtual"
   ],
   "bin": {
@@ -85,6 +86,10 @@
     "./vite-plugin": {
       "types": "./vite-plugin.d.ts",
       "import": "./vite-plugin.js"
+    },
+    "./init-loaders": {
+      "types": "./init-loaders.d.ts",
+      "import": "./init-loaders.js"
     },
     "./addons-loader": {
       "types": "./virtual/addons-loader.d.ts",

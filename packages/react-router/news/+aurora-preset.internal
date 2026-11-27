@@ -1,0 +1,1 @@
+Changed the error of `getAddonRoutesConfig()` for missing generated files to suggest the `@plone/aurora` preset. @sneridagh

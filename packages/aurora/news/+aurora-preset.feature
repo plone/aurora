@@ -1,0 +1,1 @@
+Added `@plone/aurora/preset`, with `ploneAurora()`, the React Router preset of an app: it generates the Plone registry files, including the add-ons' routes, before React Router evaluates `routes.ts`, so `react-router dev`, `build` and `typegen` no longer need `init-loaders` first. @sneridagh
