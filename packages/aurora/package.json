@@ -1,0 +1,89 @@
+{
+  "name": "@plone/aurora",
+  "description": "Plone Aurora is the next-generation frontend for Plone CMS: the framework that Plone Aurora apps are built on",
+  "version": "1.0.0-alpha.27",
+  "maintainers": [
+    {
+      "name": "Plone Foundation",
+      "url": "https://plone.org"
+    }
+  ],
+  "funding": "https://github.com/sponsors/plone",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/plone/aurora.git",
+    "directory": "packages/aurora"
+  },
+  "bugs": {
+    "url": "https://github.com/plone/aurora/issues"
+  },
+  "homepage": "https://plone-aurora.readthedocs.io/",
+  "keywords": [
+    "aurora",
+    "plone",
+    "react",
+    "frontend",
+    "framework"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./registry.config": {
+      "types": "./dist/registry.config.d.ts",
+      "import": "./dist/registry.config.js",
+      "default": "./dist/registry.config.js"
+    },
+    "./registry-publicui.config": {
+      "types": "./dist/registry-publicui.config.d.ts",
+      "import": "./dist/registry-publicui.config.js",
+      "default": "./dist/registry-publicui.config.js"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "import": "./dist/vite.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "build:force": "tsup",
+    "dev": "tsup --watch",
+    "check:ts": "tsc --project tsconfig.json",
+    "release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it",
+    "release-alpha": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --preRelease=alpha",
+    "dry-release": "GITHUB_TOKEN=${GITHUB_TOKEN:-$(gh auth token)} release-it --dry-run"
+  },
+  "peerDependencies": {
+    "vite": "^8.0.0"
+  },
+  "dependencies": {
+    "@babel/core": "^7.28.5",
+    "@babel/preset-typescript": "^7.27.1",
+    "@plone/devtools": "workspace:*",
+    "@plone/icons": "workspace:*",
+    "@plone/registry": "workspace:*",
+    "@tailwindcss/vite": "catalog:",
+    "babel-plugin-react-compiler": "1.0.0",
+    "vite-plugin-babel": "1.7.3",
+    "vite-plugin-devtools-json": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "release-it": "catalog:",
+    "tsconfig": "workspace:*",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.22.0"
+  }
+}

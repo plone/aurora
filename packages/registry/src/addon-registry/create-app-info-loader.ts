@@ -9,15 +9,47 @@ import path from 'path';
 export type AppInfo = {
   name: string;
   version: string;
+  /** The version of the `@plone/aurora` framework the app uses, if any. */
+  aurora?: string;
   addons: Array<{ name: string; version: string }>;
 };
 
 export type AppInfoRegistry = {
+  projectRootPath?: string;
   packageJson: { name?: string; version?: string };
   getAddons: () => Array<{ name: string; version?: string } | undefined>;
 };
 
 export const APP_INFO_LOADER_FILE_NAME = 'registry.appInfo.js';
+
+/*
+ * The version of the `@plone/aurora` framework that the app installs, or
+ * `undefined` when the app doesn't use it. It looks in the `node_modules`
+ * folders from the app up, like Node.js does, but without `NODE_PATH`, which
+ * package managers set for their scripts.
+ */
+function getAuroraVersion(projectRootPath?: string): string | undefined {
+  let dir = projectRootPath;
+  while (dir) {
+    const packageJson = path.join(
+      dir,
+      'node_modules',
+      '@plone',
+      'aurora',
+      'package.json',
+    );
+    if (fs.existsSync(packageJson)) {
+      try {
+        return JSON.parse(fs.readFileSync(packageJson, 'utf-8')).version;
+      } catch {
+        return undefined;
+      }
+    }
+    const parent = path.dirname(dir);
+    dir = parent === dir ? undefined : parent;
+  }
+  return undefined;
+}
 
 /*
  * The app and its add-ons, in add-on order.
@@ -26,6 +58,7 @@ export function getAppInfo(registry: AppInfoRegistry): AppInfo {
   return {
     name: registry.packageJson.name ?? '',
     version: registry.packageJson.version ?? '',
+    aurora: getAuroraVersion(registry.projectRootPath),
     addons: registry
       .getAddons()
       .filter((addon) => Boolean(addon))

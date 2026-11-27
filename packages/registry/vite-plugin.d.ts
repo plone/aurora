@@ -1,3 +1,10 @@
+export function applyViteExtenders(
+  config: Record<string, unknown>,
+  env: { command: string; mode: string; isSsrBuild?: boolean },
+  files: string[],
+  load?: (file: string) => Promise<unknown>,
+): Promise<Record<string, unknown>>;
+
 export function stylesAliases(
   ploneDir: string,
 ): Array<{ find: RegExp; replacement: string }>;

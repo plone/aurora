@@ -1,0 +1,1 @@
+Removed the stale `@plone/aurora/*` path to the app from the TypeScript configuration. @sneridagh

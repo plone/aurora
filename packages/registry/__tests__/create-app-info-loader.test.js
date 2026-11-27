@@ -51,6 +51,29 @@ describe('getAppInfo', () => {
   });
 });
 
+describe('getAppInfo with the Aurora framework', () => {
+  test('has the version of @plone/aurora that the app resolves', () => {
+    const registry = fakeRegistry();
+    const auroraDir = path.join(
+      registry.projectRootPath,
+      'node_modules',
+      '@plone',
+      'aurora',
+    );
+    fs.mkdirSync(auroraDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(auroraDir, 'package.json'),
+      JSON.stringify({ name: '@plone/aurora', version: '1.0.0-alpha.28' }),
+    );
+
+    expect(getAppInfo(registry).aurora).toBe('1.0.0-alpha.28');
+  });
+
+  test("doesn't have it when the app doesn't use the framework", () => {
+    expect(getAppInfo(fakeRegistry()).aurora).toBeUndefined();
+  });
+});
+
 describe('createAppInfoLoader', () => {
   test('writes a module that exports the app info', () => {
     const registry = fakeRegistry();

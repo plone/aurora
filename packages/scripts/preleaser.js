@@ -51,7 +51,7 @@ const RELEASE_GROUPS = [
     ],
   },
   {
-    label: 'Application',
+    label: 'Framework',
     packages: ['@plone/aurora'],
   },
 ];

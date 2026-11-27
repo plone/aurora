@@ -67,7 +67,7 @@ Vite does not discover subpath exports automatically from the main entry.
 
 If a dependency is only used in server-side code (for example `*.server.*` files), add it to `ssr.optimizeDeps.include` instead of `optimizeDeps.include` so it isn't pre-bundled for the browser.
 Declaring it in `ssr.optimizeDeps.include` alone is not always enough — Vite's client-side dependency scanner can still pick it up through re-exports.
-If that happens, also add it to the top-level `optimizeDeps.exclude` in `apps/aurora/vite.config.ts` so it's explicitly kept out of the client bundle.
+If that happens, also add it to the top-level `optimizeDeps.exclude` in `packages/aurora/src/vite.ts` so it's explicitly kept out of the client bundle.
 
 To keep the lists from drifting, run:
 
@@ -94,7 +94,7 @@ Recommended workflow:
 1. Make the code change that introduces or removes runtime imports.
 2. Run `pnpm check:vite-optimize-deps`.
 3. Copy the reported missing entries into the relevant `vite.extend.js` file or
-   `apps/aurora/vite.config.ts`.
+   `packages/aurora/src/vite.ts`.
 4. Remove reported stale entries unless you have a concrete reason to keep
    them.
 5. Re-run the check until it passes.
@@ -107,16 +107,16 @@ Recommended workflow:
 | `@plone/layout` | `packages/layout/vite.extend.js` |
 | `@plone/cmsui` | `packages/cmsui/vite.extend.js` |
 
-## Non-add-on workspace packages and app deps: `vite.config.ts`
+## Non-add-on workspace packages and app deps: `@plone/aurora/vite`
 
 Packages that are not registered add-ons — currently `@plone/components`, `@plone/icons`, `@plone/quanta`, and `@plone/helpers` — cannot use `vite.extend.js` because `PloneRegistryVitePlugin` never loads their files.
-List their dependencies directly in `apps/aurora/vite.config.ts` under `optimizeDeps.include`.
+List their dependencies directly in `packages/aurora/src/vite.ts` under `optimizeDeps.include`.
 
 The same rule applies to packages that are direct dependencies of the app itself (listed in `apps/aurora/package.json`).
 Those use plain names without the `>` syntax because Vite resolves them directly from the app root.
 
 ```ts
-// apps/aurora/vite.config.ts
+// packages/aurora/src/vite.ts
 optimizeDeps: {
   include: [
     // App-level dep — plain name works

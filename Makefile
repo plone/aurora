@@ -163,8 +163,11 @@ packages/react-router/dist: $(shell find packages/react-router/src -type f)
 packages/devtools/dist: $(shell find packages/devtools/src -type f)
 	pnpm build:devtools
 
+packages/aurora/dist: $(shell find packages/aurora/src -type f)
+	pnpm build:aurora
+
 .PHONY: build-deps
-build-deps: packages/registry/dist packages/icons/dist packages/quanta/dist packages/components/dist packages/client/dist packages/react-router/dist packages/helpers/dist packages/devtools/dist  ## Build dependencies
+build-deps: packages/registry/dist packages/icons/dist packages/quanta/dist packages/components/dist packages/client/dist packages/react-router/dist packages/helpers/dist packages/devtools/dist packages/aurora/dist  ## Build dependencies
 
 ##### Release
 
@@ -192,7 +195,7 @@ frontend-docker-start: ## Starts a Docker-based frontend for development
 
 .PHONY: acceptance-frontend-dev-start
 acceptance-frontend-dev-start: ## Start acceptance frontend in development mode, with the test add-on
-	PLONE_DEVTOOLS=false PLONE_TEST_ADDON=1 PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start
+	PLONE_DEVTOOLS=false PLONE_TEST_ADDON=1 PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora-dev start
 
 ######### Plone Aurora Acceptance tests
 
@@ -210,7 +213,7 @@ ci-acceptance-backend-start: ## Start backend acceptance server in headless mode
 
 .PHONY: acceptance-frontend-prod-start
 acceptance-frontend-prod-start: ## Start acceptance frontend in production mode, with the test add-on
-	PLONE_TEST_ADDON=1 pnpm --filter @plone/aurora build && PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora start:prod
+	PLONE_TEST_ADDON=1 pnpm --filter @plone/aurora-dev build && PLONE_API_PATH=http://localhost:55001/plone pnpm --filter @plone/aurora-dev start:prod
 
 .PHONY: acceptance-test
 acceptance-test: ## Start Cypress in interactive mode

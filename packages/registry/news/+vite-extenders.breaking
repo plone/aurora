@@ -1,0 +1,1 @@
+Changed the Vite plugin to apply the add-ons' `vite.extend` files itself, so `.plone/vite.loader.js` is no longer generated: remove its import from the app's `vite.config.ts`. A `vite.extend` file can no longer add plugins. @sneridagh

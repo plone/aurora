@@ -1,11 +1,1 @@
-const addons = [
-  '@plone/theming',
-  '@plone/plate',
-  '@plone/blocks',
-  '@plone/layout',
-  '@plone/publicui',
-  '@plone/agave',
-];
-const theme = '';
-
-export { addons, theme };
+export { addons, theme } from '@plone/aurora/registry-publicui.config';

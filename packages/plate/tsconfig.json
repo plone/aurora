@@ -5,7 +5,6 @@
   "compilerOptions": {
     "types": ["vite/client"],
     "paths": {
-      "@plone/aurora/*": ["../../apps/aurora/*"],
       "@plone/plate/*": ["./*"],
       "@/*": ["./*"]
     }
