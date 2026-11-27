@@ -44,5 +44,6 @@ custom-content-types
 translate-content
 manage-translations
 manage-folder-contents-in-bulk
+deploy-an-app
 deploy-behind-a-reverse-proxy
 ```

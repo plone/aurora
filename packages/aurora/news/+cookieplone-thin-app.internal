@@ -1,0 +1,1 @@
+The Cookieplone CI job installs the packed packages of the branch into the generated add-on, and builds and serves it with `check-thin-app.js --project`. @sneridagh

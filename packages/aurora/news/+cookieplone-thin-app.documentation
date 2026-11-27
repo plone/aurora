@@ -1,0 +1,1 @@
+Updated the frontend add-on anatomy for the thin app that the Cookieplone templates generate: it installs `@plone/aurora` from npm, without a `core` checkout. @sneridagh

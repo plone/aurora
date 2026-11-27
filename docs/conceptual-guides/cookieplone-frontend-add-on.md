@@ -15,6 +15,10 @@ This chapter explains the anatomy of a frontend add-on in Plone Aurora that was 
 
 After you create a frontend add-on with the cookieplone generator as described in {doc}`../get-started/create-package`, the code lives in the folder {file}`packages/<add-on-name>`.
 
+The root folder is a Plone Aurora app, which installs your add-on to develop it.
+It's a standard React Router app, which installs `@plone/aurora` from npm, and a pnpm workspace, which links your add-on from {file}`packages/<add-on-name>`.
+You customize Plone Aurora in your add-on, not in the app.
+
 The generated project contains the following files and folders:
 
 {file}`registry.config.ts`
@@ -32,48 +36,23 @@ The generated project contains the following files and folders:
   export { addons };
   ```
 
-{file}`mrs-developer.json`
-: This file configures the {term}`mrs-developer` tool.
-  mrs-developer helps manage multiple repositories and packages in a monorepo.
-  By default, it checks out the official Plone Aurora repository.
-  This default is mandatory and you should not remove it.
-  You can add external packages if your project requires them.
-  Add them to the {file}`packages` folder via the `output` key using a configuration, as shown in the following example:
-
-  ```{code-block} python
-  :caption: mrs-developer.json
-  :emphasize-lines: 10-18
-  {
-    "core": {
-      "output": "./",
-      "package": "@plone/aurora",
-      "url": "git@github.com:plone/aurora.git",
-      "https": "https://github.com/plone/aurora.git",
-      "filterBlobs": true
-    },
-    "volto-light-theme": {
-      "develop": true,
-      "output": "./packages",
-      "package": "@kitconcept/volto-light-theme",
-      "url": "git@github.com:kitconcept/volto-light-theme.git",
-      "https": "https://github.com/kitconcept/volto-light-theme.git",
-      "tag": "7.2.0",
-      "filterBlobs": true
-    },
-  }
-  ```
-
 {file}`package.json`
-: The root {file}`package.json` contains metadata for the monorepo.
-  In normal circumstances, you do not need to change this file.
-  It serves as glue to keep the workspace working.
-  Because it contains the main pnpm entry point, you can override dependencies with `pnpm.overrides` if needed.
+: The root {file}`package.json` is the app's.
+  Its scripts run React Router: `pnpm start` runs `react-router dev`, and `pnpm build` runs `react-router build`.
+  Its dependencies are `@plone/aurora`, React, React Router, and your add-on, linked from the workspace.
+  To upgrade Plone Aurora, change the version of `@plone/aurora`.
 
 {file}`pnpm-workspace.yaml`
 : This file configures the pnpm workspace.
-  It lists the packages that are part of the workspace.
-  In normal circumstances, you do not need to change this file.
-  It automatically picks up packages in {file}`packages/*` and nested external packages in {file}`packages/**/packages/*`.
+  It picks up packages in {file}`packages/*` and nested external packages in {file}`packages/**/packages/*`.
+  Its `catalog` holds the versions that the app and your add-on share, such as React, React Router, and TypeScript.
+  Keep `react-router` and `@react-router/dev` at the version that `@plone/aurora` uses.
+
+{file}`app`, {file}`react-router.config.ts`, {file}`vite.config.ts`, and {file}`server.js`
+: These files make the root folder a React Router app.
+  They come from `@plone/aurora`: the files in {file}`app` re-export its root route and entries, {file}`react-router.config.ts` adds its preset, and {file}`vite.config.ts` adds its Vite plugin.
+  In normal circumstances, you do not need to change them.
+  A platform that builds React Router apps, such as Vercel, builds this app with `react-router build`.
 
 ## Add-on folder structure
 
@@ -144,9 +123,8 @@ The project includes the following tooling configurations:
 : This file is the TypeScript configuration for your add-on.
 
 {file}`eslint.config.mjs`
-: This file configures ESLint.
-  It extends the default Plone Aurora configuration, and you can customize it if needed.
-  In normal circumstances, you do not need to change this file.
+: This file configures ESLint, with the TypeScript, React, React Hooks, and accessibility rules.
+  You can customize it if needed.
 
 {file}`.prettierrc`
 : This file configures Prettier.
@@ -181,34 +159,14 @@ The project includes the following tooling configurations:
   Add tests in {file}`acceptance/tests` using the `*.test.ts` naming convention.
   In normal circumstances, you do not need to change the acceptance testing configuration.
 
-## Plone Aurora core checkout
+## Update Plone Aurora
 
-The Plone Aurora core repository is checked out in the {file}`core` folder.
-This checkout is mandatory and you should not remove it.
-It is managed by mrs-developer.
-
-### Update Plone Aurora
-
-After a Plone Aurora release, update your checkout by changing the `tag` key in the `core` section of {file}`mrs-developer.json`:
-
-```{code-block} python
-:caption: mrs-developer.json
-:emphasize-lines: 7
-{
-  "core": {
-    "output": "./",
-    "package": "@plone/aurora",
-    "url": "git@github.com:plone/aurora.git",
-    "https": "https://github.com/plone/aurora.git",
-    "tag": "1.0.0",
-    "filterBlobs": true
-  },
-}
-```
-
+After a Plone Aurora release, change the version of `@plone/aurora` in the root {file}`package.json`.
+If the release notes say so, also change the versions of the `catalog` in {file}`pnpm-workspace.yaml`.
 Then run:
 
 ```shell
 make install
 ```
 
+To use packages that aren't on npm, such as an add-on from another repository, check them out in {file}`packages` with {term}`mrs-developer`, and the workspace picks them up.
