@@ -17,6 +17,7 @@ import type {
   TAccordionPanelElement,
 } from '../editor/plugins/accordion/types';
 import { BlockInnerContainer } from './block-inner-container';
+import { usePanelCollapse } from './use-panel-collapse';
 
 /*
  * The published view of the accordion, following the WAI-ARIA accordion
@@ -224,19 +225,15 @@ export function AccordionPanelContentElementStatic(props: SlateElementProps) {
   const panel = React.useContext(PanelViewContext);
   const open = panel ? panel.open : true;
   const contentId = panel?.contentId;
+  // The server renders a closed panel `hidden`; from then on, the `hidden`
+  // attribute is set by `usePanelCollapse`, so React keeps its first value.
+  const [openOnLoad] = React.useState(open);
 
-  // Closed panels stay findable: `hidden="until-found"` lets find-in-page and
-  // text fragments reveal them, which opens the panel. React renders `hidden`
-  // as a boolean, so the value is set once the page runs.
-  React.useEffect(() => {
-    if (!contentId) return;
-    const region = document.getElementById(contentId);
-    if (!region) return;
-    if (!open) region.setAttribute('hidden', 'until-found');
-    const onBeforeMatch = () => panel?.setOpen(true);
-    region.addEventListener('beforematch', onBeforeMatch);
-    return () => region.removeEventListener('beforematch', onBeforeMatch);
-  }, [contentId, open, panel]);
+  usePanelCollapse(
+    () => (contentId ? document.getElementById(contentId) : null),
+    open,
+    () => panel?.setOpen(true),
+  );
 
   return (
     <SlateElement
@@ -250,7 +247,7 @@ export function AccordionPanelContentElementStatic(props: SlateElementProps) {
               id: panel.contentId,
               role: 'region',
               'aria-labelledby': panel.triggerId,
-              hidden: !open,
+              hidden: !openOnLoad,
             }
           : {}),
       }}

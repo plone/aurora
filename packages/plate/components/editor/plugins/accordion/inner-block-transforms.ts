@@ -7,6 +7,7 @@ import {
   nanoid,
   PathApi,
   TextApi,
+  type Location,
   type Path,
   type SlateEditor,
   type TElement,
@@ -47,11 +48,14 @@ export const getInnerBlockLabel = (id: string, t: TranslateFunction) => {
   return typeof title === 'string' ? title : id;
 };
 
-const blockLabel = (editor: SlateEditor, node: unknown) =>
+/** The name of a block of a panel, such as "Text" or "Image". */
+export const getBlockLabel = (editor: SlateEditor, node: unknown) =>
   getInnerBlockLabel(
     getInnerBlockId(node as TElement) ?? KEYS.p,
     getTranslation(editor).t,
   );
+
+const blockLabel = getBlockLabel;
 
 const getContent = (editor: SlateEditor, blockPath: Path) => {
   const parent = editor.api.parent(blockPath);
@@ -60,6 +64,28 @@ const getContent = (editor: SlateEditor, blockPath: Path) => {
     parent[0].type === ACCORDION_PANEL_CONTENT_KEY
     ? (parent as [TElement, Path])
     : undefined;
+};
+
+/** Whether the block at a path is a block of an accordion panel. */
+export const isInnerBlockPath = (editor: SlateEditor, path: Path) =>
+  path.length > 0 && !!getContent(editor, path);
+
+/**
+ * The block of a panel that holds a location, by default the selection, if
+ * any.
+ */
+export const getInnerBlockEntry = (
+  editor: SlateEditor,
+  at: Location | null = editor.selection,
+): [TElement, Path] | undefined => {
+  if (!at) return undefined;
+  const content = editor.api.above<TElement>({
+    at,
+    match: { type: ACCORDION_PANEL_CONTENT_KEY },
+  });
+  if (!content) return undefined;
+  const path = editor.api.start(at)!.path.slice(0, content[1].length + 1);
+  return editor.api.node<TElement>(path);
 };
 
 const announceBlock = (
@@ -86,8 +112,18 @@ export const insertInnerBlockAt = (
   editor.tf.insertNodes(createEmptyParagraph(), { at });
   editor.tf.select(editor.api.start(at));
   editor.tf.focus();
-  // Typing "/" at the start of an empty block opens the slash menu.
-  editor.tf.insertText('/');
+  // Opens the slash menu in the new block, as typing "/" there would, but
+  // without the "/": closing the menu leaves the block empty.
+  if (KEYS.slashInput in editor.plugins) {
+    editor.tf.insertNodes(
+      {
+        type: editor.getType(KEYS.slashInput),
+        withoutTrigger: true,
+        children: [{ text: '' }],
+      },
+      { select: true },
+    );
+  }
 };
 
 /** Moves a block of a panel up (`-1`) or down (`1`) within the panel. */

@@ -112,15 +112,11 @@ test('opens and closes panels while editing', async ({ page }) => {
   ).toBeVisible();
 });
 
-test('adds and inserts panels', async ({ page }) => {
+test('adds panels at the end', async ({ page }) => {
   const { editorHandle } = await openAccordionPage(page);
 
   await page.getByRole('button', { name: 'Add a panel at the end' }).click();
   await page.keyboard.type('Contact');
-  await page
-    .getByRole('button', { name: 'Insert a panel between panel 1 and 2' })
-    .click();
-  await page.keyboard.type('Prices');
 
   await expect
     .poll(async () =>
@@ -128,7 +124,10 @@ test('adds and inserts panels', async ({ page }) => {
         nodeText(panel.children?.[0]),
       ),
     )
-    .toEqual(['Opening hours', 'Prices', 'How to find us', 'Contact']);
+    .toEqual(['Opening hours', 'How to find us', 'Contact']);
+  await expect(
+    page.getByRole('button', { name: /^(Add|Insert) a panel/ }),
+  ).toHaveCount(1);
 });
 
 test('does not offer an accordion inside an accordion', async ({ page }) => {
