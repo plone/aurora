@@ -235,14 +235,14 @@ Create a new file named {file}`LikeButton.tsx` in the {file}`slots` folder of yo
 
 ```{code-block} tsx
 :caption: packages/\<add-on-name>/slots/LikeButton.tsx
-import type { RootLoader } from '@plone/aurora/app/root';
+import type { RootLoaderData } from '@plone/types';
 import { Button } from '@plone/quanta';
 import { useFetcher, useParams, useRouteLoaderData } from 'react-router';
 
 export default function LikeButton() {
   const fetcher = useFetcher();
   const params = useParams();
-  const rootData = useRouteLoaderData<RootLoader>('root');
+  const rootData = useRouteLoaderData<RootLoaderData>('root');
   const pathname = params['*'] ? `/${params['*']}` : '/';
   const rootCount = rootData?.likes?.count ?? 0;
   const fetcherRecord = fetcher.data as { count?: number } | undefined;

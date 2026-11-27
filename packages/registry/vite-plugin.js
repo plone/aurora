@@ -135,6 +135,21 @@ export function relativeToAbsoluteImportPlugin(options) {
   };
 }
 
+/**
+ * The aliases of the `@plone/registry/styles/*.css` imports: each one resolves
+ * to the stylesheet that the plugin generated in the app's `.plone` folder, so
+ * an add-on can link the app's styles without knowing which app it is in.
+ * The `find` is a regular expression, so a query such as `?url` is kept.
+ */
+export function stylesAliases(ploneDir) {
+  return [
+    {
+      find: /^@plone\/registry\/styles\/(cmsui|publicui)\.css/,
+      replacement: path.join(ploneDir, '$1.css'),
+    },
+  ];
+}
+
 export const PloneRegistryVitePlugin = () => {
   const projectRootPath = path.resolve('.');
   const { registry, shadowAliases } = AddonRegistry.init(projectRootPath);
@@ -242,6 +257,7 @@ export const PloneRegistryVitePlugin = () => {
               find: '@plone/registry/plate-renderer',
               replacement: platePluginsLoaders.renderer,
             },
+            ...stylesAliases(ploneDir),
           ],
         },
       }),

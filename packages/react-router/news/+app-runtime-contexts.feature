@@ -1,0 +1,1 @@
+Added `@plone/react-router/context` with the request contexts (`ploneClientContext`, `ploneContentContext`, `ploneSiteContext`, `ploneUserContext`, `ploneClearAuthCookieContext`) and the new `ploneLocaleContext`, and moved `getPloneClientClass` here from the app, so add-ons can use them without importing the app. @sneridagh

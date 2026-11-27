@@ -1,5 +1,9 @@
 import { ConfigType } from './dist';
 
+export function stylesAliases(
+  ploneDir: string,
+): Array<{ find: RegExp; replacement: string }>;
+
 export function PloneRegistryVitePlugin(): {
   name: string;
   enforce: 'pre' | 'post' | undefined;

@@ -39,6 +39,10 @@
     ".": {
       "import": "./dist/index.js",
       "default": "./dist/index.cjs"
+    },
+    "./context": {
+      "import": "./dist/context.js",
+      "default": "./dist/context.cjs"
     }
   },
   "scripts": {
@@ -65,12 +69,13 @@
     }
   },
   "dependencies": {
+    "@plone/client": "workspace:*",
     "@plone/registry": "workspace:*",
+    "@plone/types": "workspace:*",
     "react-router": "catalog:"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.16.4",
-    "@plone/types": "workspace:*",
     "@react-router/dev": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",

@@ -245,3 +245,5 @@ export async function redirectIfLoggedInLoader({
 export async function redirectWithClearedCookie(url = '/') {
   return clearAuthOnResponse(redirect(url));
 }
+
+export { getPloneClientClass } from './client';

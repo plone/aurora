@@ -102,10 +102,10 @@ Then, register the menu as a pluggable, using the following code.
 import { Plug } from '@plone/layout/components/Pluggable';
 import { MyMenu } from './MyMenu';
 import { useRouteLoaderData } from 'react-router';
-import type { RootLoader } from '@plone/aurora/app/root';
+import type { RootLoaderData } from '@plone/types';
 
 // Inside your layout component:
-const rootData = useRouteLoaderData<RootLoader>('root');
+const rootData = useRouteLoaderData<RootLoaderData>('root');
 
 <Plug pluggable="toolbar-top" id="my-menu">
   <MyMenu content={rootData.content} />
