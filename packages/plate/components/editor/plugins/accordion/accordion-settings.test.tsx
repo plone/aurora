@@ -19,9 +19,9 @@ import { toast } from 'sonner';
 import { PlateEditor } from '../..';
 import { BaseBasicBlocksKit } from '../basic-blocks-base-kit';
 import {
-  handleAccordionBlockSelectionKeyDown,
-  handleAccordionKeyDown,
-} from './accordion-editor-plugin';
+  handleSettingsBlockSelectionKeyDown,
+  handleSettingsEscape,
+} from '../block-settings';
 import { AccordionKit } from './accordion-kit';
 import { getAnchorPlaceholder, isAnchorTaken, slugify } from './anchor';
 import {
@@ -127,17 +127,17 @@ describe('settings target', () => {
     const editor = createEditor([accordion(panel('a', 'A'))]);
     editor.tf.select(editor.api.start([0, 0, 0]));
 
-    expect(handleAccordionKeyDown(editor, escape)).toBe(true);
+    expect(handleSettingsEscape(editor)).toBe(true);
     expect(getSettingsTarget(editor)).toEqual({ type: 'accordion', id: 'acc' });
 
-    expect(handleAccordionKeyDown(editor, escape)).toBe(true);
+    expect(handleSettingsEscape(editor)).toBe(true);
     expect(getSettingsTarget(editor)).toEqual({ type: 'page' });
 
-    expect(handleAccordionKeyDown(editor, escape)).toBe(true);
+    expect(handleSettingsEscape(editor)).toBe(true);
     expect(getSettingsTarget(editor)).toBeNull();
 
     setSettingsTarget(editor, { type: 'accordion_panel', id: 'a' });
-    expect(handleAccordionKeyDown(editor, escape)).toBe(true);
+    expect(handleSettingsEscape(editor)).toBe(true);
     expect(getSettingsTarget(editor)).toEqual({ type: 'accordion', id: 'acc' });
   });
 
@@ -145,7 +145,7 @@ describe('settings target', () => {
     const editor = createEditor([accordion(panel('a', 'A'))]);
     editor.tf.select(editor.api.start([0, 0, 1, 0]));
 
-    expect(handleAccordionKeyDown(editor, escape)).toBe(true);
+    expect(handleSettingsEscape(editor)).toBe(true);
     expect(getSettingsTarget(editor)).toEqual({
       type: 'accordion_panel',
       id: 'a',
@@ -162,12 +162,12 @@ describe('settings target', () => {
       .blockSelection;
 
     // Only the block, not the whole accordion.
-    expect(handleAccordionKeyDown(editor, escape)).toBe(true);
+    expect(handleSettingsEscape(editor)).toBe(true);
     expect(blockSelection.getNodes().map(([node]: any) => node.id)).toEqual([
       'one',
     ]);
 
-    expect(handleAccordionBlockSelectionKeyDown(editor, escape)).toBe(true);
+    expect(handleSettingsBlockSelectionKeyDown(editor, escape)).toBe(true);
     expect(blockSelection.getNodes()).toHaveLength(0);
     expect(getSettingsTarget(editor)).toEqual({
       type: 'accordion_panel',
@@ -187,7 +187,7 @@ describe('settings target', () => {
     blockSelection.set('one');
 
     expect(
-      handleAccordionBlockSelectionKeyDown(editor, {
+      handleSettingsBlockSelectionKeyDown(editor, {
         key: 'Delete',
         preventDefault: () => {},
       }),
@@ -211,7 +211,7 @@ describe('settings target', () => {
       .blockSelection;
     blockSelection.set(['one', 'after']);
 
-    expect(handleAccordionBlockSelectionKeyDown(editor, escape)).toBe(false);
+    expect(handleSettingsBlockSelectionKeyDown(editor, escape)).toBe(false);
   });
 });
 
@@ -419,7 +419,7 @@ describe('the levels around the panel settings in the host sidebar', () => {
     expect(within(crumbs).getByRole('button', { name: 'Page' })).toBeVisible();
     expect(within(crumbs).getByText('Text')).toHaveAttribute(
       'aria-current',
-      'true',
+      'location',
     );
     expect(
       within(sidebar).getByText('Block 1 of 1 in “Hours”'),
@@ -470,7 +470,7 @@ describe('the levels around the panel settings in the host sidebar', () => {
 
     expect(
       within(sidebar).getByText(
-        "Click the accordion's frame or its label, a panel header or a block to see its settings here.",
+        'Click a block, or the frame or label of a block that holds other blocks, such as an accordion, to see its settings here.',
       ),
     ).toBeVisible();
     expect(within(sidebar).queryByText(/^Block \d/)).toBeNull();

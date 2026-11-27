@@ -53,10 +53,6 @@
         "panelMoved": "Pannello spostato alla posizione {{position}} di {{total}}",
         "panelDuplicated": "Pannello duplicato",
         "panelDeleted": "Pannello eliminato",
-        "blockMoved": "Blocco spostato alla posizione {{position}} di {{total}}",
-        "blockDuplicated": "Blocco duplicato",
-        "blockDeleted": "Blocco {{type}} eliminato",
-        "blockChanged": "Blocco trasformato in {{type}}",
         "allExpanded": "Tutti i pannelli espansi",
         "allCollapsed": "Tutti i pannelli compressi"
       },
@@ -73,13 +69,8 @@
       "insertBlockBetween": "Inserisci un blocco tra il blocco {{before}} e il {{after}} di “{{title}}”",
       "addBlockToPanel": "Aggiungi un blocco a “{{title}}”",
       "noNesting": "Una fisarmonica non può essere inserita in una fisarmonica.",
-      "blockDeleted": "Blocco {{type}} eliminato",
-      "blockTypes": {
-        "separator": "Separatore"
-      },
       "accordionSettings": "Impostazioni della fisarmonica",
       "panelSettings": "Impostazioni del pannello",
-      "selection": "Selezione",
       "panelCrumb": "Pannello “{{title}}”",
       "untitled": "Senza titolo",
       "panels": "Pannelli",
@@ -106,12 +97,31 @@
       "panelActions": "Azioni del pannello",
       "innerImageNote": "In una fisarmonica le immagini occupano sempre tutta la larghezza del pannello, quindi dimensione e allineamento non sono disponibili.",
       "innerTeaserNote": "In una fisarmonica un teaser prende lo sfondo della fisarmonica, quindi il suo sfondo non è disponibile.",
-      "blockPosition": "Blocco {{position}} di {{total}} in “{{title}}”",
-      "pageCrumb": "Pagina",
-      "pageHint": "Fai clic sulla cornice dell'accordion o sulla sua etichetta, sull'intestazione di un pannello o su un blocco per vederne qui le impostazioni.",
-      "textPlaceholder": "Scrivi del testo, o / per altri blocchi"
+      "textPlaceholder": "Scrivi del testo, o / per altri blocchi",
+      "panelPlace": "“{{title}}”"
     },
     "undo": "Annulla",
-    "undone": "Annullato"
+    "undone": "Annullato",
+    "blockSettings": {
+      "page": "Pagina",
+      "selection": "Selezione",
+      "pageHint": "Fai clic su un blocco, oppure sulla cornice o sull'etichetta di un blocco che contiene altri blocchi, come una fisarmonica, per vederne qui le impostazioni.",
+      "blockPosition": "Blocco {{position}} di {{total}} in {{place}}",
+      "blockActions": "Azioni del blocco",
+      "moveUp": "Sposta in alto",
+      "moveDown": "Sposta in basso",
+      "delete": "Elimina",
+      "blockDeleted": "Blocco {{type}} eliminato",
+      "blockTypes": {
+        "separator": "Separatore"
+      },
+      "announce": {
+        "blockMoved": "Blocco spostato alla posizione {{position}} di {{total}}",
+        "blockDuplicated": "Blocco duplicato",
+        "blockDeleted": "Blocco {{type}} eliminato",
+        "blockChanged": "Blocco trasformato in {{type}}",
+        "levelSelected": "{{level}} selezionato"
+      }
+    }
   }
 }

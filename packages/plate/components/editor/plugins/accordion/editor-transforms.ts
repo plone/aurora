@@ -2,15 +2,20 @@ import {
   ElementApi,
   nanoid,
   PathApi,
-  RangeApi,
   type Path,
   type SlateEditor,
   type TElement,
-  type TRange,
 } from 'platejs';
 
 import { announce } from '../../../../lib/announce';
 import { showUndoToast } from '../../../../lib/undo-toast';
+import {
+  findSettingsTargetEntry,
+  getSettingsEntry,
+  setSettingsTarget,
+  type NodeSettingsTarget,
+  type SettingsTarget,
+} from '../block-settings';
 import { getTranslation } from '../i18n';
 import {
   createAccordion,
@@ -21,7 +26,6 @@ import {
 import {
   ACCORDION_KEY,
   ACCORDION_PANEL_KEY,
-  ACCORDION_PANEL_TITLE_KEY,
   type TAccordionPanelElement,
 } from './types';
 
@@ -39,29 +43,24 @@ export type AccordionEditorOptions = {
   closedPanels: Record<string, boolean>;
   /** Whether the user is typing in an accordion: the block toolbars hide. */
   typing: boolean;
-  /**
-   * The accordion or panel whose settings show, or the page, chosen with a
-   * Settings button, a breadcrumb or Esc. Without one, a panel's settings
-   * show while the caret is in its title.
-   */
-  settingsTarget: AccordionSettingsTarget | null;
 };
 
-export type AccordionSettingsTarget =
-  | {
-      type: typeof ACCORDION_KEY | typeof ACCORDION_PANEL_KEY;
-      id: string;
-    }
-  /** The level above an accordion: the settings say how to choose one. */
-  | { type: typeof PAGE_SETTINGS_TARGET };
-
-export const PAGE_SETTINGS_TARGET = 'page';
+/**
+ * The accordion or panel whose settings show, or the page. It's the shared
+ * settings target (see `BlockSettingsPlugin`).
+ */
+export type AccordionSettingsTarget = SettingsTarget;
 
 /** A settings target that is an accordion or a panel. */
-export type AccordionNodeSettingsTarget = Extract<
-  AccordionSettingsTarget,
-  { id: string }
->;
+export type AccordionNodeSettingsTarget = NodeSettingsTarget;
+
+export {
+  getSettingsEntry,
+  getSettingsTarget,
+  PAGE_SETTINGS_TARGET,
+  selectionMovedSinceTarget,
+  setSettingsTarget,
+} from '../block-settings';
 
 type EditorWithOptions = SlateEditor & {
   getOption: (plugin: { key: string }, key: string) => any;
@@ -332,73 +331,11 @@ export const removePanel = (editor: SlateEditor, panelPath: Path): boolean => {
   return true;
 };
 
-/** The selection when each editor's settings target was chosen. */
-const targetSelections = new WeakMap<SlateEditor, TRange | null>();
-
-export const setSettingsTarget = (
-  editor: SlateEditor,
-  target: AccordionSettingsTarget | null,
-) => {
-  targetSelections.set(editor, editor.selection);
-  (editor as EditorWithOptions).setOption(plugin, 'settingsTarget', target);
-};
-
-/**
- * Whether the selection moved since the settings target was chosen. Moves
- * made with the choice, such as Esc putting the caret in a panel's title,
- * don't count.
- */
-export const selectionMovedSinceTarget = (editor: SlateEditor) => {
-  const chosenAt = targetSelections.get(editor);
-  const selection = editor.selection;
-  if (!chosenAt || !selection) return chosenAt !== selection;
-  return !RangeApi.equals(chosenAt, selection);
-};
-
-export const getSettingsTarget = (
-  editor: SlateEditor,
-): AccordionSettingsTarget | null => {
-  try {
-    return (
-      (editor as EditorWithOptions).getOption(plugin, 'settingsTarget') ?? null
-    );
-  } catch {
-    return null;
-  }
-};
-
 /** Finds an accordion or a panel by its ID. */
 export const findAccordionEntry = (
   editor: SlateEditor,
   target: AccordionSettingsTarget,
-) =>
-  target.type === PAGE_SETTINGS_TARGET
-    ? undefined
-    : editor.api.node<TElement>({
-        at: [],
-        match: (node) =>
-          ElementApi.isElement(node) &&
-          node.type === target.type &&
-          node.id === target.id,
-      });
-
-/**
- * The accordion or panel whose settings show: the chosen target, if it still
- * exists, or else the panel whose title holds the caret.
- */
-export const getSettingsEntry = (editor: SlateEditor) => {
-  const target = getSettingsTarget(editor);
-  if (target?.type === PAGE_SETTINGS_TARGET) return undefined;
-  if (target) {
-    const entry = findAccordionEntry(editor, target);
-    if (entry) return entry;
-  }
-  const title = editor.api.above({
-    match: { type: ACCORDION_PANEL_TITLE_KEY },
-  });
-  if (title) return editor.api.node<TElement>(PathApi.parent(title[1]));
-  return undefined;
-};
+) => findSettingsTargetEntry(editor, target);
 
 /**
  * The accordion whose settings show, or else the one that holds the

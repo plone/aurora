@@ -18,3 +18,14 @@ export {
 } from './inner-block-schema';
 export { getBlockConfig } from './block-config';
 export { isTextLikeBlock, normalizeSlotBlocks } from './normalize-inner-blocks';
+export {
+  duplicateInnerBlock,
+  getBlockLabel,
+  getInnerBlockEntry,
+  getInnerBlockLabel,
+  getSlotOfBlock,
+  isInnerBlockPath,
+  moveInnerBlock,
+  removeInnerBlock,
+  withNewIds,
+} from './inner-block-actions';
