@@ -2,8 +2,7 @@
  * This is the client side config entry point
  */
 import config from '@plone/registry';
-// eslint-disable-next-line import/no-unresolved
-import applyAddonConfiguration from '../../.plone/registry.loader';
+import applyAddonConfiguration from '@plone/registry/addons-loader';
 
 export default function install() {
   config.settings.defaultLanguage = 'en';

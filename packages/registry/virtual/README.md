@@ -17,4 +17,6 @@ A stylesheet has no default or `.d.ts`: it contains only a comment, and Vite typ
 | `@plone/registry/plate-editor`, `@plone/registry/plate-renderer`          | `plate-plugins.js`                        |
 | `@plone/registry/blocks-docs`                                             | `blocks-docs.js`                          |
 | `@plone/registry/app-info`                                                | `app-info.js`                             |
+| `@plone/registry/addons-loader`                                           | `addons-loader.js`                        |
+| `@plone/registry/addons-loader-server`                                    | `addons-loader-server.js`                 |
 | `@plone/registry/styles/cmsui.css`, `@plone/registry/styles/publicui.css` | `styles/cmsui.css`, `styles/publicui.css` |

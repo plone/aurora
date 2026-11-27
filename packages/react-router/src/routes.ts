@@ -8,6 +8,7 @@ import { route, index, layout, prefix } from '@react-router/dev/routes';
 import type { RouteConfig, RouteConfigEntry } from '@react-router/dev/routes';
 import type { ReactRouterRouteEntry } from '@plone/types';
 import { routeId } from '@plone/registry';
+import fs from 'node:fs';
 import path from 'node:path';
 
 type AddonInfo = { name: string; modulePath: string };
@@ -32,8 +33,26 @@ function resolveFile(file: string, addonsInfo: Array<AddonInfo>) {
 }
 
 /**
+ * Reads a file that the Plone registry generated in the `.plone` folder of the
+ * app, which is the working directory when React Router evaluates `routes.ts`.
+ */
+function readGenerated<T>(file: string): T {
+  const filePath = path.join(process.cwd(), '.plone', file);
+  if (!fs.existsSync(filePath)) {
+    throw new Error(
+      `${filePath} doesn't exist. Run \`init-loaders\` of \`@plone/registry\` before React Router.`,
+    );
+  }
+  return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+}
+
+/**
  * Turns the routes registered in `@plone/registry` into React Router route
  * config.
+ *
+ * Called without arguments, it reads the routes and the add-ons that the
+ * registry generated in the app's `.plone` folder, so the app's `routes.ts`
+ * doesn't need to import them.
  *
  * Each route gets its registry id (`routeId`) as its React Router id: its
  * explicit `options.id`, or else its file as registered, without its
@@ -41,8 +60,10 @@ function resolveFile(file: string, addonsInfo: Array<AddonInfo>) {
  * use the file on disk, an absolute path that differs on every machine.
  */
 export function getAddonRoutesConfig(
-  routesConfig: Array<ReactRouterRouteEntry>,
-  addonsInfo: Array<AddonInfo>,
+  routesConfig: Array<ReactRouterRouteEntry> = readGenerated(
+    'registry.routes.json',
+  ),
+  addonsInfo: Array<AddonInfo> = readGenerated('registry.addonsInfo.json'),
 ): Array<RouteConfigEntry> {
   const result = toRouteConfig(routesConfig, addonsInfo);
   warnAboutDuplicatePaths(result);

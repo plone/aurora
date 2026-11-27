@@ -1,0 +1,1 @@
+Added runtime fallbacks and typings for `@plone/registry/addons-loader`, and the new `@plone/registry/addons-loader-server` import, which the Vite plugin resolves to the generated server loader, so an app can apply the add-on configuration without importing its `.plone` folder. @sneridagh

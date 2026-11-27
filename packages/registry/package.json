@@ -87,7 +87,12 @@
       "import": "./vite-plugin.js"
     },
     "./addons-loader": {
-      "types": "./vite-plugin.d.ts"
+      "types": "./virtual/addons-loader.d.ts",
+      "default": "./virtual/addons-loader.js"
+    },
+    "./addons-loader-server": {
+      "types": "./virtual/addons-loader-server.d.ts",
+      "default": "./virtual/addons-loader-server.js"
     },
     "./app-info": {
       "types": "./virtual/app-info.d.ts",

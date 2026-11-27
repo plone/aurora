@@ -1,0 +1,1 @@
+Documented that the add-on loaders are in the app's `.plone` folder, and how the app imports them. @sneridagh

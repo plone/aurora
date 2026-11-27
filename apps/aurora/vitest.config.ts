@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { coverageConfigDefaults, defineConfig } from 'vitest/config';
 
 // https://vitejs.dev/config/
@@ -28,5 +29,17 @@ export default defineConfig({
   },
   resolve: {
     tsconfigPaths: true,
+    // The tests don't run the Plone registry Vite plugin: point its add-on
+    // loaders to the files that `init-loaders` generates before the tests.
+    alias: {
+      '@plone/registry/addons-loader-server': path.resolve(
+        import.meta.dirname,
+        '.plone/registry.loader.server.js',
+      ),
+      '@plone/registry/addons-loader': path.resolve(
+        import.meta.dirname,
+        '.plone/registry.loader.js',
+      ),
+    },
   },
 });

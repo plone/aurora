@@ -164,7 +164,7 @@ export const PloneRegistryVitePlugin = () => {
     registry.getAddons(),
     { tempInProject: true },
   );
-  createAddonsServerLoader(
+  const addonsServerLoaderPath = createAddonsServerLoader(
     registry.getAddonDependencies(),
     registry.getAddons(),
   );
@@ -236,7 +236,10 @@ export const PloneRegistryVitePlugin = () => {
                   },
                 ]
               : []),
-            // This is no longer needed in Plone Aurora
+            {
+              find: '@plone/registry/addons-loader-server',
+              replacement: addonsServerLoaderPath,
+            },
             {
               find: '@plone/registry/addons-loader',
               replacement: addonsLoaderPath,
