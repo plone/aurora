@@ -25,9 +25,24 @@
         "calloutDescription": "Inserisci un blocco evidenziato.",
         "tableOfContents": "Indice",
         "threeColumns": "3 colonne",
-        "title": "Titolo"
+        "title": "Titolo",
+        "accordion": "Fisarmonica"
       },
       "noResults": "Nessun risultato"
+    },
+    "accordion": {
+      "label": "Fisarmonica",
+      "expandAll": "Espandi tutto",
+      "collapseAll": "Comprimi tutto",
+      "panel": "Pannello",
+      "addPanelAtEnd": "Aggiungi un pannello alla fine",
+      "insertPanelBetween": "Inserisci un pannello tra il pannello {{before}} e il {{after}}",
+      "untitledPanel": "Pannello senza titolo",
+      "untitledPanelLower": "pannello senza titolo",
+      "oneBlock": "1 blocco",
+      "blocks": "{{count}} blocchi",
+      "expandPanel": "Espandi {{title}}",
+      "collapsePanel": "Comprimi {{title}}"
     }
   }
 }

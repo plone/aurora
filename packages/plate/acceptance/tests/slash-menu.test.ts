@@ -54,6 +54,14 @@ const cases: SlashCase[] = [
   { label: 'Callout', expect: (b) => expect(b.type).toBe('callout') },
   { label: 'Table of contents', expect: (b) => expect(b.type).toBe('toc') },
   {
+    label: 'Accordion',
+    expect: (b) => {
+      expect(b.type).toBe('accordion');
+      expect(b.children).toHaveLength(1);
+      expect(b.children?.[0]?.type).toBe('accordion_panel');
+    },
+  },
+  {
     label: '3 columns',
     expect: (b) => {
       expect(b.type).toBe('column_group');
