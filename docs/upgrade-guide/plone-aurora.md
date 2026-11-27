@@ -230,6 +230,120 @@ Import them from `@plone/react-router/context` instead, as described in {ref}`up
 Remove the `applyAddonViteConfiguration` import from your app's {file}`vite.config.ts`, and return the config directly.
 A `vite.extend` file can no longer add or remove plugins, because Vite resolves the plugins before it runs the plugins' `config` hooks: add plugins in the app's {file}`vite.config.ts`.
 
+(upgrade-guide-thin-app-projects)=
+
+### Projects install `@plone/aurora` instead of checking out the core
+
+```{versionchanged} 1.0.0-alpha.28
+These steps apply when you upgrade a project or an add-on repository that Cookieplone generated for Plone Aurora 1.0.0-alpha.27 or earlier.
+```
+
+The Cookieplone templates checked out the Plone Aurora repository in a {file}`core` folder with {term}`mrs-developer`, and ran its app with your {file}`registry.config.ts`.
+Now the frontend folder is a React Router app that installs `@plone/aurora` from npm, as described in {ref}`upgrade-guide-aurora-framework-package`.
+It's still the pnpm workspace root, and your add-ons stay in {file}`packages`, registered in {file}`registry.config.ts`.
+{doc}`../conceptual-guides/cookieplone-frontend-add-on` describes the new structure.
+
+The quickest way to upgrade is to generate a new add-on or project with Cookieplone, with the same names, and copy your add-ons into it.
+To upgrade by hand, make the following changes in your frontend folder.
+
+1.  Remove the core checkout and the files that set it up.
+
+    - Remove the `core` entry from {file}`mrs.developer.json`.
+      If it was the only entry, remove the file, and `mrs-developer` from the `devDependencies`.
+    - Remove {file}`.pnpmfile.cjs`, which loaded the pnpm catalog from {file}`core/catalog.json`.
+    - Remove the {file}`core` folder.
+    - In the {file}`Makefile`, remove the `missdev` call for the core, the `build-deps` target, and the `core/packages/*/dist` targets.
+      `make install` only runs `pnpm install`.
+
+2.  Add the app files that `@plone/aurora` needs: the {file}`app` folder with {file}`root.tsx`, {file}`routes.ts`, {file}`entry.client.tsx` and {file}`entry.server.tsx`, {file}`react-router.config.ts`, {file}`vite.config.ts`, {file}`server.js` and {file}`tsconfig.json`.
+    {ref}`upgrade-guide-aurora-framework-package` shows their contents.
+    Copy a {file}`public` folder with the favicon, and add {file}`.react-router`, {file}`.plone` and {file}`/public/locales/` to {file}`.gitignore`.
+
+3.  In {file}`pnpm-workspace.yaml`, remove the {file}`core` entries from `packages` and the `publicHoistPattern` list, and add a `catalog` with the versions your app and add-ons share.
+    Keep the `overrides` of React, React DOM and Jotai.
+
+    ```yaml
+    packages:
+      - 'packages/*'
+      - 'packages/**/packages/*'
+
+    catalog:
+      react: ^19.2.7
+      react-dom: ^19.2.7
+      react-router: 8.5.0
+      '@react-router/dev': 8.5.0
+      '@plone/registry': ^4.0.0-alpha.9
+      '@plone/types': ^3.0.0-alpha.11
+      typescript: ^5.9.2
+      vite: ^8.0.8
+      vitest: ^4.1.0
+
+    overrides:
+      react: ^19.2.7
+      react-dom: ^19.2.7
+      jotai: ^2.12.5
+    ```
+
+    Keep `react-router` and `@react-router/dev` at the version that `@plone/aurora` uses.
+
+4.  In the root {file}`package.json`, make the app private, with `"type": "module"`, and change the scripts and the dependencies.
+
+    ```diff
+    -    "dev": "REGISTRYCONFIG=$(pwd)/registry.config.ts pnpm --filter @plone/aurora dev",
+    -    "start": "REGISTRYCONFIG=$(pwd)/registry.config.ts pnpm --filter @plone/aurora dev",
+    -    "start:prod": "pnpm --filter @plone/aurora start:prod",
+    -    "build": "REGISTRYCONFIG=$(pwd)/registry.config.ts pnpm --filter @plone/aurora build",
+    +    "dev": "react-router dev",
+    +    "start": "react-router dev",
+    +    "start:prod": "node server.js ./build/server/index.js",
+    +    "build": "react-router build",
+    +    "typecheck": "react-router typegen && tsc",
+    -    "lint": "REGISTRYCONFIG=$(pwd)/registry.config.ts eslint --max-warnings=0 'packages/**/*.{js,jsx,ts,tsx}'",
+    +    "lint": "eslint --max-warnings=0 'packages/**/*.{js,jsx,ts,tsx}'",
+    ```
+
+    ```diff
+       "dependencies": {
+    -    "@plone/registry": "workspace:*",
+    -    "@plone/aurora": "workspace:*",
+    +    "@plone/aurora": "^1.0.0-alpha.28",
+    +    "react": "catalog:",
+    +    "react-dom": "catalog:",
+    +    "react-router": "catalog:",
+         "my-add-on": "workspace:*"
+       },
+    ```
+
+    Add the build and lint tools to the `devDependencies`, from the catalog: `@react-router/dev`, `vite`, `typescript`, the `@types` packages, ESLint, Prettier, Stylelint and their plugins, and Playwright.
+    Remove the `build:deps` script.
+
+5.  In your add-ons' {file}`package.json`, replace `workspace:*` for the `@plone/*` packages with versions, such as `catalog:`.
+    Make `@plone/registry` a peer dependency, because the app has a single registry.
+    If an add-on's {file}`.release-it.json` loads {file}`../../core/packages/scripts/prepublish.js`, load `@plone/scripts/prepublish.js` instead, and add `@plone/scripts` to its `devDependencies`.
+
+6.  Replace {file}`eslint.config.mjs`, which imported {file}`./core/eslint.config.mjs`, with a configuration of its own.
+    The one that Cookieplone generates uses `typescript-eslint`, `eslint-plugin-react`, `eslint-plugin-react-hooks`, `eslint-plugin-jsx-a11y` and `eslint-config-prettier`.
+
+7.  Give each add-on its own {file}`vitest.config.ts`.
+    Otherwise Vitest loads the app's {file}`vite.config.ts`, with the React Router plugin, and the tests fail to start.
+
+    ```ts
+    import { defineConfig } from 'vitest/config';
+
+    export default defineConfig({
+      test: {},
+    });
+    ```
+
+8.  Replace the {file}`Dockerfile`.
+    It no longer needs the `plone/aurora-builder` and `plone/aurora-prod-config` images, or the `AURORA_VERSION` build argument: it builds the app in a `node` image, and runs `node server.js ./build/server/index.js`.
+    {doc}`../how-to-guides/deploy-an-app` describes it.
+    In a project, take `AURORA_VERSION` from the `@plone/aurora` dependency in {file}`frontend/package.json`, wherever the {file}`Makefile` or the CI configuration used it.
+
+Then run `pnpm install`, `make lint`, `make typecheck` and `make test`, and start the app with `make start`.
+
+To develop against an unreleased version of Plone Aurora, install its packages from a checkout or from packed tarballs with pnpm `overrides`.
+
 ### Tailwind sources come from the add-ons' dependencies
 
 ```{versionchanged} 1.0.0-alpha.28
