@@ -187,8 +187,7 @@ export {
 :caption: app/routes.ts
 
 import type { RouteConfig } from '@react-router/dev/routes';
-import { auroraRoutes } from '@plone/aurora/routes';
-import { getAddonRoutesConfig } from '@plone/react-router/routes';
+import { auroraRoutes, getAddonRoutesConfig } from '@plone/aurora/routes';
 
 export default [
   ...auroraRoutes(),
@@ -198,12 +197,56 @@ export default [
 
 The production server is the `plone-aurora-serve` command of `@plone/aurora`, or `import '@plone/aurora/server'` in the app's {file}`server.js`, so `node server.js build/server/index.js` keeps working.
 
+An app depends on `@plone/aurora` only, besides React, React Router and its build tools.
+The framework depends on the official add-ons and on the libraries that the runtime uses, so they always come in versions that work together.
+Remove them from the app's {file}`package.json`, and keep your own add-ons and the third-party ones.
+
+```json
+{
+  "dependencies": {
+    "@plone/aurora": "^1.0.0-alpha.28",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router": "8.5.0"
+  },
+  "devDependencies": {
+    "@react-router/dev": "8.5.0",
+    "@types/node": "^26",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.9.2",
+    "vite": "^8.0.8"
+  }
+}
+```
+
+The {file}`registry.config.ts` still lists the official add-ons by name: when the app doesn't depend on an add-on, `@plone/registry` resolves it through the app's dependencies.
+The `compilerOptions.types` of the app's {file}`tsconfig.json` only need `vite/client`.
+
 Add-ons that still import the request contexts from `@plone/aurora/app/middleware.server` keep working, because the framework exports that module.
 Import them from `@plone/react-router/context` instead, as described in {ref}`upgrade-guide-no-imports-from-the-app`.
 
 `@plone/registry` no longer generates {file}`.plone/vite.loader.js`: its Vite plugin applies the add-ons' `vite.extend` files itself.
 Remove the `applyAddonViteConfiguration` import from your app's {file}`vite.config.ts`, and return the config directly.
 A `vite.extend` file can no longer add or remove plugins, because Vite resolves the plugins before it runs the plugins' `config` hooks: add plugins in the app's {file}`vite.config.ts`.
+
+### Tailwind sources come from the add-ons' dependencies
+
+```{versionchanged} 1.0.0-alpha.28
+These steps apply when you upgrade from Plone Aurora 1.0.0-alpha.27 or earlier to 1.0.0-alpha.28 or later.
+```
+
+`@plone/registry` now adds a Tailwind `@source` entry for each dependency of an add-on that uses Tailwind, such as `@plone/quanta` and `@plone/icons`, by the path where the package manager installed it.
+`@plone/cmsui` and `@plone/theming` no longer add these entries themselves, with paths into {file}`node_modules` that only worked in the Plone Aurora repository.
+
+A package uses Tailwind when it has `tailwindcss` in its `dependencies` or in its `peerDependencies`.
+In your add-ons:
+
+- Remove the `@source` entries with paths into {file}`node_modules` from your stylesheets, such as `@source '../node_modules/@plone/quanta/dist';`.
+- Move `tailwindcss` from `devDependencies` to `dependencies` if your add-on's components use Tailwind classes.
+  If your package also ships compiled CSS, declare it as an optional peer dependency instead.
+
+{ref}`tailwind-sources` explains the rules.
 
 (upgrade-guide-react-router-routes)=
 
@@ -223,6 +266,8 @@ If your app's {file}`app/routes.ts` imports `getAddonRoutesConfig`, change the i
 -import { getAddonRoutesConfig } from '@plone/react-router';
 +import { getAddonRoutesConfig } from '@plone/react-router/routes';
 ```
+
+An app that uses `@plone/aurora` imports it from `@plone/aurora/routes`, which re-exports it.
 
 `@react-router/dev` is now an optional peer dependency of `@plone/react-router`.
 A React Router app already has it among its `devDependencies`.

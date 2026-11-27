@@ -96,6 +96,7 @@ Use them for page-level styling, such as the header, the footer, or the layout, 
 
 `@plone/registry` has a helper utility `createAddonsStyleLoader` which generates the add-ons loader files.
 Each file contains the aggregated files from all the registered add-ons, keeping the order in which they were defined.
+It imports each add-on's stylesheet by the path where the registry found the add-on, so it works for an add-on that the app doesn't depend on itself, such as the official add-ons that come with `@plone/aurora`.
 
 These loaders are also `.css` files and are placed in the {file}`.plone` directory in the root of your application.
 They're called {file}`publicui.css` for the Public UI, {file}`cmsui.css` for the CMSUI, and {file}`content.css` for the content styles.
@@ -106,3 +107,60 @@ This file is generated and maintained by `@plone/registry`.
 You should neither modify it nor add your own styles in here.
 It will be overwritten in the next bundler run.
 ```
+
+(tailwind-sources)=
+
+### Tailwind sources
+
+Tailwind generates only the classes that it finds in the files it scans.
+It scans the app's folder, but not the packages in {file}`node_modules`.
+So the loaders add a `@source` entry for each package whose classes Tailwind must generate:
+
+- each add-on that ships the loader's stylesheet, {file}`styles/publicui.css` or {file}`styles/cmsui.css`, and uses Tailwind;
+- each dependency of such an add-on that uses Tailwind, such as `@plone/quanta`;
+- each dependency of those dependencies that uses Tailwind, and so on.
+
+A package uses Tailwind when it has `tailwindcss` in its `dependencies` or in its `peerDependencies`.
+Tailwind's own packages and plugins, whose names start with `tailwind` or `@tailwindcss/`, aren't scanned.
+
+The loaders write the real path of each package, as the registry finds it from the add-on's folder.
+So the classes are generated wherever the package manager installs the packages: in a pnpm workspace, or in the {file}`node_modules` of an app that installs them from npm.
+
+```{note}
+In a pnpm workspace, the Tailwind Vite plugin also scans every module that Vite compiles outside {file}`node_modules`, which includes the workspace packages.
+A class that a package doesn't get through the loaders may then work in your workspace, and be missing in an app that installs the package from npm.
+```
+
+The following sections describe what this means for each kind of package.
+
+#### Add-ons
+
+- Declare `tailwindcss` in your add-on's `dependencies`, not in `devDependencies`.
+- Ship {file}`styles/publicui.css` for the classes of your Public UI components, and {file}`styles/cmsui.css` for those of your CMSUI components.
+  The file can be empty: the loaders scan an add-on only for the stylesheets it ships.
+- Don't add `@source` entries with paths into {file}`node_modules` to your stylesheets.
+  These paths depend on how the packages were installed, and the loaders already add the dependencies that use Tailwind.
+
+#### Libraries that add-ons use
+
+A library that isn't an add-on, such as a component library, but ships components with Tailwind classes, declares `tailwindcss` in its `dependencies`.
+If it also ships compiled CSS, for apps that don't use Tailwind, it declares `tailwindcss` as an optional peer dependency instead:
+
+```json
+{
+  "peerDependencies": {
+    "tailwindcss": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "tailwindcss": { "optional": true }
+  }
+}
+```
+
+The loaders don't find a third-party library that ships Tailwind classes, but doesn't declare `tailwindcss`.
+To use one, ask its maintainers to declare it as an optional peer dependency.
+
+#### Projects
+
+The app of a project doesn't need any `@source` entry: Tailwind scans its folder, and the loaders add the add-ons and their dependencies.
+Use Tailwind classes in an add-on of the project, with its own stylesheet, rather than in a library that the app imports directly.

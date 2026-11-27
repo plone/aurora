@@ -89,6 +89,26 @@ jobs:
       - name: Check the packed packages with publint
         run: pnpm check:packages
 
+  # Builds and serves apps/aurora outside the workspace, with the packages as
+  # npm would install them, as a project does.
+  thin-app:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+    name: App outside the workspace
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Set up Node.js environment
+        uses: ./.github/actions/node_env_setup
+        with:
+          node-version: ${{ env.node-version }}
+
+      # The control panels publish their compiled CSS, which build-deps doesn't build.
+      - name: Build the control panels CSS
+        run: pnpm --filter @plone/controlpanels build:css
+
+      - name: Build and serve the app with the packed packages
+        run: pnpm check:thin-app
+
   vite-optimize-deps:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
     name: Vite optimizeDeps audit

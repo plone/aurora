@@ -1,0 +1,1 @@
+Declared `tailwindcss` as an optional peer dependency, so Plone Aurora generates the classes of the control panels in an app that installs them from npm. @sneridagh

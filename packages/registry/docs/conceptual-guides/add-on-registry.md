@@ -29,6 +29,10 @@ An add-on can be published in an npm registry, just as any other package.
 However, add-ons are meant not to be transpiled, but built along with your app code.
 They can be released as "source" packages or used directly in your app as local code.
 
+The registry finds an add-on by its package name, from the app's folder.
+If the app doesn't depend on the add-on itself, the registry looks for it in the folders of the app's dependencies.
+This way a framework package can bring add-ons: an app that depends on `@plone/aurora` registers the official add-ons by name, without depending on each of them.
+
 Add-ons can be chained, where each one can configure the app in some way.
 If needed, each add-on in the chain can override or extend the previous configuration that other add-ons set.
 Thus, the order in which you register add-ons matters.

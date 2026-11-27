@@ -17,6 +17,9 @@ const ALLOWED = [
   '@plone/helpers',
   '@plone/registry',
   'jotai',
+  // An optional peer dependency, that Volto doesn't install: it tells the
+  // registry that Aurora generates this package's classes with Tailwind.
+  'tailwindcss',
 ];
 
 const root = join(__dirname, '..');

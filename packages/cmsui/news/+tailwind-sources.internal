@@ -1,0 +1,1 @@
+Removed the `@source` entries with paths into `node_modules`, which only worked in the workspace: the registry adds them now. @sneridagh

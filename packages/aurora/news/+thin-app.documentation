@@ -1,0 +1,1 @@
+Documented the dependencies of an app in the upgrade guide, and fixed the linting guide, which ran the commands from `apps/aurora`. @sneridagh

@@ -45,7 +45,10 @@ The pickers `SizePicker`, `AlignPicker` and `WidthPicker` are exported from the 
 ## Tailwind requirement
 
 The Quanta components are styled with Tailwind utility classes, so the consuming app must build Tailwind CSS and scan this package for the classes it uses.
-Add the package's `dist` folder as a Tailwind source, and enable the `tailwindcss-react-aria-components` and `tailwindcss-animate` plugins, as `@plone/cmsui` does in `styles/cmsui.css`:
+
+In Plone Aurora, `@plone/registry` adds this package and `@plone/icons` to the Tailwind sources of every add-on that depends on them, so there's nothing to add.
+
+In another app, add the packages as Tailwind sources, and enable the `tailwindcss-react-aria-components` and `tailwindcss-animate` plugins:
 
 ```css
 @plugin 'tailwindcss-react-aria-components';
@@ -55,7 +58,7 @@ Add the package's `dist` folder as a Tailwind source, and enable the `tailwindcs
 @source '../node_modules/@plone/icons/dist';
 ```
 
-Adjust the `@source` paths so they're relative to your CSS file.
+Adjust the `@source` paths so they're relative to your CSS file, and point to where your package manager installs the packages.
 
 Consumers must also import `@plone/icons/icons.css` for the base `Icon` styles (see below), so that icon sizes from the `@source '@plone/icons'` scan and the base rules both apply.
 

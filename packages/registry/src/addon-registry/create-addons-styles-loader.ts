@@ -12,15 +12,97 @@ function getAddonInfo(addon: string, registry: AddonRegistry) {
   return registry.getAddons().find((a) => a.name === addon);
 }
 
+type PackageJson = {
+  name?: string;
+  dependencies?: Record<string, string>;
+  peerDependencies?: Record<string, string>;
+};
+
+function readPackageJson(file: string): PackageJson | undefined {
+  try {
+    return JSON.parse(fs.readFileSync(file, 'utf-8'));
+  } catch {
+    return undefined;
+  }
+}
+
+// A package uses Tailwind when it has `tailwindcss` as a dependency, or as a
+// peer dependency, as packages that also ship compiled CSS do. Tailwind's own
+// packages and plugins are not scanned.
+function usesTailwind(packageJson: PackageJson | undefined) {
+  if (!packageJson) return false;
+  const name = packageJson.name ?? '';
+  if (/^(tailwind|@tailwindcss\/)/.test(name)) return false;
+  return Boolean(
+    packageJson.dependencies?.['tailwindcss'] ||
+    packageJson.peerDependencies?.['tailwindcss'],
+  );
+}
+
 function hasTailwind(addon: string, registry: AddonRegistry) {
   const addonInfo = getAddonInfo(addon, registry);
-  if (addonInfo && addonInfo.packageJson) {
-    const packageJson = JSON.parse(
-      fs.readFileSync(addonInfo.packageJson, 'utf-8'),
-    );
-    return packageJson.dependencies && packageJson.dependencies['tailwindcss'];
+  return Boolean(
+    addonInfo?.packageJson &&
+    usesTailwind(readPackageJson(addonInfo.packageJson)),
+  );
+}
+
+// The real folder of the package `name`, as Node finds it from `fromDir`.
+function findPackageDir(name: string, fromDir: string) {
+  let dir = fromDir;
+  for (;;) {
+    const candidate = path.join(dir, 'node_modules', name);
+    if (fs.existsSync(path.join(candidate, 'package.json'))) {
+      return fs.realpathSync(candidate);
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) return undefined;
+    dir = parent;
   }
-  return false;
+}
+
+// The folders of the packages that an add-on using Tailwind depends on, and
+// that use Tailwind too, such as `@plone/quanta`: their classes must be
+// generated as well. It follows the dependencies of these packages in turn.
+// They are resolved from the add-on's real folder, so they are found wherever
+// the package manager put them, in the workspace or in `node_modules`.
+function tailwindDependencies(addonDir: string, seen: Set<string>) {
+  const found: Array<string> = [];
+  const visit = (dir: string, packageJson: PackageJson | undefined) => {
+    const names = Object.keys({
+      ...packageJson?.dependencies,
+      ...packageJson?.peerDependencies,
+    });
+    for (const name of names) {
+      const dependencyDir = findPackageDir(name, dir);
+      if (!dependencyDir || seen.has(dependencyDir)) continue;
+      const dependencyPackageJson = readPackageJson(
+        path.join(dependencyDir, 'package.json'),
+      );
+      if (!usesTailwind(dependencyPackageJson)) continue;
+      seen.add(dependencyDir);
+      found.push(dependencyDir);
+      visit(dependencyDir, dependencyPackageJson);
+    }
+  };
+  visit(addonDir, readPackageJson(path.join(addonDir, 'package.json')));
+  return found;
+}
+
+// The stylesheet of an add-on, by the path the registry resolved it to. An app
+// may not be able to resolve the add-on by name, when it comes with one of the
+// app's dependencies, and neither could the tools that read these files, such
+// as the Tailwind plugin of ESLint.
+function addonStyleSheet(
+  addon: string,
+  styleSheetPath: string,
+  registry: AddonRegistry,
+) {
+  const addonInfo = getAddonInfo(addon, registry);
+  const addonPath = addonInfo?.modulePath ?? addonInfo?.basePath;
+  return addonPath
+    ? path.join(addonPath, styleSheetPath)
+    : `${addon}/${styleSheetPath}`;
 }
 
 function header(styleSheetPath: string) {
@@ -39,16 +121,21 @@ function buildLoaderCode(registry: AddonRegistry, styleSheetPath: string) {
   let buf = header(styleSheetPath);
   buf += `@import './content.css' layer(${CONTENT_LAYER});\n`;
 
+  // Each folder is scanned once per loader.
+  const seen = new Set<string>();
   addonsStylesInfo.forEach((addon) => {
-    const customization = `${addon}/${styleSheetPath}`;
-    const line = `@import '${customization}';\n`;
-    buf += line;
+    buf += `@import '${addonStyleSheet(addon, styleSheetPath, registry)}';\n`;
 
-    // Creates an entry `@source 'addonPath';` for each addon if the
-    // add-on has tailwindcss as a dependency
+    // Creates an entry `@source 'addonPath';` for each add-on using Tailwind,
+    // and for each of its dependencies using Tailwind.
     const addonInfo = getAddonInfo(addon, registry);
     if (hasTailwind(addon, registry)) {
       buf += `@source '${addonInfo!.basePath}';\n`;
+      const addonDir = fs.realpathSync(path.dirname(addonInfo!.packageJson!));
+      seen.add(addonDir);
+      for (const dir of tailwindDependencies(addonDir, seen)) {
+        buf += `@source '${dir}';\n`;
+      }
     }
   });
 
@@ -62,7 +149,7 @@ function buildContentLoaderCode(registry: AddonRegistry) {
 
   let buf = header(CONTENT_STYLESHEET);
   addonsStylesInfo.forEach((addon) => {
-    buf += `@import '${addon}/${CONTENT_STYLESHEET}';\n`;
+    buf += `@import '${addonStyleSheet(addon, CONTENT_STYLESHEET, registry)}';\n`;
   });
 
   return buf;

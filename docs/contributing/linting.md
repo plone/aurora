@@ -56,13 +56,8 @@ Plone Aurora core performs linting using the following commands:
 `stylelint`
 :   For uniform style formatting.
 
-Although we can run the linting commands from the root of the repository, it is easier to run the commands only for Plone Aurora core within the Plone Aurora core folder:
-
-```shell
-cd apps/aurora
-```
-
-From here we will have access to the commands to check for errors and to fix them.
+Run the linting commands from the root of the repository.
+They check and fix the app and all the packages.
 
 ```{seealso}
 {ref}`developing-core-run-commands-for-pnpm-workspaces-label`
@@ -73,7 +68,7 @@ From here we will have access to the commands to check for errors and to fix the
 
 ### Eslint, Prettier, and Stylelint
 
-You can run the pnpm `eslint`, `prettier`, and `stylelint` commands from the Plone Aurora package folder:
+You can run the pnpm `eslint`, `prettier`, and `stylelint` commands from the root of the repository:
 
 ```shell
 pnpm lint

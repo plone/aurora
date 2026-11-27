@@ -3,6 +3,8 @@ import { fileURLToPath } from 'node:url';
 import { route } from '@react-router/dev/routes';
 import type { RouteConfigEntry } from '@react-router/dev/routes';
 
+export { getAddonRoutesConfig } from '@plone/react-router/routes';
+
 // This module is built to `dist/routes.js`: the route modules are in `src/app`.
 const appDir = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -16,8 +18,7 @@ const appDir = path.resolve(
  *
  * ```ts
  * import type { RouteConfig } from '@react-router/dev/routes';
- * import { auroraRoutes } from '@plone/aurora/routes';
- * import { getAddonRoutesConfig } from '@plone/react-router/routes';
+ * import { auroraRoutes, getAddonRoutesConfig } from '@plone/aurora/routes';
  *
  * export default [
  *   ...auroraRoutes(),
@@ -27,6 +28,9 @@ const appDir = path.resolve(
  *
  * - `ok`: a health check, which answers without the backend.
  * - `@reset-fetcher`: the route that resets a fetcher's data.
+ *
+ * `getAddonRoutesConfig()` is re-exported from `@plone/react-router/routes`,
+ * so that the app's `routes.ts` only imports `@plone/aurora`.
  */
 export function auroraRoutes(): RouteConfigEntry[] {
   return [

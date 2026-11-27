@@ -16,27 +16,39 @@ afterEach(() => {
 
 /**
  * A minimal stand-in for `AddonRegistry`: `styles` maps each stylesheet path
- * to the add-ons that ship it, in add-on order.
+ * to the add-ons that ship it, in add-on order. `packages` gives the
+ * `package.json` of packages in `node_modules`, add-ons or not.
  */
-function fakeRegistry({ styles = {}, tailwind = [] } = {}) {
-  const projectRootPath = fs.mkdtempSync(
-    path.join(os.tmpdir(), 'registry-styles-'),
+function fakeRegistry({ styles = {}, tailwind = [], packages = {} } = {}) {
+  // The real path: the registry writes the dependencies by their real path.
+  const projectRootPath = fs.realpathSync(
+    fs.mkdtempSync(path.join(os.tmpdir(), 'registry-styles-')),
   );
   tmpDirs.push(projectRootPath);
   fs.mkdirSync(path.join(projectRootPath, '.plone'));
 
+  const writePackage = (name, packageJson) => {
+    const dir = path.join(projectRootPath, 'node_modules', name);
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(
+      path.join(dir, 'package.json'),
+      JSON.stringify({ name, ...packageJson }),
+    );
+    return path.join(dir, 'package.json');
+  };
+  for (const [name, packageJson] of Object.entries(packages)) {
+    writePackage(name, packageJson);
+  }
+
   const addons = [...new Set(Object.values(styles).flat())].map((name) => {
     const basePath = path.join(projectRootPath, 'node_modules', name);
     let packageJson;
-    if (tailwind.includes(name)) {
-      fs.mkdirSync(basePath, { recursive: true });
+    if (packages[name]) {
       packageJson = path.join(basePath, 'package.json');
-      fs.writeFileSync(
-        packageJson,
-        JSON.stringify({ name, dependencies: { tailwindcss: '*' } }),
-      );
+    } else if (tailwind.includes(name)) {
+      packageJson = writePackage(name, { dependencies: { tailwindcss: '*' } });
     }
-    return { name, basePath, packageJson };
+    return { name, basePath, modulePath: basePath, packageJson };
   });
 
   return {
@@ -55,18 +67,20 @@ describe('buildContentLoaderCode', () => {
   });
 
   test('imports every add-on content stylesheet, in add-on order', () => {
-    const code = buildContentLoaderCode(
-      fakeRegistry({
-        styles: {
-          'styles/content.css': ['@plone/plate', '@plone/blocks', 'my-theme'],
-        },
-      }),
-    );
+    const registry = fakeRegistry({
+      styles: {
+        'styles/content.css': ['@plone/plate', '@plone/blocks', 'my-theme'],
+      },
+    });
+    const code = buildContentLoaderCode(registry);
 
+    // By path: the app may not resolve the add-ons by name.
+    const at = (name) =>
+      `@import '${path.join(registry.projectRootPath, 'node_modules', name, 'styles/content.css')}';`;
     expect(code.match(/^@import .*$/gm)).toEqual([
-      "@import '@plone/plate/styles/content.css';",
-      "@import '@plone/blocks/styles/content.css';",
-      "@import 'my-theme/styles/content.css';",
+      at('@plone/plate'),
+      at('@plone/blocks'),
+      at('my-theme'),
     ]);
   });
 
@@ -86,14 +100,14 @@ describe('buildLoaderCode', () => {
   test.each(['styles/publicui.css', 'styles/cmsui.css'])(
     '%s imports the content styles first, in the plone-content layer',
     (styleSheetPath) => {
-      const code = buildLoaderCode(
-        fakeRegistry({ styles: { [styleSheetPath]: ['@plone/layout'] } }),
-        styleSheetPath,
-      );
+      const registry = fakeRegistry({
+        styles: { [styleSheetPath]: ['@plone/layout'] },
+      });
+      const code = buildLoaderCode(registry, styleSheetPath);
 
       expect(code.match(/^@import .*$/gm)).toEqual([
         "@import './content.css' layer(plone-content);",
-        `@import '@plone/layout/${styleSheetPath}';`,
+        `@import '${path.join(registry.getAddons()[0].basePath, styleSheetPath)}';`,
       ]);
     },
   );
@@ -107,6 +121,47 @@ describe('buildLoaderCode', () => {
     const code = buildLoaderCode(registry, 'styles/publicui.css');
 
     expect(code).toContain(`@source '${registry.getAddons()[0].basePath}';`);
+  });
+
+  test('adds a Tailwind source for the dependencies using Tailwind too', () => {
+    const tailwind = { tailwindcss: '*' };
+    const registry = fakeRegistry({
+      styles: { 'styles/cmsui.css': ['my-addon', 'other-addon'] },
+      packages: {
+        'my-addon': {
+          dependencies: {
+            ...tailwind,
+            'ui-lib': '*',
+            'plain-lib': '*',
+            'tailwind-variants': '*',
+          },
+        },
+        // With Tailwind as a peer dependency, as packages that also ship
+        // compiled CSS have it.
+        'ui-lib': {
+          peerDependencies: tailwind,
+          dependencies: { 'nested-lib': '*' },
+        },
+        'nested-lib': { dependencies: tailwind },
+        'plain-lib': { dependencies: { 'hidden-lib': '*' } },
+        'hidden-lib': { dependencies: tailwind },
+        // Tailwind's own packages and plugins aren't scanned.
+        'tailwind-variants': { peerDependencies: tailwind },
+        'other-addon': { dependencies: { ...tailwind, 'ui-lib': '*' } },
+      },
+    });
+
+    const code = buildLoaderCode(registry, 'styles/cmsui.css');
+
+    const dir = (name) =>
+      path.join(registry.projectRootPath, 'node_modules', name);
+    expect(code.match(/^@source .*$/gm)).toEqual([
+      `@source '${dir('my-addon')}';`,
+      `@source '${dir('ui-lib')}';`,
+      `@source '${dir('nested-lib')}';`,
+      // Each folder once.
+      `@source '${dir('other-addon')}';`,
+    ]);
   });
 });
 
@@ -127,7 +182,7 @@ describe('createAddonsStyleLoader', () => {
         encoding: 'utf-8',
       });
     expect(read('content.css')).toContain(
-      "@import '@plone/plate/styles/content.css';",
+      `@import '${path.join(registry.projectRootPath, 'node_modules', '@plone/plate', 'styles/content.css')}';`,
     );
     expect(read('publicui.css')).toContain(
       "@import './content.css' layer(plone-content);",

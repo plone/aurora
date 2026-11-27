@@ -1,4 +1,7 @@
+import fs from 'node:fs';
 import { createRequire } from 'node:module';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Plugin, PluginOption } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import babel from 'vite-plugin-babel';
@@ -10,6 +13,11 @@ import { PloneRegistryVitePlugin } from '@plone/registry/vite-plugin';
 // Babel resolves presets and plugins given by name from the app's folder,
 // where a project may not have them: resolve them from this package.
 const require = createRequire(import.meta.url);
+
+// This module is built to `dist/vite.js`.
+const packageDir = fs.realpathSync(
+  path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'),
+);
 
 /**
  * The Vite configuration that every Plone Aurora app needs, besides the
@@ -68,12 +76,65 @@ function ploneAuroraConfig(): Plugin {
         ],
       },
       ssr: {
+        // Bundle every Plone package into the server build, as Vite does in
+        // the monorepo, where they're linked. Otherwise Vite leaves out the
+        // ones it can resolve from the app, and Node.js loads them with their
+        // own copy of `@plone/registry`, which has no configuration.
+        noExternal: [/^@plone\//],
         optimizeDeps: {
           exclude: ['@plone/aurora'],
           include: ['i18next-fs-backend/cjs', 'isbot', 'remix-i18next'],
         },
       },
     }),
+  };
+}
+
+/** The name of the package an `optimizeDeps.include` entry starts with. */
+function packageName(entry: string) {
+  const parts = entry.split('>')[0].trim().split('/');
+  return parts[0].startsWith('@') ? parts.slice(0, 2).join('/') : parts[0];
+}
+
+/** Whether Node.js resolution from `dir` finds the package `name`. */
+function canResolve(name: string, dir: string) {
+  for (let current = dir; ; current = path.dirname(current)) {
+    if (fs.existsSync(path.join(current, 'node_modules', name))) return true;
+    if (path.dirname(current) === current) return false;
+  }
+}
+
+/**
+ * Vite resolves `optimizeDeps.include` entries from the app's folder. The app
+ * depends on `@plone/aurora` only, so the entries for the packages that come
+ * with it, in this configuration and in the add-ons' `vite.extend` files,
+ * need the `@plone/aurora > ` prefix. It runs last, on the whole
+ * configuration.
+ */
+function ploneAuroraOptimizeDeps(): Plugin {
+  return {
+    name: 'plone-aurora:optimize-deps',
+    enforce: 'post',
+    config(config) {
+      const root = path.resolve(config.root || process.cwd());
+      const prefix = (entries?: string[]) =>
+        entries?.map((entry) => {
+          const name = packageName(entry);
+          return name !== '@plone/aurora' &&
+            !canResolve(name, root) &&
+            canResolve(name, packageDir)
+            ? `@plone/aurora > ${entry}`
+            : entry;
+        });
+      if (config.optimizeDeps?.include) {
+        config.optimizeDeps.include = prefix(config.optimizeDeps.include);
+      }
+      if (config.ssr?.optimizeDeps?.include) {
+        config.ssr.optimizeDeps.include = prefix(
+          config.ssr.optimizeDeps.include,
+        );
+      }
+    },
   };
 }
 
@@ -113,5 +174,6 @@ export function PloneAuroraVitePlugin(): PluginOption[] {
     }),
     devtoolsJson(),
     ploneAuroraConfig(),
+    ploneAuroraOptimizeDeps(),
   ];
 }

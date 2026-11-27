@@ -1,0 +1,1 @@
+Made the generated stylesheets add a Tailwind `@source` for the dependencies of an add-on that use Tailwind too, such as `@plone/quanta`, by their real path, so their classes are generated in an app that installs the packages from npm. A package with `tailwindcss` as a peer dependency now counts as using Tailwind. @sneridagh

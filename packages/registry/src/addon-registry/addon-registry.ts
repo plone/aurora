@@ -40,6 +40,8 @@ type PackageJsonObject = {
   coreAddons: CoreAddons;
   theme: string;
   customizationPaths: string[];
+  dependencies?: Record<string, string>;
+  devDependencies?: Record<string, string>;
 };
 
 type flatAliases = Record<string, string>;
@@ -411,6 +413,48 @@ class AddonRegistry {
     this.addonNames.forEach(this.initPublishedPackage.bind(this));
   }
 
+  /**
+   * Resolves an add-on from the app or, if the app doesn't depend on it, from
+   * one of the app's dependencies. A framework package, such as
+   * `@plone/aurora`, brings its add-ons this way: the app depends on the
+   * framework only, and registers the framework's add-ons by name.
+   */
+  resolveAddon(name: string): string {
+    const require = createRequire(this.projectRootPath);
+    try {
+      return require.resolve(name, { paths: [this.projectRootPath] });
+    } catch (error) {
+      for (const dependencyPath of this.getDependencyPaths()) {
+        try {
+          return require.resolve(name, { paths: [dependencyPath] });
+        } catch {
+          // Not a dependency of this one, try the next one.
+        }
+      }
+      throw error;
+    }
+  }
+
+  private dependencyPaths: Array<string> | undefined;
+
+  /**
+   * The folders of the app's dependencies, with symlinks resolved, so that
+   * resolving from them finds their own dependencies, as pnpm installs them.
+   */
+  getDependencyPaths(): Array<string> {
+    if (!this.dependencyPaths) {
+      const names = Object.keys({
+        ...(this.packageJson.dependencies || {}),
+        ...(this.packageJson.devDependencies || {}),
+      });
+      this.dependencyPaths = names
+        .map((name) => path.join(this.projectRootPath, 'node_modules', name))
+        .filter((dependencyPath) => fs.existsSync(dependencyPath))
+        .map((dependencyPath) => fs.realpathSync(dependencyPath));
+    }
+    return this.dependencyPaths;
+  }
+
   initPublishedPackage(name: string) {
     // I am in the paths list, if so, register it as a development package
     // instead than a published one
@@ -421,7 +465,7 @@ class AddonRegistry {
 
     if (!Object.keys(this.packages).includes(name)) {
       const require = createRequire(this.projectRootPath);
-      const resolved = require.resolve(name, { paths: [this.projectRootPath] });
+      const resolved = this.resolveAddon(name);
       const basePath = getPackageBasePath(resolved);
       const packageJson = path.join(basePath, 'package.json');
       const pkg = JSON.parse(fs.readFileSync(packageJson, 'utf-8'));
