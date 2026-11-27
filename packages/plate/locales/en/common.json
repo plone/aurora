@@ -42,7 +42,21 @@
       "oneBlock": "1 block",
       "blocks": "{{count}} blocks",
       "expandPanel": "Expand {{title}}",
-      "collapsePanel": "Collapse {{title}}"
-    }
+      "collapsePanel": "Collapse {{title}}",
+      "movePanelUp": "Move panel up",
+      "movePanelDown": "Move panel down",
+      "duplicatePanel": "Duplicate panel",
+      "deletePanel": "Delete panel",
+      "copyTitle": "{{title}} (copy)",
+      "panelDeleted": "Panel “{{title}}” deleted",
+      "announce": {
+        "panelAdded": "Panel added at position {{position}} of {{total}}",
+        "panelMoved": "Panel moved to position {{position}} of {{total}}",
+        "panelDuplicated": "Panel duplicated",
+        "panelDeleted": "Panel deleted"
+      }
+    },
+    "undo": "Undo",
+    "undone": "Undone"
   }
 }

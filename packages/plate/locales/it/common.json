@@ -42,7 +42,21 @@
       "oneBlock": "1 blocco",
       "blocks": "{{count}} blocchi",
       "expandPanel": "Espandi {{title}}",
-      "collapsePanel": "Comprimi {{title}}"
-    }
+      "collapsePanel": "Comprimi {{title}}",
+      "movePanelUp": "Sposta il pannello in alto",
+      "movePanelDown": "Sposta il pannello in basso",
+      "duplicatePanel": "Duplica il pannello",
+      "deletePanel": "Elimina il pannello",
+      "copyTitle": "{{title}} (copia)",
+      "panelDeleted": "Pannello “{{title}}” eliminato",
+      "announce": {
+        "panelAdded": "Pannello aggiunto alla posizione {{position}} di {{total}}",
+        "panelMoved": "Pannello spostato alla posizione {{position}} di {{total}}",
+        "panelDuplicated": "Pannello duplicato",
+        "panelDeleted": "Pannello eliminato"
+      }
+    },
+    "undo": "Annulla",
+    "undone": "Annullato"
   }
 }
