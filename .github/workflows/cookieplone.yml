@@ -3,7 +3,9 @@ on: [push, pull_request]
 
 env:
   python-version: '3.13'
-  CYPRESS_RETRIES: 2
+  # The templates that generate the thin app, until
+  # plone/cookieplone-templates#513 is merged. Then remove this line.
+  COOKIEPLONE_REPOSITORY_TAG: sneridagh/aurora-thin-app
 
 # Cancel the runs of a branch or pull request that a newer push supersedes,
 # except on main, where every commit runs to completion.
@@ -35,19 +37,19 @@ jobs:
           python-version: ${{ env.python-version }}
           enable-cache: false
 
+      # The control panels publish their compiled CSS, which build-deps doesn't build.
+      - name: Build the control panels CSS
+        run: pnpm --filter @plone/controlpanels build:css
+
       - name: Generate Cookieplone-based frontend addon
         run: |
           uvx --prerelease allow cookieplone aurora_addon --no-input
 
-      - name: Install generated package
-        working-directory: plone-aurora-add-on
-        run: |
-          pnpm dlx mrs-developer missdev --no-config --fetch-https
-          if [[ "${GITHUB_REF#refs/heads/}" != "main" ]]; then
-          (cd core && git fetch --depth 1 origin ${GITHUB_REF#refs/heads/}:${GITHUB_REF#refs/heads/} && git checkout ${GITHUB_REF#refs/heads/})
-          fi
-          pnpm i
-          make build-deps
+      # The generated add-on is a thin app that installs `@plone/aurora` from
+      # npm. Install the packages of this branch, packed as npm would install
+      # them, then type check, build and serve it.
+      - name: Build and serve the generated add-on with the packed packages
+        run: node packages/scripts/check-thin-app.js --project plone-aurora-add-on
 
       - name: Run linters in the generated package
         working-directory: plone-aurora-add-on
@@ -57,15 +59,6 @@ jobs:
         working-directory: plone-aurora-add-on
         run: make format
 
-      # Upload Cypress screenshots
-      - uses: actions/upload-artifact@v7
-        if: failure()
-        with:
-          name: cypress-screenshots
-          path: apps/aurora/cypress/screenshots
-      # Upload Cypress videos
-      - uses: actions/upload-artifact@v7
-        if: failure()
-        with:
-          name: cypress-videos
-          path: apps/aurora/cypress/videos
+      - name: Run unit tests in the generated package
+        working-directory: plone-aurora-add-on
+        run: make ci-test

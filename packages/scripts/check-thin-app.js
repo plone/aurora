@@ -9,13 +9,17 @@
 // Usage, from the repository root, after `make build-deps` and
 // `pnpm --filter @plone/controlpanels build:css`:
 //
-//   node packages/scripts/check-thin-app.js [--with-test-addon] [<work-dir>]
+//   node packages/scripts/check-thin-app.js [--with-test-addon] [--project <dir>] [<work-dir>]
 //
 // `--with-test-addon` also packs the test add-on and builds with it, so the
 // acceptance tests can run against the result. The work directory stays in
 // place, to look at when something fails, or to start the server from:
 //
 //   cd <work-dir>/app && PLONE_API_PATH=http://localhost:55001/plone node server.js ./build/server/index.js
+//
+// `--project <dir>` checks an existing project instead of a copy of the app,
+// such as one that Cookieplone generated: it installs the packed packages in
+// it, and builds and serves it the same way.
 import { execFileSync, spawn } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -25,13 +29,19 @@ const repoRoot = process.cwd();
 const appDir = 'apps/aurora';
 const args = process.argv.slice(2);
 const withTestAddon = args.includes('--with-test-addon');
-const [workDirArg] = args.filter((arg) => !arg.startsWith('--'));
+const projectIndex = args.indexOf('--project');
+const projectArg = projectIndex === -1 ? undefined : args[projectIndex + 1];
+const [workDirArg] = args.filter(
+  (arg, index) => !arg.startsWith('--') && index !== projectIndex + 1,
+);
 const workDir = path.resolve(
   workDirArg ||
     fs.mkdtempSync(path.join(os.tmpdir(), 'plone-aurora-thin-app-')),
 );
 const tarballsDir = path.join(workDir, 'tarballs');
-const projectDir = path.join(workDir, 'app');
+const projectDir = projectArg
+  ? path.resolve(projectArg)
+  : path.join(workDir, 'app');
 const port = process.env.PORT || '3100';
 
 // Packages of this repository that are never published, or not part of
@@ -71,18 +81,21 @@ for (const dir of fs.readdirSync(path.join(repoRoot, 'packages')).sort()) {
   tarballs[name] = `file:${path.join(tarballsDir, tarball)}`;
 }
 
-// 2. Copy the app, as git tracks it, without its acceptance tests.
-const files = execFileSync('git', ['ls-files', appDir], {
-  cwd: repoRoot,
-  encoding: 'utf-8',
-})
-  .split('\n')
-  .filter(Boolean)
-  .filter((file) => !file.startsWith(`${appDir}/acceptance/`));
-for (const file of files) {
-  const target = path.join(projectDir, path.relative(appDir, file));
-  fs.mkdirSync(path.dirname(target), { recursive: true });
-  fs.copyFileSync(path.join(repoRoot, file), target);
+// 2. Copy the app, as git tracks it, without its acceptance tests. A project
+// given with `--project` is already in place.
+if (!projectArg) {
+  const files = execFileSync('git', ['ls-files', appDir], {
+    cwd: repoRoot,
+    encoding: 'utf-8',
+  })
+    .split('\n')
+    .filter(Boolean)
+    .filter((file) => !file.startsWith(`${appDir}/acceptance/`));
+  for (const file of files) {
+    const target = path.join(projectDir, path.relative(appDir, file));
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.copyFileSync(path.join(repoRoot, file), target);
+  }
 }
 
 // 3. Point the app's dependencies at the tarballs, and resolve the catalog.
@@ -90,7 +103,13 @@ const catalog = readJson(path.join(repoRoot, 'catalog.json'));
 const packageJson = readJson(path.join(projectDir, 'package.json'));
 for (const field of ['dependencies', 'devDependencies']) {
   for (const [name, range] of Object.entries(packageJson[field] || {})) {
-    if (range.startsWith('workspace:')) {
+    if (projectArg && tarballs[name]) {
+      // A project depends on the packages by version.
+      packageJson[field][name] = tarballs[name];
+    } else if (projectArg) {
+      // A project resolves `catalog:` with its own catalog.
+      continue;
+    } else if (range.startsWith('workspace:')) {
       if (!tarballs[name]) {
         // A private package, such as the test add-on: not for projects.
         delete packageJson[field][name];
@@ -107,18 +126,29 @@ writeJson(path.join(projectDir, 'package.json'), packageJson);
 // The packages depend on each other by version, and these versions may not be
 // on npm yet: resolve all of them to the tarballs. `pnpm-workspace.yaml` also
 // keeps pnpm from looking for a workspace further up.
-const workspace = [
-  'overrides:',
-  ...Object.entries(tarballs).map(
-    ([name, tarball]) => `  '${name}': '${tarball}'`,
-  ),
-  'allowBuilds:',
-  "  '@swc/core': true",
-  "  '@tailwindcss/oxide': true",
-  '  esbuild: true',
-  '',
-].join('\n');
-fs.writeFileSync(path.join(projectDir, 'pnpm-workspace.yaml'), workspace);
+const overrides = Object.entries(tarballs).map(
+  ([name, tarball]) => `  '${name}': '${tarball}'`,
+);
+const workspacePath = path.join(projectDir, 'pnpm-workspace.yaml');
+if (projectArg && fs.existsSync(workspacePath)) {
+  // Add the tarballs to the project's own overrides.
+  const lines = fs.readFileSync(workspacePath, 'utf-8').split('\n');
+  const at = lines.indexOf('overrides:');
+  if (at === -1) lines.push('overrides:', ...overrides, '');
+  else lines.splice(at + 1, 0, ...overrides);
+  fs.writeFileSync(workspacePath, lines.join('\n'));
+} else {
+  const workspace = [
+    'overrides:',
+    ...overrides,
+    'allowBuilds:',
+    "  '@swc/core': true",
+    "  '@tailwindcss/oxide': true",
+    '  esbuild: true',
+    '',
+  ].join('\n');
+  fs.writeFileSync(workspacePath, workspace);
+}
 
 // 4. Install, check the types, and build, as a project would. Build the app
 // in the workspace too, to compare their CSS.
