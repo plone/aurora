@@ -1961,9 +1961,15 @@ importers:
 
   packages/react-router:
     dependencies:
+      '@plone/client':
+        specifier: workspace:*
+        version: link:../client
       '@plone/registry':
         specifier: workspace:*
         version: link:../registry
+      '@plone/types':
+        specifier: workspace:*
+        version: link:../types
       react:
         specifier: ^19.2.7
         version: 19.3.1
@@ -1977,9 +1983,6 @@ importers:
       '@arethetypeswrong/cli':
         specifier: ^0.16.4
         version: 0.16.4
-      '@plone/types':
-        specifier: workspace:*
-        version: link:../types
       '@react-router/dev':
         specifier: 'catalog:'
         version: 8.5.0(@react-router/serve@8.5.0(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@5.9.2))(babel-plugin-macros@3.1.0)(react-router@8.5.0(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(supports-color@8.1.1)(typescript@5.9.2)(vite@8.0.8(@types/node@26.6.5)(esbuild@0.25.11)(jiti@2.6.1)(terser@5.30.3)(yaml@2.8.1))

@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import config from '@plone/registry';
 import { RouterContextProvider } from 'react-router';
 import { localeCookie } from '@plone/react-router';
+import { ploneLocaleContext } from '@plone/react-router/context';
 import { getInstance, getLocale, i18nextMiddleware } from './i18next.server';
 
 describe('i18nextMiddleware', () => {
@@ -43,6 +44,14 @@ describe('i18nextMiddleware', () => {
 
     expect(getLocale(context)).toBe('de');
     expect(getInstance(context).t('cmsui.save')).toBe('Speichern');
+  });
+
+  it('sets the locale in ploneLocaleContext for add-ons', async () => {
+    const context = await runMiddleware(
+      new Request('http://localhost:3000/?lng=de'),
+    );
+
+    expect(context.get(ploneLocaleContext)).toBe('de');
   });
 
   it('reads the language from the locale cookie', async () => {

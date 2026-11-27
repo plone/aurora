@@ -3,6 +3,7 @@ import { data, isRouteErrorResponse, useRouteLoaderData } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { i18nextMiddleware, getLocale } from './i18next.server';
 import type { Route } from './+types/root';
+import type { RootLoaderData } from '@plone/types';
 import config from '@plone/registry';
 import {
   ploneClearAuthCookieContext,
@@ -76,6 +77,8 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
       ),
     ]);
 
+    // Add-ons read the root route's data as `RootLoaderData`, so the loader
+    // must keep returning that shape.
     const loaderData = {
       content,
       site,
@@ -94,7 +97,7 @@ export async function loader({ params, request, context }: Route.LoaderArgs) {
           }),
           {},
         ),
-    };
+    } satisfies RootLoaderData;
 
     return data(loaderData, {
       headers: context.get(ploneClearAuthCookieContext)

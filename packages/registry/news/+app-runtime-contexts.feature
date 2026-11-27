@@ -1,0 +1,1 @@
+Added the `@plone/registry/styles/cmsui.css` and `@plone/registry/styles/publicui.css` imports, which resolve to the stylesheets generated in the app's `.plone` folder, so add-ons can link them without knowing the app. @sneridagh

@@ -5,6 +5,7 @@ import { initReactI18next } from 'react-i18next';
 import { createI18nextMiddleware } from 'remix-i18next';
 import { getI18nOptions } from './i18n'; // your i18n configuration file
 import { localeCookie } from '@plone/react-router';
+import { ploneLocaleContext } from '@plone/react-router/context';
 
 // The add-on locales are generated into `public/locales`, which the build copies
 // to `build/client/locales`. Resolve them relative to this module, not the
@@ -50,10 +51,16 @@ function getI18next() {
   return i18next;
 }
 
+// After detecting the locale, set it in `ploneLocaleContext`, so add-ons can
+// read it without knowing how the app does i18n.
 export const i18nextMiddleware: createI18nextMiddleware.ReturnType[0] = (
   args,
   next,
-) => getI18next()[0](args, next);
+) =>
+  getI18next()[0](args, () => {
+    args.context.set(ploneLocaleContext, getLocale(args.context));
+    return next();
+  });
 
 export const getLocale = (context: Readonly<RouterContextProvider>) =>
   getI18next()[1](context);

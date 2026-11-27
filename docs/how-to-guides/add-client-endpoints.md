@@ -101,7 +101,7 @@ Call your endpoint from a loader or action like any core method.
 
 ```{code-block} tsx
 :caption: packages/\<add-on-name>/routes/login.tsx
-import { ploneClientContext } from '@plone/aurora/app/middleware.server';
+import { ploneClientContext } from '@plone/react-router/context';
 import type { Route } from './+types/login';
 
 export async function loader({ context }: Route.LoaderArgs) {

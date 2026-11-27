@@ -1,0 +1,1 @@
+Changed the app to take its request contexts and `getPloneClientClass` from `@plone/react-router`, to set the negotiated locale in `ploneLocaleContext`, and to check its root loader data against `RootLoaderData`. The old exports of `app/middleware.server` remain for add-ons that still import them. @sneridagh
