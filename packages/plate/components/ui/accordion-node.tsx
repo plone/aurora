@@ -9,6 +9,7 @@ import {
   ChevronDownIcon,
   CopyIcon,
   PlusIcon,
+  SlidersHorizontalIcon,
   Trash2Icon,
 } from 'lucide-react';
 import {
@@ -39,6 +40,7 @@ import type {
 } from '../editor/plugins/accordion/types';
 import { findAccordionNodePath } from '../editor/plugins/accordion/find-path';
 import { InsertBlockPoint } from './accordion-block-toolbar';
+import { AccordionSettingsTrigger } from './accordion-settings';
 import { useTranslation } from '../editor/plugins/i18n';
 import { BlockInnerContainer } from './block-inner-container';
 import { Button } from './button';
@@ -188,14 +190,17 @@ export function AccordionElement(props: PlateElementProps<TAccordionElement>) {
             contentEditable={false}
             className="flex min-h-8 items-center justify-between gap-2 select-none"
           >
-            <span
-              className={`
-                inline-flex items-center rounded-full border border-border bg-background px-3 py-0.5
-                text-xs text-muted-foreground
-              `}
+            <AccordionSettingsTrigger
+              target={{ type: 'accordion', id: element.id }}
+              label={t('plate.accordion.accordionSettings', {
+                defaultValue: 'Accordion settings',
+              })}
+              variant="outline"
+              size="sm"
+              className="h-7 rounded-full px-3 text-xs font-normal text-muted-foreground"
             >
               {t('plate.accordion.label', { defaultValue: 'Accordion' })}
-            </span>
+            </AccordionSettingsTrigger>
             {active && (
               <div className="flex gap-1.5">
                 <Button
@@ -285,10 +290,12 @@ export function AccordionPanelElement(
 }
 
 function PanelActions({
+  panelId,
   panelPath,
   index,
   total,
 }: {
+  panelId: string;
   panelPath: Path;
   index: number;
   total: number;
@@ -366,6 +373,18 @@ function PanelActions({
           <Icon aria-hidden="true" className="size-[18px]" />
         </Button>
       ))}
+      <AccordionSettingsTrigger
+        target={{ type: 'accordion_panel', id: panelId }}
+        label={t('plate.accordion.panelSettings', {
+          defaultValue: 'Panel settings',
+        })}
+        className={`
+          size-10 text-muted-foreground
+          hover:text-foreground
+        `}
+      >
+        <SlidersHorizontalIcon aria-hidden="true" className="size-[18px]" />
+      </AccordionSettingsTrigger>
     </span>
   );
 }
@@ -430,7 +449,12 @@ export function AccordionPanelTitleElement(props: PlateElementProps) {
         </span>
       )}
       {!readOnly && panel && panelPath.length > 0 && (
-        <PanelActions panelPath={panelPath} index={index} total={total} />
+        <PanelActions
+          panelId={panel.id}
+          panelPath={panelPath}
+          index={index}
+          total={total}
+        />
       )}
       {!readOnly && panel && (
         <Button
