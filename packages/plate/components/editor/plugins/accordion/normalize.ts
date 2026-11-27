@@ -2,22 +2,17 @@ import {
   ElementApi,
   KEYS,
   nanoid,
-  PathApi,
-  TextApi,
-  type Descendant,
   type Path,
   type SlateEditor,
   type TElement,
 } from 'platejs';
 
+import { isTextLikeBlock, normalizeSlotBlocks } from '../containers';
 import { getAccordionOptions } from './options';
 import {
   createAccordionPanel,
   createAccordionPanelContent,
   createAccordionPanelTitle,
-  createEmptyParagraph,
-  getAvailableInnerBlocks,
-  getInnerBlockId,
 } from './transforms';
 import {
   ACCORDION_KEY,
@@ -28,14 +23,6 @@ import {
 
 const isElementOfType = (node: unknown, type: string): node is TElement =>
   ElementApi.isElement(node) && node.type === type;
-
-const isTextLike = (editor: SlateEditor, node: TElement) =>
-  !editor.api.isVoid(node) &&
-  node.children.every(
-    (child) =>
-      TextApi.isText(child) ||
-      (ElementApi.isElement(child) && editor.api.isInline(child)),
-  );
 
 /** A panel that holds a node found where only panels are allowed. */
 const panelFor = (node: TElement) => {
@@ -168,7 +155,7 @@ const normalizeTitle = (
     return true;
   }
 
-  if (!isTextLike(editor, node)) {
+  if (!isTextLikeBlock(editor, node)) {
     // Titles hold text only: blocks pasted into one become its text.
     const text = editor.api.string(path);
     editor.tf.withoutNormalizing(() => {
@@ -192,70 +179,8 @@ const normalizeContent = (
     return true;
   }
 
-  if (!node.children.some((child) => ElementApi.isElement(child))) {
-    editor.tf.insertNodes(createEmptyParagraph(), { at: [...path, 0] });
-    return true;
-  }
-
-  const available = getAvailableInnerBlocks(editor);
-  const canBecomeParagraph = available.includes(KEYS.p);
-  const toParagraph: Path[] = [];
-  const toUnwrap: Path[] = [];
-  const toLift: Path[] = [];
-
-  node.children.forEach((child: Descendant, index) => {
-    if (!ElementApi.isElement(child)) return;
-    const id = getInnerBlockId(child);
-    if (id && available.includes(id)) return;
-
-    const at = [...path, index];
-    const known = Boolean(editor.plugins[child.type]);
-    if (!known || child.type === ACCORDION_KEY || editor.api.isVoid(child)) {
-      toLift.push(at);
-    } else if (canBecomeParagraph && isTextLike(editor, child)) {
-      toParagraph.push(at);
-    } else if (child.children.every((item) => ElementApi.isElement(item))) {
-      toUnwrap.push(at);
-    } else {
-      toLift.push(at);
-    }
-  });
-
-  // One kind of change per pass, so the paths stay valid; the content is
-  // normalized again after each one.
-  if (toParagraph.length > 0) {
-    editor.tf.withoutNormalizing(() => {
-      for (const at of toParagraph) {
-        editor.tf.setNodes({ type: KEYS.p }, { at });
-      }
-    });
-    return true;
-  }
-
-  if (toUnwrap.length > 0) {
-    // A container, such as a quote or columns, leaves its blocks in place.
-    editor.tf.withoutNormalizing(() => {
-      for (const at of [...toUnwrap].reverse()) {
-        editor.tf.unwrapNodes({ at });
-      }
-    });
-    return true;
-  }
-
-  if (toLift.length > 0) {
-    // The accordion is the grandparent: content › panel › accordion.
-    const accordionPath = PathApi.parent(PathApi.parent(path));
-    // Blocks that a panel can't hold go after the accordion, in their order:
-    // moving the last one first keeps them in order.
-    editor.tf.withoutNormalizing(() => {
-      for (const at of [...toLift].reverse()) {
-        editor.tf.moveNodes({ at, to: PathApi.next(accordionPath) });
-      }
-    });
-    return true;
-  }
-
-  return false;
+  // The blocks of the panel follow the accordion's container rules.
+  return normalizeSlotBlocks(editor, node, path);
 };
 
 /**

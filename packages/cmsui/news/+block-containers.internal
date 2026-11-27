@@ -1,0 +1,1 @@
+The block sidebar resolves the settings of blocks inside a container with `getBlockConfig` from `@plone/plate`. @Humanaice
