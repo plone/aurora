@@ -140,6 +140,49 @@ export const nativeBlockSections = {
     p('Content of the nested section.'),
   ],
 
+  accordion: [
+    {
+      type: 'accordion',
+      id: 'accordion-fixture',
+      exclusive: true,
+      theme: 'grey',
+      children: [
+        {
+          type: 'accordion_panel',
+          id: 'opening-hours',
+          startOpen: true,
+          anchor: 'opening-hours',
+          children: [
+            {
+              type: 'accordion_panel_title',
+              children: [{ text: 'Opening hours' }],
+            },
+            {
+              type: 'accordion_panel_content',
+              children: [p('Monday to Friday, 9:00 to 17:00.'), p('')],
+            },
+          ],
+        },
+        {
+          type: 'accordion_panel',
+          id: 'how-to-find-us',
+          startOpen: false,
+          anchor: 'how-to-find-us',
+          children: [
+            {
+              type: 'accordion_panel_title',
+              children: [{ text: 'How to find us' }],
+            },
+            {
+              type: 'accordion_panel_content',
+              children: [p('Take the tram to Central Square.')],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+
   hr: [
     p('Before the separator.'),
     { type: 'hr', children: [{ text: '' }] },

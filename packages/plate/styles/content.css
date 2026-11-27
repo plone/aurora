@@ -617,6 +617,104 @@
 }
 
 /*
+ * Accordion. Each panel title is a heading holding a button that opens and
+ * closes the panel; the open state is in the panel's `data-open`. The
+ * background comes from the accordion's theme, in
+ * `--block-accordion-background`, set inline.
+ */
+
+:where(.slate-accordion > .block-inner-container) {
+  padding: calc(var(--spacing, 0.25rem) * 2) calc(var(--spacing, 0.25rem) * 4);
+  border-radius: var(--block-accordion-radius, var(--radius-md, 0.375rem));
+  background-color: var(--block-accordion-background, transparent);
+}
+
+:where(.block-accordion__panel) {
+  border-bottom: 1px solid
+    var(--block-accordion-border-color, var(--border, #8a8a85));
+}
+
+:where(.block-accordion__heading) {
+  margin: 0;
+  font-size: var(--block-accordion-title-size, var(--text-xl, 1.25rem));
+  font-weight: var(--font-weight-semibold, 600);
+  line-height: var(--text-xl--line-height, calc(1.75 / 1.25));
+}
+
+:where(.block-accordion__trigger) {
+  display: flex;
+  width: 100%;
+  min-height: calc(var(--spacing, 0.25rem) * 14);
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--spacing, 0.25rem) * 3) calc(var(--spacing, 0.25rem) * 1);
+  border: 0;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  gap: calc(var(--spacing, 0.25rem) * 3);
+  text-align: start;
+}
+
+:where(.block-accordion__trigger:focus-visible) {
+  outline: 2px solid var(--block-accordion-focus-color, var(--ring, #0b6bcb));
+  outline-offset: 2px;
+}
+
+:where(.block-accordion__title) {
+  min-width: 0;
+  flex: 1;
+}
+
+:where(.block-accordion__icon) {
+  width: calc(var(--spacing, 0.25rem) * 5);
+  height: calc(var(--spacing, 0.25rem) * 5);
+  flex: none;
+  transition: transform var(--default-transition-duration, 150ms)
+    var(--default-transition-timing-function, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+:where(.block-accordion__panel[data-open='true'] .block-accordion__icon) {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(.block-accordion__icon) {
+    transition: none;
+  }
+}
+
+:where(.block-accordion__content) {
+  padding: 0 calc(var(--spacing, 0.25rem) * 1) calc(var(--spacing, 0.25rem) * 4);
+}
+
+/*
+ * A closed panel is `hidden`, or `hidden="until-found"` so find-in-page can
+ * reveal it: only the former is taken out of the layout here, since
+ * `display: none` would keep the browser from finding the text of the latter.
+ */
+:where(.block-accordion__content[hidden]:not([hidden='until-found'])) {
+  display: none;
+}
+
+/*
+ * Empty paragraphs, marked `data-empty`, aren't shown in the published view.
+ * The editor, whose root is `contenteditable`, keeps them, so they can be
+ * typed in. `!important` keeps them hidden when a later cascade layer sets
+ * `display` on blocks, such as Tailwind's `block` utility, which shares its
+ * name with the blocks' anatomy class.
+ */
+:where(
+  .block-accordion__content
+    > .slate-p[data-empty]:not([contenteditable='true'] *)
+) {
+  display: none !important;
+}
+
+/*
  * Table of contents. Each entry is a button that scrolls to its heading, with
  * its heading level in `data-depth`.
  */
