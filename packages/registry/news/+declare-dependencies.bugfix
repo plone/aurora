@@ -1,0 +1,1 @@
+Declared `vite` as an optional peer dependency of the Vite plugin and `init-loaders`, listed the `types` condition of the Vite plugin export first, so TypeScript resolves it, and added a shebang to `init-loaders`, so it runs with any package manager. @sneridagh

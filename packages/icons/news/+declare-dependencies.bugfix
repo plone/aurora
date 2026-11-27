@@ -1,0 +1,1 @@
+Declared `vite` as an optional peer dependency of the SVGR Vite plugin, and listed the `types` condition of its export first, so TypeScript resolves it. @sneridagh

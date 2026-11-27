@@ -18,7 +18,8 @@ export const streamTimeout = 5_000;
 // The Plone devtools, in development only (see `@plone/devtools/vite`).
 export const instrumentations =
   import.meta.env.DEV && import.meta.env.PLONE_DEVTOOLS
-    ? [(await import('@plone/devtools/server')).serverInstrumentation]
+    ? // eslint-disable-next-line import/no-extraneous-dependencies -- development only, removed from production builds
+      [(await import('@plone/devtools/server')).serverInstrumentation]
     : [];
 
 export default async function handleRequest(

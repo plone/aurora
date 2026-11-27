@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // This script was created to initialize and create the loaders for the Plone registry.
 // Nowadays it is not used in the build process, but it's still needed for initialize
 // the unit tests before they run.

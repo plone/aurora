@@ -55,14 +55,14 @@
   },
   "dependencies": {
     "@plone/components": "workspace:*",
+    "@plone/helpers": "workspace:*",
     "@plone/icons": "workspace:*",
+    "@plone/layout": "workspace:*",
     "@plone/registry": "workspace:*",
     "clsx": "^2.1.1",
     "react-i18next": "catalog:"
   },
   "devDependencies": {
-    "@plone/helpers": "workspace:*",
-    "@plone/layout": "workspace:*",
     "@plone/registry": "workspace:*",
     "@plone/types": "workspace:*",
     "@testing-library/jest-dom": "catalog:",

@@ -1,0 +1,1 @@
+Documented in the upgrade guide that `getAddonRoutesConfig` moved to `@plone/react-router/routes`. @sneridagh

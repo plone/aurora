@@ -43,6 +43,10 @@
     "./context": {
       "import": "./dist/context.js",
       "default": "./dist/context.cjs"
+    },
+    "./routes": {
+      "import": "./dist/routes.js",
+      "default": "./dist/routes.cjs"
     }
   },
   "scripts": {
@@ -61,10 +65,14 @@
   },
   "peerDependencies": {
     "react": "^18.2.0 || ^19.0.0",
-    "react-dom": "^18.2.0 || ^19.0.0"
+    "react-dom": "^18.2.0 || ^19.0.0",
+    "@react-router/dev": "^8.0.0"
   },
   "peerDependenciesMeta": {
     "react-dom": {
+      "optional": true
+    },
+    "@react-router/dev": {
       "optional": true
     }
   },

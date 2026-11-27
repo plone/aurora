@@ -1,0 +1,1 @@
+Added a lint rule that requires every import to be declared in the `package.json` of its package, and a CI job that checks the packed packages with `publint`. @sneridagh
