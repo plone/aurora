@@ -8,6 +8,7 @@
     },
     "actions": {
       "actions": "Azioni",
+      "toolbar": "Azioni sui contenuti",
       "upload": "Carica",
       "rename": "Rinomina",
       "state": "Cambia stato",
@@ -45,7 +46,7 @@
     "item": {
       "expired": "Scaduto",
       "scheduled": "Pianificato",
-      "more_options": "Altre opzioni"
+      "more_options": "Altre opzioni per {{title}}"
     },
     "indexes": {
       "title": "Titolo",
