@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useState } from 'react';
 import { VisuallyHidden } from 'react-aria';
 import {
+  DropIndicator,
   TooltipTrigger,
   useDragAndDrop,
   DialogTrigger,
@@ -441,6 +442,21 @@ export function ContentsTable({
       [...keys].map((key) => ({
         'text/plain': key.toString(),
       })),
+    // A line between the rows shows where the dragged row will land, for
+    // mouse and keyboard drags alike.
+    renderDropIndicator: (target) => (
+      <DropIndicator
+        target={target}
+        className={({ isDropTarget }) =>
+          isDropTarget
+            ? `
+              outline-1 outline-quanta-sapphire outline-solid
+              forced-colors:outline-[Highlight]
+            `
+            : ''
+        }
+      />
+    ),
     onReorder(e) {
       if (e.keys.size !== 1) {
         showToast({
@@ -645,6 +661,7 @@ export function ContentsTable({
                           text-quanta-space
                           selected:bg-quanta-arctic selected:text-quanta-space
                           selected:hover:bg-quanta-arctic
+                          dragging:opacity-50
                           [&_[slot=drag]]:text-quanta-dolphin
                           [&_[slot=drag]_svg]:size-4.5
                         `}
