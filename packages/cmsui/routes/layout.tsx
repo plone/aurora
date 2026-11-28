@@ -4,7 +4,6 @@ import {
   Outlet,
   RouterContextProvider,
   Scripts,
-  ScrollRestoration,
   useLoaderData,
   useMatch,
   useNavigate,
@@ -12,6 +11,7 @@ import {
   type LoaderFunctionArgs,
   type MetaFunction,
 } from 'react-router';
+import { ScrollRestoration } from '@plone/layout/components/ScrollRestoration/ScrollRestoration';
 import { useTranslation } from 'react-i18next';
 import { RouterProvider as RACRouterProvider } from 'react-aria-components';
 import { clsx } from 'clsx';

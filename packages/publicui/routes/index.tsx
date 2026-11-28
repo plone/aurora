@@ -6,7 +6,6 @@ import {
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration,
   useLoaderData,
   useFetcher,
   useLocation,
@@ -18,6 +17,7 @@ import {
   type LoaderFunctionArgs,
   RouterContextProvider,
 } from 'react-router';
+import { ScrollRestoration } from '@plone/layout/components/ScrollRestoration/ScrollRestoration';
 import { useTranslation } from 'react-i18next';
 import {
   Link,

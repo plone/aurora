@@ -1,0 +1,1 @@
+Fixed the React warning "Encountered a script tag while rendering React component" when navigating between the public UI, the CMS UI and the contents view. @sneridagh
