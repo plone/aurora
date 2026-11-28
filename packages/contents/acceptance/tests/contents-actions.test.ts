@@ -38,6 +38,42 @@ test.describe('Contents view actions', () => {
     await login(page);
   });
 
+  test('shows every action, disabled until it can be used', async ({
+    page,
+  }) => {
+    await setupFolder(page, ['Pick me']);
+    const toolbar = page.getByRole('toolbar', { name: 'Contents actions' });
+
+    await expect(
+      toolbar.getByRole('button', { name: 'Upload', exact: true }),
+    ).toBeEnabled();
+    for (const name of ['Rename', 'Cut', 'Copy', 'Paste', 'Delete']) {
+      await expect(
+        toolbar.getByRole('button', { name, exact: true }),
+      ).toBeDisabled();
+    }
+    await expect(
+      page.getByRole('button', { name: 'More options for Pick me' }),
+    ).toBeVisible();
+
+    await selectRow(page, 'Pick me');
+    for (const name of ['Rename', 'Cut', 'Copy', 'Delete']) {
+      await expect(
+        toolbar.getByRole('button', { name, exact: true }),
+      ).toBeEnabled();
+    }
+    await expect(
+      toolbar.getByRole('button', { name: 'Paste', exact: true }),
+    ).toBeDisabled();
+
+    // The toolbar is one tab stop: the arrow keys move between its actions.
+    await toolbar.getByRole('button', { name: 'Upload', exact: true }).focus();
+    await page.keyboard.press('ArrowRight');
+    await expect(
+      toolbar.getByRole('button', { name: 'Rename', exact: true }),
+    ).toBeFocused();
+  });
+
   test('deletes an item', async ({ page }) => {
     await setupFolder(page, ['Delete me', 'Keep me']);
 

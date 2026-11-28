@@ -8,6 +8,7 @@
     },
     "actions": {
       "actions": "Actions",
+      "toolbar": "Contents actions",
       "upload": "Upload",
       "rename": "Rename",
       "state": "Change state",
@@ -45,7 +46,7 @@
     "item": {
       "expired": "Expired",
       "scheduled": "Scheduled",
-      "more_options": "More options"
+      "more_options": "More options for {{title}}"
     },
     "indexes": {
       "title": "Title",

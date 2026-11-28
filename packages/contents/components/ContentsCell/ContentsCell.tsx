@@ -81,14 +81,10 @@ export function ContentsCell({
         <Button
           variant="icon"
           className={`
-            item-actions-trigger opacity-0
-            group-focus-within/row:opacity-100
-            group-hover/row:opacity-100
-            group-focus-visible/row:opacity-100
-            aria-expanded:opacity-100
-            pointer-coarse:opacity-100
+            item-actions-trigger bg-transparent
+            hover:bg-quanta-smoke
           `}
-          aria-label={t('contents.item.more_options')}
+          aria-label={t('contents.item.more_options', { title: item.title })}
         >
           <MoreoptionsIcon />
         </Button>

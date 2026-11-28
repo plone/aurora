@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { TooltipTrigger } from 'react-aria-components';
-import { Button, Tooltip } from '@plone/quanta';
+import { Button, Separator, Toolbar, Tooltip } from '@plone/quanta';
 
 import {
   UploadIcon,
@@ -55,6 +55,7 @@ export function ContentsActions({
     label: string,
     icon: React.ReactNode,
     onPress: () => void,
+    isDisabled = false,
     className = '',
   ) => (
     <TooltipTrigger key={id}>
@@ -66,6 +67,7 @@ export function ContentsActions({
           ${className}
         `}
         onPress={onPress}
+        isDisabled={isDisabled}
         aria-label={label}
       >
         {icon}
@@ -74,56 +76,75 @@ export function ContentsActions({
     </TooltipTrigger>
   );
 
+  // The actions always show, so users can find them before they can use
+  // them: the ones that need a selection, or a clipboard, are disabled
+  // until then. The toolbar is one tab stop, and the arrow keys move between
+  // its enabled actions.
   return (
-    <div className="contents-actions flex items-center gap-1">
+    <Toolbar
+      aria-label={t('contents.actions.toolbar')}
+      className="contents-actions flex-nowrap gap-1"
+    >
       {action('upload', t('contents.actions.upload'), <UploadIcon />, upload)}
-      {hasSelection && (
-        <>
-          {action(
-            'rename',
-            t('contents.actions.rename'),
-            <RenameIcon />,
-            rename,
-          )}
-          {action(
-            'state',
-            t('contents.actions.state'),
-            <StateIcon />,
-            workflow,
-          )}
-          {action('tags', t('contents.actions.tags'), <TagIcon />, tags)}
-          {action(
-            'properties',
-            t('contents.actions.properties'),
-            <PropertiesIcon />,
-            properties,
-          )}
-        </>
+      {action(
+        'rename',
+        t('contents.actions.rename'),
+        <RenameIcon />,
+        rename,
+        !hasSelection,
       )}
-      {(hasSelection || canPaste) && (
-        <span
-          aria-hidden
-          className="separator mx-1 h-6 border-s border-quanta-smoke"
-        />
+      {action(
+        'state',
+        t('contents.actions.state'),
+        <StateIcon />,
+        workflow,
+        !hasSelection,
       )}
-      {hasSelection && (
-        <>
-          {action('cut', t('contents.actions.cut'), <CutIcon />, () => cut())}
-          {action('copy', t('contents.actions.copy'), <CopyIcon />, () =>
-            copy(),
-          )}
-        </>
+      {action(
+        'tags',
+        t('contents.actions.tags'),
+        <TagIcon />,
+        tags,
+        !hasSelection,
       )}
-      {canPaste &&
-        action('paste', t('contents.actions.paste'), <PasteIcon />, paste)}
-      {hasSelection &&
-        action(
-          'delete',
-          t('contents.actions.delete'),
-          <BinIcon />,
-          () => deleteItem(),
-          'has-[svg]:text-quanta-candy',
-        )}
-    </div>
+      {action(
+        'properties',
+        t('contents.actions.properties'),
+        <PropertiesIcon />,
+        properties,
+        !hasSelection,
+      )}
+      <Separator orientation="vertical" className="mx-1 h-6 bg-quanta-smoke" />
+      {action(
+        'cut',
+        t('contents.actions.cut'),
+        <CutIcon />,
+        () => cut(),
+        !hasSelection,
+      )}
+      {action(
+        'copy',
+        t('contents.actions.copy'),
+        <CopyIcon />,
+        () => copy(),
+        !hasSelection,
+      )}
+      {action(
+        'paste',
+        t('contents.actions.paste'),
+        <PasteIcon />,
+        paste,
+        !canPaste,
+      )}
+      {action(
+        'delete',
+        t('contents.actions.delete'),
+        <BinIcon />,
+        () => deleteItem(),
+        !hasSelection,
+        // Red only when it can be used: the disabled color says it cannot.
+        hasSelection ? 'has-[svg]:text-quanta-candy' : '',
+      )}
+    </Toolbar>
   );
 }

@@ -1,0 +1,1 @@
+The contents view always shows the row "More options" button and every toolbar action, disabled until it can be used, so users don't have to discover them. The toolbar is a single tab stop where the arrow keys move between actions, and each row button names its item. @sneridagh
