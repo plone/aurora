@@ -1,0 +1,1 @@
+Fixed the contents view's results count for screen readers, which read out an i18n error, and made it count every match with singular and plural forms. Items without a workflow state, like images and files, keep their dash on screen but are announced as "No workflow state". @sneridagh

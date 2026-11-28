@@ -1,6 +1,6 @@
 import { type ComponentProps } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDateFormatter } from 'react-aria';
+import { useDateFormatter, VisuallyHidden } from 'react-aria';
 import { getContentIcon } from '@plone/helpers';
 import type { Brain } from '@plone/types';
 import { Link, Button, MenuTrigger } from '@plone/quanta';
@@ -114,9 +114,19 @@ export function ContentsCell({
       } else {
         return (
           <ReviewState state={item[column]}>
-            {t(
-              'contents.indexes.review_state.' +
-                (item[column] ?? 'no_workflow_state'),
+            {item[column] ? (
+              t('contents.indexes.review_state.' + item[column])
+            ) : (
+              // Items without a workflow, like files and images, show a
+              // dash, which screen readers would read as "em dash".
+              <>
+                <span aria-hidden>
+                  {t('contents.indexes.review_state.no_workflow_state')}
+                </span>
+                <VisuallyHidden>
+                  {t('contents.indexes.review_state.no_workflow_state_label')}
+                </VisuallyHidden>
+              </>
             )}
           </ReviewState>
         );
