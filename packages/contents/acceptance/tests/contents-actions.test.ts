@@ -74,6 +74,31 @@ test.describe('Contents view actions', () => {
     ).toBeFocused();
   });
 
+  test('shows where a row dragged with the keyboard will land', async ({
+    page,
+  }) => {
+    await setupFolder(page, ['First', 'Second', 'Third']);
+
+    // Reach the drag handle of the first row like a keyboard user: from the
+    // filter into the grid, then to the handle.
+    await page.getByRole('searchbox').focus();
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('ArrowRight');
+    await expect(
+      page.getByRole('button', { name: 'Drag First' }),
+    ).toBeFocused();
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('ArrowDown');
+
+    const indicator = page.locator('tr[data-drop-target]');
+    await expect(indicator).toHaveCount(1);
+    await expect(indicator).toHaveCSS('outline-style', 'solid');
+    await expect(page.locator('tr[data-dragging]')).toContainText('First');
+
+    await page.keyboard.press('Escape');
+    await expect(indicator).toHaveCount(0);
+  });
+
   test('deletes an item', async ({ page }) => {
     await setupFolder(page, ['Delete me', 'Keep me']);
 
