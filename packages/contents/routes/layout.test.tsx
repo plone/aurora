@@ -39,7 +39,6 @@ describe('Contents layout loader', () => {
         title: 'News',
         language: { token: 'en' },
       },
-      path: '/news',
     });
   });
 });

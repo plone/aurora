@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { VisuallyHidden } from 'react-aria';
 import {
   TooltipTrigger,
@@ -50,6 +50,18 @@ import { type TableIndexes } from '../../types';
 import { type ToastItem } from '@plone/layout/config/toast';
 
 import './ContentsTable.css';
+
+type ContentsColumn = {
+  id: keyof Brain | '_actions';
+  name: ReactNode;
+  isRowHeader: boolean;
+  width: number | undefined;
+};
+
+type ContentsRow = {
+  id: string;
+  textValue: string;
+} & Partial<Record<ContentsColumn['id'], ReactNode>>;
 
 interface ContentsTableProps {
   pathname: string;
@@ -342,7 +354,7 @@ export function ContentsTable({
   }, [fetcher.state]);
 
   /******************* TABLE ITEMS ************** */
-  const columns = [
+  const columns: ContentsColumn[] = [
     {
       id: 'title',
       name: t('contents.indexes.title'),
@@ -353,7 +365,8 @@ export function ContentsTable({
       ? indexes.order
           .filter((index) => indexes.values[index].selected)
           .map((index) => ({
-            id: index,
+            // Catalog index names are metadata columns of the brain
+            id: index as keyof Brain,
             // TODO: use translation
             name: indexes.values[index].label,
             isRowHeader: false,
@@ -391,10 +404,10 @@ export function ContentsTable({
         </TooltipTrigger>
       ) : null,
     },
-  ] as const;
+  ];
 
   const rows = items.map((item, itemIndex) =>
-    columns.reduce(
+    columns.reduce<ContentsRow>(
       (cells, column) => ({
         ...cells,
         [column.id]: (
