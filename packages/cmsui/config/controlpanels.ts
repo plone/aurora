@@ -1,6 +1,5 @@
 import type { ConfigType } from '@plone/registry';
-import type { ComponentType, SVGProps } from 'react';
-import type { Controlpanel } from '@plone/types';
+import type { Controlpanel, SVGReactComponent } from '@plone/types';
 import { controlPanelId } from '../helpers/controlpanels';
 import ArchiveSVG from '@plone/icons/svg/archive.svg?react';
 import CalendarSVG from '@plone/icons/svg/calendar.svg?react';
@@ -22,10 +21,7 @@ import WorldSVG from '@plone/icons/svg/world.svg?react';
 
 // One icon per control panel id; `default` is used for the others.
 // Add-ons can add theirs to `config.settings.controlPanelsIcons`.
-export const controlPanelsIcons: Record<
-  string,
-  ComponentType<SVGProps<SVGSVGElement>>
-> = {
+export const controlPanelsIcons: Record<string, SVGReactComponent> = {
   default: SettingsSVG,
   addons: ArchiveSVG,
   'date-and-time': CalendarSVG,
@@ -157,10 +153,7 @@ export const filterControlPanelsSchema = (controlpanel: Controlpanel) => {
 // The icons for the icon names the backend sends (plone.restapi 10.2.0 and
 // later), Bootstrap Icons names on Plone 6. They match the ones by id above,
 // which are used when the backend sends no icon, or one not listed here.
-export const controlPanelsIconNames: Record<
-  string,
-  ComponentType<SVGProps<SVGSVGElement>>
-> = {
+export const controlPanelsIconNames: Record<string, SVGReactComponent> = {
   clock: CalendarSVG,
   flag: LanguageSVG,
   'envelope-open': MailSVG,
