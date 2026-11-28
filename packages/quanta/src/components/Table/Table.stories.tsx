@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import type { Selection, SortDescriptor } from 'react-aria-components';
+import { MoreoptionsIcon } from '@plone/icons';
+import { Button } from '../Button/Button';
 import { Cell, Column, Row, Table, TableBody, TableHeader } from './Table';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
@@ -115,6 +117,34 @@ export const Empty: Story = {
         )}
       >
         {[]}
+      </TableBody>
+    </Table>
+  ),
+};
+
+// A header can hold a control instead of a label, like a menu button. The
+// control keeps its size, hover background and focus ring, and the keyboard
+// focus goes to it.
+export const HeaderControls: Story = {
+  render: () => (
+    <Table aria-label="Content types">
+      <TableHeader>
+        <Column isRowHeader>Type</Column>
+        <Column>Workflow</Column>
+        <Column width={54}>
+          <Button variant="icon" aria-label="Select columns to show">
+            <MoreoptionsIcon />
+          </Button>
+        </Column>
+      </TableHeader>
+      <TableBody items={types}>
+        {(type) => (
+          <Row>
+            <Cell>{type.title}</Cell>
+            <Cell>{type.workflow}</Cell>
+            <Cell />
+          </Row>
+        )}
       </TableBody>
     </Table>
   ),

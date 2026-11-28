@@ -103,9 +103,9 @@ Quanta keeps the RAC `*Field` parts as the reference for hand-written forms.
 | `SelectItemObject`, optional `children`, `labelClassnames` | none | extra | Without `children`, `Select` renders `SelectItemObject` items by their `label`. Used by the `cmsui` widgets and the `contents` modals. |
 | `ComboBox`, `ComboBoxItem`, `ComboBoxSection` | `ComboBox.tsx` | `aligned` | Takes `selectionMode="multiple"`. Shows "No results found" when nothing matches. |
 | `GridList`, `GridListItem`, `GridListHeader` | `GridList.tsx` | `aligned` | `GridListItem` also merges a `className`. |
-| `Table`, `TableHeader`, `Column`, `TableBody`, `Row`, `Cell` | `Table.tsx` | `Plone-specific` | Keeps the drag column header and width props. `TableFooter` can be added when needed. |
+| `Table`, `TableHeader`, `Column`, `TableBody`, `Row`, `Cell` | `Table.tsx` | `Plone-specific` | Keeps the drag column header and width props. A `Column` whose content isn't text, like a menu button, isn't wrapped in the truncated label, so the control keeps its size and focus ring, and takes the keyboard focus. `TableFooter` can be added when needed. |
 | `TagGroup`, `Tag` | `TagGroup.tsx` | `aligned` | |
-| `Menu`, `MenuItem`, `MenuSection`, `MenuSeparator`, `MenuTrigger`, `SubmenuTrigger` | `Menu.tsx` | `aligned` | `MenuSection` takes `title` and `items`. `Menu`, `MenuItem`, `MenuSection` and `MenuSeparator` also merge a `className`. |
+| `Menu`, `MenuItem`, `MenuSection`, `MenuSeparator`, `MenuTrigger`, `SubmenuTrigger` | `Menu.tsx` | `aligned` | `MenuSection` takes `title` and `items`. `Menu`, `MenuItem`, `MenuSection` and `MenuSeparator` also merge a `className`. `MenuItem` draws its focus ring inside, like the other collection items, so a sticky `MenuSection` title can't cover it. |
 | `MultiSelect` | none | `extension` | Selects several items, shown as tags. Built on `ComboBox` and `TagGroup`. The starter's `TokenField` is a different component (free text with tokens). |
 
 ## Overlays

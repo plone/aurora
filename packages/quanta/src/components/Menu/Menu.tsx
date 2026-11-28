@@ -43,7 +43,7 @@ const menuItemStyles = tv({
   extend: focusRing,
   base: `
     group relative flex cursor-default items-center gap-3 rounded-sm px-3 py-1.5 text-sm leading-6
-    no-underline forced-color-adjust-none select-none
+    no-underline -outline-offset-3 forced-color-adjust-none select-none
     [-webkit-tap-highlight-color:transparent]
     selected:pr-1
     [&[href]]:cursor-pointer

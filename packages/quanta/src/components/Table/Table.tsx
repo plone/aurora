@@ -54,6 +54,19 @@ export function Table(props: TableProps) {
   );
 }
 
+const columnHeaderStyles = tv({
+  // When the header has no label or control to focus, it takes the focus,
+  // and shows the ring inside its cell.
+  extend: focusRing,
+  base: `
+    box-border h-1 cursor-default text-start text-sm font-semibold text-quanta-iron
+    -outline-offset-3
+    focus-within:z-20
+    dark:text-neutral-300
+    [&:hover]:z-20
+  `,
+});
+
 const columnStyles = tv({
   extend: focusRing,
   base: 'box-border flex h-5 flex-1 items-center gap-1 overflow-hidden px-2',
@@ -75,45 +88,46 @@ export function Column(props: ColumnProps) {
   return (
     <AriaColumn
       {...props}
-      className={composeTailwindRenderProps(
-        props.className,
-        `
-          box-border h-1 cursor-default text-start text-sm font-semibold text-quanta-iron
-          focus-within:z-20
-          dark:text-neutral-300
-          [&:hover]:z-20
-        `,
+      className={composeRenderProps(props.className, (className, renderProps) =>
+        columnHeaderStyles({ ...renderProps, className }),
       )}
     >
       {composeRenderProps(
         props.children,
-        (children, { allowsSorting, sortDirection }) => (
-          <div className="flex items-center">
-            <Group role="presentation" tabIndex={-1} className={columnStyles}>
-              <span className="truncate">{children}</span>
-              {allowsSorting && (
-                <span
-                  className={`
-                    flex h-4 w-4 items-center justify-center transition
-                    ${sortDirection === 'descending' ? 'rotate-180' : ''}
-                  `}
-                >
-                  {sortDirection && (
-                    <ArrowupIcon
-                      aria-hidden
-                      className={`
-                        h-4 w-4 text-quanta-pigeon
-                        dark:text-neutral-400
-                        forced-colors:text-[ButtonText]
-                      `}
-                    />
-                  )}
-                </span>
-              )}
-            </Group>
-            {!props.width && <ColumnResizer className={resizerStyles} />}
-          </div>
-        ),
+        (children, { allowsSorting, sortDirection }) =>
+          typeof children === 'string' || typeof children === 'number' ? (
+            <div className="flex items-center">
+              <Group role="presentation" tabIndex={-1} className={columnStyles}>
+                <span className="truncate">{children}</span>
+                {allowsSorting && (
+                  <span
+                    className={`
+                      flex h-4 w-4 items-center justify-center transition
+                      ${sortDirection === 'descending' ? 'rotate-180' : ''}
+                    `}
+                  >
+                    {sortDirection && (
+                      <ArrowupIcon
+                        aria-hidden
+                        className={`
+                          h-4 w-4 text-quanta-pigeon
+                          dark:text-neutral-400
+                          forced-colors:text-[ButtonText]
+                        `}
+                      />
+                    )}
+                  </span>
+                )}
+              </Group>
+              {!props.width && <ColumnResizer className={resizerStyles} />}
+            </div>
+          ) : (
+            // A header that holds a control, like a menu button, is not a
+            // label: it isn't truncated, so the control keeps its size, hover
+            // background and focus ring, and the keyboard focus goes to the
+            // control itself.
+            <div className="flex items-center px-2">{children}</div>
+          ),
       )}
     </AriaColumn>
   );
@@ -146,9 +160,16 @@ export function TableHeader<T>(props: TableHeaderProps<T>) {
     >
       {/* Add extra columns for drag and drop and selection. */}
       {allowsDragging && (
-        <Column width={dragColumnWidth} minWidth={dragColumnWidth}>
-          {dragColumnHeader}
-        </Column>
+        // Like the selection column, it holds a control, not a label.
+        <AriaColumn
+          width={dragColumnWidth}
+          minWidth={dragColumnWidth}
+          className="box-border cursor-default p-0 text-sm font-semibold"
+        >
+          <div className="flex items-center justify-center">
+            {dragColumnHeader}
+          </div>
+        </AriaColumn>
       )}
       {selectionBehavior === 'toggle' && (
         <AriaColumn
