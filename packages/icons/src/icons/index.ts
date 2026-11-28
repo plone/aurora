@@ -73,6 +73,7 @@ export { PasteIcon } from './PasteIcon';
 export { PauseIcon } from './PauseIcon';
 export { PencilIcon } from './PencilIcon';
 export { PlayIcon } from './PlayIcon';
+export { PloneIcon } from './PloneIcon';
 export { PropertiesIcon } from './PropertiesIcon';
 export { QuotesIcon } from './QuotesIcon';
 export { RadiobuttonIcon } from './RadiobuttonIcon';
