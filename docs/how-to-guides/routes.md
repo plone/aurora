@@ -28,6 +28,7 @@ Name the route paths after their kind, following the Plone conventions.
 The root middleware doesn't load the Plone content, site, and user for resource routes, the routes whose path has a segment that starts with a single `@`, since they don't render a page.
 Their loaders and actions must not read `ploneContentContext`, `ploneSiteContext`, or `ploneUserContext`, because these are not set.
 Use the Plone client from `ploneClientContext` to request what they need.
+Import these contexts from `@plone/react-router/context`.
 
 ## Route definition
 

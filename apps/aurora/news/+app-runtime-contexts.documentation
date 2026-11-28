@@ -1,0 +1,1 @@
+Updated the documentation to import the request contexts from `@plone/react-router/context` and to type the root loader data with `RootLoaderData`. @sneridagh

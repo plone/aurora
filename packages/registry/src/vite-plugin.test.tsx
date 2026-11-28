@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { relativeToAbsoluteImportPlugin } from '../vite-plugin';
+import { relativeToAbsoluteImportPlugin, stylesAliases } from '../vite-plugin';
 
 describe('relativeToAbsoluteImportPlugin', () => {
   let plugin: any;
@@ -74,5 +74,39 @@ describe('relativeToAbsoluteImportPlugin', () => {
     const result = plugin.transform(code, id);
 
     expect(result.code).toBeUndefined();
+  });
+});
+
+describe('stylesAliases', () => {
+  const ploneDir = '/my/app/.plone';
+  const resolve = (importee: string) => {
+    const alias = stylesAliases(ploneDir).find(({ find }) =>
+      find.test(importee),
+    );
+    return alias ? importee.replace(alias.find, alias.replacement) : importee;
+  };
+
+  it('resolves the styles of each UI to the app stylesheet', () => {
+    expect(resolve('@plone/registry/styles/cmsui.css')).toBe(
+      '/my/app/.plone/cmsui.css',
+    );
+    expect(resolve('@plone/registry/styles/publicui.css')).toBe(
+      '/my/app/.plone/publicui.css',
+    );
+  });
+
+  it('keeps the query of the import', () => {
+    expect(resolve('@plone/registry/styles/cmsui.css?url')).toBe(
+      '/my/app/.plone/cmsui.css?url',
+    );
+  });
+
+  it('does not resolve other imports', () => {
+    expect(resolve('@plone/registry/styles/content.css')).toBe(
+      '@plone/registry/styles/content.css',
+    );
+    expect(resolve('@plone/cmsui/styles/cmsui.css')).toBe(
+      '@plone/cmsui/styles/cmsui.css',
+    );
   });
 });

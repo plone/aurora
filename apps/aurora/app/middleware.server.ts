@@ -1,22 +1,36 @@
 import { jwtDecode } from 'jwt-decode';
-import { data, createContext, redirect } from 'react-router';
+import { data, redirect } from 'react-router';
 import { flattenToAppURL } from '@plone/helpers';
-import { clearAuthOnResponse, getAuthFromRequest } from '@plone/react-router';
+import {
+  clearAuthOnResponse,
+  getAuthFromRequest,
+  getPloneClientClass,
+} from '@plone/react-router';
+import {
+  ploneClearAuthCookieContext,
+  ploneClientContext,
+  ploneContentContext,
+  ploneSiteContext,
+  ploneUserContext,
+} from '@plone/react-router/context';
 import config from '@plone/registry';
 import type PloneClient from '@plone/client';
 import type { Route } from './+types/root';
 import installServer from './config/server.server';
 import { migrateContent } from './config/server/content-migrations.server';
 
-export const ploneClientContext = createContext<PloneClient>();
-export const ploneContentContext =
-  createContext<Awaited<ReturnType<PloneClient['getContent']>>['data']>();
-export const ploneSiteContext =
-  createContext<Awaited<ReturnType<PloneClient['getSite']>>['data']>();
-export const ploneUserContext = createContext<
-  Awaited<ReturnType<PloneClient['getUser']>>['data'] | null
->(null);
-export const ploneClearAuthCookieContext = createContext<boolean>(false);
+// The request contexts and the client class live in `@plone/react-router`, so
+// add-ons can import them without importing the app. They are re-exported
+// here for add-ons that still import them from the app.
+// TODO: remove the re-exports once no add-on imports them from here.
+export {
+  ploneClientContext,
+  ploneContentContext,
+  ploneSiteContext,
+  ploneUserContext,
+  ploneClearAuthCookieContext,
+  getPloneClientClass,
+};
 
 /**
  * Where the site root sends a visitor on a multilingual site: the default
@@ -66,27 +80,6 @@ function getAuthorizedResourceHeaders(
   }
 
   return headers;
-}
-
-/**
- * Returns the `PloneClient` class registered as the `ploneClient` utility,
- * extended with the methods of every registered `clientEndpoints` utility.
- */
-export function getPloneClientClass() {
-  const PloneClient = config
-    .getUtility({
-      name: 'ploneClient',
-      type: 'client',
-    })
-    .method();
-
-  const endpoints = config
-    .getUtilities({ type: 'clientEndpoints' })
-    .map((utility) => utility.method());
-
-  return endpoints.length > 0
-    ? PloneClient.extend(Object.assign({}, ...endpoints))
-    : PloneClient;
 }
 
 /**

@@ -105,6 +105,8 @@
       "types": "./virtual/plate-plugins.d.ts",
       "default": "./virtual/plate-plugins.js"
     },
+    "./styles/cmsui.css": "./virtual/styles/cmsui.css",
+    "./styles/publicui.css": "./virtual/styles/publicui.css",
     ".": {
       "import": "./dist/index.js",
       "default": "./dist/index.cjs"

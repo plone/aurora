@@ -10,8 +10,11 @@ Each file must:
 - have a `.d.ts` next to it that describes the generated module;
 - be listed in the `exports` of `package.json` under its `@plone/registry/<name>` import.
 
-| Import                                                           | File               |
-| ---------------------------------------------------------------- | ------------------ |
-| `@plone/registry/plate-editor`, `@plone/registry/plate-renderer` | `plate-plugins.js` |
-| `@plone/registry/blocks-docs`                                    | `blocks-docs.js`   |
-| `@plone/registry/app-info`                                       | `app-info.js`      |
+A stylesheet has no default or `.d.ts`: it contains only a comment, and Vite types its `?url` import.
+
+| Import                                                                    | File                                      |
+| ------------------------------------------------------------------------- | ----------------------------------------- |
+| `@plone/registry/plate-editor`, `@plone/registry/plate-renderer`          | `plate-plugins.js`                        |
+| `@plone/registry/blocks-docs`                                             | `blocks-docs.js`                          |
+| `@plone/registry/app-info`                                                | `app-info.js`                             |
+| `@plone/registry/styles/cmsui.css`, `@plone/registry/styles/publicui.css` | `styles/cmsui.css`, `styles/publicui.css` |

@@ -59,10 +59,22 @@ You can access the additional data in your components using the `useLoaderData` 
 
 ```ts
 import { useRouteLoaderData } from 'react-router';
+import type { RootLoaderData } from '@plone/types';
 //...
-const rootData = useRouteLoaderData<RootLoader>('root');
+const rootData = useRouteLoaderData<RootLoaderData>('root');
 const likes = rootData?.likes;
 //...
 ```
 
 It is recommended that you return the data of the utility under a unique key (in this case `likes`) to avoid conflicts with other utilities that might return data for the root loader.
+
+`RootLoaderData` describes the data that every Plone Aurora app returns from its root loader.
+To type the data that your utility adds, declare it in your add-on with module augmentation.
+
+```ts
+declare module '@plone/types' {
+  export interface RootLoaderData {
+    likes: { count: number };
+  }
+}
+```
