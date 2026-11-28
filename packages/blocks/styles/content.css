@@ -62,7 +62,7 @@
   .block-image[data-style-align='left'],
   .block-image[data-style-align='right']
 ) {
-  --block-bottom-spacing: 0;
+  --block-spacing-after: 0;
 }
 
 /*

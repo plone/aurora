@@ -1,10 +1,10 @@
-main {
-  grid-area: 'content';
-}
-
 .content-area {
   container-name: content;
   container-type: inline-size;
+
+  /* The room between the content and the header and footer, set by the
+     theme with `--content-spacing` */
+  padding-block: var(--content-spacing, calc(var(--spacing, 0.25rem) * 8));
 
   /* The blocks' spatial relationships live in `content.css`, which the
      editor loads too. */

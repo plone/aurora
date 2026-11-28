@@ -578,7 +578,7 @@ export function TableCellElement({
       )}
       style={
         {
-          '--cellBackground': element.background,
+          '--block-table-cell-background': element.background,
           maxWidth: width || 240,
           minWidth: width || 120,
         } as React.CSSProperties

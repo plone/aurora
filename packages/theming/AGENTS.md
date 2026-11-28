@@ -6,13 +6,14 @@ This file applies only to `packages/theming` and its subdirectories.
 
 - `@plone/theming` provides the **CSS foundations for Plone Aurora theming**.
 - It defines the core design tokens and primitives that other packages and themes build on:
-  - CSS custom properties for colors (`styles/colors.css`)
-  - Typography scale (`styles/typography.css`)
-  - Core theme variables (`styles/theme.css`)
-  - Tailwind integration layer (`styles/tailwind.css`)
-  - Shared utility classes (`styles/utilities.css`)
+  - Tailwind integration layer (`styles/tailwind.css`): the Tailwind setup, its preflight reset, and the generic tokens, in the `theme` cascade layer
+  - Shared utility classes (`styles/utilities.css`): the `icon-*` sizes the `@plone/icons` `Icon` component uses
+  - CSS custom properties for colors (`styles/colors.css`) and core theme variables (`styles/theme.css`), used by the Storybooks of `@plone/tooling` and `@plone/layout` only
   - Simple/base styles (`styles/simple/`)
-- It is consumed by `@plone/agave` (the example theme) and can be consumed by any custom theme.
+- It is consumed by `@plone/agave` (the example theme) and can be consumed by any custom theme. A theme imports `styles/tailwind.css` first, then sets the token values.
+- It doesn't style elements: there's no typography here. Without a theme, the site looks like unstyled HTML with the correct layout.
+- The generic color tokens follow shadcn: `--accent` is a subtle hover fill. A theme's brand color goes in `--brand`, which Tailwind exposes as the `brand` color (`text-brand`, `bg-brand`).
+- The Quanta palette and the `@source` entries for `@plone/quanta` and `@plone/icons` stay here because the Public UI still renders Quanta components: the toolbar, and `Link`, `Container` and `Input` in a few visitor-facing views. Their utility classes (`text-quanta-sapphire`…) come from this palette.
 
 > [!WARNING]
 > This package is experimental. Breaking changes may occur without notice.

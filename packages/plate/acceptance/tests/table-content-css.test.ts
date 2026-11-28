@@ -13,6 +13,9 @@ import { createNativeBlocksPage, openInView } from '../fixtures/pages';
 // whatever reset the public theme brings. Without a reset, browsers give cells
 // a padding, header cells a bold weight and centered text, and tables a
 // border spacing.
+//
+// A block's own margins and padding come from `@plone/layout`'s
+// `content.css`, which lays out the stack of blocks.
 
 const CELL = [
   'height',

@@ -11,6 +11,7 @@ import {
 import { ploneClientContext } from '@plone/aurora/app/middleware.server';
 import { flattenToAppURL } from '@plone/helpers';
 import { Container } from '@plone/quanta';
+import DocumentTitle from '@plone/layout/components/DocumentTitle/DocumentTitle';
 import { SearchForm } from '../components/SearchResults/SearchForm';
 import { SearchResults } from '../components/SearchResults/SearchResults';
 import { SearchPagination } from '../components/SearchResults/SearchPagination';
@@ -98,7 +99,7 @@ export default function SearchRoute() {
   return (
     <div className="content-area">
       <Container width="default" className="route-search">
-        <h1 className="documentFirstHeading">{t('publicui.search.heading')}</h1>
+        <DocumentTitle>{t('publicui.search.heading')}</DocumentTitle>
         <SearchForm />
         <SearchResults
           items={search}

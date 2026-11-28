@@ -50,7 +50,7 @@ Override a rule
 
 /* A token: the code blocks' keyword color. */
 .content-area {
-  --code-token-keyword: #c2185b;
+  --block-code-token-keyword: #c2185b;
 }
 
 /* A rule: more room between the callout's icon and its text. */
@@ -112,12 +112,18 @@ Each value falls back to the default shown when it isn't set.
 ### Layout
 
 `@plone/layout` lays out the blocks, in {file}`packages/layout/styles/content.css`.
+The content is a stack: each block is full width and flush at the top, its content is at most `--block-width` wide, and the gap after it is the block's own bottom padding, so a block's background includes it.
+Blocks don't set outer margins or padding; they set the value of their gap instead.
 
 | Token | Default | What it sets |
 |---|---|---|
 | `--narrow-container-width`, `--default-container-width`, `--layout-container-width` | From `@plone/theming` | The widths of the `narrow`, `default`, and `layout` block widths, and of the `text` and `heading` categories. |
-| `--block-bottom-spacing` | `calc(var(--spacing) * 3)` | The space below a block. Blocks in the `heading` category use `calc(var(--spacing) * 14)`, the `action` category `calc(var(--spacing) * 8)`, and separators and the block before them `0`. Set it on a block selector, such as `.block-callout`, to change one kind of block. |
+| `--block-spacing` | `calc(var(--spacing) * 5)` | The default gap after a block. |
+| `--block-spacing-after` | `--block-spacing` | The gap after one block. Set it on a block selector, such as `.block-callout`, to change one kind of block. Blocks in the `heading` category use `calc(var(--spacing) * 14)`, the `action` category `calc(var(--spacing) * 8)`, and separators, the block before them, floated images and the last block nested in a container `0`. A block doesn't pass it on to the blocks nested in it. |
+| `--block-background` | `transparent` | The block's background, including its gap. Set it on a block selector. A block doesn't pass it on to the blocks nested in it. |
 | `--block-float-max-size` | `66%` | The largest width of a left or right aligned image. |
+| `--gutter` | `calc(var(--spacing) * 4)` | The room on both sides of the page: of the header and footer sections and of each block of the content. Set it on `.app-slot`, or on `:root`. In the editor, the editor's own padding is the gutter. |
+| `--content-spacing` | `calc(var(--spacing) * 8)` | The room between the content and the header and footer, in the Public UI. Set it on `.app-slot`, or on `:root`. |
 
 `--block-width` holds a block's computed width, and `--block-size`, `--block-margin`, and `--block-float` hold the image block's style fields.
 The framework sets them; don't set them in a theme.
@@ -135,28 +141,31 @@ The framework sets them; don't set them in a theme.
 | `--block-table-border-color` | `var(--border)` | Table cell borders. |
 | `--block-callout-background` | `var(--muted)` | The callout's box, unless the callout has its own color. |
 | `--block-callout-icon-font-family` | An emoji font stack | The callout's icon. |
+| `--block-toc-highlight-color` | `var(--brand)` | The highlight on a heading after jumping to it from the table of contents, at 13%. |
+| `--block-title-spacing-after` | `calc(var(--spacing) * 8)` | The gap after the page title. |
+| `--block-h1-spacing-before` to `--block-h6-spacing-before` | `calc(var(--spacing) * 12)`, `* 10`, `* 8`, `* 6` for `h4` to `h6` | The room before a heading, set as the gap after the block that precedes it. `h5` and `h6` follow `h4`. |
 
 The code block's syntax colors are tokens too.
 Their defaults are GitHub's light theme.
 
 | Token | Default | Highlighter classes |
 |---|---|---|
-| `--code-token-keyword` | `#d73a49` | `hljs-keyword`, `hljs-doctag`, `hljs-template-tag`, `hljs-template-variable`, `hljs-type` |
-| `--code-token-attribute` | `#005cc5` | `hljs-attr`, `hljs-attribute`, `hljs-literal`, `hljs-meta`, `hljs-number`, `hljs-operator`, `hljs-selector-attr`, `hljs-selector-class`, `hljs-selector-id`, `hljs-variable` |
-| `--code-token-string` | `#032f62` | `hljs-string`, `hljs-regexp`, strings inside `hljs-meta` |
-| `--code-token-title` | `#6f42c1` | `hljs-title` |
-| `--code-token-name` | `#22863a` | `hljs-name`, `hljs-quote`, `hljs-selector-tag`, `hljs-selector-pseudo` |
-| `--code-token-comment` | `#6a737d` | `hljs-comment`, `hljs-code`, `hljs-formula` |
-| `--code-token-symbol` | `#e36209` | `hljs-symbol` |
-| `--code-token-bullet` | `#735c0f` | `hljs-bullet` |
-| `--code-token-section` | `#005cc5` | `hljs-section` |
-| `--code-token-addition`, `--code-token-addition-background` | `#22863a`, `#f0fff4` | `hljs-addition` |
-| `--code-token-deletion`, `--code-token-deletion-background` | `#b31d28`, `#ffeef0` | `hljs-deletion` |
+| `--block-code-token-keyword` | `#d73a49` | `hljs-keyword`, `hljs-doctag`, `hljs-template-tag`, `hljs-template-variable`, `hljs-type` |
+| `--block-code-token-attribute` | `#005cc5` | `hljs-attr`, `hljs-attribute`, `hljs-literal`, `hljs-meta`, `hljs-number`, `hljs-operator`, `hljs-selector-attr`, `hljs-selector-class`, `hljs-selector-id`, `hljs-variable` |
+| `--block-code-token-string` | `#032f62` | `hljs-string`, `hljs-regexp`, strings inside `hljs-meta` |
+| `--block-code-token-title` | `#6f42c1` | `hljs-title` |
+| `--block-code-token-name` | `#22863a` | `hljs-name`, `hljs-quote`, `hljs-selector-tag`, `hljs-selector-pseudo` |
+| `--block-code-token-comment` | `#6a737d` | `hljs-comment`, `hljs-code`, `hljs-formula` |
+| `--block-code-token-symbol` | `#e36209` | `hljs-symbol` |
+| `--block-code-token-bullet` | `#735c0f` | `hljs-bullet` |
+| `--block-code-token-section` | `#005cc5` | `hljs-section` |
+| `--block-code-token-addition`, `--block-code-token-addition-background` | `#22863a`, `#f0fff4` | `hljs-addition` |
+| `--block-code-token-deletion`, `--block-code-token-deletion-background` | `#b31d28`, `#ffeef0` | `hljs-deletion` |
 
 ### Theme values
 
 The framework styles also read the theme's general values, with Tailwind's defaults as fallbacks, so a theme without Tailwind can set them too.
-These include colors such as `--muted`, `--muted-foreground`, `--primary`, `--border`, `--accent`, and `--ring`, the spacing unit `--spacing`, the type scale such as `--text-sm` and `--text-sm--line-height`, font weights such as `--font-weight-bold`, the radii `--radius-sm` and `--radius-md`, and `--font-mono`.
+These include colors such as `--muted`, `--muted-foreground`, `--primary`, `--border`, `--accent` (a subtle hover fill), `--brand` (the site's brand color), and `--ring`, the spacing unit `--spacing`, the type scale such as `--text-sm` and `--text-sm--line-height`, font weights such as `--font-weight-bold`, the radii `--radius-sm` and `--radius-md`, and `--font-mono`.
 
 ## Give code blocks dark colors
 
@@ -167,17 +176,17 @@ This theme gives code blocks dark colors when the visitor prefers a dark color s
 @media (prefers-color-scheme: dark) {
   .content-area {
     --block-code-block-background: #1e293b;
-    --code-token-keyword: #ee6960;
-    --code-token-attribute: #6596cf;
-    --code-token-string: #3593ff;
-    --code-token-title: #a77bfa;
-    --code-token-name: #36a84f;
-    --code-token-symbol: #c3854e;
-    --code-token-section: #61a5f2;
-    --code-token-addition: #ceead5;
-    --code-token-addition-background: #3c5743;
-    --code-token-deletion: #e7c7cb;
-    --code-token-deletion-background: #473235;
+    --block-code-token-keyword: #ee6960;
+    --block-code-token-attribute: #6596cf;
+    --block-code-token-string: #3593ff;
+    --block-code-token-title: #a77bfa;
+    --block-code-token-name: #36a84f;
+    --block-code-token-symbol: #c3854e;
+    --block-code-token-section: #61a5f2;
+    --block-code-token-addition: #ceead5;
+    --block-code-token-addition-background: #3c5743;
+    --block-code-token-deletion: #e7c7cb;
+    --block-code-token-deletion-background: #473235;
   }
 
   .block-code_block .block-code_block__pre {

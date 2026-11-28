@@ -1,0 +1,1 @@
+The block width acceptance test reads the container widths from `.content-area`, where a theme can set them, instead of `:root`. @sneridagh

@@ -1,3 +1,4 @@
+import cx from 'clsx';
 import EventDate from '../EventDate/EventDate';
 import { Link } from '@plone/quanta';
 import * as RRuleLib from 'rrule';
@@ -23,7 +24,7 @@ export default function EventDetails({ content, locale }: EventDetailsProps) {
   const { t } = useTranslation();
 
   return (
-    <aside className={styles['event-details']}>
+    <aside className={cx(styles['event-details'], 'event-details')}>
       <dl>
         {content.subjects?.length > 0 && (
           <>

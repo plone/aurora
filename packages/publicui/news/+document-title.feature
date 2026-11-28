@@ -1,0 +1,1 @@
+The search and sitemap pages render their title with `DocumentTitle`, so it's styled like the title block. @danalvrz

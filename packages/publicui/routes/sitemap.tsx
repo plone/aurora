@@ -9,6 +9,7 @@ import Sitemap from '@plone/layout/components/Sitemap/Sitemap';
 import { Container } from '@plone/quanta';
 import type { NavigationResponse } from '@plone/types';
 import { flattenToAppURL } from '@plone/helpers';
+import DocumentTitle from '@plone/layout/components/DocumentTitle/DocumentTitle';
 
 export const handle = {
   bodyClass: 'sitemap-route',
@@ -54,7 +55,7 @@ export default function SitemapRoute({ loaderData }: SitemapRouteProps) {
   return (
     <div className="content-area">
       <Container width="default" className="route-sitemap">
-        <h1 className="documentFirstHeading">{t('publicui.sitemap')}</h1>
+        <DocumentTitle>{t('publicui.sitemap')}</DocumentTitle>
         <Sitemap items={sitemapnavigation.items} />
       </Container>
     </div>

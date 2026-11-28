@@ -24,11 +24,13 @@ async function getInheritedBlockWidth(locator: Locator) {
   });
 }
 
-async function getRootVariable(page: Page, name: string) {
+// A theme may set the container widths on the content root, `.content-area`,
+// as Agave does, so read them there.
+async function getContentVariable(page: Page, name: string) {
   return page.evaluate((variableName: string) => {
-    return getComputedStyle(document.documentElement)
-      .getPropertyValue(variableName)
-      .trim();
+    const root =
+      document.querySelector('.content-area') ?? document.documentElement;
+    return getComputedStyle(root).getPropertyValue(variableName).trim();
   }, name);
 }
 
@@ -88,7 +90,10 @@ test('Somersault edit mode injects the configured CSS custom property for an exp
   const imageBlock = page.locator('.block-image').first();
   await expect(imageBlock).toBeVisible();
 
-  const expectedWidth = await getRootVariable(page, '--layout-container-width');
+  const expectedWidth = await getContentVariable(
+    page,
+    '--layout-container-width',
+  );
   const blockWidth = await getInheritedBlockWidth(imageBlock);
 
   expect(blockWidth).toBe(expectedWidth);
@@ -110,7 +115,10 @@ test('Somersault edit mode normalizes paragraph width to the configured default'
     page.getByText('Paragraph without explicit width'),
   ).toBeVisible();
 
-  const expectedWidth = await getRootVariable(page, '--narrow-container-width');
+  const expectedWidth = await getContentVariable(
+    page,
+    '--narrow-container-width',
+  );
   const blockWidth = await getInheritedBlockWidth(
     page.getByText('Paragraph without explicit width'),
   );

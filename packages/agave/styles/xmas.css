@@ -1,0 +1,217 @@
+/*
+ * TEMPORARY · the Xmas skin. To remove it,
+ * delete this file and its @import in publicui.css.
+ *
+ * Everything here is scoped to data-skin="xmas" on <html>. The file sits
+ * outside the cascade layers, so it wins over Agave's layered rules without
+ * extra specificity, and Agave itself needs no tokens for it. The headings
+ * fall back to Georgia, so they stay serif until Playfair Display is
+ * installed.
+ */
+
+/* ── Tokens ── */
+[data-skin='xmas'] :is(.app-slot, .content-area) {
+  --font-body:
+    'Source Sans 3', 'Funnel', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-heading: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-size: 17px;
+  --heading-weight: 700;
+  --radius: 8px;
+  --blur: 0px;
+  --border-width: 1px;
+  --container-width: 1120px;
+  --text-width: 760px;
+  --align: start;
+  --nav-align: center;
+  --type-scale: 1.25;
+  --heading-tracking: -0.01em;
+  --radius-control: 6px;
+  --callout-background: light-dark(#e7efe8, #1c3326);
+  --callout-foreground: light-dark(#1f3a2d, #d7e6db);
+  --quote-background: light-dark(#fffdf8, #1a2a22);
+  --quote-image: none;
+  --card-background: light-dark(#fffdf8, #1a2a22);
+  --card-shadow: none;
+  --background: light-dark(#fbf6ec, #13201a);
+  --foreground: light-dark(#2a1a14, #f1e8d8);
+  --brand: light-dark(#9e1b32, #f08a9b);
+  --brand-foreground: light-dark(#fff7e8, #13201a);
+  --header-background: light-dark(#9e1b32, #6e1224);
+  --header-foreground: #fff7e8;
+  --footer-background: light-dark(#1f4d3a, #163a2b);
+  --footer-foreground: #f3eadb;
+  --error: light-dark(#b42318, #f97066);
+  --background-image: none;
+  --shadow: 0 22px 44px -24px light-dark(rgb(70 30 24 / 30%), rgb(0 0 0 / 70%));
+}
+
+/* ── Header: a gold current item, the log-in pill's text in the band's
+   colour, and a ribbon under the main row ── */
+[data-skin='xmas'] #header {
+  --brand: #f3d88e;
+  --primary-foreground: light-dark(#9e1b32, #6e1224);
+}
+[data-skin='xmas'] #header .section-header {
+  border-bottom: 12px solid transparent;
+  background: repeating-linear-gradient(
+      90deg,
+      #1f4d3a 0 24px,
+      #9e1b32 24px 30px,
+      #1f4d3a 30px 54px,
+      #d9b25a 54px 58px
+    )
+    bottom / 100% 12px no-repeat border-box;
+}
+
+/* ── Breadcrumbs: a cream band of their own ── */
+[data-skin='xmas'] #header .breadcrumbs {
+  --background: light-dark(#f3eadb, #1b2a23);
+  --foreground: light-dark(#2a1a14, #f1e8d8);
+  --brand: light-dark(#1f4d3a, #8fc7a5);
+  --muted-foreground: color-mix(
+    in oklab,
+    var(--foreground) 65%,
+    var(--background)
+  );
+  --border: color-mix(in oklab, var(--foreground) 12%, var(--background));
+  background: var(--background);
+}
+
+/* ── Footer: a candy cane along its top ── */
+[data-skin='xmas'] #footer {
+  background:
+    repeating-linear-gradient(90deg, #9e1b32 0 20px, #fbf6ec 20px 40px) top /
+      100% 8px no-repeat,
+    var(--background);
+}
+
+/* ── White logos on the coloured bands ── */
+[data-skin='xmas'] .app-slot :is(.section-header, .section-footer) a.logo {
+  filter: brightness(0) invert(1);
+}
+
+/* ── Page title: cranberry, with a pine bar under the text ── */
+[data-skin='xmas'] .content-area :is(.documentFirstHeading, .slate-title) {
+  color: var(--brand);
+}
+[data-skin='xmas']
+  .content-area
+  :is(.documentFirstHeading, .slate-title)
+  > .block-inner-container::after {
+  display: block;
+  width: 88px;
+  height: 4px;
+  border-radius: 2px;
+  margin-top: var(--space-2xs);
+  background: light-dark(#1f4d3a, #3b7a57);
+  content: '';
+}
+
+/* ── Quote: a gold double frame, in the heading face ── */
+[data-skin='xmas'] .content-area .slate-blockquote > .block-inner-container {
+  border: 2px solid light-dark(#d9b25a, #c9a24c);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xl);
+  font-style: italic;
+  outline: 1px solid light-dark(#d9b25a, #c9a24c);
+  outline-offset: 5px;
+}
+
+/* ── Cards: cranberry titles ── */
+[data-skin='xmas'] .content-area .block-teaser__title {
+  color: var(--brand);
+}
+
+/* ── Snow over the page: three tiles of flakes, each moving one tile per
+   cycle, so the big flakes fall fastest. Still for reduced motion. ── */
+[data-skin='xmas'] .app-slot::after {
+  position: fixed;
+  z-index: 60;
+  animation: xmas-snow 14s linear infinite;
+  background:
+    radial-gradient(
+        circle at 20px 30px,
+        #ffffff 2.5px,
+        light-dark(rgb(90 60 40 / 30%), transparent) 3.2px,
+        transparent 4px
+      )
+      0 0 / 220px 220px,
+    radial-gradient(
+        circle at 110px 140px,
+        #ffffff 2px,
+        light-dark(rgb(90 60 40 / 30%), transparent) 2.7px,
+        transparent 3.5px
+      )
+      0 0 / 220px 220px,
+    radial-gradient(
+        circle at 170px 60px,
+        #ffffff 3px,
+        light-dark(rgb(90 60 40 / 30%), transparent) 3.7px,
+        transparent 4.5px
+      )
+      0 0 / 220px 220px,
+    radial-gradient(
+        circle at 60px 190px,
+        #ffffff 2px,
+        light-dark(rgb(90 60 40 / 30%), transparent) 2.7px,
+        transparent 3.5px
+      )
+      0 0 / 220px 220px,
+    radial-gradient(
+        circle at 50px 80px,
+        #ffffff 3.5px,
+        light-dark(rgb(90 60 40 / 30%), transparent) 4.2px,
+        transparent 5px
+      )
+      0 0 / 330px 330px,
+    radial-gradient(
+        circle at 240px 30px,
+        #ffffff 3px,
+        light-dark(rgb(90 60 40 / 30%), transparent) 3.7px,
+        transparent 4.5px
+      )
+      0 0 / 330px 330px,
+    radial-gradient(
+        circle at 160px 250px,
+        #ffffff 4px,
+        light-dark(rgb(90 60 40 / 30%), transparent) 4.7px,
+        transparent 5.5px
+      )
+      0 0 / 330px 330px,
+    radial-gradient(
+        circle at 120px 100px,
+        rgb(255 255 255 / 85%) 5px,
+        light-dark(rgb(90 60 40 / 30%), transparent) 5.7px,
+        transparent 6.5px
+      )
+      0 0 / 470px 470px,
+    radial-gradient(
+        circle at 360px 320px,
+        rgb(255 255 255 / 85%) 4.5px,
+        light-dark(rgb(90 60 40 / 30%), transparent) 5.2px,
+        transparent 6px
+      )
+      0 0 / 470px 470px;
+  content: '';
+  inset: 0;
+  pointer-events: none;
+}
+@keyframes xmas-snow {
+  to {
+    background-position:
+      30px 220px,
+      30px 220px,
+      30px 220px,
+      30px 220px,
+      -40px 330px,
+      -40px 330px,
+      -40px 330px,
+      50px 470px,
+      50px 470px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-skin='xmas'] .app-slot::after {
+    animation: none;
+  }
+}

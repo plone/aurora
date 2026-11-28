@@ -1,3 +1,4 @@
+import cx from 'clsx';
 import { hasBlocksData } from '@plone/helpers';
 import { useRouteLoaderData } from 'react-router';
 import type { RootLoader } from '@plone/aurora/app/root';
@@ -5,6 +6,7 @@ import RenderBlocks from '../blocks/RenderBlocks';
 import EventDetails from '../components/EventDetails/EventDetails';
 import config from '@plone/registry';
 import styles from './EventView.module.css';
+import DocumentTitle from '../components/DocumentTitle/DocumentTitle';
 
 export default function EventView() {
   const rootData = useRouteLoaderData<RootLoader>('root');
@@ -18,13 +20,16 @@ export default function EventView() {
   const hasBlocks = hasBlocksData(content);
 
   return (
-    <Container width="default" className={styles['event-view']}>
+    <Container
+      width="default"
+      className={cx(styles['event-view'], 'event-view')}
+    >
       <div className="content">
         {hasBlocks ? (
           <RenderBlocks content={content} />
         ) : (
           <>
-            <h1 className="documentFirstHeading">{content.title}</h1>
+            <DocumentTitle>{content.title}</DocumentTitle>
             {Boolean(content.description) && (
               <p className="documentDescription">{content.description}</p>
             )}

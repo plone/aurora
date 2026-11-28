@@ -12,6 +12,9 @@ import { createNativeBlocksPage, openInView } from '../fixtures/pages';
 // The text blocks' styles come from `styles/content.css`. They must render
 // the same whatever reset the public theme brings: Tailwind's preflight (as in
 // Agave), a different reset, or none.
+//
+// A block's own margins and padding come from `@plone/layout`'s
+// `content.css`, which lays out the stack of blocks.
 
 /** The properties the text block styles set, per element. */
 const OWNED: Record<string, string[]> = {

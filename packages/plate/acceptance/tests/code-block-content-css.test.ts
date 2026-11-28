@@ -12,6 +12,9 @@ import { createNativeBlocksPage, openInView } from '../fixtures/pages';
 // same whatever reset the public theme brings. Without a reset, browsers give
 // `pre` a margin and `code` a smaller monospace font; `@plone/theming`'s simple
 // reset wraps the lines of a `pre`.
+//
+// A block's own margins and padding come from `@plone/layout`'s
+// `content.css`, which lays out the stack of blocks.
 
 /** The properties the code block styles set, per element. */
 const OWNED: Record<string, string[]> = {

@@ -16,6 +16,9 @@ import { createNativeBlocksPage, openInView } from '../fixtures/pages';
 //
 // Sizes that follow the text aren't compared: removing the reset also removes
 // the theme's font, which the content inherits.
+//
+// A block's own margins and padding come from `@plone/layout`'s
+// `content.css`, which lays out the stack of blocks.
 
 /** The properties the structural styles set, per element. */
 const OWNED: Record<string, string[]> = {

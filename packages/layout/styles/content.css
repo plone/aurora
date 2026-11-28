@@ -1,17 +1,94 @@
 /*
- * The block model's spatial relationships: block widths by category, the
- * spacing between blocks, and nested blocks. They're loaded in both the
+ * The block model's spatial relationships: the stack of blocks, block widths,
+ * the spacing between blocks, and nested blocks. They're loaded in both the
  * Public UI and the CMSUI editor, inside the `plone-content` cascade layer, so
  * blocks are laid out the same in both. Follow the authoring rules in the
  * "Content styles" section of the add-on styles loader docs.
+ *
+ * The content is a stack, and every block follows the same rules:
+ *
+ *   .content-area
+ *     .slate-editor                the stack
+ *       > .block, .slate-title     a piece: full width, flush at the top,
+ *                                  its background, then its gap,
+ *                                  `--block-spacing-after`, as its bottom
+ *                                  padding
+ *         .block-inner-container   the content, at most `--block-width` wide
+ *                                  (the block's width setting)
+ *
+ * The gap is part of the block, so a block with a background
+ * (`--block-background`) includes it. Next step, once blocks have a
+ * background style field: a block followed by a block with a different
+ * background cancels its gap (`--block-spacing-after: 0`), and a block with
+ * a background gets the same room at the top, so its content sits inside
+ * the colour. Consecutive blocks with the same background then join into
+ * one band.
+ *
+ * Layout owns the mechanism; the block packages own the values. A block sets
+ * its own gap with `--block-spacing-after` (on the block), and more room
+ * before a block is set on the block that precedes it, e.g.
+ * `:where(.block:has(+ .slate-h2)) { --block-spacing-after: … }`. Blocks
+ * don't set outer margins or padding.
  */
 
-:where(.content-area > .block) {
-  max-width: 100%;
-  margin-right: auto;
-  margin-left: auto;
-  background: var(--background);
-  color: var(--foreground);
+/* Tokens are read with a fallback and not declared here, so a theme sets
+   them on any ancestor: `--block-spacing`, the default gap, and `--gutter`,
+   the room on both sides of the page. */
+
+/* A block's gap and background belong to that block: they aren't inherited,
+   so the blocks nested in it (a quote's paragraphs, a column's teasers, a
+   table cell's paragraphs) start from the default. */
+@property --block-spacing-after {
+  inherits: false;
+  syntax: '*';
+}
+
+@property --block-background {
+  inherits: false;
+  syntax: '*';
+}
+
+/* A piece of the stack: full width, flush at the top, then its gap. The page
+   title of a view without blocks renders the title block too. */
+:where(.content-area :is(.slate-editor > *, .block, .slate-title)) {
+  padding-top: 0;
+  padding-bottom: var(
+    --block-spacing-after,
+    var(--block-spacing, calc(var(--spacing, 0.25rem) * 5))
+  );
+  margin: 0;
+  background-color: var(--block-background, transparent);
+}
+
+/* The pieces keep a gutter on both sides; nested blocks don't. In the
+   editor, the editor itself is the content area, and its own padding is the
+   gutter, so this doesn't apply there. */
+:where(.content-area .slate-editor > *) {
+  padding-inline: var(--gutter, calc(var(--spacing, 0.25rem) * 4));
+}
+
+/* A full width block uses the whole width: no gutter */
+:where(
+  .content-area
+    .slate-editor
+    > :is(.slate-blockWidth-full, [data-style-block-width='full'])
+) {
+  --gutter: 0px;
+}
+
+/* The inner container: the block's width */
+:where(.content-area .block-inner-container) {
+  width: 100%;
+  max-width: var(--block-width, var(--default-container-width));
+  align-items: var(--align-items, center);
+  margin: 0 auto;
+  grid-auto-flow: var(--grid-auto-flow, row);
+  justify-items: var(--justify-items, stretch);
+}
+
+/* The last block in a container leaves no gap inside it */
+:where(.content-area .block .block:last-child) {
+  --block-spacing-after: 0;
 }
 
 /* Category text */
@@ -19,49 +96,26 @@
   --block-width: var(--narrow-container-width);
 }
 
-/* Nested blocks (e.g. paragraphs in a blockquote, table cell or column)
-   fill their container instead of using their category width. The inner
-   container's `justify-items: start` would otherwise shrink them to fit. */
-:where(.content-area .block .block) {
-  --block-width: 100%;
-  justify-self: stretch;
-}
-
-/* Category separator */
+/* Category separator: the separator brings its own room */
 :where(.content-area .category-separator),
 :where(.content-area .block:has(+ .category-separator)) {
-  --block-bottom-spacing: 0;
+  --block-spacing-after: 0;
 }
 
 /* Category heading */
 :where(.content-area .category-heading) {
   --block-width: var(--default-container-width);
-  --block-bottom-spacing: calc(var(--spacing) * 14);
+  --block-spacing-after: calc(var(--spacing, 0.25rem) * 14);
 }
 
 /* Category action */
 :where(.content-area .category-action) {
-  --block-bottom-spacing: calc(var(--spacing) * 8);
+  --block-spacing-after: calc(var(--spacing, 0.25rem) * 8);
 }
 
-:where(.content-area .block .block-inner-container) {
-  width: 100%;
-  max-width: var(--block-width, var(--default-container-width));
-  align-items: var(--align-items, center);
-  padding-bottom: var(--block-bottom-spacing, calc(var(--spacing) * 3));
-  margin: 0 auto;
-  grid-auto-flow: var(--grid-auto-flow, row);
-  justify-items: var(--justify-items, start);
-}
-
-:where(.content-area .block.layout) {
-  --block-width: var(--layout-container-width);
-}
-
-:where(.content-area .block.default) {
-  --block-width: var(--default-container-width);
-}
-
-:where(.content-area .block.narrow) {
-  --block-width: var(--narrow-container-width);
+/* Nested blocks (e.g. paragraphs in a blockquote, table cell or column)
+   fill their container instead of using their category width. Last, so it
+   wins over the categories. */
+:where(.content-area .block .block) {
+  --block-width: 100%;
 }

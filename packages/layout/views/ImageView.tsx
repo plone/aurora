@@ -4,6 +4,7 @@ import type { RootLoader } from '@plone/aurora/app/root';
 import { useTranslation } from 'react-i18next';
 import prettybytes from 'pretty-bytes';
 import Image from '../components/Image/Image';
+import DocumentTitle from '../components/DocumentTitle/DocumentTitle';
 
 export default function ImageView() {
   const { t } = useTranslation();
@@ -19,7 +20,7 @@ export default function ImageView() {
 
   return (
     <Container width="default">
-      <h1 className="documentFirstHeading">{content.title}</h1>
+      <DocumentTitle>{content.title}</DocumentTitle>
       <p className="documentDescription">{content.description}</p>
       {content.image?.download ? (
         <Link href={content.image.download} download={content.image.filename}>
