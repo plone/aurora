@@ -61,6 +61,7 @@ async function createImagePage(
           ],
         },
       },
+      blocks_layout: { items: ['__somersault__'] },
     }),
   });
 }

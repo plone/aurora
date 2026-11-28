@@ -1,12 +1,12 @@
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
 import { createContent } from '../../../tooling/playwright/content';
+import {
+  acceptanceApiURL,
+  acceptanceAuthorization,
+} from '../../../tooling/playwright/backend';
 
-const API = process.env.API_PATH || 'http://localhost:55001/plone';
-const auth = {
-  Accept: 'application/json',
-  Authorization: `Basic ${Buffer.from('admin:secret').toString('base64')}`,
-};
+const API = acceptanceApiURL();
 
 // Plone stores date-times in UTC. The date-time widget shows them in the
 // browser's time zone, and stores the edited value in UTC again.
@@ -47,8 +47,18 @@ test('A date-time field shows local time and saves UTC', async ({
   await saved;
 
   const event = await (
-    await request.get(`${API}/dated-event`, { headers: auth })
+    await request.get(`${API}/dated-event`, {
+      headers: {
+        Accept: 'application/json',
+        Authorization: await acceptanceAuthorization(
+          request,
+          API,
+          'admin',
+          'secret',
+        ),
+      },
+    })
   ).json();
-  expect(event.start).toBe('2026-10-05T11:00:00+00:00');
-  expect(event.end).toBe('2026-10-05T11:00:00+00:00');
+  expect(new Date(event.start).toISOString()).toBe('2026-10-05T11:00:00.000Z');
+  expect(new Date(event.end).toISOString()).toBe('2026-10-05T11:00:00.000Z');
 });

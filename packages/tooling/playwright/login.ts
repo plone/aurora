@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
 import { cookie } from '@plone/react-router';
+import { acceptanceApiURL } from './backend';
 
 export type LoginOptions = {
   apiURL?: string;
@@ -11,7 +12,6 @@ export type LoginOptions = {
 
 function getDefaults(options: LoginOptions) {
   const hostname = process.env.BACKEND_HOST || '127.0.0.1';
-  const siteId = process.env.SITE_ID || 'plone';
 
   const api =
     options.api || (process.env.API === 'guillotina' ? 'guillotina' : 'plone');
@@ -20,7 +20,7 @@ function getDefaults(options: LoginOptions) {
     options.apiURL ||
     (api === 'guillotina'
       ? `http://${hostname}:8081/db/web`
-      : process.env.API_PATH || `http://${hostname}:55001/${siteId}`);
+      : acceptanceApiURL());
 
   const username =
     options.username || (api === 'guillotina' ? 'admin' : 'admin');

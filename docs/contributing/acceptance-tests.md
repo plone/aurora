@@ -11,6 +11,8 @@ myst:
 
 Plone Aurora uses [Playwright](https://playwright.dev/) for browser-based acceptance tests.
 
+To run the separate Nick-backed acceptance test, see {doc}`../how-to-guides/use-nick-backend`.
+
 There are a number of tests available covering all the configuration use cases.
 These tests have both a specific backend and frontend configuration setup and a related set of tests.
 The continuous integration infrastructure runs them all automatically on every push to a branch or a pull request.

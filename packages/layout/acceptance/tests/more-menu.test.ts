@@ -1,11 +1,12 @@
 import { expect, test } from '../../../tooling/playwright/test';
 import { login } from '../../../tooling/playwright/login';
+import { acceptanceApiURL } from '../../../tooling/playwright/backend';
 
 test.setTimeout(45_000);
 test('More menu changes workflow and opens history and sharing', async ({
   page,
 }) => {
-  const api = process.env.API_PATH || 'http://127.0.0.1:55001/plone';
+  const api = acceptanceApiURL();
   const { token } = await login(page);
   const headers = {
     Accept: 'application/json',

@@ -2,6 +2,10 @@ import type { Page } from '@playwright/test';
 
 import { createContent } from '../../../tooling/playwright/content';
 import { waitForPlateEditorReady } from '../../../tooling/playwright/plate';
+import {
+  acceptanceApiURL,
+  acceptanceAuthorization,
+} from '../../../tooling/playwright/backend';
 import { MAIN_REGION, PLATE_TYPE } from '../../constants';
 import { nativeBlockSections, type NativeBlockSection } from './native-blocks';
 
@@ -86,13 +90,16 @@ export async function savePage(page: Page) {
 
 /** Reads the somersault value of a page straight from the REST API. */
 export async function getStoredValue(page: Page, pageId: string) {
-  const hostname = process.env.BACKEND_HOST || '127.0.0.1';
-  const siteId = process.env.SITE_ID || 'plone';
-  const apiURL = process.env.API_PATH || `http://${hostname}:55001/${siteId}`;
+  const apiURL = acceptanceApiURL();
   const response = await page.request.get(`${apiURL}/${pageId}`, {
     headers: {
       Accept: 'application/json',
-      Authorization: `Basic ${Buffer.from('admin:secret').toString('base64')}`,
+      Authorization: await acceptanceAuthorization(
+        page.request,
+        apiURL,
+        'admin',
+        'secret',
+      ),
     },
   });
   const content = await response.json();

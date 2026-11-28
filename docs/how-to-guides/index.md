@@ -15,6 +15,7 @@ This section of the documentation contains how-to guides for developing with Plo
 :maxdepth: 2
 
 routes
+use-nick-backend
 register-an-add-on
 extend-vite-configuration
 access-registry
