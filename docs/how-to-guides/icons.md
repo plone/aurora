@@ -56,14 +56,11 @@ Under the hood, the SVGR plugin gets the SVG, optimizes it, and transforms it in
 Please note the `?react` query parameter in the import statement, which tells Vite to apply the SVGR transformation and return a React component.
 ```
 
-````{tip}
-To fix the TypeScript error `Cannot find module './my-icon.svg?react' or its corresponding type declarations`, create a {file}`types.d.ts` file in your add-on with the following content:
-
-```{code-block} ts
-:caption: {file}`packages/<add-on-name>/types.d.ts`
-import '@plone/icons/svg';
+```{note}
+TypeScript knows these components without any setup.
+`@plone/types` declares the `*.svg?react` modules, with the props of the `Icon` component, and your add-on loads it as soon as it imports a type from a Plone package, such as the `ConfigType` of its `install` function.
+If your add-on imports no type from a Plone package, add `import '@plone/types';` to a {file}`types.d.ts` file in it.
 ```
-````
 
 ### Icon props
 

@@ -1,0 +1,1 @@
+Fixed the props of `*.svg?react` components: they are the props of the `Icon` component of `@plone/icons`, which wraps them, instead of the props of an `<svg>` element. Add-ons no longer need a `types.d.ts` file to use them. @sneridagh

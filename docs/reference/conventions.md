@@ -86,8 +86,9 @@ Check out the Storybook for this package at [@plone/quanta Storybook](https://pl
 
 ## `@plone/icons` package
 
-This package owns the Quanta icon set: the raw SVGs, a React component per icon, the `Icon` wrapper component, the `*.svg?react` type declarations, and the SVGR Vite plugin used to transform SVGs into React components at build time.
-It has no dependency on any other Plone package.
+This package owns the Quanta icon set: the raw SVGs, a React component per icon, the `Icon` wrapper component, and the SVGR Vite plugin used to transform SVGs into React components at build time.
+The `*.svg?react` type declarations are in `@plone/types`, with the other module declarations, and `@plone/icons/svg` loads them.
+It depends on no other Plone package than `@plone/types`.
 
 Check out the Storybook for this package at [@plone/icons Storybook](https://plone-icons.readthedocs.io/).
 

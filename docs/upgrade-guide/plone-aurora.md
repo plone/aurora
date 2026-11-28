@@ -31,6 +31,29 @@ It is usually better and quicker to move your items into new locations and copy 
 
 ## Upgrading to Plone Aurora
 
+(upgrade-guide-svg-react-icon-props)=
+
+### `*.svg?react` components take the props of `Icon`
+
+```{versionchanged} 1.0.0-alpha.28
+These steps apply when you upgrade from Plone Aurora 1.0.0-alpha.27 or earlier to 1.0.0-alpha.28 or later.
+```
+
+The SVGR Vite plugin of `@plone/icons` wraps every `*.svg?react` import in the `Icon` component.
+`@plone/types` declared these components with the props of an `<svg>` element instead, and its declaration took precedence over the one in `@plone/icons/svg`.
+So TypeScript rejected props such as `size` and `color`, and accepted props such as `strokeWidth` that `Icon` doesn't pass to the `<svg>` element.
+
+Now `@plone/types` declares them with the props of `Icon`, except `children`, and `@plone/icons/svg` loads that declaration.
+Your add-on doesn't need a {file}`types.d.ts` file for them anymore, and an existing `import '@plone/icons/svg';` keeps working.
+
+If TypeScript now rejects a prop of a `*.svg?react` component, the component never received it.
+Use `className` or `style` instead, or the `size` and `color` props of `Icon`.
+
+```diff
+-<ChevronIcon width={18} height={18} />
++<ChevronIcon size="sm" />
+```
+
 (upgrade-guide-build-plone-devtools)=
 
 ### Build `@plone/devtools` in `build-deps`
