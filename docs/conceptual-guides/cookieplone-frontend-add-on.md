@@ -44,15 +44,19 @@ The generated project contains the following files and folders:
 
 {file}`pnpm-workspace.yaml`
 : This file configures the pnpm workspace.
-  It picks up packages in {file}`packages/*` and nested external packages in {file}`packages/**/packages/*`.
+  It picks up packages in {file}`packages/*`, nested external packages in {file}`packages/**/packages/*`, and the packages of a Plone Aurora checkout in {file}`core/packages/*`, if there is one.
   Its `catalog` holds the versions that the app and your add-on share, such as React, React Router, and TypeScript.
   Keep `react-router` and `@react-router/dev` at the version that `@plone/aurora` uses.
+
+{file}`.pnpmfile.cjs`
+: This file links the `@plone/*` packages to a Plone Aurora checkout in {file}`core`, as described in {ref}`develop-against-unreleased-aurora`.
+  Without {file}`core`, it does nothing.
 
 {file}`app`, {file}`react-router.config.ts`, {file}`vite.config.ts`, and {file}`server.js`
 : These files make the root folder a React Router app.
   They come from `@plone/aurora`: the files in {file}`app` re-export its root route and entries, {file}`react-router.config.ts` adds its preset, and {file}`vite.config.ts` adds its Vite plugin.
   In normal circumstances, you do not need to change them.
-  A platform that builds React Router apps, such as Vercel, builds this app with `react-router build`.
+  {doc}`../how-to-guides/deploy-an-app` explains how to build and run it in production.
 
 ## Add-on folder structure
 
@@ -170,3 +174,39 @@ make install
 ```
 
 To use packages that aren't on npm, such as an add-on from another repository, check them out in {file}`packages` with {term}`mrs-developer`, and the workspace picks them up.
+
+(develop-against-unreleased-aurora)=
+
+## Develop against an unreleased Plone Aurora
+
+To try a change in Plone Aurora with your add-on before it's released, check out Plone Aurora in the {file}`core` folder.
+
+```shell
+make core
+```
+
+It clones the `main` branch of the Plone Aurora repository, and builds its packages.
+To check out another branch or a fork, set `CORE_BRANCH` and `CORE_REPOSITORY`.
+
+```shell
+make core CORE_BRANCH=my-feature CORE_REPOSITORY=git@github.com:me/aurora.git
+```
+
+While {file}`core` exists, {file}`.pnpmfile.cjs` changes how pnpm installs the app:
+
+- {file}`pnpm-workspace.yaml` includes the packages in {file}`core/packages`, except the Volto ones.
+- Every `@plone/*` package of the checkout overrides the released one, for the app, your add-ons and their dependencies.
+- The versions of the checkout's {file}`catalog.json` complete the `catalog` of {file}`pnpm-workspace.yaml`.
+- pnpm doesn't read or write {file}`pnpm-lock.yaml`, so the lock file keeps the released versions, and you can't commit the checkout's versions by mistake.
+
+`make start` then runs the source of the checkout, and reloads when you change it.
+After you pull changes in {file}`core`, run `make install build-core`.
+
+A frozen install, as in CI and in the Docker image, refuses the checkout, because its overrides don't match the lock file.
+The {file}`.dockerignore` file also leaves {file}`core` out of the image.
+
+To go back to the released packages, remove the checkout.
+
+```shell
+make remove-core
+```
