@@ -1,0 +1,1 @@
+Typed `contentIcons`, `controlPanelsIcons` and `controlPanelsIconNames` in the settings with the props of the `Icon` component, through the new `SVGReactComponent` type, instead of the props of an `<svg>` element. @sneridagh

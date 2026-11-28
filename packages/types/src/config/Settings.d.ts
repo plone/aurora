@@ -2,7 +2,7 @@ import { Content } from '../content';
 import { BlocksFormData } from '../blocks/index';
 import { ConfigData } from '.';
 import { Controlpanel, ControlPanelSchema } from '..';
-import type { ComponentType, SVGProps } from 'react';
+import type { SVGReactComponent } from '../icons';
 
 type apiExpandersType =
   | { match: string; GET_CONTENT: string[] }
@@ -41,9 +41,7 @@ type styleClassNameExtendersType = ({
   classNames: string[];
 }) => string[];
 
-type IconType =
-  | { [key: string]: ComponentType<SVGProps<SVGSVGElement>> }
-  | Record<string, string>; // Volto ones
+type IconType = { [key: string]: SVGReactComponent } | Record<string, string>; // Volto ones
 
 export type PlateConfig = {
   editorConfig: {
