@@ -1,0 +1,1 @@
+Removed `../icons/src/svg.d.ts` from the TypeScript configuration: the `*.svg?react` declaration comes from `@plone/types`. @sneridagh

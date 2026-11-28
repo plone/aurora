@@ -187,4 +187,95 @@ describe('createFormStore', () => {
     form.setFieldValue('description', 'Changed');
     expect(form.store.get(form.metaAtom('description')).errors).toEqual([]);
   });
+
+  describe('nested errors', () => {
+    type List = { links: Array<{ title: string; href: string }> };
+    const links: List = {
+      links: [
+        { title: 'Home', href: '/' },
+        { title: '', href: '' },
+      ],
+    };
+    // Validates the list and, by relative path, the fields of its items.
+    const validators = {
+      links: (value: List['links']) => ({
+        '': value.length > 3 ? 'Too many links' : [],
+        ...Object.fromEntries(
+          value.flatMap((item, index) =>
+            item.title ? [] : [[`${index}.title`, 'Required']],
+          ),
+        ),
+      }),
+    };
+
+    it('reports the errors of the fields inside a field', () => {
+      const form = createFormStore<List>({ initialValues: links, validators });
+      expect(form.getErrors()).toEqual({ 'links.1.title': ['Required'] });
+
+      form.touch('links.1.title');
+      expect(form.store.get(form.metaAtom('links.1.title'))).toMatchObject({
+        invalid: true,
+        errors: ['Required'],
+      });
+      expect(form.store.get(form.metaAtom('links.0.title')).invalid).toBe(
+        false,
+      );
+    });
+
+    it('keeps the errors of the field itself', () => {
+      const form = createFormStore<List>({
+        initialValues: { links: [...links.links, ...links.links] },
+        validators,
+      });
+      form.touch('links');
+      expect(form.store.get(form.metaAtom('links')).errors).toEqual([
+        'Too many links',
+      ]);
+    });
+
+    it('updates the errors as the items change', () => {
+      const form = createFormStore<List>({ initialValues: links, validators });
+      form.touch('links.1.title');
+      form.setFieldValue('links.1.title', 'About');
+      expect(form.store.get(form.metaAtom('links.1.title')).invalid).toBe(
+        false,
+      );
+      expect(form.getErrors()).toEqual({});
+    });
+
+    it('fails the submit on the errors of nested fields', async () => {
+      const onSubmit = vi.fn();
+      const form = createFormStore<List>({
+        initialValues: links,
+        validators,
+        onSubmit,
+      });
+      const result = await form.submit();
+      expect(result).toEqual({
+        ok: false,
+        errors: { 'links.1.title': ['Required'] },
+      });
+      expect(onSubmit).not.toHaveBeenCalled();
+      expect(form.store.get(form.metaAtom('links.1.title')).invalid).toBe(true);
+    });
+  });
+
+  it('counts the submit attempts', async () => {
+    const form = createFormStore<Values>({
+      initialValues,
+      validators: { description: (value) => (value ? null : 'Required') },
+    });
+    expect(form.store.get(form.stateAtom).submitCount).toBe(0);
+    await form.submit();
+    await form.submit();
+    expect(form.store.get(form.stateAtom)).toMatchObject({
+      submitted: true,
+      submitCount: 2,
+    });
+    form.reset();
+    expect(form.store.get(form.stateAtom)).toMatchObject({
+      submitted: false,
+      submitCount: 0,
+    });
+  });
 });

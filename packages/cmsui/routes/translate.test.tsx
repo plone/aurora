@@ -31,8 +31,8 @@ const mockSource = {
   description: 'A test page',
   language: { title: 'English', token: 'en' },
   blocks: {
-    __somersault__: {
-      '@type': '__somersault__',
+    main: {
+      '@type': 'plate',
       value: [
         { type: 'title', children: [{ text: 'My Page' }] },
         { type: 'p', children: [{ text: 'Hello world' }] },
@@ -93,6 +93,9 @@ describe('Translate route', () => {
       config.settings.apiPath = 'http://example.com';
       const context = makeContext({
         getType: vi.fn().mockResolvedValue({ data: mockSchema }),
+        getBreadcrumbs: vi
+          .fn()
+          .mockResolvedValue({ data: { root: '/de', items: [] } }),
         getTranslation: vi.fn().mockResolvedValue({ data: mockTranslations }),
       });
 
@@ -109,7 +112,7 @@ describe('Translate route', () => {
       expect(initial.title).toBe('');
       expect(initial['@type']).toBe('Document');
 
-      const value = initial.blocks.__somersault__.value;
+      const value = initial.blocks.main.value;
       expect(value[0].children[0].text).toBe('My Page');
       expect(value[1].children[0].text).toBe('Hello world');
       expect(value[2]).toEqual({
@@ -124,6 +127,9 @@ describe('Translate route', () => {
       config.settings.apiPath = 'http://example.com';
       const context = makeContext({
         getType: vi.fn().mockResolvedValue({ data: mockSchema }),
+        getBreadcrumbs: vi
+          .fn()
+          .mockResolvedValue({ data: { root: '/de', items: [] } }),
         getTranslation: vi.fn().mockResolvedValue({
           data: {
             ...mockTranslations,
@@ -152,6 +158,9 @@ describe('Translate route', () => {
       config.settings.apiPath = 'http://example.com';
       const context = makeContext({
         getType: vi.fn().mockResolvedValue({ data: mockSchema }),
+        getBreadcrumbs: vi
+          .fn()
+          .mockResolvedValue({ data: { root: '/de', items: [] } }),
         getTranslation: vi.fn().mockResolvedValue({ data: mockTranslations }),
       });
 
@@ -170,6 +179,9 @@ describe('Translate route', () => {
       config.settings.apiPath = 'http://example.com';
       const context = makeContext({
         getType: vi.fn().mockResolvedValue({ data: mockSchema }),
+        getBreadcrumbs: vi
+          .fn()
+          .mockResolvedValue({ data: { root: '/de', items: [] } }),
         getTranslation: vi.fn().mockResolvedValue({ data: mockTranslations }),
       });
 
@@ -190,6 +202,9 @@ describe('Translate route', () => {
         config.settings.apiPath = 'http://example.com';
         const context = makeContext({
           getType: vi.fn().mockResolvedValue({ data: mockSchema }),
+          getBreadcrumbs: vi
+            .fn()
+            .mockResolvedValue({ data: { root: '/de', items: [] } }),
           getTranslation: vi.fn().mockResolvedValue({ data: mockTranslations }),
         });
 
@@ -209,6 +224,9 @@ describe('Translate route', () => {
       config.settings.apiPath = 'http://example.com';
       const context = makeContext({
         getType: vi.fn().mockResolvedValue({ data: mockSchema }),
+        getBreadcrumbs: vi
+          .fn()
+          .mockResolvedValue({ data: { root: '/de', items: [] } }),
         getTranslation: vi.fn().mockRejectedValue({ status: 404 }),
       });
 

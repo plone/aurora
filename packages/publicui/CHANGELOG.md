@@ -8,6 +8,18 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.12 (2026-11-18)
+
+### Internal
+
+- Fixed the "Toolbar add menu" visual test, which pressed the only toolbar button and stopped finding it once the toolbar got its More and Personal tools menus. @sneridagh 
+
+## 1.0.0-alpha.11 (2026-11-06)
+
+### Feature
+
+- Show the toolbar "Add content" types menu in a bottom sheet on mobile viewports, like the personal tools and More menus. @sneridagh 
+
 ## 1.0.0-alpha.10 (2026-10-30)
 
 ### Feature

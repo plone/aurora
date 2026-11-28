@@ -1,0 +1,29 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Control panels/Introduction" />
+
+# Control panels
+
+`@plone/controlpanels` holds the control panels that need their own screens, starting with the content types control panel.
+The same screens run in Plone Aurora and in Volto.
+
+## How it fits together
+
+- The screens use Quanta components and Tailwind classes only.
+- `ControlPanelsProvider` connects them to the app: its router (`navigate`, `useHref`), its translations (`translate`) and its notifications (`notify`).
+- Each control panel reads and writes its data through a driver, such as `ContentTypesDriver`.
+  Aurora, Volto and the stories each provide their own.
+- A driver says what its backend supports through `capabilities`.
+  The screens hide or disable, with an explanation, whatever it can't do yet.
+
+## The mock driver
+
+`createMockDriver()` keeps its data in memory, seeded with fixtures from a real site.
+Every capability is on by default; turn some off to see the screens against a basic backend:
+
+```ts
+const driver = createMockDriver({
+  capabilities: { workflowChange: false },
+  latency: 300,
+});
+```

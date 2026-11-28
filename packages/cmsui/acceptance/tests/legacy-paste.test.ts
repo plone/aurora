@@ -46,8 +46,8 @@ async function setupPastePage(page: Parameters<typeof test>[0]['page']) {
     bodyModifier: (body) => ({
       ...body,
       blocks: {
-        __somersault__: {
-          '@type': '__somersault__',
+        main: {
+          '@type': 'plate',
           value: [
             { type: 'title', children: [{ text: PAGE_TITLE }] },
             { type: 'p', children: [{ text: '' }] },
@@ -55,7 +55,7 @@ async function setupPastePage(page: Parameters<typeof test>[0]['page']) {
         },
       },
       blocks_layout: {
-        items: ['__somersault__'],
+        items: [],
       },
     }),
   });

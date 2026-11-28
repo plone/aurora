@@ -8,6 +8,25 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.29 (2026-11-22)
+
+### Internal
+
+- Updated an acceptance test for the editor's Content tab, which is now Metadata. @sneridagh 
+
+## 1.0.0-alpha.28 (2026-11-21)
+
+### Internal
+
+- Documented in `AGENTS.md` that the package also runs in Volto, and how to keep it working there. @sneridagh 
+
+## 1.0.0-alpha.27 (2026-11-18)
+
+### Feature
+
+- Added the `MAIN_REGION` and `PLATE_TYPE` constants and deprecated `SOMERSAULT_KEY`. The document format docs now describe the `main` region. @sneridagh [#379](https://github.com/plone/aurora/issues/379)
+- Added the `document_model` frontmatter to the docs of the Plate elements, and made the docs of the page document the docs of the `plone.plate` document model. @sneridagh 
+
 ## 1.0.0-alpha.26 (2026-10-29)
 
 ### Feature

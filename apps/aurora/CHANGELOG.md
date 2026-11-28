@@ -8,6 +8,59 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.27 (2026-11-25)
+
+### Feature
+
+- Added the Plone devtools (`@plone/devtools`) to the development server. Set `PLONE_DEVTOOLS=false` to turn them off; production builds never include them. @sneridagh [#381](https://github.com/plone/aurora/issues/381)
+
+## 1.0.0-alpha.26 (2026-11-22)
+
+### Documentation
+
+- Documented the Quanta tabs: the `segmented` look of `TabList` and the swipeable `TabPanelCarousel`. @sneridagh 
+
+## 1.0.0-alpha.25 (2026-11-21)
+
+### Feature
+
+- Aurora registers `@plone/controlpanels` as an add-on, so its translations load. @sneridagh 
+
+### Documentation
+
+- Documented the new `@plone/controlpanels` package in the package overview and the release order. @sneridagh [#269](https://github.com/plone/aurora/issues/269)
+- Added the conceptual guide "Packages for Volto and Plone Aurora", on how `@plone/plate` and `@plone/controlpanels` run in both apps: no framework imports, a provider and a driver, translations, styles, building and the registry as a peer dependency. @sneridagh 
+
+## 1.0.0-alpha.24 (2026-11-18)
+
+### Breaking
+
+- The page body is now stored in the `main` region of `blocks`, with `"@type": "plate"`, instead of the `__somersault__` block. Content with the old block is renamed when it is read, through the new `contentMigration` utility type, and keeps the new shape once it is saved. The backend must run Plone 6.2 with `plone.restapi` 10.3.0 or later before deploying this version, so that `plate` regions are indexed, checked for link integrity, and get `resolveuid` links. It also needs `plone.volto` 6.2.1 or later with the `plone.volto:aurora` profile applied, so that the Personal tools menu gets the links of Plone Aurora instead of those of the Volto toolbar. With a Nick backend, upgrade to Nick 3.1.0 or later first, which reads the `main` region. See the upgrade guide. @sneridagh [#379](https://github.com/plone/aurora/issues/379)
+
+### Internal
+
+- Allowed up to 10 different pixels in the visual regression screenshots in CI, so anti-aliasing noise no longer fails the nightly run. @sneridagh 
+
+### Documentation
+
+- Say Plate.js blocks instead of Plate-native blocks in the docs. @silviubogan [#231](https://github.com/plone/aurora/issues/231)
+- Updated the control panel and toolbar how-to guides for the `/@@controlpanel` path. @sneridagh [#429](https://github.com/plone/aurora/issues/429)
+- Document the Nick 3.1.0 requirement, and remove the Volto versions, Python support and branch policy from the version policy and the system requirements. @sneridagh 
+- Documented the `personal_tools` and `more_menu` actions for the Personal tools and More toolbar menus. @sneridagh 
+- Documented the document model of the `@blocks-schema` endpoint, the `document_model` frontmatter of element docs and of the document model docs, and the `type` query parameter. @sneridagh 
+
+## 1.0.0-alpha.23 (2026-11-06)
+
+### Internal
+
+- Added `usehooks-ts`, a new dependency of `@plone/quanta`, to the Vite `optimizeDeps` list. @sneridagh 
+- Installed `plone.restapi` 10.2.0 in the development and acceptance backends, through `KGS` in `variables.mk`, which the acceptance backend now installs too. @sneridagh 
+- Load the private `@plone/test-addon` add-on when the `PLONE_TEST_ADDON` environment variable is set, as the acceptance `make` targets do. It registers blocks and fields that only the acceptance and visual regression tests use. @sneridagh 
+
+### Documentation
+
+- Added the how-to guide "Add a control panel": the backend parts, the icon and description on the site setup page, hiding a control panel, and replacing its form with a page of your own. @sneridagh 
+
 ## 1.0.0-alpha.22 (2026-10-30)
 
 ### Breaking

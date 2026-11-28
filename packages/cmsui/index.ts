@@ -8,7 +8,7 @@ import type { BlockConfigBase, FormWidgetProps } from '@plone/types';
 
 declare module '@plone/types' {
   export interface BlocksConfigData {
-    __somersault__: BlockConfigBase;
+    plate: BlockConfigBase;
   }
 
   // The widgets registered for the CMS UI forms follow the widget contract,

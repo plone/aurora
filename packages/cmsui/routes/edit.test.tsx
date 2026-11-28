@@ -28,6 +28,12 @@ const mockContent = {
   '@type': 'Document',
   title: 'My Page',
   description: 'A test page',
+  '@components': {
+    breadcrumbs: {
+      root: '',
+      items: [{ '@id': '/my-page', title: 'My Page' }],
+    },
+  },
   blocks: {},
   blocks_layout: { items: [] },
   '@components': { actions: { object: [{ id: 'edit' }] } },
@@ -281,7 +287,7 @@ describe('Edit route', () => {
             data-content-type={props.content['@type']}
             data-content-title={props.content.title}
           >
-            {props.heading}
+            {props.breadcrumbs.at(-1)?.title}
           </div>
         ),
       }));

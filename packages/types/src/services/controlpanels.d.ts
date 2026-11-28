@@ -14,6 +14,15 @@ export interface Controlpanel {
   '@id': string;
   group: string;
   title: string;
+  /** Since plone.restapi 10.2.0: the id of the group, like `plone-general`. */
+  group_id?: string | null;
+  /** Since plone.restapi 10.2.0: the translated description, or empty. */
+  description?: string;
+  /**
+   * Since plone.restapi 10.2.0: the configlet's icon, a Bootstrap Icons name
+   * on Plone 6, or empty.
+   */
+  icon?: string;
   schema?: ControlPanelSchema;
   data?: Record<string, any>;
 }

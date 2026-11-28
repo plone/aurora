@@ -185,7 +185,7 @@ test('mobile toolbar keeps the other menus and CMS page accessible', async ({
   await page.keyboard.press('Escape');
   await toolbar.getByRole('button', { name: 'Add content' }).click();
   await expect(page.getByRole('menu', { name: /add content/i })).toBeVisible();
-  await page.goto('/controlpanel', { waitUntil: 'networkidle' });
+  await page.goto('/@@controlpanel', { waitUntil: 'networkidle' });
   const bodyWidth = await page.evaluate(
     () => document.documentElement.clientWidth,
   );

@@ -8,9 +8,18 @@ import BinSVG from '@plone/icons/svg/bin.svg?react';
 import { type ToastItem } from '@plone/layout/config/toast';
 import { useContentsContext } from '../../providers/contents';
 
+type DeleteError = {
+  __error: { status: number; data: { type: string; message?: string } };
+};
+
+type DeleteResult = {
+  ok: Array<{ title: string }>;
+  errors: Array<DeleteError>;
+};
+
 export default function DeleteModal() {
   const { t } = useTranslation();
-  const fetcher = useFetcher();
+  const fetcher = useFetcher<DeleteResult>();
   const {
     showDelete,
     setShowDelete,
@@ -27,7 +36,7 @@ export default function DeleteModal() {
       // La richiesta è terminata.
       const data = fetcher.data;
 
-      if (data?.ok?.length > 0) {
+      if (data?.ok?.length) {
         const toast: ToastItem = {
           title: t('contents.actions.deleted', {
             count: data.ok.length,
@@ -38,7 +47,7 @@ export default function DeleteModal() {
 
         showToast(toast);
       }
-      if (data?.errors?.length > 0) {
+      if (data?.errors?.length) {
         data.errors.forEach((e) => {
           const toast: ToastItem = {
             title: `${t('contents.error')} ${e.__error.status} - ${e.__error.data.type}`,

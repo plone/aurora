@@ -31,6 +31,132 @@ It is usually better and quicker to move your items into new locations and copy 
 
 ## Upgrading to Plone Aurora
 
+(upgrade-guide-svg-react-icon-props)=
+
+### `*.svg?react` components take the props of `Icon`
+
+```{versionchanged} 1.0.0-alpha.28
+These steps apply when you upgrade from Plone Aurora 1.0.0-alpha.27 or earlier to 1.0.0-alpha.28 or later.
+```
+
+The SVGR Vite plugin of `@plone/icons` wraps every `*.svg?react` import in the `Icon` component.
+`@plone/types` declared these components with the props of an `<svg>` element instead, and its declaration took precedence over the one in `@plone/icons/svg`.
+So TypeScript rejected props such as `size` and `color`, and accepted props such as `strokeWidth` that `Icon` doesn't pass to the `<svg>` element.
+
+Now `@plone/types` declares them with the props of `Icon`, except `children`, and `@plone/icons/svg` loads that declaration.
+Your add-on doesn't need a {file}`types.d.ts` file for them anymore, and an existing `import '@plone/icons/svg';` keeps working.
+
+If TypeScript now rejects a prop of a `*.svg?react` component, the component never received it.
+Use `className` or `style` instead, or the `size` and `color` props of `Icon`.
+
+```diff
+-<ChevronIcon width={18} height={18} />
++<ChevronIcon size="sm" />
+```
+
+(upgrade-guide-build-plone-devtools)=
+
+### Build `@plone/devtools` in `build-deps`
+
+```{versionchanged} 1.0.0-alpha.27
+These steps apply when you upgrade a project or an add-on from Plone Aurora 1.0.0-alpha.26 or earlier to 1.0.0-alpha.27 or later.
+```
+
+```{versionadded} 1.0.0-alpha.27
+The `@plone/devtools` package.
+```
+
+The Plone Aurora app now loads the Plone devtools in its development server, from the new `@plone/devtools` package.
+Its {file}`vite.config.ts` imports the package's Vite plugin, which is only available once the package is built.
+Without that build, both `make start` and `make build` fail with an `ERR_MODULE_NOT_FOUND` error when Vite loads its configuration, because the production build loads the same configuration.
+Production builds do not include the devtools.
+
+The Cookieplone templates are updated to match this release, so the recommended way to upgrade an existing project or add-on is to run the generator again over it and review the differences.
+Alternatively, add a target for the package to the {file}`Makefile` of your project or add-on, and add it to `build-deps`.
+
+```diff
+ core/packages/react-router/dist: $(shell find core/packages/react-router/src -type f)
+ 	pnpm --filter @plone/react-router build
+ 
++core/packages/devtools/dist: $(shell find core/packages/devtools/src -type f)
++	pnpm --filter @plone/devtools build
++
+ .PHONY: build-deps
+-build-deps: core/packages/registry/dist core/packages/icons/dist core/packages/quanta/dist core/packages/components/dist core/packages/client/dist core/packages/react-router/dist core/packages/helpers/dist ## Build dependencies
++build-deps: core/packages/registry/dist core/packages/icons/dist core/packages/quanta/dist core/packages/components/dist core/packages/client/dist core/packages/react-router/dist core/packages/helpers/dist core/packages/devtools/dist ## Build dependencies
+```
+
+Do the same in the `build:deps` script of the root {file}`package.json`.
+
+```diff
+-    "build:deps": "pnpm --filter @plone/registry --filter @plone/icons --filter @plone/quanta --filter @plone/components build",
++    "build:deps": "pnpm --filter @plone/registry --filter @plone/icons --filter @plone/quanta --filter @plone/components --filter @plone/devtools build",
+```
+
+To turn the devtools off in the development server, for example for acceptance tests, set the environment variable `PLONE_DEVTOOLS=false`.
+
+(upgrade-guide-main-plate-region)=
+
+### The page body is stored in the `main` region
+
+```{versionchanged} 1.0.0-alpha.24
+These steps apply when you upgrade from Plone Aurora 1.0.0-alpha.23 or earlier to 1.0.0-alpha.24 or later.
+```
+
+The page body is now stored in the `main` entry of `blocks`, whose `@type` is `plate`, instead of the `__somersault__` block.
+Content with the old block is renamed when it is read, and keeps the new shape once it is saved.
+See {doc}`../conceptual-guides/unified-editor`.
+
+Before you deploy this version, upgrade the backend to Plone 6.2 with `plone.restapi` 10.3.0 or later.
+Plone 6.2 releases that ship an older `plone.restapi` need it pinned, for example in {file}`backend/pyproject.toml`:
+
+```toml
+dependencies = [
+    "Products.CMFPlone==6.2.3",
+    "plone.restapi>=10.3.0",
+]
+```
+
+With an older `plone.restapi`, the pages saved in the new shape drop out of `SearchableText`, get no link integrity, and the links of the blocks in them are not converted to `resolveuid` links.
+Reindexing fixes the first two, but not the links, which stay as they are until the page is saved again.
+
+With a Nick backend, upgrade it to Nick 3.1.0 or later before you deploy this version.
+Older versions of Nick only read the `__somersault__` block, so they miss the Markdown, the `SearchableText` and the block types of the pages saved in the new shape.
+
+(upgrade-guide-plone-volto-aurora-profile)=
+
+### The backend needs the `plone.volto:aurora` profile
+
+```{versionchanged} 1.0.0-alpha.24
+These steps apply when you upgrade from Plone Aurora 1.0.0-alpha.23 or earlier to 1.0.0-alpha.24 or later.
+```
+
+Since `plone.volto` 6.1.0, which Plone 6.2.3 ships, the `plone.volto:default` profile adds the `personal_tools` actions with the links of the Volto toolbar.
+The Personal tools menu of Plone Aurora shows these actions instead of its own links, so Profile and Preferences point to pages that Plone Aurora doesn't have, and Log out is missing.
+
+`plone.volto` 6.2.0 adds the `plone.volto:aurora` profile, which replaces these actions with the links of Plone Aurora, and 6.2.1 fixes its Site Setup link.
+Pin `plone.volto` to 6.2.1 or later in your backend, next to `plone.restapi`:
+
+```toml
+dependencies = [
+    "Products.CMFPlone==6.2.3",
+    "plone.restapi>=10.3.0",
+    "plone.volto>=6.2.1",
+]
+```
+
+Then apply the profile.
+In a backend add-on, add it to the dependencies of your profile, in {file}`profiles/default/metadata.xml`, and add an upgrade step that applies it on existing sites:
+
+```xml
+<dependencies>
+  <dependency>profile-plone.volto:aurora</dependency>
+</dependencies>
+```
+
+On an existing site without an add-on, import the profile in the {guilabel}`Import` tab of `portal_setup`, in the Zope Management Interface.
+The official Docker images apply it when they create a site, if you add it to the `PROFILES` environment variable, for example `PROFILES=plone.volto:aurora`.
+
 (upgrade-guide-block-content-css)=
 
 ### Block content is styled in `styles/content.css`

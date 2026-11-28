@@ -8,6 +8,31 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.6 (2026-11-22)
+
+### Feature
+
+- Added `TabPanelCarousel`, which lets tab panels be swiped on narrow touch screens, or dragged there with a mouse, with the selected tab following along. @sneridagh 
+- Restyle the Quanta `Menu`: menu items no longer have a border between them, and show a rounded highlight on hover and focus instead. @sneridagh 
+- Restyled the `Tabs` with a sliding selection indicator, and added a `segmented` look for `TabList` with its `variant` prop. @sneridagh 
+
+## 1.0.0-alpha.5 (2026-11-18)
+
+### Feature
+
+- Restyled `Switch`: a pill-shaped track that fills with sapphire when on, and a white knob with a soft shadow. The off track has no outline, and the description and error line up with the label. @sneridagh 
+
+## 1.0.0-alpha.4 (2026-11-06)
+
+### Feature
+
+- Added `ModalSheet`, a modal dialog that is a `Modal` on wide screens and becomes a swipeable bottom sheet on narrow screens. A centered `Sheet` no longer shows the swipe handle. @sneridagh 
+
+### Bugfix
+
+- Sheets, and `ModalSheet` on mobile, now cover the CMS toolbar and other fixed or sticky page chrome, like `Modal` does. @sneridagh 
+- The `Modal` takes the adaptable width of the Figma design on desktop: it fills up to 90% of the viewport, with a maximum of 600 px, instead of spanning the whole screen. To change the maximum, set the `--modal-max-width` custom property in its `className`, which it now merges. @sneridagh 
+
 ## 1.0.0-alpha.3 (2026-10-29)
 
 ### Breaking

@@ -2,11 +2,12 @@ import { useCallback, useMemo, useRef, useState, type DragEvent } from 'react';
 import { Button, DialogTrigger, Input } from '@plone/quanta';
 import type { TextFieldProps as QuantaTextFieldProps } from '@plone/quanta';
 import {
+  ArrowrightIcon,
   BinIcon,
+  FolderIcon,
   ImageIcon,
-  LinkIcon,
-  NavigationIcon,
   UploadIcon,
+  WorldIcon,
 } from '@plone/icons';
 import type { Brain } from '@plone/types';
 import { Description, FieldError, Label } from '../Field/Field';
@@ -161,6 +162,10 @@ function parseDataUrl(dataUrl: string) {
   };
 }
 
+// The round 36px action buttons of the empty placeholder.
+const placeholderButtonClassName =
+  'flex size-9 shrink-0 items-center justify-center p-2';
+
 function ObjectBrowserButton({
   title,
   onBeforeOpen,
@@ -174,12 +179,12 @@ function ObjectBrowserButton({
     <DialogTrigger isOpen={open} onOpenChange={setOpen}>
       <Button
         aria-label={title}
-        size="L"
+        className={placeholderButtonClassName}
         type="button"
         variant="icon"
         onPress={onBeforeOpen}
       >
-        <NavigationIcon />
+        <FolderIcon className="size-5" />
       </Button>
       <ObjectBrowserModal />
     </DialogTrigger>
@@ -359,10 +364,16 @@ function ImageInputBase({
     );
   }
 
+  const submitLink = () => {
+    const nextValue = linkValue.trim();
+    onValueChange(nextValue || null);
+  };
+
   return (
     <div
       className={`
-        space-y-3 rounded-md border border-dashed border-quanta-azure bg-quanta-snow p-4
+        flex flex-col items-center gap-2 rounded-md bg-quanta-arctic px-4 py-6 text-center
+        ${isDragging ? 'inset-ring-3 inset-ring-quanta-cobalt' : ''}
         ${className || ''}
       `}
       onDrop={onDrop}
@@ -370,17 +381,21 @@ function ImageInputBase({
       onDragEnter={() => !restrictFileUpload && setIsDragging(true)}
       onDragLeave={() => setIsDragging(false)}
       role="group"
+      aria-label="Add an image"
     >
-      <div className="flex items-center gap-2 text-quanta-pigeon">
-        <ImageIcon />
-        <p>
-          {isDragging
-            ? 'Drop an image to upload'
-            : 'Browse the site, drop an image, or use a URL'}
-        </p>
+      <div
+        className={`
+          flex size-30 shrink-0 items-center justify-center rounded-full bg-quanta-azure
+          text-quanta-royal
+        `}
+      >
+        <ImageIcon className="size-12" />
       </div>
+      <p className="-mt-1.25 text-xl/[25px] font-bold text-quanta-iron">
+        {isDragging ? 'Drop an image to upload' : 'Add your image'}
+      </p>
 
-      <div className="flex items-center gap-2">
+      <div className="flex w-full flex-wrap items-center justify-center gap-3">
         {!hideObjectBrowserPicker && (
           <ObjectBrowserProvider
             config={{
@@ -412,7 +427,7 @@ function ImageInputBase({
           <>
             <Button
               aria-label="Upload an image"
-              size="L"
+              className={placeholderButtonClassName}
               type="button"
               variant="icon"
               onPress={() => {
@@ -420,7 +435,7 @@ function ImageInputBase({
                 fileInputRef.current?.click();
               }}
             >
-              <UploadIcon />
+              <UploadIcon className="size-5" />
             </Button>
             <input
               ref={fileInputRef}
@@ -435,28 +450,52 @@ function ImageInputBase({
             />
           </>
         )}
-      </div>
 
-      {!hideLinkPicker && (
-        <div className="flex items-center gap-2">
-          <div className="text-quanta-pigeon">
-            <LinkIcon />
-          </div>
-          <Input
-            value={linkValue}
-            onChange={(event) => {
-              setLinkValue(event.target.value);
-            }}
-            onKeyDown={(event) => {
-              if (event.key !== 'Enter') return;
-              event.preventDefault();
-              const nextValue = linkValue.trim();
-              onValueChange(nextValue || null);
-            }}
-            placeholder={placeholderLinkInput || 'Enter an image URL'}
-          />
-        </div>
-      )}
+        {!hideLinkPicker && (
+          <>
+            <div
+              className={`
+                flex h-9 max-w-90 min-w-0 flex-1 basis-48 items-center gap-3 rounded-md
+                bg-quanta-air pl-3 text-quanta-sapphire
+              `}
+            >
+              <WorldIcon className="size-4.5 shrink-0" />
+              <Input
+                aria-label="Image URL"
+                className={`
+                  h-full rounded-none bg-transparent px-0 py-0 font-medium
+                  placeholder:text-quanta-sapphire
+                  hover:bg-transparent
+                  focus:bg-transparent
+                  active:bg-transparent
+                `}
+                value={linkValue}
+                onChange={(event) => {
+                  setLinkValue(event.target.value);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key !== 'Enter') return;
+                  event.preventDefault();
+                  submitLink();
+                }}
+                placeholder={placeholderLinkInput || 'Type a URL…'}
+              />
+            </div>
+            <Button
+              aria-label="Use this image URL"
+              className={placeholderButtonClassName}
+              type="button"
+              variant="primary"
+              accent
+              onPress={() => {
+                if (linkValue.trim()) submitLink();
+              }}
+            >
+              <ArrowrightIcon className="size-5" />
+            </Button>
+          </>
+        )}
+      </div>
 
       {isUploading && (
         <p className="text-sm text-quanta-pigeon">Uploading image...</p>

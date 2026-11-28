@@ -19,15 +19,15 @@ The package manager is **pnpm**. Do not use `npm` or `yarn`.
 Every package except `volto` and `volto-slate` belongs to the **Plone Aurora** stack, an API-first, React-based frontend for Plone RESTAPI contract (`plone.restapi`).
 Plone Aurora is composed of focused packages that are assembled into `apps/aurora`:
 
-| Layer                      | Packages                                                                            |
-| -------------------------- | ----------------------------------------------------------------------------------- |
-| App shell                  | `apps/aurora`                                                                        |
-| Public UI (visitor-facing) | `@plone/publicui`, `@plone/layout`, `@plone/blocks`                                 |
-| CMS UI (editor-facing)     | `@plone/cmsui`, `@plone/contents`, `@plone/plate`, `@plone/blocks`, `@plone/layout`, `@plone/quanta` |
-| Shared infrastructure      | `@plone/client`, `@plone/registry`, `@plone/react-router`                           |
-| Utilities and types        | `@plone/helpers`, `@plone/types`                                                    |
-| Theming                    | `@plone/theming`, `@plone/agave`, `@plone/components`, `@plone/quanta`, `@plone/icons` |
-| Tooling                    | `@plone/tooling`, `@plone/scripts`, `tsconfig`                                      |
+| Layer                      | Packages                                                                                                                     |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| App shell                  | `apps/aurora`                                                                                                                |
+| Public UI (visitor-facing) | `@plone/publicui`, `@plone/layout`, `@plone/blocks`                                                                          |
+| CMS UI (editor-facing)     | `@plone/cmsui`, `@plone/contents`, `@plone/controlpanels`, `@plone/plate`, `@plone/blocks`, `@plone/layout`, `@plone/quanta` |
+| Shared infrastructure      | `@plone/client`, `@plone/registry`, `@plone/react-router`                                                                    |
+| Utilities and types        | `@plone/helpers`, `@plone/types`                                                                                             |
+| Theming                    | `@plone/theming`, `@plone/agave`, `@plone/components`, `@plone/quanta`, `@plone/icons`                                       |
+| Tooling                    | `@plone/tooling`, `@plone/scripts`, `@plone/devtools`, `tsconfig`                                                            |
 
 ### Volto (Plone 6) — reference only
 
@@ -88,6 +88,17 @@ pnpm check:ts
 - Keep changes **package-local** unless there is a clear cross-cutting reason.
 - When adding a new package dependency, check whether it already exists in a sibling package or the workspace root before adding it.
 - Do not commit secrets, credentials, or environment-specific values.
+
+## Packages for Volto and Plone Aurora
+
+Some packages run unchanged in both Plone Aurora and Volto: `@plone/plate` (in Volto through volto-plate) and `@plone/controlpanels` (in Volto core).
+Before changing one, or creating a new one, read `docs/conceptual-guides/packages-for-volto-and-aurora.md`. In short:
+
+- No framework imports: no `react-router`, i18n library, `@plone/client`, `@plone/cmsui`, `@plone/components` or Volto modules. Enforce it with a lint rule and a test.
+- App services (navigation, translations, notifications, navigation blocking) come from a provider; backend data from a driver with capability flags.
+- Translations: the app passes an i18next-shaped `t`, messages use `{{placeholder}}`s, and the catalogs ship in `locales/<language>/common.json`. Aurora loads them with the registered add-on; Volto adapts react-intl and keeps the messages in its catalogs.
+- Styles: Aurora compiles Tailwind from the source; Volto loads compiled CSS, scoped with `:where()` and without cascade layers.
+- `@plone/registry` is a peer dependency only (`^3.0.0 || ^4.0.0-alpha.0`), so each app keeps a single registry.
 
 ## Editing Rules
 

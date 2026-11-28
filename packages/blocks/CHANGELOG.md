@@ -8,6 +8,12 @@
 
 <!-- towncrier release notes start -->
 
+## 1.0.0-alpha.20 (2026-11-18)
+
+### Internal
+
+- Updated the acceptance fixtures and tests to store the page body in the `main` region with `"@type": "plate"`. @sneridagh [#379](https://github.com/plone/aurora/pull/379)
+
 ## 1.0.0-alpha.19 (2026-10-29)
 
 ### Feature

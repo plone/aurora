@@ -1,7 +1,7 @@
 {
   "name": "@plone/aurora",
   "description": "Plone Aurora is the next-generation frontend for Plone CMS",
-  "version": "1.0.0-alpha.22",
+  "version": "1.0.0-alpha.27",
   "maintainers": [
     {
       "name": "Plone Foundation",
@@ -57,6 +57,7 @@
     "@plone/components": "workspace:*",
     "@plone/icons": "workspace:*",
     "@plone/contents": "workspace:*",
+    "@plone/controlpanels": "workspace:*",
     "@plone/helpers": "workspace:*",
     "@plone/layout": "workspace:*",
     "@plone/plate": "workspace:*",
@@ -85,6 +86,8 @@
   "devDependencies": {
     "@babel/core": "^7.28.5",
     "@babel/preset-typescript": "^7.27.1",
+    "@plone/devtools": "workspace:*",
+    "@plone/test-addon": "workspace:*",
     "@plone/types": "workspace:*",
     "@react-router/dev": "catalog:",
     "@tailwindcss/vite": "catalog:",

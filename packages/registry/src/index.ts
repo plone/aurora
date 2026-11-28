@@ -29,11 +29,94 @@ export type ConfigData = {
   addonReducers?: AddonReducersConfig;
   addonRoutes?: AddonRoutesConfig;
   routes?: Array<ReactRouterRouteEntry>;
+  /**
+   * Changes to registered routes, by route id: the parts of the route to
+   * replace, or `null` for a removed route. See `overrideRoute` and
+   * `removeRoute`.
+   */
+  routeOverrides?: Record<string, RouteOverride | null>;
   slots: SlotsConfig | Record<string, never>;
   components: ComponentsConfig | Record<string, never>;
   utilities: UtilitiesConfig | Record<string, never>;
   experimental?: ExperimentalConfig;
 };
+
+/** The parts of a registered route that `overrideRoute` can replace. */
+export type RouteOverride = {
+  /** The route's module, e.g. `my-project/routes/login.tsx`. */
+  file?: string;
+  /** The path of a `route` entry. */
+  path?: string;
+  options?: { index?: boolean; caseSensitive?: boolean };
+  /** Replaces all of the route's children. */
+  children?: Array<ReactRouterRouteEntry>;
+};
+
+/**
+ * The id of a registered route: its explicit `options.id`, or else its
+ * `file` as registered, without a leading `./` and without its extension.
+ * `@plone/cmsui/routes/edit.tsx` gets the id `@plone/cmsui/routes/edit`.
+ * A `prefix` entry only groups routes, so it has no id.
+ *
+ * `@plone/react-router` gives these ids to React Router, so they are the ids
+ * of `useRouteLoaderData`, `useMatches` and the other route APIs.
+ */
+export function routeId(entry: ReactRouterRouteEntry): string | undefined {
+  if (entry.type === 'prefix') return undefined;
+  return (
+    entry.options?.id ??
+    entry.file.replace(/^\.\//, '').replace(/\.[^./]+$/, '')
+  );
+}
+
+/** Finds a route by id anywhere in a route tree. */
+function findRoute(
+  entries: Array<ReactRouterRouteEntry>,
+  id: string,
+): ReactRouterRouteEntry | undefined {
+  for (const entry of entries) {
+    if (routeId(entry) === id) return entry;
+    const found =
+      'children' in entry && entry.children
+        ? findRoute(entry.children, id)
+        : undefined;
+    if (found) return found;
+  }
+  return undefined;
+}
+
+/**
+ * Applies the route overrides to a route tree, without changing it. An
+ * overridden route keeps its id, even when its file changes.
+ */
+function applyRouteOverrides(
+  entries: Array<ReactRouterRouteEntry>,
+  overrides: Record<string, RouteOverride | null>,
+): Array<ReactRouterRouteEntry> {
+  const result: Array<ReactRouterRouteEntry> = [];
+  for (const original of entries) {
+    let entry = original;
+    const id = routeId(entry);
+    if (id !== undefined && id in overrides) {
+      const override = overrides[id];
+      if (override === null) continue;
+      const options = 'options' in entry ? entry.options : undefined;
+      entry = {
+        ...entry,
+        ...override,
+        options: { ...options, ...override.options, id },
+      } as ReactRouterRouteEntry;
+    }
+    if ('children' in entry && entry.children) {
+      entry = {
+        ...entry,
+        children: applyRouteOverrides(entry.children, overrides),
+      } as ReactRouterRouteEntry;
+    }
+    result.push(entry);
+  }
+  return result;
+}
 
 type GetComponentResult<Name extends string = string> = {
   component: RegisteredComponent<Name> | undefined;
@@ -170,8 +253,14 @@ class Config {
     this._data.addonRoutes = addonRoutes;
   }
 
+  /** The registered routes, with the changes of `overrideRoute` and `removeRoute`. */
   get routes() {
-    return this._data.routes;
+    const routes = this._data.routes;
+    const overrides = this._data.routeOverrides;
+    if (!routes || !overrides || Object.keys(overrides).length === 0) {
+      return routes;
+    }
+    return applyRouteOverrides(routes, overrides);
   }
 
   set routes(routes) {
@@ -569,6 +658,56 @@ class Config {
       route.push(options);
     }
     this._data.routes = route;
+  }
+
+  /**
+   * Replaces parts of a registered route: its file, path, options or
+   * children. The route keeps its id, so code that refers to it keeps
+   * working. Calling it again for the same route merges the changes.
+   *
+   * The route must already be registered: apply the add-on that registers it
+   * first. Throws when no route has this id.
+   *
+   * @param id - The route's id, see `routeId`, e.g. `@plone/cmsui/routes/edit`.
+   * @param override - The parts of the route to replace.
+   */
+  overrideRoute(id: string, override: RouteOverride) {
+    const overrides = this._data.routeOverrides || {};
+    if (overrides[id] === null) {
+      throw new Error(
+        `The route "${id}" was removed, so it can't be overridden.`,
+      );
+    }
+    if (!findRoute(this.routes || [], id)) {
+      throw new Error(`No route with the id "${id}" is registered.`);
+    }
+    const previous = overrides[id];
+    this._data.routeOverrides = {
+      ...overrides,
+      [id]: {
+        ...previous,
+        ...override,
+        options: { ...previous?.options, ...override.options },
+      },
+    };
+  }
+
+  /**
+   * Removes a registered route, and its children.
+   *
+   * The route must already be registered: apply the add-on that registers it
+   * first. Throws when no route has this id.
+   *
+   * @param id - The route's id, see `routeId`, e.g. `@plone/cmsui/routes/sharing`.
+   */
+  removeRoute(id: string) {
+    const overrides = this._data.routeOverrides || {};
+    // Removing it again (the configuration applied twice) changes nothing.
+    if (overrides[id] === null) return;
+    if (!findRoute(this.routes || [], id)) {
+      throw new Error(`No route with the id "${id}" is registered.`);
+    }
+    this._data.routeOverrides = { ...overrides, [id]: null };
   }
 
   /**

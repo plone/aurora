@@ -143,7 +143,7 @@ export default function install(config: ConfigType) {
       },
       {
         type: 'prefix',
-        path: 'controlpanel',
+        path: '@@controlpanel',
         children: [
           {
             type: 'index',
@@ -153,20 +153,44 @@ export default function install(config: ConfigType) {
             },
           },
           {
+            type: 'prefix',
+            path: 'content-types',
+            children: [
+              {
+                type: 'index',
+                file: '@plone/cmsui/routes/contentTypes.tsx',
+                options: {
+                  id: 'content-types-controlpanel',
+                },
+              },
+              {
+                // No splat: the root content middleware would fetch it as
+                // content. Without one, it loads the site root.
+                type: 'route',
+                path: ':type/:tab?',
+                file: '@plone/cmsui/routes/contentType.tsx',
+              },
+            ],
+          },
+          {
+            type: 'route',
+            path: 'dexterity-types/:type?/:page?',
+            file: '@plone/cmsui/routes/dexterityTypesRedirect.tsx',
+          },
+          {
+            type: 'route',
+            path: 'addons',
+            file: '@plone/cmsui/routes/controlpanelAddons.tsx',
+          },
+          {
+            type: 'route',
+            path: 'plone-upgrade',
+            file: '@plone/cmsui/routes/controlpanelUpgrade.tsx',
+          },
+          {
             type: 'route',
             path: ':id',
             file: '@plone/cmsui/routes/controlpanel.tsx',
-          },
-        ],
-      },
-      {
-        type: 'prefix',
-        path: 'test-layout',
-        children: [
-          {
-            type: 'route',
-            path: '*',
-            file: '@plone/cmsui/routes/test.tsx',
           },
         ],
       },
@@ -241,6 +265,17 @@ export default function install(config: ConfigType) {
         type: 'route',
         path: '*',
         file: '@plone/cmsui/routes/querystringSearch.tsx',
+      },
+    ],
+  });
+  config.registerRoute({
+    type: 'prefix',
+    path: '@content-types',
+    children: [
+      {
+        type: 'route',
+        path: '*',
+        file: '@plone/cmsui/routes/api/contentTypes.tsx',
       },
     ],
   });
