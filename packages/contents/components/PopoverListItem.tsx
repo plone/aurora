@@ -8,7 +8,7 @@ export default function PopoverListItem({
 }: {
   className?: string;
   children: React.ReactNode;
-  ariaDescribedby: string;
+  ariaDescribedby?: string;
 }) {
   return (
     <li

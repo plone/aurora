@@ -59,11 +59,7 @@ export function ContentsCell({
         className="title-link inline-flex items-center decoration-0"
         href={`${item.is_folderish ? '/@@contents' : ''}${item['@id']}`}
       >
-        <Icon
-          size="S"
-          title={item['Type'] || item['@type']}
-          className="me-4 shrink-0 text-quanta-pigeon"
-        />
+        <Icon className="me-4 shrink-0 text-quanta-pigeon" />
         {item.title}
         {isExpired(item.ExpirationDate) && (
           <span className="expired">{t('contents.item.expired')}</span>
