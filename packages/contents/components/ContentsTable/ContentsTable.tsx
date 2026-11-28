@@ -599,9 +599,11 @@ export function ContentsTable({
             </div>
           </Topbar>
           <section className="contents-table">
+            {/* Screen readers hear how many items match, also when the filter
+                changes. It counts every match, not only this page's. */}
             <VisuallyHidden>
               <span aria-live="polite">
-                {t('contents.results', { count: items.length })}
+                {t('contents.results.number', { count: search.items_total })}
               </span>
             </VisuallyHidden>
             {rows?.length > 0 ? (

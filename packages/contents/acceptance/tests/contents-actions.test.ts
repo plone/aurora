@@ -99,6 +99,33 @@ test.describe('Contents view actions', () => {
     await expect(indicator).toHaveCount(0);
   });
 
+  test('tells screen readers the results count and missing states', async ({
+    page,
+  }) => {
+    const folderId = await setupFolder(page, ['A page']);
+    // Images have no workflow, so no review state.
+    await createContent(page, {
+      contentType: 'Image',
+      contentId: 'an-image',
+      contentTitle: 'An image',
+      path: folderId,
+      image: true,
+    });
+    await page.goto(`/@@contents/${folderId}`, { waitUntil: 'networkidle' });
+
+    await expect(page.locator('[aria-live="polite"]')).toHaveText('2 items');
+    const imageRow = page.getByRole('row', { name: /An image/ });
+    // The dash is hidden from screen readers, which hear a label instead.
+    await expect(imageRow.getByText('—')).toHaveAttribute(
+      'aria-hidden',
+      'true',
+    );
+    await expect(imageRow.getByText('No workflow state')).toBeAttached();
+
+    await page.getByRole('searchbox').fill('image');
+    await expect(page.locator('[aria-live="polite"]')).toHaveText('1 item');
+  });
+
   test('deletes an item', async ({ page }) => {
     await setupFolder(page, ['Delete me', 'Keep me']);
 
