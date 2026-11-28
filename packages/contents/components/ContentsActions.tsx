@@ -55,7 +55,6 @@ export function ContentsActions({
     label: string,
     icon: React.ReactNode,
     onPress: () => void,
-    isDisabled = false,
     className = '',
   ) => (
     <TooltipTrigger key={id}>
@@ -67,7 +66,6 @@ export function ContentsActions({
           ${className}
         `}
         onPress={onPress}
-        isDisabled={isDisabled}
         aria-label={label}
       >
         {icon}
@@ -76,72 +74,56 @@ export function ContentsActions({
     </TooltipTrigger>
   );
 
-  // Every action stays visible, disabled until it can be used, so users do
-  // not have to discover where they appear.
   return (
     <div className="contents-actions flex items-center gap-1">
       {action('upload', t('contents.actions.upload'), <UploadIcon />, upload)}
-      {action(
-        'rename',
-        t('contents.actions.rename'),
-        <RenameIcon />,
-        rename,
-        !hasSelection,
+      {hasSelection && (
+        <>
+          {action(
+            'rename',
+            t('contents.actions.rename'),
+            <RenameIcon />,
+            rename,
+          )}
+          {action(
+            'state',
+            t('contents.actions.state'),
+            <StateIcon />,
+            workflow,
+          )}
+          {action('tags', t('contents.actions.tags'), <TagIcon />, tags)}
+          {action(
+            'properties',
+            t('contents.actions.properties'),
+            <PropertiesIcon />,
+            properties,
+          )}
+        </>
       )}
-      {action(
-        'state',
-        t('contents.actions.state'),
-        <StateIcon />,
-        workflow,
-        !hasSelection,
+      {(hasSelection || canPaste) && (
+        <span
+          aria-hidden
+          className="separator mx-1 h-6 border-s border-quanta-smoke"
+        />
       )}
-      {action(
-        'tags',
-        t('contents.actions.tags'),
-        <TagIcon />,
-        tags,
-        !hasSelection,
+      {hasSelection && (
+        <>
+          {action('cut', t('contents.actions.cut'), <CutIcon />, () => cut())}
+          {action('copy', t('contents.actions.copy'), <CopyIcon />, () =>
+            copy(),
+          )}
+        </>
       )}
-      {action(
-        'properties',
-        t('contents.actions.properties'),
-        <PropertiesIcon />,
-        properties,
-        !hasSelection,
-      )}
-      <span
-        aria-hidden
-        className="separator mx-1 h-6 border-s border-quanta-smoke"
-      />
-      {action(
-        'cut',
-        t('contents.actions.cut'),
-        <CutIcon />,
-        () => cut(),
-        !hasSelection,
-      )}
-      {action(
-        'copy',
-        t('contents.actions.copy'),
-        <CopyIcon />,
-        () => copy(),
-        !hasSelection,
-      )}
-      {action(
-        'paste',
-        t('contents.actions.paste'),
-        <PasteIcon />,
-        paste,
-        !canPaste,
-      )}
-      {action(
-        'delete',
-        t('contents.actions.delete'),
-        <BinIcon />,
-        () => deleteItem(),
-        !hasSelection,
-        hasSelection ? 'has-[svg]:text-quanta-candy' : '',
-      )}
+      {canPaste &&
+        action('paste', t('contents.actions.paste'), <PasteIcon />, paste)}
+      {hasSelection &&
+        action(
+          'delete',
+          t('contents.actions.delete'),
+          <BinIcon />,
+          () => deleteItem(),
+          'has-[svg]:text-quanta-candy',
+        )}
     </div>
   );
 }
