@@ -34,13 +34,33 @@ export function NotContentTypeCondition(contentType: string[]) {
   };
 }
 
-export function shouldShowToolbar(content?: Content | null) {
+/**
+ * Whether the user can edit the item, the `@@edit` view: Plone gives the
+ * `edit` action to users with the permission to modify it.
+ */
+export function canEdit(content?: Content | null) {
   const actions = content?.['@components']?.actions;
-  const isVisible =
+  return (
     (actions?.object?.some((a) => a.id === 'edit') ?? false) ||
-    (actions?.object_buttons?.some((a) => a.id === 'edit') ?? false);
+    (actions?.object_buttons?.some((a) => a.id === 'edit') ?? false)
+  );
+}
 
-  return isVisible;
+export function shouldShowToolbar(content?: Content | null) {
+  return canEdit(content);
+}
+
+/**
+ * Whether the user can see the contents of the item, the `@@contents` view:
+ * Plone gives the `folderContents` object action to users with the
+ * permission to list its contents.
+ */
+export function canViewContents(content?: Content | null) {
+  return (
+    content?.['@components']?.actions?.object?.some(
+      (action) => action.id === 'folderContents',
+    ) ?? false
+  );
 }
 
 export function isSameDay(start: string, end: string): boolean {

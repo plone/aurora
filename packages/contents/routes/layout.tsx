@@ -4,6 +4,8 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  data,
+  useFetcher,
   useNavigate,
   useLoaderData,
   type LinksFunction,
@@ -15,21 +17,29 @@ import { useTranslation } from 'react-i18next';
 import { RouterProvider as RACRouterProvider } from 'react-aria-components';
 import clsx from 'clsx';
 import { getLocale } from '@plone/aurora/app/i18next.server';
-import { ploneContentContext } from '@plone/aurora/app/middleware.server';
+import {
+  ploneClientContext,
+  ploneContentContext,
+  ploneSiteContext,
+  ploneUserContext,
+} from '@plone/aurora/app/middleware.server';
 import { type RootLoader } from '@plone/aurora/app/root';
 import { Link } from '@plone/quanta';
+import { requireAuthCookie } from '@plone/react-router';
 import { PluggablesProvider, Plug } from '@plone/layout/components/Pluggable';
 import Toast from '@plone/layout/components/Toast/Toast';
 import Toolbar from '@plone/layout/components/Toolbar/Toolbar';
-import { shouldShowToolbar } from '@plone/layout/helpers';
+import { ContentTypesMenu } from '@plone/layout/components/Toolbar/ContentTypesMenu/ContentTypesMenu';
+import { MoreMenu } from '@plone/layout/components/Toolbar/MoreMenu/MoreMenu';
+import { PersonalTools } from '@plone/layout/components/Toolbar/PersonalTools/PersonalTools';
+import { canViewContents, shouldShowToolbar } from '@plone/layout/helpers';
+import { getMoreMenuData } from '@plone/layout/helpers/moreMenu';
 import config from '@plone/registry';
 import Back from '@plone/icons/svg/arrow-left.svg?react';
+import Pencil from '@plone/icons/svg/pencil.svg?react';
 
 // eslint-disable-next-line import/no-unresolved
 import stylesheet from '@plone/aurora/.plone/cmsui.css?url';
-// TODO these imports are temporary and will need to be fully replaced with quanta tailwind styles
-import basicComponentsStylesheets from '@plone/components/dist/basic.css?url';
-import quantaComponentsStylesheet from '@plone/quanta/dist/quanta.css?url';
 
 export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
   matches,
@@ -48,8 +58,6 @@ export const meta: MetaFunction<unknown, { root: RootLoader }> = ({
 };
 
 export const links: LinksFunction = () => [
-  { rel: 'stylesheet', href: basicComponentsStylesheets },
-  { rel: 'stylesheet', href: quantaComponentsStylesheet },
   { rel: 'stylesheet', href: stylesheet },
   {
     rel: 'icon',
@@ -77,16 +85,46 @@ export const links: LinksFunction = () => [
 export async function loader({
   context,
   params,
+  request,
 }: LoaderFunctionArgs<RouterContextProvider>) {
+  await requireAuthCookie(request);
   const content = context.get(ploneContentContext);
+  // Like Volto, the view needs the `folderContents` action, which Plone gives
+  // to users who can list the contents of the item.
+  if (!canViewContents(content)) {
+    throw data('Unauthorized', { status: 401 });
+  }
   const locale = getLocale(context);
   const path = `/${params['*'] || ''}`;
-  return { locale, content, path };
+  const cli = context.get(ploneClientContext);
+  const user = context.get(ploneUserContext);
+  const multilingual = !!context.get(ploneSiteContext)?.features?.multilingual;
+  const moreData = await getMoreMenuData(cli, content);
+  return {
+    locale,
+    content,
+    path,
+    moreData,
+    multilingual,
+    user: user && {
+      id: user.id,
+      username: user.username,
+      fullname: user.fullname,
+      email: user.email,
+      portrait: (user.portrait as string | null)
+        ? `/@portrait/${encodeURIComponent(user.id)}`
+        : null,
+    },
+  };
 }
 
 export default function Index() {
-  const { locale, content, path } = useLoaderData<typeof loader>();
-  const { i18n } = useTranslation();
+  const { locale, content, path, moreData, multilingual, user } =
+    useLoaderData<typeof loader>();
+  const { t, i18n } = useTranslation();
+  const moreFetcher = useFetcher();
+  // The root is `/`, but its views are `/@@edit`, not `/@@edit/`.
+  const viewPath = path.replace(/^\/$/, '');
   const navigate = useNavigate();
 
   const contentLanguage = (content?.language as { token?: string } | undefined)
@@ -111,6 +149,35 @@ export default function Index() {
         <link rel="stylesheet" href="/@layers.css" precedence="first" />
         <RACRouterProvider navigate={navigate}>
           <PluggablesProvider>
+            {showToolbar && (
+              <Plug
+                pluggable="toolbar-bottom"
+                id="personal-tools"
+                // @ts-expect-error Plug's JavaScript declaration infers never[]
+                dependencies={[user, content?.['@components']?.actions]}
+              >
+                <PersonalTools
+                  user={user}
+                  actions={content?.['@components']?.actions}
+                />
+              </Plug>
+            )}
+            {showToolbar && (
+              <Plug
+                pluggable="toolbar-top"
+                id="button-edit"
+                // @ts-expect-error this is currently typed as never[]
+                dependencies={[viewPath]}
+              >
+                <Link
+                  className="primary"
+                  aria-label={t('layout.toolbar.edit')}
+                  href={`/@@edit${viewPath}`}
+                >
+                  <Pencil />
+                </Link>
+              </Plug>
+            )}
             {showToolbar && <Toolbar />}
             <div
               className={clsx({
@@ -126,10 +193,46 @@ export default function Index() {
               // @ts-expect-error this is currently typed as never[]
               dependencies={[path]}
             >
-              <Link className="secondary" aria-label="back" href={path}>
+              <Link
+                className="secondary"
+                aria-label={t('layout.toolbar.back')}
+                href={path}
+              >
                 <Back />
               </Link>
             </Plug>
+            <Plug
+              pluggable="toolbar-top"
+              id="button-add"
+              // @ts-expect-error this is currently typed as never[]
+              dependencies={[content, path]}
+            >
+              <ContentTypesMenu content={content} path={viewPath} />
+            </Plug>
+            {showToolbar && (
+              <Plug
+                pluggable="toolbar-top"
+                id="button-more"
+                dependencies={
+                  [content, moreData, multilingual, path] as never[]
+                }
+              >
+                <MoreMenu
+                  content={content}
+                  path={path}
+                  actions={content?.['@components']?.actions}
+                  workflow={moreData.workflow}
+                  layouts={moreData.layouts}
+                  multilingual={multilingual}
+                  onChange={(operation, value) =>
+                    moreFetcher.submit(
+                      { path, operation, value },
+                      { method: 'post', action: '/@more-menu' },
+                    )
+                  }
+                />
+              </Plug>
+            )}
           </PluggablesProvider>
         </RACRouterProvider>
         <Toast

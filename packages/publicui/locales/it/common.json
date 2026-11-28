@@ -27,10 +27,6 @@
       "resultCount_one": "{{count}} risultato",
       "resultCount_other": "{{count}} risultati",
       "pageLabel": "Pagina"
-    },
-    "toolbar": {
-      "edit": "Modifica",
-      "addContent": "Aggiungi contenuto"
     }
   }
 }

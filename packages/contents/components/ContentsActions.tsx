@@ -48,116 +48,82 @@ export function ContentsActions({
   const { t } = useTranslation();
   const { selected } = useContentsContext();
 
+  const hasSelection = selected.size > 0;
+
+  const action = (
+    id: string,
+    label: string,
+    icon: React.ReactNode,
+    onPress: () => void,
+    className = '',
+  ) => (
+    <TooltipTrigger key={id}>
+      <Button
+        variant="icon"
+        className={`
+          contents-action-trigger
+          ${id}
+          ${className}
+        `}
+        onPress={onPress}
+        aria-label={label}
+      >
+        {icon}
+      </Button>
+      <Tooltip placement="bottom">{label}</Tooltip>
+    </TooltipTrigger>
+  );
+
   return (
-    <div className="contents-actions flex flex-wrap gap-1">
-      <TooltipTrigger>
-        <Button
-          variant="icon"
-          className="contents-action-trigger upload"
-          onPress={upload}
-          aria-label={t('contents.actions.upload')}
-        >
-          <UploadIcon />
-        </Button>
-        <Tooltip placement="bottom">{t('contents.actions.upload')}</Tooltip>
-      </TooltipTrigger>
-      <TooltipTrigger>
-        <Button
-          variant="icon"
-          className="contents-action-trigger rename"
-          onPress={rename}
-          aria-label={t('contents.actions.rename')}
-          isDisabled={selected.size === 0}
-        >
-          <RenameIcon />
-        </Button>
-        <Tooltip placement="bottom">{t('contents.actions.rename')}</Tooltip>
-      </TooltipTrigger>
-      <TooltipTrigger>
-        <Button
-          variant="icon"
-          className="contents-action-trigger state"
-          onPress={workflow}
-          aria-label={t('contents.actions.state')}
-          isDisabled={selected.size === 0}
-        >
-          <StateIcon />
-        </Button>
-        <Tooltip placement="bottom">{t('contents.actions.state')}</Tooltip>
-      </TooltipTrigger>
-      <TooltipTrigger>
-        <Button
-          variant="icon"
-          className="contents-action-trigger tags"
-          onPress={tags}
-          aria-label={t('contents.actions.tags')}
-          isDisabled={selected.size === 0}
-        >
-          <TagIcon />
-        </Button>
-        <Tooltip placement="bottom">{t('contents.actions.tags')}</Tooltip>
-      </TooltipTrigger>
-      <TooltipTrigger>
-        <Button
-          variant="icon"
-          className="contents-action-trigger properties"
-          onPress={properties}
-          aria-label={t('contents.actions.properties')}
-          isDisabled={selected.size === 0}
-        >
-          <PropertiesIcon />
-        </Button>
-        <Tooltip placement="bottom">{t('contents.actions.properties')}</Tooltip>
-      </TooltipTrigger>
-      <span className="separator mx-1 border-[0.5px] border-quanta-silver"></span>
-      <TooltipTrigger>
-        <Button
-          variant="icon"
-          className="contents-action-trigger cut"
-          onPress={() => cut()}
-          aria-label={t('contents.actions.cut')}
-          isDisabled={selected.size === 0}
-        >
-          <CutIcon />
-        </Button>
-        <Tooltip placement="bottom">{t('contents.actions.cut')}</Tooltip>
-      </TooltipTrigger>
-      <TooltipTrigger>
-        <Button
-          variant="icon"
-          className="contents-action-trigger copy"
-          onPress={() => copy()}
-          aria-label={t('contents.actions.copy')}
-          isDisabled={selected.size === 0}
-        >
-          <CopyIcon />
-        </Button>
-        <Tooltip placement="bottom">{t('contents.actions.copy')}</Tooltip>
-      </TooltipTrigger>
-      <TooltipTrigger>
-        <Button
-          variant="icon"
-          className="contents-action-trigger paste"
-          onPress={paste}
-          aria-label={t('contents.actions.paste')}
-          isDisabled={!canPaste}
-        >
-          <PasteIcon />
-        </Button>
-        <Tooltip placement="bottom">{t('contents.actions.paste')}</Tooltip>
-      </TooltipTrigger>
-      <TooltipTrigger>
-        <Button
-          variant="icon"
-          className="contents-action-trigger delete text-quanta-candy"
-          onPress={() => deleteItem()}
-          aria-label={t('contents.actions.delete')}
-          isDisabled={selected.size === 0}
-        >
-          <BinIcon />
-        </Button>
-        <Tooltip placement="bottom">{t('contents.actions.delete')}</Tooltip>
-      </TooltipTrigger>
+    <div className="contents-actions flex items-center gap-1">
+      {action('upload', t('contents.actions.upload'), <UploadIcon />, upload)}
+      {hasSelection && (
+        <>
+          {action(
+            'rename',
+            t('contents.actions.rename'),
+            <RenameIcon />,
+            rename,
+          )}
+          {action(
+            'state',
+            t('contents.actions.state'),
+            <StateIcon />,
+            workflow,
+          )}
+          {action('tags', t('contents.actions.tags'), <TagIcon />, tags)}
+          {action(
+            'properties',
+            t('contents.actions.properties'),
+            <PropertiesIcon />,
+            properties,
+          )}
+        </>
+      )}
+      {(hasSelection || canPaste) && (
+        <span
+          aria-hidden
+          className="separator mx-1 h-6 border-s border-quanta-smoke"
+        />
+      )}
+      {hasSelection && (
+        <>
+          {action('cut', t('contents.actions.cut'), <CutIcon />, () => cut())}
+          {action('copy', t('contents.actions.copy'), <CopyIcon />, () =>
+            copy(),
+          )}
+        </>
+      )}
+      {canPaste &&
+        action('paste', t('contents.actions.paste'), <PasteIcon />, paste)}
+      {hasSelection &&
+        action(
+          'delete',
+          t('contents.actions.delete'),
+          <BinIcon />,
+          () => deleteItem(),
+          'has-[svg]:text-quanta-candy',
+        )}
     </div>
   );
 }

@@ -72,9 +72,9 @@
     "rearrange": {
       "error": "Error reordering items",
       "by": "Rearrange items by…",
-      "asc": "Ascending",
-      "desc": "Descending",
-      "pickOrder": "Pick order for {{index}}"
+      "asc": "Arrange A–Z",
+      "desc": "Arrange Z–A",
+      "permanently_by": "Arrange permanently by"
     },
     "modal": {
       "close": "Close"
