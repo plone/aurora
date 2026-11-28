@@ -3,7 +3,7 @@
   "compilerOptions": {
     "paths": {}
   },
-  "include": ["src", "../icons/src/svg.d.ts", "./setupTesting.ts"],
+  "include": ["src", "./setupTesting.ts"],
   "exclude": ["node_modules", "dist", "coverage"],
   "references": [
     {

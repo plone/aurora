@@ -1,0 +1,1 @@
+Documented that `*.svg?react` components need no type declaration in add-ons, and how to upgrade code that passes them `<svg>` props. @sneridagh

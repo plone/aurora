@@ -104,10 +104,25 @@ declare module '*.svg' {
   let asset: string;
   export default asset;
 }
+// The SVGR Vite plugin of `@plone/icons` wraps every `*.svg?react` import in
+// its `Icon` component, so the component takes the props of `Icon`, except
+// `children`. A type check in `@plone/icons` fails when they differ.
 declare module '*.svg?react' {
-  import type { FunctionComponent, SVGProps } from 'react';
+  import type { CSSProperties, FunctionComponent } from 'react';
 
-  const ReactComponent: FunctionComponent<SVGProps<SVGSVGElement>>;
+  const ReactComponent: FunctionComponent<{
+    id?: string;
+    'aria-label'?: string;
+    'aria-labelledby'?: string;
+    'aria-describedby'?: string;
+    'aria-details'?: string;
+    'aria-hidden'?: boolean | 'false' | 'true';
+    size?: '2xs' | 'xs' | 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl';
+    slot?: string;
+    color?: string;
+    className?: string;
+    style?: CSSProperties;
+  }>;
   export default ReactComponent;
 }
 declare module '*.ttf' {

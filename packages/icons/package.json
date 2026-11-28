@@ -86,6 +86,7 @@
     "not dead"
   ],
   "dependencies": {
+    "@plone/types": "workspace:*",
     "@react-aria/utils": "catalog:",
     "@react-spectrum/utils": "catalog:",
     "@svgr/plugin-jsx": "^8.1.0",

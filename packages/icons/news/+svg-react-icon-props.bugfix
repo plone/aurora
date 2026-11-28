@@ -1,0 +1,1 @@
+`@plone/icons/svg` loads the `*.svg?react` declaration of `@plone/types` instead of declaring its own, which conflicted with it. A type check fails when the props of `Icon` and that declaration differ. @sneridagh

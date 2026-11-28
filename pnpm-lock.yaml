@@ -1242,6 +1242,9 @@ importers:
 
   packages/icons:
     dependencies:
+      '@plone/types':
+        specifier: workspace:*
+        version: link:../types
       '@react-aria/utils':
         specifier: 'catalog:'
         version: 3.34.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
