@@ -342,7 +342,9 @@ To upgrade by hand, make the following changes in your frontend folder.
 
 Then run `pnpm install`, `make lint`, `make typecheck` and `make test`, and start the app with `make start`.
 
-To develop against an unreleased version of Plone Aurora, install its packages from a checkout or from packed tarballs with pnpm `overrides`.
+To develop against an unreleased version of Plone Aurora, add the core overlay of the Cookieplone templates: {file}`.pnpmfile.cjs`, the {file}`core/packages/*` entries of {file}`pnpm-workspace.yaml`, and the `core`, `build-core` and `remove-core` targets of the {file}`Makefile`.
+Exclude {file}`core` in {file}`tsconfig.json`, {file}`eslint.config.mjs`, {file}`.gitignore` and {file}`.dockerignore`.
+{ref}`develop-against-unreleased-aurora` describes how it works.
 
 ### Tailwind sources come from the add-ons' dependencies
 
